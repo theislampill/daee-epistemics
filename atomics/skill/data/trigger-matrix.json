@@ -5,7 +5,7 @@
   "rules": [
     {
       "id": "do-christian-extensions",
-      "requires_any": ["term.trinity", "term.father_son_spirit"],
+      "requires_any": ["feature.predication_confusion"],
       "requires_all": [],
       "blocks": [],
       "yields_to": [],

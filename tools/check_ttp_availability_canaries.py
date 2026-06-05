@@ -61,7 +61,7 @@ OWNER_ALIASES = {
 }
 OWNER_SPECIFIC_BODY_RE = {
     "DO_ATTRIBUTE": re.compile(r"(?i)\b(?:attribute|person|nature|predicate|category|transfer)\b"),
-    "DO_CHRISTIAN": re.compile(r"(?i)\b(?:model|trinitarian|route|family|fan[- ]out)\b"),
+    "DO_CHRISTIAN": re.compile(r"(?i)\b(?:model|predication|person|nature|route|family|fan[- ]out|perfection|canon|authority)\b"),
     "DOUBT_SKEPTICISM": re.compile(r"(?i)\b(?:doubt|skepticism|method|question)\b"),
     "FPD": re.compile(r"(?i)\b(?:foreign|premise|criterion|tribunal|support)\b"),
     "HUSN_AL_NAZAR": re.compile(r"(?i)\b(?:proof|readiness|infer|argument|nazar|evidence)\b"),

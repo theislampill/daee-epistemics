@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import re
 import sys
@@ -363,6 +364,53 @@ def check_tree(root: Path, prefix: str) -> list[str]:
     return errors
 
 
+def load_script_module(path: Path, module_name: str) -> Any:
+    scripts_dir = str(path.parent)
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"could not load module spec for {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def route_ids_for_text(root: Path, text: str) -> tuple[set[str], list[str]]:
+    scripts_root = root / "atomics" / "skill" / "scripts"
+    skill_root = root / "atomics" / "skill"
+    diagnose = load_script_module(scripts_root / "diagnose.py", "level3_diagnose_canary")
+    route = load_script_module(scripts_root / "route.py", "level3_route_canary")
+    features = diagnose.extract(text, skill_root)
+    route_plan = route.compute_route(features, skill_root)
+    first_live = [str(item.get("id")) for item in route_plan.get("first_live", []) if isinstance(item, dict)]
+    held = [str(item.get("id")) for item in route_plan.get("held", []) if isinstance(item, dict)]
+    deferred = [str(item.get("id")) for item in route_plan.get("deferred", []) if isinstance(item, dict)]
+    return set(features.get("feature_ids", [])), [*first_live, *held, *deferred]
+
+
+def formal_route_canary_errors(root: Path) -> list[str]:
+    errors: list[str] = []
+    bare_features, bare_routes = route_ids_for_text(
+        root,
+        "Catalogue note: Trinity is a label here, with no claim, no relation, and no objection.",
+    )
+    if "term.trinity" not in bare_features:
+        errors.append("formal route canary: bare label did not exercise term.trinity extraction")
+    if "do-christian-extensions" in bare_routes:
+        errors.append("formal route canary: bare topic label routed do-christian-extensions")
+
+    formal_features, formal_routes = route_ids_for_text(
+        root,
+        "The proposal says three persons share one divine nature, and the predicate/category transfer is unclear.",
+    )
+    if "feature.predication_confusion" not in formal_features:
+        errors.append("formal route canary: neutral person/nature predicate relation did not derive feature.predication_confusion")
+    if "do-christian-extensions" not in formal_routes:
+        errors.append("formal route canary: neutral formal predication pressure did not route do-christian-extensions")
+    return errors
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -373,6 +421,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     root = repo_root()
     errors = check_tree(root, "atomics/skill")
+    errors.extend(formal_route_canary_errors(root))
     if args.include_generated:
         errors.extend(check_tree(root, "skill"))
     if not errors:

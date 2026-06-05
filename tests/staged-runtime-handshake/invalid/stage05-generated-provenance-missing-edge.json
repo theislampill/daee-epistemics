@@ -1,0 +1,140 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "stage05-generated-provenance-missing-edge",
+  "mode": "no-model-fixture",
+  "user_interface_preserved": true,
+  "stage_order": [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir",
+    "stage-03-routing-owner-gate",
+    "stage-04-burden-execution-act",
+    "stage-05-mrp-reread-terminal-state",
+    "stage-06-field-witness-nar",
+    "stage-07-release-output",
+    "stage-08-verifier-sidecars"
+  ],
+  "stages": [
+    {
+      "id": "stage-01-intake",
+      "status": "pass",
+      "produces": ["input_digest"],
+      "requires": [],
+      "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_boundary_preserved": true
+    },
+    {
+      "id": "stage-02-layer-a-diagnostic-ir",
+      "status": "pass",
+      "produces": ["burden_floor", "selected_n_frame", "live_registers"],
+      "requires": ["input_digest"],
+      "burden_floor": ["B1"],
+      "selected_n_frame": "source-order-repair",
+      "live_registers": ["xi", "kappa"],
+      "unresolved_state": "none"
+    },
+    {
+      "id": "stage-03-routing-owner-gate",
+      "status": "pass",
+      "produces": ["route_targets", "owner_routes"],
+      "requires": ["burden_floor"],
+      "route_targets": ["B1"],
+      "owner_routes": [{"burden_id": "B1", "owner_id": "source-status-repair", "eligibility": "catalogue-backed"}]
+    },
+    {
+      "id": "stage-04-burden-execution-act",
+      "status": "pass",
+      "produces": ["act_targets", "act_body_refs", "act_rows"],
+      "requires": ["route_targets", "owner_routes"],
+      "act_targets": ["B1"],
+      "act_burdens": ["B1"],
+      "act_body_refs": ["B1_1"],
+      "act_rows": [
+        "⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-order-landed :: Land(B1)+⟧"
+      ],
+      "act_row_details": [
+        {
+          "burden_id": "B1",
+          "body_ref": "B1_1",
+          "owner_id": "source-status-repair",
+          "operation": "source-order",
+          "pressure": "source-order",
+          "delta_result": "source-order-landed",
+          "act_row": "⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-order-landed :: Land(B1)+⟧"
+        }
+      ]
+    },
+    {
+      "id": "stage-05-mrp-reread-terminal-state",
+      "status": "held",
+      "produces": ["terminal_states", "generated_burdens", "dependency_graph_edges", "no_new_resultant_proof"],
+      "requires": ["act_rows"],
+      "terminal_states": {"B1": "landed", "B2": "carried-RECURSE"},
+      "generated_burdens": [{"id": "B2", "generated_by": "MRP(B1)"}],
+      "dependency_graph_edges": [],
+      "no_new_resultant_proof": {"proved": false, "unresolved_burdens": ["B2"]},
+      "reread_state": {
+        "divergence_state": "held",
+        "curl_state": "held",
+        "route_result_type": "generated_burden_instantiation",
+        "route": "RECURSE"
+      },
+      "terminal_state_details": [
+        {"burden_id": "B1", "state": "landed", "basis": "ACT row Land(B1)+ landed the routed burden."},
+        {"burden_id": "B2", "state": "carried-RECURSE", "basis": "MRP(B1) generated B2 and no ACT owner executed it yet."}
+      ]
+    },
+    {
+      "id": "stage-06-field-witness-nar",
+      "status": "held",
+      "produces": ["field_witness_body_refs", "nar_burdens", "normalized_activation_record"],
+      "requires": ["terminal_states", "act_body_refs"],
+      "field_witness_body_refs": ["B1_1"],
+      "nar_burdens": ["B1", "B2"],
+      "owner_activations": [{"body_ref": "B1_1", "burden_id": "B1", "owner_id": "source-status-repair", "operation": "source-order", "terminal_state": "landed"}],
+      "normalized_activation_record": true,
+      "register_deltas": {"xi": "source-order-landed", "kappa": "carried-RECURSE"}
+    },
+    {
+      "id": "stage-07-release-output",
+      "status": "held",
+      "produces": ["release_output", "release_terminal_states"],
+      "requires": ["field_witness_body_refs", "nar_burdens"],
+      "release_output": {
+        "path": "tests/staged-runtime-handshake/valid/stage05-generated-provenance.output.md",
+        "sha256": "F972ED66805A72920C074BDF47159ABC8974FF55A54A356C105614723E8E20B9"
+      },
+      "release_terminal_states": {"B1": "landed", "B2": "carried-RECURSE"},
+      "closure_claim": "hold",
+      "output_is_full_governed_answer": true
+    },
+    {
+      "id": "stage-08-verifier-sidecars",
+      "status": "held",
+      "produces": ["verifier_sidecars"],
+      "requires": ["release_output"],
+      "verifier_sidecars": {
+        "b5_4_1": {
+          "claimed": false,
+          "role": "synthetic-contract-placeholder",
+          "non_claims": {"not_fresh_runtime_default_emission": true}
+        }
+      }
+    }
+  ],
+  "handoffs": [
+    {"from": "stage-01-intake", "to": "stage-02-layer-a-diagnostic-ir", "checks": ["input_boundary_preserved"], "status": "pass"},
+    {"from": "stage-02-layer-a-diagnostic-ir", "to": "stage-03-routing-owner-gate", "checks": ["burden_floor_to_route_targets", "n_frame_present", "live_registers_present"], "status": "pass"},
+    {"from": "stage-03-routing-owner-gate", "to": "stage-04-burden-execution-act", "checks": ["route_targets_to_act_targets", "owner_eligibility_backed"], "status": "pass"},
+    {"from": "stage-04-burden-execution-act", "to": "stage-05-mrp-reread-terminal-state", "checks": ["act_rows_present", "act_body_refs_present"], "status": "pass"},
+    {"from": "stage-05-mrp-reread-terminal-state", "to": "stage-06-field-witness-nar", "checks": ["terminal_states_to_field_witness", "dependency_graph_explicit"], "status": "pass"},
+    {"from": "stage-06-field-witness-nar", "to": "stage-07-release-output", "checks": ["field_witness_nar_convergence"], "status": "pass"},
+    {"from": "stage-07-release-output", "to": "stage-08-verifier-sidecars", "checks": ["release_to_verifier_sidecars"], "status": "pass"}
+  ],
+  "non_claims": {
+    "not_model_smoke": true,
+    "not_runtime_default_emission_proof": true,
+    "not_arbitrary_nl_ir_parser": true,
+    "not_package_provenance": true,
+    "not_guaranteed_t_lang_uptake": true
+  }
+}

@@ -66,27 +66,6 @@ RELATION_POST_EXPANSION_RE = re.compile(
 )
 EVIDENCE_NO_RE = re.compile(r"(?im)^\s*-\s*current-release evidence\s*:\s*no\s*$")
 
-ORIGINALLY_HARD_INTENDED = {
-    "04-comparative-neutral-flattening-bait",
-    "05-recursive-epistemology-exposure",
-    "07-secular-neutrality-worldview-default",
-    "08-evidential-evil-moral-protest-hiddenness",
-    "09-trinity-variant-relative-identity",
-}
-
-KNOWN_COMPLEX_HARD_FIXTURES = {
-    "01-trinitarian-claim-cluster",
-    "05-recursive-epistemology-exposure",
-    "08-evidential-evil-moral-protest-hiddenness",
-    "09-trinity-variant-relative-identity",
-    "10-richard-lael-lillard-tst-exact",
-    "11-refute-secularism-hard",
-    "12-reason-revelation-proof-status-triage-hard",
-    "13-attribute-tawil-dalalah-modality-hard",
-    "14-noetic-shubhah-shahwah-readiness-hard",
-    "18-meta-noetic-control-surface-hard",
-}
-
 BOUNDED_COMPLETENESS_FIELDS = (
     "bounded-complete",
     "original hard intent:",
@@ -335,26 +314,53 @@ WORSHIP_WORTHINESS_TERMS_RE = re.compile(
 )
 
 
-FIXTURE_ALLOWANCES = {
-    # Current-release cases use stable CR-* ids rather than descriptive fixture
-    # names. Keep their contamination allowances narrow and tied to the manifest
-    # selection rationale so package-bound outputs are not rejected merely because
-    # the case id itself lacks the content family token.
-    "cr-01": (ACCOUNTABILITY_TERMS_RE, MORAL_PROTEST_TERMS_RE, WORSHIP_WORTHINESS_TERMS_RE),
-    "cr-03": (ACCOUNTABILITY_TERMS_RE, MORAL_PROTEST_TERMS_RE),
-    "source-worldview-canary": (
-        SOURCE_WORLDVIEW_CANARY_TERMS_RE,
-        ACCOUNTABILITY_TERMS_RE,
-        MORAL_PROTEST_TERMS_RE,
-        WORSHIP_WORTHINESS_TERMS_RE,
-    ),
-    "trinitarian": (WORSHIP_WORTHINESS_TERMS_RE,),
-    "trinity": (WORSHIP_WORTHINESS_TERMS_RE,),
-    "revelation-direct-source": (ACCOUNTABILITY_TERMS_RE,),
-    "evidential-evil": (MORAL_PROTEST_TERMS_RE, ACCOUNTABILITY_TERMS_RE),
-    "moral-protest": (MORAL_PROTEST_TERMS_RE, ACCOUNTABILITY_TERMS_RE),
-    "secularism": (ACCOUNTABILITY_TERMS_RE,),
+ALLOWANCE_PATTERN_BY_FAMILY = {
+    "source_worldview_canary": SOURCE_WORLDVIEW_CANARY_TERMS_RE,
+    "accountability": ACCOUNTABILITY_TERMS_RE,
+    "moral_protest": MORAL_PROTEST_TERMS_RE,
+    "worship_worthiness": WORSHIP_WORTHINESS_TERMS_RE,
 }
+
+ALLOWANCE_FAMILY_ALIASES = {
+    "source-worldview-canary": "source_worldview_canary",
+    "source_worldview_canary": "source_worldview_canary",
+    "source-label-canary": "source_worldview_canary",
+    "accountability": "accountability",
+    "punishment": "accountability",
+    "hujjah": "accountability",
+    "messenger-warning": "accountability",
+    "direct-source": "accountability",
+    "source-direct": "accountability",
+    "moral-protest": "moral_protest",
+    "moral_protest": "moral_protest",
+    "hiddenness": "moral_protest",
+    "imported-criterion": "moral_protest",
+    "worship-worthiness": "worship_worthiness",
+    "worship_worthiness": "worship_worthiness",
+    "person-nature": "worship_worthiness",
+    "person_nature": "worship_worthiness",
+    "predication": "worship_worthiness",
+    "do-christian-extensions": "worship_worthiness",
+}
+
+ALLOWANCE_FAMILY_FIELDS = (
+    "allowed_contamination_families",
+    "contamination_allowance_families",
+    "expected_content_families",
+    "expected_live_registers",
+    "live_registers",
+    "registers",
+    "source_status",
+    "source_status_families",
+    "owner_families",
+    "owner_family",
+    "owner_id",
+    "route_families",
+    "route_family",
+    "burden_families",
+    "n_frame",
+    "selected_n_frame",
+)
 
 
 VALID_HARD_SAMPLE_OUTPUT = (
@@ -405,6 +411,66 @@ BAD_SAMPLES = {
         "output": "The hidden premise separates accountability, punishment, and bare non-belief.",
         "verdict": "- fixture class: bounded\n- status: PASS\n",
         "expected": "fixture contamination",
+    },
+    "named_fixture_without_structural_allowance_rejected": {
+        "fixture": "01-trinitarian-claim-cluster",
+        "input": "Neutral label-only smoke.",
+        "output": "The question turns on worship-worthiness and whether the claim is worthy of worship.",
+        "verdict": "- fixture class: bounded\n- status: PASS\n",
+        "expected": "fixture contamination",
+    },
+    "neutral_fixture_with_structural_allowance_allowed": {
+        "fixture": "neutral-proof-scope",
+        "input": "Neutral label-only smoke.",
+        "output": (
+            "## Burden-Cycle 1\n"
+            "Target: selected predication repair.\n"
+            "Operation: test worship-worthiness as the live predicate consequence.\n"
+            "Result: the worthy of worship claim is bounded by the selected owner family.\n"
+            "### State/noetic re-read\n"
+            "- What changed / cumulative-state delta: predication pressure narrowed.\n"
+            "- Release status: closed for this input.\n"
+        ),
+        "verdict": (
+            "- fixture class: bounded\n"
+            "- status: PASS\n"
+            "- smoke provenance mode: handcrafted-regression\n"
+            "- bounded-depth exception rationale: narrow.\n"
+            "- bounded-complete\n"
+            "- original hard intent: yes\n"
+            "- first-order burdens handled: predication\n"
+            "- second-order burdens handled: owner family\n"
+            "- higher-order burdens handled: source-status\n"
+            "- held burdens and why: none.\n"
+            "- skipped licensed burdens: none\n"
+            "- another pass licensed: no\n"
+            "- under-20 rationale: complete.\n"
+            "- not suitable as a hard-depth smoke\n"
+            "- burden-cycle count: 1\n"
+        ),
+        "ir": {
+            "allowed_contamination_families": ["worship_worthiness"],
+            "owner_families": ["do-christian-extensions"],
+            "n_frame": "selected-predication-repair",
+        },
+        "trace": (
+            f"- package filename: {DEFAULT_RELEASE_PACKAGE_FILENAME}\n"
+            f"- package SHA256: {DEFAULT_RELEASE_PACKAGE_SHA256}\n"
+            "- release-artifact relation: development-regression\n"
+            "- model/host: no-model fixture\n"
+            "- invocation mode: checker-self-test\n"
+            "- prompt: see input.md\n"
+            "- run timestamp: 2026-05-07T00:00:00Z\n"
+            "- live-run vs handcrafted-regression classification: handcrafted-regression\n"
+            "- smoke provenance mode: handcrafted-regression\n"
+            "- current-release evidence: no\n"
+            "- output.md relation: direct-copied model/skill output\n"
+            "- formatting-safe normalization: none\n"
+            "- owner-body evidence: compiled bundle sections available\n"
+            "- owner-floor evidence: owner-floor execution output-visible\n"
+            "- atomics/skill/references/tactics/M9-predication-mode.md\n"
+        ),
+        "expected_pass": True,
     },
     "reused_generic_paragraph": {
         "fixture": "02-unknown-misleading-denomination-pattern-first",
@@ -501,7 +567,7 @@ BAD_SAMPLES = {
             + ("case-specific filler placeholder " * 900)
         ),
         "verdict": "- fixture class: hard\n- status: PASS\n- burden-cycle count: 2\n- diagnostic-burden-accounting: single-submove\n",
-        "expected": "known complex or multi-cycle hard PASS cannot use burden-accounting single-submove escape",
+        "expected": "multi-cycle hard PASS cannot use burden-accounting single-submove escape",
     },
     "label_only_operation_pass": {
         "fixture": "11-refute-secularism-hard",
@@ -1448,23 +1514,89 @@ def verdict_status(verdict: str) -> str:
     return match.group(1).upper() if match else "MISSING"
 
 
-def allowed_patterns(fixture_name: str, input_text: str) -> tuple[re.Pattern[str], ...]:
-    text = (fixture_name + " " + input_text).lower()
+def read_optional_json(path: Path) -> dict[str, object]:
+    if not path.is_file():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def string_values(value: object) -> list[str]:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, dict):
+        result: list[str] = []
+        for item in value.values():
+            result.extend(string_values(item))
+        return result
+    if isinstance(value, list):
+        result: list[str] = []
+        for item in value:
+            result.extend(string_values(item))
+        return result
+    return []
+
+
+def allowance_family_ids(payload: dict[str, object] | None) -> set[str]:
+    if not isinstance(payload, dict):
+        return set()
+    families: set[str] = set()
+    for field in ALLOWANCE_FAMILY_FIELDS:
+        for value in string_values(payload.get(field)):
+            normalized = value.strip().lower().replace(" ", "-")
+            if not normalized:
+                continue
+            family = ALLOWANCE_FAMILY_ALIASES.get(normalized)
+            if family:
+                families.add(family)
+    n_frame_details = payload.get("n_frame_details")
+    if isinstance(n_frame_details, dict):
+        families.update(allowance_family_ids(n_frame_details))
+    route_details = payload.get("route_target_details")
+    if isinstance(route_details, (dict, list)):
+        for value in string_values(route_details):
+            normalized = value.strip().lower().replace(" ", "-")
+            family = ALLOWANCE_FAMILY_ALIASES.get(normalized)
+            if family:
+                families.add(family)
+    return families
+
+
+def allowed_patterns(
+    fixture_name: str,
+    input_text: str,
+    *,
+    ir_payload: dict[str, object] | None = None,
+    manifest_case: dict[str, object] | None = None,
+) -> tuple[re.Pattern[str], ...]:
+    del fixture_name, input_text
+    families = allowance_family_ids(ir_payload) | allowance_family_ids(manifest_case)
     allowed: list[re.Pattern[str]] = []
-    for token, patterns in FIXTURE_ALLOWANCES.items():
-        if token in text:
-            allowed.extend(patterns)
-    # Content-shaped allowances keep historical hard canaries from depending on
-    # named-person or movement-specific fixture paths.
-    for pattern in (ACCOUNTABILITY_TERMS_RE, MORAL_PROTEST_TERMS_RE, WORSHIP_WORTHINESS_TERMS_RE):
-        if pattern.search(input_text):
+    for family in sorted(families):
+        pattern = ALLOWANCE_PATTERN_BY_FAMILY.get(family)
+        if pattern and pattern not in allowed:
             allowed.append(pattern)
     return tuple(allowed)
 
 
-def contamination_errors(fixture_name: str, input_text: str, output_text: str) -> list[str]:
+def contamination_errors(
+    fixture_name: str,
+    input_text: str,
+    output_text: str,
+    *,
+    ir_payload: dict[str, object] | None = None,
+    manifest_case: dict[str, object] | None = None,
+) -> list[str]:
     errors: list[str] = []
-    allowed = allowed_patterns(fixture_name, input_text)
+    allowed = allowed_patterns(
+        fixture_name,
+        input_text,
+        ir_payload=ir_payload,
+        manifest_case=manifest_case,
+    )
     checks = [
         ("fixture contamination: source-worldview canary/source-label terms", SOURCE_WORLDVIEW_CANARY_TERMS_RE),
         ("fixture contamination: accountability/punishment terms", ACCOUNTABILITY_TERMS_RE),
@@ -1478,6 +1610,7 @@ def contamination_errors(fixture_name: str, input_text: str, output_text: str) -
 
 
 def bounded_completeness_errors(fixture_name: str, verdict_text: str) -> list[str]:
+    del fixture_name
     errors: list[str] = []
     verdict_lower = verdict_text.lower()
     cls = fixture_class(verdict_text)
@@ -1487,7 +1620,7 @@ def bounded_completeness_errors(fixture_name: str, verdict_text: str) -> list[st
     missing = [field for field in BOUNDED_COMPLETENESS_FIELDS if field not in verdict_lower]
     if missing:
         errors.append("bounded PASS lacks burden-completeness audit")
-    if fixture_name in ORIGINALLY_HARD_INTENDED:
+    if "original hard intent: yes" in verdict_lower:
         if "original hard intent: yes" not in verdict_lower:
             errors.append("originally hard-intended bounded PASS lacks original-hard marker")
         if "not suitable as a hard-depth smoke" not in verdict_lower:
@@ -1656,6 +1789,7 @@ def current_release_requirement_errors(root: Path, release_artifact: ReleaseArti
         output_text = read(directory / "output.md")
         trace_text = read(directory / "trace.md")
         verdict_text = read(directory / "verdict.md")
+        ir_payload = read_optional_json(directory / "ir.json")
         provenance = f"{trace_text}\n{verdict_text}"
         status = verdict_status(verdict_text)
         cls = fixture_class(verdict_text)
@@ -1672,6 +1806,8 @@ def current_release_requirement_errors(root: Path, release_artifact: ReleaseArti
             verdict_text,
             trace_text,
             release_artifact=release_artifact,
+            ir_payload=ir_payload,
+            manifest_case=manifest_case,
         )
         if status == "PASS" and not (directory / "ir.json").is_file():
             artifact_errors.append("current-release PASS smoke missing ir.json")
@@ -1876,6 +2012,7 @@ def source_function_first_appears_in_restoration(output_text: str) -> bool:
 
 
 def hard_output_support_errors(fixture_name: str, output_text: str, verdict_text: str) -> list[str]:
+    del fixture_name
     errors: list[str] = []
     if fixture_class(verdict_text) != "hard" or verdict_status(verdict_text) != "PASS":
         return errors
@@ -1892,8 +2029,6 @@ def hard_output_support_errors(fixture_name: str, output_text: str, verdict_text
         errors.append("hard PASS claims more cycles than output visibly supports")
     if not sections:
         errors.append("hard PASS output lacks visible burden-cycle or Layer A sections")
-    if fixture_name in KNOWN_COMPLEX_HARD_FIXTURES and expected_cycles < 2:
-        errors.append("known complex hard PASS lacks multiple visible burden cycles")
 
     rereads = len(STATE_REREAD_RE.findall(output_text))
     if expected_cycles and rereads < expected_cycles:
@@ -1905,8 +2040,8 @@ def hard_output_support_errors(fixture_name: str, output_text: str, verdict_text
 
     unit_counts = [operation_unit_count(section) for section in sections]
     burden_accounted_single_submove = bool(BURDEN_ACCOUNTED_SINGLE_SUBMOVE_RE.search(verdict_text))
-    if burden_accounted_single_submove and (fixture_name in KNOWN_COMPLEX_HARD_FIXTURES or expected_cycles > 1):
-        errors.append("known complex or multi-cycle hard PASS cannot use burden-accounting single-submove escape")
+    if burden_accounted_single_submove and expected_cycles > 1:
+        errors.append("multi-cycle hard PASS cannot use burden-accounting single-submove escape")
         burden_accounted_single_submove = False
     if sections and not burden_accounted_single_submove:
         section_single_submove = [
@@ -1923,8 +2058,8 @@ def hard_output_support_errors(fixture_name: str, output_text: str, verdict_text
                 "hard PASS has sections without burden-accounted multi-submove support: "
                 + ", ".join(str(index) for index in weak_sections)
             )
-    if fixture_name in KNOWN_COMPLEX_HARD_FIXTURES and sections and not any(count >= 2 for count in unit_counts):
-        errors.append("known complex hard PASS lacks a complex burden with multiple operative units")
+    if expected_cycles > 1 and sections and not any(count >= 2 for count in unit_counts):
+        errors.append("multi-cycle hard PASS lacks a complex burden with multiple operative units")
     if sections and any(count == 0 for count in unit_counts):
         errors.append("hard PASS has a visible burden without target-operation-result support")
     if source_function_first_appears_in_restoration(output_text):
@@ -1995,6 +2130,8 @@ def validate_artifact(
     trace_text: str = "",
     global_fixtures: dict[str, set[str]] | None = None,
     release_artifact: ReleaseArtifact | None = None,
+    ir_payload: dict[str, object] | None = None,
+    manifest_case: dict[str, object] | None = None,
 ) -> list[str]:
     errors: list[str] = []
     cls = fixture_class(verdict_text)
@@ -2033,7 +2170,15 @@ def validate_artifact(
         errors.append("reused generic paragraph")
     if status == "PASS" and LITERAL_GOVERNANCE_RE.search(output_text):
         errors.append("literal governance label in output")
-    errors.extend(contamination_errors(fixture_name, input_text, output_text))
+    errors.extend(
+        contamination_errors(
+            fixture_name,
+            input_text,
+            output_text,
+            ir_payload=ir_payload,
+            manifest_case=manifest_case,
+        )
+    )
     errors.extend(bounded_completeness_errors(fixture_name, verdict_text))
     errors.extend(bounded_output_support_errors(output_text, verdict_text))
     errors.extend(hard_output_support_errors(fixture_name, output_text, verdict_text))
@@ -2152,13 +2297,14 @@ def validate_root(root: Path, release_artifact: ReleaseArtifact | None = None) -
         return [f"no fixture directories found under {root}"]
 
     all_paragraphs: dict[str, set[str]] = defaultdict(set)
-    artifacts: list[tuple[str, str, str, str, str, str, bool]] = []
+    artifacts: list[tuple[str, str, str, str, str, str, dict[str, object], bool]] = []
     for directory in fixture_dirs:
         input_text = read(directory / "input.md")
         output_text = read(directory / "output.md")
         trace_text = read(directory / "trace.md")
         verdict_text = read(directory / "verdict.md")
-        artifacts.append((directory.name, directory.name, input_text, output_text, verdict_text, trace_text, False))
+        ir_payload = read_optional_json(directory / "ir.json")
+        artifacts.append((directory.name, directory.name, input_text, output_text, verdict_text, trace_text, ir_payload, False))
         for paragraph in paragraph_fingerprints(output_text):
             all_paragraphs[paragraph].add(directory.name)
 
@@ -2175,13 +2321,13 @@ def validate_root(root: Path, release_artifact: ReleaseArtifact | None = None) -
             sidecar_output = read(output_path)
             sidecar_trace = read(trace_path)
             sidecar_verdict = read(verdict_path)
-            artifacts.append((label, directory.name, input_text, sidecar_output, sidecar_verdict, sidecar_trace, True))
+            artifacts.append((label, directory.name, input_text, sidecar_output, sidecar_verdict, sidecar_trace, ir_payload, True))
 
         for required in ("input.md", "output.md", "trace.md", "verdict.md"):
             if not (directory / required).exists():
                 errors.append(f"{directory.name}: missing {required}")
 
-    for artifact_label, fixture_name, input_text, output_text, verdict_text, trace_text, is_sidecar in artifacts:
+    for artifact_label, fixture_name, input_text, output_text, verdict_text, trace_text, ir_payload, is_sidecar in artifacts:
         if is_sidecar:
             found_errors = validate_sidecar_artifact(
                 fixture_name,
@@ -2199,6 +2345,7 @@ def validate_root(root: Path, release_artifact: ReleaseArtifact | None = None) -
                 trace_text,
                 all_paragraphs,
                 release_artifact,
+                ir_payload=ir_payload,
             )
         for error in found_errors:
             errors.append(f"{artifact_label}: {error}")
@@ -2215,6 +2362,8 @@ def validate_bad_samples(release_artifact: ReleaseArtifact) -> list[str]:
             sample["verdict"],
             sample.get("trace", ""),
             release_artifact=release_artifact,
+            ir_payload=sample.get("ir", {}),
+            manifest_case=sample.get("manifest_case", {}),
         )
         if sample.get("expected_pass"):
             if found:

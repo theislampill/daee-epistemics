@@ -1377,7 +1377,7 @@ Target: Trinity. Operation: mention person and nature. Result: the objection is 
 ##### TTP/operator trace
 Trace: M9-predication-mode.
 ### State/noetic re-read
-- What changed: predication is mentioned.
+- What changed: the relation was named without a local operation result.
 - Cleared: Trinity predication
 - Remaining input-anchored burdens: none
 - Release status: closed; no same-input eligible burden remains
@@ -1385,6 +1385,45 @@ Trace: M9-predication-mode.
 Predication is restored.
 ### Closing Formulation
 The one-three issue is unclear.
+""",
+        "shallow M9 execution",
+    ),
+    "neutral_shallow_m9_execution": (
+        """## Burden-Cycle 1
+### Layer A - Compact DSL/IR header
+- read status: dominant
+- confidence: strong
+- claim_level: first-order
+- pattern_profile: selected predication pressure
+- reason-category: 2
+- concealment: clear
+- deformation: person/nature predicate transfer
+- DO-orient: truth-seek
+- live noetic burden: selected predication relation
+- current bounded operator: M9 predication-mode
+- held: V12
+- source-status/noetic-frame: operative frame selected
+- gate/release decision: release M9
+### Layer B - bounded governed response
+#### Hidden Premises
+- A person/nature predicate relation is unstable.
+#### Burden / Operation 1
+##### Core Formulation
+The deformation is predication disorder; the noetic pattern is identity/category instability; the restoration vector is predication repair.
+##### Bounded Response / operative submoves
+Operator: M9 predication-mode.
+Target: selected predicate relation. Operation: mention person and nature. Result: the objection is unclear.
+##### TTP/operator trace
+Trace: M9-predication-mode.
+### State/noetic re-read
+- What changed: the relation was named without a local operation result.
+- Cleared: selected predication relation
+- Remaining input-anchored burdens: none
+- Release status: closed; no same-input eligible burden remains
+### Restorative Response
+Predication is restored.
+### Closing Formulation
+The predicate issue is unclear.
 """,
         "shallow M9 execution",
     ),
@@ -1507,7 +1546,7 @@ The deformation is category pressure on predication; the noetic pattern is equiv
 
 ##### Bounded Response / operative submoves
 Operator: predication-mode repair.
-Target: the loaded term "composition". Operation: split ordinary conceptual distinction from separable part-composition. Result: the objection's move from real attributes to composite parts no longer follows.
+Target: the loaded term "composition". Operation: distinguish ordinary conceptual distinction from separable part-composition. Result: the category pressure is separated, so the objection's move from real attributes to composite parts no longer follows.
 
 ##### TTP/operator trace
 Trace: predication-mode repair + M9-predication-mode + diagnostic-render-contract.
@@ -1746,10 +1785,6 @@ STATE_DELTA_RE = re.compile(
     r"returned as not-yet-target)\b"
 )
 V12_OPERATOR_RE = re.compile(r"(?i)\b(?:V12|tamanu|tam[?a]nu[?']?|multiple independent lords?)\b")
-V12_PREMATURE_TRINITY_RE = re.compile(
-    r"(?is)\b(?:Trinity|Trinitarian)\b(?:(?!independent lordship|worship-status plurality).){0,1200}"
-    r"\b(?:V12|tamanu|tam[?a]nu[?']?)\b"
-)
 V12_DIMENSION_TERMS = [
     "dependency",
     "derivation",
@@ -1779,8 +1814,9 @@ def v12_before_independence_gate(text: str) -> bool:
     return False
 
 
-M9_OPERATOR_RE = re.compile(r"(?i)\b(?:M9|predication-mode|predication repair|person/nature|one-three)\b")
-M9_TRINITY_TRIGGER_RE = re.compile(r"(?i)\b(?:Trinity|Trinitarian|person|nature|one-three)\b")
+M9_OPERATOR_RE = re.compile(r"(?i)\b(?:M9|predication-mode|predication repair)\b")
+M9_PREDICATION_PRESSURE_RE = re.compile(r"(?i)\b(?:person|nature|predicate|predication|category|identity|one-three)\b")
+M9_STATE_CHANGE_RE = re.compile(r"(?i)\b(?:blocked|separated|distinguished|repaired|identified)\b")
 PASS_VERDICT_RE = re.compile(r"(?im)^\s*(?:status\s*:\s*)?PASS\b")
 UNRESOLVED_CHECKER_GAP_RE = re.compile(
     r"(?is)(?:checker gap|unresolved checker|remaining checker|not currently enforced)"
@@ -2016,10 +2052,10 @@ def structural_default_output_violations(text: str) -> list[str]:
         if dimension_hits < 3:
             violations.append("shallow V12 execution")
 
-    if M9_OPERATOR_RE.search(layer_b_text) and M9_TRINITY_TRIGGER_RE.search(layer_b_text):
+    if M9_OPERATOR_RE.search(layer_b_text) and M9_PREDICATION_PRESSURE_RE.search(layer_b_text):
         m9_lower = layer_b_text.lower()
-        required_terms = ["person", "nature", "is god", "one", "three"]
-        if not all(term in m9_lower for term in required_terms):
+        has_predication_dimension = any(term in m9_lower for term in ("predicate", "predication", "category", "identity"))
+        if not (has_predication_dimension and M9_STATE_CHANGE_RE.search(layer_b_text)):
             violations.append("shallow M9 execution")
 
     state_pos = first_state_reread_pos(lower)

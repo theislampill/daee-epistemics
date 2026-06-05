@@ -306,25 +306,9 @@ def explicit_node_registers(node: dict[str, Any]) -> list[str]:
 
 
 def inferred_node_registers(node: dict[str, Any], terminal: dict[str, str] | None = None) -> list[str]:
+    del terminal
     explicit = explicit_node_registers(node)
-    if explicit:
-        return explicit
-    parts: list[str] = []
-    for key in ("title", "label", "pressure", "register_operation", "operation", "finding", "type"):
-        value = node.get(key)
-        if isinstance(value, str):
-            parts.append(value)
-        elif isinstance(value, list):
-            parts.extend(str(item) for item in value)
-    if terminal:
-        parts.append(terminal.get("detail", ""))
-        parts.append(terminal.get("state", ""))
-    text = " ".join(parts).lower()
-    return [
-        register
-        for register, keywords in REGISTER_BURDEN_KEYWORDS.items()
-        if any(keyword in text for keyword in keywords)
-    ]
+    return explicit
 
 
 def non_load_bearing_register_proof(text: str, register: str) -> bool:

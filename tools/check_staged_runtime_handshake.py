@@ -170,6 +170,7 @@ SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 ACT_OWNER_RE = re.compile(r"^⟦ACT\s+[^\[]+\[([^\.\]]+)\.[^\]]+\]")
 CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0-9_])")
+MRP_GENERATED_BY_RE = re.compile(r"^MRP\((B[1-9][0-9]*)\)$")
 
 
 def rel(path: Path) -> str:
@@ -1001,14 +1002,45 @@ def generated_burden_ids(stage05: dict[str, Any]) -> tuple[set[str], list[str]]:
     for index, item in enumerate(raw):
         if isinstance(item, str) and item:
             result.add(item)
+            errors.append(
+                f"stage-05 generated_burdens[{index}] must be an object with generated_by provenance"
+            )
             continue
         if isinstance(item, dict):
             burden_id = item.get("id") or item.get("burden_id")
             if isinstance(burden_id, str) and burden_id:
                 result.add(burden_id)
                 continue
-        errors.append(f"stage-05 generated_burdens[{index}] must be a burden id string or object with id/burden_id")
+        errors.append(f"stage-05 generated_burdens[{index}] must be an object with id/burden_id and generated_by")
     return result, errors
+
+
+def generated_burden_parent_map(stage05: dict[str, Any]) -> tuple[dict[str, str], list[str]]:
+    raw = stage05.get("generated_burdens", [])
+    if raw in (None, []):
+        return {}, []
+    if not isinstance(raw, list):
+        return {}, []
+    parents: dict[str, str] = {}
+    errors: list[str] = []
+    for index, item in enumerate(raw):
+        if not isinstance(item, dict):
+            continue
+        burden_id = item.get("id") or item.get("burden_id")
+        if not isinstance(burden_id, str) or not burden_id:
+            continue
+        generated_by = item.get("generated_by")
+        if not isinstance(generated_by, str) or not generated_by.strip():
+            errors.append(f"stage-05 generated_burdens[{index}].generated_by is required")
+            continue
+        match = MRP_GENERATED_BY_RE.fullmatch(generated_by.strip())
+        if not match:
+            errors.append(
+                f"stage-05 generated_burdens[{index}].generated_by must use MRP(Bn) provenance"
+            )
+            continue
+        parents[burden_id] = match.group(1)
+    return parents, errors
 
 
 def unresolved_burden_ids(stage05: dict[str, Any], proof: Any) -> tuple[set[str], list[str]]:
@@ -1066,9 +1098,18 @@ def stage05_mrp_errors(
         | set(list_field(stage04 or {}, "act_targets"))
         | act_burdens
     )
+    floor_burdens = set(list_field(stage02 or {}, "burden_floor"))
+    pre_generated_known_burdens = set(known_burdens)
     generated, found = generated_burden_ids(stage05)
     errors.extend(f"{label}: {error}" for error in found)
+    generated_parents, found = generated_burden_parent_map(stage05)
+    errors.extend(f"{label}: {error}" for error in found)
     known_burdens |= generated
+    for burden_id, parent_id in sorted(generated_parents.items()):
+        if burden_id in floor_burdens:
+            errors.append(f"{label}: generated burden {burden_id} must not be in stage-02 burden_floor")
+        if parent_id not in pre_generated_known_burdens:
+            errors.append(f"{label}: generated burden {burden_id} parent {parent_id} must be an existing pre-MRP burden")
 
     terminal_states = stage05.get("terminal_states")
     terminal_burdens: set[str] = set()
@@ -1096,6 +1137,7 @@ def stage05_mrp_errors(
         if unknown_terminal:
             errors.append(f"{label}: stage-05 terminal_states names unknown burden(s): {unknown_terminal}")
 
+    edge_pairs: set[tuple[str, str]] = set()
     edges = stage05.get("dependency_graph_edges")
     if not isinstance(edges, list):
         errors.append(f"{label}: stage-05 dependency_graph_edges must be a list")
@@ -1107,6 +1149,7 @@ def stage05_mrp_errors(
             errors.append(f"{edge_label}: {error}")
             continue
         assert source is not None and target is not None
+        edge_pairs.add((source, target))
         unknown = sorted({source, target} - known_burdens)
         if unknown:
             errors.append(f"{edge_label}: endpoint(s) must appear in known/generated burden set: {unknown}")
@@ -1134,9 +1177,15 @@ def stage05_mrp_errors(
                         errors.append(f"{graph_edge_label}: {error}")
                         continue
                     assert source is not None and target is not None
+                    edge_pairs.add((source, target))
                     unknown = sorted({source, target} - known_burdens)
                     if unknown:
                         errors.append(f"{graph_edge_label}: endpoint(s) must appear in known/generated burden set: {unknown}")
+    for burden_id, parent_id in sorted(generated_parents.items()):
+        if (parent_id, burden_id) not in edge_pairs:
+            errors.append(
+                f"{label}: generated burden {burden_id} must have dependency edge {parent_id}->{burden_id}"
+            )
 
     proof = stage05.get("no_new_resultant_proof")
     if proof is None:

@@ -36,7 +36,7 @@ field_witness
   "B_MRP": [],
   "B_total": ["B1"],
   "nodes": [
-    {"id": "B1", "type": "burden", "title": "doubt-churn proof-carousel boundary", "state": "landed", "generation_depth": 0}
+    {"id": "B1", "type": "burden", "title": "doubt-churn proof-carousel boundary", "register_types": ["kappa"], "state": "landed", "generation_depth": 0}
   ],
   "edges": [],
   "mrp_resultants": [

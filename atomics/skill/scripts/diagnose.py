@@ -29,6 +29,12 @@ MECHANICAL_PATTERNS: dict[str, list[str]] = {
         r"\b(?:holy\s+)?spirit\b.{0,120}\bson\b",
         r"\bholy\s+spirit\b",
     ],
+    "feature.person_nature_predication_relation": [
+        r"\b(?:one|single|shared)\b.{0,120}\b(?:nature|essence|substance)\b.{0,120}\bthree\s+persons?\b",
+        r"\bthree\s+persons?\b.{0,120}\b(?:one|single|shared)\b.{0,120}\b(?:nature|essence|substance)\b",
+        r"\bpredicate\b.{0,120}\b(?:person|nature|category|identity)\b",
+        r"\b(?:person|nature|category|identity)\b.{0,120}\bpredicate\b",
+    ],
     "term.attribute": [r"\battribute\b", r"\battributes\b", r"\bpredicate\b", r"\bpredication\b"],
     "term.god": [r"\bgod\b", r"\bdivine\b", r"\bcreator\b"],
     "term.secularism": [r"\bsecularism\b", r"\bsecularist\b", r"\bnaturalism\b", r"\batheism\b"],
@@ -164,8 +170,12 @@ def extract(text: str, skill_root: Path) -> dict[str, Any]:
         add_feature(mechanical, feature_ids, feature_id, spans, source="mechanical")
 
     # Derived mechanical features.
-    if span_cache["term.trinity"] and span_cache["term.father_son_spirit"]:
-        spans = span_cache["term.trinity"] + span_cache["term.father_son_spirit"]
+    predication_spans: list[dict[str, Any]] = []
+    if span_cache["term.trinity"] and (span_cache["term.father_son_spirit"] or span_cache["term.attribute"]):
+        predication_spans.extend(span_cache["term.trinity"] + span_cache["term.father_son_spirit"] + span_cache["term.attribute"])
+    predication_spans.extend(span_cache["feature.person_nature_predication_relation"])
+    if predication_spans:
+        spans = predication_spans
         add_feature(mechanical, feature_ids, "feature.predication_confusion", spans, source="mechanical")
 
     if span_cache["feature.attribute_resemblance"]:
@@ -311,7 +321,7 @@ def extract(text: str, skill_root: Path) -> dict[str, Any]:
         spans = shubhah_spans
     elif "feature.predication_confusion" in feature_ids:
         sequence = "predication-first"
-        spans = span_cache["term.trinity"] + span_cache["term.father_son_spirit"]
+        spans = span_cache["term.trinity"] + span_cache["term.father_son_spirit"] + span_cache["feature.person_nature_predication_relation"]
     else:
         sequence = "ambiguous"
         spans = []

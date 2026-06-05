@@ -135,6 +135,23 @@ FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
         re.compile(r"Graphify[^.\n]{0,80}\bproof\b|ActiveGraph[^.\n]{0,80}\bproof\b", re.IGNORECASE),
     ),
 ]
+PUBLIC_META_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
+    (
+        "private planning or self-talk in public section",
+        re.compile(
+            r"(?im)^\s*(?:"
+            r"Final answer only text\?|"
+            r"Need (?:include|public|length|process|not|ensure|maybe|final|to)\b|"
+            r"Let's (?:produce|write|craft|answer)\b|"
+            r"Now final\b|"
+            r"Hmm\b|"
+            r"Potential exact quote\b|"
+            r"Safety:\b|"
+            r"Desired oververbosity\b"
+            r")"
+        ),
+    ),
+]
 SURFACE_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("visible noetic-field opening/header", re.compile(r"NOETIC FIELD EXECUTION|noetic-field", re.IGNORECASE)),
     (
@@ -271,6 +288,10 @@ def resolve_output_path(root: Path, manifest_dir: Path, value: Any, label: str) 
 
 def forbidden_text_errors(text: str, label: str) -> list[str]:
     return [f"{label}: forbidden {name}" for name, pattern in FORBIDDEN_PATTERNS if pattern.search(text)]
+
+
+def public_meta_text_errors(text: str, label: str) -> list[str]:
+    return [f"{label}: forbidden {name}" for name, pattern in PUBLIC_META_PATTERNS if pattern.search(text)]
 
 
 def required_surface_errors(text: str) -> list[str]:
@@ -1166,9 +1187,11 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
             errors.append(f"{label}.sha256: expected {expected_hash} but found {actual_hash}")
         original_text = section_path.read_text(encoding="utf-8", errors="replace")
         errors.extend(forbidden_text_errors(original_text, label))
+        errors.extend(public_meta_text_errors(original_text, label))
         text, scaffold_event = normalize_section_scaffold(section_id, role, original_text)
         text, trimmed_trailing_whitespace_lines = strip_trailing_line_whitespace(text)
         errors.extend(forbidden_text_errors(text, label))
+        errors.extend(public_meta_text_errors(text, label))
         section_texts.append(text)
         section_text_by_id[section_id] = text
         section_role_by_id[section_id] = role
@@ -1201,6 +1224,7 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
         if not assembled.endswith("\n"):
             assembled += "\n"
     errors.extend(forbidden_text_errors(assembled, "assembled output"))
+    errors.extend(public_meta_text_errors(assembled, "assembled output"))
     errors.extend(required_surface_errors(assembled))
     errors.extend(
         act_partition_errors(
@@ -1478,6 +1502,23 @@ def run_self_test(root: Path) -> int:
     small_record = assemble_manifest(small_manifest, root=root)
     if small_record["output"]["bytes"] <= 0:
         raise AssemblyError("self-test valid small assembly wrote an empty output")
+    if not public_meta_text_errors("Final answer only text?\nNeed include public rows.\n", "self-test"):
+        raise AssemblyError("self-test public meta guard did not catch planning prose")
+
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-public-planning-text",
+        lambda payload, case_dir: replace_section_text(
+            payload,
+            case_dir,
+            2,
+            "Layer B - Bounded Governed Response\n"
+            "ACT row body_ref=¹B₁.\n"
+            "Final answer only text? Need include the assigned ACT row.\n"
+            "Land(¹B): landed.\n",
+        ),
+    )
 
     trailing_whitespace_sections = list(small_sections())
     trailing_whitespace_sections[0] = (

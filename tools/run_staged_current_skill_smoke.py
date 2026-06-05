@@ -24,7 +24,7 @@ from typing import Any
 
 import build_staged_governed_output as staged_output
 from closure_witness_lib import extract_embedded_field_witness, parse_closure_witness, status_head
-from delta_result_vocabulary import DELTA_RESULT_VOCABULARY, canonical_delta_owner
+from delta_result_vocabulary import DELTA_RESULT_VOCABULARY, canonical_delta_owner, delta_result_vocabulary_errors
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -523,6 +523,7 @@ def canonical_delta_result_for_owner(
     pressure: Any,
     raw_delta_result: Any,
 ) -> str:
+    del operation, pressure
     raw = str(raw_delta_result or "").strip()
     if not raw:
         return raw
@@ -530,82 +531,14 @@ def canonical_delta_result_for_owner(
     vocabulary = DELTA_RESULT_VOCABULARY.get(family)
     if not vocabulary:
         return raw
-
-    combined = delta_token_key(f"{operation} {pressure} {raw}")
-    source_generic_repair = family == "SOURCE" and raw == "source-order-repaired"
-    if raw in vocabulary and not source_generic_repair:
-        return raw
-    candidates: list[str] = []
-    if family == "DO_CHRISTIAN":
-        if any(token in combined for token in ("selected-model", "person-nature", "model-transfer", "model-identification", "model-family")):
-            candidates.append("trinitarian-model-identified")
-        if "fan-out" in combined:
-            candidates.append("fan-out-route-named")
-    elif family == "M7":
-        if any(token in combined for token in ("only-scope", "definition", "scope-defined")):
-            candidates.append("definition-anchored")
-        if "semantic" in combined or "meaning" in combined:
-            candidates.append("semantic-anchor-stabilized")
-        if "term" in combined:
-            candidates.append("term-meaning-bounded")
-        if "falsifiability" in combined:
-            candidates.append("falsifiability-standard-defined")
-    elif family == "M8":
-        if "entailment" in combined:
-            candidates.append("entailment-blocked")
-        if "consequence" in combined:
-            candidates.append("consequence-traced")
-        if "dependency" in combined:
-            candidates.append("dependency-exposed")
-        if "implication" in combined:
-            candidates.append("implication-demoted")
-    elif family == "M9":
-        if "person-nature" in combined:
-            candidates.append("person-nature-transfer-blocked")
-        if "category" in combined:
-            candidates.append("category-separated")
-        if "referent" in combined or "sender-sent" in combined:
-            candidates.append("referent-separated")
-        if "predicate" in combined or "predication" in combined:
-            candidates.append("predicate-separated")
-        if "sense" in combined:
-            candidates.append("sense-separated")
-    elif family == "SOURCE":
-        if "proof-text-hidden-support" in combined:
-            candidates.append("proof-text-hidden-support-blocked")
-        if "hidden-support" in combined or "carrier-support" in combined or "recoil" in combined:
-            candidates.append("hidden-support-blocked")
-        if any(
-            token in combined
-            for token in (
-                "proof-text",
-                "proof-stack",
-                "source-stack",
-                "quran",
-                "qur-an",
-                "hadith",
-                "lexical",
-                "transmission",
-                "report",
-            )
-        ):
-            candidates.append("proof-text-sorted")
-        if "source-order" in combined or "proof-stack-routed" in combined:
-            candidates.append("hidden-authority-source-status-bounded")
-        if "authority-order" in combined:
-            candidates.append("authority-order-repaired")
-    elif family == "P7":
-        if "hold" in combined or "held" in combined:
-            candidates.append("held-route-bounded")
-        if "scope" in combined:
-            candidates.append("scope-boundary-named")
-        if "reopen" in combined:
-            candidates.append("reopen-condition-stated")
-
-    for candidate in ordered_unique(candidates):
-        if candidate in vocabulary:
-            return candidate
     return raw
+
+
+def require_delta_result_vocabulary(label: str, owner: Any, raw_delta_result: Any) -> None:
+    token = str(raw_delta_result or "").strip()
+    errors = delta_result_vocabulary_errors(label, str(owner or ""), token)
+    if errors:
+        raise HarnessError("; ".join(errors))
 
 
 def canonicalize_delta_fields(item: dict[str, Any]) -> tuple[dict[str, Any], dict[str, str] | None]:
@@ -616,6 +549,7 @@ def canonicalize_delta_fields(item: dict[str, Any]) -> tuple[dict[str, Any], dic
     delta_value = str(item.get("delta") or "")
     if not raw_result and ":" in delta_value:
         raw_result = delta_value.split(":", 1)[1]
+    require_delta_result_vocabulary("delta_result", owner, raw_result)
     canonical = canonical_delta_result_for_owner(owner, operation, pressure, raw_result)
     if not raw_result or canonical == str(raw_result).strip():
         return item, None
@@ -637,6 +571,7 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
     if not match:
         return row, None
     raw_result = match.group("delta_result").strip()
+    require_delta_result_vocabulary("Stage 04 ACT row", match.group("owner"), raw_result)
     canonical = canonical_delta_result_for_owner(
         match.group("owner"),
         match.group("operation"),
@@ -1488,6 +1423,87 @@ def stage05_generated_burdens(stage05: dict[str, Any] | None) -> list[str]:
     return ordered_unique(generated)
 
 
+GENERATED_MRP_TRACKS = {"primary", "restoration"}
+
+
+def canonical_generated_mrp_track(value: Any) -> str:
+    token = str(value or "").strip().lower().replace("_", "-")
+    return token if token in GENERATED_MRP_TRACKS else ""
+
+
+def generated_burden_track(record: dict[str, Any], route_types: list[str] | None = None) -> str:
+    """Classify generated MRP burdens by typed route evidence, not case/prose labels."""
+    explicit = canonical_generated_mrp_track(record.get("track"))
+    if explicit:
+        return explicit
+    typed_routes = {str(item or "").strip().lower().replace("_", "-") for item in (route_types or []) if str(item or "").strip()}
+    for checked in record_escape_routes(record):
+        route_type = str(checked.get("type") or checked.get("route_type") or "").strip().lower().replace("_", "-")
+        target = b_id(checked.get("target") or checked.get("burden") or checked.get("generated_target") or record.get("id"))
+        live = checked.get("live")
+        if route_type == "restoration-recoil" and live is True and (not target or target == b_id(record.get("id"))):
+            typed_routes.add(route_type)
+    if "restoration-recoil" in typed_routes:
+        return "restoration"
+    if "generated-burden-instantiation" in typed_routes:
+        return "primary"
+    return ""
+
+
+def record_escape_routes(record: dict[str, Any]) -> list[dict[str, Any]]:
+    routes: list[dict[str, Any]] = []
+    raw = record.get("escape_routes_checked")
+    if isinstance(raw, list):
+        routes.extend(item for item in raw if isinstance(item, dict))
+    proof = record.get("no_new_resultant_proof")
+    if isinstance(proof, dict) and isinstance(proof.get("escape_routes_checked"), list):
+        routes.extend(item for item in proof["escape_routes_checked"] if isinstance(item, dict))
+    return routes
+
+
+def stage05_generated_route_types(stage05: dict[str, Any], target: str, record: dict[str, Any]) -> list[str]:
+    route_types: list[str] = []
+    for key in ("route_type", "mrp_route_result_type"):
+        value = str(record.get(key) or "").strip()
+        if value:
+            route_types.append(value)
+    raw_edges = stage05.get("dependency_graph_edges")
+    if raw_edges is None and isinstance(stage05.get("dependency_graph"), dict):
+        raw_edges = stage05["dependency_graph"].get("edges")
+    generated_source = burden_endpoint_id(record.get("generated_by"))
+    if isinstance(raw_edges, list):
+        for item in raw_edges:
+            if not isinstance(item, dict):
+                continue
+            source = burden_endpoint_id(item.get("from") or item.get("source"))
+            edge_target = burden_endpoint_id(item.get("to") or item.get("target"))
+            if edge_target != target:
+                continue
+            edge_type = str(item.get("type") or "").strip()
+            if edge_type:
+                route_types.append(edge_type)
+            elif generated_source and generated_source == source:
+                route_types.append("generated_burden_instantiation")
+    reread_state = stage05.get("reread_state")
+    if isinstance(reread_state, dict):
+        route_target = stage07_route_target_from_graph(reread_state.get("graph") or reread_state.get("graph_delta"))
+        if route_target == target:
+            value = str(reread_state.get("route_result_type") or "").strip()
+            if value:
+                route_types.append(value)
+    raw_resultants = stage05.get("mrp_resultants")
+    if isinstance(raw_resultants, list):
+        for item in raw_resultants:
+            if not isinstance(item, dict):
+                continue
+            route_target = stage07_route_target_from_graph(item.get("graph") or item.get("graph_delta"))
+            if route_target == target:
+                value = str(item.get("type") or item.get("route_result_type") or "").strip()
+                if value:
+                    route_types.append(value)
+    return ordered_unique(route_types)
+
+
 def stage05_generated_burden_records(stage05: dict[str, Any] | None) -> list[dict[str, Any]]:
     if not isinstance(stage05, dict):
         return []
@@ -1519,6 +1535,9 @@ def stage05_generated_burden_records(stage05: dict[str, Any] | None) -> list[dic
         record.setdefault("type", "generated_burden")
         record.setdefault("terminal_state", str(terminal_states.get(burden) or "held-with-reason"))
         record.setdefault("activation_state", "generated_unexecuted")
+        track = generated_burden_track(record, stage05_generated_route_types(stage05, burden, record))
+        if track:
+            record.setdefault("track", track)
         depth = record.get("generation_depth")
         if isinstance(depth, str) and depth.isdigit():
             record["generation_depth"] = int(depth)
@@ -1581,6 +1600,9 @@ def normalize_stage07_generated_terminal_accounting(
         if burden in executed_act_burdens:
             record["activation_state"] = "generated_executed"
             record.setdefault("terminal_state", str(normalized_states.get(burden) or "landed"))
+            track = generated_burden_track(record)
+            if track:
+                record.setdefault("track", track)
             continue
 
         current_state = str(
@@ -1598,6 +1620,9 @@ def normalize_stage07_generated_terminal_accounting(
         record["terminal_state"] = current_state
         record["activation_state"] = "generated_unexecuted"
         record.setdefault("reason", GENERATED_UNEXECUTED_REASON)
+        track = generated_burden_track(record)
+        if track:
+            record.setdefault("track", track)
         unresolved.append(burden)
     return normalized_states, ordered_unique(unresolved)
 
@@ -1974,6 +1999,9 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
             },
         )
         record.setdefault("generated_by", f"MRP({edge['from']})")
+        track = generated_burden_track(record, [edge.get("type", "")])
+        if track:
+            record.setdefault("track", track)
 
     def route_tokens_for_burden(target: str) -> list[str]:
         tokens = list(owner_routes_by_burden.get(target) or [])
@@ -2350,6 +2378,9 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         )
         record.setdefault("generated_by", f"MRP({edge['from']})")
         record.setdefault("reason", f"generated by {edge['from']} -> {target}")
+        track = generated_burden_track(record, [edge.get("type", "")])
+        if track:
+            record.setdefault("track", track)
         raw_route = record.get("required_owner_route")
         tokens: list[str] = []
         if isinstance(raw_route, list):
@@ -2512,6 +2543,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
             record = generated_record_by_id.get(burden, {})
             if record.get("generated_by"):
                 node["generated_by"] = record["generated_by"]
+            node["track"] = generated_burden_track(record)
         nodes_payload.append(node)
     generated_payload = [generated_record_by_id[burden] for burden in generated_burdens if burden in generated_record_by_id]
     scaffold = {
@@ -2566,7 +2598,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- `coverage_proof.dependency_graph` is required with `nodes`, `edges`, `roots`, and boolean `acyclic`.",
         "- If the dependency edge list is empty and `B_total` has multiple nodes, the visible graph line must declare every node as a parallel root, for example `¹B (root) || ²B (root)`, and JSON `parallel_groups` must mirror the full node group.",
         "- If the dependency edge list is non-empty, the visible graph must declare every root node plus every actual edge, for example `¹B (root); ²B (root); ⁴B → ⁵B`; never convert an edgeful graph into `¹B (root) → ⁵B` unless Stage 05 actually records that edge.",
-        "- A generated `B_MRP` burden must appear in `generated_burdens[]`, `nodes[]`, `B_total`, `terminal_states`, `coverage_proof.dependency_graph.nodes`, and `normalized_activation_record.per_burden[]` with `generation_depth` and `generated_by` provenance.",
+        "- A generated `B_MRP` burden must appear in `generated_burdens[]`, `nodes[]`, `B_total`, `terminal_states`, `coverage_proof.dependency_graph.nodes`, and `normalized_activation_record.per_burden[]` with `generation_depth`, `track`, and `generated_by` provenance.",
         "- If Stage 05 leaves `unresolved_burdens` or `no_new_resultant_proof.proved=false`, do not claim `coverage_complete=true`; set `coverage_complete` false and keep the generated burden held/unresolved instead of synthesizing terminal STOP proof.",
         "- Do not synthesize a generated-burden `MRP(Bn)` row with `graph=none`; visible generated/held MRP resultants must expose the concrete Stage 05 graph edge such as `⁴B → ⁵B`, while JSON mirrors keep ASCII machine IDs.",
         "- Each `nodes[]` burden payload must include `register_types` copied from Stage 02 `burden_floor_details` when live registers are present.",
@@ -3564,6 +3596,9 @@ ACT partition contract for this section:
 - Emit ACT rows only for those exact `body_ref=` tokens.
 - Do not emit ACT rows for unassigned body_refs, even if they appear in the validated compact stage state.
 - Every assigned body_ref must appear exactly once in this section.
+- Do not repeat any assigned body_ref in planning prose, examples, or explanatory
+  notes; after the one visible ACT row, refer back with prose such as "this submove"
+  rather than printing another `body_ref=` token.
 - Preserve public burden grouping: body_refs for the same burden must stay contiguous in the final assembled body.
 - Emit a burden heading only for a body_ref marked `first_for_burden`; emit a standalone Land/HOLD line only for a body_ref marked `last_for_burden`.
 - Do not repeat `## Layer B — Bounded Governed Response` unless this section owns the first Stage 04 ACT body_ref.
@@ -3589,6 +3624,8 @@ Public interface boundary:
 - Preserve `/daee-epistemics` governed output shape across the assembled file.
 - Do not expose raw dev harness internals as a new public mode.
 - Do not include commentary about this harness, section manifest, or compiler.
+- Do not include private planning, self-talk, scratch analysis, "final answer only"
+  reminders, checklist prose, or notes about what you need to write.
 - Do not build or claim verifier sidecars, collapse certificates, Grapher output,
   B.5 projection sidecars, retained promotion, package/provenance, guaranteed
   uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or
@@ -3643,7 +3680,8 @@ def release_section_expansion_prompt(
     role_notes = {
         "layer_b_act": (
             "Use only the assigned ACT body_refs. Do not add ACT rows for unassigned body_refs. "
-            "Expand owner operation bodies, local result prose, and Land(...) consequences. "
+            "Do not emit new `⟦ACT` rows or new `body_ref=` tokens during expansion; "
+            "expand only owner operation bodies, local result prose, and Land(...) consequences. "
             "Do not repeat the main Layer B bounded heading or print Land(...) before all submoves "
             "for that burden have rendered."
         ),
@@ -3685,6 +3723,8 @@ Expansion contract:
 - Do not include JSON or code fences unless the section role itself requires JSON and the added text is valid for that role.
 - Do not claim verifier sidecars, retained promotion, package/provenance, guaranteed uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or ActiveGraph proof.
 - Do not mention this harness, expansion loop, byte budget, manifest, or compiler.
+- Do not include private planning, self-talk, scratch analysis, "final answer only"
+  reminders, checklist prose, or notes about what you need to write.
 - {role_notes.get(section_role, "Add role-local governed detail that stays inside the current section boundary.")}
 
 Existing section text:
@@ -4385,6 +4425,27 @@ def run_self_test(root: Path) -> int:
     run_dir = root / ".daee" / "validation" / f"staged-current-skill-harness-self-test-{uuid.uuid4().hex}"
     stages_dir = run_dir / "stages"
     stages_dir.mkdir(parents=True, exist_ok=True)
+    literal_input_dir = run_dir / "raw-input-literal"
+    literal_input_path = materialize_smoke_raw_input(
+        root,
+        literal_input_dir,
+        DEFAULT_INPUT,
+        "/daee-epistemics refute secularism",
+    )
+    if literal_input_path.read_text(encoding="utf-8") != "/daee-epistemics refute secularism\n":
+        raise HarnessError("Self-test raw literal input was not materialized exactly")
+    try:
+        materialize_smoke_raw_input(
+            root,
+            literal_input_dir,
+            DEFAULT_INPUT.parent / "alternate-input.md",
+            "/daee-epistemics refute secularism",
+        )
+    except HarnessError as exc:
+        if "mutually exclusive" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test raw literal input accepted a simultaneous raw-input-path")
     stage_files: list[Path] = []
     for stage in replay["stages"]:
         stage_path = stages_dir / f"{stage['id']}.response.json"
@@ -5022,15 +5083,15 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in selected_model_delta_guidance:
             raise HarnessError(f"Self-test Stage 04 delta vocabulary guidance omitted {required}")
-    selected_model_drift_rows = [
-        "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: π=selected-model-person-nature-transfer :: body_ref=¹B₁ :: Δ=Δ¹B:selected-model-transfer-bounded :: Land(¹B)+⟧",
-        "⟦ACT ¹B₂[M9.predication-repair] :: π=selected-only-true-god-predicate-transfer :: body_ref=¹B₂ :: Δ=Δ¹B:predicate-transfer-blocked :: Land(¹B)+⟧",
-        "⟦ACT ²B₁[M7.definition-anchor] :: π=only-placement-analogy :: body_ref=²B₁ :: Δ=Δ²B:only-scope-defined :: Land(²B)+⟧",
-        "⟦ACT ²B₂[M9.predication-repair] :: π=2-plus-2-predicate-category :: body_ref=²B₂ :: Δ=Δ²B:predicate-category-separated :: Land(²B)+⟧",
-        "⟦ACT ³B₁[source-status-repair.source-order] :: π=selected-proof-stack :: body_ref=³B₁ :: Δ=Δ³B:proof-stack-routed :: Land(³B)+⟧",
-        "⟦ACT ³B₂[authority-order-repair.sort] :: π=proof-text-hidden-support :: body_ref=³B₂ :: Δ=Δ³B:hidden-support-demoted :: Land(³B)+⟧",
-        "⟦ACT ⁴B₁[M8.consequence-trace] :: π=selected-entailment-pressure :: body_ref=⁴B₁ :: Δ=Δ⁴B:entailment-bounded :: Land(⁴B)+⟧",
-        "⟦ACT ⁴B₂[M9.predication-repair] :: π=sender-sent-relation-category :: body_ref=⁴B₂ :: Δ=Δ⁴B:sender-sent-predication-separated :: Land(⁴B)+⟧",
+    selected_model_controlled_rows = [
+        "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: π=selected-model-person-nature-transfer :: body_ref=¹B₁ :: Δ=Δ¹B:trinitarian-model-identified :: Land(¹B)+⟧",
+        "⟦ACT ¹B₂[M9.predication-repair] :: π=selected-only-true-god-predicate-transfer :: body_ref=¹B₂ :: Δ=Δ¹B:person-nature-transfer-blocked :: Land(¹B)+⟧",
+        "⟦ACT ²B₁[M7.definition-anchor] :: π=only-placement-analogy :: body_ref=²B₁ :: Δ=Δ²B:definition-anchored :: Land(²B)+⟧",
+        "⟦ACT ²B₂[M9.predication-repair] :: π=2-plus-2-predicate-category :: body_ref=²B₂ :: Δ=Δ²B:category-separated :: Land(²B)+⟧",
+        "⟦ACT ³B₁[source-status-repair.source-order] :: π=selected-proof-stack :: body_ref=³B₁ :: Δ=Δ³B:proof-text-sorted :: Land(³B)+⟧",
+        "⟦ACT ³B₂[authority-order-repair.sort] :: π=proof-text-hidden-support :: body_ref=³B₂ :: Δ=Δ³B:proof-text-hidden-support-blocked :: Land(³B)+⟧",
+        "⟦ACT ⁴B₁[M8.consequence-trace] :: π=selected-entailment-pressure :: body_ref=⁴B₁ :: Δ=Δ⁴B:entailment-blocked :: Land(⁴B)+⟧",
+        "⟦ACT ⁴B₂[M9.predication-repair] :: π=sender-sent-relation-category :: body_ref=⁴B₂ :: Δ=Δ⁴B:referent-separated :: Land(⁴B)+⟧",
     ]
     normalized_selected_model_stage04 = normalized_stage(
         "stage-04-burden-execution-act",
@@ -5039,7 +5100,7 @@ def run_self_test(root: Path) -> int:
             "status": "pass",
             "act_targets": ["B1", "B2", "B3", "B4"],
             "act_burdens": ["B1", "B2", "B3", "B4"],
-            "act_rows": selected_model_drift_rows,
+            "act_rows": selected_model_controlled_rows,
         },
     )
     selected_model_delta_results = [
@@ -5048,27 +5109,48 @@ def run_self_test(root: Path) -> int:
     ]
     if selected_model_delta_results != [
         "trinitarian-model-identified",
-        "predicate-separated",
+        "person-nature-transfer-blocked",
         "definition-anchored",
         "category-separated",
         "proof-text-sorted",
         "proof-text-hidden-support-blocked",
         "entailment-blocked",
-        "category-separated",
+        "referent-separated",
     ]:
-        raise HarnessError("Self-test failed to canonicalize selected DO-family Stage 04 delta_result drift")
+        raise HarnessError("Self-test failed to preserve exact controlled Stage 04 delta_result tokens")
     rewrites = normalized_selected_model_stage04.get("normalization", {}).get("delta_result_canonicalizations")
-    if not isinstance(rewrites, list) or len(rewrites) != 8:
-        raise HarnessError("Self-test failed to record selected DO-family Stage 04 delta_result canonicalizations")
+    if rewrites:
+        raise HarnessError("Self-test laundered selected DO-family Stage 04 delta_result tokens")
+    invalid_delta_row = (
+        "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: "
+        "π=selected-model-person-nature-transfer :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:selected-model-transfer-bounded :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_delta_row],
+            },
+        )
+    except HarnessError as exc:
+        if "outside controlled vocabulary" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted near-synonym Stage 04 delta_result laundering")
     source_stack_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
         "π=quran-hadith-lexical-source-stack :: "
-        "body_ref=¹B₁ :: Δ=Δ¹B:source-order-repaired :: Land(¹B)+⟧"
+        "body_ref=¹B₁ :: Δ=Δ¹B:proof-text-sorted :: Land(¹B)+⟧"
     )
     source_recoil_row = (
         "⟦ACT ¹B₂[source-status-repair.source-order] :: "
         "π=source-order-recoil-hidden-support :: "
-        "body_ref=¹B₂ :: Δ=Δ¹B:source-order-repaired :: Land(¹B)+⟧"
+        "body_ref=¹B₂ :: Δ=Δ¹B:hidden-support-blocked :: Land(¹B)+⟧"
     )
     normalized_source_stage04 = normalized_stage(
         "stage-04-burden-execution-act",
@@ -5085,7 +5167,28 @@ def run_self_test(root: Path) -> int:
         for ref in ["¹B₁", "¹B₂"]
     ]
     if source_delta_results != ["proof-text-sorted", "hidden-support-blocked"]:
-        raise HarnessError("Self-test failed to canonicalize generic source-stack/recoil delta_result tokens")
+        raise HarnessError("Self-test failed to preserve exact SOURCE delta_result tokens")
+    invalid_source_row = (
+        "⟦ACT ¹B₁[source-status-repair.source-order] :: "
+        "π=quran-hadith-lexical-source-stack :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:source-order-repaired-via-prose :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_source_row],
+            },
+        )
+    except HarnessError as exc:
+        if "outside controlled vocabulary" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted prose-derived SOURCE delta_result laundering")
     partition_stage04 = dict(normalized_stage04)
     partition_stage04["act_body_refs"] = ["¹B₁", "¹B₂", "²B₁", "²B₂", "³B₁", "³B₂", "⁴B₁", "⁴B₂", "⁵B₁", "⁵B₂"]
     partition_plan = compiled_release_section_plan(70)
@@ -5402,6 +5505,7 @@ def run_self_test(root: Path) -> int:
                 "burden_id": "B1",
                 "owner_id": "source-status-repair",
                 "operation": "source-order",
+                "delta_result": "source-order-repaired",
                 "terminal_state": "landed",
                 "generation_depth": 0,
             }
@@ -5420,6 +5524,7 @@ def run_self_test(root: Path) -> int:
                     "burden_id": "B1",
                     "owner_id": "source-status-repair",
                     "operation": "source-order",
+                    "delta_result": "source-order-repaired",
                     "terminal_state": "landed",
                 },
                 {
@@ -5427,6 +5532,7 @@ def run_self_test(root: Path) -> int:
                     "burden_id": "B1",
                     "owner_id": "M1",
                     "operation": "self-grounding-test",
+                    "delta_result": "criterion-self-failed",
                     "terminal_state": "landed",
                 }
             ],
@@ -5479,7 +5585,7 @@ def run_self_test(root: Path) -> int:
             pass
         else:
             raise HarnessError(f"Self-test failed to reject Stage 06 list-object register_deltas {message}")
-    normalized_stage06_delta_drift = normalized_stage(
+    normalized_stage06_controlled_delta = normalized_stage(
         "stage-06-field-witness-nar",
         {
             "id": "stage-06-field-witness-nar",
@@ -5494,8 +5600,8 @@ def run_self_test(root: Path) -> int:
                     "owner_id": "M9",
                     "operation": "predication-repair",
                     "pressure": "selected-predicate-transfer",
-                    "delta": "Δ¹B:predicate-transfer-blocked",
-                    "delta_result": "predicate-transfer-blocked",
+                    "delta": "Δ¹B:predicate-separated",
+                    "delta_result": "predicate-separated",
                     "land": "Land(¹B)+",
                     "terminal_state": "landed",
                 },
@@ -5506,8 +5612,8 @@ def run_self_test(root: Path) -> int:
                     "owner_id": "authority-order-repair",
                     "operation": "sort",
                     "pressure": "proof-text-hidden-support",
-                    "delta": "Δ³B:hidden-support-demoted",
-                    "delta_result": "hidden-support-demoted",
+                    "delta": "Δ³B:proof-text-hidden-support-blocked",
+                    "delta_result": "proof-text-hidden-support-blocked",
                     "land": "Land(³B)+",
                     "terminal_state": "landed",
                 },
@@ -5522,7 +5628,7 @@ def run_self_test(root: Path) -> int:
                         "owner_id": "M9",
                         "operation": "predication-repair",
                         "pressure": "selected-predicate-transfer",
-                        "delta_result": "predicate-transfer-blocked",
+                        "delta_result": "predicate-separated",
                         "terminal_state": "landed",
                         "generation_depth": 0,
                     },
@@ -5531,27 +5637,72 @@ def run_self_test(root: Path) -> int:
                         "owner_id": "authority-order-repair",
                         "operation": "sort",
                         "pressure": "proof-text-hidden-support",
-                        "delta_result": "hidden-support-demoted",
+                        "delta_result": "proof-text-hidden-support-blocked",
                         "terminal_state": "landed",
                         "generation_depth": 0,
                     },
                 ],
             },
-            "register_deltas": {"Omega": "predicate-transfer-blocked", "xi": "hidden-support-demoted"},
+            "register_deltas": {"Omega": "predicate-separated", "xi": "proof-text-hidden-support-blocked"},
         },
     )
-    delta_details = normalized_stage06_delta_drift.get("owner_activation_details") or []
+    delta_details = normalized_stage06_controlled_delta.get("owner_activation_details") or []
     if [item.get("delta_result") for item in delta_details] != [
         "predicate-separated",
         "proof-text-hidden-support-blocked",
     ]:
-        raise HarnessError("Self-test failed to canonicalize Stage 06 owner_activation delta_result drift")
+        raise HarnessError("Self-test failed to preserve exact Stage 06 owner_activation delta_result tokens")
     nar_delta_results = [
         row.get("delta_result")
-        for row in normalized_stage06_delta_drift["normalized_activation_record"]["per_burden"]
+        for row in normalized_stage06_controlled_delta["normalized_activation_record"]["per_burden"]
     ]
     if nar_delta_results != ["predicate-separated", "proof-text-hidden-support-blocked"]:
-        raise HarnessError("Self-test failed to canonicalize Stage 06 NAR delta_result drift")
+        raise HarnessError("Self-test failed to preserve exact Stage 06 NAR delta_result tokens")
+    try:
+        normalized_stage(
+            "stage-06-field-witness-nar",
+            {
+                "id": "stage-06-field-witness-nar",
+                "status": "pass",
+                "field_witness_body_refs": ["¹B₂"],
+                "nar_burdens": ["B1"],
+                "owner_activations": [
+                    {
+                        "body_ref": "¹B₂",
+                        "burden_id": "B1",
+                        "owner": "M9",
+                        "owner_id": "M9",
+                        "operation": "predication-repair",
+                        "pressure": "selected-predicate-transfer",
+                        "delta": "Δ¹B:predicate-transfer-blocked",
+                        "delta_result": "predicate-transfer-blocked",
+                        "land": "Land(¹B)+",
+                        "terminal_state": "landed",
+                    }
+                ],
+                "normalized_activation_record": {
+                    "n_frame": "selected-do12-source-order-repair",
+                    "live_registers": ["Omega"],
+                    "burden_floor": ["B1"],
+                    "per_burden": [
+                        {
+                            "burden_id": "B1",
+                            "owner_id": "M9",
+                            "operation": "predication-repair",
+                            "pressure": "selected-predicate-transfer",
+                            "delta_result": "predicate-transfer-blocked",
+                            "terminal_state": "landed",
+                            "generation_depth": 0,
+                        }
+                    ],
+                },
+            },
+        )
+    except HarnessError as exc:
+        if "outside controlled vocabulary" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted Stage 06 delta_result laundering")
     stage07_layer_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
@@ -6182,7 +6333,7 @@ def run_self_test(root: Path) -> int:
         body_ref = f"{public}₁"
         return (
             f"⟦ACT {body_ref}[M8.trace] :: π=pressure-{number} :: "
-            f"body_ref={body_ref} :: Δ=Δ{public}:landed-{number} :: Land({public})+⟧"
+            f"body_ref={body_ref} :: Δ=Δ{public}:consequence-traced :: Land({public})+⟧"
         )
 
     def synthetic_stage04(burdens: list[str]) -> dict[str, Any]:
@@ -6259,6 +6410,24 @@ def run_self_test(root: Path) -> int:
             payload["unresolved_burdens"] = [generated]
         return normalized_stage("stage-05-mrp-reread-terminal-state", payload)
 
+    restoration_track_record = {
+        "id": "B2",
+        "generated_by": "MRP(B1)",
+        "escape_routes_checked": [{"type": "restoration-recoil", "live": True, "target": "B2"}],
+    }
+    if generated_burden_track(restoration_track_record, ["generated_burden_instantiation"]) != "restoration":
+        raise HarnessError("Self-test failed to derive generated restoration track from structured escape route")
+    prose_only_track_record = {
+        "id": "B2",
+        "generated_by": "MRP(B1)",
+        "title": "restoration recoil remains in prose only",
+        "reason": "restoration is mentioned without a structured route object",
+    }
+    if generated_burden_track(prose_only_track_record):
+        raise HarnessError("Self-test derived generated track from prose-only restoration wording")
+    if generated_burden_track({"id": "B2", "generated_by": "MRP(B1)"}, ["generated_burden_instantiation"]) != "primary":
+        raise HarnessError("Self-test failed to derive primary generated track from typed generated route")
+
     def assert_generated_topology(parent: str, generated: str, *, executed: bool, label: str) -> None:
         stage04 = synthetic_stage04([*generated_topology_stage02["burden_floor"], *([generated] if executed else [])])
         stage05 = synthetic_generated_stage05(parent, generated, executed=executed)
@@ -6282,6 +6451,8 @@ def run_self_test(root: Path) -> int:
         record = generated_records.get(generated)
         if not isinstance(record, dict) or record.get("generated_by") != f"MRP({parent})":
             raise HarnessError(f"Self-test {label} generated_burdens provenance missing MRP({parent})")
+        if record.get("track") not in GENERATED_MRP_TRACKS:
+            raise HarnessError(f"Self-test {label} generated_burdens track missing or non-canonical")
         edge = {"from": parent, "to": generated}
         coverage_edges = payload.get("coverage_proof", {}).get("dependency_graph", {}).get("edges", [])
         if edge not in coverage_edges:
@@ -6511,6 +6682,7 @@ def run_self_test(root: Path) -> int:
                     "B1": {
                         "owner_id": "source-status-repair",
                         "operation": "source-order",
+                        "delta_result": "source-order-repaired",
                         "terminal_state": "landed",
                         "generation_depth": 0,
                     }
@@ -6542,6 +6714,7 @@ def run_self_test(root: Path) -> int:
                         "burden_id": "B1",
                         "owner_id": "source-status-repair",
                         "operation": "source-order",
+                        "delta_result": "source-order-repaired",
                         "terminal_state": "landed",
                         "generation_depth": 0,
                     }
@@ -7187,11 +7360,30 @@ def build_sidecars(
     return [certificate, grapher, out_dir / f"{prefix}.hashes.json", b5_sidecar]
 
 
+def materialize_smoke_raw_input(
+    root: Path,
+    run_dir: Path,
+    raw_input_path: Path,
+    raw_input_literal: str | None,
+) -> Path:
+    if raw_input_literal is not None:
+        requested = raw_input_path if raw_input_path.is_absolute() else root / raw_input_path
+        if requested.resolve() != DEFAULT_INPUT.resolve():
+            raise HarnessError("--raw-input and --raw-input-path are mutually exclusive")
+        run_dir.mkdir(parents=True, exist_ok=True)
+        literal_path = run_dir / "raw-input.md"
+        write_text(literal_path, str(raw_input_literal).rstrip() + "\n")
+        return literal_path
+    return resolve_under_root(root, raw_input_path, "Raw input")
+
+
 def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
     files = validate_required_files(root)
     run_dir = resolve_under_root(root, args.run_dir, "Run directory")
     resume_context: dict[str, Any] | None = None
     if args.resume_run_dir is not None:
+        if args.raw_input is not None:
+            raise HarnessError("--raw-input cannot be used with --resume-run-dir")
         resume_run_dir = resolve_under_root(root, args.resume_run_dir, "Resume run directory")
         if resume_run_dir != run_dir:
             raise HarnessError("--resume-run-dir and --run-dir must identify the same directory")
@@ -7200,7 +7392,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
         raw_input = resume_context["raw_input_path"]
     else:
         replay_record = resolve_under_root(root, args.replay_record, "Replay record")
-        raw_input = resolve_under_root(root, args.raw_input_path, "Raw input")
+        raw_input = materialize_smoke_raw_input(root, run_dir, args.raw_input_path, args.raw_input)
     validate_replay_record(root, replay_record)
     run_dir.mkdir(parents=True, exist_ok=True)
     prompts_dir = run_dir / "prompts"
@@ -7684,10 +7876,11 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--case-name", default="staged-a9-science-source")
+    parser.add_argument("--raw-input", default=None)
     parser.add_argument("--raw-input-path", type=Path, default=DEFAULT_INPUT)
     parser.add_argument("--replay-record", type=Path, default=DEFAULT_REPLAY_RECORD)
     parser.add_argument("--run-dir", type=Path, default=None)
