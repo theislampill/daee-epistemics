@@ -3069,28 +3069,36 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- For every `owner_activations[]` mirror, `owner` must contain only the ACT owner token or owner family, not `owner.operation`.",
         "- Put the operation in the separate `operation` field, and keep `owner_id` aligned with the owner token.",
         "- Do not set `owner` to `owner.operation`; for example use `\"owner\": \"FPD\"` and `\"operation\": \"foreign-premise-detection\"`.",
+        "- For every `owner_activations[]` mirror whose `delta` carrier is `Δκ` / `Delta-kappa`, include explicit `kappa_carrier`, `dependency_radius`, and `reread_state_effect` fields. Those fields must mention kappa/dependency/R(H,Delta) evidence that binds the dependency-radius transition back to the raw burden target before release.",
         "- Required field_witness scaffold and checker-owned keys (copy field names exactly; adapt prose details but keep the structure):",
         json.dumps(scaffold, ensure_ascii=False, indent=2),
         "- Mirror these exact ACT-visible values by body_ref; include `target` exactly as shown:",
     ]
     for ref, detail in act_details.items():
+        mirror_row = {
+            "body_ref": ref,
+            "owner": detail["owner"],
+            "owner_id": detail["owner"],
+            "operation": detail["operation"],
+            "pressure": detail["pressure"],
+            "delta": f"{detail['delta']}:{detail['delta_result']}",
+            "delta_result": detail["delta_result"],
+            "land": detail["land"],
+            "target": detail["burden_id"],
+            "land_target": detail["burden_id"],
+        }
+        raw_delta = str(detail["delta"])
+        if "κ" in raw_delta or "kappa" in raw_delta.lower():
+            mirror_row.update(
+                {
+                    "kappa_carrier": f"κ dependency-radius carrier for {ref} over {detail['pressure']}",
+                    "dependency_radius": f"{detail['burden_id']} dependency radius after {detail['operation']}",
+                    "reread_state_effect": f"R(H,Delta) binds Δκ back to {detail['burden_id']} before release",
+                }
+            )
         lines.append(
             "  "
-            + json.dumps(
-                {
-                    "body_ref": ref,
-                    "owner": detail["owner"],
-                    "owner_id": detail["owner"],
-                    "operation": detail["operation"],
-                    "pressure": detail["pressure"],
-                    "delta": f"{detail['delta']}:{detail['delta_result']}",
-                    "delta_result": detail["delta_result"],
-                    "land": detail["land"],
-                    "target": detail["burden_id"],
-                    "land_target": detail["burden_id"],
-                },
-                ensure_ascii=False,
-            )
+            + json.dumps(mirror_row, ensure_ascii=False)
         )
     return "\n".join(lines)
 
@@ -7845,6 +7853,54 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_witness_prompt:
             raise HarnessError(f"Self-test Stage 07 field_witness prompt omitted mirror scaffold: {required}")
+    stage07_kappa_witness_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-kappa-carrier",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[
+            normalized_stage02,
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_rows": [
+                    "⟦ACT ¹B₁[M8.consequence-trace] :: π=entailment-pressure :: body_ref=¹B₁ :: Δ=Δκ:entailment-blocked :: Land(¹B)+⟧"
+                ],
+                "act_body_refs": ["¹B₁"],
+                "act_row_details": [
+                    {
+                        "body_ref": "¹B₁",
+                        "burden_id": "B1",
+                        "owner": "M8",
+                        "operation": "consequence-trace",
+                        "pressure": "entailment-pressure",
+                        "delta": "Δκ",
+                        "delta_result": "entailment-blocked",
+                        "land": "Land(¹B)+",
+                    }
+                ],
+            },
+            normalized_stage05,
+            normalized_stage06,
+        ],
+        section_id="field-witness-nar",
+        section_role="field_witness_nar",
+        section_number=9,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=None,
+    )
+    for required in (
+        "whose `delta` carrier is `Δκ` / `Delta-kappa`",
+        '"kappa_carrier": "κ dependency-radius carrier for ¹B₁ over entailment-pressure"',
+        '"dependency_radius": "B1 dependency radius after consequence-trace"',
+        '"reread_state_effect": "R(H,Delta) binds Δκ back to B1 before release"',
+    ):
+        if required not in stage07_kappa_witness_prompt:
+            raise HarnessError(f"Self-test Stage 07 field_witness prompt omitted kappa carrier scaffold: {required}")
     generated_stage05 = normalized_stage(
         "stage-05-mrp-reread-terminal-state",
         {
