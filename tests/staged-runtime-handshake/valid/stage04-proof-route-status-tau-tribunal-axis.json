@@ -1,6 +1,6 @@
 {
   "schema": "staged-runtime-handshake-v1",
-  "case_id": "stage04-proof-method-tau-generic-operation",
+  "case_id": "stage04-proof-route-status-tau-tribunal-axis",
   "mode": "staged-current-skill-stage-local-smoke",
   "user_interface_preserved": true,
   "stage_scope": {
@@ -12,7 +12,7 @@
   "model_scope": {
     "type": "focused-current-skill-stage-smoke",
     "case_count": 1,
-    "case_family": "neutral-proof-method-tau-generic-negative",
+    "case_family": "neutral-proof-route-status-tribunal-axis-positive",
     "retained_replay_target": "tests/staged-runtime-handshake/valid/stage04-model-scope-act-details.json"
   },
   "stage_order": [
@@ -35,7 +35,7 @@
       "produces": ["burden_floor", "selected_n_frame", "live_registers"],
       "requires": ["input_digest"],
       "burden_floor": ["B1"],
-      "selected_n_frame": "neutral-proof-family-label",
+      "selected_n_frame": "neutral-proof-route-status-tribunal",
       "live_registers": ["tau"]
     },
     {
@@ -48,7 +48,7 @@
         {
           "burden_id": "B1",
           "owner_id": "proof-method-audit",
-          "operation": "proof-family-classification",
+          "operation": "proof-route-status-audit",
           "eligibility": "catalogue-backed"
         }
       ]
@@ -62,17 +62,17 @@
       "act_burdens": ["B1"],
       "act_body_refs": ["B1_1"],
       "act_rows": [
-        "⟦ACT B1_1[proof-method-audit.proof-family-classification] :: π=proof-family-label :: body_ref=B1_1 :: Δ=ΔB1:proof-family-carrier-typed :: Land(B1)+⟧"
+        "⟦ACT B1_1[proof-method-audit.proof-route-status-audit] :: π=proof-route-status-tribunal-function :: body_ref=B1_1 :: Δ=ΔB1:proof-route-status-clarified :: Land(B1)+⟧"
       ],
       "act_row_details": [
         {
           "burden_id": "B1",
           "body_ref": "B1_1",
           "owner_id": "proof-method-audit",
-          "operation": "proof-family-classification",
+          "operation": "proof-route-status-audit",
           "register_axis": "τ",
-          "delta_result": "proof-family-carrier-typed",
-          "act_row": "⟦ACT B1_1[proof-method-audit.proof-family-classification] :: π=proof-family-label :: body_ref=B1_1 :: Δ=ΔB1:proof-family-carrier-typed :: Land(B1)+⟧"
+          "delta_result": "proof-route-status-clarified",
+          "act_row": "⟦ACT B1_1[proof-method-audit.proof-route-status-audit] :: π=proof-route-status-tribunal-function :: body_ref=B1_1 :: Δ=ΔB1:proof-route-status-clarified :: Land(B1)+⟧"
         }
       ]
     }

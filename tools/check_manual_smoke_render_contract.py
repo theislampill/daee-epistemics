@@ -207,18 +207,26 @@ STATE_CHANGE_RE = re.compile(
 )
 PROOF_METHOD_CARRIER_RE = re.compile(
     r"(?is)\b(?:proof[- ]family|proof[- ]carrier|proof carrier|logic tree|"
-    r"formal derivation|formal display|diagram|symbolic conflict|compression device)\b"
+    r"formal derivation|formal display|diagram|symbolic conflict|compression device|"
+    r"proof[- ]route|route[- ]status|burden[- ]scope|tribunal[- ]status|burden[- ]function)\b"
 )
 PROOF_METHOD_DEPENDENCY_RE = re.compile(
     r"(?is)\b(?:premise[- ]set|premises?|predicate|definition|definitions?|"
     r"source sorting|source meanings?|entailment licensing|dependency|depends on|"
-    r"earlier source|earlier .* semantic|faithful(?:ly)? preserve)\b"
+    r"earlier source|earlier .* semantic|faithful(?:ly)? preserve|supporting texts?|"
+    r"proof eligibility|standard of proof|proof forum|burden role|burden[- ]function)\b"
 )
 PROOF_METHOD_STATE_RE = re.compile(
     r"(?is)\b(?:no longer treated as (?:a )?neutral proof|typed as a proof carrier|"
     r"does not independently establish|not self[- ]standing|prevents? the formal display from outranking|"
     r"cannot outrank|imports unresolved|packages? a contested premise[- ]set|"
-    r"classif(?:y|ies|ied) .* compression device|loses the decisive distinctions?)\b"
+    r"classif(?:y|ies|ied) .* compression device|loses the decisive distinctions?|"
+    r"route[- ]status (?:is )?clarified|proof route is bounded|"
+    r"tribunal[- ]function (?:is )?named|burden[- ]function (?:is )?named)\b"
+)
+PROOF_METHOD_ROUTE_STATUS_BODY_RE = re.compile(
+    r"(?is)\b(?:proof forum|standard of proof|burden[- ]function|burden role|"
+    r"tribunal[- ]function|proof eligibility|supporting texts?|premise/inference/conclusion scope)\b"
 )
 SOURCE_AUTHORITY_REPAIR_STATE_RE = re.compile(
     r"(?is)\b(?:authority[- ]order[- ]repaired|authority order is repaired)\b"
@@ -1195,6 +1203,10 @@ def proof_method_carrier_transition_visible(block: str) -> bool:
         return False
     if not operation_body_has_state_delta(body, result, contribution):
         return False
+    if "proof-route-status-audit" in payload and not PROOF_METHOD_ROUTE_STATUS_BODY_RE.search(
+        " ".join((operation, result, contribution, body))
+    ):
+        return False
     return bool(
         PROOF_METHOD_CARRIER_RE.search(payload)
         and PROOF_METHOD_DEPENDENCY_RE.search(payload)
@@ -1273,6 +1285,60 @@ def public_source_formal_transition_errors(path: Path, text: str) -> list[str]:
                 errors.append(
                     f"{label} SOURCE source-order-repair lacks "
                     "source-lineage/quotation/inherited-claim/evidential-dependency transition evidence"
+                )
+    return errors
+
+
+PROOF_METHOD_COMPACT_FORMAL_DELTAS = {
+    "proof-family-carrier-typed",
+    "proof-route-status-clarified",
+}
+
+
+def public_proof_method_formal_transition_errors(path: Path, text: str) -> list[str]:
+    """Validate compact proof-method deltas against visible ACT/body evidence."""
+    errors: list[str] = []
+    blocks_by_ref = submove_blocks_by_ref(text)
+    seen_records: set[str] = set()
+    for match in PUBLIC_ACT_RECORD_RE.finditer(text):
+        record = match.group(0).strip()
+        if record in seen_records:
+            continue
+        seen_records.add(record)
+
+        owner = match.group("owner").strip()
+        operation = match.group("operation").strip()
+        delta_result = match.group("delta_result").strip()
+        body_ref = match.group("body_ref").strip()
+        submove_ref = match.group("submove_ref").strip()
+        label = f"{path}: ACT {submove_ref}"
+
+        if owner_family(owner) != "PROOF_METHOD" or delta_result not in PROOF_METHOD_COMPACT_FORMAL_DELTAS:
+            continue
+        if "[" in body_ref or "]" in body_ref:
+            continue
+        if canonical_submove_ref(body_ref) != canonical_submove_ref(submove_ref):
+            continue
+        operation_errors = owner_operation_vocabulary_errors("operation", owner, operation)
+        delta_errors = delta_result_vocabulary_errors("delta_result", owner, delta_result)
+        errors.extend(f"{label}: {error}" for error in operation_errors)
+        errors.extend(f"{label}: {error}" for error in delta_errors)
+        if operation_errors or delta_errors:
+            continue
+        block = blocks_by_ref.get(canonical_submove_ref(body_ref))
+        if not block:
+            errors.append(f"{label} compact proof-method delta lacks a dereferenced public Layer B body")
+            continue
+        if not proof_method_carrier_transition_visible(block):
+            if operation == "proof-route-status-audit":
+                errors.append(
+                    f"{label} proof-route-status-audit lacks body-backed proof forum, "
+                    "standard, tribunal/burden-function, and proof eligibility transition evidence"
+                )
+            else:
+                errors.append(
+                    f"{label} proof-method delta lacks body-backed proof-family, premise, "
+                    "inference, conclusion-scope, and state-change evidence"
                 )
     return errors
 
@@ -1820,6 +1886,7 @@ def check_text(path: Path, text: str, require_field_witness: bool = True) -> lis
                 )
     errors.extend(layer_b_mass_errors(path, text))
     errors.extend(public_source_formal_transition_errors(path, text))
+    errors.extend(public_proof_method_formal_transition_errors(path, text))
     errors.extend(public_tail_quality_errors(path, text, hard_anchor_hits))
 
     loopbreak_without_generated = (

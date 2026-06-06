@@ -51,6 +51,7 @@ OWNER_REGISTER_AXIS_FLOORS = {
 
 OWNER_OPERATION_REGISTER_AXIS_FLOORS = {
     ("proof-method-audit", "proof-family-and-carrier-audit"): {"σ", "ξ", "μ", "κ", "τ"},
+    ("proof-method-audit", "proof-route-status-audit"): {"σ", "ξ", "μ", "κ", "τ"},
 }
 
 

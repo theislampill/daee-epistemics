@@ -225,18 +225,26 @@ BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
 }
 PROOF_METHOD_CARRIER_RE = re.compile(
     r"(?is)\b(?:proof[- ]family|proof[- ]carrier|proof carrier|logic tree|"
-    r"formal derivation|formal display|diagram|symbolic conflict|compression device)\b"
+    r"formal derivation|formal display|diagram|symbolic conflict|compression device|"
+    r"proof[- ]route|route[- ]status|burden[- ]scope|tribunal[- ]status|burden[- ]function)\b"
 )
 PROOF_METHOD_DEPENDENCY_RE = re.compile(
     r"(?is)\b(?:premise[- ]set|premises?|predicate|definition|definitions?|"
     r"source sorting|source meanings?|entailment licensing|dependency|depends on|"
-    r"earlier source|earlier .* semantic|faithful(?:ly)? preserve)\b"
+    r"earlier source|earlier .* semantic|faithful(?:ly)? preserve|supporting texts?|"
+    r"proof eligibility|standard of proof|proof forum|burden role|burden[- ]function)\b"
 )
 PROOF_METHOD_STATE_RE = re.compile(
     r"(?is)\b(?:no longer treated as (?:a )?neutral proof|typed as a proof carrier|"
     r"does not independently establish|not self[- ]standing|prevents? the formal display from outranking|"
     r"cannot outrank|imports unresolved|packages? a contested premise[- ]set|"
-    r"classif(?:y|ies|ied) .* compression device|loses the decisive distinctions?)\b"
+    r"classif(?:y|ies|ied) .* compression device|loses the decisive distinctions?|"
+    r"route[- ]status (?:is )?clarified|proof route is bounded|"
+    r"tribunal[- ]function (?:is )?named|burden[- ]function (?:is )?named)\b"
+)
+PROOF_METHOD_ROUTE_STATUS_BODY_RE = re.compile(
+    r"(?is)\b(?:proof forum|standard of proof|burden[- ]function|burden role|"
+    r"tribunal[- ]function|proof eligibility|supporting texts?|premise/inference/conclusion scope)\b"
 )
 M8_DEPENDENCY_TRACE_RE = re.compile(
     r"(?is)\b(?:dependency|dependent|depends|dependency[- ]trace|dependency[- ]chain|"
@@ -1392,6 +1400,10 @@ def proof_method_carrier_transition_visible(block: str) -> bool:
     if not contribution_explains_land(contribution):
         return False
     if not operation_body_has_state_delta(body, result, contribution):
+        return False
+    if "proof-route-status-audit" in payload and not PROOF_METHOD_ROUTE_STATUS_BODY_RE.search(
+        " ".join((operation, result, contribution, body))
+    ):
         return False
     return bool(
         PROOF_METHOD_CARRIER_RE.search(payload)

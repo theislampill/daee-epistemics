@@ -173,7 +173,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "field must be a JSON array of strings. If richer diagnostic metadata "
             "is useful, put it in "
             "optional detail fields; do not replace the canonical string fields with "
-            "objects. Do not release a final answer."
+            "objects. `burden_floor_details` should be a list of detail objects; a "
+            "keyed object map is compatibility-normalized only when its keys exactly "
+            "match the bare `burden_floor` ids and every value preserves burden "
+            "identity. Do not release a final answer."
         ),
     },
     "stage-03-routing-owner-gate": {
@@ -844,6 +847,38 @@ def normalize_stage02_diagnostic_fields(stage: dict[str, Any]) -> None:
             stage["burden_floor_details"] = list(detail_alias)
             normalization["burden_floor_detail_alias"] = True
         if detail_alias is not None:
+            if isinstance(detail_alias, dict):
+                floor_ids = list(stage["burden_floor"])
+                detail_keys = list(detail_alias.keys())
+                canonical_keys: list[str] = []
+                for key in detail_keys:
+                    if not isinstance(key, str) or CANONICAL_BURDEN_ID_RE.fullmatch(key) is None:
+                        raise HarnessError(
+                            "stage-02 burden_floor_details keyed object keys must be canonical burden ids"
+                        )
+                    canonical_keys.append(key)
+                if set(canonical_keys) != set(floor_ids):
+                    raise HarnessError(
+                        "stage-02 burden_floor_details keyed object keys must exactly match burden_floor"
+                    )
+                normalized_details: list[dict[str, Any]] = []
+                for burden_id in floor_ids:
+                    detail = detail_alias.get(burden_id)
+                    if not isinstance(detail, dict):
+                        raise HarnessError(
+                            f"stage-02 burden_floor_details.{burden_id} must be an object"
+                        )
+                    raw_detail_id = detail.get("burden_id") or detail.get("id")
+                    if raw_detail_id is not None and raw_detail_id != burden_id:
+                        raise HarnessError(
+                            f"stage-02 burden_floor_details.{burden_id} burden_id/id must match its key"
+                        )
+                    normalized_detail = dict(detail)
+                    normalized_detail["burden_id"] = burden_id
+                    normalized_details.append(normalized_detail)
+                detail_alias = normalized_details
+                stage["burden_floor_details"] = normalized_details
+                normalization["burden_floor_details_keyed_map"] = True
             if not isinstance(detail_alias, list) or not all(isinstance(item, dict) for item in detail_alias):
                 raise HarnessError("stage-02 burden_floor_details must be a list of detail objects")
             for index, detail in enumerate(detail_alias):
@@ -5737,6 +5772,77 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to preserve bare Stage 02 burden_floor IDs")
     if not isinstance(detail_stage02.get("burden_floor_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 02 burden_floor detail objects")
+    keyed_detail_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "selected-route-keyed-burden-detail-self-test",
+            "live_registers": ["xi", "kappa"],
+            "burden_floor": ["B1", "B2", "B3"],
+            "burden_floor_details": {
+                "B2": {
+                    "label": "dependency-collapse pressure",
+                    "register_types": ["kappa"],
+                },
+                "B1": {
+                    "burden_id": "B1",
+                    "label": "source-order/warrant pressure",
+                    "register_types": ["xi"],
+                },
+                "B3": {
+                    "id": "B3",
+                    "label": "held proof-function pressure",
+                    "register_types": ["xi", "kappa"],
+                },
+            },
+        },
+    )
+    if keyed_detail_stage02.get("burden_floor") != ["B1", "B2", "B3"]:
+        raise HarnessError("Self-test keyed Stage 02 details changed the burden floor")
+    keyed_details = keyed_detail_stage02.get("burden_floor_details")
+    if not isinstance(keyed_details, list) or [item.get("burden_id") for item in keyed_details] != ["B1", "B2", "B3"]:
+        raise HarnessError("Self-test failed to normalize keyed Stage 02 burden details in floor order")
+    keyed_registers = stage02_burden_register_types(keyed_detail_stage02, keyed_detail_stage02["burden_floor"])
+    if keyed_registers.get("B2") != ["kappa"] or keyed_registers.get("B3") != ["xi", "kappa"]:
+        raise HarnessError("Self-test keyed Stage 02 details lost register typing")
+    try:
+        normalized_stage(
+            "stage-02-layer-a-diagnostic-ir",
+            {
+                "id": "stage-02-layer-a-diagnostic-ir",
+                "status": "pass",
+                "selected_n_frame": "selected-route-keyed-burden-detail-missing-self-test",
+                "live_registers": ["xi", "kappa"],
+                "burden_floor": ["B1", "B2", "B3"],
+                "burden_floor_details": {
+                    "B1": {"register_types": ["xi"]},
+                    "B2": {"register_types": ["kappa"]},
+                },
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject keyed Stage 02 details with missing burden")
+    try:
+        normalized_stage(
+            "stage-02-layer-a-diagnostic-ir",
+            {
+                "id": "stage-02-layer-a-diagnostic-ir",
+                "status": "pass",
+                "selected_n_frame": "selected-route-keyed-burden-detail-mismatch-self-test",
+                "live_registers": ["xi"],
+                "burden_floor": ["B1"],
+                "burden_floor_details": {
+                    "B1": {"burden_id": "B2", "register_types": ["xi"]},
+                },
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject keyed Stage 02 detail id mismatch")
     label_stage03 = normalized_stage(
         "stage-03-routing-owner-gate",
         {
@@ -6924,10 +7030,28 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted proof-method route label as operation token")
-    invalid_proof_method_tau_row = (
+    proof_route_status_tau_row = (
         "⟦ACT ¹B₁[proof-method-audit.proof-route-status-audit] :: "
         "π=proof-route-status :: "
         "body_ref=¹B₁ :: Δ=Δ¹B:proof-route-status-clarified :: Land(¹B)+⟧"
+    )
+    proof_route_status_tau_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_route_status_tau_row],
+            "act_row_details": self_test_act_row_details([proof_route_status_tau_row], {"¹B₁": "τ"}),
+        },
+    )
+    if proof_route_status_tau_stage04["act_row_details"][0].get("register_axis") != "τ":
+        raise HarnessError("Self-test failed to accept proof-route-status tribunal/burden-function register_axis")
+    invalid_proof_method_tau_row = (
+        "⟦ACT ¹B₁[proof-method-audit.proof-family-classification] :: "
+        "π=proof-family-label :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:proof-family-carrier-typed :: Land(¹B)+⟧"
     )
     try:
         normalized_stage(
@@ -6942,7 +7066,7 @@ def run_self_test(root: Path) -> int:
             },
         )
     except HarnessError as exc:
-        if "register_axis 'τ' is not approved for owner proof-method-audit.proof-route-status-audit" not in str(exc):
+        if "register_axis 'τ' is not approved for owner proof-method-audit.proof-family-classification" not in str(exc):
             raise
     else:
         raise HarnessError("Self-test accepted generic proof-method tau register_axis")
