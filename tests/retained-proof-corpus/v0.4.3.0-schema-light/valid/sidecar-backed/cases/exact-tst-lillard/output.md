@@ -765,7 +765,7 @@ field_witness
       {"target": "B4", "before_owner": "M9", "after_owner": "M8"},
       {"target": "B4", "before_owner": "M8", "after_owner": "source-status-repair"},
       {"target": "B4", "before_owner": "source-status-repair", "after_owner": "P1"},
-      {"target": "B5", "before_owner": "source-status-repair", "after_owner": "authority-order-repair"},
+      {"target": "B5", "before_owner": "source-status-repair", "before_operation": "source-order", "before_body_ref": "⁵B₁", "after_owner": "authority-order-repair", "after_operation": "sort", "after_body_ref": "⁵B₂"},
       {"target": "B5", "before_owner": "authority-order-repair", "after_owner": "M8"},
       {"target": "B5", "before_owner": "M8", "after_owner": "P7"},
       {"target": "B6", "before_owner": "source-status-repair", "after_owner": "M8"},

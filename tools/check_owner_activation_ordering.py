@@ -423,16 +423,24 @@ def rule_operation(rule: dict[str, Any], key: str) -> str:
     return normalized_operation(rule.get(key))
 
 
-def activation_endpoint_matches(activation: Activation, owner: str, operation: str = "") -> bool:
+def activation_endpoint_matches(
+    activation: Activation,
+    owner: str,
+    operation: str = "",
+    body_ref: str = "",
+) -> bool:
     if activation.owner != owner:
         return False
     if operation and activation.operation != operation:
         return False
+    if body_ref and activation.body_ref != body_ref:
+        return False
     return True
 
 
-def owner_operation_label(owner: str, operation: str = "") -> str:
-    return f"{owner}.{operation}" if operation else owner
+def owner_operation_label(owner: str, operation: str = "", body_ref: str = "") -> str:
+    label = f"{owner}.{operation}" if operation else owner
+    return f"{label}@{body_ref}" if body_ref else label
 
 
 def operation_member_key(owner: str, operation: str) -> str:
@@ -445,6 +453,8 @@ def required_rule_covers_pair(rule: dict[str, Any], before: Activation, after: A
     after_owner = strict_owner_family(str(rule.get("after_owner") or rule.get("after") or ""))
     before_operation = rule_operation(rule, "before_operation")
     after_operation = rule_operation(rule, "after_operation")
+    before_body_ref = graph_submove_id(rule.get("before_body_ref"))
+    after_body_ref = graph_submove_id(rule.get("after_body_ref"))
     if target != before.target or target != after.target:
         return False
     if before_owner != before.owner or after_owner != after.owner:
@@ -454,6 +464,10 @@ def required_rule_covers_pair(rule: dict[str, Any], before: Activation, after: A
     if before_operation and before_operation != before.operation:
         return False
     if after_operation and after_operation != after.operation:
+        return False
+    if before_body_ref and before_body_ref != before.body_ref:
+        return False
+    if after_body_ref and after_body_ref != after.body_ref:
         return False
     return True
 
@@ -472,8 +486,10 @@ def ordering_plan_fingerprint(field_witness: dict[str, Any]) -> str:
                 "target": graph_burden_id(item.get("target")),
                 "before_owner": normalized_owner(item.get("before_owner")),
                 "before_operation": rule_operation(item, "before_operation"),
+                "before_body_ref": graph_submove_id(item.get("before_body_ref")),
                 "after_owner": normalized_owner(item.get("after_owner")),
                 "after_operation": rule_operation(item, "after_operation"),
+                "after_body_ref": graph_submove_id(item.get("after_body_ref")),
             }
         )
     required_before_rows = sorted(
@@ -482,8 +498,10 @@ def ordering_plan_fingerprint(field_witness: dict[str, Any]) -> str:
             row["target"],
             row["before_owner"],
             row["before_operation"],
+            row["before_body_ref"],
             row["after_owner"],
             row["after_operation"],
+            row["after_body_ref"],
         ),
     )
 
@@ -622,6 +640,8 @@ def required_before_errors(path: Path, activations: list[Activation], rules: lis
         after_owner = strict_owner_family(str(rule.get("after_owner") or rule.get("after") or ""))
         before_operation = rule_operation(rule, "before_operation")
         after_operation = rule_operation(rule, "after_operation")
+        before_body_ref = graph_submove_id(rule.get("before_body_ref"))
+        after_body_ref = graph_submove_id(rule.get("after_body_ref"))
         if not target or not before_owner or not after_owner:
             errors.append(f"{rel(path)}: owner_activation_ordering.required_before[{index}] is incomplete")
             continue
@@ -634,9 +654,20 @@ def required_before_errors(path: Path, activations: list[Activation], rules: lis
                 )
                 continue
             if before_operation == after_operation:
+                if before_body_ref and after_body_ref and before_body_ref != after_body_ref:
+                    pass
+                else:
+                    errors.append(
+                        f"{rel(path)}: owner_activation_ordering.required_before[{index}] repeats the same "
+                        f"owner-operation {owner_operation_label(before_owner, before_operation)} on both sides; "
+                        "repeated same-owner-operation ordering must include distinct before_body_ref and "
+                        "after_body_ref endpoints"
+                    )
+                    continue
+            if before_body_ref and after_body_ref and before_body_ref == after_body_ref:
                 errors.append(
                     f"{rel(path)}: owner_activation_ordering.required_before[{index}] repeats the same "
-                    f"owner-operation {owner_operation_label(before_owner, before_operation)} on both sides"
+                    f"body_ref {before_body_ref} on both sides"
                 )
                 continue
         target_activations = [
@@ -645,26 +676,26 @@ def required_before_errors(path: Path, activations: list[Activation], rules: lis
         before_positions = [
             activation.order_index
             for activation in target_activations
-            if activation_endpoint_matches(activation, before_owner, before_operation)
+            if activation_endpoint_matches(activation, before_owner, before_operation, before_body_ref)
         ]
         after_positions = [
             activation.order_index
             for activation in target_activations
-            if activation_endpoint_matches(activation, after_owner, after_operation)
+            if activation_endpoint_matches(activation, after_owner, after_operation, after_body_ref)
         ]
         if not before_positions or not after_positions:
             errors.append(
                 f"{rel(path)}: owner_activation_ordering.required_before[{index}] references missing "
                 f"owner-operation endpoints for {target}: "
-                f"{owner_operation_label(before_owner, before_operation)} -> "
-                f"{owner_operation_label(after_owner, after_operation)}"
+                f"{owner_operation_label(before_owner, before_operation, before_body_ref)} -> "
+                f"{owner_operation_label(after_owner, after_operation, after_body_ref)}"
             )
             continue
         if min(before_positions) > min(after_positions):
             errors.append(
                 f"{rel(path)}: owner_activation_ordering.required_before[{index}] violated for {target}: "
-                f"{owner_operation_label(before_owner, before_operation)} must precede "
-                f"{owner_operation_label(after_owner, after_operation)}"
+                f"{owner_operation_label(before_owner, before_operation, before_body_ref)} must precede "
+                f"{owner_operation_label(after_owner, after_operation, after_body_ref)}"
             )
     return errors
 

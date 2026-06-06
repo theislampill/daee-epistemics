@@ -550,7 +550,7 @@ field_witness
     "required_before": [
       {"target": "B1", "before_owner": "do-christian-extensions", "after_owner": "M9"},
       {"target": "B2", "before_owner": "M7", "after_owner": "M9"},
-      {"target": "B3", "before_owner": "source-status-repair", "after_owner": "authority-order-repair"},
+      {"target": "B3", "before_owner": "source-status-repair", "before_operation": "source-order", "before_body_ref": "³B₁", "after_owner": "authority-order-repair", "after_operation": "sort", "after_body_ref": "³B₂"},
       {"target": "B4", "before_owner": "M8", "after_owner": "M9"},
       {"target": "B5", "before_owner": "P7", "after_owner": "source-status-repair"}
     ],

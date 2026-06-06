@@ -2984,8 +2984,22 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
                         "target": target,
                         "before_owner": before_owner,
                         "before_operation": before_operation,
+                        "before_body_ref": str(before.get("body_ref") or "").strip(),
                         "after_owner": after_owner,
                         "after_operation": after_operation,
+                        "after_body_ref": str(after.get("body_ref") or "").strip(),
+                    }
+                )
+            elif before_operation and after_operation and before_operation == after_operation:
+                owner_activation_ordering["required_before"].append(
+                    {
+                        "target": target,
+                        "before_owner": before_owner,
+                        "before_operation": before_operation,
+                        "before_body_ref": str(before.get("body_ref") or "").strip(),
+                        "after_owner": after_owner,
+                        "after_operation": after_operation,
+                        "after_body_ref": str(after.get("body_ref") or "").strip(),
                     }
                 )
     mrp_resultants = [
@@ -3149,7 +3163,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- Each `nodes[]` burden payload must include `register_types` copied from Stage 02 `burden_floor_details` when live registers are present.",
         "- Every `owner_activations[]` object must include both `target` and `land_target`; the checker reads `target` for terminal-state evidence.",
         "- `field_witness.owner_activation_ordering` must be an object with `policy_id=\"diagnostic-ir-pressure-owner-floor-v1\"`; an `owner_activations[]` list or prose ordering explanation is not a deterministic ordering plan.",
-        "- If multiple load-bearing `owner_activations[]` rows land the same target, set each row's `ordering_role` and add `owner_activation_ordering.required_before[]` edges that mirror Stage 04 / visible ACT order. If the same owner lands multiple distinct operations on the same target, every required-before edge for that pair must include `before_operation` and `after_operation`; owner-only self-edges do not prove operation order. For genuinely parallel owner work, set every involved row to `ordering_role=\"parallel\"`, give them a stable `ordering_group`, and mirror that group in `owner_activation_ordering.parallel_groups[]`; same-owner parallel operations must be listed in `parallel_groups[].members[]` with `owner` and `operation`.",
+        "- If multiple load-bearing `owner_activations[]` rows land the same target, set each row's `ordering_role` and add `owner_activation_ordering.required_before[]` edges that mirror Stage 04 / visible ACT order. If the same owner lands multiple operations on the same target, every required-before edge for that pair must include `before_operation`, `after_operation`, `before_body_ref`, and `after_body_ref`; owner-only self-edges do not prove operation order, and repeated same-owner-operation rows need body_ref endpoints. For genuinely parallel owner work, set every involved row to `ordering_role=\"parallel\"`, give them a stable `ordering_group`, and mirror that group in `owner_activation_ordering.parallel_groups[]`; same-owner parallel operations must be listed in `parallel_groups[].members[]` with `owner` and `operation`.",
         "- Emit one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror, plus one MRP-owned row for each generated `B_MRP` burden that has no Stage 04 ACT rows; do not collapse these into one summary row per burden.",
         "- Each NAR row must include `burden_id`, `owner_id`, `operation`, `delta_result`, `mrp_route_result_type`, `terminal_state`, and integer `generation_depth`.",
         "- `formal_reread_states[]` is required; emit exactly one row for every `mrp_resultants[]` source and keep `source_burden`, `route_result_type`, `graph_delta`, and `route` aligned with that MRP row.",
@@ -8155,8 +8169,9 @@ def run_self_test(root: Path) -> int:
         '"owner_activation_ordering"',
         '"policy_id": "diagnostic-ir-pressure-owner-floor-v1"',
         '"ordering_role": "required"',
-        "same owner lands multiple distinct operations",
-        "`before_operation` and `after_operation`",
+        "same owner lands multiple operations",
+        "`before_operation`, `after_operation`, `before_body_ref`, and `after_body_ref`",
+        "repeated same-owner-operation rows need body_ref endpoints",
         "same-owner parallel operations must be listed in `parallel_groups[].members[]`",
         "Do not add unscaffolded `owner_activations[]` rows",
         "visible `𝔅_MRP (B_MRP) = {}` and JSON `\"B_MRP\": []`",
