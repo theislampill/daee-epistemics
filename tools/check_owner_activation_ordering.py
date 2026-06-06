@@ -415,6 +415,49 @@ def normalized_owner(value: Any) -> str:
     return strict_owner_family(raw) or canonical_text(raw).upper()
 
 
+def normalized_operation(value: Any) -> str:
+    return canonical_text(value)
+
+
+def rule_operation(rule: dict[str, Any], key: str) -> str:
+    return normalized_operation(rule.get(key))
+
+
+def activation_endpoint_matches(activation: Activation, owner: str, operation: str = "") -> bool:
+    if activation.owner != owner:
+        return False
+    if operation and activation.operation != operation:
+        return False
+    return True
+
+
+def owner_operation_label(owner: str, operation: str = "") -> str:
+    return f"{owner}.{operation}" if operation else owner
+
+
+def operation_member_key(owner: str, operation: str) -> str:
+    return f"{owner}.{operation}"
+
+
+def required_rule_covers_pair(rule: dict[str, Any], before: Activation, after: Activation) -> bool:
+    target = graph_burden_id(rule.get("target"))
+    before_owner = strict_owner_family(str(rule.get("before_owner") or rule.get("before") or ""))
+    after_owner = strict_owner_family(str(rule.get("after_owner") or rule.get("after") or ""))
+    before_operation = rule_operation(rule, "before_operation")
+    after_operation = rule_operation(rule, "after_operation")
+    if target != before.target or target != after.target:
+        return False
+    if before_owner != before.owner or after_owner != after.owner:
+        return False
+    if before.owner == after.owner and (not before_operation or not after_operation):
+        return False
+    if before_operation and before_operation != before.operation:
+        return False
+    if after_operation and after_operation != after.operation:
+        return False
+    return True
+
+
 def ordering_plan_fingerprint(field_witness: dict[str, Any]) -> str:
     raw = ordering_surface(field_witness)
     if not isinstance(raw, dict):
@@ -428,12 +471,20 @@ def ordering_plan_fingerprint(field_witness: dict[str, Any]) -> str:
             {
                 "target": graph_burden_id(item.get("target")),
                 "before_owner": normalized_owner(item.get("before_owner")),
+                "before_operation": rule_operation(item, "before_operation"),
                 "after_owner": normalized_owner(item.get("after_owner")),
+                "after_operation": rule_operation(item, "after_operation"),
             }
         )
     required_before_rows = sorted(
         required_before_rows,
-        key=lambda row: (row["target"], row["before_owner"], row["after_owner"]),
+        key=lambda row: (
+            row["target"],
+            row["before_owner"],
+            row["before_operation"],
+            row["after_owner"],
+            row["after_operation"],
+        ),
     )
 
     parallel_group_rows = []
@@ -441,16 +492,31 @@ def ordering_plan_fingerprint(field_witness: dict[str, Any]) -> str:
         if not isinstance(item, dict):
             continue
         owners = sorted({normalized_owner(owner) for owner in item.get("owners") or [] if normalized_owner(owner)})
+        members = []
+        for member in item.get("members") or []:
+            if not isinstance(member, dict):
+                continue
+            owner = normalized_owner(member.get("owner"))
+            operation = normalized_operation(member.get("operation"))
+            if owner and operation:
+                members.append({"owner": owner, "operation": operation})
+        members = sorted(members, key=lambda row: (row["owner"], row["operation"]))
         parallel_group_rows.append(
             {
                 "target": graph_burden_id(item.get("target")),
                 "group": canonical_text(item.get("group")),
                 "owners": owners,
+                "members": members,
             }
         )
     parallel_group_rows = sorted(
         parallel_group_rows,
-        key=lambda row: (row["target"], row["group"], ",".join(row["owners"])),
+        key=lambda row: (
+            row["target"],
+            row["group"],
+            ",".join(row["owners"]),
+            ",".join(f"{member['owner']}.{member['operation']}" for member in row["members"]),
+        ),
     )
 
     return digest(
@@ -554,23 +620,51 @@ def required_before_errors(path: Path, activations: list[Activation], rules: lis
         target = graph_burden_id(rule.get("target"))
         before_owner = strict_owner_family(str(rule.get("before_owner") or rule.get("before") or ""))
         after_owner = strict_owner_family(str(rule.get("after_owner") or rule.get("after") or ""))
+        before_operation = rule_operation(rule, "before_operation")
+        after_operation = rule_operation(rule, "after_operation")
         if not target or not before_owner or not after_owner:
             errors.append(f"{rel(path)}: owner_activation_ordering.required_before[{index}] is incomplete")
             continue
+        if before_owner == after_owner:
+            if not before_operation or not after_operation:
+                errors.append(
+                    f"{rel(path)}: owner_activation_ordering.required_before[{index}] uses the same owner "
+                    f"{before_owner} on both sides; same-owner ordering must include before_operation and "
+                    "after_operation"
+                )
+                continue
+            if before_operation == after_operation:
+                errors.append(
+                    f"{rel(path)}: owner_activation_ordering.required_before[{index}] repeats the same "
+                    f"owner-operation {owner_operation_label(before_owner, before_operation)} on both sides"
+                )
+                continue
         target_activations = [
             activation for activation in activations if activation.target == target and activation.role not in NON_REQUIRED_ROLES
         ]
-        before_positions = [activation.order_index for activation in target_activations if activation.owner == before_owner]
-        after_positions = [activation.order_index for activation in target_activations if activation.owner == after_owner]
+        before_positions = [
+            activation.order_index
+            for activation in target_activations
+            if activation_endpoint_matches(activation, before_owner, before_operation)
+        ]
+        after_positions = [
+            activation.order_index
+            for activation in target_activations
+            if activation_endpoint_matches(activation, after_owner, after_operation)
+        ]
         if not before_positions or not after_positions:
             errors.append(
-                f"{rel(path)}: owner_activation_ordering.required_before[{index}] references missing owners for {target}"
+                f"{rel(path)}: owner_activation_ordering.required_before[{index}] references missing "
+                f"owner-operation endpoints for {target}: "
+                f"{owner_operation_label(before_owner, before_operation)} -> "
+                f"{owner_operation_label(after_owner, after_operation)}"
             )
             continue
         if min(before_positions) > min(after_positions):
             errors.append(
                 f"{rel(path)}: owner_activation_ordering.required_before[{index}] violated for {target}: "
-                f"{before_owner} must precede {after_owner}"
+                f"{owner_operation_label(before_owner, before_operation)} must precede "
+                f"{owner_operation_label(after_owner, after_operation)}"
             )
     return errors
 
@@ -593,6 +687,25 @@ def plan_surface_errors(path: Path, activations: list[Activation], rules: list[d
                 f"{rel(path)}: target {target} has multiple load-bearing owner activations but no "
                 "deterministic required_before rule or parallel ordering group"
             )
+        same_owner_rows: dict[str, list[Activation]] = {}
+        for activation in load_bearing:
+            same_owner_rows.setdefault(activation.owner, []).append(activation)
+        for owner, owner_rows in sorted(same_owner_rows.items()):
+            operation_rows = sorted(owner_rows, key=lambda activation: activation.order_index)
+            operations = {activation.operation for activation in operation_rows}
+            if len(operation_rows) <= 1 or len(operations) <= 1:
+                continue
+            if all(activation.role == "parallel" and activation.group for activation in operation_rows):
+                continue
+            for before, after in zip(operation_rows, operation_rows[1:]):
+                if any(required_rule_covers_pair(rule, before, after) for rule in rules):
+                    continue
+                errors.append(
+                    f"{rel(path)}: target {target} has same-owner operation activations for {owner} "
+                    f"but no operation-specific required_before edge for "
+                    f"{owner_operation_label(before.owner, before.operation)} -> "
+                    f"{owner_operation_label(after.owner, after.operation)}"
+                )
     return errors
 
 
@@ -653,7 +766,7 @@ def parallel_group_errors(path: Path, field_witness: dict[str, Any], activations
     raw = ordering_surface(field_witness)
     if not isinstance(raw, dict):
         return []
-    plan_groups: dict[tuple[str, str], set[str]] = {}
+    plan_groups: dict[tuple[str, str], tuple[str, set[str]]] = {}
     errors: list[str] = []
     for index, item in enumerate(raw.get("parallel_groups") or [], start=1):
         if not isinstance(item, dict):
@@ -661,18 +774,48 @@ def parallel_group_errors(path: Path, field_witness: dict[str, Any], activations
             continue
         target = graph_burden_id(item.get("target"))
         group = canonical_text(item.get("group"))
+        members_raw = item.get("members")
+        if members_raw is not None:
+            if not isinstance(members_raw, list):
+                errors.append(
+                    f"{rel(path)}: owner_activation_ordering.parallel_groups[{index}].members must be a list"
+                )
+                continue
+            members: set[str] = set()
+            for member_index, member in enumerate(members_raw, start=1):
+                if not isinstance(member, dict):
+                    errors.append(
+                        f"{rel(path)}: owner_activation_ordering.parallel_groups[{index}].members"
+                        f"[{member_index}] must be an object with owner and operation"
+                    )
+                    continue
+                owner = normalized_owner(member.get("owner"))
+                operation = normalized_operation(member.get("operation"))
+                if not owner or not operation:
+                    errors.append(
+                        f"{rel(path)}: owner_activation_ordering.parallel_groups[{index}].members"
+                        f"[{member_index}] is incomplete"
+                    )
+                    continue
+                members.add(operation_member_key(owner, operation))
+            if not target or not group or len(members) < 2:
+                errors.append(f"{rel(path)}: owner_activation_ordering.parallel_groups[{index}] is incomplete")
+                continue
+            plan_groups[(target, group)] = ("members", members)
+            continue
+
         owners = {normalized_owner(owner) for owner in item.get("owners") or [] if normalized_owner(owner)}
         if not target or not group or len(owners) < 2:
             errors.append(f"{rel(path)}: owner_activation_ordering.parallel_groups[{index}] is incomplete")
             continue
-        plan_groups[(target, group)] = owners
+        plan_groups[(target, group)] = ("owners", owners)
 
-    activation_groups: dict[tuple[str, str], set[str]] = {}
+    activation_groups: dict[tuple[str, str], list[Activation]] = {}
     for activation in activations:
         if activation.role == "parallel":
-            activation_groups.setdefault((activation.target, activation.group), set()).add(activation.owner)
+            activation_groups.setdefault((activation.target, activation.group), []).append(activation)
 
-    for key, owners in sorted(activation_groups.items()):
+    for key, group_activations in sorted(activation_groups.items()):
         target, group = key
         planned = plan_groups.get(key)
         if planned is None:
@@ -680,10 +823,27 @@ def parallel_group_errors(path: Path, field_witness: dict[str, Any], activations
                 f"{rel(path)}: parallel owner activations for {target}/{group} have no matching "
                 "owner_activation_ordering.parallel_groups entry"
             )
-        elif planned != owners:
+            continue
+        mode, planned_values = planned
+        activation_owners = {activation.owner for activation in group_activations}
+        activation_members = {
+            operation_member_key(activation.owner, activation.operation) for activation in group_activations
+        }
+        owner_counts = {
+            owner: sum(1 for activation in group_activations if activation.owner == owner) for owner in activation_owners
+        }
+        needs_member_mode = any(count > 1 for count in owner_counts.values())
+        if needs_member_mode and mode != "members":
+            errors.append(
+                f"{rel(path)}: parallel owner group {target}/{group} contains multiple operations for "
+                "the same owner; use parallel_groups[].members[] with owner and operation"
+            )
+            continue
+        actual_values = activation_members if mode == "members" else activation_owners
+        if planned_values != actual_values:
             errors.append(
                 f"{rel(path)}: parallel owner group {target}/{group} disagrees with activations: "
-                f"plan={sorted(planned)} activations={sorted(owners)}"
+                f"plan={sorted(planned_values)} activations={sorted(actual_values)}"
             )
     return errors
 
