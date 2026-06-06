@@ -644,10 +644,37 @@ def nar_object_errors(
                 elif canonical_n_frame and detail_selected.strip() != canonical_n_frame:
                     errors.append(f"{label}: stage-06 NAR n_frame_details.selected must match canonical n_frame")
             detail_held = n_frame_details.get("held")
-            if detail_held is not None and (
-                not isinstance(detail_held, list) or not all(isinstance(item, str) and item for item in detail_held)
-            ):
-                errors.append(f"{label}: stage-06 NAR n_frame_details.held must be a string list when present")
+            held_tokens: set[str] = set()
+            if detail_held is not None:
+                if not isinstance(detail_held, list) or not all(isinstance(item, str) and item for item in detail_held):
+                    errors.append(f"{label}: stage-06 NAR n_frame_details.held must be a string list when present")
+                else:
+                    held_tokens = {item.strip() for item in detail_held}
+            detail_held_details = n_frame_details.get("held_details")
+            if detail_held_details is not None:
+                if not isinstance(detail_held_details, list):
+                    errors.append(f"{label}: stage-06 NAR n_frame_details.held_details must be an object list when present")
+                else:
+                    for index, item in enumerate(detail_held_details):
+                        if not isinstance(item, dict):
+                            errors.append(
+                                f"{label}: stage-06 NAR n_frame_details.held_details[{index}] must be an object"
+                            )
+                            continue
+                        detail_frame = item.get("n_frame")
+                        if not isinstance(detail_frame, str) or not detail_frame.strip():
+                            errors.append(
+                                f"{label}: stage-06 NAR n_frame_details.held_details[{index}].n_frame must be a non-empty string"
+                            )
+                        elif held_tokens and detail_frame.strip() not in held_tokens:
+                            errors.append(
+                                f"{label}: stage-06 NAR n_frame_details.held_details[{index}].n_frame must appear in n_frame_details.held"
+                            )
+                        detail_reason = item.get("hold_reason")
+                        if not isinstance(detail_reason, str) or not detail_reason.strip():
+                            errors.append(
+                                f"{label}: stage-06 NAR n_frame_details.held_details[{index}].hold_reason must be a non-empty string"
+                            )
     normalization = nar.get("normalization")
     if normalization is not None and not isinstance(normalization, dict):
         errors.append(f"{label}: stage-06 NAR normalization must be an object when present")

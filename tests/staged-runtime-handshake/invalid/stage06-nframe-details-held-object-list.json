@@ -1,6 +1,6 @@
 {
   "schema": "staged-runtime-handshake-v1",
-  "case_id": "stage06-normalized-nframe-details",
+  "case_id": "stage06-nframe-details-held-object-list",
   "mode": "staged-current-skill-stage-local-smoke",
   "user_interface_preserved": true,
   "stage_order": [
@@ -186,12 +186,9 @@
         "n_frame_details": {
           "selected": "science-only-source-order-warrant",
           "held": [
-            "revelation-private-preference-frame"
-          ],
-          "held_details": [
             {
               "n_frame": "revelation-private-preference-frame",
-              "hold_reason": "revelation-private-preference-frame remains held while science-only-source-order-warrant is selected"
+              "hold_reason": "object details belong in held_details, not held"
             }
           ]
         },

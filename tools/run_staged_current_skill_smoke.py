@@ -332,7 +332,11 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "When a structured `normalized_activation_record` is present, "
             "`normalized_activation_record_details` is supplemental metadata only; any "
             "`n_frame_details.selected` value there must match the canonical string "
-            "`normalized_activation_record.n_frame`. "
+            "`normalized_activation_record.n_frame`. Within any `n_frame_details` object, "
+            "`held`, when present, must be a JSON array of held n_frame string tokens only. "
+            "Put hold reasons in `held_details` as objects with `n_frame` and `hold_reason`; "
+            "each `held_details[].n_frame` must also appear in `held`. Do not put objects "
+            "inside `held`. "
             "`per_burden` must be a JSON array/list of objects; each object must include "
             "a non-empty string `burden_id`. When a row mirrors a Stage 04 owner activation, "
             "include `owner_id`, `operation`, and the exact owner-local `delta_result`; "
@@ -1497,10 +1501,32 @@ def normalize_stage06_nar_object(value: dict[str, Any], label: str) -> None:
             if detail_selected.strip() != n_frame:
                 raise HarnessError(f"{label}.n_frame_details.selected must match canonical n_frame")
         detail_held = n_frame_details.get("held")
-        if detail_held is not None and (
-            not isinstance(detail_held, list) or not all(isinstance(item, str) and item for item in detail_held)
-        ):
-            raise HarnessError(f"{label}.n_frame_details.held must be a string list when present")
+        held_tokens: set[str] = set()
+        if detail_held is not None:
+            if not isinstance(detail_held, list) or not all(isinstance(item, str) and item for item in detail_held):
+                raise HarnessError(f"{label}.n_frame_details.held must be a string list when present")
+            held_tokens = {item.strip() for item in detail_held}
+        detail_held_details = n_frame_details.get("held_details")
+        if detail_held_details is not None:
+            if not isinstance(detail_held_details, list):
+                raise HarnessError(f"{label}.n_frame_details.held_details must be an object list when present")
+            for index, item in enumerate(detail_held_details):
+                if not isinstance(item, dict):
+                    raise HarnessError(f"{label}.n_frame_details.held_details[{index}] must be an object")
+                detail_frame = non_empty_string(item.get("n_frame"))
+                if detail_frame is None:
+                    raise HarnessError(f"{label}.n_frame_details.held_details[{index}].n_frame must be a non-empty string")
+                item["n_frame"] = detail_frame.strip()
+                if held_tokens and item["n_frame"] not in held_tokens:
+                    raise HarnessError(
+                        f"{label}.n_frame_details.held_details[{index}].n_frame must appear in n_frame_details.held"
+                    )
+                detail_reason = non_empty_string(item.get("hold_reason"))
+                if detail_reason is None:
+                    raise HarnessError(
+                        f"{label}.n_frame_details.held_details[{index}].hold_reason must be a non-empty string"
+                    )
+                item["hold_reason"] = detail_reason.strip()
     normalization = value.get("normalization")
     if normalization is not None and not isinstance(normalization, dict):
         raise HarnessError(f"{label}.normalization must be an object when present")
@@ -8256,7 +8282,13 @@ def run_self_test(root: Path) -> int:
             "normalized_activation_record_details": {
                 "n_frame_details": {
                     "selected": "science-only-source-order-warrant",
-                    "held_frame_pressures": ["revelation-private-preference-frame"],
+                    "held": ["revelation-private-preference-frame"],
+                    "held_details": [
+                        {
+                            "n_frame": "revelation-private-preference-frame",
+                            "hold_reason": "bounded self-test frame held rather than selected",
+                        }
+                    ],
                 },
                 "per_burden_count": 1,
                 "generated_terminal_burdens_without_act": [],
@@ -8272,6 +8304,77 @@ def run_self_test(root: Path) -> int:
         "hydrated_from_normalized_activation_record", []
     ):
         raise HarnessError("Self-test failed to record supplemental Stage 06 NAR details hydration")
+    supplemental_frame_details = supplemental_details.get("n_frame_details")
+    if not isinstance(supplemental_frame_details, dict) or supplemental_frame_details.get("held") != [
+        "revelation-private-preference-frame"
+    ]:
+        raise HarnessError("Self-test failed to preserve Stage 06 held n_frame string list")
+    supplemental_held_details = supplemental_frame_details.get("held_details")
+    if (
+        not isinstance(supplemental_held_details, list)
+        or not supplemental_held_details
+        or supplemental_held_details[0].get("n_frame") != "revelation-private-preference-frame"
+    ):
+        raise HarnessError("Self-test failed to preserve Stage 06 held_details object list")
+    try:
+        normalized_stage(
+            "stage-06-field-witness-nar",
+            {
+                "id": "stage-06-field-witness-nar",
+                "status": "pass",
+                "field_witness_body_refs": ["¹B₁"],
+                "nar_burdens": ["B1"],
+                "owner_activations": ["¹B₁"],
+                "normalized_activation_record": copy.deepcopy(structured_nar),
+                "normalized_activation_record_details": {
+                    "n_frame_details": {
+                        "selected": "science-only-source-order-warrant",
+                        "held": [
+                            {
+                                "n_frame": "revelation-private-preference-frame",
+                                "hold_reason": "object shape belongs in held_details, not held",
+                            }
+                        ],
+                    },
+                    "per_burden_count": 1,
+                },
+                "register_deltas": {"xi": "source-order-landed"},
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject Stage 06 n_frame_details.held object list")
+    try:
+        normalized_stage(
+            "stage-06-field-witness-nar",
+            {
+                "id": "stage-06-field-witness-nar",
+                "status": "pass",
+                "field_witness_body_refs": ["¹B₁"],
+                "nar_burdens": ["B1"],
+                "owner_activations": ["¹B₁"],
+                "normalized_activation_record": copy.deepcopy(structured_nar),
+                "normalized_activation_record_details": {
+                    "n_frame_details": {
+                        "selected": "science-only-source-order-warrant",
+                        "held": ["revelation-private-preference-frame"],
+                        "held_details": [
+                            {
+                                "n_frame": "unlisted-held-frame",
+                                "hold_reason": "detail must reference a held frame token",
+                            }
+                        ],
+                    },
+                    "per_burden_count": 1,
+                },
+                "register_deltas": {"xi": "source-order-landed"},
+            },
+        )
+    except HarnessError:
+        pass
+    else:
+        raise HarnessError("Self-test failed to reject Stage 06 held_details outside held frame list")
     try:
         normalized_stage(
             "stage-06-field-witness-nar",
