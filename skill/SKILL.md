@@ -196,7 +196,12 @@ surface too small`.
    exactly once per burden. Do not repeat ACT rows, reopen the Layer B heading, or start proof-tail
    fields inside a submove body; finish every submove before printing `Land(Bn)`.
    The `Δ=` field starts with the
-   burden-local delta token, such as `Δ²B:` or `Δκ:`, not `∇B:`. Its result phrase must include
+   burden-local delta token, such as `Δ²B:` or `ΔB2:`, or the dependency-radius token `Δκ:`,
+   not `∇B:`, diagnostic step IDs such as `D7:`, or submove-indexed carriers such as `Δ²B₁:`.
+   The carrier before the colon says which hidden transition state changed; the suffix after the
+   colon is the owner-local `delta_result`. Do not put owner.operation strings, register axes, or
+   prose labels into the carrier. If the actual change is κ/H dependency-radius work, use `Δκ:`
+   and make the dependency-radius state change visible in the dereferenced body. Its result phrase must include
    a concrete state word such as `blocked`, `bounded`, `defined`, `stabilized`, `invalidated`, `demoted`, `routed`,
    `held-with-reason`, `licensed`, `restored`, or `separated`; words like `traced` or `named`
    are not state changes by themselves. Do not use `repaired` as the only state-change token; write
@@ -2026,6 +2031,16 @@ Invocation-surface invariants retained here:
   `science-source-bounded` or `self-authorizing-standard-invalidated`; do not
   include the burden-local prefix (`Δ¹B:`, `Delta(B1):`, or similar) inside
   `normalized_activation_record.per_burden[].delta_result`.
+  Public ACT rows have the same layer split: the `Δ=` carrier before the colon
+  names only the burden-state or dependency-radius transition, such as `Δ¹B`,
+  `ΔB1`, or `Δκ`; the suffix after the colon is the owner-local
+  `delta_result`. Do not put diagnostic step IDs (`D7`, `D8`), submove IDs
+  (`Δ¹B₁`, `ΔB1_1`), owner.operation tokens, register axes, or prose labels in
+  the `Δ=` carrier. If the relevant change is dependency-radius, use `Δκ` as
+  the carrier and keep the owner-local state change as the suffix. This is not
+  a permission to drop work: if the burden state or κ/H dependency state is
+  still unresolved, route HOLD/PARTIAL/RECURSE instead of printing a compact
+  label as Land proof.
   In NAR, `burden_floor` is a string list of B IDs only, for example
   `["B1","B2"]`; do not use register/object rows there. `per_burden[]` is
   ACT-level despite its historical name: emit one row for every visible ACT /

@@ -292,7 +292,12 @@ surface too small`.
    exactly once per burden. Do not repeat ACT rows, reopen the Layer B heading, or start proof-tail
    fields inside a submove body; finish every submove before printing `Land(Bn)`.
    The `Δ=` field starts with the
-   burden-local delta token, such as `Δ²B:` or `Δκ:`, not `∇B:`. Its result phrase must include
+   burden-local delta token, such as `Δ²B:` or `ΔB2:`, or the dependency-radius token `Δκ:`,
+   not `∇B:`, diagnostic step IDs such as `D7:`, or submove-indexed carriers such as `Δ²B₁:`.
+   The carrier before the colon says which hidden transition state changed; the suffix after the
+   colon is the owner-local `delta_result`. Do not put owner.operation strings, register axes, or
+   prose labels into the carrier. If the actual change is κ/H dependency-radius work, use `Δκ:`
+   and make the dependency-radius state change visible in the dereferenced body. Its result phrase must include
    a concrete state word such as `blocked`, `bounded`, `defined`, `stabilized`, `invalidated`, `demoted`, `routed`,
    `held-with-reason`, `licensed`, `restored`, or `separated`; words like `traced` or `named`
    are not state changes by themselves. Do not use `repaired` as the only state-change token; write

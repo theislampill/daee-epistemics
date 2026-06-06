@@ -250,6 +250,13 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "π=<pressure> :: body_ref=<same-bare-ref> :: Δ=<delta-id>:<delta_result> "
             ":: Land(<burden>)+⟧`. Do not omit the `::` separators, reorder these "
             "slots, or place `body_ref=` before `π=`. "
+            "`<delta-id>` is a transition carrier, not the owner-local result. It must "
+            "name a burden-state delta such as `Δ¹B` / `ΔB1` or a dependency-radius "
+            "delta such as `Δκ`; never use diagnostic step IDs like `D7`, submove IDs "
+            "like `Δ¹B₁` / `ΔB1_1`, owner.operation strings, register axes, or prose "
+            "labels before the colon. Put the owner-local state change only after the "
+            "colon as `delta_result`, and mirror that suffix in ACT details, NAR, and "
+            "field_witness owner activations. "
             "`body_ref=` value and every `act_body_refs[]` item must be only the bare "
             "submove join key before the bracket, such as `¹B₁`. Do not put "
             "`[owner.operation]` in `body_ref=` or `act_body_refs[]`. This keeps the "
@@ -2642,6 +2649,10 @@ def stage07_act_contract_guidance(
             "- If the matched owner body is not loaded, emit HOLD/PARTIAL with `OWNER-BODY-NOT-LOADED` and do not emit `Land(Bn):` for that burden.",
             "- The `TTP Operation Body:` must visibly perform target -> operation -> result -> contribution; do not merely restate the conclusion, cite an owner name, or summarize that the burden fails.",
             "- Operation-token discipline: keep the registered callable operation token from the copied ACT row and skeleton. Do not replace it with a result, pressure, route label, or prose description; result labels belong in `Result/state-change:` and local prose.",
+            "- Delta-layer discipline: the ACT `Δ=` carrier before the colon must be only a burden-state delta such as `Δ¹B` / `ΔB1` or dependency-radius `Δκ`; never print `D7`, `D8`, `Δ¹B₁`, `ΔB1_1`, owner.operation, register axes, or prose labels as the carrier.",
+            "- Keep `delta_result` as the owner-local suffix after the colon and in `Result/state-change:`; the carrier proves which hidden transition state changed, while the suffix names what changed locally.",
+            "- If the row needs κ/H dependency-radius work, use `Δκ:<owner-local-state-change>` and make the dependency-radius change visible in the dereferenced body; otherwise use the burden-state carrier `ΔⁿB:<owner-local-state-change>`.",
+            "- A compact label such as `reopen-condition-stated` or `scope-boundary-named` cannot replace the visible burden-local state change; if the body cannot show the state transition, route HOLD/PARTIAL instead of printing `Land(Bn)`.",
             "- Source/citation/proof-stack rows must name the concrete burden-local state change that the source-status, authority-order, proof-method, or transmission/content operation produces.",
             "- Emit standalone public landing lines such as `Land(Bn): ...` or `HOLD(Bn): ...` only after the final Stage 04 body_ref for that burden; `Contribution-to-Land(Bn):` alone is not a landing line.",
             "- Never print `Land(Bn):` for a burden while another assigned or later Stage 04 body_ref for the same burden remains unrendered.",
@@ -7423,6 +7434,9 @@ def run_self_test(root: Path) -> int:
         "route/context umbrella labels, case-library labels, noetic-frame labels, and code lookups are not load-bearing ACT owners",
         "The `TTP Operation Body:` must visibly perform target -> operation -> result -> contribution",
         "Operation-token discipline: keep the registered callable operation token from the copied ACT row and skeleton.",
+        "Delta-layer discipline: the ACT `Δ=` carrier before the colon must be only a burden-state delta such as `Δ¹B` / `ΔB1` or dependency-radius `Δκ`",
+        "If the row needs κ/H dependency-radius work, use `Δκ:<owner-local-state-change>`",
+        "A compact label such as `reopen-condition-stated` or `scope-boundary-named` cannot replace the visible burden-local state change",
         "SOURCE/source-status operation: explicitly sort source authority, source function, proof-stack order, or hidden support",
     ):
         if required not in stage07_act_prompt:
