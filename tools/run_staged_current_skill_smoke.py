@@ -2912,24 +2912,32 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
             generated_source = str(generated_record_by_id.get(target, {}).get("generated_by") or "")
             if generated_source:
                 source = generated_source
-        owner_activation_rows.append(
-            {
-                "body_ref": ref,
-                "source": source,
-                "target": target,
-                "owner": detail["owner"],
-                "owner_id": detail["owner"],
-                "operation": detail["operation"],
-                "pressure": detail["pressure"],
-                "delta": f"{detail['delta']}:{detail['delta_result']}",
-                "delta_result": detail["delta_result"],
-                "land": detail["land"],
-                "land_target": target,
-                "terminal_state": terminal_states.get(target, "landed"),
-                "mrp_route_result_type": route_type,
-                "ordering_role": "required",
-            }
-        )
+        owner_activation_row = {
+            "body_ref": ref,
+            "source": source,
+            "target": target,
+            "owner": detail["owner"],
+            "owner_id": detail["owner"],
+            "operation": detail["operation"],
+            "pressure": detail["pressure"],
+            "delta": f"{detail['delta']}:{detail['delta_result']}",
+            "delta_result": detail["delta_result"],
+            "land": detail["land"],
+            "land_target": target,
+            "terminal_state": terminal_states.get(target, "landed"),
+            "mrp_route_result_type": route_type,
+            "ordering_role": "required",
+        }
+        raw_delta = str(detail["delta"])
+        if "κ" in raw_delta or "kappa" in raw_delta.lower():
+            owner_activation_row.update(
+                {
+                    "kappa_carrier": f"κ dependency-radius carrier for {ref} over {detail['pressure']}",
+                    "dependency_radius": f"{target} dependency radius after {detail['operation']}",
+                    "reread_state_effect": f"R(H,Delta) binds Δκ back to {target} before release",
+                }
+            )
+        owner_activation_rows.append(owner_activation_row)
         nar_rows.append(
             {
                 "burden_id": target,
@@ -8326,6 +8334,10 @@ def run_self_test(root: Path) -> int:
         section_min_bytes=1024,
         assigned_body_refs=None,
     )
+    kappa_primary_scaffold = stage07_kappa_witness_prompt.split(
+        "- Mirror these exact ACT-visible values by body_ref;",
+        1,
+    )[0]
     for required in (
         "whose `delta` carrier is `Δκ` / `Delta-kappa`",
         '"kappa_carrier": "κ dependency-radius carrier for ¹B₁ over entailment-pressure"',
@@ -8334,6 +8346,8 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_kappa_witness_prompt:
             raise HarnessError(f"Self-test Stage 07 field_witness prompt omitted kappa carrier scaffold: {required}")
+        if required.startswith('"') and required not in kappa_primary_scaffold:
+            raise HarnessError(f"Self-test Stage 07 primary field_witness scaffold omitted kappa carrier field: {required}")
     stage07_full_release_prompt = release_prompt(
         root=root,
         case_name="self-test-a9-science-source",
