@@ -26,9 +26,11 @@ import build_staged_governed_output as staged_output
 from closure_witness_lib import extract_embedded_field_witness, extract_field_witness, parse_closure_witness, status_head
 from delta_result_vocabulary import (
     DELTA_RESULT_VOCABULARY,
+    FAMILY_EXECUTION_OWNER_IDS,
     OWNER_OPERATION_VOCABULARY,
     canonical_delta_owner,
     delta_result_vocabulary_errors,
+    family_alias_as_executable_owner_errors,
     owner_operation_delta_result_errors,
     owner_operation_vocabulary_errors,
     route_owner_vocabulary_errors,
@@ -767,6 +769,9 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
     match = ACT_ROW_DETAIL_RE.match(row)
     if not match:
         return row, None
+    alias_errors = family_alias_as_executable_owner_errors("Stage 04 ACT row", match.group("owner"))
+    if alias_errors:
+        raise HarnessError(alias_errors[0])
     operation_errors = owner_operation_vocabulary_errors(
         "Stage 04 ACT row",
         match.group("owner"),
@@ -3819,6 +3824,13 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
             "owner vocabulary with no-model canaries before claiming Land."
         )
     for family in families:
+        execution_owner = FAMILY_EXECUTION_OWNER_IDS.get(family)
+        if execution_owner:
+            lines.append(
+                f"- {family} is a delta/register vocabulary family for callable owner "
+                f"`{execution_owner}`. Do not use `{family}` as the ACT bracket owner, "
+                f"`owner_id`, field_witness owner, or NAR owner_id."
+            )
         operations = OWNER_OPERATION_VOCABULARY.get(family)
         if operations:
             lines.append(f"- {family} operations: {', '.join(sorted(operations))}")
@@ -6416,6 +6428,7 @@ def run_self_test(root: Path) -> int:
     for required in (
         "The token after the dot in `[owner.operation]` must be one of the source-owned owner-local operation tokens below",
         "DO_CHRISTIAN: fan-out-route-named, trinitarian-model-identified",
+        "DO_CHRISTIAN is a delta/register vocabulary family for callable owner `do-christian-extensions`",
         "DO_CHRISTIAN operations: model-identification",
         "M7: definition-anchored",
         "M3 operations: orphaned-intuition",
@@ -6425,12 +6438,14 @@ def run_self_test(root: Path) -> int:
         "M9 operations: predication-repair, sense-split",
         "M9: category-separated",
         "PROOF_METHOD operations: proof-denominator-audit, proof-family-and-carrier-audit",
+        "PROOF_METHOD is a delta/register vocabulary family for callable owner `proof-method-audit`",
         "PROOF_METHOD: proof-denominator-exposed",
         "SOURCE operations: authority-order-repair, sort, source-order, source-order-repair, status",
         "SOURCE: authority-order-repaired",
         "V2 operations: proof-burden-order, reason-role-repair, reconstituting-reason",
         "V2: frame-cleared",
         "PATTERN_PROFILE operations: collapse-radius-mapping, loaded-label-carrier-audit",
+        "PATTERN_PROFILE is a delta/register vocabulary family for callable owner `pattern-profiling`",
         "PATTERN_PROFILE: carrier-function-typed",
         "Routed owners without controlled Stage 04 operation/delta_result vocabulary: unmapped-neutral-owner",
         "controlled-vocabulary-gap evidence",
@@ -6455,6 +6470,7 @@ def run_self_test(root: Path) -> int:
     )
     for required in (
         "DO_SECOND_LOOP operations: accountability-hujjah-compression",
+        "DO_SECOND_LOOP is a delta/register vocabulary family for callable owner `do-second-loop`",
         "coercive-guidance-demand",
         "punishment-proportionality-accountability",
         "DO_SECOND_LOOP: accountability-hujjah-narrowed",
@@ -6704,6 +6720,27 @@ def run_self_test(root: Path) -> int:
             "act_row_details": self_test_act_row_details([valid_do_attribute_delta_row], {"¹B₁": "Ω"}),
         },
     )
+    invalid_do_attribute_family_owner_row = (
+        "⟦ACT ¹B₁[DO_ATTRIBUTE.attribute-precision] :: "
+        "π=predicate-identity-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:predicate-identity-separated :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_do_attribute_family_owner_row],
+            },
+        )
+    except HarnessError as exc:
+        if "delta/register family alias" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted DO_ATTRIBUTE family alias as executable ACT owner")
     m9_residue_row = (
         "⟦ACT ¹B₁[M9.predication-repair] :: "
         "π=residue-slippage-pressure :: "
@@ -6940,6 +6977,27 @@ def run_self_test(root: Path) -> int:
         "punishment-proportionality-calibrated",
     ]:
         raise HarnessError("Self-test failed to preserve exact DO_SECOND_LOOP delta_result tokens")
+    invalid_do_second_loop_family_owner_row = (
+        "⟦ACT ¹B₁[DO_SECOND_LOOP.accountability-hujjah-compression] :: "
+        "π=accountability-hujjah-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:accountability-hujjah-narrowed :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_do_second_loop_family_owner_row],
+            },
+        )
+    except HarnessError as exc:
+        if "delta/register family alias" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted DO_SECOND_LOOP family alias as executable ACT owner")
     invalid_do_second_loop_delta_row = (
         "⟦ACT ¹B₁[do-second-loop.accountability-hujjah-compression] :: "
         "π=accountability-hujjah-pressure :: "

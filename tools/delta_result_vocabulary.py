@@ -91,6 +91,17 @@ SOURCE_FORMAL_REPAIR_DELTA_OPERATIONS = {
     "authority-order-repaired": "authority-order-repair",
     "source-order-repaired": "source-order-repair",
 }
+FAMILY_EXECUTION_OWNER_IDS = {
+    "DO_ATTRIBUTE": "do-attribute-precision",
+    "DO_CHRISTIAN": "do-christian-extensions",
+    "DO_SECOND_LOOP": "do-second-loop",
+    "DOUBT_SKEPTICISM": "doubt-vs-skepticism",
+    "HUSN_AL_NAZAR": "husn-al-nazar-arguments",
+    "INDUCTIVE_FITRI": "inductive-fitri-method",
+    "PATTERN_PROFILE": "pattern-profiling",
+    "PROOF_METHOD": "proof-method-audit",
+    "SYMMETRIC_TAQLID": "symmetric-taqlid-check",
+}
 PROOF_TEXT_HIDDEN_SUPPORT_PRESSURE_TOKENS = ("proof-text", "proof-stack", "backread")
 HELD_ROUTE_SIGNAL_KEYS = {
     "body_status",
@@ -111,6 +122,30 @@ def canonical_delta_owner(owner: str) -> str:
         if form in DELTA_RESULT_VOCABULARY:
             return form
     return ""
+
+
+def family_alias_execution_owner(owner: str) -> tuple[str, str]:
+    """Return (family, callable_owner) when owner is only a delta family alias."""
+
+    stripped = str(owner or "").strip().strip("[]")
+    forms = owner_key_forms(owner)
+    for family, callable_owner in FAMILY_EXECUTION_OWNER_IDS.items():
+        if stripped == callable_owner:
+            continue
+        if family in forms or family.replace("_", "-") in forms:
+            return family, callable_owner
+    return "", ""
+
+
+def family_alias_as_executable_owner_errors(label: str, owner: str) -> list[str]:
+    family, callable_owner = family_alias_execution_owner(owner)
+    if not family:
+        return []
+    return [
+        f"{label}: owner token {owner!r} is the {family} delta/register family alias, "
+        f"not a callable owner_id; use {callable_owner!r} for executable ACT/Land "
+        f"and keep {family!r} only as vocabulary/register classification"
+    ]
 
 
 def load_owner_operation_delta_results(
@@ -346,6 +381,9 @@ def route_owner_vocabulary_errors(label: str, route: dict[str, Any]) -> list[str
     if not isinstance(raw_owner, str) or not raw_owner.strip():
         return [f"{label}: owner route must carry a non-empty owner_id"]
     owner, operation = split_owner_operation_token(raw_owner, route.get("operation") or route.get("owner_operation"))
+    alias_errors = family_alias_as_executable_owner_errors(label, owner)
+    if alias_errors:
+        return alias_errors
     family = canonical_delta_owner(owner)
     if not family:
         return [
