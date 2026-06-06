@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Any
 
 import build_staged_governed_output as staged_output
-from closure_witness_lib import extract_embedded_field_witness, parse_closure_witness, status_head
+from closure_witness_lib import extract_embedded_field_witness, extract_field_witness, parse_closure_witness, status_head
 from delta_result_vocabulary import (
     DELTA_RESULT_VOCABULARY,
     OWNER_OPERATION_VOCABULARY,
@@ -3044,6 +3044,10 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- `curl_state` values must be parser-stable JSON strings. When curl is absent/resolved, emit JSON string `\"null\"`, never bare JSON null.",
         "- Terminal `STOP` / `no_new_resultant` rows must set `reread` to `R(H,Delta)`, `divergence_state` to `neutral`, `curl_state` to JSON string `\"null\"`, `graph_delta` to `none`, omit `next_burden`, and include `no_new_resultant_proof.escape_routes_checked` as a JSON list.",
         "- Complete closure must have no HOLD/PARTIAL formal rows and no held terminal burdens. If a terminal `STOP` / `no_new_resultant` row is only a bounded MRP row for a generated or unresolved burden, keep `coverage_complete=false`, set `no_new_resultant_proof.proved=false`, and keep explicit HOLD/PARTIAL accounting instead of claiming clean closure.",
+        "- Treat the visible Closure/Reconstruction Witness, machine `field_witness` JSON, NAR rows, and optional sidecars as separate clone states that must mirror the same ACT/body_ref chain; do not let prose or sidecar custody substitute for the machine witness.",
+        "- The line `field_witness` is only a marker. It must be followed by a parseable JSON object containing the checker-owned witness, including `normalized_activation_record`; YAML, prose, or a heading-only witness is invalid.",
+        "- `body_ref` remains the bare join key copied from ACT. Public submove headings, owner labels, operations, register axes, deltas, and graph proof text must not be encoded into `body_ref`.",
+        "- `land` and `land_target` are witness mirrors of visible `Land(Bn)` clauses; every owner activation must copy the same target burden rather than summarizing closure in prose.",
         "- For every `owner_activations[]` mirror, `owner` must contain only the ACT owner token or owner family, not `owner.operation`.",
         "- Put the operation in the separate `operation` field, and keep `owner_id` aligned with the owner token.",
         "- Do not set `owner` to `owner.operation`; for example use `\"owner\": \"FPD\"` and `\"operation\": \"foreign-premise-detection\"`.",
@@ -7738,6 +7742,10 @@ def run_self_test(root: Path) -> int:
         "one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror",
         "plus one MRP-owned row for each generated `B_MRP` burden",
         "`formal_reread_states[]` is required",
+        "machine `field_witness` JSON, NAR rows, and optional sidecars as separate clone states",
+        "The line `field_witness` is only a marker",
+        "`body_ref` remains the bare join key copied from ACT",
+        "`land` and `land_target` are witness mirrors of visible `Land(Bn)` clauses",
         "`curl_state` values must be parser-stable JSON strings",
         'emit JSON string `"null"`, never bare JSON null',
         "Terminal `STOP` / `no_new_resultant` rows must set",
@@ -8819,6 +8827,111 @@ def run_self_test(root: Path) -> int:
     stage07_diagnostics = build_release_field_diagnostics(replay_output_path)
     if stage07_diagnostics.get("matches") is not True:
         raise HarnessError("Self-test replay output did not produce matching release_field_diagnostics")
+
+    visible_probe_witness = {
+        "B_LA": ["B1"],
+        "B_MRP": [],
+        "B_total": ["B1"],
+        "field_diagnostics": {"divergence_check": "neutral", "curl_check": "null"},
+        "terminal_states": {"B1": "landed"},
+        "owner_activations": [
+            {
+                "body_ref": "B1_1",
+                "target": "B1",
+                "owner": "M7",
+                "owner_id": "M7",
+                "operation": "definition-anchor",
+                "pressure": "definition-pressure",
+                "delta": "DeltaB1:definition-anchored",
+                "delta_result": "definition-anchored",
+                "land": "Land(B1)",
+                "land_target": "B1",
+            }
+        ],
+        "normalized_activation_record": {
+            "n_frame": "neutral-visible-projection",
+            "live_registers": ["mu"],
+            "burden_floor": ["B1"],
+            "per_burden": [
+                {
+                    "burden_id": "B1",
+                    "owner_id": "M7",
+                    "operation": "definition-anchor",
+                    "delta_result": "definition-anchored",
+                    "terminal_state": "landed",
+                    "generation_depth": 0,
+                }
+            ],
+        },
+        "coverage_proof": {
+            "initial_burden_set": ["B1"],
+            "terminal_states": {"B1": "landed"},
+            "dependency_graph": {"nodes": ["B1"], "edges": [], "roots": ["B1"], "acyclic": True},
+            "divergence_check": "neutral",
+            "curl_check": "null",
+            "coverage_complete": True,
+        },
+    }
+    visible_probe_base = "\n".join(
+        [
+            "NOETIC FIELD EXECUTION",
+            "Layer A / Diagnostic IR Header",
+            "Layer B / Burden 1",
+            "⟦ACT B1_1[M7.definition-anchor] :: π=definition-pressure :: body_ref=B1_1 :: Δ=ΔB1:definition-anchored :: Land(B1)+⟧",
+            "MRP(B1): type=no_new_resultant; graph=none; route=STOP",
+            "Restorative Response",
+            "Closing Formulation",
+            "Closure/Reconstruction Witness",
+            "Terminal states:",
+            "B1: landed / ACT owners / landed by visible owner activations",
+            "field_witness",
+            json.dumps(visible_probe_witness, ensure_ascii=False, indent=2),
+            "",
+        ]
+    )
+    visible_probe_path = run_dir / "stage07-visible-output-valid-probe.md"
+    visible_probe_path.write_text(visible_probe_base, encoding="utf-8")
+    visible_probe_errors = visible_governed_output_errors(visible_probe_path)
+    if visible_probe_errors:
+        raise HarnessError(
+            "Self-test Stage 07 visible-output valid probe failed: " + ", ".join(visible_probe_errors)
+        )
+
+    def assert_visible_output_rejects(name: str, text: str, expected: str) -> None:
+        probe_path = run_dir / f"{name}.invalid.md"
+        probe_path.write_text(text, encoding="utf-8")
+        found = visible_governed_output_errors(probe_path)
+        if expected not in found:
+            raise HarnessError(
+                f"Self-test Stage 07 visible-output probe {name} missed {expected!r}; found: {found}"
+            )
+
+    assert_visible_output_rejects(
+        "stage07-field-witness-heading-only",
+        visible_probe_base.rsplit("\nfield_witness\n", 1)[0] + "\nfield_witness\nB_LA: B1\n",
+        "parser-stable field_witness object",
+    )
+    no_nar_witness = dict(visible_probe_witness)
+    no_nar_witness.pop("normalized_activation_record", None)
+    assert_visible_output_rejects(
+        "stage07-field-witness-missing-nar",
+        visible_probe_base.rsplit("\nfield_witness\n", 1)[0]
+        + "\nfield_witness\n"
+        + json.dumps(no_nar_witness, ensure_ascii=False, indent=2)
+        + "\n",
+        "normalized_activation_record / NAR evidence",
+    )
+    assert_visible_output_rejects(
+        "stage07-guaranteed-tlang-proof-claim",
+        visible_probe_base + "\nT_lang guarantees interlocutor uptake.\n",
+        "guaranteed T_lang uptake claim",
+    )
+    assert_visible_output_rejects(
+        "stage07-activegraph-proof-claim",
+        visible_probe_base + "\nActiveGraph proof confirms retained closure.\n",
+        "Graphify/ActiveGraph proof claim",
+    )
+
     stage07_local_record = base_record(
         "self-test-a9-science-source-stage07",
         "staged-current-skill-stage-local-smoke",
@@ -8965,12 +9078,18 @@ def visible_governed_output_errors(output_path: Path) -> list[str]:
         ("ACT body_ref tokens", r"\bbody_ref="),
         ("Land surface", r"Land\("),
         ("MRP / reread / terminal state surface", r"MRP\(|R\(H,|Mid-Reread|Terminal states"),
-        ("parser-stable field_witness", r"(?m)^\s*field_witness\b"),
+        ("field_witness heading", r"(?m)^\s*field_witness\b"),
         ("normalized_activation_record / NAR evidence", r"normalized_activation_record|\bNAR\b"),
         ("Restorative Response", r"(?im)^\s*(?:#+\s*)?Restorative Response\b"),
         ("Closing Formulation", r"(?im)^\s*(?:#+\s*)?Closing Formulation\b"),
     ]
     errors = [label for label, pattern in checks if re.search(pattern, text, re.IGNORECASE | re.MULTILINE) is None]
+    witness_payload = extract_embedded_field_witness(text)
+    field_witness = extract_field_witness(witness_payload)
+    if re.search(r"(?m)^\s*field_witness\b", text, re.IGNORECASE | re.MULTILINE) and field_witness is None:
+        errors.append("parser-stable field_witness object")
+    if isinstance(field_witness, dict) and not isinstance(field_witness.get("normalized_activation_record"), dict):
+        errors.append("normalized_activation_record / NAR evidence")
     forbidden = [
         ("harness commentary", r"You are executing stage-|Validated compact stage state|Return exactly one JSON object"),
         ("package/provenance claim", r"\bpackage/provenance\b|provenance asset|release package|\.skill\b|GitHub Release"),
@@ -8996,7 +9115,7 @@ def coverage_status(field_witness: dict[str, Any] | None, key: str) -> str:
 def build_release_field_diagnostics(output_path: Path) -> dict[str, Any]:
     text = output_path.read_text(encoding="utf-8", errors="replace")
     witness = parse_closure_witness(text)
-    field_witness = extract_embedded_field_witness(text)
+    field_witness = extract_field_witness(extract_embedded_field_witness(text))
     visible = {
         "divergence_check": status_head(witness.divergence) if witness is not None else "",
         "curl_check": status_head(witness.curl) if witness is not None else "",
