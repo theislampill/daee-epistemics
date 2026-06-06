@@ -108,6 +108,15 @@ CONTROLLED_STAGE05_TERMINAL_STATES = {
     "carried-RECURSE",
     "discharged-as-derivative",
 }
+
+
+def ordering_owner_family(owner: str) -> str:
+    """Return the checker-owned owner family used for ordering comparisons."""
+
+    raw = str(owner or "").strip()
+    return canonical_delta_owner(raw) or raw
+
+
 STAGE07_RELEASE_VALIDATION_ORDER = (
     "visible_opening_header",
     "nla_semantic_faithfulness",
@@ -3063,7 +3072,9 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
             after_operation = str(after.get("operation") or "").strip()
             if not before_owner or not after_owner:
                 continue
-            if before_owner != after_owner:
+            before_ordering_owner = ordering_owner_family(before_owner)
+            after_ordering_owner = ordering_owner_family(after_owner)
+            if before_ordering_owner != after_ordering_owner:
                 owner_activation_ordering["required_before"].append(
                     {
                         "target": target,
@@ -9156,6 +9167,83 @@ def run_self_test(root: Path) -> int:
     for forbidden in ("byte budget", "manifest", "compiler", "Trinitarian", "Khaybar", "TST", "Secularism"):
         if forbidden in supplemented_restorative:
             raise HarnessError(f"Self-test Restorative Response budget guardrail leaked implementation/case term {forbidden}")
+    source_alias_guidance = stage07_field_witness_contract_guidance(
+        [
+            {
+                "id": "stage-02-layer-a-diagnostic-ir",
+                "status": "pass",
+                "selected_n_frame": "source-family-alias-ordering-self-test",
+                "live_registers": ["xi"],
+                "burden_floor": ["B1"],
+                "burden_floor_details": [{"burden_id": "B1", "register_types": ["xi"]}],
+            },
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_burdens": ["B1"],
+                "act_targets": ["B1"],
+                "act_body_refs": ["B1_1", "B1_2"],
+                "act_rows": [
+                    "⟦ACT B1_1[source-status-repair.source-order] :: π=source-lineage-order :: body_ref=B1_1 :: Δ=DeltaB1:source-order-repaired :: Land(B1)+⟧",
+                    "⟦ACT B1_2[authority-order-repair.sort] :: π=authority-rank-order :: body_ref=B1_2 :: Δ=DeltaB1:authority-order-separated :: Land(B1)+⟧",
+                ],
+            },
+            {
+                "id": "stage-05-mrp-reread-terminal-state",
+                "status": "pass",
+                "terminal_states": {"B1": "landed"},
+                "generated_burdens": [],
+                "dependency_graph_edges": [],
+                "no_new_resultant_proof": {"proved": True, "unresolved_burdens": []},
+            },
+            {
+                "id": "stage-06-field-witness-nar",
+                "status": "pass",
+                "field_witness_body_refs": ["B1_1", "B1_2"],
+                "nar_burdens": ["B1"],
+                "owner_activations": ["B1_1", "B1_2"],
+                "normalized_activation_record": {
+                    "n_frame": "source-family-alias-ordering-self-test",
+                    "live_registers": ["xi"],
+                    "burden_floor": ["B1"],
+                    "per_burden": [
+                        {
+                            "burden_id": "B1",
+                            "owner_id": "source-status-repair",
+                            "operation": "source-order",
+                            "delta_result": "source-order-repaired",
+                            "terminal_state": "landed",
+                            "generation_depth": 0,
+                        },
+                        {
+                            "burden_id": "B1",
+                            "owner_id": "authority-order-repair",
+                            "operation": "sort",
+                            "delta_result": "authority-order-separated",
+                            "terminal_state": "landed",
+                            "generation_depth": 0,
+                        },
+                    ],
+                },
+                "register_deltas": {"xi": ["source-order-repaired", "authority-order-separated"]},
+            },
+        ]
+    )
+    for required in (
+        '"before_owner": "source-status-repair"',
+        '"before_operation": "source-order"',
+        '"before_body_ref": "B1_1"',
+        '"after_owner": "authority-order-repair"',
+        '"after_operation": "sort"',
+        '"after_body_ref": "B1_2"',
+    ):
+        if required not in source_alias_guidance:
+            raise HarnessError(f"Self-test SOURCE alias ordering scaffold omitted {required}")
+    if re.search(
+        r'\{\s*"target": "B1",\s*"before_owner": "source-status-repair",\s*"after_owner": "authority-order-repair"\s*\}',
+        source_alias_guidance,
+    ):
+        raise HarnessError("Self-test SOURCE alias ordering scaffold emitted owner-only alias edge")
     stage07_witness_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
