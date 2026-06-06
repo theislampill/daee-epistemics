@@ -3760,7 +3760,15 @@ def stage03_owner_operation_guidance() -> str:
         "operations are `test` and `performative-test`; do not mint "
         "`authority-premise-test`, `authority-test`, or similar mixed "
         "source/authority operation labels.",
+        "- In Stage 03 `owner_routes[].owner_id`, delta/register family codes "
+        "are observations, not executable owner ids. Use the callable owner id "
+        "shown below; keep the family code only in classification/detail fields.",
     ]
+    for family, execution_owner in sorted(FAMILY_EXECUTION_OWNER_IDS.items()):
+        lines.append(
+            f"- Stage 03 owner_id mapping: `{family}` -> `{execution_owner}`; "
+            f"use `{execution_owner}` in `owner_routes[].owner_id`, not `{family}`."
+        )
     for family in sorted(OWNER_OPERATION_VOCABULARY):
         operations = ", ".join(sorted(OWNER_OPERATION_VOCABULARY[family]))
         lines.append(f"- {family} operations: {operations}")
@@ -6081,6 +6089,18 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted authority/source pressure as an M1-P Stage 03 operation")
+
+    stage03_guidance = stage03_owner_operation_guidance()
+    for required in (
+        "delta/register family codes are observations, not executable owner ids",
+        "Stage 03 owner_id mapping: `DO_SECOND_LOOP` -> `do-second-loop`",
+        "use `do-second-loop` in `owner_routes[].owner_id`, not `DO_SECOND_LOOP`",
+        "Stage 03 owner_id mapping: `PROOF_METHOD` -> `proof-method-audit`",
+        "use `proof-method-audit` in `owner_routes[].owner_id`, not `PROOF_METHOD`",
+        "Stage 03 owner_id mapping: `PATTERN_PROFILE` -> `pattern-profiling`",
+    ):
+        if required not in stage03_guidance:
+            raise HarnessError(f"Self-test Stage 03 owner guidance omitted {required}")
 
     canonical_act_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
