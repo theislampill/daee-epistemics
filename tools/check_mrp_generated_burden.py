@@ -131,6 +131,14 @@ SOURCE_OWNED_ACT_OPERATIONS = {
             r"test(?:s|ed)? (?:the|that) claim)\b"
         ),
     },
+    "M3": {
+        "orphaned-intuition": re.compile(
+            r"(?is)\b(?:orphaned intuition|ungrounded intuition|intuition without|moral intuition|"
+            r"orphaned moral|ground is orphaned|grounded? intuition|intuition has a home|"
+            r"moral deliverance|moral recognition|recognition remains honored|retained while its ground|"
+            r"restored to (?:a )?ground|cannot remain severed from its ground)\b"
+        ),
+    },
     "M7": {
         "definition-anchor": re.compile(
             r"(?is)\b(?:definition|define|anchor|carrier|what (?:is|counts as)|semantic boundary)\b"
