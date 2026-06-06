@@ -2146,6 +2146,40 @@ def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[
     }
 
 
+def stage02_diagnostic_ir_details(stage02: dict[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(stage02, dict):
+        return {}
+    details = stage02.get("diagnostic_ir_details")
+    return details if isinstance(details, dict) else {}
+
+
+def stage07_layer_a_diagnostic_state_lines(stage02: dict[str, Any] | None) -> list[str]:
+    details = stage02_diagnostic_ir_details(stage02)
+    if not details and not isinstance(stage02, dict):
+        return []
+    lines: list[str] = []
+
+    def add(label: str, value: Any) -> None:
+        if isinstance(value, list):
+            rendered = "; ".join(str(item).strip() for item in value if str(item).strip())
+        else:
+            rendered = str(value).strip() if value is not None else ""
+        if rendered:
+            lines.append(f"{label}: {rendered}")
+
+    add("Field", details.get("field") or (stage02 or {}).get("field"))
+    add("Task", details.get("user_task") or (stage02 or {}).get("user_task"))
+    add("Authority frame", details.get("authority_frame"))
+    add("Claim level", details.get("claim_level"))
+    add("Selected N-frame", (stage02 or {}).get("selected_n_frame"))
+    add("Held N-frame candidates", (stage02 or {}).get("held_n_frame_candidates"))
+    add("Pattern profile", details.get("pattern_profile"))
+    add("DO orientation", details.get("do_orient") or details.get("do_orientation"))
+    add("Concealment mode", details.get("concealment_mode"))
+    add("Diagnostic deformation", details.get("deformation"))
+    return lines
+
+
 def stage07_route_type_for_burden(
     burden: str,
     edges: list[dict[str, str]],
@@ -2636,6 +2670,7 @@ def stage07_layer_a_contract_guidance(previous_stages: list[dict[str, Any]]) -> 
     b_total = ordered_unique([*burden_floor, *generated_burdens])
     live_registers = list_field(stage02, "live_registers")
     burden_registers = stage02_burden_register_types(stage02, burden_floor)
+    diagnostic_lines = stage07_layer_a_diagnostic_state_lines(stage02)
     burden_rows = []
     for burden in burden_floor:
         registers = burden_registers.get(burden, [])
@@ -2661,6 +2696,24 @@ def stage07_layer_a_contract_guidance(previous_stages: list[dict[str, Any]]) -> 
         "- `𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP` is required exactly as the public total-ledger relation, followed by the concrete public burden set.",
         "- Each Layer A burden/register row must expose the burden ID and its Stage 02 register type(s) so the field witness can prove live-register floor coverage.",
     ]
+    if diagnostic_lines:
+        lines.extend(
+            [
+                "- Print these Stage 02 diagnostic-state projection lines exactly before prose expansion:",
+                *[f"  {line}" for line in diagnostic_lines],
+            ]
+        )
+        concealment_line = next(
+            (line for line in diagnostic_lines if line.lower().startswith("concealment mode:")),
+            "",
+        )
+        if "mixed" in concealment_line.lower() and len(concealment_source_components(concealment_line)) >= 2:
+            components = ", ".join(concealment_source_components(concealment_line))
+            lines.append(
+                "- Because Stage 02 selected mixed concealment, the `Concealment mode:` line must name "
+                f"at least two source-owned component pressures in that same line: {components}. "
+                "Do not collapse this to generic `mixed pressure`."
+            )
     return "\n".join(lines)
 
 
@@ -3310,6 +3363,10 @@ RESTORATIVE_SLOT_PATTERNS = (
     re.compile(r"(?im)^\s*(?:[-*]\s*)?Relieved pressure\s*:\s*\S"),
     re.compile(r"(?im)^\s*(?:[-*]\s*)?Held/scoped/reopenable remainder\s*:\s*\S"),
 )
+CONCEALMENT_MODE_LINE_RE = re.compile(r"(?im)^(?P<prefix>\s*(?:[-*]\s*)?Concealment mode\s*:\s*)(?P<value>.*)$")
+CONCEALMENT_COMPONENT_TOKEN_RE = re.compile(
+    r"(?i)\b(?:iʿrāḍ|i'rad|i`rad|irad|juḥūd|juhud|inkār|inkar|istikbār|istikbar|nifāq|nifaq)\b"
+)
 SECTION_ROLE_HEADING_PATTERNS = {
     "restorative_response": re.compile(
         r"(?i)^\s*(?:#{1,6}\s*)?(?:(?:\*\*|__|\*|_)\s*)?"
@@ -3322,6 +3379,27 @@ SECTION_ROLE_HEADING_PATTERNS = {
         r"(?:\s*(?:\*\*|__|\*|_))?\s*(?:#+\s*)?$"
     ),
 }
+
+
+def concealment_source_components(value: str) -> list[str]:
+    aliases = {
+        "iʿrāḍ": "irad",
+        "i'rad": "irad",
+        "i`rad": "irad",
+        "irad": "irad",
+        "juḥūd": "juhud",
+        "juhud": "juhud",
+        "inkār": "inkar",
+        "inkar": "inkar",
+        "istikbār": "istikbar",
+        "istikbar": "istikbar",
+        "nifāq": "nifaq",
+        "nifaq": "nifaq",
+    }
+    return ordered_unique(
+        aliases.get(match.group(0).lower(), match.group(0).lower())
+        for match in CONCEALMENT_COMPONENT_TOKEN_RE.finditer(value)
+    )
 
 
 def restorative_response_slots_present(text: str) -> bool:
@@ -3354,6 +3432,61 @@ def demote_duplicate_own_section_heading(
     return normalized, {
         "role": section_role,
         "demoted_duplicate_own_section_headings": demoted,
+        "original_bytes": len(text.encode("utf-8")),
+        "canonical_bytes": len(normalized.encode("utf-8")),
+    }
+
+
+def canonicalize_mixed_concealment_projection(
+    section_role: str,
+    text: str,
+    previous_stages: list[dict[str, Any]],
+) -> tuple[str, dict[str, Any] | None]:
+    if section_role not in {"visible_opening", "layer_a_diagnostic_ir"}:
+        return text, None
+    stage02 = stage_by_id(previous_stages, "stage-02-layer-a-diagnostic-ir")
+    expected_line = next(
+        (
+            line
+            for line in stage07_layer_a_diagnostic_state_lines(stage02)
+            if line.lower().startswith("concealment mode:")
+        ),
+        "",
+    )
+    expected_value = expected_line.split(":", 1)[1].strip() if ":" in expected_line else ""
+    if "mixed" not in expected_value.lower() or len(concealment_source_components(expected_value)) < 2:
+        return text, None
+
+    replacements = 0
+
+    def replace_match(match: re.Match[str]) -> str:
+        nonlocal replacements
+        value = match.group("value")
+        if "mixed" in value.lower() and len(concealment_source_components(value)) < 2:
+            replacements += 1
+            return f"{match.group('prefix')}{expected_value}"
+        return match.group(0)
+
+    normalized = CONCEALMENT_MODE_LINE_RE.sub(replace_match, text)
+    if replacements == 0 and section_role == "layer_a_diagnostic_ir" and not CONCEALMENT_MODE_LINE_RE.search(text):
+        insertion = expected_line + "\n"
+        header = re.search(r"(?im)^\s*(?:#{1,6}\s*)?.*\b(?:Layer A|Diagnostic IR|DSL/IR)\b.*$", normalized)
+        if header:
+            insert_at = normalized.find("\n", header.end())
+            if insert_at >= 0:
+                normalized = normalized[: insert_at + 1] + insertion + normalized[insert_at + 1 :]
+            else:
+                normalized = normalized.rstrip() + "\n" + insertion
+        else:
+            normalized = insertion + normalized.lstrip()
+        replacements = 1
+    if replacements == 0:
+        return text, None
+    return normalized, {
+        "role": section_role,
+        "canonicalized_mixed_concealment_projection": True,
+        "source_components": concealment_source_components(expected_value),
+        "replacement_count": replacements,
         "original_bytes": len(text.encode("utf-8")),
         "canonical_bytes": len(normalized.encode("utf-8")),
     }
@@ -3718,6 +3851,11 @@ def canonical_compiled_structural_section(
     text: str,
     previous_stages: list[dict[str, Any]],
 ) -> tuple[str, dict[str, Any] | None]:
+    text, mixed_concealment_event = canonicalize_mixed_concealment_projection(
+        section_role,
+        text,
+        previous_stages,
+    )
     text, duplicate_heading_event = demote_duplicate_own_section_heading(section_role, text)
     if section_role == "mrp_reread_terminal":
         scaffold = stage07_mrp_reread_section_scaffold(previous_stages)
@@ -3736,17 +3874,21 @@ def canonical_compiled_structural_section(
         if body:
             scaffold = scaffold.rstrip() + "\n\n" + body.rstrip() + "\n"
     else:
-        return text, duplicate_heading_event
+        return text, mixed_concealment_event or duplicate_heading_event
     if not scaffold:
-        return text, duplicate_heading_event
+        return text, mixed_concealment_event or duplicate_heading_event
     if text.strip() == scaffold.strip():
-        return text, duplicate_heading_event
+        return text, mixed_concealment_event or duplicate_heading_event
     event = {
         "role": section_role,
         "canonicalized_structural_stage07_section": True,
         "original_bytes": len(text.encode("utf-8")),
         "canonical_bytes": len(scaffold.encode("utf-8")),
     }
+    if mixed_concealment_event is not None:
+        event["canonicalized_mixed_concealment_projection"] = True
+        event["mixed_concealment_source_components"] = mixed_concealment_event["source_components"]
+        event["mixed_concealment_replacement_count"] = mixed_concealment_event["replacement_count"]
     if duplicate_heading_event is not None:
         event["demoted_duplicate_own_section_headings"] = duplicate_heading_event[
             "demoted_duplicate_own_section_headings"
@@ -5803,6 +5945,32 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to preserve rich Stage 02 live register details")
     if not isinstance(normalized_stage02.get("burden_floor_details"), list):
         raise HarnessError("Self-test failed to preserve rich Stage 02 burden-floor details")
+    mixed_concealment_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "mixed-concealment-neutral-self-test",
+            "held_n_frame_candidates": ["clarification-pressure-held", "refusal-pressure-held"],
+            "live_registers": ["xi", "kappa"],
+            "burden_floor": ["B1"],
+            "diagnostic_ir_details": {
+                "field": "MIXED NOETIC FIELD",
+                "user_task": "REFUTE",
+                "authority_frame": "LIVE",
+                "claim_level": "neutral mixed concealment audit",
+                "pattern_profile": "mixed source-owned concealment pressure",
+                "do_orient": "neutral diagnostic pressure",
+                "concealment_mode": (
+                    "mixed - irad + juhud pressure; sincere clarification pressure routed to "
+                    "clarification, not refusal; no hidden soul-state judgment"
+                ),
+                "deformation": "neutral mixed pressure before route release",
+            },
+        },
+    )
+    if mixed_concealment_stage02.get("diagnostic_ir_details", {}).get("concealment_mode", "").count("juhud") != 1:
+        raise HarnessError("Self-test failed to preserve Stage 02 diagnostic_ir_details.concealment_mode")
     detail_stage02 = normalized_stage(
         "stage-02-layer-a-diagnostic-ir",
         {
@@ -8246,6 +8414,51 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_layer_prompt:
             raise HarnessError(f"Self-test Stage 07 Layer A prompt omitted parser-stable scaffold: {required}")
+    stage07_mixed_layer_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-mixed-concealment-neutral",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[mixed_concealment_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+        section_id="layer-a-diagnostic-ir",
+        section_role="layer_a_diagnostic_ir",
+        section_number=2,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=None,
+    )
+    for required in (
+        "Concealment mode: mixed - irad + juhud pressure",
+        "at least two source-owned component pressures",
+        "irad, juhud",
+        "Do not collapse this to generic `mixed pressure`",
+    ):
+        if required not in stage07_mixed_layer_prompt:
+            raise HarnessError(f"Self-test Stage 07 Layer A mixed-concealment prompt omitted: {required}")
+    collapsed_mixed_layer = (
+        "Layer A / Diagnostic IR Header\n"
+        "Initial burden set: [¹B]\n"
+        "𝔅_LA (B_LA) = {¹B}\n"
+        "𝔅_MRP (B_MRP) = {}\n"
+        "𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP = {¹B}\n"
+        "Concealment mode: mixed pressure; sincere clarification pressure remains routed to clarification.\n"
+    )
+    canonical_mixed_layer, mixed_event = canonical_compiled_structural_section(
+        "layer_a_diagnostic_ir",
+        collapsed_mixed_layer,
+        [mixed_concealment_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+    )
+    if not mixed_event:
+        raise HarnessError("Self-test Stage 07 mixed concealment canonicalization did not record an event")
+    if "Concealment mode: mixed - irad + juhud pressure" not in canonical_mixed_layer:
+        raise HarnessError("Self-test Stage 07 mixed concealment canonicalization omitted source-owned components")
+    if "Concealment mode: mixed pressure" in canonical_mixed_layer:
+        raise HarnessError("Self-test Stage 07 mixed concealment canonicalization left generic mixed pressure")
+    if mixed_event.get("source_components") != ["irad", "juhud"]:
+        raise HarnessError("Self-test Stage 07 mixed concealment canonicalization metadata missing components")
     stage07_mrp_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
