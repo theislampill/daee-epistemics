@@ -1,0 +1,58 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "stage04-unicode-body-ref-land-axis-swap",
+  "mode": "no-model-fixture",
+  "user_interface_preserved": true,
+  "stage_order": [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir",
+    "stage-03-routing-owner-gate",
+    "stage-04-burden-execution-act",
+    "stage-05-mrp-reread-terminal-state",
+    "stage-06-field-witness-nar",
+    "stage-07-release-output",
+    "stage-08-verifier-sidecars"
+  ],
+  "stages": [
+    {"id": "stage-01-intake", "status": "pass", "produces": ["input_digest"], "requires": [], "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"id": "stage-02-layer-a-diagnostic-ir", "status": "pass", "produces": ["burden_floor", "selected_n_frame", "live_registers"], "requires": ["input_digest"], "burden_floor": ["B1"], "selected_n_frame": "neutral-body-ref-axis-check", "live_registers": ["sigma"]},
+    {"id": "stage-03-routing-owner-gate", "status": "pass", "produces": ["route_targets", "owner_routes"], "requires": ["burden_floor"], "route_targets": ["B1"], "owner_routes": [{"burden_id": "B1", "owner_id": "source-status-repair", "eligibility": "catalogue-backed"}]},
+    {
+      "id": "stage-04-burden-execution-act",
+      "status": "pass",
+      "produces": ["act_targets", "act_body_refs", "act_rows"],
+      "requires": ["route_targets", "owner_routes"],
+      "act_targets": ["B1"],
+      "act_burdens": ["B1"],
+      "act_body_refs": ["¹B₁", "²B₁"],
+      "act_rows": [
+        "⟦ACT ¹B₁[source-status-repair.source-order] :: π=source-order-pressure :: body_ref=¹B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧",
+        "⟦ACT ²B₁[source-status-repair.source-order] :: π=source-order-pressure :: body_ref=²B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧"
+      ],
+      "act_row_details": [
+        {"burden_id": "B1", "body_ref": "¹B₁", "owner_id": "source-status-repair", "operation": "source-order", "register_axis": "σ", "delta_result": "science-source-bounded", "act_row": "⟦ACT ¹B₁[source-status-repair.source-order] :: π=source-order-pressure :: body_ref=¹B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧"},
+        {"burden_id": "B1", "body_ref": "²B₁", "owner_id": "source-status-repair", "operation": "source-order", "register_axis": "σ", "delta_result": "science-source-bounded", "act_row": "⟦ACT ²B₁[source-status-repair.source-order] :: π=source-order-pressure :: body_ref=²B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧"}
+      ]
+    },
+    {"id": "stage-05-mrp-reread-terminal-state", "status": "pass", "produces": ["terminal_states", "dependency_graph_edges", "no_new_resultant_proof"], "requires": ["act_rows"], "terminal_states": {"B1": "landed"}, "dependency_graph_edges": [], "no_new_resultant_proof": {"proved": true, "basis": "Invalid fixture: Stage04 should have rejected the axis-swapped body_ref before this point.", "unresolved_burdens": []}, "terminal_state_details": [{"burden_id": "B1", "state": "landed", "basis": "Invalid fixture carried forward only to keep the record shape complete."}]},
+    {"id": "stage-06-field-witness-nar", "status": "pass", "produces": ["field_witness_body_refs", "nar_burdens", "normalized_activation_record"], "requires": ["terminal_states", "act_body_refs"], "field_witness_body_refs": ["¹B₁", "²B₁"], "nar_burdens": ["B1"], "owner_activations": ["¹B₁", "²B₁"], "normalized_activation_record": true, "register_deltas": {"sigma": "science-source-bounded"}},
+    {"id": "stage-07-release-output", "status": "pass", "produces": ["release_output", "release_terminal_states"], "requires": ["field_witness_body_refs", "nar_burdens"], "release_output": {"path": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/output.md", "sha256": "4017E4AFDE38E747BE6BC6A42818DFD2E46138C1D2DB2310F233ABAC84412DD6"}, "release_terminal_states": {"B1": "landed"}, "closure_claim": "complete", "output_is_full_governed_answer": true},
+    {"id": "stage-08-verifier-sidecars", "status": "pass", "produces": ["verifier_sidecars"], "requires": ["release_output"], "verifier_sidecars": {"b5_4_1": {"claimed": false, "role": "synthetic-contract-placeholder", "non_claims": {"not_fresh_runtime_default_emission": true}}}}
+  ],
+  "handoffs": [
+    {"from": "stage-01-intake", "to": "stage-02-layer-a-diagnostic-ir", "checks": ["input_boundary_preserved"], "status": "pass"},
+    {"from": "stage-02-layer-a-diagnostic-ir", "to": "stage-03-routing-owner-gate", "checks": ["burden_floor_to_route_targets", "n_frame_present", "live_registers_present"], "status": "pass"},
+    {"from": "stage-03-routing-owner-gate", "to": "stage-04-burden-execution-act", "checks": ["route_targets_to_act_targets", "owner_eligibility_backed"], "status": "pass"},
+    {"from": "stage-04-burden-execution-act", "to": "stage-05-mrp-reread-terminal-state", "checks": ["act_rows_present", "act_body_refs_present"], "status": "pass"},
+    {"from": "stage-05-mrp-reread-terminal-state", "to": "stage-06-field-witness-nar", "checks": ["terminal_states_to_field_witness", "dependency_graph_explicit"], "status": "pass"},
+    {"from": "stage-06-field-witness-nar", "to": "stage-07-release-output", "checks": ["field_witness_nar_convergence"], "status": "pass"},
+    {"from": "stage-07-release-output", "to": "stage-08-verifier-sidecars", "checks": ["release_to_verifier_sidecars"], "status": "pass"}
+  ],
+  "non_claims": {
+    "not_model_smoke": true,
+    "not_runtime_default_emission_proof": true,
+    "not_arbitrary_nl_ir_parser": true,
+    "not_package_provenance": true,
+    "not_guaranteed_t_lang_uptake": true
+  }
+}

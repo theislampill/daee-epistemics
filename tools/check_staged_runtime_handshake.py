@@ -181,6 +181,10 @@ REREAD_ROUTES = {"STOP", "HOLD", "PARTIAL", "RECURSE", "LoopBreak", "LOOPBREAK"}
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 ACT_OWNER_RE = re.compile(r"^⟦ACT\s+[^\[]+\[([^\.\]]+)\.[^\]]+\]")
+LAND_TARGET_RE = re.compile(r"Land\((?P<target>[^)\n]+)\)")
+SUP_DIGITS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
+BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*)?$")
+ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
 ACT_OWNER_OPERATION_DELTA_RE = re.compile(
     r"^⟦ACT\s+[^\[]+\[(?P<owner>[^.\]]+)\.(?P<operation>[^\]]+)\]"
     r".*?\bΔ=[^:\s]+:(?P<delta_result>[^:\s⟧]+)"
@@ -257,6 +261,27 @@ def canonical_burden_id_from_text(value: str, allowed_ids: set[str] | None = Non
     if allowed_ids is not None:
         matches = [match for match in matches if match in allowed_ids]
     return matches[0] if len(matches) == 1 else None
+
+
+def canonical_burden_id(value: str) -> str:
+    text = str(value or "").strip()
+    if re.fullmatch(r"B[1-9][0-9]*", text):
+        return text
+    match = re.fullmatch(r"([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B", text)
+    if match:
+        return f"B{match.group(1).translate(SUP_DIGITS)}"
+    return text
+
+
+def body_ref_burden_id(value: str) -> str:
+    text = str(value or "").strip()
+    match = BODY_REF_BURDEN_RE.fullmatch(text)
+    if match:
+        return canonical_burden_id(match.group("burden"))
+    match = ASCII_BODY_REF_RE.fullmatch(text)
+    if match:
+        return f"B{match.group('burden')}"
+    return ""
 
 
 def canonical_burden_ids_from_strings(values: list[str], allowed_ids: set[str] | None = None) -> list[str] | None:
@@ -1365,6 +1390,13 @@ def act_body_ref(row: str) -> str | None:
     return match.group(1) if match else None
 
 
+def act_land_burden(row: str) -> str:
+    match = LAND_TARGET_RE.search(row)
+    if not match:
+        return ""
+    return canonical_burden_id(match.group("target"))
+
+
 def act_owner(row: str) -> str | None:
     match = ACT_OWNER_RE.match(row.strip())
     return match.group(1) if match else None
@@ -1517,6 +1549,12 @@ def stage04_act_errors(
             row_refs.add(ref)
             if ref not in act_body_refs:
                 errors.append(f"{row_label} body_ref {ref!r} must appear in stage-04 act_body_refs")
+            encoded_burden = body_ref_burden_id(ref)
+            land_burden = act_land_burden(stripped)
+            if encoded_burden and land_burden and encoded_burden != land_burden:
+                errors.append(
+                    f"{row_label} body_ref {ref!r} encodes {encoded_burden} but Land() targets {land_burden}"
+                )
         owner = act_owner(stripped)
         if owner:
             row_owners.add(owner)
@@ -1551,6 +1589,11 @@ def stage04_act_errors(
                     errors.append(f"{detail_label}.body_ref must be a string")
                 elif body_ref not in act_body_refs:
                     errors.append(f"{detail_label}.body_ref must appear in act_body_refs")
+                elif isinstance(burden_id, str) and body_ref_burden_id(body_ref) and body_ref_burden_id(body_ref) != burden_id:
+                    errors.append(
+                        f"{detail_label}.body_ref {body_ref!r} encodes {body_ref_burden_id(body_ref)} "
+                        f"but burden_id is {burden_id}"
+                    )
                 owner_id = detail.get("owner_id")
                 if owner_id is not None:
                     if not isinstance(owner_id, str) or not owner_id:

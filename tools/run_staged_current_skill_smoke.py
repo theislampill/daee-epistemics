@@ -275,7 +275,13 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "`[owner.operation]` in `body_ref=` or `act_body_refs[]`. This keeps the "
             "public ACT row, body_ref dereference, owner_activation mirror, NAR, and "
             "field_witness tied to one stable DSL key while owner and operation remain "
-            "separate typed fields. "
+            "separate typed fields. In public Unicode notation, the superscript before "
+            "`B` is the burden number and the subscript after `B` is the submove number: "
+            "`¹B₁`, `¹B₂`, `¹B₃` are three submoves of burden B1, while `²B₁` is the "
+            "first submove of burden B2. Therefore a row whose `Land(...)` target is B1 "
+            "must not use `²B₁` or `³B₁` as additional B1 submoves; use `¹B₂` / `¹B₃` "
+            "or an approved ASCII fallback such as `B1_2` / `B1_3` in machine-only "
+            "fields when the public notation is unavailable. "
             "`act_row_details` is required and must be a JSON array of objects tied to "
             "the exact ACT row with `act_row` and/or the same bare `body_ref`, not "
             "owner-qualified body_ref strings or prose strings. Each detail object must "
@@ -1111,6 +1117,12 @@ def parsed_stage04_act_rows(stage: dict[str, Any]) -> list[dict[str, str]]:
         parsed = parsed_stage04_act_detail(row)
         if not parsed:
             raise HarnessError(f"stage-04 act_rows[{index}] is not a parseable canonical ACT row")
+        encoded_burden = body_ref_burden_id(parsed["body_ref"])
+        if encoded_burden and parsed["burden_id"] and encoded_burden != parsed["burden_id"]:
+            raise HarnessError(
+                f"stage-04 act_rows[{index}] body_ref {parsed['body_ref']!r} encodes "
+                f"{encoded_burden} but Land() targets {parsed['burden_id']}"
+            )
         parsed_rows.append(parsed)
     return parsed_rows
 
@@ -6352,6 +6364,81 @@ def run_self_test(root: Path) -> int:
     )
     if hydrated_missing_burden["act_row_details"][0].get("burden_id") != "B1":
         raise HarnessError("Self-test failed to hydrate Stage 04 act_row_details burden_id from Land()")
+    multi_b1_rows = [
+        (
+            f"⟦ACT {ref}[source-status-repair.source-order] :: "
+            "π=scientific-explanations-only-knowledge-source :: "
+            f"body_ref={ref} :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧"
+        )
+        for ref in ("¹B₁", "¹B₂", "¹B₃")
+    ]
+    accepted_multi_b1_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁", "¹B₂", "¹B₃"],
+            "act_rows": multi_b1_rows,
+            "act_row_details": [
+                {
+                    "burden_id": "B1",
+                    "body_ref": ref,
+                    "owner_id": "source-status-repair",
+                    "operation": "source-order",
+                    "register_axis": "σ",
+                    "delta_result": "science-source-bounded",
+                    "act_row": row,
+                }
+                for ref, row in zip(("¹B₁", "¹B₂", "¹B₃"), multi_b1_rows, strict=True)
+            ],
+        },
+    )
+    if accepted_multi_b1_stage04.get("act_body_refs") != ["¹B₁", "¹B₂", "¹B₃"]:
+        raise HarnessError("Self-test failed to accept unambiguous B1 submove body_ref sequence")
+    swapped_axis_b1_row = (
+        "⟦ACT ²B₁[source-status-repair.source-order] :: "
+        "π=scientific-explanations-only-knowledge-source :: "
+        "body_ref=²B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_body_refs": ["¹B₁", "²B₁"],
+                "act_rows": [multi_b1_rows[0], swapped_axis_b1_row],
+                "act_row_details": [
+                    {
+                        "burden_id": "B1",
+                        "body_ref": "¹B₁",
+                        "owner_id": "source-status-repair",
+                        "operation": "source-order",
+                        "register_axis": "σ",
+                        "delta_result": "science-source-bounded",
+                        "act_row": multi_b1_rows[0],
+                    },
+                    {
+                        "burden_id": "B1",
+                        "body_ref": "²B₁",
+                        "owner_id": "source-status-repair",
+                        "operation": "source-order",
+                        "register_axis": "σ",
+                        "delta_result": "science-source-bounded",
+                        "act_row": swapped_axis_b1_row,
+                    },
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "body_ref '²B₁' encodes B2 but Land() targets B1" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test failed to reject Stage 04 body_ref burden/submove axis swap")
     owner_qualified_body_ref_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
         "π=scientific-explanations-only-knowledge-source :: "

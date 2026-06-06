@@ -1507,11 +1507,13 @@ def act_partition_payload(assignments: list[tuple[str, list[str]]]) -> dict[str,
 
 
 def act_section(section_id: str, *body_refs: str) -> tuple[str, str, str]:
-    rows = [
-        f"⟦ACT {body_ref}[M9.predication-repair] :: π=predicate-transfer :: "
-        f"body_ref={body_ref} :: Δ=ΔB1:predicate-transfer-blocked :: Land(B1)+⟧"
-        for body_ref in body_refs
-    ]
+    rows = []
+    for body_ref in body_refs:
+        burden_id = body_ref_burden_id(body_ref) or "B1"
+        rows.append(
+            f"⟦ACT {body_ref}[M9.predication-repair] :: π=predicate-transfer :: "
+            f"body_ref={body_ref} :: Δ=Δ{burden_id}:predicate-transfer-blocked :: Land({burden_id})+⟧"
+        )
     return (
         section_id,
         "layer_b_act",
@@ -2296,9 +2298,21 @@ def run_self_test(root: Path) -> int:
         valid=True,
     )
     assemble_partition_case(
+        "valid-act-partition-unicode-contiguous-burden-groups",
+        [act_section("act-body-1", "¹B₁", "¹B₂", "¹B₃"), act_section("act-body-2", "²B₁", "²B₂")],
+        [("act-body-1", ["¹B₁", "¹B₂", "¹B₃"]), ("act-body-2", ["²B₁", "²B₂"])],
+        valid=True,
+    )
+    assemble_partition_case(
         "invalid-act-partition-spliced-burden-groups",
         [act_section("act-body-1", "B1_1", "B3_1"), act_section("act-body-2", "B1_2", "B2_1")],
         [("act-body-1", ["B1_1", "B3_1"]), ("act-body-2", ["B1_2", "B2_1"])],
+        valid=False,
+    )
+    assemble_partition_case(
+        "invalid-act-partition-unicode-burden-submove-axis-swap",
+        [act_section("act-body-1", "¹B₁", "²B₁", "³B₁"), act_section("act-body-2", "¹B₂", "²B₂")],
+        [("act-body-1", ["¹B₁", "²B₁", "³B₁"]), ("act-body-2", ["¹B₂", "²B₂"])],
         valid=False,
     )
     assemble_partition_case(
