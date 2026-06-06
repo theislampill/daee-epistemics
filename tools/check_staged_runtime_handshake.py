@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from closure_witness_lib import extract_embedded_field_witness, parse_closure_witness, status_head
+from closure_witness_lib import extract_embedded_field_witness, extract_field_witness, parse_closure_witness, status_head
 from delta_result_vocabulary import (
     DELTA_RESULT_VOCABULARY,
     delta_result_vocabulary_errors,
@@ -862,6 +862,13 @@ def visible_governed_output_errors(label: str, output_path: Path, text: str) -> 
     for check_label, pattern in checks:
         if re.search(pattern, text, re.IGNORECASE | re.MULTILINE) is None:
             errors.append(f"{label}: stage-07 output {rel(output_path)} missing {check_label}")
+
+    witness_payload = extract_embedded_field_witness(text)
+    field_witness = extract_field_witness(witness_payload)
+    if re.search(r"(?m)^\s*field_witness\b", text, re.IGNORECASE | re.MULTILINE) and field_witness is None:
+        errors.append(f"{label}: stage-07 output {rel(output_path)} missing parser-stable field_witness object")
+    if isinstance(field_witness, dict) and not isinstance(field_witness.get("normalized_activation_record"), dict):
+        errors.append(f"{label}: stage-07 output {rel(output_path)} missing structured field_witness normalized_activation_record")
 
     forbidden_patterns = [
         ("harness commentary", r"You are executing stage-|Validated compact stage state|Return exactly one JSON object"),

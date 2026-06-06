@@ -1,0 +1,25 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "stage07-field-witness-missing-nar",
+  "mode": "no-model-fixture",
+  "user_interface_preserved": true,
+  "stage_order": ["stage-01-intake", "stage-02-layer-a-diagnostic-ir", "stage-03-routing-owner-gate", "stage-04-burden-execution-act", "stage-05-mrp-reread-terminal-state", "stage-06-field-witness-nar", "stage-07-release-output"],
+  "stages": [
+    {"id": "stage-01-intake", "status": "pass", "produces": ["input_digest"], "requires": [], "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"id": "stage-02-layer-a-diagnostic-ir", "status": "pass", "produces": ["burden_floor"], "requires": ["input_digest"], "burden_floor": ["B1"], "selected_n_frame": "neutral-visible-projection", "live_registers": ["mu"]},
+    {"id": "stage-03-routing-owner-gate", "status": "pass", "produces": ["route_targets", "owner_routes"], "requires": ["burden_floor"], "route_targets": ["B1"], "owner_routes": [{"burden_id": "B1", "owner_id": "M7", "operation": "definition-anchor", "route_status": "executable"}]},
+    {"id": "stage-04-burden-execution-act", "status": "pass", "produces": ["act_targets", "act_body_refs", "act_rows"], "requires": ["route_targets", "owner_routes"], "act_targets": ["B1"], "act_burdens": ["B1"], "act_body_refs": ["B1_1"], "act_rows": ["⟦ACT B1_1[M7.definition-anchor] :: π=definition-pressure :: body_ref=B1_1 :: Δ=ΔB1:definition-anchored :: Land(B1)+⟧"]},
+    {"id": "stage-05-mrp-reread-terminal-state", "status": "pass", "produces": ["terminal_states", "dependency_graph_edges", "no_new_resultant_proof"], "requires": ["act_rows"], "terminal_states": {"B1": "landed"}, "dependency_graph_edges": [], "no_new_resultant_proof": {"proved": true, "basis": "B1 landed and no generated burden remains live.", "unresolved_burdens": []}},
+    {"id": "stage-06-field-witness-nar", "status": "pass", "produces": ["field_witness_body_refs", "nar_burdens", "normalized_activation_record"], "requires": ["terminal_states", "act_body_refs"], "field_witness_body_refs": ["B1_1"], "nar_burdens": ["B1"], "owner_activations": ["B1_1"], "normalized_activation_record": {"n_frame": "neutral-visible-projection", "live_registers": ["mu"], "burden_floor": ["B1"], "per_burden": [{"burden_id": "B1", "owner_id": "M7", "operation": "definition-anchor", "delta_result": "definition-anchored", "terminal_state": "landed", "generation_depth": 0}]}, "register_deltas": {"mu": "definition-anchored"}},
+    {"id": "stage-07-release-output", "status": "pass", "produces": ["release_output", "release_terminal_states"], "requires": ["field_witness_body_refs", "nar_burdens"], "release_output": {"path": "tests/staged-runtime-handshake/invalid/stage07-field-witness-missing-nar.output.md", "sha256": "DB39B61F4BB51ABE369CEF9F2DD7A6F6055822B2F34BFF86696F25D9E3F3941F"}, "release_terminal_states": {"B1": "landed"}, "closure_claim": "complete", "output_is_full_governed_answer": true}
+  ],
+  "handoffs": [
+    {"from": "stage-01-intake", "to": "stage-02-layer-a-diagnostic-ir", "checks": ["input_boundary_preserved"], "status": "pass"},
+    {"from": "stage-02-layer-a-diagnostic-ir", "to": "stage-03-routing-owner-gate", "checks": ["burden_floor_to_route_targets", "n_frame_present", "live_registers_present"], "status": "pass"},
+    {"from": "stage-03-routing-owner-gate", "to": "stage-04-burden-execution-act", "checks": ["route_targets_to_act_targets", "owner_eligibility_backed"], "status": "pass"},
+    {"from": "stage-04-burden-execution-act", "to": "stage-05-mrp-reread-terminal-state", "checks": ["act_rows_present", "act_body_refs_present"], "status": "pass"},
+    {"from": "stage-05-mrp-reread-terminal-state", "to": "stage-06-field-witness-nar", "checks": ["terminal_states_to_field_witness", "dependency_graph_explicit"], "status": "pass"},
+    {"from": "stage-06-field-witness-nar", "to": "stage-07-release-output", "checks": ["field_witness_nar_convergence"], "status": "pass"}
+  ],
+  "non_claims": {"not_model_smoke": true, "not_runtime_default_emission_proof": true, "not_arbitrary_nl_ir_parser": true, "not_package_provenance": true, "not_guaranteed_t_lang_uptake": true}
+}
