@@ -246,6 +246,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "with `⟦ACT`, containing `body_ref=`, `Δ=`, and `Land(`, and closing with "
             "`⟧`. The token immediately after `⟦ACT` is the public owner-qualified "
             "submove token, such as `¹B₁[source-status-repair.source-order]`; the "
+            "canonical slot grammar is `⟦ACT <bare-ref>[<owner>.<operation>] :: "
+            "π=<pressure> :: body_ref=<same-bare-ref> :: Δ=<delta-id>:<delta_result> "
+            ":: Land(<burden>)+⟧`. Do not omit the `::` separators, reorder these "
+            "slots, or place `body_ref=` before `π=`. "
             "`body_ref=` value and every `act_body_refs[]` item must be only the bare "
             "submove join key before the bracket, such as `¹B₁`. Do not put "
             "`[owner.operation]` in `body_ref=` or `act_body_refs[]`. This keeps the "
@@ -5749,6 +5753,39 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to derive Stage 04 act_body_refs from canonical ACT rows")
     if not isinstance(normalized_stage04.get("act_row_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 04 act_row_details")
+    missing_slot_separators_row = (
+        "⟦ACT ¹B₁[source-status-repair.source-order] "
+        "body_ref=¹B₁ π=scientific-explanations-only-knowledge-source "
+        "Δ=Δ¹B:science-source-bounded Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_body_refs": ["¹B₁"],
+                "act_rows": [missing_slot_separators_row],
+                "act_row_details": [
+                    {
+                        "burden_id": "B1",
+                        "body_ref": "¹B₁",
+                        "owner_id": "source-status-repair",
+                        "operation": "source-order",
+                        "register_axis": "σ",
+                        "delta_result": "science-source-bounded",
+                        "act_row": missing_slot_separators_row,
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "act_rows[0] is not a parseable canonical ACT row" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test failed to reject Stage 04 ACT row without canonical slot separators")
     hydrated_missing_body_ref = normalized_stage(
         "stage-04-burden-execution-act",
         {

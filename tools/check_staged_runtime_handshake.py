@@ -183,6 +183,13 @@ ACT_OWNER_OPERATION_DELTA_RE = re.compile(
     r"^⟦ACT\s+[^\[]+\[(?P<owner>[^.\]]+)\.(?P<operation>[^\]]+)\]"
     r".*?\bΔ=[^:\s]+:(?P<delta_result>[^:\s⟧]+)"
 )
+CANONICAL_ACT_ROW_RE = re.compile(
+    r"^\s*⟦ACT\s+[^\s\[]+\[[A-Za-z][A-Za-z0-9_/\-]*\.[A-Za-z][A-Za-z0-9_.\-/]*\]"
+    r"\s*::\s*π=[^\n]+?"
+    r"\s*::\s*body_ref=[^\s\[:⟧]+"
+    r"\s*::\s*Δ=[^:\s]+:.+?"
+    r"\s*::\s*Land\([^)\n]+\)\+?⟧\s*$"
+)
 CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0-9_])")
 MRP_GENERATED_BY_RE = re.compile(r"^MRP\((B[1-9][0-9]*)\)$")
 def rel(path: Path) -> str:
@@ -1476,6 +1483,11 @@ def stage04_act_errors(
         stripped = row.strip()
         if not stripped.startswith("⟦ACT"):
             errors.append(f"{row_label} must start with canonical '⟦ACT'")
+        if not CANONICAL_ACT_ROW_RE.match(stripped):
+            errors.append(
+                f"{row_label} must match canonical slot order "
+                "'⟦ACT <ref>[owner.operation] :: π=... :: body_ref=... :: Δ=... :: Land(Bn)+⟧'"
+            )
         if "body_ref=" not in stripped:
             errors.append(f"{row_label} must contain body_ref=")
         if "Δ=" not in stripped:
