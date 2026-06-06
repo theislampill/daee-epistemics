@@ -235,7 +235,7 @@ Cross-guardrails:
 - Do not source-parade.
 - Do not add corpus quotations or topical refutations.
 
-## Public ACT / NLA Reconstruction Contract
+## Public ACT / Semantic Reconstruction Contract
 
 `pattern-profiling` is a callable owner when Stage 03/04 selects an operation
 from the source-owned owner vocabulary. Its ACT owner slot remains
