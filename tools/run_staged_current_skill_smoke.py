@@ -2087,6 +2087,19 @@ def stage05_dependency_edges(stage05: dict[str, Any] | None) -> list[dict[str, s
     return edges
 
 
+STAGE02_BURDEN_REGISTER_KEYS = ("register_types", "registers", "burden_types", "types")
+
+
+def stage02_burden_detail_registers(item: dict[str, Any]) -> list[str]:
+    values: list[str] = []
+    for key in STAGE02_BURDEN_REGISTER_KEYS:
+        registers = item.get(key)
+        if not isinstance(registers, list):
+            continue
+        values.extend(str(register).strip() for register in registers if str(register).strip())
+    return ordered_unique(values)
+
+
 def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
     coverage: dict[str, list[str]] = {}
     if isinstance(stage02, dict):
@@ -2096,12 +2109,11 @@ def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]
                 if not isinstance(item, dict):
                     continue
                 burden = b_id(item.get("burden_id"))
-                registers = item.get("register_types")
-                if not burden or not isinstance(registers, list):
+                registers = stage02_burden_detail_registers(item)
+                if not burden or not registers:
                     continue
                 for register in registers:
-                    if isinstance(register, str) and register.strip():
-                        coverage.setdefault(register.strip(), []).append(burden)
+                    coverage.setdefault(register, []).append(burden)
     if coverage:
         return {register: ordered_unique(ids) for register, ids in coverage.items()}
     return {register: [burden] for register, burden in zip(list_field(stage02, "live_registers"), burdens)}
@@ -2116,12 +2128,10 @@ def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[
                 if not isinstance(item, dict):
                     continue
                 burden = b_id(item.get("burden_id"))
-                registers = item.get("register_types")
-                if not burden or not isinstance(registers, list):
+                values = stage02_burden_detail_registers(item)
+                if not burden or not values:
                     continue
-                values = [str(register).strip() for register in registers if str(register).strip()]
-                if values:
-                    burden_registers[burden] = ordered_unique(values)
+                burden_registers[burden] = values
     if burden_registers:
         return burden_registers
     return {
@@ -5830,6 +5840,38 @@ def run_self_test(root: Path) -> int:
     singular_registers = stage02_burden_register_types(singular_detail_stage02, singular_detail_stage02["burden_floor"])
     if singular_registers.get("B4") != ["kappa"]:
         raise HarnessError("Self-test singular Stage 02 detail alias lost B4 register typing")
+    registers_alias_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "selected-route-register-detail-alias-self-test",
+            "live_registers": ["m", "tau", "sigma", "xi", "Omega", "mu", "kappa"],
+            "burden_floor": ["B1", "B2", "B3", "B4"],
+            "burden_floor_details": [
+                {"burden_id": "B1", "registers": ["m", "tau", "Omega"]},
+                {"burden_id": "B2", "registers": ["xi", "sigma"]},
+                {"burden_id": "B3", "registers": ["mu", "tau"]},
+                {"burden_id": "B4", "registers": ["kappa", "Omega"]},
+            ],
+        },
+    )
+    registers_alias_coverage = stage02_register_coverage(registers_alias_stage02, registers_alias_stage02["burden_floor"])
+    for register, expected_burdens in {
+        "Omega": ["B1", "B4"],
+        "mu": ["B3"],
+        "kappa": ["B4"],
+    }.items():
+        if registers_alias_coverage.get(register) != expected_burdens:
+            raise HarnessError(
+                f"Self-test Stage 02 registers alias lost {register} coverage: {registers_alias_coverage.get(register)}"
+            )
+    registers_alias_burden_types = stage02_burden_register_types(
+        registers_alias_stage02,
+        registers_alias_stage02["burden_floor"],
+    )
+    if registers_alias_burden_types.get("B4") != ["kappa", "Omega"]:
+        raise HarnessError("Self-test Stage 02 registers alias lost B4 kappa/Omega typing")
     try:
         normalized_stage(
             "stage-02-layer-a-diagnostic-ir",
@@ -6138,6 +6180,67 @@ def run_self_test(root: Path) -> int:
                 }
             )
         return details
+
+    registers_alias_act_rows = [
+        (
+            "⟦ACT ¹B₁[M9.predication-repair] :: "
+            "π=selected-model-predication-pressure :: body_ref=¹B₁ :: "
+            "Δ=Δ¹B:person-nature-transfer-blocked :: Land(¹B)+⟧"
+        ),
+        (
+            "⟦ACT ²B₁[source-status-repair.source-order] :: "
+            "π=source-order-pressure :: body_ref=²B₁ :: "
+            "Δ=Δ²B:proof-text-sorted :: Land(²B)+⟧"
+        ),
+        (
+            "⟦ACT ³B₁[M7.definition-anchor] :: "
+            "π=semantic-compression-pressure :: body_ref=³B₁ :: "
+            "Δ=Δ³B:semantic-anchor-stabilized :: Land(³B)+⟧"
+        ),
+        (
+            "⟦ACT ⁴B₁[M8.dependency-trace] :: "
+            "π=dependency-collapse-pressure :: body_ref=⁴B₁ :: "
+            "Δ=Δκ:dependency-exposed :: Land(⁴B)+⟧"
+        ),
+    ]
+    registers_alias_stage07_contract = stage07_field_witness_contract_guidance(
+        [
+            registers_alias_stage02,
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1", "B2", "B3", "B4"],
+                "act_burdens": ["B1", "B2", "B3", "B4"],
+                "act_rows": registers_alias_act_rows,
+            },
+            {
+                "id": "stage-05-mrp-reread-terminal-state",
+                "status": "pass",
+                "terminal_states": {"B1": "landed", "B2": "landed", "B3": "landed", "B4": "landed"},
+                "reread_state": {"source_burden": "B4", "route_result_type": "no_new_resultant", "route": "STOP"},
+            },
+            {
+                "id": "stage-06-field-witness-nar",
+                "status": "pass",
+                "selected_n_frame": "selected-route-register-detail-alias-self-test",
+                "live_registers": ["m", "tau", "sigma", "xi", "Omega", "mu", "kappa"],
+                "register_deltas": {
+                    "Omega": ["person-nature-transfer-blocked"],
+                    "mu": ["semantic-anchor-stabilized"],
+                    "kappa": ["dependency-exposed"],
+                },
+            },
+        ]
+    )
+    for register, expected_pattern in {
+        "Omega": r'"Omega": \[\s*"B1",\s*"B4"\s*\]',
+        "mu": r'"mu": \[\s*"B3"\s*\]',
+        "kappa": r'"kappa": \[\s*"B4"\s*\]',
+    }.items():
+        if not re.search(expected_pattern, registers_alias_stage07_contract):
+            raise HarnessError(f"Self-test Stage 07 scaffold lost Stage 02 `registers` coverage for {register}")
+    if not re.search(r'"register_types": \[\s*"kappa",\s*"Omega"\s*\]', registers_alias_stage07_contract):
+        raise HarnessError("Self-test Stage 07 scaffold lost node register_types copied from Stage 02 `registers`")
 
     normalized_stage04 = normalized_stage(
         "stage-04-burden-execution-act",
