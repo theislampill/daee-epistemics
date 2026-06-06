@@ -2886,6 +2886,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
                 "land_target": target,
                 "terminal_state": terminal_states.get(target, "landed"),
                 "mrp_route_result_type": route_type,
+                "ordering_role": "required",
             }
         )
         nar_rows.append(
@@ -2915,6 +2916,28 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
                 "generation_depth": int(record.get("generation_depth") or 1),
             }
         )
+    owner_activation_ordering = {
+        "policy_id": "diagnostic-ir-pressure-owner-floor-v1",
+        "required_before": [],
+        "parallel_groups": [],
+    }
+    rows_by_target: dict[str, list[dict[str, Any]]] = {}
+    for row in owner_activation_rows:
+        rows_by_target.setdefault(str(row.get("target") or ""), []).append(row)
+    for target, rows in rows_by_target.items():
+        if len(rows) <= 1:
+            continue
+        for before, after in zip(rows, rows[1:]):
+            before_owner = str(before.get("owner") or "").strip()
+            after_owner = str(after.get("owner") or "").strip()
+            if before_owner and after_owner and before_owner != after_owner:
+                owner_activation_ordering["required_before"].append(
+                    {
+                        "target": target,
+                        "before_owner": before_owner,
+                        "after_owner": after_owner,
+                    }
+                )
     mrp_resultants = [
         {
             "source": edge["from"],
@@ -3029,6 +3052,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "terminal_states": terminal_states,
         "closure": {"status": closure_status, "unresolved_burdens": unresolved_burdens},
         "T_lang": "T_lang: PsiN -> PsiI: partial coupling boundary; no guaranteed uptake",
+        "owner_activation_ordering": owner_activation_ordering,
         "owner_activations": owner_activation_rows,
         "normalized_activation_record": {
             "n_frame": str((stage02 or {}).get("selected_n_frame") or (stage06 or {}).get("selected_n_frame") or "selected-n-frame"),
@@ -3066,6 +3090,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- Visible public burden IDs must use superscript notation such as `¹B`; JSON machine IDs remain canonical ASCII such as `B1`.",
         "- `𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP` is required in the visible ledger; JSON `B_total` must equal JSON `B_LA` plus `B_MRP` in order.",
         "- `coverage_proof.dependency_graph` is required with `nodes`, `edges`, `roots`, and boolean `acyclic`.",
+        "- `coverage_proof.diagnostic_completeness.live_registers` and `normalized_activation_record.live_registers` must include every Layer A live register, including `kappa` when Layer A makes it load-bearing. If a Layer A register is non-load-bearing or held, state that explicitly instead of omitting it from the mirrors.",
         "- If the dependency edge list is empty and `B_total` has multiple nodes, the visible graph line must declare every node as a parallel root, for example `¹B (root) || ²B (root)`, and JSON `parallel_groups` must mirror the full node group.",
         "- If the dependency edge list is non-empty, the visible graph must declare every root node plus every actual edge, for example `¹B (root); ²B (root); ⁴B → ⁵B`; never convert an edgeful graph into `¹B (root) → ⁵B` unless Stage 05 actually records that edge.",
         "- A generated `B_MRP` burden must appear in `generated_burdens[]`, `nodes[]`, `B_total`, `terminal_states`, `coverage_proof.dependency_graph.nodes`, and `normalized_activation_record.per_burden[]` with `generation_depth`, `track`, and `generated_by` provenance.",
@@ -3073,6 +3098,8 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- Do not synthesize a generated-burden `MRP(Bn)` row with `graph=none`; visible generated/held MRP resultants must expose the concrete Stage 05 graph edge such as `⁴B → ⁵B`, while JSON mirrors keep ASCII machine IDs.",
         "- Each `nodes[]` burden payload must include `register_types` copied from Stage 02 `burden_floor_details` when live registers are present.",
         "- Every `owner_activations[]` object must include both `target` and `land_target`; the checker reads `target` for terminal-state evidence.",
+        "- `field_witness.owner_activation_ordering` must be an object with `policy_id=\"diagnostic-ir-pressure-owner-floor-v1\"`; an `owner_activations[]` list or prose ordering explanation is not a deterministic ordering plan.",
+        "- If multiple load-bearing `owner_activations[]` rows land the same target, set each row's `ordering_role` and add `owner_activation_ordering.required_before[]` edges that mirror Stage 04 / visible ACT order. For genuinely parallel owner work, set every involved row to `ordering_role=\"parallel\"`, give them a stable `ordering_group`, and mirror that group in `owner_activation_ordering.parallel_groups[]`.",
         "- Emit one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror, plus one MRP-owned row for each generated `B_MRP` burden that has no Stage 04 ACT rows; do not collapse these into one summary row per burden.",
         "- Each NAR row must include `burden_id`, `owner_id`, `operation`, `delta_result`, `mrp_route_result_type`, `terminal_state`, and integer `generation_depth`.",
         "- `formal_reread_states[]` is required; emit exactly one row for every `mrp_resultants[]` source and keep `source_burden`, `route_result_type`, `graph_delta`, and `route` aligned with that MRP row.",
@@ -3087,6 +3114,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- For every `owner_activations[]` mirror, `owner` must contain only the ACT owner token or owner family, not `owner.operation`.",
         "- Put the operation in the separate `operation` field, and keep `owner_id` aligned with the owner token.",
         "- Do not set `owner` to `owner.operation`; for example use `\"owner\": \"FPD\"` and `\"operation\": \"foreign-premise-detection\"`.",
+        "- Do not add unscaffolded `owner_activations[]` rows. Every row must correspond to exactly one Stage 04 ACT `body_ref` shown in the mirror scaffold below; generated MRP-only rows belong in `normalized_activation_record.per_burden[]`, not `owner_activations[]`.",
         "- For every `owner_activations[]` mirror whose `delta` carrier is `Δκ` / `Delta-kappa`, include explicit `kappa_carrier`, `dependency_radius`, and `reread_state_effect` fields. Those fields must mention kappa/dependency/R(H,Delta) evidence that binds the dependency-radius transition back to the raw burden target before release.",
         "- Required field_witness scaffold and checker-owned keys (copy field names exactly; adapt prose details but keep the structure):",
         json.dumps(scaffold, ensure_ascii=False, indent=2),
@@ -3104,6 +3132,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
             "land": detail["land"],
             "target": detail["burden_id"],
             "land_target": detail["burden_id"],
+            "ordering_role": "required",
         }
         raw_delta = str(detail["delta"])
         if "κ" in raw_delta or "kappa" in raw_delta.lower():
@@ -3838,6 +3867,7 @@ def release_prompt(
     previous_stages: list[dict[str, Any]],
 ) -> str:
     previous = json.dumps(compact_state(previous_stages), ensure_ascii=False, indent=2)
+    field_witness_contract = stage07_field_witness_contract_guidance(previous_stages)
     return f"""Runtime SHA256: {skill_hash}
 
 You are executing stage-07-release-output for one bounded staged current-skill smoke.
@@ -3881,6 +3911,9 @@ Required public output surface:
   identical after status-head normalization.
 - Include Restorative Response.
 - Include Closing Formulation.
+
+Stage07 checker-owned field_witness/NAR clone-state contract:
+{field_witness_contract}
 
 Do not include JSON-only stage scratch as the public answer.
 Do not include commentary about this harness.
@@ -7914,6 +7947,11 @@ def run_self_test(root: Path) -> int:
     for required in (
         "Do not set `owner` to `owner.operation`",
         "After Closing Formulation, print the visible Closure/Reconstruction Witness ledger",
+        "`field_witness.owner_activation_ordering` must be an object",
+        '"owner_activation_ordering"',
+        '"policy_id": "diagnostic-ir-pressure-owner-floor-v1"',
+        '"ordering_role": "required"',
+        "Do not add unscaffolded `owner_activations[]` rows",
         "visible `𝔅_MRP (B_MRP) = {}` and JSON `\"B_MRP\": []`",
         "JSON machine IDs remain canonical ASCII such as `B1`",
         "`𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP` is required",
@@ -7996,6 +8034,29 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_kappa_witness_prompt:
             raise HarnessError(f"Self-test Stage 07 field_witness prompt omitted kappa carrier scaffold: {required}")
+    stage07_full_release_prompt = release_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+    )
+    for required in (
+        "Stage07 checker-owned field_witness/NAR clone-state contract:",
+        "Stage 07 field_witness mirror contract:",
+        "`field_witness.owner_activation_ordering` must be an object",
+        '"owner_activation_ordering"',
+        '"policy_id": "diagnostic-ir-pressure-owner-floor-v1"',
+        '"ordering_role": "required"',
+        "Do not add unscaffolded `owner_activations[]` rows",
+        "For every `owner_activations[]` mirror whose `delta` carrier is `Δκ` / `Delta-kappa`",
+        "`coverage_proof.diagnostic_completeness.live_registers`",
+        "`normalized_activation_record.per_burden[]`",
+    ):
+        if required not in stage07_full_release_prompt:
+            raise HarnessError(f"Self-test Stage 07 release prompt omitted witness clone-state scaffold: {required}")
     generated_stage05 = normalized_stage(
         "stage-05-mrp-reread-terminal-state",
         {
