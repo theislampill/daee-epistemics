@@ -226,7 +226,13 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "not activation proof; later ACT rows must use a callable selected owner/TTP "
             "floor. A route is executable for Stage 04 only when the selected owner "
             "family has source-owned operation and delta_result vocabulary, or when the "
-            "`owner_routes` row names a controlled `owner.operation` pair. If a selected "
+            "`owner_routes` row names a controlled `owner.operation` pair. In the "
+            "canonical `owner_routes` object, `owner_id` carries the owner or approved "
+            "owner alias, while `operation` / `owner_operation` carries only the "
+            "owner-local callable operation token. Do not prefix `operation` with "
+            "`owner_id`, an owner alias, a route label, or an ACT display token; for "
+            "example use `owner_id: source-status-repair` with `operation: source-order`, "
+            "not `operation: source-status-repair.source-order`. If a selected "
             "route has no loaded callable owner body, no controlled operation, or no "
             "owner-local delta_result vocabulary, preserve it as HOLD/PARTIAL with "
             "OWNER-BODY-NOT-LOADED / controlled-vocabulary-gap evidence instead of "
@@ -5769,6 +5775,32 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted M9 mode label as an executable Stage 03 operation")
+    try:
+        normalized_stage(
+            "stage-03-routing-owner-gate",
+            {
+                "id": "stage-03-routing-owner-gate",
+                "status": "pass",
+                "route_targets": ["B1"],
+                "owner_routes": [
+                    {
+                        "burden_id": "B1",
+                        "owner_id": "source-status-repair",
+                        "operation": "source-status-repair.source-order",
+                        "route_status": "executable",
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if (
+            "operation token 'source-status-repair.source-order' is outside controlled operation "
+            "vocabulary for SOURCE"
+            not in str(exc)
+        ):
+            raise
+    else:
+        raise HarnessError("Self-test accepted prefixed owner alias as a Stage 03 operation token")
 
     canonical_act_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
