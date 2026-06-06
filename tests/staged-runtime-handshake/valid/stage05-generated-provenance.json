@@ -63,6 +63,7 @@
           "body_ref": "B1_1",
           "owner_id": "source-status-repair",
           "operation": "source-order",
+          "register_axis": "σ",
           "pressure": "source-order",
           "delta_result": "source-function-bounded",
           "act_row": "⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-function-bounded :: Land(B1)+⟧"

@@ -28,6 +28,7 @@ from delta_result_vocabulary import (
     source_formal_delta_operation_errors,
     split_owner_operation_token,
 )
+from register_axis_contract import register_axis_errors
 from stage05_basis_contract import normalize_terminal_detail_basis
 import check_nla_decode_semantic_faithfulness as nla_decode
 import check_retained_proof_corpus as retained
@@ -1608,6 +1609,14 @@ def stage04_act_errors(
                     value = detail.get(key)
                     if value is not None and (not isinstance(value, str) or not value):
                         errors.append(f"{detail_label}.{key} must be a string when present")
+                errors.extend(
+                    register_axis_errors(
+                        detail_label,
+                        detail.get("owner_id") or detail.get("owner"),
+                        detail.get("operation"),
+                        detail.get("register_axis", detail.get("axis")),
+                    )
+                )
                 errors.extend(object_source_formal_errors(detail_label, detail))
                 act_row_value = detail.get("act_row")
                 if act_row_value is not None:

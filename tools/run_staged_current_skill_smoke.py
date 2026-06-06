@@ -37,6 +37,7 @@ from delta_result_vocabulary import (
     source_formal_delta_operation_errors,
     source_pressure_delta_errors,
 )
+from register_axis_contract import canonicalize_register_axis, register_axis_floor
 from stage05_basis_contract import normalize_terminal_detail_basis
 
 
@@ -99,44 +100,6 @@ CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0
 STAGE05_TERMINAL_BURDEN_ID_RE = re.compile(r"^B[1-9][0-9]*$")
 BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*)?$")
 ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
-REGISTER_AXIS_ALIASES = {
-    "N": "N",
-    "n": "N",
-    "m": "m",
-    "tau": "τ",
-    "τ": "τ",
-    "sigma": "σ",
-    "source_status": "σ",
-    "source-status": "σ",
-    "σ": "σ",
-    "heart": "♥",
-    "♥": "♥",
-    "xi": "ξ",
-    "ξ": "ξ",
-    "omega": "Ω",
-    "Omega": "Ω",
-    "Ω": "Ω",
-    "mu": "μ",
-    "μ": "μ",
-    "kappa": "κ",
-    "κ": "κ",
-    "H": "H",
-    "h": "H",
-}
-OWNER_REGISTER_AXIS_FLOORS = {
-    "SOURCE": {"σ", "H", "κ", "μ", "ξ"},
-    "source-status-repair": {"σ"},
-    "authority-order-repair": {"σ", "ξ"},
-    "M3": {"♥", "ξ", "Ω", "μ"},
-    "M9": {"μ", "ξ", "Ω"},
-    "PATTERN_PROFILE": {"μ", "κ", "σ", "ξ"},
-    "pattern-profiling": {"μ", "κ", "σ", "ξ"},
-    "V2": {"ξ", "κ", "μ", "Ω"},
-    "V2-reconstituting-reason": {"ξ", "κ", "μ", "Ω"},
-    "proof-method-audit": {"σ", "ξ", "μ", "κ"},
-    "do-second-loop": {"♥", "ξ", "Ω", "κ", "σ"},
-    "P3-reason-revelation-tension": {"Ω", "κ", "σ"},
-}
 CONTROLLED_STAGE05_TERMINAL_STATES = {
     "landed",
     "cleared",
@@ -290,7 +253,7 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "noetic tuple/register field being acted on (`N`, `m`, `τ`, `σ`, `♥`, `ξ`, "
             "`Ω`, `μ`, `κ`, or `H`); it is not a substitute for body_ref, owner, "
             "operation, or delta_result. Source-status operations bind to `σ`; M9 "
-            "predication/meaning-density/residue repairs bind only to an approved M9 "
+            "predication/residue/memetic-carrier repairs bind only to an approved M9 "
             "axis (`μ`, `ξ`, or `Ω`). Do not guess by encoding the operation into "
             "`body_ref`. The ACT bracket owner token before the dot must be the full "
             "selected owner id, not an abbreviation; long owner ids still use "
@@ -743,12 +706,6 @@ def reject_stage04_owner_qualified_body_ref(row: str) -> None:
         )
 
 
-def canonicalize_register_axis(value: Any) -> str | None:
-    if not isinstance(value, str) or not value.strip():
-        return None
-    return REGISTER_AXIS_ALIASES.get(value.strip())
-
-
 def require_stage04_register_axis(
     *,
     index: int,
@@ -760,11 +717,12 @@ def require_stage04_register_axis(
     if axis is None:
         raise HarnessError(f"stage-04 act_row_details[{index}].register_axis is required")
 
-    allowed_axes = OWNER_REGISTER_AXIS_FLOORS.get(parsed["owner_id"])
+    allowed_axes = register_axis_floor(parsed["owner_id"], parsed.get("operation"))
     if allowed_axes is not None and axis not in allowed_axes:
+        operation_suffix = f".{parsed.get('operation')}" if parsed.get("operation") else ""
         raise HarnessError(
             f"stage-04 act_row_details[{index}].register_axis {axis!r} is not approved for owner "
-            f"{parsed['owner_id']}"
+            f"{parsed['owner_id']}{operation_suffix}"
         )
 
     return axis, isinstance(raw_axis, str) and raw_axis.strip() != axis
@@ -2120,7 +2078,7 @@ def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]
             for item in details:
                 if not isinstance(item, dict):
                     continue
-                burden = b_id(item.get("burden_id"))
+                burden = b_id(item.get("burden_id") or item.get("id"))
                 registers = stage02_burden_detail_registers(item)
                 if not burden or not registers:
                     continue
@@ -2139,7 +2097,7 @@ def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[
             for item in details:
                 if not isinstance(item, dict):
                     continue
-                burden = b_id(item.get("burden_id"))
+                burden = b_id(item.get("burden_id") or item.get("id"))
                 values = stage02_burden_detail_registers(item)
                 if not burden or not values:
                     continue
@@ -3896,6 +3854,13 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
                 "`dependency-exposed`. Use `consequence-trace` for consequence or "
                 "entailment-blocking work; do not Land `M8.dependency-trace` with "
                 "`entailment-blocked`."
+            )
+        if family == "M9":
+            lines.append(
+                "- M9 delta_result tokens such as `predicate-separated`, `category-separated`, "
+                "`referent-separated`, and `sense-separated` are not callable operations. "
+                "Use `M9.predication-repair` or `M9.sense-split` in `[owner.operation]`, "
+                "then put the state-change token in the `Δ=...:<delta_result>` slot."
             )
     return "\n".join(lines)
 
@@ -5854,6 +5819,27 @@ def run_self_test(root: Path) -> int:
     singular_registers = stage02_burden_register_types(singular_detail_stage02, singular_detail_stage02["burden_floor"])
     if singular_registers.get("B4") != ["kappa"]:
         raise HarnessError("Self-test singular Stage 02 detail alias lost B4 register typing")
+    id_alias_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "selected-route-id-alias-register-coverage-self-test",
+            "live_registers": ["xi", "mu", "Omega", "kappa"],
+            "burden_floor": ["B1", "B2", "B3"],
+            "burden_floor_details": [
+                {"id": "B1", "register_types": ["xi", "mu"]},
+                {"id": "B2", "register_types": ["Omega"]},
+                {"id": "B3", "register_types": ["kappa"]},
+            ],
+        },
+    )
+    id_alias_coverage = stage02_register_coverage(id_alias_stage02, id_alias_stage02["burden_floor"])
+    if id_alias_coverage.get("kappa") != ["B3"]:
+        raise HarnessError("Self-test Stage 02 id alias lost kappa diagnostic coverage for B3")
+    id_alias_registers = stage02_burden_register_types(id_alias_stage02, id_alias_stage02["burden_floor"])
+    if id_alias_registers.get("B3") != ["kappa"]:
+        raise HarnessError("Self-test Stage 02 id alias lost B3 kappa register typing")
     registers_alias_stage02 = normalized_stage(
         "stage-02-layer-a-diagnostic-ir",
         {
@@ -6657,6 +6643,7 @@ def run_self_test(root: Path) -> int:
         "M8 operation-specific delta floor: `dependency-trace` requires `dependency-exposed`",
         "M9 operations: predication-repair, sense-split",
         "M9: category-separated",
+        "M9 delta_result tokens such as `predicate-separated`, `category-separated`, `referent-separated`, and `sense-separated` are not callable operations",
         "PROOF_METHOD operations: proof-denominator-audit, proof-family-and-carrier-audit",
         "PROOF_METHOD is a delta/register vocabulary family for callable owner `proof-method-audit`",
         "PROOF_METHOD: proof-denominator-exposed",
@@ -6903,6 +6890,19 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to preserve proof-method-audit ACT owner")
     if proof_method_detail.get("delta_result") != "proof-family-carrier-typed":
         raise HarnessError("Self-test failed to preserve proof-method-audit delta_result")
+    proof_method_tau_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_method_row],
+            "act_row_details": self_test_act_row_details([proof_method_row], {"¹B₁": "τ"}),
+        },
+    )
+    if proof_method_tau_stage04["act_row_details"][0].get("register_axis") != "τ":
+        raise HarnessError("Self-test failed to accept proof-method tribunal/burden-function register_axis")
     invalid_proof_method_operation_row = (
         "⟦ACT ¹B₁[proof-method-audit.proof-stack-routed] :: "
         "π=proof-family-carrier-pressure :: "
@@ -6924,6 +6924,28 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted proof-method route label as operation token")
+    invalid_proof_method_tau_row = (
+        "⟦ACT ¹B₁[proof-method-audit.proof-route-status-audit] :: "
+        "π=proof-route-status :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:proof-route-status-clarified :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_proof_method_tau_row],
+                "act_row_details": self_test_act_row_details([invalid_proof_method_tau_row], {"¹B₁": "τ"}),
+            },
+        )
+    except HarnessError as exc:
+        if "register_axis 'τ' is not approved for owner proof-method-audit.proof-route-status-audit" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted generic proof-method tau register_axis")
     valid_do_attribute_delta_row = (
         "⟦ACT ¹B₁[do-attribute-precision.attribute-precision] :: "
         "π=predicate-identity-pressure :: "
@@ -6996,6 +7018,31 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted source-status register_axis for M9")
+    invalid_m9_delta_as_operation_row = (
+        "⟦ACT ¹B₁[M9.referent-separated] :: "
+        "π=referent-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:referent-separated :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_m9_delta_as_operation_row],
+                "act_row_details": self_test_act_row_details(
+                    [invalid_m9_delta_as_operation_row],
+                    {"¹B₁": "μ"},
+                ),
+            },
+        )
+    except HarnessError as exc:
+        if "operation token 'referent-separated' is outside controlled operation vocabulary for M9" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted M9 delta_result token as callable operation")
     source_stack_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
         "π=quran-hadith-lexical-source-stack :: "
@@ -7088,7 +7135,7 @@ def run_self_test(root: Path) -> int:
         if "register_axis 'μ' is not approved for owner source-status-repair" not in str(exc):
             raise
     else:
-        raise HarnessError("Self-test accepted meaning-density register_axis for source-status repair")
+        raise HarnessError("Self-test accepted memetic-carrier register_axis for source-status repair")
     invalid_source_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
         "π=quran-hadith-lexical-source-stack :: "
@@ -8486,6 +8533,24 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_witness_prompt:
             raise HarnessError(f"Self-test Stage 07 field_witness prompt omitted mirror scaffold: {required}")
+    stage07_id_alias_witness_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-id-alias-kappa-coverage",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[id_alias_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+        section_id="field-witness-nar",
+        section_role="field_witness_nar",
+        section_number=7,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=None,
+    )
+    if '"kappa": [\n          "B3"\n        ]' not in stage07_id_alias_witness_prompt:
+        raise HarnessError("Self-test Stage 07 scaffold lost kappa diagnostic coverage from Stage 02 id alias")
     stage07_kappa_witness_prompt = release_section_prompt(
         root=root,
         case_name="self-test-kappa-carrier",

@@ -73,10 +73,10 @@ This notation is operative compression for existing runtime behavior, not decora
 It creates no IR fields, route IDs, PF codes, module owners, or schema keys.
 
 Legend:
-- `N` = noetic structure / operative noetic frame.
-- `m` = memetic claim / criterion / authority-node.
-- `τ` = tribunal / evaluative criterion.
-- `σ` = source-status.
+- `N` = operative noetic frame.
+- `m` = deformation / memetic mode.
+- `τ` = tribunal / burden-function.
+- `σ` = source / semantic / authority status.
 - `B` = live noetic burden.
 - `s` = operative submove.
 - `H` = held set.
