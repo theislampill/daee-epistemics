@@ -2643,6 +2643,7 @@ def stage07_act_contract_guidance(
     lines.extend(
         [
             "- Do not write malformed rows such as `⟦ACT [owner.operation] ...⟧`; the body_ref must appear immediately after `ACT`.",
+            "- Do not write any ACT-looking summary row outside this ACT slice. If a line begins with `⟦ACT`, it must be one of the exact copied Stage 04 rows above and it must include `body_ref=`.",
             "- After each copied ACT row, emit exactly one dereferenceable public submove block for the same body_ref.",
             "- Public submove block headings must use canonical public notation such as `¹B₁[owner] - ...`, not ASCII `B1_1[owner]`; keep ASCII `body_ref=B1_1` only inside copied ACT rows and field_witness JSON.",
             "- Emit a `## Burden N / ⁿB` heading only when this section contains the first Stage 04 body_ref for that burden.",
@@ -4037,7 +4038,9 @@ def release_section_prompt(
             "Write only the visible opening for the governed answer. It must contain the exact banner "
             "`daee-epistemics — NOETIC FIELD EXECUTION`, plus the field/read/state surface a "
             "normal `/daee-epistemics` answer exposes. Do not include Layer B, field_witness, "
-            "Restorative Response, or Closing Formulation."
+            "Restorative Response, Closing Formulation, or any `⟦ACT` fence. If the opening needs "
+            "to preview live burdens or selected owners, use ordinary prose or bullet text without "
+            "ACT-row syntax."
         ),
         "layer_a_diagnostic_ir": (
             "Write only the compact Layer A / Diagnostic IR public surface. It must include a Layer A "
@@ -4154,6 +4157,12 @@ Public interface boundary:
   B.5 projection sidecars, retained promotion, package/provenance, guaranteed
   uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or
   ActiveGraph proof.
+- ACT fence syntax is global across the assembled public output: outside
+  `layer_b_act` sections, do not emit any line beginning with `⟦ACT`. Inside
+  `layer_b_act`, every visible `⟦ACT ...⟧` row must be copied exactly from the
+  canonical Stage 04 row and must include `body_ref=`. Opening summaries, Layer
+  A prose, MRP, restoration, closing, and field_witness sections may refer to
+  burdens in prose, but they must not invent ACT-looking summary rows.
 
 Run metadata: redacted from model-facing route surface; case IDs and paths are
 custody fields only and must not determine routing, owner selection, proof
@@ -7376,6 +7385,29 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted Stage 06 NAR hidden-support pressure with authority-order delta")
+    stage07_opening_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+        section_id="opening",
+        section_role="visible_opening",
+        section_number=1,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=None,
+    )
+    for required in (
+        "outside\n  `layer_b_act` sections, do not emit any line beginning with `⟦ACT`",
+        "Restorative Response, Closing Formulation, or any `⟦ACT` fence",
+        "use ordinary prose or bullet text without ACT-row syntax",
+    ):
+        if required not in stage07_opening_prompt:
+            raise HarnessError(f"Self-test Stage 07 opening prompt omitted ACT-fence boundary: {required}")
     stage07_layer_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
@@ -7460,6 +7492,7 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test Stage 07 ACT prompt omitted exact canonical Stage 04 ACT row")
     for required in (
         "Do not write malformed rows such as `⟦ACT [owner.operation] ...⟧`",
+        "Do not write any ACT-looking summary row outside this ACT slice.",
         "¹B₁[source-status-repair] - source-order over scientific-explanations-only-knowledge-source",
         "Contribution-to-Land(¹B)",
         "Land(¹B): summarize the cumulative state delta from the visible submove block(s)",
