@@ -234,3 +234,31 @@ Cross-guardrails:
 - Do not turn memetic-carrier analysis into public denunciation.
 - Do not source-parade.
 - Do not add corpus quotations or topical refutations.
+
+## Public ACT / NLA Reconstruction Contract
+
+`pattern-profiling` is a callable owner when Stage 03/04 selects an operation
+from the source-owned owner vocabulary. Its ACT owner slot remains
+`pattern-profiling`; `PATTERN_PROFILE` is only the owner-family / delta-result
+vocabulary family and MUST NOT be used as the executable ACT owner.
+
+For `pattern-profiling.loaded-label-carrier-audit`, public reconstruction is
+body-backed only when the dereferenced submove:
+
+1. names the pressure target as a label, slogan, identity marker, proof packet,
+   or worldview/noetic carrier;
+2. identifies what hidden proof rule, source-status posture, authority-order,
+   ontology, identity marker, or burden-shift the carrier transmits;
+3. records `carrier-function-typed` as the owner-local `delta_result`;
+4. explains how that typed carrier state contributes to the exact typed
+   `Land(B)` target; and
+5. leaves downstream topical, source, proof, or verdict content held until the
+   carrier function has landed.
+
+The ACT row, field_witness owner activation, normalized activation record, and
+public submove must therefore preserve separate typed layers:
+`body_ref` join key, callable owner `pattern-profiling`, operation
+`loaded-label-carrier-audit`, register pressure over `mu` / `kappa` / `sigma` /
+`xi` where live, delta_result `carrier-function-typed`, and exact `Land(B)`
+target. Repeating `pattern-profiling.loaded-label-carrier-audit` or
+`carrier-function-typed` in prose is not proof of the transition.

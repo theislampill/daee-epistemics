@@ -45,7 +45,10 @@ from check_mrp_generated_burden import (
     GENERIC_ACT_VALUE_RE,
     STATE_CHANGE_RE,
 )
-from delta_result_vocabulary import family_alias_as_executable_owner_errors
+from delta_result_vocabulary import (
+    DELTA_RESULT_OWNER_ALIASES,
+    family_alias_as_executable_owner_errors,
+)
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -231,6 +234,13 @@ def owner_contract_key(value: str) -> str:
     return re.sub(r"[\s_]+", "-", value.strip().strip("[]")).upper()
 
 
+def nla_owner_family(value: str) -> str:
+    """Resolve public reconstruction owners without accepting family aliases."""
+
+    token = owner_contract_key(str(value or ""))
+    return strict_owner_family(str(value or "")) or DELTA_RESULT_OWNER_ALIASES.get(token, "")
+
+
 def formal_owner_contract_operations() -> dict[str, set[str]]:
     operations: dict[str, set[str]] = {}
     catalogue = ROOT / "atomics/skill/references/diagnostics/module-catalogue.json"
@@ -294,6 +304,19 @@ RUNTIME_EMISSION_POLICY_SOURCE_EVIDENCE = {
     "field_witness.canonical_ir_projection.decoded_ir",
     "field_witness.canonical_ir_projection.full_ir_decode",
 }
+PATTERN_PROFILE_NEGATED_EVIDENCE_RE = re.compile(
+    r"(?is)\b(?:only repeats?|merely repeats?|label[- ]only|owner labels?|"
+    r"does not identify|does not perform|without identifying|without a burden[- ]local state transition)\b"
+)
+PATTERN_PROFILE_LABEL_CARRIER_RE = re.compile(
+    r"(?is)\b(?:loaded[- ]label|label[- ]carrier|identity[- ]carrier|"
+    r"worldview[- ]carrier|noetic[- ]carrier|carrier[- ]function|"
+    r"label as (?:a )?(?:noetic |worldview |identity )?carrier)\b"
+)
+PATTERN_PROFILE_HIDDEN_RULE_RE = re.compile(
+    r"(?is)\b(?:hidden proof rule|proof rule|transmit(?:s|ted)?|noetic grammar|"
+    r"compressed grammar|hidden grammar|unnamed owner|does proof work|source or proof burden)\b"
+)
 
 
 @dataclass(frozen=True)
@@ -430,7 +453,7 @@ def visible_activation_triplets(records: list[ActRecord]) -> set[tuple[str, str,
     for record in records:
         land_target_tokens = [graph_burden_id(item) for item in land_targets(record.land)]
         target = land_target_tokens[0] if land_target_tokens else ""
-        owner = strict_owner_family(record.owner)
+        owner = nla_owner_family(record.owner)
         if target and owner and record.operation:
             triplets.add((target, owner, record.operation))
     return triplets
@@ -466,7 +489,7 @@ def activation_surface_coverage_errors(
         if not isinstance(row, dict):
             continue
         burden = graph_burden_id(row.get("burden_id"))
-        owner = strict_owner_family(str(row.get("owner_id") or ""))
+        owner = nla_owner_family(str(row.get("owner_id") or ""))
         operation = str(row.get("operation") or "").strip()
         if burden and owner and operation and (burden, owner, operation) not in visible_triplets:
             errors.append(
@@ -610,7 +633,7 @@ def projection_row_set(records: list[ActRecord]) -> set[tuple[str, str, str, str
     for record in records:
         land_target_tokens = [graph_burden_id(item) for item in land_targets(record.land)]
         target = land_target_tokens[0] if land_target_tokens else ""
-        rows.add((target, strict_owner_family(record.owner), record.operation, record.delta_result))
+        rows.add((target, nla_owner_family(record.owner), record.operation, record.delta_result))
     return rows
 
 
@@ -679,7 +702,7 @@ def canonical_ir_projection_common_errors(
                 errors.append(f"{row_label}: normalized_activation_record row is not an object")
             elif canonical_projection_row(row) != canonical_projection_row(nar_row):
                 errors.append(f"{row_label}: row does not match normalized_activation_record")
-        owner_family = strict_owner_family(str(row.get("owner_id") or ""))
+        owner_family = nla_owner_family(str(row.get("owner_id") or ""))
         if not owner_family:
             errors.append(f"{row_label}: owner_id is not catalogue-backed")
         route_type = row.get("mrp_route_result_type")
@@ -921,11 +944,11 @@ def register_composition_projection_errors(path: Path, projection: dict[str, Any
             errors.append(f"{label}.owner_handoff.held must be a string list")
             held = []
         projection_owners = {
-            strict_owner_family(str(row.get("owner_id") or ""))
+            nla_owner_family(str(row.get("owner_id") or ""))
             for row in projection.get("per_burden", [])
             if isinstance(row, dict)
         }
-        selected_families = {strict_owner_family(owner) for owner in selected}
+        selected_families = {nla_owner_family(owner) for owner in selected}
         missing_selected = sorted(owner for owner in selected_families if owner and owner not in projection_owners)
         if missing_selected:
             errors.append(f"{label}.owner_handoff.selected not backed by projection rows: {missing_selected}")
@@ -1051,12 +1074,12 @@ def canonical_ir_decode_errors(
         if record is None:
             errors.append(f"{row_label}: no visible ACT row has body_ref {body_ref!r}")
         else:
-            owner_family = strict_owner_family(str(row.get("owner_id") or ""))
+            owner_family = nla_owner_family(str(row.get("owner_id") or ""))
             land_target_tokens = [graph_burden_id(item) for item in land_targets(record.land)]
             land_target = land_target_tokens[0] if land_target_tokens else ""
             if graph_burden_id(row.get("burden_id")) != land_target:
                 errors.append(f"{row_label}: burden_id does not match ACT Land target")
-            if owner_family != strict_owner_family(record.owner):
+            if owner_family != nla_owner_family(record.owner):
                 errors.append(f"{row_label}: owner_id does not match visible ACT owner")
             if row.get("operation") != record.operation:
                 errors.append(f"{row_label}: operation does not match visible ACT operation")
@@ -1070,7 +1093,7 @@ def canonical_ir_decode_errors(
             errors.append(f"{row_label}: field_witness.owner_activations must have exactly one mirror")
         else:
             mirror = mirror_items[0]
-            if strict_owner_family(str(row.get("owner_id") or "")) != strict_owner_family(str(mirror.get("owner") or "")):
+            if nla_owner_family(str(row.get("owner_id") or "")) != nla_owner_family(str(mirror.get("owner") or "")):
                 errors.append(f"{row_label}: owner_id does not match field_witness mirror")
             if row.get("operation") != mirror.get("operation"):
                 errors.append(f"{row_label}: operation does not match field_witness mirror")
@@ -1421,8 +1444,8 @@ def activation_mirror_errors(
             + ", ".join(self_claims)
         )
 
-    record_family = strict_owner_family(record.owner)
-    mirror_family = strict_owner_family(str(mirror.get("owner") or ""))
+    record_family = nla_owner_family(record.owner)
+    mirror_family = nla_owner_family(str(mirror.get("owner") or ""))
     errors.extend(family_alias_as_executable_owner_errors(label, record.owner))
     errors.extend(family_alias_as_executable_owner_errors(label, str(mirror.get("owner") or "")))
     if record_family != mirror_family:
@@ -1455,7 +1478,7 @@ def decode_facets(path: Path, text: str, record: ActRecord) -> tuple[DecodedFace
     if record.submove_ref != record.body_ref:
         errors.append(f"{label}: body_ref must equal the encoded submove ref")
 
-    owner_family = strict_owner_family(record.owner)
+    owner_family = nla_owner_family(record.owner)
     errors.extend(family_alias_as_executable_owner_errors(label, record.owner))
     if not owner_family:
         errors.append(f"{label}: owner {record.owner!r} is not catalogue-backed")
@@ -1492,7 +1515,7 @@ def decode_facets(path: Path, text: str, record: ActRecord) -> tuple[DecodedFace
         return None, errors
     block = blocks[0]
     _block_ref, block_owner = submove_block_ref_owner(block)
-    body_owner_family = strict_owner_family(block_owner)
+    body_owner_family = nla_owner_family(block_owner)
     if owner_family and body_owner_family != owner_family:
         errors.append(f"{label}: body owner {block_owner!r} does not decode to ACT owner family {owner_family}")
 
@@ -1552,6 +1575,22 @@ def semantic_faithfulness_errors(path: Path, record: ActRecord, facets: DecodedF
         facets.land_target,
     ):
         errors.append(f"{label}: body contribution does not decode to Land({facets.land_target})")
+    if facets.owner_family == "PATTERN_PROFILE" and facets.operation == "loaded-label-carrier-audit":
+        payload = "\n".join(
+            (
+                facets.body_target,
+                facets.body_operation,
+                facets.body_result,
+                facets.body_contribution,
+                facets.body_prose,
+            )
+        )
+        if PATTERN_PROFILE_NEGATED_EVIDENCE_RE.search(payload):
+            errors.append(f"{label}: pattern-profiling body negates or repeats transition evidence")
+        if not PATTERN_PROFILE_LABEL_CARRIER_RE.search(payload):
+            errors.append(f"{label}: pattern-profiling body does not identify a loaded label carrier")
+        if not PATTERN_PROFILE_HIDDEN_RULE_RE.search(payload):
+            errors.append(f"{label}: pattern-profiling body does not expose the hidden rule carried by the label")
     return errors
 
 
@@ -1566,7 +1605,7 @@ def reconstruct_layer_b_submove(path: Path, record: ActRecord) -> tuple[str | No
     label = f"{rel(path)}: ACT {record.submove_ref}"
     errors: list[str] = []
     canonical = canonical_activation_from_record(record)
-    owner_family = strict_owner_family(canonical.owner)
+    owner_family = nla_owner_family(canonical.owner)
     errors.extend(family_alias_as_executable_owner_errors(label, canonical.owner))
     if not owner_family:
         errors.append(f"{label}: cannot reconstruct from non-catalogue owner {canonical.owner!r}")
@@ -1592,30 +1631,55 @@ def reconstruct_layer_b_submove(path: Path, record: ActRecord) -> tuple[str | No
     pressure = canonical.pressure
     operation = canonical.operation
     delta_result = record.delta_result
+    if owner_family == "PATTERN_PROFILE" and operation == "loaded-label-carrier-audit":
+        operation_line = (
+            f"Operation: {operation} acts on {pressure} by treating the label as a noetic "
+            "carrier, exposing the hidden proof rule it transmits, and preventing the "
+            "label from doing owner work by itself."
+        )
+        result_line = (
+            f"Result/state-change: {delta_result}; state-change: the carrier function is "
+            "identified, the hidden rule is exposed, and the label is no longer "
+            "load-bearing as a proof shortcut."
+        )
+        contribution_line = (
+            f"Contribution-to-Land({target}): This {delta_result} state change contributes "
+            f"to Land({target}) by making the noetic carrier and transmitted rule explicit."
+        )
+        body_line = (
+            "The reconstructed PATTERN_PROFILE operation recovers the loaded-label carrier, "
+            f"targets {pressure}, exposes the hidden proof rule carried by the label, and "
+            f"makes {delta_result} visible as the local state transition."
+        )
+    else:
+        operation_line = (
+            f"Operation: {operation} acts on {pressure}; owner family {owner_family} "
+            "performs the named operation rather than merely echoing the label."
+        )
+        result_line = (
+            f"Result/state-change: {delta_result}; state-change: {pressure} is no "
+            f"longer load-bearing after {operation}."
+        )
+        contribution_line = (
+            f"Contribution-to-Land({target}): This {delta_result} state change "
+            f"contributes to Land({target}) by making {pressure} no longer "
+            "load-bearing."
+        )
+        body_line = (
+            f"The reconstructed {owner_family} operation recovers {operation}, "
+            f"targets {pressure}, makes {delta_result} visible, and explains the "
+            f"local state change that licenses Land({target})."
+        )
     reconstructed = "\n".join(
         (
             f"### {raw_body_ref}[{canonical.owner}] - reconstructed {operation} over {pressure}",
             f"Target: {pressure}.",
-            (
-                f"Operation: {operation} acts on {pressure}; owner family {owner_family} "
-                "performs the named operation rather than merely echoing the label."
-            ),
-            (
-                f"Result/state-change: {delta_result}; state-change: {pressure} is no "
-                f"longer load-bearing after {operation}."
-            ),
-            (
-                f"Contribution-to-Land({target}): This {delta_result} state change "
-                f"contributes to Land({target}) by making {pressure} no longer "
-                "load-bearing."
-            ),
+            operation_line,
+            result_line,
+            contribution_line,
             "",
             "TTP Operation Body:",
-            (
-                f"The reconstructed {owner_family} operation recovers {operation}, "
-                f"targets {pressure}, makes {delta_result} visible, and explains the "
-                f"local state change that licenses Land({target})."
-            ),
+            body_line,
         )
     )
     return reconstructed, []
@@ -1644,13 +1708,13 @@ def reconstructed_submove_errors(
     land_target = land_target_tokens[0] if land_target_tokens else ""
     facets = DecodedFacets(
         body_ref=graph_submove_id(record.body_ref),
-        owner_family=strict_owner_family(record.owner),
+        owner_family=nla_owner_family(record.owner),
         operation=record.operation,
         pressure=record.pi,
         delta_result=record.delta_result,
         land_target=land_target,
         body_target=field_body(block, "Target"),
-        body_owner_family=strict_owner_family(block_owner),
+        body_owner_family=nla_owner_family(block_owner),
         body_operation=field_body_any(block, ("Operation", "What it does")),
         body_result=field_body_any(block, ("Result", "Result/state-change")),
         body_contribution=contribution_body(block),

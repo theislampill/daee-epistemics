@@ -45,7 +45,11 @@ from check_manual_smoke_render_contract import (
     submove_operation_body,
     target_pressure_identifiable,
 )
-from delta_result_vocabulary import source_formal_delta_operation_errors
+from delta_result_vocabulary import (
+    DELTA_RESULT_OWNER_ALIASES,
+    family_alias_as_executable_owner_errors,
+    source_formal_delta_operation_errors,
+)
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -281,6 +285,7 @@ FAMILY_OPERATION_OWNER = {
     "DO_CHRISTIAN": "do-christian-extensions",
     "DO_SECOND_LOOP": "do-second-loop",
     "DOUBT_SKEPTICISM": "doubt-vs-skepticism",
+    "PATTERN_PROFILE": "pattern-profiling",
     "PROOF_METHOD": "proof-method-audit",
 }
 
@@ -519,6 +524,7 @@ def owner_alias_key(value: str) -> str:
 
 def catalogue_owner_aliases() -> dict[str, str]:
     aliases = dict(DOCUMENTED_OWNER_ALIASES)
+    aliases.update(DELTA_RESULT_OWNER_ALIASES)
     repo = Path(__file__).resolve().parents[1]
     for relative in (
         Path("atomics/skill/references/diagnostics/module-catalogue.json"),
@@ -1447,6 +1453,7 @@ def validate_act_record(
         )
     if not record_family:
         errors.append(f"ACT owner {record.owner!r} is not a catalogue-backed owner alias")
+    errors.extend(family_alias_as_executable_owner_errors(f"ACT {record.submove_ref}", record.owner))
     if not compact_record_shape(record):
         errors.append(f"ACT {record.submove_ref} must stay compact; put prose in the dereferenced body")
     if GENERIC_ACT_VALUE_RE.fullmatch(record.operation):

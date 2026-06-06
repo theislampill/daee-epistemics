@@ -324,6 +324,15 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
         re.compile(r"(?i)\b(?:tamanu|tamānu|divine plurality|independent lordship|multiple gods|logical exhaustion|plurality pressure)\b"),
     ),
     (
+        "PATTERN_PROFILE",
+        re.compile(
+            r"(?i)\b(?:loaded[- ]label|label[- ]carrier|identity[- ]carrier|"
+            r"worldview[- ]carrier|noetic[- ]carrier|carrier[- ]function|"
+            r"proof[- ]packet|collapse[- ]radius|mutation[- ]after[- ]challenge|"
+            r"pattern[- ]profile|compression[- ]carrier)\b"
+        ),
+    ),
+    (
         "FPD",
         re.compile(
             r"(?i)\b(?:foreign premise|imported premise|imported criterion|hidden court|"
@@ -963,6 +972,8 @@ def owner_family(owner: str) -> str:
         return "V11"
     if re.match(r"^V12(?:\b|[-_/])", normalized):
         return "V12"
+    if "PATTERN-PROFILING" in normalized or "PATTERN_PROFILE" in normalized:
+        return "PATTERN_PROFILE"
     for code in ("V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9"):
         if re.match(rf"^{code}(?:\b|[-_/])", normalized):
             return code
