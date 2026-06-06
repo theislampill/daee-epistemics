@@ -2690,7 +2690,10 @@ def stage07_act_contract_guidance(
                 "  M8 consequence-trace operation: use the registered operation token `consequence-trace`; "
                 "assume the live pressure, trace at least one concrete downstream implication or entailment, "
                 "name why that consequence is blocked/demoted/unacceptable in the selected noetic frame, "
-                "and put result words such as dependency-exposed or entailment-bounded in `Result/state-change:`, not `Operation:`."
+                "and put result words such as dependency-exposed or entailment-bounded in `Result/state-change:`, not `Operation:`. "
+                "A marker-rich row is not enough: if the public body cannot state the consequence/dependency, "
+                "the tested if-accepted implication, and the burden-local state change, render HOLD/PARTIAL "
+                "instead of `Land(Bn)`."
             )
         elif family == "V10":
             lines.append(
@@ -7463,6 +7466,7 @@ def run_self_test(root: Path) -> int:
     for required in (
         "M8 consequence-trace operation: use the registered operation token `consequence-trace`",
         "put result words such as dependency-exposed or entailment-bounded in `Result/state-change:`, not `Operation:`",
+        "if the public body cannot state the consequence/dependency, the tested if-accepted implication, and the burden-local state change",
     ):
         if required not in stage07_m8_prompt:
             raise HarnessError(f"Self-test Stage 07 M8 prompt omitted owner scaffold: {required}")
