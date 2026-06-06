@@ -3644,6 +3644,31 @@ def split_route_owner_operation(owner: str) -> tuple[str, str]:
     return token, ""
 
 
+def stage03_owner_operation_guidance() -> str:
+    lines = [
+        "",
+        "Stage 03 controlled owner-operation vocabulary:",
+        "- If an `owner_routes[]` row is executable, its `operation` / "
+        "`owner_operation` value must be one of the listed owner-local callable "
+        "operation tokens for that owner family.",
+        "- Keep route pressure, source/authority labels, proof pressure, and "
+        "delta/result labels out of `operation`; if a route names pressure but "
+        "not a callable operation, emit HOLD/PARTIAL instead of inventing an "
+        "operation token.",
+        "- Source, authority, rank, tribunal, quotation, lineage, or source-order "
+        "pressure belongs to SOURCE-family operations when selected; do not "
+        "encode that pressure as an M1-P operation.",
+        "- M1-P is the performative self-refutation family. Its callable "
+        "operations are `test` and `performative-test`; do not mint "
+        "`authority-premise-test`, `authority-test`, or similar mixed "
+        "source/authority operation labels.",
+    ]
+    for family in sorted(OWNER_OPERATION_VOCABULARY):
+        operations = ", ".join(sorted(OWNER_OPERATION_VOCABULARY[family]))
+        lines.append(f"- {family} operations: {operations}")
+    return "\n".join(lines)
+
+
 def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> str:
     stage03 = stage_by_id(previous_stages, "stage-03-routing-owner-gate")
     if not isinstance(stage03, dict):
@@ -3736,7 +3761,9 @@ def stage_prompt(
     spec = STAGE_SPECS[stage_id]
     previous = json.dumps(compact_state(previous_stages), ensure_ascii=False, indent=2)
     extra_guidance = ""
-    if stage_id == "stage-04-burden-execution-act":
+    if stage_id == "stage-03-routing-owner-gate":
+        extra_guidance = stage03_owner_operation_guidance()
+    elif stage_id == "stage-04-burden-execution-act":
         extra_guidance = stage04_delta_vocabulary_guidance(previous_stages)
     custody_metadata = {
         "case_id": case_name,
@@ -5836,6 +5863,56 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted prefixed owner alias as a Stage 03 operation token")
+
+    normalized_m1p_route = normalized_stage(
+        "stage-03-routing-owner-gate",
+        {
+            "id": "stage-03-routing-owner-gate",
+            "status": "pass",
+            "route_targets": ["B1"],
+            "owner_routes": [
+                {
+                    "burden_id": "B1",
+                    "owner_id": "M1-P",
+                    "operation": "performative-test",
+                    "route_status": "executable",
+                }
+            ],
+        },
+    )
+    if normalized_m1p_route.get("owner_routes") != [
+        {
+            "burden_id": "B1",
+            "owner_id": "M1-P",
+            "operation": "performative-test",
+            "route_status": "executable",
+        }
+    ]:
+        raise HarnessError("Self-test failed to accept controlled M1-P Stage 03 operation")
+    try:
+        normalized_stage(
+            "stage-03-routing-owner-gate",
+            {
+                "id": "stage-03-routing-owner-gate",
+                "status": "pass",
+                "route_targets": ["B1"],
+                "owner_routes": [
+                    {
+                        "burden_id": "B1",
+                        "owner_id": "M1-P",
+                        "operation": "authority-premise-test",
+                        "route_status": "executable",
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "operation token 'authority-premise-test' is outside controlled operation vocabulary for M1-P" not in str(
+            exc
+        ):
+            raise
+    else:
+        raise HarnessError("Self-test accepted authority/source pressure as an M1-P Stage 03 operation")
 
     canonical_act_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] :: "
