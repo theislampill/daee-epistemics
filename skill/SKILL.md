@@ -2031,16 +2031,9 @@ Invocation-surface invariants retained here:
   `science-source-bounded` or `self-authorizing-standard-invalidated`; do not
   include the burden-local prefix (`Δ¹B:`, `Delta(B1):`, or similar) inside
   `normalized_activation_record.per_burden[].delta_result`.
-  Public ACT rows have the same layer split: the `Δ=` carrier before the colon
-  names only the burden-state or dependency-radius transition, such as `Δ¹B`,
-  `ΔB1`, or `Δκ`; the suffix after the colon is the owner-local
-  `delta_result`. Do not put diagnostic step IDs (`D7`, `D8`), submove IDs
-  (`Δ¹B₁`, `ΔB1_1`), owner.operation tokens, register axes, or prose labels in
-  the `Δ=` carrier. If the relevant change is dependency-radius, use `Δκ` as
-  the carrier and keep the owner-local state change as the suffix. This is not
-  a permission to drop work: if the burden state or κ/H dependency state is
-  still unresolved, route HOLD/PARTIAL/RECURSE instead of printing a compact
-  label as Land proof.
+  `Δ=` carrier: `Δ¹B`/`ΔB1`/`Δκ` only; suffix: owner-local `delta_result`.
+  No `D7`/submove IDs/owner.operation/register axes/prose carriers;
+  unresolved => HOLD/PARTIAL/RECURSE.
   In NAR, `burden_floor` is a string list of B IDs only, for example
   `["B1","B2"]`; do not use register/object rows there. `per_burden[]` is
   ACT-level despite its historical name: emit one row for every visible ACT /
