@@ -3310,10 +3310,53 @@ RESTORATIVE_SLOT_PATTERNS = (
     re.compile(r"(?im)^\s*(?:[-*]\s*)?Relieved pressure\s*:\s*\S"),
     re.compile(r"(?im)^\s*(?:[-*]\s*)?Held/scoped/reopenable remainder\s*:\s*\S"),
 )
+SECTION_ROLE_HEADING_PATTERNS = {
+    "restorative_response": re.compile(
+        r"(?i)^\s*(?:#{1,6}\s*)?(?:(?:\*\*|__|\*|_)\s*)?"
+        r"Restorative Response"
+        r"(?:\s*(?:\*\*|__|\*|_))?\s*(?:#+\s*)?$"
+    ),
+    "closing_formulation": re.compile(
+        r"(?i)^\s*(?:#{1,6}\s*)?(?:(?:\*\*|__|\*|_)\s*)?"
+        r"Closing Formulation"
+        r"(?:\s*(?:\*\*|__|\*|_))?\s*(?:#+\s*)?$"
+    ),
+}
 
 
 def restorative_response_slots_present(text: str) -> bool:
     return all(pattern.search(text) for pattern in RESTORATIVE_SLOT_PATTERNS)
+
+
+def demote_duplicate_own_section_heading(
+    section_role: str,
+    text: str,
+) -> tuple[str, dict[str, Any] | None]:
+    pattern = SECTION_ROLE_HEADING_PATTERNS.get(section_role)
+    if pattern is None:
+        return text, None
+    lines = text.splitlines(keepends=True)
+    seen_heading = False
+    demoted = 0
+    retained: list[str] = []
+    for line in lines:
+        if pattern.match(line.strip()):
+            if seen_heading:
+                demoted += 1
+                continue
+            seen_heading = True
+        retained.append(line)
+    if demoted == 0:
+        return text, None
+    normalized = "".join(retained)
+    if text.endswith("\n") and not normalized.endswith("\n"):
+        normalized += "\n"
+    return normalized, {
+        "role": section_role,
+        "demoted_duplicate_own_section_headings": demoted,
+        "original_bytes": len(text.encode("utf-8")),
+        "canonical_bytes": len(normalized.encode("utf-8")),
+    }
 
 
 def stage07_restorative_response_section_scaffold(previous_stages: list[dict[str, Any]]) -> str:
@@ -3675,13 +3718,14 @@ def canonical_compiled_structural_section(
     text: str,
     previous_stages: list[dict[str, Any]],
 ) -> tuple[str, dict[str, Any] | None]:
+    text, duplicate_heading_event = demote_duplicate_own_section_heading(section_role, text)
     if section_role == "mrp_reread_terminal":
         scaffold = stage07_mrp_reread_section_scaffold(previous_stages)
     elif section_role == "field_witness_nar":
         scaffold = stage07_field_witness_section_scaffold(previous_stages)
     elif section_role == "restorative_response":
         if restorative_response_slots_present(text):
-            return text, None
+            return text, duplicate_heading_event
         scaffold = stage07_restorative_response_section_scaffold(previous_stages)
         body = re.sub(
             r"(?is)^\s*(?:#{1,6}\s*)?Restorative Response\s*",
@@ -3692,17 +3736,23 @@ def canonical_compiled_structural_section(
         if body:
             scaffold = scaffold.rstrip() + "\n\n" + body.rstrip() + "\n"
     else:
-        return text, None
+        return text, duplicate_heading_event
     if not scaffold:
-        return text, None
+        return text, duplicate_heading_event
     if text.strip() == scaffold.strip():
-        return text, None
-    return scaffold, {
+        return text, duplicate_heading_event
+    event = {
         "role": section_role,
         "canonicalized_structural_stage07_section": True,
         "original_bytes": len(text.encode("utf-8")),
         "canonical_bytes": len(scaffold.encode("utf-8")),
     }
+    if duplicate_heading_event is not None:
+        event["demoted_duplicate_own_section_headings"] = duplicate_heading_event[
+            "demoted_duplicate_own_section_headings"
+        ]
+        event["original_bytes_before_heading_demote"] = duplicate_heading_event["original_bytes"]
+    return scaffold, event
 
 
 def validate_incremental_handoffs(stages: list[dict[str, Any]]) -> None:
@@ -4288,6 +4338,7 @@ def release_section_prompt(
         ),
         "restorative_response": (
             "Write only the Restorative Response section. Begin with the exact public role heading `Restorative Response`. "
+            "Emit that heading exactly once as the first line; do not repeat `Restorative Response` as a later heading or paragraph label. "
             "Carry explicit fitrah/tawhid and sound reason/ʿaql orientation in the endpoint. "
             "It must include these exact parser-stable lines before any extended prose: "
             "`Restored criterion/order: ...`, `Relieved pressure: ...`, and "
@@ -4299,6 +4350,7 @@ def release_section_prompt(
         ),
         "closing_formulation": (
             "Write only the Closing Formulation section. Begin with the exact public role heading `Closing Formulation`. "
+            "Emit that heading exactly once as the first line; do not repeat `Closing Formulation` as a later heading or paragraph label. "
             "Carry explicit fitrah/tawhid and sound reason/ʿaql orientation in the endpoint. "
             "It must include explicit high-mass slots for "
             "Established failure, Restored criterion/orientation, and Scoped boundary or Reopen boundary. "
@@ -4440,7 +4492,12 @@ def release_section_expansion_prompt(
         "restorative_response": (
             "Preserve the exact Restorative Response heading and keep the parser-stable lines "
             "`Restored criterion/order:`, `Relieved pressure:`, and "
-            "`Held/scoped/reopenable remainder:` visible before any added prose."
+            "`Held/scoped/reopenable remainder:` visible before any added prose. "
+            "Do not repeat the `Restorative Response` heading."
+        ),
+        "closing_formulation": (
+            "Preserve the exact Closing Formulation heading and keep the required public closing slots "
+            "visible before any added prose. Do not repeat the `Closing Formulation` heading."
         ),
     }
     return f"""Runtime SHA256: {skill_hash}
@@ -8458,6 +8515,7 @@ def run_self_test(root: Path) -> int:
     )
     for required in (
         "Begin with the exact public role heading `Restorative Response`",
+        "Emit that heading exactly once as the first line; do not repeat `Restorative Response`",
         "Carry explicit fitrah/tawhid and sound reason/ʿaql orientation in the endpoint",
         "`Restored criterion/order: ...`",
         "`Relieved pressure: ...`",
@@ -8487,6 +8545,27 @@ def run_self_test(root: Path) -> int:
             raise HarnessError(f"Self-test Stage 07 Restorative canonicalization omitted slot: {required}")
     if canonical_restorative_text.count("Restorative Response") != 1:
         raise HarnessError("Self-test Stage 07 Restorative canonicalization duplicated the heading")
+    duplicate_heading_restorative = (
+        "Restorative Response\n\n"
+        "Restored criterion/order: keep the source-owned order.\n"
+        "Relieved pressure: block the proof-stack pressure.\n"
+        "Held/scoped/reopenable remainder: future concrete burdens remain reopenable.\n\n"
+        "Restorative Response\n"
+        "Second restorative tail that must stay body prose, not a second public heading.\n"
+    )
+    demoted_restorative, demoted_restorative_event = canonical_compiled_structural_section(
+        "restorative_response",
+        duplicate_heading_restorative,
+        [normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+    )
+    if not demoted_restorative_event:
+        raise HarnessError("Self-test Stage 07 Restorative duplicate heading did not record an event")
+    if demoted_restorative.count("Restorative Response") != 1:
+        raise HarnessError("Self-test Stage 07 Restorative duplicate heading was not demoted")
+    if "Second restorative tail" not in demoted_restorative:
+        raise HarnessError("Self-test Stage 07 Restorative duplicate heading demotion dropped body prose")
+    if demoted_restorative_event.get("demoted_duplicate_own_section_headings") != 1:
+        raise HarnessError("Self-test Stage 07 Restorative duplicate heading metadata missing")
     already_slot_shaped_restorative = (
         "Restorative Response\n\n"
         "Restored criterion/order: keep the source-owned order.\n"
@@ -8518,6 +8597,7 @@ def run_self_test(root: Path) -> int:
     )
     for required in (
         "Begin with the exact public role heading `Closing Formulation`",
+        "Emit that heading exactly once as the first line; do not repeat `Closing Formulation`",
         "Carry explicit fitrah/tawhid and sound reason/ʿaql orientation in the endpoint",
         "`### Established failure`",
         "`### Restored criterion/orientation`",
@@ -8525,6 +8605,27 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_closing_prompt:
             raise HarnessError(f"Self-test Stage 07 Closing prompt omitted role-heading scaffold: {required}")
+    duplicate_heading_closing = (
+        "Closing Formulation\n\n"
+        "### Established failure\nFailure established.\n"
+        "### Restored criterion/orientation\nCriterion restored.\n"
+        "### Scoped boundary\nBoundary scoped.\n\n"
+        "Closing Formulation\n"
+        "Second closing tail that must stay body prose, not a second public heading.\n"
+    )
+    demoted_closing, demoted_closing_event = canonical_compiled_structural_section(
+        "closing_formulation",
+        duplicate_heading_closing,
+        [normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+    )
+    if not demoted_closing_event:
+        raise HarnessError("Self-test Stage 07 Closing duplicate heading did not record an event")
+    if demoted_closing.count("Closing Formulation") != 1:
+        raise HarnessError("Self-test Stage 07 Closing duplicate heading was not demoted")
+    if "Second closing tail" not in demoted_closing:
+        raise HarnessError("Self-test Stage 07 Closing duplicate heading demotion dropped body prose")
+    if demoted_closing_event.get("demoted_duplicate_own_section_headings") != 1:
+        raise HarnessError("Self-test Stage 07 Closing duplicate heading metadata missing")
     short_closing = "Closing Formulation\n\nShort governed close.\n"
     supplemented_closing, supplement_event = compiled_section_budget_guardrail(
         "closing_formulation",
