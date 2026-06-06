@@ -2101,6 +2101,24 @@ def stage07_route_type_for_burden(
     return "no_new_resultant"
 
 
+def stage07_held_or_partial_burdens(
+    b_total: list[str],
+    terminal_states: dict[str, str],
+    unresolved_burdens: list[str],
+) -> list[str]:
+    unresolved = set(unresolved_burdens)
+    return [
+        burden
+        for burden in b_total
+        if burden in unresolved
+        or re.search(
+            r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b",
+            terminal_states.get(burden, ""),
+        )
+        is not None
+    ]
+
+
 def stage07_dependency_graph_scaffold(
     b_total: list[str],
     edges: list[dict[str, str]],
@@ -2320,12 +2338,17 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
             terminal_states.get(burden, ""),
         ) is not None
 
+    held_or_partial_burdens = stage07_held_or_partial_burdens(
+        b_total,
+        terminal_states,
+        unresolved_burdens,
+    )
     if (
-        final_source
-        and unresolved_terminal(final_source)
+        held_or_partial_burdens
         and final_type in {"no_new_resultant", "none", "stable"}
         and final_route.upper() == "STOP"
     ):
+        final_source = held_or_partial_burdens[0]
         final_type = "hold_partial"
         final_route = "HOLD"
     if edges and final_type == "no_new_resultant" and final_route.upper() == "STOP":
@@ -2355,6 +2378,19 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
                 "route": final_route,
             }
         )
+    if final_type == "hold_partial" and final_route.upper() == "HOLD":
+        for burden in held_or_partial_burdens:
+            if any(row["source"] == burden and row["type"] == "hold_partial" for row in mrp_resultants):
+                continue
+            mrp_resultants.append(
+                {
+                    "source": burden,
+                    "type": "hold_partial",
+                    "finding": "partial-real",
+                    "graph": "none",
+                    "route": "HOLD",
+                }
+            )
 
     for edge in edges:
         target = edge["to"]
@@ -2722,12 +2758,17 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
             terminal_states.get(burden, ""),
         ) is not None
 
+    held_or_partial_burdens = stage07_held_or_partial_burdens(
+        b_total,
+        terminal_states,
+        unresolved_burdens,
+    )
     if (
-        final_source
-        and unresolved_terminal(final_source)
+        held_or_partial_burdens
         and final_type in {"no_new_resultant", "none", "stable", ""}
         and final_route.upper() == "STOP"
     ):
+        final_source = held_or_partial_burdens[0]
         final_type = "hold_partial"
         final_route = "HOLD"
     live_registers = list_field(stage02, "live_registers")
@@ -2860,6 +2901,19 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
                 "route": final_route,
             }
         )
+    if final_type == "hold_partial" and final_route.upper() == "HOLD":
+        for burden in held_or_partial_burdens:
+            if any(row["source"] == burden and row["type"] == "hold_partial" for row in mrp_resultants):
+                continue
+            mrp_resultants.append(
+                {
+                    "source": burden,
+                    "type": "hold_partial",
+                    "finding": "partial-real",
+                    "graph": "none",
+                    "route": "HOLD",
+                }
+            )
     formal_reread_states = stage07_formal_reread_states(
         mrp_resultants,
         terminal_states,
@@ -7923,6 +7977,82 @@ def run_self_test(root: Path) -> int:
                 "act_row_details": self_test_act_row_details(rows, axis_by_ref),
             },
         )
+
+    baseline_held_stage02 = dict(normalized_stage02)
+    baseline_held_stage02["burden_floor"] = ["B1", "B2", "B3"]
+    baseline_held_stage02["burden_floor_details"] = [
+        {"burden_id": "B1", "register_types": ["xi"]},
+        {"burden_id": "B2", "register_types": ["kappa"]},
+        {"burden_id": "B3", "register_types": ["mu"]},
+    ]
+    baseline_held_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "partial",
+            "terminal_states": {
+                "B1": "landed",
+                "B2": "held-with-reason",
+                "B3": "landed",
+            },
+            "dependency_graph_edges": [],
+            "reread_state": {
+                "source_burden": "B3",
+                "route_result_type": "no_new_resultant",
+                "route": "STOP",
+            },
+            "no_new_resultant_proof": {
+                "proved": False,
+                "basis": "baseline B_LA burden remains held; whole-field STOP is not licensed",
+                "unresolved_burdens": ["B2"],
+            },
+            "unresolved_burdens": ["B2"],
+        },
+    )
+    baseline_held_stages = [
+        baseline_held_stage02,
+        synthetic_stage04(["B1", "B2", "B3"]),
+        baseline_held_stage05,
+        normalized_stage06,
+    ]
+    baseline_held_mrp_text = stage07_mrp_reread_section_scaffold(baseline_held_stages)
+    baseline_held_witness_text = stage07_field_witness_section_scaffold(baseline_held_stages)
+    baseline_held_payload = first_json_object_from_text(
+        baseline_held_witness_text.split("\nfield_witness\n", 1)[-1]
+    )
+    if baseline_held_payload is None:
+        raise HarnessError("Self-test baseline-held canary did not emit field_witness JSON")
+    for required in (
+        "Target: MRP(²B) / Stage 05 terminal MRP source",
+        "MRP route result type: hold_partial",
+        "Route: HOLD",
+    ):
+        if required not in baseline_held_mrp_text:
+            raise HarnessError(f"Self-test baseline-held MRP prompt omitted scaffold: {required}")
+    if "coverage_complete=false; unresolved_burdens=[B2]" not in baseline_held_witness_text:
+        raise HarnessError("Self-test baseline-held witness omitted coverage_complete=false for B2")
+    baseline_held_states = [
+        row for row in baseline_held_payload.get("formal_reread_states", [])
+        if isinstance(row, dict)
+    ]
+    b2_state = next((row for row in baseline_held_states if row.get("source_burden") == "B2"), None)
+    if not b2_state:
+        raise HarnessError("Self-test baseline-held canary omitted B2 formal reread state")
+    if b2_state.get("route_result_type") != "hold_partial" or b2_state.get("route") != "HOLD":
+        raise HarnessError("Self-test baseline-held canary did not convert false STOP to HOLD/PARTIAL")
+    if b2_state.get("divergence_state") != "non-neutral" or b2_state.get("curl_state") != "unresolved":
+        raise HarnessError("Self-test baseline-held canary did not mirror non-neutral/unresolved diagnostics")
+    if "no_new_resultant_proof" in b2_state:
+        raise HarnessError("Self-test baseline-held canary attached terminal STOP proof to held burden")
+    if any(
+        row.get("route_result_type") == "no_new_resultant"
+        and isinstance(row.get("no_new_resultant_proof"), dict)
+        and row["no_new_resultant_proof"].get("stop_licensed") is True
+        for row in baseline_held_states
+    ):
+        raise HarnessError("Self-test baseline-held canary left a clean STOP proof while B2 remained held")
+    if baseline_held_payload.get("coverage_proof", {}).get("coverage_complete") is not False:
+        raise HarnessError("Self-test baseline-held canary falsely completed coverage")
 
     generated_topology_stage02 = {
         "id": "stage-02-layer-a-diagnostic-ir",
