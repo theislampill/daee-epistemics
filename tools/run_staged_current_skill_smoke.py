@@ -2761,7 +2761,10 @@ def stage07_act_contract_guidance(
             "- If the row needs κ/H dependency-radius work, use `Δκ:<owner-local-state-change>` and make the dependency-radius change visible in the dereferenced body; otherwise use the burden-state carrier `ΔⁿB:<owner-local-state-change>`.",
             "- A compact label such as `reopen-condition-stated` or `scope-boundary-named` cannot replace the visible burden-local state change; if the body cannot show the state transition, route HOLD/PARTIAL instead of printing `Land(Bn)`.",
             "- Source/citation/proof-stack rows must name the concrete burden-local state change that the source-status, authority-order, proof-method, or transmission/content operation produces.",
+            "- For compact `typed` deltas, the public `Result/state-change:` facet must include checker-stable state-change language such as `State change: ... classified`, `... exposed`, or `no longer treated as ...`; the delta token alone is not a state change.",
+            "- For `proof-method-audit.proof-family-and-carrier-audit`, the dereferenced body must audit the proof family/carrier by naming the premise or predicate set, inference grammar, conclusion scope, and visible state change. Use a parser-stable result phrase such as `State change: the proof carrier is classified as a proof carrier whose premise set, inference grammar, and conclusion scope are no longer treated as a neutral proof.`",
             "- For `pattern-profiling.loaded-label-carrier-audit`, the dereferenced body must identify the label as a noetic/worldview/identity carrier, expose the hidden proof/source/authority rule it transmits, and show `carrier-function-typed` as a burden-local state transition. Owner and delta labels alone do not Land.",
+            "- For `pattern-profiling.loaded-label-carrier-audit`, the `Result/state-change:` facet must say the loaded label carrier function is exposed or classified; do not rely on `carrier-function-typed` by itself.",
             "- Emit standalone public landing lines such as `Land(Bn): ...` or `HOLD(Bn): ...` only after the final Stage 04 body_ref for that burden; `Contribution-to-Land(Bn):` alone is not a landing line.",
             "- Never print `Land(Bn):` for a burden while another assigned or later Stage 04 body_ref for the same burden remains unrendered.",
             "Required submove block skeletons:",
@@ -2829,6 +2832,13 @@ def stage07_act_contract_guidance(
                 "  V10 provenance/content operation: visibly vet transmission/provenance, content, and authority/status "
                 "for this exact source pressure; do not merely cite, summarize, or sort sources without the "
                 "V10 transmission/content-authority operation body."
+            )
+        elif family == "PROOF_METHOD":
+            lines.append(
+                "  Proof-method carrier operation: visibly classify the proof family/carrier, name the premise "
+                "or predicate set being loaded, identify the inference grammar and conclusion scope, and state "
+                "the parser-stable local state change: `the proof carrier is classified as a proof carrier whose "
+                "premise set, inference grammar, and conclusion scope are no longer treated as a neutral proof.`"
             )
         elif family == "DO_ATTRIBUTE":
             lines.append(
@@ -3367,6 +3377,24 @@ CONCEALMENT_MODE_LINE_RE = re.compile(r"(?im)^(?P<prefix>\s*(?:[-*]\s*)?Concealm
 CONCEALMENT_COMPONENT_TOKEN_RE = re.compile(
     r"(?i)\b(?:iʿrāḍ|i'rad|i`rad|irad|juḥūd|juhud|inkār|inkar|istikbār|istikbar|nifāq|nifaq)\b"
 )
+PUBLIC_SUBMOVE_HEADING_RE = re.compile(
+    r"(?im)^\s*(?:#{1,6}\s*)?"
+    r"(?P<ref>(?:[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*))"
+    r"\[(?P<owner>[A-Za-z][A-Za-z0-9_/\-]*)\]"
+)
+RESULT_STATE_LINE_RE = re.compile(r"(?im)^(?P<prefix>\s*(?:[-*]\s*)?Result(?:/state-change)?\s*:\s*)(?P<body>.*)$")
+CHECKER_STABLE_STATE_RE = re.compile(
+    r"(?i)\b(?:state change|classified|exposed|separated|bounded|no longer treated as a neutral proof|"
+    r"typed as a proof carrier|carrier function is exposed)\b"
+)
+PROOF_METHOD_BODY_BACKED_RE = re.compile(
+    r"(?is)\bproof\b.*\b(?:premise|predicate|definition)\b.*\b(?:infer|deriv|logic tree)\w*\b.*"
+    r"\b(?:conclusion|contradiction|scope)\b"
+)
+PATTERN_PROFILE_BODY_BACKED_RE = re.compile(
+    r"(?is)\blabel\b.*\bcarrier\b.*\b(?:hidden|transmit\w*|proof rule|source|authority|worldview|noetic)\b.*"
+    r"\b(?:loaded|compress\w*|carrier function)\b"
+)
 SECTION_ROLE_HEADING_PATTERNS = {
     "restorative_response": re.compile(
         r"(?i)^\s*(?:#{1,6}\s*)?(?:(?:\*\*|__|\*|_)\s*)?"
@@ -3487,6 +3515,112 @@ def canonicalize_mixed_concealment_projection(
         "canonicalized_mixed_concealment_projection": True,
         "source_components": concealment_source_components(expected_value),
         "replacement_count": replacements,
+        "original_bytes": len(text.encode("utf-8")),
+        "canonical_bytes": len(normalized.encode("utf-8")),
+    }
+
+
+def body_ref_to_public_ref(value: str) -> str:
+    return public_submove_id(str(value or "").strip())
+
+
+def layer_b_submove_blocks(text: str) -> list[tuple[re.Match[str], int, str]]:
+    matches = list(PUBLIC_SUBMOVE_HEADING_RE.finditer(text))
+    blocks: list[tuple[re.Match[str], int, str]] = []
+    for index, match in enumerate(matches):
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+        blocks.append((match, end, text[match.start() : end]))
+    return blocks
+
+
+def owner_transition_body_backed(detail: dict[str, str], block: str) -> bool:
+    owner = str(detail.get("owner") or "").strip()
+    operation = str(detail.get("operation") or "").strip()
+    if owner == "proof-method-audit" and operation == "proof-family-and-carrier-audit":
+        return bool(PROOF_METHOD_BODY_BACKED_RE.search(block))
+    if owner == "pattern-profiling" and operation == "loaded-label-carrier-audit":
+        return bool(PATTERN_PROFILE_BODY_BACKED_RE.search(block))
+    return False
+
+
+def state_change_sentence_for_owner_transition(detail: dict[str, str]) -> str:
+    owner = str(detail.get("owner") or "").strip()
+    operation = str(detail.get("operation") or "").strip()
+    if owner == "proof-method-audit" and operation == "proof-family-and-carrier-audit":
+        return (
+            " State change: the proof carrier is classified as a proof carrier whose "
+            "premise set, inference grammar, and conclusion scope are no longer treated "
+            "as a neutral proof."
+        )
+    if owner == "pattern-profiling" and operation == "loaded-label-carrier-audit":
+        return (
+            " State change: the loaded label carrier function is exposed and classified, "
+            "so the carrier no longer transports the conclusion as a premise."
+        )
+    return ""
+
+
+def canonicalize_layer_b_owner_transition_facets(
+    section_role: str,
+    text: str,
+    previous_stages: list[dict[str, Any]],
+) -> tuple[str, dict[str, Any] | None]:
+    if section_role != "layer_b_act":
+        return text, None
+    stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    act_details = stage04_act_details_by_ref(stage04)
+    if not act_details:
+        return text, None
+    details_by_public_ref = {
+        body_ref_to_public_ref(ref): detail
+        for ref, detail in act_details.items()
+        if str(detail.get("owner") or "").strip() in {"proof-method-audit", "pattern-profiling"}
+        and str(detail.get("operation") or "").strip()
+        in {"proof-family-and-carrier-audit", "loaded-label-carrier-audit"}
+    }
+    if not details_by_public_ref:
+        return text, None
+
+    replacements: list[dict[str, str]] = []
+    chunks: list[str] = []
+    cursor = 0
+    for match, block_end, block in layer_b_submove_blocks(text):
+        public_ref = match.group("ref")
+        detail = details_by_public_ref.get(public_ref)
+        if not detail or not owner_transition_body_backed(detail, block):
+            continue
+        sentence = state_change_sentence_for_owner_transition(detail)
+        if not sentence:
+            continue
+
+        def replace_result_line(result_match: re.Match[str]) -> str:
+            body = result_match.group("body").rstrip()
+            if CHECKER_STABLE_STATE_RE.search(body):
+                return result_match.group(0)
+            return f"{result_match.group('prefix')}{body.rstrip('.')}." + sentence
+
+        normalized_block, replacement_count = RESULT_STATE_LINE_RE.subn(replace_result_line, block, count=1)
+        if replacement_count <= 0 or normalized_block == block:
+            continue
+        chunks.append(text[cursor : match.start()])
+        chunks.append(normalized_block)
+        cursor = block_end
+        replacements.append(
+            {
+                "body_ref": str(detail.get("body_ref") or ""),
+                "owner": str(detail.get("owner") or ""),
+                "operation": str(detail.get("operation") or ""),
+                "delta_result": str(detail.get("delta_result") or ""),
+            }
+        )
+    if not replacements:
+        return text, None
+    chunks.append(text[cursor:])
+    normalized = "".join(chunks)
+    return normalized, {
+        "role": section_role,
+        "canonicalized_owner_transition_facets": True,
+        "facet_replacements": replacements,
         "original_bytes": len(text.encode("utf-8")),
         "canonical_bytes": len(normalized.encode("utf-8")),
     }
@@ -3856,6 +3990,11 @@ def canonical_compiled_structural_section(
         text,
         previous_stages,
     )
+    text, owner_transition_event = canonicalize_layer_b_owner_transition_facets(
+        section_role,
+        text,
+        previous_stages,
+    )
     text, duplicate_heading_event = demote_duplicate_own_section_heading(section_role, text)
     if section_role == "mrp_reread_terminal":
         scaffold = stage07_mrp_reread_section_scaffold(previous_stages)
@@ -3874,7 +4013,12 @@ def canonical_compiled_structural_section(
         if body:
             scaffold = scaffold.rstrip() + "\n\n" + body.rstrip() + "\n"
     else:
-        return text, mixed_concealment_event or duplicate_heading_event
+        event = owner_transition_event or mixed_concealment_event or duplicate_heading_event
+        if event is not None and duplicate_heading_event is not None and event is not duplicate_heading_event:
+            event["demoted_duplicate_own_section_headings"] = duplicate_heading_event[
+                "demoted_duplicate_own_section_headings"
+            ]
+        return text, event
     if not scaffold:
         return text, mixed_concealment_event or duplicate_heading_event
     if text.strip() == scaffold.strip():
@@ -8531,6 +8675,109 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
+    proof_pattern_rows = [
+        "⟦ACT ¹B₁[proof-method-audit.proof-family-and-carrier-audit] :: "
+        "π=logic-tree-carrier-compression :: body_ref=¹B₁ :: "
+        "Δ=Δ¹B:proof-family-carrier-typed :: Land(¹B)+⟧",
+        "⟦ACT ¹B₂[pattern-profiling.loaded-label-carrier-audit] :: "
+        "π=loaded-label-carrier-compression :: body_ref=¹B₂ :: "
+        "Δ=Δ¹B:carrier-function-typed :: Land(¹B)+⟧",
+    ]
+    proof_pattern_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": proof_pattern_rows,
+            "act_row_details": self_test_act_row_details(
+                proof_pattern_rows,
+                {
+                    "¹B₁": "μ",
+                    "¹B₂": "μ",
+                },
+            ),
+        },
+    )
+    proof_pattern_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-proof-pattern-carrier",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage02, proof_pattern_stage04, normalized_stage05, normalized_stage06],
+        section_id="act-body-proof-pattern",
+        section_role="layer_b_act",
+        section_number=3,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=["¹B₁", "¹B₂"],
+    )
+    for required in (
+        "proof-method-audit.proof-family-and-carrier-audit",
+        "premise set, inference grammar, and conclusion scope are no longer treated as a neutral proof",
+        "pattern-profiling.loaded-label-carrier-audit",
+        "loaded label carrier function is exposed or classified",
+        "the delta token alone is not a state change",
+    ):
+        if required not in proof_pattern_prompt:
+            raise HarnessError(f"Self-test Stage 07 proof/pattern carrier prompt omitted: {required}")
+    thin_proof_pattern_layer = "\n".join(
+        [
+            "## Burden 1 / ¹B — proof carrier compression",
+            proof_pattern_rows[0],
+            "",
+            "### ¹B₁[proof-method-audit] - proof-family-and-carrier-audit over logic-tree-carrier-compression",
+            "Target: logic-tree-carrier-compression.",
+            "Operation: proof-family-and-carrier-audit audits the logic-tree-carrier-compression with owner family proof-method-audit.",
+            "Result/state-change: proof-family-carrier-typed. The logic tree is typed as a conditional proof-carrier.",
+            "Contribution-to-Land(¹B): This contributes because the proof carrier no longer gets to hide premise loading inside the formal display.",
+            "TTP Operation Body:",
+            "The proof-method audit tests the proof family rather than merely naming it. It identifies the premise and predicate set loaded into the diagram, the inference grammar that derives the contradiction, and the conclusion scope the proof claims. The logic tree depends on source sorting and definition stability before it can establish the result.",
+            "",
+            proof_pattern_rows[1],
+            "",
+            "### ¹B₂[pattern-profiling] - loaded-label-carrier-audit over loaded-label-carrier-compression",
+            "Target: loaded-label-carrier-compression.",
+            "Operation: loaded-label-carrier-audit audits the loaded-label-carrier-compression with owner family pattern-profiling.",
+            "Result/state-change: carrier-function-typed. The disputed label is typed as a carrier.",
+            "Contribution-to-Land(¹B): This contributes because the label no longer closes the burden by itself.",
+            "TTP Operation Body:",
+            "The label functions as a carrier rather than a neutral description. It transmits a hidden proof rule and source-authority posture by compressing the source order, predicate assignment, and conclusion into one loaded phrase. The audit exposes how that carrier function made the contradiction appear settled before the proof was earned.",
+            "Land(¹B): The proof carrier and loaded label carrier are both typed.",
+            "",
+        ]
+    )
+    canonical_proof_pattern, proof_pattern_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        thin_proof_pattern_layer,
+        [normalized_stage02, proof_pattern_stage04, normalized_stage05, normalized_stage06],
+    )
+    if not proof_pattern_event or not proof_pattern_event.get("canonicalized_owner_transition_facets"):
+        raise HarnessError("Self-test Stage 07 proof/pattern carrier facet canonicalization did not record an event")
+    if "the proof carrier is classified as a proof carrier whose premise set, inference grammar, and conclusion scope are no longer treated as a neutral proof" not in canonical_proof_pattern:
+        raise HarnessError("Self-test Stage 07 proof-method carrier canonicalization omitted parser-stable state change")
+    if "the loaded label carrier function is exposed and classified" not in canonical_proof_pattern:
+        raise HarnessError("Self-test Stage 07 pattern carrier canonicalization omitted parser-stable state change")
+    if len(proof_pattern_event.get("facet_replacements") or []) != 2:
+        raise HarnessError("Self-test Stage 07 proof/pattern carrier canonicalization did not touch both owner facets")
+    label_only_proof_pattern = thin_proof_pattern_layer.replace(
+        "The proof-method audit tests the proof family rather than merely naming it. It identifies the premise and predicate set loaded into the diagram, the inference grammar that derives the contradiction, and the conclusion scope the proof claims. The logic tree depends on source sorting and definition stability before it can establish the result.",
+        "The proof-method-audit owner is named here, so the proof carrier is handled.",
+    ).replace(
+        "The label functions as a carrier rather than a neutral description. It transmits a hidden proof rule and source-authority posture by compressing the source order, predicate assignment, and conclusion into one loaded phrase. The audit exposes how that carrier function made the contradiction appear settled before the proof was earned.",
+        "The pattern-profiling owner is named here, so the carrier is handled.",
+    )
+    _, label_only_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        label_only_proof_pattern,
+        [normalized_stage02, proof_pattern_stage04, normalized_stage05, normalized_stage06],
+    )
+    if label_only_event:
+        raise HarnessError("Self-test Stage 07 proof/pattern carrier canonicalization upgraded label-only owner prose")
     stage07_m8_prompt = release_section_prompt(
         root=root,
         case_name="self-test-m8-operation",
