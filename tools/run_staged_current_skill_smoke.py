@@ -9645,6 +9645,24 @@ def run_self_test(root: Path) -> int:
         visible_probe_base + "\nActiveGraph proof confirms retained closure.\n",
         "Graphify/ActiveGraph proof claim",
     )
+    assert_visible_output_rejects(
+        "stage07-duplicate-restorative-response",
+        visible_probe_base.replace(
+            "Closing Formulation\n",
+            "Restorative Response\nDuplicated public tail.\nClosing Formulation\n",
+            1,
+        ),
+        "visible output: duplicate singleton final public heading 'Restorative Response'",
+    )
+    assert_visible_output_rejects(
+        "stage07-closure-witness-before-closing",
+        visible_probe_base.replace(
+            "Closing Formulation\n",
+            "Closure/Reconstruction Witness\nPremature proof tail.\nClosing Formulation\n",
+            1,
+        ),
+        "visible output: duplicate singleton final public heading 'Closure/Reconstruction Witness'",
+    )
 
     stage07_local_record = base_record(
         "self-test-a9-science-source-stage07",
@@ -9798,6 +9816,7 @@ def visible_governed_output_errors(output_path: Path) -> list[str]:
         ("Closing Formulation", r"(?im)^\s*(?:#+\s*)?Closing Formulation\b"),
     ]
     errors = [label for label, pattern in checks if re.search(pattern, text, re.IGNORECASE | re.MULTILINE) is None]
+    errors.extend(staged_output.final_public_tail_errors(text, "visible output"))
     witness_payload = extract_embedded_field_witness(text)
     field_witness = extract_field_witness(witness_payload)
     if re.search(r"(?m)^\s*field_witness\b", text, re.IGNORECASE | re.MULTILINE) and field_witness is None:

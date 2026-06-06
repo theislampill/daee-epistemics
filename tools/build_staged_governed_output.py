@@ -187,6 +187,18 @@ SUB_DIGITS = str.maketrans("₀₁₂₃₄₅₆₇₈₉", "0123456789")
 BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.s][0-9]+)?$")
 ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
 FIELD_WITNESS_LABEL_RE = re.compile(r"(?im)^\s*(?:#+\s*)?field_witness\b")
+FINAL_PUBLIC_TAIL_ORDER = (
+    "restorative_response",
+    "closing_formulation",
+    "closure_witness",
+    "field_witness",
+)
+FINAL_PUBLIC_TAIL_LABELS = {
+    "restorative_response": "Restorative Response",
+    "closing_formulation": "Closing Formulation",
+    "closure_witness": "Closure/Reconstruction Witness",
+    "field_witness": "field_witness",
+}
 OWNER_ORDERING_POLICY_ID = "diagnostic-ir-pressure-owner-floor-v1"
 OWNER_ORDERING_FAMILY_ALIASES = {
     "AUTHORITY-ORDER-REPAIR": "SOURCE",
@@ -300,6 +312,39 @@ def required_surface_errors(text: str) -> list[str]:
         for label, pattern in SURFACE_PATTERNS
         if pattern.search(text) is None
     ]
+
+
+def final_public_tail_heading_patterns() -> list[tuple[str, str, re.Pattern[str]]]:
+    return [
+        ("restorative_response", "Restorative Response", public_heading_pattern("Restorative Response")),
+        ("closing_formulation", "Closing Formulation", public_heading_pattern("Closing Formulation")),
+        (
+            "closure_witness",
+            "Closure/Reconstruction Witness",
+            re.compile(r"(?im)^\s*(?:#{1,6}\s*)?Closure\s*/\s*Reconstruction\s+Witness\s*$"),
+        ),
+        ("field_witness", "field_witness", FIELD_WITNESS_LABEL_RE),
+    ]
+
+
+def final_public_tail_errors(text: str, label: str) -> list[str]:
+    errors: list[str] = []
+    positions: list[tuple[int, str]] = []
+    for role, display, pattern in final_public_tail_heading_patterns():
+        matches = list(pattern.finditer(text))
+        if len(matches) == 0:
+            errors.append(f"{label}: missing singleton final public heading {display!r}")
+            continue
+        if len(matches) > 1:
+            errors.append(f"{label}: duplicate singleton final public heading {display!r}")
+        positions.append((matches[0].start(), role))
+    if len(positions) == len(FINAL_PUBLIC_TAIL_ORDER):
+        observed = [role for _index, role in sorted(positions)]
+        if tuple(observed) != FINAL_PUBLIC_TAIL_ORDER:
+            expected = " -> ".join(FINAL_PUBLIC_TAIL_LABELS[role] for role in FINAL_PUBLIC_TAIL_ORDER)
+            found = " -> ".join(FINAL_PUBLIC_TAIL_LABELS[role] for role in observed)
+            errors.append(f"{label}: final public tail order must be {expected}; found {found}")
+    return errors
 
 
 def public_heading_text(line: str) -> str:
@@ -1226,6 +1271,7 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
     errors.extend(forbidden_text_errors(assembled, "assembled output"))
     errors.extend(public_meta_text_errors(assembled, "assembled output"))
     errors.extend(required_surface_errors(assembled))
+    errors.extend(final_public_tail_errors(assembled, "assembled output"))
     errors.extend(
         act_partition_errors(
             payload.get("act_partition"),
@@ -2377,6 +2423,28 @@ def run_self_test(root: Path) -> int:
         base_dir,
         "invalid-duplicate-required-role",
         lambda payload, _case_dir: payload["sections"].insert(1, dict(payload["sections"][0])),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-duplicate-restorative-heading-in-section",
+        lambda payload, case_dir: replace_section_text(
+            payload,
+            case_dir,
+            4,
+            "Restorative Response\nRestored orientation.\n\nRestorative Response\nSecond restorative tail.\n",
+        ),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-closure-witness-inside-closing-section",
+        lambda payload, case_dir: replace_section_text(
+            payload,
+            case_dir,
+            5,
+            "Closing Formulation\nScoped close.\n\nClosure/Reconstruction Witness\nPremature proof tail.\n",
+        ),
     )
     expect_invalid(
         root,
