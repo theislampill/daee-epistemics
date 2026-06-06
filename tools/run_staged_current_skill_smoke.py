@@ -29,6 +29,7 @@ from delta_result_vocabulary import (
     OWNER_OPERATION_VOCABULARY,
     canonical_delta_owner,
     delta_result_vocabulary_errors,
+    owner_operation_delta_result_errors,
     owner_operation_vocabulary_errors,
     route_owner_vocabulary_errors,
     source_formal_delta_operation_errors,
@@ -236,7 +237,11 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "route has no loaded callable owner body, no controlled operation, or no "
             "owner-local delta_result vocabulary, preserve it as HOLD/PARTIAL with "
             "OWNER-BODY-NOT-LOADED / controlled-vocabulary-gap evidence instead of "
-            "converting the route label into a fake ACT owner."
+            "converting the route label into a fake ACT owner. Some owner operations "
+            "also have operation-specific delta floors. For example, `M8.dependency-trace` "
+            "is executable only as the dependency-exposure transition with "
+            "`delta_result=dependency-exposed`; use a different callable M8 operation "
+            "or HOLD/PARTIAL if the intended transition is not dependency exposure."
         ),
     },
     "stage-04-burden-execution-act": {
@@ -291,7 +296,12 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "code lookup. When the selected owner body is unavailable/not loaded, or "
             "when the selected owner has no controlled Stage 04 operation/delta_result "
             "vocabulary, emit HOLD/PARTIAL / OWNER-BODY-NOT-LOADED / "
-            "controlled-vocabulary-gap handoff evidence instead of claiming `Land(...)`."
+            "controlled-vocabulary-gap handoff evidence instead of claiming `Land(...)`. "
+            "When an owner operation has an operation-specific delta floor, keep that "
+            "hidden transition state distinct from the wider owner-family vocabulary. "
+            "For `M8.dependency-trace`, `delta_result` must be `dependency-exposed`; "
+            "`entailment-blocked` remains an M8-family result for consequence/entailment "
+            "work, but it is not a licensed dependency-trace Land transition."
         ),
     },
     "stage-05-mrp-reread-terminal-state": {
@@ -774,6 +784,14 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
     )
     if pair_errors:
         raise HarnessError("; ".join(pair_errors))
+    operation_delta_errors = owner_operation_delta_result_errors(
+        "Stage 04 ACT row",
+        match.group("owner"),
+        match.group("operation"),
+        raw_result,
+    )
+    if operation_delta_errors:
+        raise HarnessError("; ".join(operation_delta_errors))
     pressure_errors = source_pressure_delta_errors(
         "Stage 04 ACT row",
         match.group("owner"),
@@ -1199,6 +1217,14 @@ def normalize_stage04_act_row_details(
             parsed["owner_id"],
             detail_delta_result,
         )
+        operation_delta_errors = owner_operation_delta_result_errors(
+            f"stage-04 act_row_details[{index}].delta_result",
+            parsed["owner_id"],
+            parsed["operation"],
+            detail_delta_result,
+        )
+        if operation_delta_errors:
+            raise HarnessError("; ".join(operation_delta_errors))
         if detail_delta_result != parsed["delta_result"]:
             raise HarnessError(
                 f"stage-04 act_row_details[{index}].delta_result disagrees with parsed ACT row"
@@ -2704,15 +2730,25 @@ def stage07_act_contract_guidance(
                 "the held/non-load-bearing route boundary, and the reopen condition in this body."
             )
         elif family == "M8":
-            lines.append(
-                "  M8 consequence-trace operation: use the registered operation token `consequence-trace`; "
-                "assume the live pressure, trace at least one concrete downstream implication or entailment, "
-                "name why that consequence is blocked/demoted/unacceptable in the selected noetic frame, "
-                "and put result words such as dependency-exposed or entailment-bounded in `Result/state-change:`, not `Operation:`. "
-                "A marker-rich row is not enough: if the public body cannot state the consequence/dependency, "
-                "the tested if-accepted implication, and the burden-local state change, render HOLD/PARTIAL "
-                "instead of `Land(Bn)`."
-            )
+            if detail["operation"] == "dependency-trace":
+                lines.append(
+                    "  M8 dependency-trace operation: use the registered operation token `dependency-trace`; "
+                    "the operation-specific delta_result must be `dependency-exposed`. State the concrete "
+                    "dependency edge or carrier relation, the trace path it exposes, and how exposing that "
+                    "dependency changes this burden. Do not use `entailment-blocked` for dependency-trace; "
+                    "route consequence or entailment-blocking work to `consequence-trace`, or render "
+                    "HOLD/PARTIAL instead of `Land(Bn)`."
+                )
+            else:
+                lines.append(
+                    "  M8 consequence-trace operation: use the registered operation token `consequence-trace`; "
+                    "assume the live pressure, trace at least one concrete downstream implication or entailment, "
+                    "name why that consequence is blocked/demoted/unacceptable in the selected noetic frame, "
+                    "and put result words such as dependency-exposed or entailment-bounded in `Result/state-change:`, not `Operation:`. "
+                    "A marker-rich row is not enough: if the public body cannot state the consequence/dependency, "
+                    "the tested if-accepted implication, and the burden-local state change, render HOLD/PARTIAL "
+                    "instead of `Land(Bn)`."
+                )
         elif family == "V10":
             lines.append(
                 "  V10 provenance/content operation: visibly vet transmission/provenance, content, and authority/status "
@@ -3742,6 +3778,7 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
         "- The token after the dot in `[owner.operation]` must be one of the source-owned owner-local operation tokens below when a family lists operations.",
         "- Keep route pressure, proof pressure, and result labels out of the operation slot. For example, hidden support belongs in `π=` or `delta_result`, not as `source-status-repair.hidden-support-block`.",
         "- Tokens are family-local proof terms. Do not borrow a token from another owner family; if the chosen owner lacks that token, choose the nearest listed token for the chosen owner or route a different callable owner.",
+        "- Some owner operations have operation-specific delta floors. Do not treat a valid family token as proof of a different hidden transition state.",
         "- For M9 predication/identity pressure, use an M9 token such as `predicate-separated`; reserve DO_ATTRIBUTE tokens such as `predicate-identity-separated` for DO_ATTRIBUTE rows.",
         "- Do not invent near-synonyms such as `predicate-transfer-blocked`, `only-scope-defined`, `proof-stack-routed`, or `entailment-bounded`.",
     ]
@@ -3772,6 +3809,13 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
                 "proof-stack, or backread hidden-support pressure must use "
                 "`proof-text-hidden-support-blocked`. Do not use `authority-order-separated` "
                 "or `source-order-repaired` to claim hidden-support blocking."
+            )
+        if family == "M8":
+            lines.append(
+                "- M8 operation-specific delta floor: `dependency-trace` requires "
+                "`dependency-exposed`. Use `consequence-trace` for consequence or "
+                "entailment-blocking work; do not Land `M8.dependency-trace` with "
+                "`entailment-blocked`."
             )
     return "\n".join(lines)
 
@@ -5897,6 +5941,57 @@ def run_self_test(root: Path) -> int:
     else:
         raise HarnessError("Self-test accepted prefixed owner alias as a Stage 03 operation token")
 
+    normalized_m8_dependency_route = normalized_stage(
+        "stage-03-routing-owner-gate",
+        {
+            "id": "stage-03-routing-owner-gate",
+            "status": "pass",
+            "route_targets": ["B1"],
+            "owner_routes": [
+                {
+                    "burden_id": "B1",
+                    "owner_id": "M8",
+                    "operation": "dependency-trace",
+                    "delta_result_vocabulary": ["dependency-exposed"],
+                    "route_status": "executable",
+                }
+            ],
+        },
+    )
+    if normalized_m8_dependency_route.get("owner_routes") != [
+        {
+            "burden_id": "B1",
+            "owner_id": "M8",
+            "operation": "dependency-trace",
+            "delta_result_vocabulary": ["dependency-exposed"],
+            "route_status": "executable",
+        }
+    ]:
+        raise HarnessError("Self-test failed to accept M8 dependency-trace operation-specific delta floor")
+    try:
+        normalized_stage(
+            "stage-03-routing-owner-gate",
+            {
+                "id": "stage-03-routing-owner-gate",
+                "status": "pass",
+                "route_targets": ["B1"],
+                "owner_routes": [
+                    {
+                        "burden_id": "B1",
+                        "owner_id": "M8",
+                        "operation": "dependency-trace",
+                        "delta_result_vocabulary": ["dependency-exposed", "entailment-blocked"],
+                        "route_status": "executable",
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "M8.dependency-trace requires operation-specific delta_result 'dependency-exposed'" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted broad M8 dependency-trace delta_result vocabulary")
+
     normalized_m1p_route = normalized_stage(
         "stage-03-routing-owner-gate",
         {
@@ -6298,6 +6393,7 @@ def run_self_test(root: Path) -> int:
         "M3 operations: orphaned-intuition",
         "M3: grounding-severed",
         "M8: coercive-clarity-entailment-demoted",
+        "M8 operation-specific delta floor: `dependency-trace` requires `dependency-exposed`",
         "M9 operations: predication-repair, sense-split",
         "M9: category-separated",
         "PROOF_METHOD operations: proof-denominator-audit, proof-family-and-carrier-audit",
@@ -6413,6 +6509,52 @@ def run_self_test(root: Path) -> int:
     rewrites = normalized_selected_model_stage04.get("normalization", {}).get("delta_result_canonicalizations")
     if rewrites:
         raise HarnessError("Self-test laundered selected DO-family Stage 04 delta_result tokens")
+    m8_dependency_row = (
+        "⟦ACT ¹B₁[M8.dependency-trace] :: "
+        "π=dependency-carrier-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δκ:dependency-exposed :: Land(¹B)+⟧"
+    )
+    normalized_m8_dependency_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [m8_dependency_row],
+            "act_row_details": self_test_act_row_details(
+                [m8_dependency_row],
+                {"¹B₁": "κ"},
+            ),
+        },
+    )
+    if stage04_act_details_by_ref(normalized_m8_dependency_stage04)["¹B₁"]["delta_result"] != "dependency-exposed":
+        raise HarnessError("Self-test failed to preserve M8 dependency-trace dependency-exposed delta")
+    invalid_m8_dependency_row = (
+        "⟦ACT ¹B₁[M8.dependency-trace] :: "
+        "π=dependency-carrier-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δκ:entailment-blocked :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_m8_dependency_row],
+                "act_row_details": self_test_act_row_details(
+                    [invalid_m8_dependency_row],
+                    {"¹B₁": "κ"},
+                ),
+            },
+        )
+    except HarnessError as exc:
+        if "M8.dependency-trace requires operation-specific delta_result 'dependency-exposed'" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted M8 dependency-trace with entailment-blocked delta")
     invalid_m9_operation_row = (
         "⟦ACT ¹B₁[M9.category-or-referent-separation] :: "
         "π=predicate-category-pressure :: "
@@ -7689,6 +7831,54 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_m8_prompt:
             raise HarnessError(f"Self-test Stage 07 M8 prompt omitted owner scaffold: {required}")
+    stage07_m8_dependency_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-m8-dependency-operation",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[
+            normalized_stage02,
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_rows": [
+                    "⟦ACT ¹B₁[M8.dependency-trace] :: π=dependency-carrier-pressure :: body_ref=¹B₁ :: Δ=Δκ:dependency-exposed :: Land(¹B)+⟧"
+                ],
+                "act_body_refs": ["¹B₁"],
+                "act_row_details": [
+                    {
+                        "body_ref": "¹B₁",
+                        "burden_id": "B1",
+                        "owner": "M8",
+                        "operation": "dependency-trace",
+                        "pressure": "dependency-carrier-pressure",
+                        "delta": "Δκ",
+                        "delta_result": "dependency-exposed",
+                        "land": "Land(¹B)+",
+                    }
+                ],
+            },
+            normalized_stage05,
+            normalized_stage06,
+        ],
+        section_id="act-body-m8-dependency",
+        section_role="layer_b_act",
+        section_number=3,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=["¹B₁"],
+    )
+    for required in (
+        "M8 dependency-trace operation: use the registered operation token `dependency-trace`",
+        "the operation-specific delta_result must be `dependency-exposed`",
+        "Do not use `entailment-blocked` for dependency-trace",
+        "route consequence or entailment-blocking work to `consequence-trace`",
+    ):
+        if required not in stage07_m8_dependency_prompt:
+            raise HarnessError(f"Self-test Stage 07 M8 dependency prompt omitted owner scaffold: {required}")
     stage07_v10_prompt = release_section_prompt(
         root=root,
         case_name="self-test-v10-operation",

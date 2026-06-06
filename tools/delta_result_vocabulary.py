@@ -113,6 +113,64 @@ def canonical_delta_owner(owner: str) -> str:
     return ""
 
 
+def load_owner_operation_delta_results(
+    path: Path = VOCABULARY_PATH,
+) -> dict[str, dict[str, frozenset[str]]]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    mapping = payload.get("owner_operation_delta_results") or {}
+    if not isinstance(mapping, dict):
+        raise ValueError(f"{path}: owner_operation_delta_results must be an object when present")
+    results: dict[str, dict[str, frozenset[str]]] = {}
+    for owner, operations in mapping.items():
+        family = canonical_delta_owner(str(owner))
+        if not family:
+            raise ValueError(f"{path}: owner_operation_delta_results key {owner!r} has no owner_families entry")
+        if family not in OWNER_OPERATION_VOCABULARY:
+            raise ValueError(f"{path}: owner_operation_delta_results key {owner!r} has no owner_operations entry")
+        if not isinstance(operations, dict):
+            raise ValueError(f"{path}: owner_operation_delta_results {owner!r} must be an object")
+        owner_results: dict[str, frozenset[str]] = {}
+        for operation, values in operations.items():
+            if not isinstance(operation, str) or not operation.strip():
+                raise ValueError(f"{path}: owner_operation_delta_results {owner!r} has a blank operation")
+            operation_token = operation.strip()
+            if operation_token not in OWNER_OPERATION_VOCABULARY[family]:
+                raise ValueError(
+                    f"{path}: owner_operation_delta_results {owner!r}.{operation_token!r} "
+                    "has no owner_operations entry"
+                )
+            if not isinstance(values, list) or not values:
+                raise ValueError(
+                    f"{path}: owner_operation_delta_results {owner!r}.{operation_token!r} "
+                    "must list at least one delta_result token"
+                )
+            tokens: list[str] = []
+            for token in values:
+                if not isinstance(token, str) or not token.strip():
+                    raise ValueError(
+                        f"{path}: owner_operation_delta_results {owner!r}.{operation_token!r} "
+                        "contains a blank token"
+                    )
+                token_text = token.strip()
+                if token_text not in DELTA_RESULT_VOCABULARY[family]:
+                    raise ValueError(
+                        f"{path}: owner_operation_delta_results {owner!r}.{operation_token!r} "
+                        f"uses delta_result {token_text!r} outside {family} vocabulary"
+                    )
+                tokens.append(token_text)
+            if len(set(tokens)) != len(tokens):
+                raise ValueError(
+                    f"{path}: owner_operation_delta_results {owner!r}.{operation_token!r} "
+                    "contains duplicate tokens"
+                )
+            owner_results[operation_token] = frozenset(tokens)
+        results[family] = owner_results
+    return results
+
+
+OWNER_OPERATION_DELTA_RESULTS = load_owner_operation_delta_results()
+
+
 def delta_result_vocabulary_errors(label: str, owner: str, delta_result: str) -> list[str]:
     family = canonical_delta_owner(owner)
     if not family:
@@ -215,6 +273,72 @@ def split_owner_operation_token(owner: str, operation: Any = None) -> tuple[str,
     return owner_token, operation_token
 
 
+def owner_operation_delta_result_errors(
+    label: str,
+    owner: str,
+    operation: str,
+    delta_result: str,
+) -> list[str]:
+    family = canonical_delta_owner(owner)
+    if not family:
+        return []
+    operation_token = str(operation or "").strip()
+    if not operation_token:
+        return []
+    allowed = OWNER_OPERATION_DELTA_RESULTS.get(family, {}).get(operation_token)
+    if not allowed:
+        return []
+    token = str(delta_result or "").strip()
+    if token in allowed:
+        return []
+    allowed_text = ", ".join(sorted(allowed))
+    return [
+        f"{label}: {family}.{operation_token} requires operation-specific delta_result "
+        f"{allowed_text!r}; got {token!r}. Family-local delta tokens are hidden transition "
+        "states and are not interchangeable surface labels."
+    ]
+
+
+def route_owner_operation_delta_result_errors(
+    label: str,
+    owner: str,
+    operation: str,
+    route: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    for key in (
+        "delta_result",
+        "delta_result_floor",
+        "delta_result_vocabulary",
+        "allowed_delta_results",
+        "delta_results",
+    ):
+        value = route.get(key)
+        if value is None:
+            continue
+        values: list[str] = []
+        if isinstance(value, str):
+            values = [value]
+        elif isinstance(value, list):
+            if not all(isinstance(item, str) and item.strip() for item in value):
+                errors.append(f"{label}.{key}: delta_result entries must be non-empty strings")
+                continue
+            values = [item.strip() for item in value]
+        else:
+            errors.append(f"{label}.{key}: delta_result evidence must be a string or string list")
+            continue
+        for token in values:
+            errors.extend(
+                owner_operation_delta_result_errors(
+                    f"{label}.{key}",
+                    owner,
+                    operation,
+                    token,
+                )
+            )
+    return errors
+
+
 def route_owner_vocabulary_errors(label: str, route: dict[str, Any]) -> list[str]:
     if route_is_held_or_partial(route):
         return []
@@ -236,7 +360,10 @@ def route_owner_vocabulary_errors(label: str, route: dict[str, Any]) -> list[str
             "route labels are not callable ACT owners"
         ]
     if operation:
-        return owner_operation_vocabulary_errors(label, owner, operation)
+        errors: list[str] = []
+        errors.extend(owner_operation_vocabulary_errors(label, owner, operation))
+        errors.extend(route_owner_operation_delta_result_errors(label, owner, operation, route))
+        return errors
     return []
 
 

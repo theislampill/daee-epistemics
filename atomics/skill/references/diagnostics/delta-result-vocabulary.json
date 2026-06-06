@@ -158,6 +158,13 @@
       "exhaust"
     ]
   },
+  "owner_operation_delta_results": {
+    "M8": {
+      "dependency-trace": [
+        "dependency-exposed"
+      ]
+    }
+  },
   "owner_families": {
     "M1": [
       "self-authorizing-standard-invalidated",

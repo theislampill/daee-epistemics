@@ -20,6 +20,7 @@ from closure_witness_lib import extract_embedded_field_witness, extract_field_wi
 from delta_result_vocabulary import (
     DELTA_RESULT_VOCABULARY,
     delta_result_vocabulary_errors,
+    owner_operation_delta_result_errors,
     owner_operation_vocabulary_errors,
     route_is_held_or_partial,
     route_owner_vocabulary_errors,
@@ -1378,6 +1379,7 @@ def act_row_owner_transition_errors(label: str, row: str) -> list[str]:
     errors: list[str] = []
     errors.extend(owner_operation_vocabulary_errors(label, owner, operation))
     errors.extend(delta_result_vocabulary_errors(label, owner, delta_result))
+    errors.extend(owner_operation_delta_result_errors(label, owner, operation, delta_result))
     errors.extend(
         source_formal_delta_operation_errors(
             label,
@@ -1398,6 +1400,7 @@ def object_source_formal_errors(label: str, item: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     errors.extend(owner_operation_vocabulary_errors(label, str(owner), str(operation)))
     errors.extend(delta_result_vocabulary_errors(label, str(owner), str(delta_result)))
+    errors.extend(owner_operation_delta_result_errors(label, str(owner), str(operation), str(delta_result)))
     errors.extend(source_formal_delta_operation_errors(label, str(owner), str(operation), str(delta_result)))
     return errors
 
