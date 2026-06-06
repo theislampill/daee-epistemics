@@ -205,6 +205,21 @@ STATE_CHANGE_RE = re.compile(
     r"self[- ]undermining|invalidated|resolved|bounded|stopped|restored|restores|restoring|"
     r"returned|returning|returns|anchors?|anchored)\b"
 )
+PROOF_METHOD_CARRIER_RE = re.compile(
+    r"(?is)\b(?:proof[- ]family|proof[- ]carrier|proof carrier|logic tree|"
+    r"formal derivation|formal display|diagram|symbolic conflict|compression device)\b"
+)
+PROOF_METHOD_DEPENDENCY_RE = re.compile(
+    r"(?is)\b(?:premise[- ]set|premises?|predicate|definition|definitions?|"
+    r"source sorting|source meanings?|entailment licensing|dependency|depends on|"
+    r"earlier source|earlier .* semantic|faithful(?:ly)? preserve)\b"
+)
+PROOF_METHOD_STATE_RE = re.compile(
+    r"(?is)\b(?:no longer treated as (?:a )?neutral proof|typed as a proof carrier|"
+    r"does not independently establish|not self[- ]standing|prevents? the formal display from outranking|"
+    r"cannot outrank|imports unresolved|packages? a contested premise[- ]set|"
+    r"classif(?:y|ies|ied) .* compression device|loses the decisive distinctions?)\b"
+)
 SOURCE_AUTHORITY_REPAIR_STATE_RE = re.compile(
     r"(?is)\b(?:authority[- ]order[- ]repaired|authority order is repaired)\b"
 )
@@ -1146,6 +1161,36 @@ def source_repair_transition_kind(result: str, contribution: str, operation_body
     return ""
 
 
+def proof_method_carrier_transition_visible(block: str) -> bool:
+    target = field_body(block, "Target")
+    operation = field_body_any(block, ("Operation", "What it does"))
+    result = field_body_any(block, ("Result", "Result/state-change"))
+    contribution_match = re.search(
+        r"(?im)^\s*-?\s*Contribution-to-Land(?:\([^)]*\))?\s*:\s*(?P<body>.+)$",
+        block,
+    )
+    contribution = contribution_match.group("body").strip() if contribution_match else ""
+    body = submove_operation_body(block)
+    if not (target and operation and result and contribution and body):
+        return False
+    if is_label_like_submove(block):
+        return False
+    payload = " ".join((target, operation, result, contribution, body))
+    if not owner_specific_operation_performed("proof-method-audit", payload):
+        return False
+    if not operation_acts_on_pressure(target, " ".join((operation, body))):
+        return False
+    if not contribution_explains_land(contribution):
+        return False
+    if not operation_body_has_state_delta(body, result, contribution):
+        return False
+    return bool(
+        PROOF_METHOD_CARRIER_RE.search(payload)
+        and PROOF_METHOD_DEPENDENCY_RE.search(payload)
+        and PROOF_METHOD_STATE_RE.search(payload)
+    )
+
+
 def public_source_formal_transition_errors(path: Path, text: str) -> list[str]:
     """Validate compact SOURCE repair deltas against visible ACT/body evidence.
 
@@ -1389,6 +1434,8 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
     if not operation_body and not low_mass_license:
         return False
     owner = submove_owner(block)
+    if owner_family(owner) == "PROOF_METHOD" and proof_method_carrier_transition_visible(block):
+        return True
     owner_performed = owner_specific_operation_performed(owner, operation_scope)
     if not (OPERATION_MECHANISM_RE.search(combined) or owner_performed):
         return False

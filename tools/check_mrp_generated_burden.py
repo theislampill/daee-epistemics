@@ -208,8 +208,24 @@ SOURCE_OWNED_ACT_OPERATIONS = {
 }
 BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
     "M8": {"consequence-traced", "dependency-exposed"},
+    "PROOF_METHOD": {"proof-family-carrier-typed"},
     "SOURCE": {"authority-order-repaired", "source-order-repaired"},
 }
+PROOF_METHOD_CARRIER_RE = re.compile(
+    r"(?is)\b(?:proof[- ]family|proof[- ]carrier|proof carrier|logic tree|"
+    r"formal derivation|formal display|diagram|symbolic conflict|compression device)\b"
+)
+PROOF_METHOD_DEPENDENCY_RE = re.compile(
+    r"(?is)\b(?:premise[- ]set|premises?|predicate|definition|definitions?|"
+    r"source sorting|source meanings?|entailment licensing|dependency|depends on|"
+    r"earlier source|earlier .* semantic|faithful(?:ly)? preserve)\b"
+)
+PROOF_METHOD_STATE_RE = re.compile(
+    r"(?is)\b(?:no longer treated as (?:a )?neutral proof|typed as a proof carrier|"
+    r"does not independently establish|not self[- ]standing|prevents? the formal display from outranking|"
+    r"cannot outrank|imports unresolved|packages? a contested premise[- ]set|"
+    r"classif(?:y|ies|ied) .* compression device|loses the decisive distinctions?)\b"
+)
 M8_DEPENDENCY_TRACE_RE = re.compile(
     r"(?is)\b(?:dependency|dependent|depends|dependency[- ]trace|dependency[- ]chain|"
     r"dependency[- ]edge|dependency[- ]carrier|borrowed .* capital|"
@@ -1302,6 +1318,8 @@ def is_reconstructible_owner_operation(block: str) -> bool:
 
 
 def is_reconstructible_for_act_family(family: str, block: str) -> bool:
+    if family == "PROOF_METHOD":
+        return proof_method_carrier_transition_visible(block)
     if not is_mrp_operation_shaped_submove(block):
         return False
     payload = operation_payload(block)
@@ -1323,6 +1341,12 @@ def delta_result_has_concrete_state_change(record: ActRecord, family: str, block
         return False
     if family == "M8" and record.delta_result in BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get("M8", set()):
         return m8_delta_result_has_body_backing(record, block)
+    if (
+        family == "PROOF_METHOD"
+        and record.operation == "proof-family-and-carrier-audit"
+        and record.delta_result == "proof-family-carrier-typed"
+    ):
+        return proof_method_carrier_transition_visible(block)
     if STATE_CHANGE_RE.search(record.delta_result):
         return True
     supported = BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get(family, set())
@@ -1334,6 +1358,32 @@ def delta_result_has_concrete_state_change(record: ActRecord, family: str, block
     if family == "SOURCE":
         return source_repair_state_change_visible(record.owner, result, contribution, operation)
     return bool(STATE_CHANGE_RE.search(" ".join((result, contribution, operation))))
+
+
+def proof_method_carrier_transition_visible(block: str) -> bool:
+    target = field_body(block, "Target")
+    operation = field_body_any(block, ("Operation", "What it does"))
+    result = field_body_any(block, ("Result", "Result/state-change"))
+    contribution = contribution_body(block)
+    body = submove_operation_body(block)
+    if not (target and operation and result and contribution and body):
+        return False
+    if is_label_like_submove(block):
+        return False
+    payload = " ".join((target, operation, result, contribution, body))
+    if not owner_specific_operation_performed("proof-method-audit", payload):
+        return False
+    if not operation_acts_on_pressure(target, " ".join((operation, body))):
+        return False
+    if not contribution_explains_land(contribution):
+        return False
+    if not operation_body_has_state_delta(body, result, contribution):
+        return False
+    return bool(
+        PROOF_METHOD_CARRIER_RE.search(payload)
+        and PROOF_METHOD_DEPENDENCY_RE.search(payload)
+        and PROOF_METHOD_STATE_RE.search(payload)
+    )
 
 
 def m8_delta_result_has_body_backing(record: ActRecord, block: str) -> bool:
