@@ -71,8 +71,7 @@ operator_pack_eligible: true
   ],
   "operation_token": [
     "predication-repair",
-    "sense-split",
-    "repair"
+    "sense-split"
   ],
   "delta_result": [
     "predicate-separated",

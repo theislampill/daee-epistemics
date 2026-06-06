@@ -1462,7 +1462,7 @@ def act_partition_payload(assignments: list[tuple[str, list[str]]]) -> dict[str,
 
 def act_section(section_id: str, *body_refs: str) -> tuple[str, str, str]:
     rows = [
-        f"⟦ACT {body_ref}[M9.repair] :: π=predicate-transfer :: "
+        f"⟦ACT {body_ref}[M9.predication-repair] :: π=predicate-transfer :: "
         f"body_ref={body_ref} :: Δ=ΔB1:predicate-transfer-blocked :: Land(B1)+⟧"
         for body_ref in body_refs
     ]

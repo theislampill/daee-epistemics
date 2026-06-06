@@ -6012,7 +6012,7 @@ def run_self_test(root: Path) -> int:
         "M3 operations: orphaned-intuition",
         "M3: grounding-severed",
         "M8: coercive-clarity-entailment-demoted",
-        "M9 operations: predication-repair, repair, sense-split",
+        "M9 operations: predication-repair, sense-split",
         "M9: category-separated",
         "PROOF_METHOD operations: proof-denominator-audit, proof-family-and-carrier-audit",
         "PROOF_METHOD: proof-denominator-exposed",
