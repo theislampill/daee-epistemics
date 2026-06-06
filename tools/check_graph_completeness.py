@@ -1172,6 +1172,65 @@ def explicit_generated_hold_open(
     return bool(open_generated)
 
 
+def diagnostics_mentions_all(status: str, marker: str, burdens: list[str]) -> bool:
+    text = str(status or "")
+    if marker.lower() not in text.lower():
+        return False
+    return all(re.search(rf"\b{re.escape(burden)}\b", text) for burden in burdens)
+
+
+def formal_hold_state_for_burden(state: dict[str, Any], burden: str) -> bool:
+    if state_burden_id(state.get("source_burden")) != burden:
+        return False
+    route_type = normalized_token(state.get("route_result_type"))
+    route = normalized_token(state.get("route"))
+    if route_type not in {"hold-partial", "held-burden-activation", "loopbreak"} and route not in {
+        "hold",
+        "partial",
+        "recurse",
+    }:
+        if not state_hold_partial_recurse(state):
+            return False
+    divergence = status_head(str(state.get("divergence_state") or ""))
+    curl = status_head(str(state.get("curl_state") or ""))
+    return divergence in DIVERGENCE_POSITIVE_STATES or curl in CURL_LIVE_STATES
+
+
+def explicit_b_la_hold_open(
+    field_witness: dict[str, Any],
+    *,
+    divergence_curl_errors: list[str],
+    formal_errors: list[str],
+) -> bool:
+    if divergence_curl_errors or formal_errors:
+        return False
+    cov = coverage(field_witness)
+    if cov.get("coverage_complete") is not False:
+        return False
+    ledgers = field_witness_ledger(field_witness)
+    b_la = set(ledgers["B_LA"])
+    b_mrp = set(ledgers["B_MRP"])
+    terminals = terminal_state_map(field_witness)
+    open_b_la = sorted(
+        burden
+        for burden in b_la
+        if burden not in b_mrp and terminals.get(burden, "") in LIVE_TERMINAL_STATES | {"held-with-reason"}
+    )
+    if not open_b_la:
+        return False
+    curl = diagnostic_status(field_witness, "curl_check", "del_cross_kappa", "del-cross kappa")
+    divergence = diagnostic_status(field_witness, "divergence_check", "del_dot_B", "del-dot B")
+    if not diagnostics_mentions_all(curl, "b_la_hold_open", open_b_la):
+        return False
+    if not (
+        diagnostics_mentions_all(divergence, "unresolved_burdens", open_b_la)
+        or diagnostics_mentions_all(divergence, "b_la_hold_open", open_b_la)
+    ):
+        return False
+    states = formal_reread_states(field_witness)
+    return all(any(formal_hold_state_for_burden(state, burden) for state in states) for burden in open_b_la)
+
+
 def graph_checker_self_errors() -> list[str]:
     sigma_field_witness = {
         "coverage_proof": {
@@ -1333,50 +1392,93 @@ Land(¹B): landed.
             },
         },
     }
-    if explicit_generated_hold_open(
+    if not explicit_generated_hold_open(
         field_witness,
         graph_edge_set={"B1->B2"},
         resultant_edge_set={"B1->B2"},
         divergence_curl_errors=[],
         formal_errors=[],
     ):
-        curl_state = certificate_curl_state("unresolved", generated_hold_open=True)
-        hold_nodes = hold_partial_nodes(field_witness)
-        certificate = {
-            "input_fingerprint": "0" * 64,
-            "skill_version": DEFAULT_SKILL_VERSION,
-            "collapse_positive": False,
+        return ["checker self-canary: explicit generated-held open graph state was not accepted"]
+    curl_state = certificate_curl_state("unresolved", open_hold_state=True)
+    hold_nodes = hold_partial_nodes(field_witness)
+    certificate = {
+        "input_fingerprint": "0" * 64,
+        "skill_version": DEFAULT_SKILL_VERSION,
+        "collapse_positive": False,
+        "coverage_complete": False,
+        "divergence_state": "non-neutral",
+        "curl_state": curl_state,
+        "diagnostic_completeness": True,
+        "live_registers_covered": [],
+        "max_generation_depth": 1,
+        "loopbreak_count": 0,
+        "loopbreak_grounds": [],
+        "verified_activations": ["B1"],
+        "hold_partial_nodes": hold_nodes,
+        "primary_track_closed": True,
+        "restoration_track_closed": True,
+        "divergence_positive_addressed": True,
+        "curl_resolved": False,
+        "terminal_stop_proof_complete": True,
+        "terminal_stop_proof_count": 0,
+        "restoration_endpoint_reached": False,
+        "checker_version": CHECKER_VERSION,
+        "timestamp": "2026-05-30T00:00:00Z",
+    }
+    if curl_state != "held":
+        return ["checker self-canary: generated-held certificate curl_state was not canonicalized to held"]
+    if certificate_coverage_complete({"coverage_completeness": {"pass": True}}, open_hold_state=True):
+        return ["checker self-canary: generated-held certificate falsely reported coverage_complete"]
+    if not hold_nodes:
+        return ["checker self-canary: generated-held certificate omitted hold_partial_nodes"]
+    found = certificate_errors(certificate)
+    if found:
+        return [f"checker self-canary: generated-held certificate failed schema: {error}" for error in found]
+
+    b_la_hold_field_witness = {
+        "B_LA": ["B1", "B2"],
+        "B_MRP": [],
+        "B_total": ["B1", "B2"],
+        "nodes": [
+            {"id": "B1", "type": "burden", "state": "landed"},
+            {"id": "B2", "type": "burden", "state": "held-with-reason"},
+        ],
+        "formal_reread_states": [
+            {
+                "source_burden": "B2",
+                "route_result_type": "hold_partial",
+                "route": "HOLD",
+                "route_gradient": "B_LA B2 remains HOLD/PARTIAL after R(H,Delta)",
+                "divergence_state": "non-neutral",
+                "curl_state": "unresolved",
+            }
+        ],
+        "field_diagnostics": {
+            "divergence_check": "non-neutral / unresolved_burdens=[B2]",
+            "curl_check": "unresolved / b_la_hold_open=[B2]",
+        },
+        "terminal_states": {"B1": "landed", "B2": "held-with-reason"},
+        "coverage_proof": {
             "coverage_complete": False,
-            "divergence_state": "non-neutral",
-            "curl_state": curl_state,
-            "diagnostic_completeness": True,
-            "live_registers_covered": [],
-            "max_generation_depth": 1,
-            "loopbreak_count": 0,
-            "loopbreak_grounds": [],
-            "verified_activations": ["B1"],
-            "hold_partial_nodes": hold_nodes,
-            "primary_track_closed": True,
-            "restoration_track_closed": True,
-            "divergence_positive_addressed": True,
-            "curl_resolved": False,
-            "terminal_stop_proof_complete": True,
-            "terminal_stop_proof_count": 0,
-            "restoration_endpoint_reached": False,
-            "checker_version": CHECKER_VERSION,
-            "timestamp": "2026-05-30T00:00:00Z",
-        }
-        if curl_state != "held":
-            return ["checker self-canary: generated-held certificate curl_state was not canonicalized to held"]
-        if certificate_coverage_complete({"coverage_completeness": {"pass": True}}, generated_hold_open=True):
-            return ["checker self-canary: generated-held certificate falsely reported coverage_complete"]
-        if not hold_nodes:
-            return ["checker self-canary: generated-held certificate omitted hold_partial_nodes"]
-        found = certificate_errors(certificate)
-        if found:
-            return [f"checker self-canary: generated-held certificate failed schema: {error}" for error in found]
-        return []
-    return ["checker self-canary: explicit generated-held open graph state was not accepted"]
+            "dependency_graph": {"nodes": ["B1", "B2"], "edges": []},
+        },
+    }
+    if not explicit_b_la_hold_open(
+        b_la_hold_field_witness,
+        divergence_curl_errors=[],
+        formal_errors=[],
+    ):
+        return ["checker self-canary: explicit B_LA hold-open graph state was not accepted"]
+    aliased_hold = json.loads(json.dumps(b_la_hold_field_witness))
+    aliased_hold["field_diagnostics"]["curl_check"] = "unresolved / generated_burden_hold=[B2]"
+    if explicit_b_la_hold_open(aliased_hold, divergence_curl_errors=[], formal_errors=[]):
+        return ["checker self-canary: B_LA hold-open accepted generated_burden_hold alias"]
+    if certificate_curl_state("unresolved", open_hold_state=True) != "held":
+        return ["checker self-canary: B_LA hold-open certificate curl_state was not canonicalized to held"]
+    if certificate_coverage_complete({"coverage_completeness": {"pass": True}}, open_hold_state=True):
+        return ["checker self-canary: B_LA hold-open certificate falsely reported coverage_complete"]
+    return []
 
 
 def track_closure_flags(field_witness: dict[str, Any]) -> tuple[bool, bool]:
@@ -1545,6 +1647,12 @@ def condition_rows(path: Path, text: str, field_witness: dict[str, Any]) -> dict
         divergence_curl_errors=divergence_curl_errors,
         formal_errors=formal_errors,
     )
+    b_la_hold_open = explicit_b_la_hold_open(
+        field_witness,
+        divergence_curl_errors=divergence_curl_errors,
+        formal_errors=formal_errors,
+    )
+    open_hold_state = generated_hold_open or b_la_hold_open
     track_errors = two_track_mrp_errors(path, field_witness)
     tracks = generated_burden_tracks(field_witness)
     restoration_targets = sorted(restoration_generated_targets(field_witness))
@@ -1605,17 +1713,17 @@ def condition_rows(path: Path, text: str, field_witness: dict[str, Any]) -> dict
             ),
         },
         "mrp_exhaustion": {
-            "pass": no_silent_live and (divergence_head == "neutral" or generated_hold_open),
+            "pass": no_silent_live and (divergence_head == "neutral" or open_hold_state),
             "basis": (
                 f"divergence={divergence or '<missing>'}; terminals={terminals}; "
-                f"generated_hold_open={generated_hold_open}"
+                f"generated_hold_open={generated_hold_open}; b_la_hold_open={b_la_hold_open}"
             ),
         },
         "curl_loopbreak_handling": {
-            "pass": not formal_errors and (curl_head in {"null", "resolved"} or generated_hold_open),
+            "pass": not formal_errors and (curl_head in {"null", "resolved"} or open_hold_state),
             "basis": (
                 f"curl={curl or '<missing>'}; formal_reread_state_errors={len(formal_errors)}; "
-                f"generated_hold_open={generated_hold_open}"
+                f"generated_hold_open={generated_hold_open}; b_la_hold_open={b_la_hold_open}"
             ),
         },
         "graph_structure": {
@@ -1648,6 +1756,11 @@ def condition_rows(path: Path, text: str, field_witness: dict[str, Any]) -> dict
             "active": generated_hold_open,
             "basis": "explicit generated B_MRP HOLD/PARTIAL/RECURSE is valid-open graph state, not collapse-positive proof",
         },
+        "b_la_hold_open_state": {
+            "pass": True,
+            "active": b_la_hold_open,
+            "basis": "explicit B_LA HOLD/PARTIAL/RECURSE is valid-open graph state, not collapse-positive proof",
+        },
     }
 
 
@@ -1664,10 +1777,12 @@ def graph_report(path: Path) -> tuple[dict[str, Any] | None, list[str]]:
     failures = [name for name, row in conditions.items() if not row["pass"]]
     graph_valid = not failures
     generated_hold_open = bool(conditions.get("generated_hold_open_state", {}).get("active"))
+    b_la_hold_open = bool(conditions.get("b_la_hold_open_state", {}).get("active"))
+    open_hold_state = generated_hold_open or b_la_hold_open
     report = {
         "path": rel(path),
         "graph_valid": graph_valid,
-        "collapse_positive": graph_valid and not generated_hold_open,
+        "collapse_positive": graph_valid and not open_hold_state,
         "conditions": conditions,
         "failures": failures,
         "boundary": "schema-light B.1 slice; not a B.2 collapse certificate",
@@ -1675,14 +1790,14 @@ def graph_report(path: Path) -> tuple[dict[str, Any] | None, list[str]]:
     return report, []
 
 
-def certificate_curl_state(curl: str, *, generated_hold_open: bool) -> str:
-    if generated_hold_open and curl == "unresolved":
+def certificate_curl_state(curl: str, *, open_hold_state: bool) -> str:
+    if open_hold_state and curl == "unresolved":
         return "held"
     return curl
 
 
-def certificate_coverage_complete(conditions: dict[str, dict[str, Any]], *, generated_hold_open: bool) -> bool:
-    return bool(conditions["coverage_completeness"]["pass"] and not generated_hold_open)
+def certificate_coverage_complete(conditions: dict[str, dict[str, Any]], *, open_hold_state: bool) -> bool:
+    return bool(conditions["coverage_completeness"]["pass"] and not open_hold_state)
 
 
 def graph_certificate(
@@ -1704,9 +1819,11 @@ def graph_certificate(
     cov = coverage(field_witness)
     conditions = report["conditions"]
     generated_hold_open = bool(conditions.get("generated_hold_open_state", {}).get("active"))
+    b_la_hold_open = bool(conditions.get("b_la_hold_open_state", {}).get("active"))
+    open_hold_state = generated_hold_open or b_la_hold_open
     divergence = status_head(diagnostic_status(field_witness, "divergence_check", "del_dot_B", "del-dot B"))
     raw_curl = status_head(diagnostic_status(field_witness, "curl_check", "del_cross_kappa", "del-cross kappa"))
-    curl = certificate_curl_state(raw_curl, generated_hold_open=generated_hold_open)
+    curl = certificate_curl_state(raw_curl, open_hold_state=open_hold_state)
     grounds = loopbreak_grounds(field_witness)
     primary_track_closed, restoration_track_closed = track_closure_flags(field_witness)
     terminal_proof_count = terminal_stop_proof_count(field_witness)
@@ -1733,7 +1850,7 @@ def graph_certificate(
         "input_fingerprint": fingerprint,
         "skill_version": field_skill_version(field_witness),
         "collapse_positive": bool(report["collapse_positive"]),
-        "coverage_complete": certificate_coverage_complete(conditions, generated_hold_open=generated_hold_open),
+        "coverage_complete": certificate_coverage_complete(conditions, open_hold_state=open_hold_state),
         "divergence_state": divergence,
         "curl_state": curl,
         "diagnostic_completeness": bool(conditions["diagnostic_completeness"]["pass"]),

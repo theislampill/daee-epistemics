@@ -2840,7 +2840,25 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         else f"coverage_complete=false; unresolved_burdens=[{unresolved_text}]"
     )
     divergence_status = "neutral" if coverage_complete else f"non-neutral / unresolved_burdens=[{unresolved_text}]"
-    curl_status = "null" if coverage_complete else f"unresolved / generated_burden_hold=[{unresolved_text}]"
+    generated_unresolved = [burden for burden in unresolved_burdens if burden in generated_burdens]
+    b_la_unresolved = [
+        burden
+        for burden in unresolved_burdens
+        if burden in burden_floor and burden not in generated_burdens
+    ]
+    other_unresolved = [
+        burden
+        for burden in unresolved_burdens
+        if burden not in generated_unresolved and burden not in b_la_unresolved
+    ]
+    curl_markers: list[str] = []
+    if generated_unresolved:
+        curl_markers.append(f"generated_burden_hold=[{', '.join(generated_unresolved)}]")
+    if b_la_unresolved:
+        curl_markers.append(f"b_la_hold_open=[{', '.join(b_la_unresolved)}]")
+    if other_unresolved:
+        curl_markers.append(f"unresolved_burdens=[{', '.join(other_unresolved)}]")
+    curl_status = "null" if coverage_complete else f"unresolved / {'; '.join(curl_markers)}"
     incoming_source_by_target = {edge["to"]: edge["from"] for edge in edges}
     owner_activation_rows: list[dict[str, Any]] = []
     nar_rows: list[dict[str, Any]] = []
@@ -8178,6 +8196,10 @@ def run_self_test(root: Path) -> int:
             raise HarnessError(f"Self-test baseline-held MRP prompt omitted scaffold: {required}")
     if "coverage_complete=false; unresolved_burdens=[B2]" not in baseline_held_witness_text:
         raise HarnessError("Self-test baseline-held witness omitted coverage_complete=false for B2")
+    if "b_la_hold_open=[B2]" not in baseline_held_witness_text:
+        raise HarnessError("Self-test baseline-held witness omitted B_LA hold-open curl marker for B2")
+    if "generated_burden_hold=[B2]" in baseline_held_witness_text:
+        raise HarnessError("Self-test baseline-held witness mislabeled B_LA hold as generated_burden_hold")
     baseline_held_states = [
         row for row in baseline_held_payload.get("formal_reread_states", [])
         if isinstance(row, dict)
