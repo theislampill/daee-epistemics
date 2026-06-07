@@ -250,7 +250,8 @@ SOURCE_REPAIR_NEGATED_EVIDENCE_RE = re.compile(
     r"does not perform (?:source|authority|ordering|repair|transition|operation|work)|"
     r"do not perform (?:source|authority|ordering|repair|transition|operation|work)|"
     r"never (?:sorts?|distinguishes?)|never performs (?:source|authority|ordering|repair|transition|operation|work)|"
-    r"not .*sort|not .*distinguish|only repeats?|merely repeats?|"
+    r"not\s+(?:actually\s+|really\s+|visibly\s+|explicitly\s+)?(?:sorts?|distinguishes?)\b|"
+    r"only repeats?|merely repeats?|"
     r"generic repair language|label(?:s)? only|owner labels?)\b"
 )
 PUBLIC_ACT_RECORD_RE = re.compile(

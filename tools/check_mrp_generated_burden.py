@@ -220,6 +220,7 @@ SOURCE_OWNED_ACT_OPERATIONS = {
 }
 BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
     "M8": {"consequence-traced", "dependency-exposed"},
+    "PATTERN_PROFILE": {"carrier-function-typed", "proof-packet-reconstructed"},
     "PROOF_METHOD": {"proof-family-carrier-typed"},
     "SOURCE": {"authority-order-repaired", "source-order-repaired"},
 }
@@ -241,6 +242,27 @@ PROOF_METHOD_STATE_RE = re.compile(
     r"classif(?:y|ies|ied) .* compression device|loses the decisive distinctions?|"
     r"route[- ]status (?:is )?clarified|proof route is bounded|"
     r"tribunal[- ]function (?:is )?named|burden[- ]function (?:is )?named)\b"
+)
+PATTERN_PROFILE_LOADED_LABEL_RE = re.compile(
+    r"(?is)\b(?:loaded[- ]label|label cluster|identity[- ]carrier|worldview[- ]carrier|"
+    r"noetic[- ]carrier|carrier function)\b.*"
+    r"\b(?:hidden proof rule|proof function|source[- ]authority|authority rule|"
+    r"worldview premise|source[- ]worldview|authority signal)\b"
+)
+PATTERN_PROFILE_LOADED_LABEL_STATE_RE = re.compile(
+    r"(?is)\b(?:carrier[- ]function[- ]typed|loaded label carrier function is exposed|"
+    r"label .*classified|no longer treated as (?:automatic proof|automatic disproof|"
+    r"a license for contempt|proof by itself|decisive proof)|proper public function)\b"
+)
+PATTERN_PROFILE_PROOF_PACKET_RE = re.compile(
+    r"(?is)\b(?:proof[- ]packet|logic[- ]tree|mind[- ]map|diagram)\b.*"
+    r"\b(?:reconstruct|reconstructed|rebuilding|rebuilt|ordered sequence|sequence of transfers)\b"
+)
+PATTERN_PROFILE_PROOF_PACKET_STATE_RE = re.compile(
+    r"(?is)\b(?:hidden source moves?|predicate transfers?|conclusion jump|"
+    r"source, predicate, event, inference, and conclusion|source, definitions?, event, inference, and conclusion|"
+    r"imported fatal[- ]success premise|expanded protection predicate|forum switch|"
+    r"load[- ]bearing assumptions|closed logic[- ]tree picture)\b"
 )
 PROOF_METHOD_ROUTE_STATUS_BODY_RE = re.compile(
     r"(?is)\b(?:proof forum|standard of proof|burden[- ]function|burden role|"
@@ -1364,6 +1386,11 @@ def delta_result_has_concrete_state_change(record: ActRecord, family: str, block
     if family == "M8" and record.delta_result in BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get("M8", set()):
         return m8_delta_result_has_body_backing(record, block)
     if (
+        family == "PATTERN_PROFILE"
+        and record.delta_result in BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get("PATTERN_PROFILE", set())
+    ):
+        return pattern_profile_delta_result_has_body_backing(record, block)
+    if (
         family == "PROOF_METHOD"
         and record.operation == "proof-family-and-carrier-audit"
         and record.delta_result == "proof-family-carrier-typed"
@@ -1380,6 +1407,36 @@ def delta_result_has_concrete_state_change(record: ActRecord, family: str, block
     if family == "SOURCE":
         return source_repair_state_change_visible(record.owner, result, contribution, operation)
     return bool(STATE_CHANGE_RE.search(" ".join((result, contribution, operation))))
+
+
+def pattern_profile_delta_result_has_body_backing(record: ActRecord, block: str) -> bool:
+    target = field_body(block, "Target")
+    operation = field_body_any(block, ("Operation", "What it does"))
+    result = field_body_any(block, ("Result", "Result/state-change"))
+    contribution = contribution_body(block)
+    body = submove_operation_body(block)
+    if not (target and operation and result and contribution and body):
+        return False
+    payload = " ".join((record.pi, target, operation, result, contribution, body))
+    if not owner_specific_operation_performed("pattern-profiling", payload):
+        return False
+    if not operation_acts_on_pressure(target, " ".join((operation, body))):
+        return False
+    if not contribution_explains_land(contribution):
+        return False
+    if not STATE_CHANGE_RE.search(" ".join((result, contribution, body))):
+        return False
+    if record.operation == "loaded-label-carrier-audit" and record.delta_result == "carrier-function-typed":
+        return bool(
+            PATTERN_PROFILE_LOADED_LABEL_RE.search(payload)
+            and PATTERN_PROFILE_LOADED_LABEL_STATE_RE.search(payload)
+        )
+    if record.operation == "proof-packet-reconstruction" and record.delta_result == "proof-packet-reconstructed":
+        return bool(
+            PATTERN_PROFILE_PROOF_PACKET_RE.search(payload)
+            and PATTERN_PROFILE_PROOF_PACKET_STATE_RE.search(payload)
+        )
+    return False
 
 
 def proof_method_carrier_transition_visible(block: str) -> bool:

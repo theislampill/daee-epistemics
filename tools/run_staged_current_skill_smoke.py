@@ -2893,6 +2893,7 @@ def stage07_act_contract_guidance(
             "- Each submove block heading must begin with that canonical public submove ID plus `[{owner}] - ...` with the owner token only; put the operation in the `Operation:` facet.",
             "- Each submove block must contain `Target:`, `Operation:`, `Result/state-change:`, and `Contribution-to-Land(Bn):` facets.",
             "- The block prose must make the ACT pressure, operation, delta/result, and Land(Bn) contribution recoverable without relying on the ACT row alone.",
+            "- Stage07 locality rule: every landed ACT row must make a local proof capsule recoverable near that row: BEFORE (what pressure/state was live), OPERATION (which owner operation acted), AFTER (what changed in this burden), DELTA (how the compact delta_result names it), and LAND-LICENSE (why Land(Bn) is licensed instead of HOLD/PARTIAL).",
             "- Copy the ACT Land slot byte-for-byte from the canonical Stage 04 row. Do not rewrite `Land(B5)+` / `Land(⁵B)+` into prose such as `Land(additional burden 5)+`; a prose Land target is not a typed burden id.",
             "- The ACT owner, matched route owner, submove owner heading, field_witness owner, and NAR owner_id must all name the same callable selected owner family; route/context umbrella labels, case-library labels, noetic-frame labels, and code lookups are not load-bearing ACT owners.",
             "- If the selected route names only an umbrella/context module, resolve to a callable owner/TTP floor before ACT; otherwise keep the route as HOLD/PARTIAL instead of inventing an ACT owner.",
@@ -2909,6 +2910,7 @@ def stage07_act_contract_guidance(
             "- For `proof-method-audit.proof-route-status-audit`, the dereferenced body must identify the proof forum, standard of proof, tribunal/burden-function, proof eligibility, supporting texts, and premise/inference/conclusion scope. Generic proof-route labels do not Land.",
             "- For `pattern-profiling.loaded-label-carrier-audit`, the dereferenced body must identify the label as a noetic/worldview/identity carrier, expose the hidden proof/source/authority rule it transmits, and show `carrier-function-typed` as a burden-local state transition. Owner and delta labels alone do not Land.",
             "- For `pattern-profiling.loaded-label-carrier-audit`, the `Result/state-change:` facet must say the loaded label carrier function is exposed or classified; do not rely on `carrier-function-typed` by itself.",
+            "- For `pattern-profiling.proof-packet-reconstruction`, the dereferenced body must reconstruct the proof packet, expose hidden source moves, predicate transfers, conclusion jumps, or forum switches, and show `proof-packet-reconstructed` as a burden-local state transition. Owner and delta labels alone do not Land.",
             "- For `FPD.foreign-premise-detection`, the dereferenced body must expose the foreign/imported premise, imported criterion, hidden criterion, or imported tribunal that was functioning as proof. Owner labels or generic criterion language do not Land.",
             "- Emit standalone public landing lines such as `Land(Bn): ...` or `HOLD(Bn): ...` only after the final Stage 04 body_ref for that burden; `Contribution-to-Land(Bn):` alone is not a landing line.",
             "- Never print `Land(Bn):` for a burden while another assigned or later Stage 04 body_ref for the same burden remains unrendered.",
@@ -2943,6 +2945,7 @@ def stage07_act_contract_guidance(
                 f"  Operation: {detail['operation']} must act on {detail['pressure']} with owner family {detail['owner']}.",
                 f"  Result/state-change: {detail['delta_result']}; state-change must be visible in local prose.",
                 f"  Contribution-to-Land({public_burden}): explain how {detail['delta_result']} contributes to Land({public_burden}).",
+                "  Local proof capsule: make BEFORE, OPERATION, AFTER, DELTA, and LAND-LICENSE recoverable in this block; if the body cannot name the burden-local change, render HOLD/PARTIAL instead of Land.",
                 "  TTP Operation Body: expand the local governed operation in ordinary public prose.",
             ]
         )
@@ -2993,6 +2996,21 @@ def stage07_act_contract_guidance(
                     "or predicate set being loaded, identify the inference grammar and conclusion scope, and state "
                     "the parser-stable local state change: `the proof carrier is classified as a proof carrier whose "
                     "premise set, inference grammar, and conclusion scope are no longer treated as a neutral proof.`"
+                )
+        elif family == "PATTERN_PROFILE":
+            if detail["operation"] == "proof-packet-reconstruction":
+                lines.append(
+                    "  Pattern-profile proof-packet operation: reconstruct the proof packet in public order and name "
+                    "the hidden source moves, predicate transfers, conclusion jump, forum switch, or carrier compression "
+                    "that changed in this burden. State the parser-stable local change: `the proof packet is reconstructed "
+                    "so its hidden source moves, predicate transfers, and conclusion jump are exposed.`"
+                )
+            else:
+                lines.append(
+                    "  Pattern-profile loaded-label operation: identify the label as a noetic/worldview/identity carrier, "
+                    "expose the hidden proof/source/authority rule it transmits, and state that the loaded label carrier "
+                    "function is exposed or classified. If the body only names the label or owner, render HOLD/PARTIAL "
+                    "instead of Land."
                 )
         elif family == "FPD":
             lines.append(
@@ -3579,6 +3597,11 @@ PATTERN_PROFILE_BODY_BACKED_RE = re.compile(
     r"(?is)\blabel\b.*\bcarrier\b.*\b(?:hidden|transmit\w*|proof rule|source|authority|worldview|noetic)\b.*"
     r"\b(?:loaded|compress\w*|carrier function)\b"
 )
+PATTERN_PROFILE_PROOF_PACKET_BODY_BACKED_RE = re.compile(
+    r"(?is)\b(?:proof[- ]packet|logic[- ]tree|mind[- ]map|diagram)\b.*"
+    r"\b(?:reconstruct|reconstructed|rebuilding|rebuilt|ordered sequence|sequence of transfers)\b.*"
+    r"\b(?:source moves?|predicate transfers?|conclusion jump|forum switch|carrier compression|load[- ]bearing assumptions)\b"
+)
 FPD_BODY_BACKED_RE = re.compile(
     r"(?is)\b(?:foreign premise|imported premise|imported criterion|hidden criterion|"
     r"foreign criterion|unargued criterion|criterion import|premise import|"
@@ -3741,21 +3764,24 @@ def owner_transition_body_backed(detail: dict[str, str], block: str) -> bool:
     owner = str(detail.get("owner") or "").strip()
     operation = str(detail.get("operation") or "").strip()
     family = canonical_delta_owner(owner) or owner
+    operation_body = ttp_operation_body_from_public_block(block)
     if owner == "proof-method-audit" and operation == "proof-family-and-carrier-audit":
-        return bool(PROOF_METHOD_BODY_BACKED_RE.search(block))
+        return bool(PROOF_METHOD_BODY_BACKED_RE.search(operation_body))
     if owner == "proof-method-audit" and operation == "proof-route-status-audit":
         return bool(
-            PROOF_METHOD_BODY_BACKED_RE.search(block)
-            and PROOF_ROUTE_STATUS_BODY_BACKED_RE.search(block)
+            PROOF_METHOD_BODY_BACKED_RE.search(operation_body)
+            and PROOF_ROUTE_STATUS_BODY_BACKED_RE.search(operation_body)
         )
     if owner == "pattern-profiling" and operation == "loaded-label-carrier-audit":
-        return bool(PATTERN_PROFILE_BODY_BACKED_RE.search(block))
+        return bool(PATTERN_PROFILE_BODY_BACKED_RE.search(operation_body))
+    if owner == "pattern-profiling" and operation == "proof-packet-reconstruction":
+        return bool(PATTERN_PROFILE_PROOF_PACKET_BODY_BACKED_RE.search(operation_body))
     if family == "FPD" and operation == "foreign-premise-detection":
-        return bool(FPD_BODY_BACKED_RE.search(ttp_operation_body_from_public_block(block)))
+        return bool(FPD_BODY_BACKED_RE.search(operation_body))
     if family == "SOURCE" and operation == "authority-order-repair":
-        return bool(SOURCE_AUTHORITY_ORDER_BODY_BACKED_RE.search(ttp_operation_body_from_public_block(block)))
+        return bool(SOURCE_AUTHORITY_ORDER_BODY_BACKED_RE.search(operation_body))
     if family == "SOURCE" and operation == "source-order-repair":
-        return bool(SOURCE_SOURCE_ORDER_BODY_BACKED_RE.search(ttp_operation_body_from_public_block(block)))
+        return bool(SOURCE_SOURCE_ORDER_BODY_BACKED_RE.search(operation_body))
     return False
 
 
@@ -3779,6 +3805,11 @@ def state_change_sentence_for_owner_transition(detail: dict[str, str]) -> str:
         return (
             " State change: the loaded label carrier function is exposed and classified, "
             "so the carrier no longer transports the conclusion as a premise."
+        )
+    if owner == "pattern-profiling" and operation == "proof-packet-reconstruction":
+        return (
+            " State change: the proof packet is reconstructed so its hidden source moves, "
+            "predicate transfers, and conclusion jump are exposed rather than carried invisibly."
         )
     if family == "FPD" and operation == "foreign-premise-detection":
         return (
@@ -3819,6 +3850,7 @@ def canonicalize_layer_b_owner_transition_facets(
                 "proof-family-and-carrier-audit",
                 "proof-route-status-audit",
                 "loaded-label-carrier-audit",
+                "proof-packet-reconstruction",
             }
         )
         or (
@@ -7455,7 +7487,7 @@ def run_self_test(root: Path) -> int:
         "SOURCE register-axis floor: authority-order/source-status repairs act on source/semantic/authority status (`σ`)",
         "V2 operations: proof-burden-order, reason-role-repair, reconstituting-reason",
         "V2: frame-cleared",
-        "PATTERN_PROFILE operations: collapse-radius-mapping, loaded-label-carrier-audit",
+        "PATTERN_PROFILE operations: collapse-radius-mapping, loaded-label-carrier-audit, mutation-after-challenge-tracking, pattern-profile, proof-packet-reconstruction",
         "PATTERN_PROFILE is a delta/register vocabulary family for callable owner `pattern-profiling`",
         "PATTERN_PROFILE: carrier-function-typed",
         "Routed owners without controlled Stage 04 operation/delta_result vocabulary: unmapped-neutral-owner",
@@ -9027,6 +9059,8 @@ def run_self_test(root: Path) -> int:
         "Delta-layer discipline: the ACT `Δ=` carrier before the colon must be only a burden-state delta such as `Δ¹B` / `ΔB1` or dependency-radius `Δκ`",
         "If the row needs κ/H dependency-radius work, use `Δκ:<owner-local-state-change>`",
         "A compact label such as `reopen-condition-stated` or `scope-boundary-named` cannot replace the visible burden-local state change",
+        "Stage07 locality rule: every landed ACT row must make a local proof capsule recoverable near that row",
+        "Local proof capsule: make BEFORE, OPERATION, AFTER, DELTA, and LAND-LICENSE recoverable in this block",
         "SOURCE/source-status operation: explicitly sort source authority, source function, proof-stack order, or hidden support",
         "`status` is not a callable ACT operation; use a registered SOURCE operation",
     ):
@@ -9039,6 +9073,9 @@ def run_self_test(root: Path) -> int:
         "⟦ACT ¹B₂[pattern-profiling.loaded-label-carrier-audit] :: "
         "π=loaded-label-carrier-compression :: body_ref=¹B₂ :: "
         "Δ=Δ¹B:carrier-function-typed :: Land(¹B)+⟧",
+        "⟦ACT ¹B₃[pattern-profiling.proof-packet-reconstruction] :: "
+        "π=logic-tree-proof-packet-compression :: body_ref=¹B₃ :: "
+        "Δ=Δ¹B:proof-packet-reconstructed :: Land(¹B)+⟧",
     ]
     proof_pattern_stage04 = normalized_stage(
         "stage-04-burden-execution-act",
@@ -9053,6 +9090,7 @@ def run_self_test(root: Path) -> int:
                 {
                     "¹B₁": "μ",
                     "¹B₂": "μ",
+                    "¹B₃": "μ",
                 },
             ),
         },
@@ -9071,13 +9109,15 @@ def run_self_test(root: Path) -> int:
         section_count=9,
         target_output_kb=70,
         section_min_bytes=1024,
-        assigned_body_refs=["¹B₁", "¹B₂"],
+        assigned_body_refs=["¹B₁", "¹B₂", "¹B₃"],
     )
     for required in (
         "proof-method-audit.proof-family-and-carrier-audit",
         "premise set, inference grammar, and conclusion scope are no longer treated as a neutral proof",
         "pattern-profiling.loaded-label-carrier-audit",
         "loaded label carrier function is exposed or classified",
+        "pattern-profiling.proof-packet-reconstruction",
+        "proof packet is reconstructed",
         "the delta token alone is not a state change",
     ):
         if required not in proof_pattern_prompt:
@@ -9104,7 +9144,17 @@ def run_self_test(root: Path) -> int:
             "Contribution-to-Land(¹B): This contributes because the label no longer closes the burden by itself.",
             "TTP Operation Body:",
             "The label functions as a carrier rather than a neutral description. It transmits a hidden proof rule and source-authority posture by compressing the source order, predicate assignment, and conclusion into one loaded phrase. The audit exposes how that carrier function made the contradiction appear settled before the proof was earned.",
-            "Land(¹B): The proof carrier and loaded label carrier are both typed.",
+            "",
+            proof_pattern_rows[2],
+            "",
+            "### ¹B₃[pattern-profiling] - proof-packet-reconstruction over logic-tree-proof-packet-compression",
+            "Target: logic-tree-proof-packet-compression.",
+            "Operation: proof-packet-reconstruction reconstructs the logic-tree-proof-packet-compression with owner family pattern-profiling.",
+            "Result/state-change: proof-packet-reconstructed. The proof packet is rebuilt in public order.",
+            "Contribution-to-Land(¹B): This contributes because the hidden source moves, predicate transfers, and conclusion jump no longer travel inside the diagram.",
+            "TTP Operation Body:",
+            "The proof-packet reconstruction rebuilds the logic-tree proof packet as an ordered sequence of transfers. It reconstructs the source moves, predicate transfers, and conclusion jump, then exposes the forum switch and carrier compression that made the diagram appear to close before the premises were earned.",
+            "Land(¹B): The proof carrier, loaded label carrier, and proof packet reconstruction are all typed.",
             "",
         ]
     )
@@ -9119,14 +9169,19 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test Stage 07 proof-method carrier canonicalization omitted parser-stable state change")
     if "the loaded label carrier function is exposed and classified" not in canonical_proof_pattern:
         raise HarnessError("Self-test Stage 07 pattern carrier canonicalization omitted parser-stable state change")
-    if len(proof_pattern_event.get("facet_replacements") or []) != 2:
-        raise HarnessError("Self-test Stage 07 proof/pattern carrier canonicalization did not touch both owner facets")
+    if "the proof packet is reconstructed so its hidden source moves, predicate transfers, and conclusion jump are exposed" not in canonical_proof_pattern:
+        raise HarnessError("Self-test Stage 07 proof-packet canonicalization omitted parser-stable state change")
+    if len(proof_pattern_event.get("facet_replacements") or []) != 3:
+        raise HarnessError("Self-test Stage 07 proof/pattern carrier canonicalization did not touch all owner facets")
     label_only_proof_pattern = thin_proof_pattern_layer.replace(
         "The proof-method audit tests the proof family rather than merely naming it. It identifies the premise and predicate set loaded into the diagram, the inference grammar that derives the contradiction, and the conclusion scope the proof claims. The logic tree depends on source sorting and definition stability before it can establish the result.",
         "The proof-method-audit owner is named here, so the proof carrier is handled.",
     ).replace(
         "The label functions as a carrier rather than a neutral description. It transmits a hidden proof rule and source-authority posture by compressing the source order, predicate assignment, and conclusion into one loaded phrase. The audit exposes how that carrier function made the contradiction appear settled before the proof was earned.",
         "The pattern-profiling owner is named here, so the carrier is handled.",
+    ).replace(
+        "The proof-packet reconstruction rebuilds the logic-tree proof packet as an ordered sequence of transfers. It reconstructs the source moves, predicate transfers, and conclusion jump, then exposes the forum switch and carrier compression that made the diagram appear to close before the premises were earned.",
+        "The pattern-profiling proof-packet owner is named here, so the proof packet is handled.",
     )
     _, label_only_event = canonical_compiled_structural_section(
         "layer_b_act",
