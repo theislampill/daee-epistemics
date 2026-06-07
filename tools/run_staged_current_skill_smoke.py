@@ -98,6 +98,16 @@ ACT_ROW_OWNER_QUALIFIED_BODY_REF_RE = re.compile(
 )
 LAND_TARGET_RE = re.compile(r"Land\((?P<target>[^)\n]+)\)")
 CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0-9_])")
+PUBLIC_ASCII_SUBMOVE_RE = re.compile(r"\bB([1-9][0-9]*)[_\.]([1-9][0-9]*)(\[[^\]\n]+\])?")
+PUBLIC_ASCII_BURDEN_RE = re.compile(r"\bB([1-9][0-9]*)\b")
+PUBLIC_ASCII_EDGE_RE = re.compile(r"\bB([1-9][0-9]*)\s*(?:->|→)\s*B([1-9][0-9]*)\b")
+PUBLIC_ASCII_LAND_RE = re.compile(r"\b(Land|HOLD)\(B([1-9][0-9]*)\)", re.IGNORECASE)
+PUBLIC_ASCII_MRP_RE = re.compile(r"\bMRP\(B([1-9][0-9]*)\)")
+PUBLIC_MACHINE_PAYLOAD_LINE_RE = re.compile(
+    r"^\s*(?:[`]{3}|[{[\]},]|"
+    r"\"(?:B_LA|B_MRP|B_total|nodes|edges|terminal_states|owner_activations|"
+    r"field_witness|coverage_proof|body_ref|burden_id|source|target|from|to|graph)\"\s*:)"
+)
 STAGE05_TERMINAL_BURDEN_ID_RE = re.compile(r"^B[1-9][0-9]*$")
 BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*)?$")
 ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
@@ -265,9 +275,13 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "`register_axis`, and `delta_result` evidence. `register_axis` must name the "
             "noetic tuple/register field being acted on (`N`, `m`, `τ`, `σ`, `♥`, `ξ`, "
             "`Ω`, `μ`, `κ`, or `H`); it is not a substitute for body_ref, owner, "
-            "operation, or delta_result. Source-status operations bind to `σ`; M9 "
-            "predication/residue/memetic-carrier repairs bind only to an approved M9 "
-            "axis (`μ`, `ξ`, or `Ω`). Do not guess by encoding the operation into "
+            "operation, or delta_result. Source-status operations bind to `σ`; "
+            "SOURCE/authority-order operations bind to source/semantic/authority "
+            "status (`σ`) or explicitly held source/authority residue (`ξ`), not "
+            "`Ω`; do not borrow `Ω` merely because the burden also has ontological "
+            "pressure. M9 predication/residue/memetic-carrier repairs bind only "
+            "to an approved M9 axis (`μ`, `ξ`, or `Ω`). Do not guess by encoding "
+            "the operation into "
             "`body_ref`. The ACT bracket owner token before the dot must be the full "
             "selected owner id, not an abbreviation; long owner ids still use "
             "`full-owner-id.operation` and the detail row mirrors that same `owner_id`. "
@@ -1755,6 +1769,84 @@ def public_graph_value(value: Any) -> str:
     rendered = str(value or "")
     rendered = re.sub(r"\bB[1-9][0-9]*\b", lambda match: public_burden_id(match.group(0)), rendered)
     return rendered.replace("->", "→")
+
+
+def canonicalize_public_burden_aliases(
+    section_role: str,
+    text: str,
+) -> tuple[str, dict[str, Any] | None]:
+    if not text:
+        return text, None
+    lines = text.splitlines(keepends=True)
+    normalized_lines: list[str] = []
+    replacements = 0
+    in_fence = False
+
+    def bump(pattern: re.Pattern[str], repl: Any, line: str) -> str:
+        nonlocal replacements
+        normalized, count = pattern.subn(repl, line)
+        replacements += count
+        return normalized
+
+    for line in lines:
+        stripped = line.lstrip()
+        if stripped.startswith("```"):
+            in_fence = not in_fence
+            normalized_lines.append(line)
+            continue
+        if (
+            in_fence
+            or "⟦ACT" in line
+            or "body_ref=" in line
+            or PUBLIC_MACHINE_PAYLOAD_LINE_RE.match(line)
+        ):
+            normalized_lines.append(line)
+            continue
+        normalized = bump(
+            PUBLIC_ASCII_SUBMOVE_RE,
+            lambda match: (
+                f"{match.group(1).translate(ASCII_TO_SUP_DIGITS)}B"
+                f"{match.group(2).translate(ASCII_TO_SUB_DIGITS)}"
+                f"{match.group(3) or ''}"
+            ),
+            line,
+        )
+        normalized = bump(
+            PUBLIC_ASCII_LAND_RE,
+            lambda match: f"{match.group(1)}({public_burden_id('B' + match.group(2))})",
+            normalized,
+        )
+        normalized = bump(
+            PUBLIC_ASCII_MRP_RE,
+            lambda match: f"MRP({public_burden_id('B' + match.group(1))})",
+            normalized,
+        )
+        normalized, reread_count = re.subn(r"\bR\(H,Delta\)", "R(H,Δ)", normalized)
+        replacements += reread_count
+        normalized = bump(
+            PUBLIC_ASCII_EDGE_RE,
+            lambda match: (
+                f"{public_burden_id('B' + match.group(1))} → "
+                f"{public_burden_id('B' + match.group(2))}"
+            ),
+            normalized,
+        )
+        normalized = bump(
+            PUBLIC_ASCII_BURDEN_RE,
+            lambda match: public_burden_id("B" + match.group(1)),
+            normalized,
+        )
+        normalized_lines.append(normalized)
+    if replacements == 0:
+        return text, None
+    normalized_text = "".join(normalized_lines)
+    return normalized_text, {
+        "role": section_role,
+        "canonicalized_public_burden_aliases": True,
+        "replacement_count": replacements,
+        "original_bytes": len(text.encode("utf-8")),
+        "canonical_bytes": len(normalized_text.encode("utf-8")),
+    }
 
 
 def public_graph_line(b_total: list[str], edges: list[dict[str, str]]) -> str:
@@ -4102,6 +4194,7 @@ def canonical_compiled_structural_section(
         text,
         previous_stages,
     )
+    text, public_alias_event = canonicalize_public_burden_aliases(section_role, text)
     text, duplicate_heading_event = demote_duplicate_own_section_heading(section_role, text)
     if section_role == "mrp_reread_terminal":
         scaffold = stage07_mrp_reread_section_scaffold(previous_stages)
@@ -4109,7 +4202,15 @@ def canonical_compiled_structural_section(
         scaffold = stage07_field_witness_section_scaffold(previous_stages)
     elif section_role == "restorative_response":
         if restorative_response_slots_present(text):
-            return text, duplicate_heading_event
+            event = public_alias_event or duplicate_heading_event
+            if event is not None and public_alias_event is not None and event is not public_alias_event:
+                event["canonicalized_public_burden_aliases"] = True
+                event["public_alias_replacement_count"] = public_alias_event["replacement_count"]
+            if event is not None and duplicate_heading_event is not None and event is not duplicate_heading_event:
+                event["demoted_duplicate_own_section_headings"] = duplicate_heading_event[
+                    "demoted_duplicate_own_section_headings"
+                ]
+            return text, event
         scaffold = stage07_restorative_response_section_scaffold(previous_stages)
         body = re.sub(
             r"(?is)^\s*(?:#{1,6}\s*)?Restorative Response\s*",
@@ -4120,7 +4221,10 @@ def canonical_compiled_structural_section(
         if body:
             scaffold = scaffold.rstrip() + "\n\n" + body.rstrip() + "\n"
     else:
-        event = owner_transition_event or mixed_concealment_event or duplicate_heading_event
+        event = public_alias_event or owner_transition_event or mixed_concealment_event or duplicate_heading_event
+        if event is not None and public_alias_event is not None and event is not public_alias_event:
+            event["canonicalized_public_burden_aliases"] = True
+            event["public_alias_replacement_count"] = public_alias_event["replacement_count"]
         if event is not None and duplicate_heading_event is not None and event is not duplicate_heading_event:
             event["demoted_duplicate_own_section_headings"] = duplicate_heading_event[
                 "demoted_duplicate_own_section_headings"
@@ -4140,6 +4244,9 @@ def canonical_compiled_structural_section(
         event["canonicalized_mixed_concealment_projection"] = True
         event["mixed_concealment_source_components"] = mixed_concealment_event["source_components"]
         event["mixed_concealment_replacement_count"] = mixed_concealment_event["replacement_count"]
+    if public_alias_event is not None:
+        event["canonicalized_public_burden_aliases"] = True
+        event["public_alias_replacement_count"] = public_alias_event["replacement_count"]
     if duplicate_heading_event is not None:
         event["demoted_duplicate_own_section_headings"] = duplicate_heading_event[
             "demoted_duplicate_own_section_headings"
@@ -4334,6 +4441,13 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
                 "dependency pressure must use `source-order-repair` with "
                 "`source-order-repaired`. Do not convert authority-order pressure into "
                 "`source-order-repair` merely because both mention sources."
+            )
+            lines.append(
+                "- SOURCE register-axis floor: authority-order/source-status repairs act "
+                "on source/semantic/authority status (`σ`) or explicitly held "
+                "source/authority residue (`ξ`). They must not use `Ω` merely because "
+                "the burden also names ontological or worship-worthiness pressure; "
+                "emit HOLD/PARTIAL if the owner/register target is ambiguous."
             )
             lines.append(
                 "- SOURCE pressure-to-delta rule: pressure naming hidden support or "
@@ -7282,6 +7396,7 @@ def run_self_test(root: Path) -> int:
         "PROOF_METHOD: proof-denominator-exposed",
         "SOURCE operations: authority-order-repair, sort, source-order, source-order-repair, status",
         "SOURCE: authority-order-repaired",
+        "SOURCE register-axis floor: authority-order/source-status repairs act on source/semantic/authority status (`σ`)",
         "V2 operations: proof-burden-order, reason-role-repair, reconstituting-reason",
         "V2: frame-cleared",
         "PATTERN_PROFILE operations: collapse-radius-mapping, loaded-label-carrier-audit",
@@ -10236,6 +10351,39 @@ def run_self_test(root: Path) -> int:
             raise HarnessError(f"Self-test Stage 07 structural field_witness canonicalization omitted scaffold: {required}")
     if '"coverage_complete": true' in canonical_witness_text or '"curl_state": null' in canonical_witness_text:
         raise HarnessError("Self-test Stage 07 structural field_witness canonicalization retained drifted proof values")
+    public_alias_probe = (
+        "This definition-anchored state is the final local repair for B2.\n"
+        "B2_1[M7] repairs the local definition.\n"
+        "Land(B2): local scope repaired.\n"
+        "R(H,Delta): release B2.\n"
+        "⟦ACT B2_1[M7.definition-anchor] :: π=definition :: body_ref=B2_1 :: Δ=ΔB2:definition-anchored :: Land(B2)+⟧\n"
+        "field_witness\n"
+        '{\n  "B_total": ["B2"],\n  "body_ref": "B2_1"\n}\n'
+        "```\nB2 remains literal inside code fence\n```\n"
+    )
+    canonical_alias_text, canonical_alias_event = canonical_compiled_structural_section(
+        "closing_formulation",
+        public_alias_probe,
+        [wide_stage02, normalized_stage04, wide_stage05, normalized_stage06],
+    )
+    if not canonical_alias_event or not canonical_alias_event.get("canonicalized_public_burden_aliases"):
+        raise HarnessError("Self-test Stage 07 public burden alias canonicalization did not record an event")
+    for required in (
+        "final local repair for ²B",
+        "²B₁[M7] repairs the local definition",
+        "Land(²B): local scope repaired",
+        "R(H,Δ): release ²B",
+    ):
+        if required not in canonical_alias_text:
+            raise HarnessError(f"Self-test Stage 07 public burden alias canonicalization omitted {required}")
+    for preserved in (
+        "body_ref=B2_1",
+        '"B_total": ["B2"]',
+        '"body_ref": "B2_1"',
+        "B2 remains literal inside code fence",
+    ):
+        if preserved not in canonical_alias_text:
+            raise HarnessError(f"Self-test Stage 07 public burden alias canonicalization mutated machine/code text: {preserved}")
     generated_stage07_mrp_prompt = release_section_prompt(
         root=root,
         case_name="self-test-generated-burden",
