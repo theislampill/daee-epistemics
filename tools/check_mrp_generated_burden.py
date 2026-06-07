@@ -1522,7 +1522,13 @@ def validate_act_record(
         )
     if not record_family:
         errors.append(f"ACT owner {record.owner!r} is not a catalogue-backed owner alias")
-    errors.extend(family_alias_as_executable_owner_errors(f"ACT {record.submove_ref}", record.owner))
+    errors.extend(
+        family_alias_as_executable_owner_errors(
+            f"ACT {record.submove_ref}",
+            record.owner,
+            record.operation,
+        )
+    )
     if not compact_record_shape(record):
         errors.append(f"ACT {record.submove_ref} must stay compact; put prose in the dereferenced body")
     if GENERIC_ACT_VALUE_RE.fullmatch(record.operation):

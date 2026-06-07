@@ -1446,8 +1446,14 @@ def activation_mirror_errors(
 
     record_family = nla_owner_family(record.owner)
     mirror_family = nla_owner_family(str(mirror.get("owner") or ""))
-    errors.extend(family_alias_as_executable_owner_errors(label, record.owner))
-    errors.extend(family_alias_as_executable_owner_errors(label, str(mirror.get("owner") or "")))
+    errors.extend(family_alias_as_executable_owner_errors(label, record.owner, record.operation))
+    errors.extend(
+        family_alias_as_executable_owner_errors(
+            label,
+            str(mirror.get("owner") or ""),
+            str(mirror.get("operation") or ""),
+        )
+    )
     if record_family != mirror_family:
         errors.append(f"{label}: field_witness owner does not decode to ACT owner family")
     if str(mirror.get("operation") or "").strip() != record.operation:
@@ -1479,7 +1485,7 @@ def decode_facets(path: Path, text: str, record: ActRecord) -> tuple[DecodedFace
         errors.append(f"{label}: body_ref must equal the encoded submove ref")
 
     owner_family = nla_owner_family(record.owner)
-    errors.extend(family_alias_as_executable_owner_errors(label, record.owner))
+    errors.extend(family_alias_as_executable_owner_errors(label, record.owner, record.operation))
     if not owner_family:
         errors.append(f"{label}: owner {record.owner!r} is not catalogue-backed")
     if GENERIC_ACT_VALUE_RE.fullmatch(record.operation):
@@ -1606,7 +1612,7 @@ def reconstruct_layer_b_submove(path: Path, record: ActRecord) -> tuple[str | No
     errors: list[str] = []
     canonical = canonical_activation_from_record(record)
     owner_family = nla_owner_family(canonical.owner)
-    errors.extend(family_alias_as_executable_owner_errors(label, canonical.owner))
+    errors.extend(family_alias_as_executable_owner_errors(label, canonical.owner, canonical.operation))
     if not owner_family:
         errors.append(f"{label}: cannot reconstruct from non-catalogue owner {canonical.owner!r}")
     if GENERIC_ACT_VALUE_RE.fullmatch(canonical.operation):

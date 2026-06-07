@@ -760,7 +760,11 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
     match = ACT_ROW_DETAIL_RE.match(row)
     if not match:
         return row, None
-    alias_errors = family_alias_as_executable_owner_errors("Stage 04 ACT row", match.group("owner"))
+    alias_errors = family_alias_as_executable_owner_errors(
+        "Stage 04 ACT row",
+        match.group("owner"),
+        match.group("operation"),
+    )
     if alias_errors:
         raise HarnessError(alias_errors[0])
     operation_errors = owner_operation_vocabulary_errors(
@@ -2894,6 +2898,7 @@ def stage07_act_contract_guidance(
             "- Each submove block must contain `Target:`, `Operation:`, `Result/state-change:`, and `Contribution-to-Land(Bn):` facets.",
             "- The block prose must make the ACT pressure, operation, delta/result, and Land(Bn) contribution recoverable without relying on the ACT row alone.",
             "- Stage07 locality rule: every landed ACT row must make a local proof capsule recoverable near that row: BEFORE (what pressure/state was live), OPERATION (which owner operation acted), AFTER (what changed in this burden), DELTA (how the compact delta_result names it), and LAND-LICENSE (why Land(Bn) is licensed instead of HOLD/PARTIAL).",
+            "- For every landed row, `Contribution-to-Land(Bn):` must include the local LAND-LICENSE: it must say why this row licenses `Land(Bn)` because the named burden-local state changed. Do not write a generic contribution such as `this submove bounds the carrier function` without the concrete Land license.",
             "- Copy the ACT Land slot byte-for-byte from the canonical Stage 04 row. Do not rewrite `Land(B5)+` / `Land(⁵B)+` into prose such as `Land(additional burden 5)+`; a prose Land target is not a typed burden id.",
             "- The ACT owner, matched route owner, submove owner heading, field_witness owner, and NAR owner_id must all name the same callable selected owner family; route/context umbrella labels, case-library labels, noetic-frame labels, and code lookups are not load-bearing ACT owners.",
             "- If the selected route names only an umbrella/context module, resolve to a callable owner/TTP floor before ACT; otherwise keep the route as HOLD/PARTIAL instead of inventing an ACT owner.",
@@ -2944,7 +2949,7 @@ def stage07_act_contract_guidance(
                 f"  Target: {detail['pressure']}.",
                 f"  Operation: {detail['operation']} must act on {detail['pressure']} with owner family {detail['owner']}.",
                 f"  Result/state-change: {detail['delta_result']}; state-change must be visible in local prose.",
-                f"  Contribution-to-Land({public_burden}): explain how {detail['delta_result']} contributes to Land({public_burden}).",
+                f"  Contribution-to-Land({public_burden}): explain why {detail['delta_result']} licenses Land({public_burden}) because the burden-local AFTER state changed; generic contribution prose is not enough.",
                 "  Local proof capsule: make BEFORE, OPERATION, AFTER, DELTA, and LAND-LICENSE recoverable in this block; if the body cannot name the burden-local change, render HOLD/PARTIAL instead of Land.",
                 "  TTP Operation Body: expand the local governed operation in ordinary public prose.",
             ]
@@ -3009,8 +3014,9 @@ def stage07_act_contract_guidance(
                 lines.append(
                     "  Pattern-profile loaded-label operation: identify the label as a noetic/worldview/identity carrier, "
                     "expose the hidden proof/source/authority rule it transmits, and state that the loaded label carrier "
-                    "function is exposed or classified. If the body only names the label or owner, render HOLD/PARTIAL "
-                    "instead of Land."
+                    "function is exposed or classified. The `Contribution-to-Land` line must say this licenses Land "
+                    "because the label no longer carries motive, source authority, or conclusion force as proof by itself. "
+                    "If the body only names the label or owner, render HOLD/PARTIAL instead of Land."
                 )
         elif family == "FPD":
             lines.append(
@@ -3581,9 +3587,17 @@ PUBLIC_SUBMOVE_HEADING_RE = re.compile(
     r"\[(?P<owner>[A-Za-z][A-Za-z0-9_/\-]*)\]"
 )
 RESULT_STATE_LINE_RE = re.compile(r"(?im)^(?P<prefix>\s*(?:[-*]\s*)?Result(?:/state-change)?\s*:\s*)(?P<body>.*)$")
+CONTRIBUTION_LAND_LINE_RE = re.compile(
+    r"(?im)^(?P<prefix>\s*(?:[-*]\s*)?Contribution-to-Land\((?P<land>[^)]*)\)\s*:\s*)(?P<body>.*)$"
+)
 CHECKER_STABLE_STATE_RE = re.compile(
     r"(?i)\b(?:state change|classified|exposed|separated|bounded|no longer treated as a neutral proof|"
     r"typed as a proof carrier|carrier function is exposed)\b"
+)
+CHECKER_STABLE_CONTRIBUTION_RE = re.compile(
+    r"(?i)\b(?:because|so that|therefore|thereby|rather than|instead of|licenses?|lands?|"
+    r"contributes? to|prevents?|blocks?|preserves?|keeps?|separates?|bars?|routes?|state change|"
+    r"delta|no longer|can no longer|cannot|establish(?:es|ed)?|shows?)\b"
 )
 PROOF_METHOD_BODY_BACKED_RE = re.compile(
     r"(?is)\bproof\b.*\b(?:premise|predicate|definition)\b.*\b(?:infer|deriv|logic tree)\w*\b.*"
@@ -3829,6 +3843,54 @@ def state_change_sentence_for_owner_transition(detail: dict[str, str]) -> str:
     return ""
 
 
+def land_license_sentence_for_owner_transition(detail: dict[str, str], public_burden: str) -> str:
+    owner = str(detail.get("owner") or "").strip()
+    operation = str(detail.get("operation") or "").strip()
+    family = canonical_delta_owner(owner) or owner
+    land_target = public_burden.strip() or public_burden_id(str(detail.get("burden_id") or "B1"))
+    if owner == "proof-method-audit" and operation == "proof-family-and-carrier-audit":
+        return (
+            f"This licenses Land({land_target}) because the proof carrier's premise set, "
+            "inference grammar, and conclusion scope are exposed, so the carrier no longer "
+            "functions as neutral proof by itself."
+        )
+    if owner == "proof-method-audit" and operation == "proof-route-status-audit":
+        return (
+            f"This licenses Land({land_target}) because the proof forum, standard of proof, "
+            "tribunal/burden-function, proof eligibility, and premise/inference/conclusion scope "
+            "are bounded, so the route no longer functions as neutral proof by itself."
+        )
+    if owner == "pattern-profiling" and operation == "loaded-label-carrier-audit":
+        return (
+            f"This licenses Land({land_target}) because the loaded label carrier function is exposed "
+            "and classified, so the label no longer carries motive, source authority, or conclusion "
+            "force as proof by itself."
+        )
+    if owner == "pattern-profiling" and operation == "proof-packet-reconstruction":
+        return (
+            f"This licenses Land({land_target}) because the proof packet is reconstructed with its "
+            "hidden source moves, predicate transfers, and conclusion jump exposed, so the packet "
+            "no longer carries closure invisibly."
+        )
+    if family == "FPD" and operation == "foreign-premise-detection":
+        return (
+            f"This licenses Land({land_target}) because the foreign premise and imported criterion "
+            "are exposed, so the hidden criterion no longer travels as neutral proof."
+        )
+    if family == "SOURCE" and operation == "authority-order-repair":
+        return (
+            f"This licenses Land({land_target}) because the authority/rank/tribunal relation is "
+            "ordered, so the rival public authority no longer functions as a higher court over the source."
+        )
+    if family == "SOURCE" and operation == "source-order-repair":
+        return (
+            f"This licenses Land({land_target}) because the source lineage, source priority, and "
+            "evidential dependency are explicitly ordered, so the inherited claim no longer travels "
+            "as an unworked source chain."
+        )
+    return ""
+
+
 def canonicalize_layer_b_owner_transition_facets(
     section_role: str,
     text: str,
@@ -3886,8 +3948,31 @@ def canonicalize_layer_b_owner_transition_facets(
                 return result_match.group(0)
             return f"{result_match.group('prefix')}{body.rstrip('.')}." + sentence
 
-        normalized_block, replacement_count = RESULT_STATE_LINE_RE.subn(replace_result_line, block, count=1)
-        if replacement_count <= 0 or normalized_block == block:
+        normalized_block, result_replacement_count = RESULT_STATE_LINE_RE.subn(
+            replace_result_line,
+            block,
+            count=1,
+        )
+        land_license_changed = False
+
+        def replace_contribution_line(contribution_match: re.Match[str]) -> str:
+            nonlocal land_license_changed
+            body = contribution_match.group("body").strip()
+            if CHECKER_STABLE_CONTRIBUTION_RE.search(body):
+                return contribution_match.group(0)
+            public_burden = contribution_match.group("land").strip()
+            land_license = land_license_sentence_for_owner_transition(detail, public_burden)
+            if not land_license:
+                return contribution_match.group(0)
+            land_license_changed = True
+            return f"{contribution_match.group('prefix')}{land_license}"
+
+        normalized_block = CONTRIBUTION_LAND_LINE_RE.sub(
+            replace_contribution_line,
+            normalized_block,
+            count=1,
+        )
+        if (result_replacement_count <= 0 and not land_license_changed) or normalized_block == block:
             continue
         chunks.append(text[cursor : match.start()])
         chunks.append(normalized_block)
@@ -4433,6 +4518,11 @@ def stage03_owner_operation_guidance() -> str:
         "- In Stage 03 `owner_routes[].owner_id`, delta/register family codes "
         "are observations, not executable owner ids. Use the callable owner id "
         "shown below; keep the family code only in classification/detail fields.",
+        "- SOURCE is the source/authority delta/register family, not the executable "
+        "owner_id. For authority/rank/tribunal/source-sovereignty transitions, use "
+        "`owner_id=authority-order-repair` with `operation=authority-order-repair`. "
+        "For source-lineage/quotation/inherited-claim/evidential-dependency transitions, "
+        "use `owner_id=source-status-repair` with `operation=source-order-repair`.",
     ]
     for family, execution_owner in sorted(FAMILY_EXECUTION_OWNER_IDS.items()):
         lines.append(
@@ -4515,6 +4605,13 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
         tokens = ", ".join(sorted(DELTA_RESULT_VOCABULARY[family]))
         lines.append(f"- {family}: {tokens}")
         if family == "SOURCE":
+            lines.append(
+                "- SOURCE is a delta/register vocabulary family, not an executable ACT "
+                "owner. Use `authority-order-repair.authority-order-repair` for "
+                "`authority-order-repaired`, and `source-status-repair.source-order-repair` "
+                "for `source-order-repaired`; keep `SOURCE` only as family/register "
+                "classification in non-executable summaries."
+            )
             lines.append(
                 "- SOURCE formal repair pairing: `authority-order-repaired` requires "
                 "`authority-order-repair`; `source-order-repaired` requires "
@@ -8043,6 +8140,28 @@ def run_self_test(root: Path) -> int:
         "π=authority-rank-tribunal-pressure :: "
         "body_ref=¹B₁ :: Δ=Δ¹B:authority-order-repaired :: Land(¹B)+⟧"
     )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [source_family_authority_row],
+                "act_row_details": self_test_act_row_details([source_family_authority_row], {"¹B₁": "σ"}),
+            },
+        )
+    except HarnessError as exc:
+        if "SOURCE" not in str(exc) or "delta/register family alias" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted SOURCE family alias as executable ACT owner")
+    source_callable_authority_row = (
+        "⟦ACT ¹B₁[authority-order-repair.authority-order-repair] :: "
+        "π=authority-rank-tribunal-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:authority-order-repaired :: Land(¹B)+⟧"
+    )
     normalized_stage(
         "stage-04-burden-execution-act",
         {
@@ -8050,8 +8169,8 @@ def run_self_test(root: Path) -> int:
             "status": "pass",
             "act_targets": ["B1"],
             "act_burdens": ["B1"],
-            "act_rows": [source_family_authority_row],
-            "act_row_details": self_test_act_row_details([source_family_authority_row], {"¹B₁": "σ"}),
+            "act_rows": [source_callable_authority_row],
+            "act_row_details": self_test_act_row_details([source_callable_authority_row], {"¹B₁": "σ"}),
         },
     )
     invalid_source_formal_source_pair_row = (
@@ -9061,6 +9180,7 @@ def run_self_test(root: Path) -> int:
         "A compact label such as `reopen-condition-stated` or `scope-boundary-named` cannot replace the visible burden-local state change",
         "Stage07 locality rule: every landed ACT row must make a local proof capsule recoverable near that row",
         "Local proof capsule: make BEFORE, OPERATION, AFTER, DELTA, and LAND-LICENSE recoverable in this block",
+        "For every landed row, `Contribution-to-Land(Bn):` must include the local LAND-LICENSE",
         "SOURCE/source-status operation: explicitly sort source authority, source function, proof-stack order, or hidden support",
         "`status` is not a callable ACT operation; use a registered SOURCE operation",
     ):
@@ -9141,7 +9261,7 @@ def run_self_test(root: Path) -> int:
             "Target: loaded-label-carrier-compression.",
             "Operation: loaded-label-carrier-audit audits the loaded-label-carrier-compression with owner family pattern-profiling.",
             "Result/state-change: carrier-function-typed. The disputed label is typed as a carrier.",
-            "Contribution-to-Land(¹B): This contributes because the label no longer closes the burden by itself.",
+            "Contribution-to-Land(¹B): This submove bounds the carrier function of the label.",
             "TTP Operation Body:",
             "The label functions as a carrier rather than a neutral description. It transmits a hidden proof rule and source-authority posture by compressing the source order, predicate assignment, and conclusion into one loaded phrase. The audit exposes how that carrier function made the contradiction appear settled before the proof was earned.",
             "",
@@ -9169,6 +9289,8 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test Stage 07 proof-method carrier canonicalization omitted parser-stable state change")
     if "the loaded label carrier function is exposed and classified" not in canonical_proof_pattern:
         raise HarnessError("Self-test Stage 07 pattern carrier canonicalization omitted parser-stable state change")
+    if "licenses Land(¹B) because the loaded label carrier function is exposed and classified" not in canonical_proof_pattern:
+        raise HarnessError("Self-test Stage 07 pattern carrier canonicalization omitted parser-stable Land license")
     if "the proof packet is reconstructed so its hidden source moves, predicate transfers, and conclusion jump are exposed" not in canonical_proof_pattern:
         raise HarnessError("Self-test Stage 07 proof-packet canonicalization omitted parser-stable state change")
     if len(proof_pattern_event.get("facet_replacements") or []) != 3:

@@ -1411,7 +1411,7 @@ def act_row_owner_transition_errors(label: str, row: str) -> list[str]:
     operation = match.group("operation")
     delta_result = match.group("delta_result")
     errors: list[str] = []
-    errors.extend(family_alias_as_executable_owner_errors(label, owner))
+    errors.extend(family_alias_as_executable_owner_errors(label, owner, operation))
     errors.extend(owner_operation_vocabulary_errors(label, owner, operation))
     errors.extend(delta_result_vocabulary_errors(label, owner, delta_result))
     errors.extend(owner_operation_delta_result_errors(label, owner, operation, delta_result))
@@ -1433,7 +1433,7 @@ def object_source_formal_errors(label: str, item: dict[str, Any]) -> list[str]:
     if owner is None or operation is None or delta_result is None:
         return []
     errors: list[str] = []
-    errors.extend(family_alias_as_executable_owner_errors(label, str(owner)))
+    errors.extend(family_alias_as_executable_owner_errors(label, str(owner), str(operation)))
     errors.extend(owner_operation_vocabulary_errors(label, str(owner), str(operation)))
     errors.extend(delta_result_vocabulary_errors(label, str(owner), str(delta_result)))
     errors.extend(owner_operation_delta_result_errors(label, str(owner), str(operation), str(delta_result)))
