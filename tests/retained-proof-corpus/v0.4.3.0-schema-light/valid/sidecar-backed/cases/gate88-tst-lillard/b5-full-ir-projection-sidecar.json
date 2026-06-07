@@ -1,0 +1,628 @@
+{
+  "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
+  "source": {
+    "raw_input": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/gate88-tst-lillard/input.txt",
+    "governed_output": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/gate88-tst-lillard/output.md",
+    "collapse_certificate": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/gate88-tst-lillard/collapse-certificate.json",
+    "builder": "tools/build_b5_full_ir_projection_sidecar.py",
+    "grapher_html": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/gate88-tst-lillard/grapher.html"
+  },
+  "projection": {
+    "schema": "b5-canonical-ir-projection-v1",
+    "n_frame": "mixed-moral-tribunal-hiddenness-accountability-source-worldview",
+    "live_registers": [
+      "heart",
+      "xi",
+      "Omega",
+      "mu",
+      "kappa"
+    ],
+    "burden_floor": [
+      "B1",
+      "B2",
+      "B3",
+      "B4",
+      "B5"
+    ],
+    "per_burden": [
+      {
+        "burden_id": "B1",
+        "owner_id": "authority-order-repair",
+        "operation": "authority-order-repair",
+        "delta_result": "authority-order-repaired",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B1",
+        "owner_id": "FPD",
+        "operation": "foreign-premise-detection",
+        "delta_result": "imported-control-criterion-blocked",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B2",
+        "owner_id": "do-second-loop",
+        "operation": "accountability-hujjah-compression",
+        "delta_result": "accountability-hujjah-narrowed",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B2",
+        "owner_id": "M8",
+        "operation": "dependency-trace",
+        "delta_result": "dependency-exposed",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B3",
+        "owner_id": "do-second-loop",
+        "operation": "coercive-guidance-demand",
+        "delta_result": "coercive-guidance-demand-bounded",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B4",
+        "owner_id": "do-second-loop",
+        "operation": "punishment-proportionality-accountability",
+        "delta_result": "punishment-proportionality-calibrated",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B4",
+        "owner_id": "do-attribute-precision",
+        "operation": "attribute-precision",
+        "delta_result": "attribute-precision-typed",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B5",
+        "owner_id": "pattern-profiling",
+        "operation": "loaded-label-carrier-audit",
+        "delta_result": "carrier-function-typed",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B5",
+        "owner_id": "authority-order-repair",
+        "operation": "authority-order-repair",
+        "delta_result": "authority-order-repaired",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      }
+    ],
+    "diagnostic_completeness": {
+      "live_registers": [
+        "heart",
+        "xi",
+        "Omega",
+        "mu",
+        "kappa"
+      ],
+      "coverage": {
+        "heart": [
+          "B1",
+          "B4"
+        ],
+        "xi": [
+          "B1",
+          "B2",
+          "B3",
+          "B5"
+        ],
+        "kappa": [
+          "B1",
+          "B2",
+          "B3",
+          "B4"
+        ],
+        "Omega": [
+          "B3",
+          "B4"
+        ],
+        "mu": [
+          "B5"
+        ]
+      },
+      "complete": true
+    },
+    "decoded_ir": {
+      "schema": "b5-canonical-ir-decode-v1",
+      "source_evidence": [
+        "visible_act",
+        "field_witness.owner_activations",
+        "normalized_activation_record",
+        "canonical_ir_projection"
+      ],
+      "n_frame": "mixed-moral-tribunal-hiddenness-accountability-source-worldview",
+      "live_registers": [
+        "heart",
+        "xi",
+        "Omega",
+        "mu",
+        "kappa"
+      ],
+      "burden_floor": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5"
+      ],
+      "per_burden": [
+        {
+          "burden_id": "B1",
+          "owner_id": "authority-order-repair",
+          "operation": "authority-order-repair",
+          "delta_result": "authority-order-repaired",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "imported moral tribunal and worship-worthiness criterion",
+          "body_ref": "B1_1"
+        },
+        {
+          "burden_id": "B1",
+          "owner_id": "FPD",
+          "operation": "foreign-premise-detection",
+          "delta_result": "imported-control-criterion-blocked",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "imported criterion pressure",
+          "body_ref": "B1_2"
+        },
+        {
+          "burden_id": "B2",
+          "owner_id": "do-second-loop",
+          "operation": "accountability-hujjah-compression",
+          "delta_result": "accountability-hujjah-narrowed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "accountability and hujjah compression",
+          "body_ref": "B2_1"
+        },
+        {
+          "burden_id": "B2",
+          "owner_id": "M8",
+          "operation": "dependency-trace",
+          "delta_result": "dependency-exposed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "dependency exposure between disbelief, hujjah, culpability, and punishment",
+          "body_ref": "B2_2"
+        },
+        {
+          "burden_id": "B3",
+          "owner_id": "do-second-loop",
+          "operation": "coercive-guidance-demand",
+          "delta_result": "coercive-guidance-demand-bounded",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "hiddenness and coercive-guidance demand",
+          "body_ref": "B3_1"
+        },
+        {
+          "burden_id": "B4",
+          "owner_id": "do-second-loop",
+          "operation": "punishment-proportionality-accountability",
+          "delta_result": "punishment-proportionality-calibrated",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "punishment proportionality with mercy-justice source architecture",
+          "body_ref": "B4_1"
+        },
+        {
+          "burden_id": "B4",
+          "owner_id": "do-attribute-precision",
+          "operation": "attribute-precision",
+          "delta_result": "attribute-precision-typed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "divine predicate and attribute-transfer pressure",
+          "body_ref": "B4_2"
+        },
+        {
+          "burden_id": "B5",
+          "owner_id": "pattern-profiling",
+          "operation": "loaded-label-carrier-audit",
+          "delta_result": "carrier-function-typed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "source-worldview and identity-stabilization burden",
+          "body_ref": "B5_1"
+        },
+        {
+          "burden_id": "B5",
+          "owner_id": "authority-order-repair",
+          "operation": "authority-order-repair",
+          "delta_result": "authority-order-repaired",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "authority order and source status pressure",
+          "body_ref": "B5_2"
+        }
+      ],
+      "diagnostic_completeness": {
+        "live_registers": [
+          "heart",
+          "xi",
+          "Omega",
+          "mu",
+          "kappa"
+        ],
+        "coverage": {
+          "heart": [
+            "B1",
+            "B4"
+          ],
+          "xi": [
+            "B1",
+            "B2",
+            "B3",
+            "B5"
+          ],
+          "kappa": [
+            "B1",
+            "B2",
+            "B3",
+            "B4"
+          ],
+          "Omega": [
+            "B3",
+            "B4"
+          ],
+          "mu": [
+            "B5"
+          ]
+        },
+        "complete": true
+      }
+    },
+    "full_ir_decode": {
+      "schema": "b5-full-ir-decode-v1",
+      "source_evidence": [
+        "visible_act",
+        "field_witness.owner_activations",
+        "normalized_activation_record",
+        "canonical_ir_projection",
+        "canonical_ir_projection.decoded_ir",
+        "field_witness.coverage_proof",
+        "field_witness.coverage_proof.dependency_graph",
+        "field_witness.formal_reread_states"
+      ],
+      "n_frame": "mixed-moral-tribunal-hiddenness-accountability-source-worldview",
+      "live_registers": [
+        "heart",
+        "xi",
+        "Omega",
+        "mu",
+        "kappa"
+      ],
+      "burden_floor": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5"
+      ],
+      "B_LA": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5"
+      ],
+      "B_MRP": [],
+      "B_total": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5"
+      ],
+      "dependency_graph": {
+        "nodes": [
+          "B1",
+          "B2",
+          "B3",
+          "B4",
+          "B5"
+        ],
+        "edges": [],
+        "roots": [
+          "B1",
+          "B2",
+          "B3",
+          "B4",
+          "B5"
+        ],
+        "parallel_groups": [
+          [
+            "B1",
+            "B2",
+            "B3",
+            "B4",
+            "B5"
+          ]
+        ],
+        "acyclic": true
+      },
+      "terminal_states": {
+        "B1": "landed",
+        "B2": "landed",
+        "B3": "landed",
+        "B4": "landed",
+        "B5": "landed"
+      },
+      "diagnostic_completeness": {
+        "live_registers": [
+          "heart",
+          "xi",
+          "Omega",
+          "mu",
+          "kappa"
+        ],
+        "coverage": {
+          "heart": [
+            "B1",
+            "B4"
+          ],
+          "xi": [
+            "B1",
+            "B2",
+            "B3",
+            "B5"
+          ],
+          "kappa": [
+            "B1",
+            "B2",
+            "B3",
+            "B4"
+          ],
+          "Omega": [
+            "B3",
+            "B4"
+          ],
+          "mu": [
+            "B5"
+          ]
+        },
+        "complete": true
+      },
+      "per_burden": [
+        {
+          "burden_id": "B1",
+          "owner_id": "authority-order-repair",
+          "operation": "authority-order-repair",
+          "delta_result": "authority-order-repaired",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "imported moral tribunal and worship-worthiness criterion",
+          "body_ref": "B1_1",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B1",
+          "owner_id": "FPD",
+          "operation": "foreign-premise-detection",
+          "delta_result": "imported-control-criterion-blocked",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "imported criterion pressure",
+          "body_ref": "B1_2",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B2",
+          "owner_id": "do-second-loop",
+          "operation": "accountability-hujjah-compression",
+          "delta_result": "accountability-hujjah-narrowed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "accountability and hujjah compression",
+          "body_ref": "B2_1",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B2",
+          "owner_id": "M8",
+          "operation": "dependency-trace",
+          "delta_result": "dependency-exposed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "dependency exposure between disbelief, hujjah, culpability, and punishment",
+          "body_ref": "B2_2",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B3",
+          "owner_id": "do-second-loop",
+          "operation": "coercive-guidance-demand",
+          "delta_result": "coercive-guidance-demand-bounded",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "hiddenness and coercive-guidance demand",
+          "body_ref": "B3_1",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B4",
+          "owner_id": "do-second-loop",
+          "operation": "punishment-proportionality-accountability",
+          "delta_result": "punishment-proportionality-calibrated",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "punishment proportionality with mercy-justice source architecture",
+          "body_ref": "B4_1",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B4",
+          "owner_id": "do-attribute-precision",
+          "operation": "attribute-precision",
+          "delta_result": "attribute-precision-typed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "divine predicate and attribute-transfer pressure",
+          "body_ref": "B4_2",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B5",
+          "owner_id": "pattern-profiling",
+          "operation": "loaded-label-carrier-audit",
+          "delta_result": "carrier-function-typed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "source-worldview and identity-stabilization burden",
+          "body_ref": "B5_1",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B5",
+          "owner_id": "authority-order-repair",
+          "operation": "authority-order-repair",
+          "delta_result": "authority-order-repaired",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "authority order and source status pressure",
+          "body_ref": "B5_2",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        }
+      ],
+      "generated_burdens": [],
+      "formal_reread": {
+        "states_present": true,
+        "divergence_state": "neutral",
+        "curl_state": "null",
+        "escape_routes_checked": [],
+        "no_new_resultant_proof": {
+          "escape_routes_checked": [
+            {
+              "type": "closure-boundary-immunity",
+              "live": false,
+              "basis": "MRP(B5) reported no new closure-boundary-immunity route after R(H,Delta)."
+            },
+            {
+              "type": "proof-carousel",
+              "live": false,
+              "basis": "MRP(B5) reported no proof-carousel route after the terminal reread."
+            },
+            {
+              "type": "total-system-exhaustion",
+              "live": false,
+              "basis": "The bounded Stage 07 reply licenses only this scoped terminal state, not a global total-system proof."
+            },
+            {
+              "type": "doubt-churn",
+              "live": false,
+              "basis": "MRP(B5) reports neutral divergence and null curl at STOP."
+            },
+            {
+              "type": "moral-tribunal",
+              "live": false,
+              "basis": "MRP(B5) did not expose a live moral-tribunal route."
+            },
+            {
+              "type": "authority-order-recoil",
+              "live": false,
+              "basis": "MRP(B5) did not expose a live authority-order recoil route."
+            },
+            {
+              "type": "hidden-framework-recoil",
+              "live": false,
+              "basis": "MRP(B5) did not expose a live hidden-framework recoil route."
+            },
+            {
+              "type": "restoration-recoil",
+              "subtype": "scope-protest",
+              "live": false,
+              "basis": "MRP(B5) did not expose a live restoration-recoil route."
+            }
+          ],
+          "field_state_at_stop": {
+            "divergence": "neutral",
+            "curl": "null",
+            "b_live": "empty",
+            "kappa_residual": 0
+          },
+          "stop_licensed": true
+        }
+      },
+      "source_basis": {
+        "source_basis_available": false,
+        "sigma_inside_hard_registers": false,
+        "basis": []
+      }
+    },
+    "proof_mode": {
+      "schema": "b5-full-ir-proof-mode-v1",
+      "mode": "retained-proof-corpus-sidecar",
+      "source_evidence": [
+        "visible_noetic_field_opening",
+        "visible_layer_a_diagnostic_ir_header",
+        "field_witness.canonical_ir_projection",
+        "field_witness.canonical_ir_projection.decoded_ir",
+        "field_witness.canonical_ir_projection.full_ir_decode"
+      ],
+      "machine_facing": true,
+      "schema_light_absent_valid": true,
+      "requires_decoded_ir": true,
+      "visible_opening_header_preserved": true,
+      "arbitrary_nl_ir_parser_claim": false,
+      "default_runtime_emission_claim": false,
+      "t_lang_uptake_claim": false
+    }
+  }
+}

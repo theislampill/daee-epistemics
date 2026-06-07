@@ -19,7 +19,11 @@
         "uptake-guarantee-recoil",
         "worship-frame-recoil",
         "staged-a9-science-source-proofbundle",
-        "staged-secularism-proofbundle-pilot-v17"
+        "staged-secularism-proofbundle-pilot-v17",
+        "gate88-trinitarian-j173",
+        "gate88-tst-lillard",
+        "gate88-khaybar",
+        "gate88-secularism"
       ]
     },
     {
@@ -38,7 +42,11 @@
         "uptake-guarantee-recoil",
         "worship-frame-recoil",
         "staged-a9-science-source-proofbundle",
-        "staged-secularism-proofbundle-pilot-v17"
+        "staged-secularism-proofbundle-pilot-v17",
+        "gate88-trinitarian-j173",
+        "gate88-tst-lillard",
+        "gate88-khaybar",
+        "gate88-secularism"
       ]
     },
     {
@@ -67,7 +75,11 @@
         "trinitarian-j173-repair-v6",
         "therapy-moral-tribunal",
         "staged-a9-science-source-proofbundle",
-        "staged-secularism-proofbundle-pilot-v17"
+        "staged-secularism-proofbundle-pilot-v17",
+        "gate88-trinitarian-j173",
+        "gate88-tst-lillard",
+        "gate88-khaybar",
+        "gate88-secularism"
       ]
     },
     {
@@ -96,7 +108,11 @@
         "trinitarian-j173-repair-v6",
         "therapy-moral-tribunal",
         "staged-a9-science-source-proofbundle",
-        "staged-secularism-proofbundle-pilot-v17"
+        "staged-secularism-proofbundle-pilot-v17",
+        "gate88-trinitarian-j173",
+        "gate88-tst-lillard",
+        "gate88-khaybar",
+        "gate88-secularism"
       ]
     },
     {
@@ -119,7 +135,11 @@
         "trinitarian-j173-repair-v6",
         "therapy-moral-tribunal",
         "staged-a9-science-source-proofbundle",
-        "staged-secularism-proofbundle-pilot-v17"
+        "staged-secularism-proofbundle-pilot-v17",
+        "gate88-trinitarian-j173",
+        "gate88-tst-lillard",
+        "gate88-khaybar",
+        "gate88-secularism"
       ]
     },
     {
@@ -131,7 +151,11 @@
       "case_ids": [
         "a9-science-source",
         "staged-a9-science-source-proofbundle",
-        "staged-secularism-proofbundle-pilot-v17"
+        "staged-secularism-proofbundle-pilot-v17",
+        "gate88-trinitarian-j173",
+        "gate88-tst-lillard",
+        "gate88-khaybar",
+        "gate88-secularism"
       ]
     },
     {
@@ -154,7 +178,11 @@
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
         "therapy-moral-tribunal",
-        "staged-secularism-proofbundle-pilot-v17"
+        "staged-secularism-proofbundle-pilot-v17",
+        "gate88-trinitarian-j173",
+        "gate88-tst-lillard",
+        "gate88-khaybar",
+        "gate88-secularism"
       ]
     },
     {
@@ -786,6 +814,126 @@
         "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
         "path": "cases/staged-secularism-proofbundle-pilot-v17/b5-full-ir-projection-sidecar.json",
         "sha256": "C0BA661540536CCB085019E4D87E48EC2A15448D71F7B2CCD6D0659DA66E1ABA",
+        "builder": "tools/build_b5_full_ir_projection_sidecar.py"
+      }
+    },
+    {
+      "id": "gate88-trinitarian-j173",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "T_lang"
+      ],
+      "generated_skill_sha": "9DD3DF243EA07DB80335135D847C5BD9C256928BF64C17F641C47AEB2DB163A9",
+      "origin": ".daee/release-regression-smokes/20260607-gate88-matrix-trinitarian-j173/output.md",
+      "input": "cases/gate88-trinitarian-j173/input.txt",
+      "output": "cases/gate88-trinitarian-j173/output.md",
+      "collapse_certificate": "cases/gate88-trinitarian-j173/collapse-certificate.json",
+      "grapher_html": "cases/gate88-trinitarian-j173/grapher.html",
+      "hashes": {
+        "input": "DD7B21625FA55ECDC47110927C00EB66BC9919EF0576DB9076249A7FC197845C",
+        "output": "7A87C7C5B7BCFFF8BDB32358C0A5B4E345968C809D1CE4A53267ADB65380A950",
+        "collapse_certificate": "D9EDF971AB24EDE3CCF4022CE4C55993F38B188D2F7F16540D02CD399222A95B",
+        "grapher_html": "0F2A8D552126285583748CF451D857CEE62840A95DB713474FA5CD7F9B7D0A53"
+      },
+      "b5_full_ir_projection_sidecar": {
+        "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
+        "path": "cases/gate88-trinitarian-j173/b5-full-ir-projection-sidecar.json",
+        "sha256": "9E2069C72DF660D2A26AA4BB4C7583EF4D782A3D228610A67C724C03D3514BBE",
+        "builder": "tools/build_b5_full_ir_projection_sidecar.py"
+      }
+    },
+    {
+      "id": "gate88-tst-lillard",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "T_lang"
+      ],
+      "generated_skill_sha": "9DD3DF243EA07DB80335135D847C5BD9C256928BF64C17F641C47AEB2DB163A9",
+      "origin": ".daee/release-regression-smokes/20260607-gate88-matrix-tst-lillard/output.md",
+      "input": "cases/gate88-tst-lillard/input.txt",
+      "output": "cases/gate88-tst-lillard/output.md",
+      "collapse_certificate": "cases/gate88-tst-lillard/collapse-certificate.json",
+      "grapher_html": "cases/gate88-tst-lillard/grapher.html",
+      "hashes": {
+        "input": "0A901886CEFADFCBA596D999A8716BDEA889AA729B71C960821CDAFD2DFDAC36",
+        "output": "2340C77FFC6C443405C0266FFD620827B479438959CED3880715BCCC7579A308",
+        "collapse_certificate": "B89FDEDBBFBD079840B3AF742D2F2475D441779402CDEDC888F8F498265C9AA1",
+        "grapher_html": "4E7AB696BE6C951B9A198DA4F7E6E7989D95A366C4DB8B762A7FD51DE9F6CA8E"
+      },
+      "b5_full_ir_projection_sidecar": {
+        "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
+        "path": "cases/gate88-tst-lillard/b5-full-ir-projection-sidecar.json",
+        "sha256": "D0958DC16ECC91F934915EEE04389000D6C5BC3936B8E90F4DFC7865C65D9F03",
+        "builder": "tools/build_b5_full_ir_projection_sidecar.py"
+      }
+    },
+    {
+      "id": "gate88-khaybar",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "T_lang"
+      ],
+      "generated_skill_sha": "9DD3DF243EA07DB80335135D847C5BD9C256928BF64C17F641C47AEB2DB163A9",
+      "origin": ".daee/release-regression-smokes/20260607-gate88-matrix-khaybar/output.md",
+      "input": "cases/gate88-khaybar/input.txt",
+      "output": "cases/gate88-khaybar/output.md",
+      "collapse_certificate": "cases/gate88-khaybar/collapse-certificate.json",
+      "grapher_html": "cases/gate88-khaybar/grapher.html",
+      "hashes": {
+        "input": "76351ACEB44F9836F6AD7763D91A80D660BF2840FEE5C948FE6753D1774127A9",
+        "output": "AD3E6446CDC09ECCCDA2A77E31285F7D4835A7997773023610893343591674BC",
+        "collapse_certificate": "9037F79FECB8BB7AE8A238AA367327D2B51313DD96723DCDFA3300AD0DBD7C93",
+        "grapher_html": "AF5DF91F9CC76D5F9C6DDE1678D7C0C431DD136677853C0FFCD8B8DC6ACE4764"
+      },
+      "b5_full_ir_projection_sidecar": {
+        "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
+        "path": "cases/gate88-khaybar/b5-full-ir-projection-sidecar.json",
+        "sha256": "F2BF15F162906F09D7F0478763D7440CFFD51A273003A8D8C5FA5E5AE1CDEDB1",
+        "builder": "tools/build_b5_full_ir_projection_sidecar.py"
+      }
+    },
+    {
+      "id": "gate88-secularism",
+      "classification": "SIDECAR_BACKED_PROOF",
+      "rows": [
+        "B.1",
+        "B.2",
+        "B.3",
+        "B.4",
+        "B.5",
+        "T_lang"
+      ],
+      "generated_skill_sha": "9DD3DF243EA07DB80335135D847C5BD9C256928BF64C17F641C47AEB2DB163A9",
+      "origin": ".daee/release-regression-smokes/20260607-gate88-matrix-secularism/output.md",
+      "input": "cases/gate88-secularism/input.txt",
+      "output": "cases/gate88-secularism/output.md",
+      "collapse_certificate": "cases/gate88-secularism/collapse-certificate.json",
+      "grapher_html": "cases/gate88-secularism/grapher.html",
+      "hashes": {
+        "input": "F315B91F2B2BD3531FC1714F01A5682F0588180D71AEB6C7BE895122EE1D7E70",
+        "output": "9E656FD96EB84A62868CEC8FEDCB1FFA12A877124BAD12BA33AEE0E06350900B",
+        "collapse_certificate": "B36D33DA94AB03C7CB232D7E57AC30EDAE42A75ACA84B375A56CE4CF0E3C1728",
+        "grapher_html": "14A571A61EECCB0EE4E7FD2650BE656D546A33F577663ED2330B9504D873F2B2"
+      },
+      "b5_full_ir_projection_sidecar": {
+        "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
+        "path": "cases/gate88-secularism/b5-full-ir-projection-sidecar.json",
+        "sha256": "E849F4F5CF364C10708BF3546E1227F4B45ECCC1C06571605B96EF2192074D75",
         "builder": "tools/build_b5_full_ir_projection_sidecar.py"
       }
     }

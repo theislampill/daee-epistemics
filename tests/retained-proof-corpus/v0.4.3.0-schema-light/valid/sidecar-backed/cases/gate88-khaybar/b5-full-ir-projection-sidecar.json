@@ -1,0 +1,512 @@
+{
+  "schema": "b5-retained-proof-mode-full-ir-sidecar-v1",
+  "source": {
+    "raw_input": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/gate88-khaybar/input.txt",
+    "governed_output": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/gate88-khaybar/output.md",
+    "collapse_certificate": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/gate88-khaybar/collapse-certificate.json",
+    "builder": "tools/build_b5_full_ir_projection_sidecar.py",
+    "grapher_html": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/gate88-khaybar/grapher.html"
+  },
+  "projection": {
+    "schema": "b5-canonical-ir-projection-v1",
+    "n_frame": "mixed-source-authority-formal-contradiction-shubhah",
+    "live_registers": [
+      "xi",
+      "Omega",
+      "mu",
+      "kappa"
+    ],
+    "burden_floor": [
+      "B1",
+      "B2",
+      "B3",
+      "B4"
+    ],
+    "per_burden": [
+      {
+        "burden_id": "B1",
+        "owner_id": "authority-order-repair",
+        "operation": "authority-order-repair",
+        "delta_result": "authority-order-repaired",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B1",
+        "owner_id": "source-status-repair",
+        "operation": "source-order-repair",
+        "delta_result": "source-order-repaired",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B2",
+        "owner_id": "M9",
+        "operation": "predication-repair",
+        "delta_result": "predicate-separated",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B2",
+        "owner_id": "P7",
+        "operation": "scope-boundary",
+        "delta_result": "scope-boundary-named",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B3",
+        "owner_id": "proof-method-audit",
+        "operation": "proof-family-and-carrier-audit",
+        "delta_result": "proof-family-carrier-typed",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B3",
+        "owner_id": "M7",
+        "operation": "definition-anchor",
+        "delta_result": "definition-anchored",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      },
+      {
+        "burden_id": "B4",
+        "owner_id": "M8",
+        "operation": "dependency-trace",
+        "delta_result": "dependency-exposed",
+        "mrp_route_result_type": "no_new_resultant",
+        "terminal_state": "landed",
+        "generation_depth": 0
+      }
+    ],
+    "diagnostic_completeness": {
+      "live_registers": [
+        "xi",
+        "Omega",
+        "mu",
+        "kappa"
+      ],
+      "coverage": {
+        "xi": [
+          "B1"
+        ],
+        "Omega": [
+          "B2"
+        ],
+        "mu": [
+          "B3"
+        ],
+        "kappa": [
+          "B4"
+        ]
+      },
+      "complete": true
+    },
+    "decoded_ir": {
+      "schema": "b5-canonical-ir-decode-v1",
+      "source_evidence": [
+        "visible_act",
+        "field_witness.owner_activations",
+        "normalized_activation_record",
+        "canonical_ir_projection"
+      ],
+      "n_frame": "mixed-source-authority-formal-contradiction-shubhah",
+      "live_registers": [
+        "xi",
+        "Omega",
+        "mu",
+        "kappa"
+      ],
+      "burden_floor": [
+        "B1",
+        "B2",
+        "B3",
+        "B4"
+      ],
+      "per_burden": [
+        {
+          "burden_id": "B1",
+          "owner_id": "authority-order-repair",
+          "operation": "authority-order-repair",
+          "delta_result": "authority-order-repaired",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "authority-rank-and-proof-text-order",
+          "body_ref": "B1_1"
+        },
+        {
+          "burden_id": "B1",
+          "owner_id": "source-status-repair",
+          "operation": "source-order-repair",
+          "delta_result": "source-order-repaired",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "hadith-report-and-lexical-source-order",
+          "body_ref": "B1_2"
+        },
+        {
+          "burden_id": "B2",
+          "owner_id": "M9",
+          "operation": "predication-repair",
+          "delta_result": "predicate-separated",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "fatal-harm-predicate-separation",
+          "body_ref": "B2_1"
+        },
+        {
+          "burden_id": "B2",
+          "owner_id": "P7",
+          "operation": "scope-boundary",
+          "delta_result": "scope-boundary-named",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "protection-scope-boundary",
+          "body_ref": "B2_2"
+        },
+        {
+          "burden_id": "B3",
+          "owner_id": "proof-method-audit",
+          "operation": "proof-family-and-carrier-audit",
+          "delta_result": "proof-family-carrier-typed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "formal-carrier-and-imported-premise-audit",
+          "body_ref": "B3_1"
+        },
+        {
+          "burden_id": "B3",
+          "owner_id": "M7",
+          "operation": "definition-anchor",
+          "delta_result": "definition-anchored",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "predicate-definition-anchor",
+          "body_ref": "B3_2"
+        },
+        {
+          "burden_id": "B4",
+          "owner_id": "M8",
+          "operation": "dependency-trace",
+          "delta_result": "dependency-exposed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "t1-t2-lethal-exposure-fatal-harm-dependency",
+          "body_ref": "B4_1"
+        }
+      ],
+      "diagnostic_completeness": {
+        "live_registers": [
+          "xi",
+          "Omega",
+          "mu",
+          "kappa"
+        ],
+        "coverage": {
+          "xi": [
+            "B1"
+          ],
+          "Omega": [
+            "B2"
+          ],
+          "mu": [
+            "B3"
+          ],
+          "kappa": [
+            "B4"
+          ]
+        },
+        "complete": true
+      }
+    },
+    "full_ir_decode": {
+      "schema": "b5-full-ir-decode-v1",
+      "source_evidence": [
+        "visible_act",
+        "field_witness.owner_activations",
+        "normalized_activation_record",
+        "canonical_ir_projection",
+        "canonical_ir_projection.decoded_ir",
+        "field_witness.coverage_proof",
+        "field_witness.coverage_proof.dependency_graph",
+        "field_witness.formal_reread_states"
+      ],
+      "n_frame": "mixed-source-authority-formal-contradiction-shubhah",
+      "live_registers": [
+        "xi",
+        "Omega",
+        "mu",
+        "kappa"
+      ],
+      "burden_floor": [
+        "B1",
+        "B2",
+        "B3",
+        "B4"
+      ],
+      "B_LA": [
+        "B1",
+        "B2",
+        "B3",
+        "B4"
+      ],
+      "B_MRP": [],
+      "B_total": [
+        "B1",
+        "B2",
+        "B3",
+        "B4"
+      ],
+      "dependency_graph": {
+        "nodes": [
+          "B1",
+          "B2",
+          "B3",
+          "B4"
+        ],
+        "edges": [],
+        "roots": [
+          "B1",
+          "B2",
+          "B3",
+          "B4"
+        ],
+        "parallel_groups": [
+          [
+            "B1",
+            "B2",
+            "B3",
+            "B4"
+          ]
+        ],
+        "acyclic": true
+      },
+      "terminal_states": {
+        "B1": "landed",
+        "B2": "landed",
+        "B3": "landed",
+        "B4": "landed"
+      },
+      "diagnostic_completeness": {
+        "live_registers": [
+          "xi",
+          "Omega",
+          "mu",
+          "kappa"
+        ],
+        "coverage": {
+          "xi": [
+            "B1"
+          ],
+          "Omega": [
+            "B2"
+          ],
+          "mu": [
+            "B3"
+          ],
+          "kappa": [
+            "B4"
+          ]
+        },
+        "complete": true
+      },
+      "per_burden": [
+        {
+          "burden_id": "B1",
+          "owner_id": "authority-order-repair",
+          "operation": "authority-order-repair",
+          "delta_result": "authority-order-repaired",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "authority-rank-and-proof-text-order",
+          "body_ref": "B1_1",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B1",
+          "owner_id": "source-status-repair",
+          "operation": "source-order-repair",
+          "delta_result": "source-order-repaired",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "hadith-report-and-lexical-source-order",
+          "body_ref": "B1_2",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B2",
+          "owner_id": "M9",
+          "operation": "predication-repair",
+          "delta_result": "predicate-separated",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "fatal-harm-predicate-separation",
+          "body_ref": "B2_1",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B2",
+          "owner_id": "P7",
+          "operation": "scope-boundary",
+          "delta_result": "scope-boundary-named",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "protection-scope-boundary",
+          "body_ref": "B2_2",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B3",
+          "owner_id": "proof-method-audit",
+          "operation": "proof-family-and-carrier-audit",
+          "delta_result": "proof-family-carrier-typed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "formal-carrier-and-imported-premise-audit",
+          "body_ref": "B3_1",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B3",
+          "owner_id": "M7",
+          "operation": "definition-anchor",
+          "delta_result": "definition-anchored",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "predicate-definition-anchor",
+          "body_ref": "B3_2",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        },
+        {
+          "burden_id": "B4",
+          "owner_id": "M8",
+          "operation": "dependency-trace",
+          "delta_result": "dependency-exposed",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0,
+          "pressure": "t1-t2-lethal-exposure-fatal-harm-dependency",
+          "body_ref": "B4_1",
+          "graph_role": "root",
+          "generated_by": null,
+          "track": "baseline"
+        }
+      ],
+      "generated_burdens": [],
+      "formal_reread": {
+        "states_present": true,
+        "divergence_state": "neutral",
+        "curl_state": "null",
+        "escape_routes_checked": [],
+        "no_new_resultant_proof": {
+          "escape_routes_checked": [
+            {
+              "type": "closure-boundary-immunity",
+              "live": false,
+              "basis": "MRP(B4) reported no new closure-boundary-immunity route after R(H,Delta)."
+            },
+            {
+              "type": "proof-carousel",
+              "live": false,
+              "basis": "MRP(B4) reported no proof-carousel route after the terminal reread."
+            },
+            {
+              "type": "total-system-exhaustion",
+              "live": false,
+              "basis": "The bounded Stage 07 reply licenses only this scoped terminal state, not a global total-system proof."
+            },
+            {
+              "type": "doubt-churn",
+              "live": false,
+              "basis": "MRP(B4) reports neutral divergence and null curl at STOP."
+            },
+            {
+              "type": "moral-tribunal",
+              "live": false,
+              "basis": "MRP(B4) did not expose a live moral-tribunal route."
+            },
+            {
+              "type": "authority-order-recoil",
+              "live": false,
+              "basis": "MRP(B4) did not expose a live authority-order recoil route."
+            },
+            {
+              "type": "hidden-framework-recoil",
+              "live": false,
+              "basis": "MRP(B4) did not expose a live hidden-framework recoil route."
+            },
+            {
+              "type": "restoration-recoil",
+              "subtype": "scope-protest",
+              "live": false,
+              "basis": "MRP(B4) did not expose a live restoration-recoil route."
+            }
+          ],
+          "field_state_at_stop": {
+            "divergence": "neutral",
+            "curl": "null",
+            "b_live": "empty",
+            "kappa_residual": 0
+          },
+          "stop_licensed": true
+        }
+      },
+      "source_basis": {
+        "source_basis_available": false,
+        "sigma_inside_hard_registers": false,
+        "basis": []
+      }
+    },
+    "proof_mode": {
+      "schema": "b5-full-ir-proof-mode-v1",
+      "mode": "retained-proof-corpus-sidecar",
+      "source_evidence": [
+        "visible_noetic_field_opening",
+        "visible_layer_a_diagnostic_ir_header",
+        "field_witness.canonical_ir_projection",
+        "field_witness.canonical_ir_projection.decoded_ir",
+        "field_witness.canonical_ir_projection.full_ir_decode"
+      ],
+      "machine_facing": true,
+      "schema_light_absent_valid": true,
+      "requires_decoded_ir": true,
+      "visible_opening_header_preserved": true,
+      "arbitrary_nl_ir_parser_claim": false,
+      "default_runtime_emission_claim": false,
+      "t_lang_uptake_claim": false
+    }
+  }
+}
