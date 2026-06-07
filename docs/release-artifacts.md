@@ -25,6 +25,49 @@ slash-safe archive entries.
 
 ## Artifact Evidence
 
+## v0.4.4.0 Release Package / Provenance Status
+
+v0.4.4.0 public artifact status: published after Gate88 four-smoke closure and
+retained proof-corpus promotion. The package is built from the retained-proof
+source boundary `651b5b98dd7bf81be258ebe29fe43bab3a073eb2`. The `.skill.zip`
+file is a local build intermediate only and was not uploaded.
+
+| Field | Value |
+| --- | --- |
+| Package filename | `daee-epistemics-v0.4.4.0.skill` |
+| Local zip build | `build/daee-epistemics-v0.4.4.0.skill.zip` |
+| Local package copy | `build/daee-epistemics-v0.4.4.0.skill` |
+| SHA256 | `011E5EAA603747E126A0E403B9F22174043936E827235F423314D312ECE43CE0` |
+| Size | `711590` bytes |
+| Entries | `21` |
+| Source commit recorded in provenance | `651b5b98dd7bf81be258ebe29fe43bab3a073eb2` |
+| Source state | Gate88 4/4 Stage08 matrix pass, direct validator replay, retained proof promotion, and CI/Pages PASS before package build |
+| Branch | `main` |
+| Contract version | `0.4.0.0` |
+| Source/runtime tracking status | `atomics/skill/**` tracked; `skill/**` ignored/generated |
+| Generated runtime manifest SHA256 | `CFC21BDFCF7725EF451FD1CD6DD87DB59EE066B971CF8BE1DBB146A518C7F6E7` |
+| Compiled module map SHA256 | `D00D8A752B766978D5A949CF5304489AD9E78EF7EF0D14610E7877E256837800` |
+| GitHub Release visibility | Published at `https://github.com/theislampill/daee-epistemics/releases/tag/v0.4.4.0`; annotated tag peels to `651b5b98dd7bf81be258ebe29fe43bab3a073eb2` |
+| Provenance file | Release asset: `daee-epistemics-v0.4.4.0.provenance.json` generated from `build/daee-epistemics-v0.4.4.0.provenance.json` |
+| Provenance SHA256 | `899BDAD2860153ADFE6D75C3D0296BC6BABE39D45727373CD1424F22DFF57E0A` |
+| Package-bound proof | Gate88 4/4 one-shot matrix passed through Stage08 before package publication; direct replay validators passed across all four Gate88 outputs; retained proof corpus promotion passed for row scope `B.1 B.2 B.3 B.4 B.5 T_lang`; package artifact validation PASS; self-contained package PASS; local and downloaded provenance checks PASS. Cross-host/paraphrase proof is not claimed. |
+
+The v0.4.4.0 release assets include the canonical `.skill` payload and package
+provenance JSON only:
+
+- `daee-epistemics-v0.4.4.0.skill`
+- `daee-epistemics-v0.4.4.0.provenance.json`
+
+No `.skill.zip` asset was uploaded. Raw Gate88 smoke artifacts remain local
+custody/proof evidence and are not release assets. No cross-host/paraphrase
+proof, guaranteed `T_lang` uptake, or universal semantic grading is claimed.
+
+The downloaded package/provenance pair is checked with:
+
+```powershell
+python tools/check_release_provenance.py --provenance build\download-verify-v0.4.4.0-20260607\daee-epistemics-v0.4.4.0.provenance.json --package build\download-verify-v0.4.4.0-20260607\daee-epistemics-v0.4.4.0.skill --manifest skill\build-manifest.json --compiled-map skill\compiled-module-map.json
+```
+
 ## v0.4.3.5 Release Package / Provenance Status
 
 v0.4.3.5 public artifact status: published on the existing GitHub Release for

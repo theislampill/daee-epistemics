@@ -4,6 +4,8 @@ This directory keeps release history out of the active docs root while preservin
 
 - `release-history-v0.3.md` consolidates archived v0.3.x release evidence.
 - `release-history-v0.4.md` consolidates archived v0.4.x release evidence.
+- `../v0.4.4.0-release-notes.md` and `../v0.4.4.0-release-log.md` record the
+  Gate88 four-smoke closure and retained proof-promotion release.
 - `../v0.4.2.0-release-notes.md` and `../v0.4.2.0-release-log.md` are pre-public
   candidate surfaces for the Deep Research implementation / evidence-discipline release; local
   package/provenance and the minimal three-case smoke skeleton remain pre-public and are not
