@@ -128,13 +128,13 @@
     },
     {
       "owner": "source-status-repair",
-      "act_row": "ACT B1_7[source-status-repair.status] :: body_ref=B1_7 :: Land(B1)+",
+      "act_row": "ACT B1_7[source-status-repair.source-order] :: body_ref=B1_7 :: Land(B1)+",
       "body_ref": "B1_7",
       "body_ref_dereference": {
         "body_ref": "B1_7",
         "owner": "source-status-repair",
         "target": "source status pressure",
-        "operation": "repair source status",
+        "operation": "source-order repair of source status",
         "result": "source-function-bounded",
         "contribution": "Contribution-to-Land"
       },

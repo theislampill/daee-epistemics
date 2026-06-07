@@ -2906,8 +2906,10 @@ def stage07_act_contract_guidance(
             "- Source/citation/proof-stack rows must name the concrete burden-local state change that the source-status, authority-order, proof-method, or transmission/content operation produces.",
             "- For compact `typed` deltas, the public `Result/state-change:` facet must include checker-stable state-change language such as `State change: ... classified`, `... exposed`, or `no longer treated as ...`; the delta token alone is not a state change.",
             "- For `proof-method-audit.proof-family-and-carrier-audit`, the dereferenced body must audit the proof family/carrier by naming the premise or predicate set, inference grammar, conclusion scope, and visible state change. Use a parser-stable result phrase such as `State change: the proof carrier is classified as a proof carrier whose premise set, inference grammar, and conclusion scope are no longer treated as a neutral proof.`",
+            "- For `proof-method-audit.proof-route-status-audit`, the dereferenced body must identify the proof forum, standard of proof, tribunal/burden-function, proof eligibility, supporting texts, and premise/inference/conclusion scope. Generic proof-route labels do not Land.",
             "- For `pattern-profiling.loaded-label-carrier-audit`, the dereferenced body must identify the label as a noetic/worldview/identity carrier, expose the hidden proof/source/authority rule it transmits, and show `carrier-function-typed` as a burden-local state transition. Owner and delta labels alone do not Land.",
             "- For `pattern-profiling.loaded-label-carrier-audit`, the `Result/state-change:` facet must say the loaded label carrier function is exposed or classified; do not rely on `carrier-function-typed` by itself.",
+            "- For `FPD.foreign-premise-detection`, the dereferenced body must expose the foreign/imported premise, imported criterion, hidden criterion, or imported tribunal that was functioning as proof. Owner labels or generic criterion language do not Land.",
             "- Emit standalone public landing lines such as `Land(Bn): ...` or `HOLD(Bn): ...` only after the final Stage 04 body_ref for that burden; `Contribution-to-Land(Bn):` alone is not a landing line.",
             "- Never print `Land(Bn):` for a burden while another assigned or later Stage 04 body_ref for the same burden remains unrendered.",
             "Required submove block skeletons:",
@@ -2977,11 +2979,27 @@ def stage07_act_contract_guidance(
                 "V10 transmission/content-authority operation body."
             )
         elif family == "PROOF_METHOD":
+            if detail["operation"] == "proof-route-status-audit":
+                lines.append(
+                    "  Proof-method route-status operation: visibly identify the proof forum, standard of proof, "
+                    "tribunal/burden-function, proof eligibility, supporting texts, and premise/inference/conclusion "
+                    "scope being assigned to this proof carrier. State the parser-stable local change: `the proof "
+                    "route status is clarified because the proof forum, standard of proof, tribunal/burden-function, "
+                    "proof eligibility, and premise/inference/conclusion scope are no longer treated as a neutral proof route.`"
+                )
+            else:
+                lines.append(
+                    "  Proof-method carrier operation: visibly classify the proof family/carrier, name the premise "
+                    "or predicate set being loaded, identify the inference grammar and conclusion scope, and state "
+                    "the parser-stable local state change: `the proof carrier is classified as a proof carrier whose "
+                    "premise set, inference grammar, and conclusion scope are no longer treated as a neutral proof.`"
+                )
+        elif family == "FPD":
             lines.append(
-                "  Proof-method carrier operation: visibly classify the proof family/carrier, name the premise "
-                "or predicate set being loaded, identify the inference grammar and conclusion scope, and state "
-                "the parser-stable local state change: `the proof carrier is classified as a proof carrier whose "
-                "premise set, inference grammar, and conclusion scope are no longer treated as a neutral proof.`"
+                "  FPD foreign-premise-detection operation: expose the foreign/imported premise, imported criterion, "
+                "hidden criterion, imported tribunal, or hidden court that was functioning as proof; name how that "
+                "imported premise or criterion changes this burden. If the public body cannot show the imported "
+                "premise/criterion, render HOLD/PARTIAL instead of `Land(Bn)`."
             )
         elif family == "DO_ATTRIBUTE":
             lines.append(
@@ -3008,7 +3026,9 @@ def stage07_act_contract_guidance(
                 lines.append(
                     "  SOURCE/source-status operation: explicitly sort source authority, source function, "
                     "proof-stack order, or hidden support for this exact pressure; do not merely say the "
-                    "source route was handled."
+                    "source route was handled. `status` is not a callable ACT operation; use a registered "
+                    "SOURCE operation such as `source-order`, `source-order-repair`, `authority-order-repair`, "
+                    "or `sort` only when licensed by the copied ACT row."
                 )
     if landing_lines:
         lines.extend(["Required standalone landing lines for this ACT slice:", *landing_lines])
@@ -3551,9 +3571,18 @@ PROOF_METHOD_BODY_BACKED_RE = re.compile(
     r"(?is)\bproof\b.*\b(?:premise|predicate|definition)\b.*\b(?:infer|deriv|logic tree)\w*\b.*"
     r"\b(?:conclusion|contradiction|scope)\b"
 )
+PROOF_ROUTE_STATUS_BODY_BACKED_RE = re.compile(
+    r"(?is)\b(?:proof forum|standard of proof|burden[- ]function|burden role|"
+    r"tribunal[- ]function|proof eligibility|supporting texts?|premise/inference/conclusion scope)\b"
+)
 PATTERN_PROFILE_BODY_BACKED_RE = re.compile(
     r"(?is)\blabel\b.*\bcarrier\b.*\b(?:hidden|transmit\w*|proof rule|source|authority|worldview|noetic)\b.*"
     r"\b(?:loaded|compress\w*|carrier function)\b"
+)
+FPD_BODY_BACKED_RE = re.compile(
+    r"(?is)\b(?:foreign premise|imported premise|imported criterion|hidden criterion|"
+    r"foreign criterion|unargued criterion|criterion import|premise import|"
+    r"imported tribunal|imported court|hidden court)\b"
 )
 SOURCE_AUTHORITY_ORDER_BODY_BACKED_RE = re.compile(
     r"(?is)\b(?:authority|rank|tribunal|judging office|higher court|source[- ]sovereignty|"
@@ -3714,8 +3743,15 @@ def owner_transition_body_backed(detail: dict[str, str], block: str) -> bool:
     family = canonical_delta_owner(owner) or owner
     if owner == "proof-method-audit" and operation == "proof-family-and-carrier-audit":
         return bool(PROOF_METHOD_BODY_BACKED_RE.search(block))
+    if owner == "proof-method-audit" and operation == "proof-route-status-audit":
+        return bool(
+            PROOF_METHOD_BODY_BACKED_RE.search(block)
+            and PROOF_ROUTE_STATUS_BODY_BACKED_RE.search(block)
+        )
     if owner == "pattern-profiling" and operation == "loaded-label-carrier-audit":
         return bool(PATTERN_PROFILE_BODY_BACKED_RE.search(block))
+    if family == "FPD" and operation == "foreign-premise-detection":
+        return bool(FPD_BODY_BACKED_RE.search(ttp_operation_body_from_public_block(block)))
     if family == "SOURCE" and operation == "authority-order-repair":
         return bool(SOURCE_AUTHORITY_ORDER_BODY_BACKED_RE.search(ttp_operation_body_from_public_block(block)))
     if family == "SOURCE" and operation == "source-order-repair":
@@ -3733,10 +3769,21 @@ def state_change_sentence_for_owner_transition(detail: dict[str, str]) -> str:
             "premise set, inference grammar, and conclusion scope are no longer treated "
             "as a neutral proof."
         )
+    if owner == "proof-method-audit" and operation == "proof-route-status-audit":
+        return (
+            " State change: the proof route status is clarified because the proof forum, "
+            "standard of proof, tribunal/burden-function, proof eligibility, supporting texts, "
+            "and premise/inference/conclusion scope are no longer treated as a neutral proof route."
+        )
     if owner == "pattern-profiling" and operation == "loaded-label-carrier-audit":
         return (
             " State change: the loaded label carrier function is exposed and classified, "
             "so the carrier no longer transports the conclusion as a premise."
+        )
+    if family == "FPD" and operation == "foreign-premise-detection":
+        return (
+            " State change: the foreign premise and imported criterion are exposed, "
+            "so the hidden criterion or imported tribunal no longer travels as neutral proof."
         )
     if family == "SOURCE" and operation == "authority-order-repair":
         return (
@@ -3768,7 +3815,16 @@ def canonicalize_layer_b_owner_transition_facets(
         if (
             str(detail.get("owner") or "").strip() in {"proof-method-audit", "pattern-profiling"}
             and str(detail.get("operation") or "").strip()
-            in {"proof-family-and-carrier-audit", "loaded-label-carrier-audit"}
+            in {
+                "proof-family-and-carrier-audit",
+                "proof-route-status-audit",
+                "loaded-label-carrier-audit",
+            }
+        )
+        or (
+            (canonical_delta_owner(str(detail.get("owner") or "").strip()) or "")
+            == "FPD"
+            and str(detail.get("operation") or "").strip() == "foreign-premise-detection"
         )
         or (
             (canonical_delta_owner(str(detail.get("owner") or "").strip()) or "")
@@ -7394,7 +7450,7 @@ def run_self_test(root: Path) -> int:
         "PROOF_METHOD operations: proof-denominator-audit, proof-family-and-carrier-audit",
         "PROOF_METHOD is a delta/register vocabulary family for callable owner `proof-method-audit`",
         "PROOF_METHOD: proof-denominator-exposed",
-        "SOURCE operations: authority-order-repair, sort, source-order, source-order-repair, status",
+        "SOURCE operations: authority-order-repair, sort, source-order, source-order-repair",
         "SOURCE: authority-order-repaired",
         "SOURCE register-axis floor: authority-order/source-status repairs act on source/semantic/authority status (`σ`)",
         "V2 operations: proof-burden-order, reason-role-repair, reconstituting-reason",
@@ -7412,6 +7468,8 @@ def run_self_test(root: Path) -> int:
             raise HarnessError(f"Self-test Stage 04 delta vocabulary guidance omitted {required}")
     if "M9 operations: category-or-referent-separation" in selected_model_delta_guidance:
         raise HarnessError("Self-test Stage 04 guidance laundered an M9 delta/result label into operation space")
+    if "SOURCE operations: authority-order-repair, sort, source-order, source-order-repair, status" in selected_model_delta_guidance:
+        raise HarnessError("Self-test Stage 04 guidance exposed SOURCE status as a callable operation")
     do_second_loop_guidance = stage04_delta_vocabulary_guidance(
         [
             {
@@ -7885,6 +7943,31 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted source-status result pressure as operation token")
+    invalid_source_status_operation_row = (
+        "⟦ACT ¹B₁[source-status-repair.status] :: "
+        "π=source-status-label-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:source-function-bounded :: Land(¹B)+⟧"
+    )
+    try:
+        normalized_stage(
+            "stage-04-burden-execution-act",
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "act_burdens": ["B1"],
+                "act_rows": [invalid_source_status_operation_row],
+                "act_row_details": self_test_act_row_details(
+                    [invalid_source_status_operation_row],
+                    {"¹B₁": "σ"},
+                ),
+            },
+        )
+    except HarnessError as exc:
+        if "outside controlled operation vocabulary" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted SOURCE status label as callable operation")
     try:
         normalized_stage(
             "stage-04-burden-execution-act",
@@ -8945,6 +9028,7 @@ def run_self_test(root: Path) -> int:
         "If the row needs κ/H dependency-radius work, use `Δκ:<owner-local-state-change>`",
         "A compact label such as `reopen-condition-stated` or `scope-boundary-named` cannot replace the visible burden-local state change",
         "SOURCE/source-status operation: explicitly sort source authority, source function, proof-stack order, or hidden support",
+        "`status` is not a callable ACT operation; use a registered SOURCE operation",
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
@@ -9051,6 +9135,145 @@ def run_self_test(root: Path) -> int:
     )
     if label_only_event:
         raise HarnessError("Self-test Stage 07 proof/pattern carrier canonicalization upgraded label-only owner prose")
+    proof_route_status_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-proof-route-status-public",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage02, proof_route_status_tau_stage04, normalized_stage05, normalized_stage06],
+        section_id="act-body-proof-route-status",
+        section_role="layer_b_act",
+        section_number=3,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=["¹B₁"],
+    )
+    for required in (
+        "proof-method-audit.proof-route-status-audit",
+        "proof forum, standard of proof, tribunal/burden-function, proof eligibility",
+        "premise/inference/conclusion scope are no longer treated as a neutral proof route",
+        "Generic proof-route labels do not Land",
+    ):
+        if required not in proof_route_status_prompt:
+            raise HarnessError(f"Self-test Stage 07 proof-route-status prompt omitted: {required}")
+    thin_proof_route_status_layer = "\n".join(
+        [
+            "## Burden 1 / ¹B — proof route status",
+            proof_route_status_tau_row,
+            "",
+            "### ¹B₁[proof-method-audit] - proof-route-status-audit over proof-route-status",
+            "Target: proof-route-status.",
+            "Operation: proof-route-status-audit audits the proof-route-status with owner family proof-method-audit.",
+            "Result/state-change: proof-route-status-clarified.",
+            "Contribution-to-Land(¹B): This contributes because the proof forum and burden-function are now bounded.",
+            "TTP Operation Body:",
+            "The proof-method audit identifies the proof forum, standard of proof, tribunal-function and burden-function that the supporting texts are being made to serve. It names proof eligibility and the premise/inference/conclusion scope so the proof route no longer functions as a neutral proof.",
+            "Land(¹B): The proof route status is clarified.",
+            "",
+        ]
+    )
+    canonical_proof_route_status, proof_route_status_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        thin_proof_route_status_layer,
+        [normalized_stage02, proof_route_status_tau_stage04, normalized_stage05, normalized_stage06],
+    )
+    if not proof_route_status_event or not proof_route_status_event.get("canonicalized_owner_transition_facets"):
+        raise HarnessError("Self-test Stage 07 proof-route-status canonicalization did not record an event")
+    if "the proof route status is clarified because the proof forum, standard of proof, tribunal/burden-function" not in canonical_proof_route_status:
+        raise HarnessError("Self-test Stage 07 proof-route-status canonicalization omitted parser-stable state change")
+    label_only_proof_route_status = thin_proof_route_status_layer.replace(
+        "The proof-method audit identifies the proof forum, standard of proof, tribunal-function and burden-function that the supporting texts are being made to serve. It names proof eligibility and the premise/inference/conclusion scope so the proof route no longer functions as a neutral proof.",
+        "The proof-method-audit proof-route-status-audit owner is named, so the proof route status is handled.",
+    )
+    _, label_only_proof_route_status_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        label_only_proof_route_status,
+        [normalized_stage02, proof_route_status_tau_stage04, normalized_stage05, normalized_stage06],
+    )
+    if label_only_proof_route_status_event:
+        raise HarnessError("Self-test Stage 07 proof-route-status canonicalization upgraded label-only owner prose")
+    fpd_row = (
+        "⟦ACT ¹B₁[FPD.foreign-premise-detection] :: "
+        "π=imported-criterion-pressure :: body_ref=¹B₁ :: "
+        "Δ=Δ¹B:imported-criterion-blocked :: Land(¹B)+⟧"
+    )
+    fpd_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [fpd_row],
+            "act_row_details": self_test_act_row_details([fpd_row], {"¹B₁": "ξ"}),
+        },
+    )
+    fpd_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-fpd-public",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage02, fpd_stage04, normalized_stage05, normalized_stage06],
+        section_id="act-body-fpd",
+        section_role="layer_b_act",
+        section_number=3,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=["¹B₁"],
+    )
+    for required in (
+        "FPD.foreign-premise-detection",
+        "foreign/imported premise, imported criterion, hidden criterion, imported tribunal",
+        "Owner labels or generic criterion language do not Land",
+        "render HOLD/PARTIAL instead of `Land(Bn)`",
+    ):
+        if required not in fpd_prompt:
+            raise HarnessError(f"Self-test Stage 07 FPD prompt omitted: {required}")
+    thin_fpd_layer = "\n".join(
+        [
+            "## Burden 1 / ¹B — imported criterion pressure",
+            fpd_row,
+            "",
+            "### ¹B₁[FPD] - foreign-premise-detection over imported-criterion-pressure",
+            "Target: imported-criterion-pressure.",
+            "Operation: foreign-premise-detection audits the imported-criterion-pressure with owner family FPD.",
+            "Result/state-change: imported-criterion-blocked.",
+            "Contribution-to-Land(¹B): This contributes because the imported criterion can no longer decide the burden from hiding.",
+            "TTP Operation Body:",
+            "The FPD operation exposes the foreign premise and imported criterion that were functioning as the proof tribunal. It names the hidden criterion and imported tribunal so that criterion can no longer travel as neutral proof.",
+            "Land(¹B): The imported criterion is blocked.",
+            "",
+        ]
+    )
+    canonical_fpd, fpd_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        thin_fpd_layer,
+        [normalized_stage02, fpd_stage04, normalized_stage05, normalized_stage06],
+    )
+    if not fpd_event or not fpd_event.get("canonicalized_owner_transition_facets"):
+        raise HarnessError("Self-test Stage 07 FPD canonicalization did not record an event")
+    if "the foreign premise and imported criterion are exposed" not in canonical_fpd:
+        raise HarnessError("Self-test Stage 07 FPD canonicalization omitted parser-stable state change")
+    label_only_fpd = thin_fpd_layer.replace(
+        "The FPD operation exposes the foreign premise and imported criterion that were functioning as the proof tribunal. It names the hidden criterion and imported tribunal so that criterion can no longer travel as neutral proof.",
+        "The FPD owner is named, so the foreign-premise-detection route is handled.",
+    ).replace(
+        "Land(¹B): The imported criterion is blocked.",
+        "Land(¹B): The route is handled.",
+    )
+    _, label_only_fpd_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        label_only_fpd,
+        [normalized_stage02, fpd_stage04, normalized_stage05, normalized_stage06],
+    )
+    if label_only_fpd_event:
+        raise HarnessError("Self-test Stage 07 FPD canonicalization upgraded label-only owner prose")
     source_split_rows = [
         (
             "⟦ACT ¹B₁[source-status-repair.source-order-repair] :: "

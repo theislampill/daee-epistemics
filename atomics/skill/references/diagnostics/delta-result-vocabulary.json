@@ -73,8 +73,7 @@
       "authority-order-repair",
       "source-order-repair",
       "source-order",
-      "sort",
-      "status"
+      "sort"
     ],
     "P1": [
       "restore",
