@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import Any
 
 import build_staged_governed_output as staged_output
+from check_field_witness_convergence import registers_in_text as checker_field_witness_registers_in_text
 from closure_witness_lib import extract_embedded_field_witness, extract_field_witness, parse_closure_witness, status_head
 from delta_result_vocabulary import (
     DELTA_RESULT_VOCABULARY,
@@ -2104,6 +2105,22 @@ def stage05_dependency_edges(stage05: dict[str, Any] | None) -> list[dict[str, s
 STAGE02_BURDEN_REGISTER_KEYS = ("register_types", "registers", "burden_types", "types")
 
 
+def field_witness_registers_in_text(value: object) -> list[str]:
+    """Project Stage 02 register prose into the Stage 07 field_witness dialect."""
+
+    source = str(value or "").strip()
+    if not source:
+        return []
+    return checker_field_witness_registers_in_text(source)
+
+
+def field_witness_registers_from_values(values: list[object]) -> list[str]:
+    registers: list[str] = []
+    for value in values:
+        registers.extend(field_witness_registers_in_text(value))
+    return ordered_unique(registers)
+
+
 def stage02_burden_detail_registers(item: dict[str, Any]) -> list[str]:
     values: list[str] = []
     for key in STAGE02_BURDEN_REGISTER_KEYS:
@@ -2112,6 +2129,19 @@ def stage02_burden_detail_registers(item: dict[str, Any]) -> list[str]:
             continue
         values.extend(str(register).strip() for register in registers if str(register).strip())
     return ordered_unique(values)
+
+
+def stage02_detail_register_projection(item: dict[str, Any]) -> list[str]:
+    explicit = stage02_burden_detail_registers(item)
+    if explicit:
+        return field_witness_registers_from_values(explicit)
+    scalars: list[object] = []
+    for value in item.values():
+        if isinstance(value, str):
+            scalars.append(value)
+        elif isinstance(value, list):
+            scalars.extend(entry for entry in value if isinstance(entry, str))
+    return field_witness_registers_from_values(scalars)
 
 
 def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
@@ -2123,14 +2153,20 @@ def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]
                 if not isinstance(item, dict):
                     continue
                 burden = b_id(item.get("burden_id") or item.get("id"))
-                registers = stage02_burden_detail_registers(item)
+                registers = stage02_detail_register_projection(item)
                 if not burden or not registers:
                     continue
                 for register in registers:
                     coverage.setdefault(register, []).append(burden)
     if coverage:
         return {register: ordered_unique(ids) for register, ids in coverage.items()}
-    return {register: [burden] for register, burden in zip(list_field(stage02, "live_registers"), burdens)}
+    return {
+        register: [burden]
+        for register, burden in zip(
+            field_witness_registers_from_values(list_field(stage02, "live_registers")),
+            burdens,
+        )
+    }
 
 
 def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
@@ -2142,17 +2178,23 @@ def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[
                 if not isinstance(item, dict):
                     continue
                 burden = b_id(item.get("burden_id") or item.get("id"))
-                values = stage02_burden_detail_registers(item)
+                values = stage02_detail_register_projection(item)
                 if not burden or not values:
                     continue
                 burden_registers[burden] = values
     if burden_registers:
         return burden_registers
     return {
-        burden: [register]
-        for burden, register in zip(burdens, list_field(stage02, "live_registers"))
-        if register
+        burden: registers
+        for burden, raw in zip(burdens, list_field(stage02, "live_registers"))
+        if (registers := field_witness_registers_in_text(raw))
     }
+
+
+def stage02_public_live_registers(stage02: dict[str, Any] | None, burdens: list[str]) -> list[str]:
+    live_registers = field_witness_registers_from_values(list_field(stage02, "live_registers"))
+    coverage = stage02_register_coverage(stage02, burdens)
+    return ordered_unique([*live_registers, *coverage.keys()])
 
 
 def stage02_diagnostic_ir_details(stage02: dict[str, Any] | None) -> dict[str, Any]:
@@ -2677,7 +2719,7 @@ def stage07_layer_a_contract_guidance(previous_stages: list[dict[str, Any]]) -> 
         return ""
     generated_burdens = stage05_generated_burdens(stage05)
     b_total = ordered_unique([*burden_floor, *generated_burdens])
-    live_registers = list_field(stage02, "live_registers")
+    live_registers = stage02_public_live_registers(stage02, burden_floor)
     burden_registers = stage02_burden_register_types(stage02, burden_floor)
     diagnostic_lines = stage07_layer_a_diagnostic_state_lines(stage02)
     burden_rows = []
@@ -2856,11 +2898,26 @@ def stage07_act_contract_guidance(
                 "burden-local state change visible before Land."
             )
         elif family == "SOURCE":
-            lines.append(
-                "  SOURCE/source-status operation: explicitly sort source authority, source function, "
-                "proof-stack order, or hidden support for this exact pressure; do not merely say the "
-                "source route was handled."
-            )
+            if detail["operation"] == "source-order-repair":
+                lines.append(
+                    "  SOURCE source-order-repair operation: explicitly order source lineage, quotation "
+                    "chain, inherited-claim order, source priority, derivation order, or evidential "
+                    "dependency for this exact pressure. Authority/rank/tribunal/source-sovereignty "
+                    "prose alone is not source-order proof; use HOLD/PARTIAL or authority-order-repair "
+                    "if that is the actual transition."
+                )
+            elif detail["operation"] == "authority-order-repair":
+                lines.append(
+                    "  SOURCE authority-order-repair operation: explicitly order authority, rank, "
+                    "tribunal, judging office, source-sovereignty, or public-truth authority for this "
+                    "exact pressure. Source-lineage/quotation prose alone is not authority-order proof."
+                )
+            else:
+                lines.append(
+                    "  SOURCE/source-status operation: explicitly sort source authority, source function, "
+                    "proof-stack order, or hidden support for this exact pressure; do not merely say the "
+                    "source route was handled."
+                )
     if landing_lines:
         lines.extend(["Required standalone landing lines for this ACT slice:", *landing_lines])
     return "\n".join(lines)
@@ -2922,7 +2979,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         final_source = held_or_partial_burdens[0]
         final_type = "hold_partial"
         final_route = "HOLD"
-    live_registers = list_field(stage02, "live_registers")
+    live_registers = stage02_public_live_registers(stage02, burden_floor)
     diagnostic_coverage = stage02_register_coverage(stage02, burden_floor)
     burden_registers = stage02_burden_register_types(stage02, burden_floor)
     for edge in edges:
@@ -3406,6 +3463,16 @@ PATTERN_PROFILE_BODY_BACKED_RE = re.compile(
     r"(?is)\blabel\b.*\bcarrier\b.*\b(?:hidden|transmit\w*|proof rule|source|authority|worldview|noetic)\b.*"
     r"\b(?:loaded|compress\w*|carrier function)\b"
 )
+SOURCE_AUTHORITY_ORDER_BODY_BACKED_RE = re.compile(
+    r"(?is)\b(?:authority|rank|tribunal|judging office|higher court|source[- ]sovereignty|"
+    r"source authority|public[- ]truth authority|approval standard)\b.*"
+    r"\b(?:order|ordered|sort|sorted|rank|tribunal|court|sovereignty|authority)\b"
+)
+SOURCE_SOURCE_ORDER_BODY_BACKED_RE = re.compile(
+    r"(?is)\b(?:source lineage|quotation chain|quotation order|inherited[- ]claim order|"
+    r"inherited claim|source priority|source precedence|evidential dependency|"
+    r"derivation order|source chain|testimony source|report source)\b"
+)
 SECTION_ROLE_HEADING_PATTERNS = {
     "restorative_response": re.compile(
         r"(?i)^\s*(?:#{1,6}\s*)?(?:(?:\*\*|__|\*|_)\s*)?"
@@ -3418,6 +3485,11 @@ SECTION_ROLE_HEADING_PATTERNS = {
         r"(?:\s*(?:\*\*|__|\*|_))?\s*(?:#+\s*)?$"
     ),
 }
+
+
+def ttp_operation_body_from_public_block(block: str) -> str:
+    match = re.search(r"(?ims)^\s*(?:[-*]\s*)?TTP Operation Body\s*:\s*(?P<body>.*)$", block)
+    return match.group("body") if match else ""
 
 
 def concealment_source_components(value: str) -> list[str]:
@@ -3547,16 +3619,22 @@ def layer_b_submove_blocks(text: str) -> list[tuple[re.Match[str], int, str]]:
 def owner_transition_body_backed(detail: dict[str, str], block: str) -> bool:
     owner = str(detail.get("owner") or "").strip()
     operation = str(detail.get("operation") or "").strip()
+    family = canonical_delta_owner(owner) or owner
     if owner == "proof-method-audit" and operation == "proof-family-and-carrier-audit":
         return bool(PROOF_METHOD_BODY_BACKED_RE.search(block))
     if owner == "pattern-profiling" and operation == "loaded-label-carrier-audit":
         return bool(PATTERN_PROFILE_BODY_BACKED_RE.search(block))
+    if family == "SOURCE" and operation == "authority-order-repair":
+        return bool(SOURCE_AUTHORITY_ORDER_BODY_BACKED_RE.search(ttp_operation_body_from_public_block(block)))
+    if family == "SOURCE" and operation == "source-order-repair":
+        return bool(SOURCE_SOURCE_ORDER_BODY_BACKED_RE.search(ttp_operation_body_from_public_block(block)))
     return False
 
 
 def state_change_sentence_for_owner_transition(detail: dict[str, str]) -> str:
     owner = str(detail.get("owner") or "").strip()
     operation = str(detail.get("operation") or "").strip()
+    family = canonical_delta_owner(owner) or owner
     if owner == "proof-method-audit" and operation == "proof-family-and-carrier-audit":
         return (
             " State change: the proof carrier is classified as a proof carrier whose "
@@ -3567,6 +3645,16 @@ def state_change_sentence_for_owner_transition(detail: dict[str, str]) -> str:
         return (
             " State change: the loaded label carrier function is exposed and classified, "
             "so the carrier no longer transports the conclusion as a premise."
+        )
+    if family == "SOURCE" and operation == "authority-order-repair":
+        return (
+            " State change: the authority/rank/tribunal relation is ordered, so the "
+            "rival public authority no longer functions as a higher court over the source."
+        )
+    if family == "SOURCE" and operation == "source-order-repair":
+        return (
+            " State change: the source lineage, source priority, and evidential dependency "
+            "are explicitly ordered, so the inherited claim no longer travels as an unworked source chain."
         )
     return ""
 
@@ -3585,9 +3673,17 @@ def canonicalize_layer_b_owner_transition_facets(
     details_by_public_ref = {
         body_ref_to_public_ref(ref): detail
         for ref, detail in act_details.items()
-        if str(detail.get("owner") or "").strip() in {"proof-method-audit", "pattern-profiling"}
-        and str(detail.get("operation") or "").strip()
-        in {"proof-family-and-carrier-audit", "loaded-label-carrier-audit"}
+        if (
+            str(detail.get("owner") or "").strip() in {"proof-method-audit", "pattern-profiling"}
+            and str(detail.get("operation") or "").strip()
+            in {"proof-family-and-carrier-audit", "loaded-label-carrier-audit"}
+        )
+        or (
+            (canonical_delta_owner(str(detail.get("owner") or "").strip()) or "")
+            == "SOURCE"
+            and str(detail.get("operation") or "").strip()
+            in {"authority-order-repair", "source-order-repair"}
+        )
     }
     if not details_by_public_ref:
         return text, None
@@ -4128,6 +4224,13 @@ def stage03_owner_operation_guidance() -> str:
         "- Source, authority, rank, tribunal, quotation, lineage, or source-order "
         "pressure belongs to SOURCE-family operations when selected; do not "
         "encode that pressure as an M1-P operation.",
+        "- Split SOURCE formal repairs by hidden transition state: use "
+        "`authority-order-repair` for authority, rank, tribunal, judging-office, "
+        "source-sovereignty, public-truth-gate, or source-demotion pressure; use "
+        "`source-order-repair` only for source lineage, quotation chain, "
+        "inherited-claim order, source priority, derivation order, or evidential "
+        "dependency pressure. Do not let authority/tribunal prose pass as "
+        "`source-order-repair`.",
         "- M1-P is the performative self-refutation family. Its callable "
         "operations are `test` and `performative-test`; do not mint "
         "`authority-premise-test`, `authority-test`, or similar mixed "
@@ -4222,6 +4325,15 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
                 "`authority-order-repair`; `source-order-repaired` requires "
                 "`source-order-repair`. Broad `source-order`/`sort` operations may "
                 "use other SOURCE deltas, but they do not prove those compact formal transitions."
+            )
+            lines.append(
+                "- SOURCE formal repair split: authority/rank/tribunal/source-sovereignty "
+                "pressure must use `authority-order-repair` with "
+                "`authority-order-repaired`; source lineage, quotation chain, "
+                "inherited-claim order, source priority, derivation order, or evidential "
+                "dependency pressure must use `source-order-repair` with "
+                "`source-order-repaired`. Do not convert authority-order pressure into "
+                "`source-order-repair` merely because both mention sources."
             )
             lines.append(
                 "- SOURCE pressure-to-delta rule: pressure naming hidden support or "
@@ -6358,6 +6470,39 @@ def run_self_test(root: Path) -> int:
     )
     if registers_alias_burden_types.get("B4") != ["kappa", "Omega"]:
         raise HarnessError("Self-test Stage 02 registers alias lost B4 kappa/Omega typing")
+    legacy_register_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "legacy-register-projection-self-test",
+            "live_registers": [
+                "scriptural-text",
+                "source-order",
+                "predication",
+                "entailment",
+            ],
+            "burden_floor": ["B1", "B2"],
+            "burden_floor_details": [
+                {
+                    "id": "B1",
+                    "pressure": "exclusive predication and person-nature pressure",
+                    "why_live": "the predicate and nature relation are load-bearing",
+                },
+                {
+                    "id": "B2",
+                    "pressure": "source-order and entailment/backread pressure",
+                    "why_live": "the downstream entailment chain is load-bearing",
+                },
+            ],
+        },
+    )
+    legacy_live = stage02_public_live_registers(legacy_register_stage02, legacy_register_stage02["burden_floor"])
+    if legacy_live != ["xi", "Omega", "kappa"]:
+        raise HarnessError(f"Self-test legacy Stage 02 register projection drifted: {legacy_live}")
+    legacy_coverage = stage02_register_coverage(legacy_register_stage02, legacy_register_stage02["burden_floor"])
+    if legacy_coverage.get("kappa") != ["B2"]:
+        raise HarnessError("Self-test legacy Stage 02 entailment pressure did not project to kappa coverage for B2")
     try:
         normalized_stage(
             "stage-02-layer-a-diagnostic-ir",
@@ -6634,6 +6779,8 @@ def run_self_test(root: Path) -> int:
         "Stage 03 owner_id mapping: `PROOF_METHOD` -> `proof-method-audit`",
         "use `proof-method-audit` in `owner_routes[].owner_id`, not `PROOF_METHOD`",
         "Stage 03 owner_id mapping: `PATTERN_PROFILE` -> `pattern-profiling`",
+        "`authority-order-repair` for authority, rank, tribunal",
+        "`source-order-repair` only for source lineage, quotation chain",
     ):
         if required not in stage03_guidance:
             raise HarnessError(f"Self-test Stage 03 owner guidance omitted {required}")
@@ -8789,6 +8936,105 @@ def run_self_test(root: Path) -> int:
     )
     if label_only_event:
         raise HarnessError("Self-test Stage 07 proof/pattern carrier canonicalization upgraded label-only owner prose")
+    source_split_rows = [
+        (
+            "⟦ACT ¹B₁[source-status-repair.source-order-repair] :: "
+            "π=source-lineage-quotation-order :: body_ref=¹B₁ :: "
+            "Δ=Δ¹B:source-order-repaired :: Land(¹B)+⟧"
+        ),
+        (
+            "⟦ACT ¹B₂[authority-order-repair.authority-order-repair] :: "
+            "π=authority-rank-tribunal-pressure :: body_ref=¹B₂ :: "
+            "Δ=Δ¹B:authority-order-repaired :: Land(¹B)+⟧"
+        ),
+    ]
+    source_split_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁", "¹B₂"],
+            "act_rows": source_split_rows,
+            "act_row_details": self_test_act_row_details(
+                source_split_rows,
+                {"¹B₁": "σ", "¹B₂": "σ"},
+            ),
+        },
+    )
+    source_split_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-source-transition-split",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage02, source_split_stage04, normalized_stage05, normalized_stage06],
+        section_id="act-body-source-split",
+        section_role="layer_b_act",
+        section_number=3,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=["¹B₁", "¹B₂"],
+    )
+    for required in (
+        "SOURCE source-order-repair operation: explicitly order source lineage, quotation",
+        "Authority/rank/tribunal/source-sovereignty prose alone is not source-order proof",
+        "SOURCE authority-order-repair operation: explicitly order authority, rank",
+        "Source-lineage/quotation prose alone is not authority-order proof",
+    ):
+        if required not in source_split_prompt:
+            raise HarnessError(f"Self-test Stage 07 SOURCE split prompt omitted: {required}")
+    thin_source_split_layer = "\n".join(
+        [
+            "## Burden 1 / ¹B — source transition split",
+            source_split_rows[0],
+            "",
+            "### ¹B₁[source-status-repair] - source-order-repair over source-lineage-quotation-order",
+            "Target: source-lineage-quotation-order.",
+            "Operation: source-order-repair audits the source-lineage-quotation-order with owner family source-status-repair.",
+            "Result/state-change: source-order-repaired.",
+            "Contribution-to-Land(¹B): This contributes because the source priority and derivation order become explicit.",
+            "TTP Operation Body:",
+            "The source-order repair distinguishes source lineage, quotation chain, inherited-claim order, source priority, derivation order, and evidential dependency before the burden lands.",
+            "",
+            source_split_rows[1],
+            "",
+            "### ¹B₂[authority-order-repair] - authority-order-repair over authority-rank-tribunal-pressure",
+            "Target: authority-rank-tribunal-pressure.",
+            "Operation: authority-order-repair audits the authority-rank-tribunal-pressure with owner family authority-order-repair.",
+            "Result/state-change: authority-order-repaired.",
+            "Contribution-to-Land(¹B): This contributes because the rival public authority can no longer act as a higher court.",
+            "TTP Operation Body:",
+            "The authority-order repair orders authority, rank, tribunal, judging office, source-sovereignty, and public-truth authority before the burden lands.",
+            "Land(¹B): the SOURCE transitions land through distinct source-order and authority-order repairs.",
+            "",
+        ]
+    )
+    canonical_source_split, source_split_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        thin_source_split_layer,
+        [normalized_stage02, source_split_stage04, normalized_stage05, normalized_stage06],
+    )
+    if not source_split_event or not source_split_event.get("canonicalized_owner_transition_facets"):
+        raise HarnessError("Self-test Stage 07 SOURCE split facet canonicalization did not record an event")
+    if "source lineage, source priority, and evidential dependency are explicitly ordered" not in canonical_source_split:
+        raise HarnessError("Self-test Stage 07 SOURCE source-order canonicalization omitted source-order state change")
+    if "authority/rank/tribunal relation is ordered" not in canonical_source_split:
+        raise HarnessError("Self-test Stage 07 SOURCE authority-order canonicalization omitted authority-order state change")
+    authority_only_source_order = thin_source_split_layer.split(source_split_rows[1], 1)[0].replace(
+        "The source-order repair distinguishes source lineage, quotation chain, inherited-claim order, source priority, derivation order, and evidential dependency before the burden lands.",
+        "The source-order repair talks about authority, rank, tribunal, and public-truth authority, but it only repeats authority-order language.",
+    )
+    _, authority_only_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        authority_only_source_order,
+        [normalized_stage02, source_split_stage04, normalized_stage05, normalized_stage06],
+    )
+    if authority_only_event:
+        raise HarnessError("Self-test Stage 07 SOURCE source-order canonicalization upgraded authority-only prose")
     stage07_m8_prompt = release_section_prompt(
         root=root,
         case_name="self-test-m8-operation",
