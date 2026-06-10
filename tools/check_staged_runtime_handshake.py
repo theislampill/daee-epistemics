@@ -1178,6 +1178,119 @@ def dependency_graph_edge_endpoints(edge: Any) -> tuple[str | None, str | None, 
     return None, None, "edge must be a string or object"
 
 
+PER_BURDEN_REREAD_FIELD = "per_burden_reread"
+PER_BURDEN_PRESSURE_KEYS = {
+    "freeze-landed-move",
+    "dependency-tug",
+    "hidden-framework-recoil",
+    "entailment-pressure",
+    "doubt-churn-guard",
+    "reorientation-reminder",
+}
+PER_BURDEN_FINDINGS = {
+    "stable",
+    "genuine-dependent",
+    "partial-real",
+    "hidden-framework-recoil",
+    "doubt-churn",
+    "reorientation",
+}
+PER_BURDEN_ROUTE_RESULT_TYPES = {
+    "held_burden_activation",
+    "generated_burden_instantiation",
+    "no_new_resultant",
+    "loopbreak",
+    "hold_partial",
+}
+PER_BURDEN_ROUTES = {"STOP", "HOLD", "RECURSE", "LoopBreak(∇×T)"}
+PER_BURDEN_PREEMPTION_BASES = {"none", "graph-bound", "commitment-bound", "framework-bound"}
+PER_BURDEN_BOUNDARY_PREFIX = "T_lang does not imply guaranteed uptake"
+PER_BURDEN_REQUIRED_STRING_FIELDS = (
+    "burden_id",
+    "target",
+    "reread",
+    "landed_delta",
+    "route_gradient",
+    "finding",
+    "route_result_type",
+    "mrp_resultant",
+    "graph_delta",
+    "preemption_basis",
+    "route",
+    "boundary",
+)
+
+
+def per_burden_reread_errors(label: str, stage05: dict[str, Any]) -> list[str]:
+    """Validate optional stage-05 per_burden_reread entries when present.
+
+    Each entry mirrors one visible per-burden [Mid-Reread Pressure] block so
+    the public projection can be checked against producer state instead of
+    letting per-burden reread structure live only in machine sidecars. This is
+    shape/vocabulary validation; producer adoption in the staged runner is the
+    follow-up no-model slice.
+    """
+    if PER_BURDEN_REREAD_FIELD not in stage05:
+        return []
+    entries = stage05.get(PER_BURDEN_REREAD_FIELD)
+    prefix = f"{label}: stage-05 {PER_BURDEN_REREAD_FIELD}"
+    if not isinstance(entries, list) or not entries:
+        return [f"{prefix} must be a non-empty list when present"]
+    terminal_states = stage05.get("terminal_states")
+    terminal_ids = set(terminal_states) if isinstance(terminal_states, dict) else set()
+    errors: list[str] = []
+    seen: set[str] = set()
+    for index, entry in enumerate(entries):
+        entry_label = f"{prefix}[{index}]"
+        if not isinstance(entry, dict):
+            errors.append(f"{entry_label} must be an object")
+            continue
+        for field in PER_BURDEN_REQUIRED_STRING_FIELDS:
+            value = entry.get(field)
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"{entry_label}.{field} must be a non-empty string")
+        burden_id = entry.get("burden_id")
+        if isinstance(burden_id, str) and burden_id:
+            if burden_id in seen:
+                errors.append(f"{entry_label}.burden_id duplicates {burden_id}")
+            seen.add(burden_id)
+            if terminal_ids and burden_id not in terminal_ids:
+                errors.append(f"{entry_label}.burden_id {burden_id} must appear in terminal_states")
+        reread = entry.get("reread")
+        if isinstance(reread, str) and "R(H," not in reread:
+            errors.append(f"{entry_label}.reread must invoke R(H,Δ)")
+        landed_delta = entry.get("landed_delta")
+        if isinstance(landed_delta, str) and "Δ" not in landed_delta and "Delta" not in landed_delta:
+            errors.append(f"{entry_label}.landed_delta must name Δ/Delta")
+        if entry.get("finding") not in PER_BURDEN_FINDINGS:
+            errors.append(f"{entry_label}.finding must be a controlled finding token")
+        if entry.get("route_result_type") not in PER_BURDEN_ROUTE_RESULT_TYPES:
+            errors.append(f"{entry_label}.route_result_type must be a controlled MRP route result type")
+        if entry.get("route") not in PER_BURDEN_ROUTES:
+            errors.append(f"{entry_label}.route must be STOP, HOLD, RECURSE, or LoopBreak(∇×T)")
+        if entry.get("preemption_basis") not in PER_BURDEN_PREEMPTION_BASES:
+            errors.append(
+                f"{entry_label}.preemption_basis must be none, graph-bound, commitment-bound, or framework-bound"
+            )
+        boundary = entry.get("boundary")
+        if isinstance(boundary, str) and boundary and not boundary.startswith(PER_BURDEN_BOUNDARY_PREFIX):
+            errors.append(f"{entry_label}.boundary must begin with the T_lang non-uptake boundary")
+        activations = entry.get("pressure_activations")
+        if not isinstance(activations, dict):
+            errors.append(f"{entry_label}.pressure_activations must be an object carrying the six fixed slots")
+            continue
+        missing = sorted(PER_BURDEN_PRESSURE_KEYS - set(activations))
+        extra = sorted(set(activations) - PER_BURDEN_PRESSURE_KEYS)
+        if missing:
+            errors.append(f"{entry_label}.pressure_activations missing slot(s): {missing}")
+        if extra:
+            errors.append(f"{entry_label}.pressure_activations unknown slot(s): {extra}")
+        for key, value in activations.items():
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"{entry_label}.pressure_activations.{key} must be a non-empty string")
+    return errors
+
+
 def stage05_mrp_errors(
     label: str,
     stage02: dict[str, Any] | None,
@@ -1189,6 +1302,7 @@ def stage05_mrp_errors(
     forbidden = sorted(STAGE05_FORBIDDEN_FIELDS & set(stage05))
     if forbidden:
         errors.append(f"{label}: stage-05 must not emit release/final/verifier field(s): {forbidden}")
+    errors.extend(per_burden_reread_errors(label, stage05))
 
     act_burdens = canonical_stage04_act_burdens(stage04)
     known_burdens = (

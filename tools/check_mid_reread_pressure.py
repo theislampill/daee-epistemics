@@ -82,6 +82,7 @@ MRP_BLOCK_RE = re.compile(
     + r"|^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+\b|Closure/Reconstruction Witness\b|"
     r"Closure Audit\b|Restorative Response\b|Closing Formulation\b)|\Z)"
 )
+LAND_GATE_RE = re.compile(r"(?m)^Land\((?P<burden>[¹²³⁴⁵⁶⁷⁸⁹]B)\):")
 STOP_ROUTE_RE = re.compile(r"(?im)^\s*Route\s*:\s*STOP\b")
 POST_STOP_CONTINUATION_RE = re.compile(
     r"(?im)^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+\b|Layer B\b|.*Layer B\s*[-—]\s*Governed Operation Body\b)"
@@ -695,6 +696,34 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
     return errors
 
 
+def per_land_mrp_coverage_errors(path: Path, text: str) -> list[str]:
+    """Require one visible MRP block per line-start landing gate.
+
+    Canonical per-burden MRP visibility: every public `Land(ⁿB):` landing gate
+    must be followed by a `[Mid-Reread Pressure]` heading before the next
+    landing gate (or end of output for the final burden). A single terminal
+    block covering multiple landings is the staged-shape projection-thinning
+    failure class: per-burden reread state then lives only in
+    `field_witness.formal_reread_states[]` while the public surface
+    under-mirrors it.
+    """
+    gates = list(LAND_GATE_RE.finditer(text))
+    if not gates:
+        return []
+    headings = [match.start() for match in re.finditer(MRP_HEADING_RE, text, re.MULTILINE)]
+    errors: list[str] = []
+    for index, gate in enumerate(gates):
+        window_end = gates[index + 1].start() if index + 1 < len(gates) else len(text)
+        if not any(gate.end() <= position < window_end for position in headings):
+            errors.append(
+                f"{path}: Land({gate.group('burden')}) landing gate has no "
+                "[Mid-Reread Pressure] block before the next landing gate; "
+                "per-burden MRP visibility is required and a single terminal "
+                "block must not cover multiple landings"
+            )
+    return errors
+
+
 def check_fixture(path: Path) -> list[str]:
     text = path.read_text(encoding="utf-8", errors="replace")
     errors: list[str] = []
@@ -709,6 +738,7 @@ def check_fixture(path: Path) -> list[str]:
     all_mrps = parse_mrps(text)
     for index, block in enumerate(all_mrps[1:], start=2):
         errors.extend(check_mrp_block(path, text, block, index))
+    errors.extend(per_land_mrp_coverage_errors(path, text))
 
     if not mrp.target or "B" not in mrp.target:
         errors.append(f"{path}: MRP Target must name a burden")
