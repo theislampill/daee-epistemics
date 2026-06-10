@@ -1,7 +1,7 @@
 {
   "schema_version": "v0.4.3.0-retained-proof-corpus-v1",
   "corpus_id": "v0.4.3.0-schema-light-sidecar-backed",
-  "proof_boundary": "Retained governed-output copies that have raw input sidecars, checker-owned collapse certificates, warning-clean certificate-backed Grapher HTML, and row-specific orchestrator evidence. This corpus is an integrity gate, not a release/provenance claim.",
+  "proof_boundary": "Retained governed-output copies that have raw input sidecars, checker-owned collapse certificates, warning-clean certificate-backed Grapher HTML, and row-specific orchestrator evidence. This corpus is an integrity gate, not a release/provenance claim. Row claims are coverage-target-scoped: each claimed row is guarded by the validator_binding recorded on its coverage target and replayed by tools/check_retained_row_claims.py. Corpus-glob validator runs outside a case's claimed rows are advisory context, not claim failures; known current-contract deviations on unclaimed surfaces are recorded in per-case contract_notes.",
   "coverage_targets": [
     {
       "id": "b1-graph-completeness-retained-breadth",
@@ -24,7 +24,13 @@
         "gate88-tst-lillard",
         "gate88-khaybar",
         "gate88-secularism"
-      ]
+      ],
+      "validator_binding": {
+        "kind": "graph-keys",
+        "keys": [
+          "ALL"
+        ]
+      }
     },
     {
       "id": "b2-collapse-certificate-retained-breadth",
@@ -47,7 +53,11 @@
         "gate88-tst-lillard",
         "gate88-khaybar",
         "gate88-secularism"
-      ]
+      ],
+      "validator_binding": {
+        "kind": "corpus-integrity",
+        "note": "B.2 certificate schema, collapse flags, and input fingerprint binding are enforced per case by tools/check_retained_proof_corpus.py."
+      }
     },
     {
       "id": "b3-output-grapher-retained-breadth",
@@ -80,7 +90,11 @@
         "gate88-tst-lillard",
         "gate88-khaybar",
         "gate88-secularism"
-      ]
+      ],
+      "validator_binding": {
+        "kind": "corpus-integrity",
+        "note": "B.3 warning-clean reconstructible Grapher verdicts are enforced per case by tools/check_retained_proof_corpus.py."
+      }
     },
     {
       "id": "b4-input-fingerprint-retained-breadth",
@@ -113,7 +127,11 @@
         "gate88-tst-lillard",
         "gate88-khaybar",
         "gate88-secularism"
-      ]
+      ],
+      "validator_binding": {
+        "kind": "corpus-integrity",
+        "note": "B.4 raw-input fingerprint binding is enforced per case by tools/check_retained_proof_corpus.py."
+      }
     },
     {
       "id": "b5-nla-decode-retained-breadth",
@@ -140,7 +158,14 @@
         "gate88-tst-lillard",
         "gate88-khaybar",
         "gate88-secularism"
-      ]
+      ],
+      "validator_binding": {
+        "kind": "outputs-checker",
+        "tool": "tools/check_nla_decode_semantic_faithfulness.py",
+        "args": [
+          "--outputs"
+        ]
+      }
     },
     {
       "id": "b5-4-retained-proof-mode-full-ir",
@@ -156,7 +181,11 @@
         "gate88-tst-lillard",
         "gate88-khaybar",
         "gate88-secularism"
-      ]
+      ],
+      "validator_binding": {
+        "kind": "corpus-integrity",
+        "note": "B.5.4 full-IR projection sidecars are schema- and binding-validated per case by tools/check_retained_proof_corpus.py."
+      }
     },
     {
       "id": "tlang-response-closure-retained-breadth",
@@ -183,7 +212,14 @@
         "gate88-tst-lillard",
         "gate88-khaybar",
         "gate88-secularism"
-      ]
+      ],
+      "validator_binding": {
+        "kind": "outputs-checker",
+        "tool": "tools/check_tlang_response_closure.py",
+        "args": [
+          "--outputs"
+        ]
+      }
     },
     {
       "id": "c5-named-restoration-recoil-subtypes",
@@ -197,7 +233,11 @@
         "authority-return-recoil",
         "uptake-guarantee-recoil",
         "worship-frame-recoil"
-      ]
+      ],
+      "validator_binding": {
+        "kind": "documented-evidence",
+        "evidence": "docs/audits/v0.4.3.0-open-work-ledger.md C.5 named restoration-recoil subtype rows; tools/check_formal_reread_state_semantics.py passes corpus-wide as advisory support."
+      }
     },
     {
       "id": "c6-two-track-retained-breadth",
@@ -212,7 +252,13 @@
         "authority-return-recoil",
         "uptake-guarantee-recoil",
         "worship-frame-recoil"
-      ]
+      ],
+      "validator_binding": {
+        "kind": "graph-keys",
+        "keys": [
+          "two_track_mrp_closure"
+        ]
+      }
     },
     {
       "id": "c7-divergence-curl-retained-breadth",
@@ -235,7 +281,13 @@
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
         "therapy-moral-tribunal"
-      ]
+      ],
+      "validator_binding": {
+        "kind": "graph-keys",
+        "keys": [
+          "divergence_curl_generated_burden_rules"
+        ]
+      }
     },
     {
       "id": "d2-closing-formulation-retained-breadth",
@@ -252,7 +304,14 @@
         "exact-trinitarian-j173",
         "trinitarian-j173-repair-v6",
         "therapy-moral-tribunal"
-      ]
+      ],
+      "validator_binding": {
+        "kind": "outputs-checker",
+        "tool": "tools/check_manual_smoke_render_contract.py",
+        "args": [
+          "--outputs"
+        ]
+      }
     },
     {
       "id": "d3-mixed-concealment-retained-breadth",
@@ -266,7 +325,133 @@
         "dad8-science-only-c8",
         "academic-prestige-authority",
         "therapy-moral-tribunal"
-      ]
+      ],
+      "validator_binding": {
+        "kind": "outputs-checker",
+        "tool": "tools/check_concealment_mode.py",
+        "args": [
+          "--outputs"
+        ]
+      }
+    },
+    {
+      "id": "a9-delta-vocabulary-retained-anchor",
+      "description": "A.9 controlled delta-result vocabulary anchor case validated through owner-activation-ordering plan discipline.",
+      "rows": [
+        "A.9"
+      ],
+      "case_ids": [
+        "a9-science-source"
+      ],
+      "validator_binding": {
+        "kind": "outputs-checker",
+        "tool": "tools/check_owner_activation_ordering.py",
+        "args": [
+          "--require-plan",
+          "--outputs"
+        ]
+      }
+    },
+    {
+      "id": "c1-primary-root-verification-retained-breadth",
+      "description": "C.1 primary-claim resolution verified via the graph-completeness primary_root_verification condition.",
+      "rows": [
+        "C.1"
+      ],
+      "case_ids": [
+        "cd9a-mixed-concealment",
+        "mixed-family-authority",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ],
+      "validator_binding": {
+        "kind": "graph-keys",
+        "keys": [
+          "primary_root_verification"
+        ]
+      }
+    },
+    {
+      "id": "c2-typed-escape-route-retained-breadth",
+      "description": "C.2 typed escape-route accounting verified via the graph-completeness typed_escape_route_accounting condition.",
+      "rows": [
+        "C.2"
+      ],
+      "case_ids": [
+        "mixed-family-authority",
+        "dad8-science-only-c8",
+        "dad8-testimony-c8",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ],
+      "validator_binding": {
+        "kind": "graph-keys",
+        "keys": [
+          "typed_escape_route_accounting"
+        ]
+      }
+    },
+    {
+      "id": "c3-formalism-emergent-closure-retained-breadth",
+      "description": "C.3 formalism-emergent escape-route closure verified via the graph-completeness formalism_emergent_escape_route_closure condition.",
+      "rows": [
+        "C.3"
+      ],
+      "case_ids": [
+        "mixed-family-authority",
+        "dad8-science-only-c8",
+        "dad8-testimony-c8",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ],
+      "validator_binding": {
+        "kind": "graph-keys",
+        "keys": [
+          "formalism_emergent_escape_route_closure"
+        ]
+      }
+    },
+    {
+      "id": "c8-no-new-resultant-retained-breadth",
+      "description": "C.8 structured no_new_resultant terminal proof verified via the graph-completeness no_new_resultant_terminal_proof condition.",
+      "rows": [
+        "C.8"
+      ],
+      "case_ids": [
+        "source-order-tlang",
+        "restoration-track",
+        "fitrah-restoration-recoil",
+        "authority-return-recoil",
+        "uptake-guarantee-recoil",
+        "worship-frame-recoil",
+        "mixed-family-authority",
+        "dad8-science-only-c8",
+        "dad8-testimony-c8",
+        "academic-prestige-authority",
+        "exact-tst-lillard",
+        "exact-secularism",
+        "exact-trinitarian-j173",
+        "trinitarian-j173-repair-v6",
+        "therapy-moral-tribunal"
+      ],
+      "validator_binding": {
+        "kind": "graph-keys",
+        "keys": [
+          "no_new_resultant_terminal_proof"
+        ]
+      }
     }
   ],
   "cases": [
@@ -308,7 +493,6 @@
         "B.2",
         "B.3",
         "B.4",
-        "C.4",
         "C.6",
         "C.7",
         "C.8",
@@ -325,7 +509,10 @@
         "output": "64613192AC95048C1183E5B228A471A6A905F827EFDF1B1D7B2EF85105A5D44F",
         "collapse_certificate": "6B1F43F2C8FEE1519A97D93DCAB7B8B9928F98DD1ABEDE60D287EB99EEEE4443",
         "grapher_html": "1E27039CF8ABD3DD8ACC79336CEB8A533B914E5CB11E4EE71BD975109A3B8AFB"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: C.4 narrowed from current rows to historical evidence. The C.4 visible-output-form claim was valid at the 2026-05-31 promotion, but the SOURCE typed-transition render contract (c760206, 2026-06-05) rejects the ¹B₁ SOURCE delta/operation linkage (check_manual_smoke_render_contract FAIL), so the visible-form row is no longer current proof. Remaining rows verify under bound validators (class 7). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "restoration-track",
@@ -510,7 +697,10 @@
         "output": "0A55BA4C2F2C7FC4C40BB148B86B49AC8E57B8A318BA9C42B9ABE5B0B7EE4D60",
         "collapse_certificate": "AC74BBE97E3FBE5A6E53483564676E2E0CA30A28E8EE7744F8F26950D48F8169",
         "grapher_html": "CF87BE1E072FECE9B96B5B5C126FABCEBC02B6AB0A1D024FAB0194507686288C"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: graph two_track_mrp_closure (C.6, unclaimed here) fails under the despecialized checker (76ca709, 2026-06-04); recorded PASS at the 2026-05-31 18-case boundary. Claimed graph keys verify (class 7 context). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "mixed-family-authority",
@@ -539,7 +729,10 @@
         "output": "0F9C5C901E529D98428B55A07720950A6A81B72263DFB8871E69D1948BB824CA",
         "collapse_certificate": "AD8A89DF6B158021CC2F2DEC6E880DD6FBBB90C254C6452462EF2CFCE4753830",
         "grapher_html": "75A05C01A6A61A204DFA56C2015394887422DE5F9E903C6D9DA6CCAE8D463B8E"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: graph two_track_mrp_closure (C.6, unclaimed here) fails under the despecialized checker (76ca709, 2026-06-04); recorded PASS at the 2026-05-31 18-case boundary. Claimed graph keys verify (class 7 context). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "dad8-science-only-c8",
@@ -563,7 +756,10 @@
         "output": "0F3DCB704A08D3392FD13111BFD2E0F589E008053AD40AD83D7B5BF702DD7448",
         "collapse_certificate": "15296CC2233A20876F6A370ED8BAFABFC168F25EFD777DE876FC2CA980C58B0E",
         "grapher_html": "C26A5EBA4845BD528373F41BDAF7C0944129B54FBE0F29CE9A5C4F80BA3663E9"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: live register xi lacks warrant burden-floor coverage under current check_field_witness_convergence (rule hardened after 2026-05-31 promotion); unclaimed surface, claimed rows verify (class 7 context). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "dad8-testimony-c8",
@@ -586,7 +782,11 @@
         "output": "5F07FDEAA615D60646443789599E326819EC105508458D7BCB1AEAD7FB15806E",
         "collapse_certificate": "0C012CBD9C1E7456DD8C0F33AFB2B46A4A5F9CC3FEF6809CA7ADBD1BB627F343",
         "grapher_html": "51341BFB73AF0F2FAD6229C061AAEC806C879BD45C3335E5E71709F46B21A791"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: live register xi lacks warrant burden-floor coverage under current check_field_witness_convergence (rule hardened after 2026-05-31 promotion); unclaimed surface, claimed rows verify (class 7 context). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md.",
+        "2026-06-10 reconciliation: SOURCE delta_result 'source-order-repaired' lacks the operation 'source-order-repair' linkage required since c760206 (2026-06-05); check_manual_smoke_render_contract and check_mrp_generated_burden FAIL on unclaimed surfaces (class 7 context). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "academic-prestige-authority",
@@ -615,7 +815,10 @@
         "output": "3084D879B2CCEDE49039B8EB44FD00E765C1C12A12C117AE61118249191DBF82",
         "collapse_certificate": "AAA16196C8E8D10136DF080A4211CC2CF6A6AF089DA88537BDD4E5F1AC7A9C63",
         "grapher_html": "9E818F357DE27AA82217917D0C026C3622B70AB1F49086E94EA16A8025080DE5"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: graph two_track_mrp_closure (C.6, unclaimed here) fails under the despecialized checker (76ca709, 2026-06-04); recorded PASS at the 2026-05-31 18-case boundary. Claimed graph keys verify (class 7 context). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "exact-tst-lillard",
@@ -643,7 +846,10 @@
         "output": "3ABD636EA47AF234276EA55709B07551E4FAA8B5AE453F6DE42B1016BDE41601",
         "collapse_certificate": "3E10B8377DC1215770027AFBF89CBD41B5D82EE1BCC8A474D84775C676D91BD8",
         "grapher_html": "6CF08961F96E1EAB9E9C418625F96D172A5CD4535DD9E5AA211B1584C2D844D5"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: graph two_track_mrp_closure (C.6, unclaimed here) fails under the despecialized checker (76ca709, 2026-06-04); recorded PASS at the 2026-05-31 18-case boundary. Claimed graph keys verify (class 7 context). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "exact-secularism",
@@ -671,7 +877,10 @@
         "output": "CB7A0B40E72018B8BFF90589B62824D98CA5A06BC2F629CB6661A6EC858F7430",
         "collapse_certificate": "A438C98E912BE0D136F703695ADA87071986B444F8C8BEF50824E02305DF98FB",
         "grapher_html": "801562D067680724FEDD6A46B0CEE3D5879C39AC1A69F239477F314B29573D33"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: graph two_track_mrp_closure (C.6, unclaimed here) fails under the despecialized checker (76ca709, 2026-06-04); recorded PASS at the 2026-05-31 18-case boundary. Claimed graph keys verify (class 7 context). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "exact-trinitarian-j173",
@@ -699,7 +908,10 @@
         "output": "AAB57A7A705C32B329C40F6F6469CDC28D000DD495A0CD3CFD838EDFF2E29B9E",
         "collapse_certificate": "A7BB89874CC6A8053000B70B29E6C2431852A4930AF3C818A153192A11AB5346",
         "grapher_html": "6DC34896AB72D788B780CE8B96218E4FC24CFB82D6F76430F2BC14FB1D887B98"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: graph two_track_mrp_closure (C.6, unclaimed here) fails under the despecialized checker (76ca709, 2026-06-04); recorded PASS at the 2026-05-31 18-case boundary. Claimed graph keys verify (class 7 context). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "trinitarian-j173-repair-v6",
@@ -727,7 +939,10 @@
         "output": "B3835FB4E4E5C0562ECA90AB7F2AB88EA9B01D0688E3FEF697AD068E0BFC678A",
         "collapse_certificate": "DDFA44AE275DC85427BA33B206D62733BA46DD9036E6816144126642B74988D0",
         "grapher_html": "41C5811A691A5C1843EF38C54993F87FE34691E4ACED0888DA75D75BD9F83FDE"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: graph two_track_mrp_closure (C.6, unclaimed here) fails under the despecialized checker (76ca709, 2026-06-04); recorded PASS at the 2026-05-31 18-case boundary. Claimed graph keys verify (class 7 context). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "therapy-moral-tribunal",
@@ -756,7 +971,10 @@
         "output": "02C259F14F7DE76605BFB24FC51C3C12C22C90C1428BAD214EDDD325B3C70AE8",
         "collapse_certificate": "139861D46CE83D1C844CA0CFCB5111A57043D4E6C43FCFB0F684FD66880A11C6",
         "grapher_html": "8F8EE8110B390EB30A60DB8F9759355EC414209585EB9D246D5CA267BDBB6671"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: graph two_track_mrp_closure (C.6, unclaimed here) fails under the despecialized checker (76ca709, 2026-06-04); recorded PASS at the 2026-05-31 18-case boundary. Claimed graph keys verify (class 7 context). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "staged-a9-science-source-proofbundle",
@@ -815,7 +1033,11 @@
         "path": "cases/staged-secularism-proofbundle-pilot-v17/b5-full-ir-projection-sidecar.json",
         "sha256": "C0BA661540536CCB085019E4D87E48EC2A15448D71F7B2CCD6D0659DA66E1ABA",
         "builder": "tools/build_b5_full_ir_projection_sidecar.py"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: staged-shape output fails canonical per-burden [Mid-Reread Pressure] visibility (check_mid_reread_pressure) on an unclaimed surface; claimed rows verify under bound validators. Current D3 producer seam (North Star class 1). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md.",
+        "2026-06-10 reconciliation: ACT pressure-field dialect defect at output line 95 (`target=` where `π=` is required; check_act_surface_syntax) and check_public_burden_grouping FAIL on unclaimed surfaces; promoted 2026-06-03 before the 2026-06-04/06 contract hardening and superseded for B-row breadth by gate88-secularism. Claimed rows verify under bound validators (class 7 context). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "gate88-trinitarian-j173",
@@ -845,7 +1067,10 @@
         "path": "cases/gate88-trinitarian-j173/b5-full-ir-projection-sidecar.json",
         "sha256": "9E2069C72DF660D2A26AA4BB4C7583EF4D782A3D228610A67C724C03D3514BBE",
         "builder": "tools/build_b5_full_ir_projection_sidecar.py"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: staged-shape output fails canonical per-burden [Mid-Reread Pressure] visibility (check_mid_reread_pressure) on an unclaimed surface; claimed rows verify under bound validators. Current D3 producer seam (North Star class 1). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "gate88-tst-lillard",
@@ -875,7 +1100,10 @@
         "path": "cases/gate88-tst-lillard/b5-full-ir-projection-sidecar.json",
         "sha256": "D0958DC16ECC91F934915EEE04389000D6C5BC3936B8E90F4DFC7865C65D9F03",
         "builder": "tools/build_b5_full_ir_projection_sidecar.py"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: staged-shape output fails canonical per-burden [Mid-Reread Pressure] visibility (check_mid_reread_pressure) on an unclaimed surface; claimed rows verify under bound validators. Current D3 producer seam (North Star class 1). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "gate88-khaybar",
@@ -905,7 +1133,10 @@
         "path": "cases/gate88-khaybar/b5-full-ir-projection-sidecar.json",
         "sha256": "F2BF15F162906F09D7F0478763D7440CFFD51A273003A8D8C5FA5E5AE1CDEDB1",
         "builder": "tools/build_b5_full_ir_projection_sidecar.py"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: staged-shape output fails canonical per-burden [Mid-Reread Pressure] visibility (check_mid_reread_pressure) on an unclaimed surface; claimed rows verify under bound validators. Current D3 producer seam (North Star class 1). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     },
     {
       "id": "gate88-secularism",
@@ -935,7 +1166,10 @@
         "path": "cases/gate88-secularism/b5-full-ir-projection-sidecar.json",
         "sha256": "E849F4F5CF364C10708BF3546E1227F4B45ECCC1C06571605B96EF2192074D75",
         "builder": "tools/build_b5_full_ir_projection_sidecar.py"
-      }
+      },
+      "contract_notes": [
+        "2026-06-10 reconciliation: staged-shape output fails canonical per-burden [Mid-Reread Pressure] visibility (check_mid_reread_pressure) on an unclaimed surface; claimed rows verify under bound validators. Current D3 producer seam (North Star class 1). See docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md."
+      ]
     }
   ]
 }

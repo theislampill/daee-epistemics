@@ -54,11 +54,29 @@ REQUIRED_CASE_FIELDS = {
 ALLOWED_CASE_FIELDS = set(REQUIRED_CASE_FIELDS)
 B5_FULL_IR_SIDECAR_FIELD = "b5_full_ir_projection_sidecar"
 ALLOWED_CASE_FIELDS.add(B5_FULL_IR_SIDECAR_FIELD)
+CONTRACT_NOTES_FIELD = "contract_notes"
+ALLOWED_CASE_FIELDS.add(CONTRACT_NOTES_FIELD)
 REQUIRED_ROOT_FIELDS = {"schema_version", "corpus_id", "proof_boundary", "cases"}
 ALLOWED_ROOT_FIELDS = set(REQUIRED_ROOT_FIELDS) | {"coverage_targets"}
 CANONICAL_SIDECAR_MANIFEST = FIXTURE_ROOT / "valid" / "sidecar-backed" / "manifest.json"
 REQUIRED_COVERAGE_TARGET_FIELDS = {"id", "description", "rows", "case_ids"}
 ALLOWED_COVERAGE_TARGET_FIELDS = set(REQUIRED_COVERAGE_TARGET_FIELDS)
+VALIDATOR_BINDING_FIELD = "validator_binding"
+ALLOWED_COVERAGE_TARGET_FIELDS.add(VALIDATOR_BINDING_FIELD)
+VALIDATOR_BINDING_KINDS = {
+    "graph-keys",
+    "outputs-checker",
+    "corpus-integrity",
+    "documented-evidence",
+}
+VALIDATOR_BINDING_COMMON_FIELDS = {"kind"}
+VALIDATOR_BINDING_KIND_FIELDS = {
+    "graph-keys": {"keys"},
+    "outputs-checker": {"tool", "args"},
+    "corpus-integrity": {"note"},
+    "documented-evidence": {"evidence"},
+}
+GRAPH_KEY_RE = re.compile(r"^(?:ALL|[a-z0-9_]+)$")
 REQUIRED_CANONICAL_COVERAGE_TARGETS = {
     "b1-graph-completeness-retained-breadth": "B.1",
     "b2-collapse-certificate-retained-breadth": "B.2",
@@ -202,6 +220,14 @@ def case_errors(manifest_path: Path, case: Any, index: int) -> list[str]:
         invalid_rows = [row for row in rows if not ROW_ID_RE.fullmatch(row)]
         if invalid_rows:
             errors.append(f"{prefix}.rows: invalid row ids {invalid_rows}")
+
+    if CONTRACT_NOTES_FIELD in case:
+        notes = string_list(case.get(CONTRACT_NOTES_FIELD))
+        if notes is None:
+            errors.append(
+                f"{prefix}.{CONTRACT_NOTES_FIELD}: must be a non-empty array of"
+                " non-empty strings when present"
+            )
 
     skill_sha = case.get("generated_skill_sha")
     if not isinstance(skill_sha, str) or not SHA256_RE.match(skill_sha):
@@ -570,6 +596,49 @@ def manifest_errors(path: Path) -> list[str]:
     return errors
 
 
+def validator_binding_errors(binding: Any, prefix: str) -> list[str]:
+    label = f"{prefix}.{VALIDATOR_BINDING_FIELD}"
+    errors: list[str] = []
+    if not isinstance(binding, dict):
+        return [f"{label}: must be an object when present"]
+    kind = binding.get("kind")
+    if kind not in VALIDATOR_BINDING_KINDS:
+        errors.append(f"{label}.kind: must be one of {sorted(VALIDATOR_BINDING_KINDS)}")
+        return errors
+    allowed = VALIDATOR_BINDING_COMMON_FIELDS | VALIDATOR_BINDING_KIND_FIELDS[kind]
+    extra = sorted(set(binding) - allowed)
+    if extra:
+        errors.append(f"{label}: unexpected fields {extra} for kind {kind}")
+    if kind == "graph-keys":
+        keys = string_list(binding.get("keys"))
+        if keys is None:
+            errors.append(f"{label}.keys: must be a non-empty array of strings")
+        else:
+            invalid = [key for key in keys if not GRAPH_KEY_RE.match(key)]
+            if invalid:
+                errors.append(f"{label}.keys: invalid graph condition keys {invalid}")
+            if "ALL" in keys and len(keys) != 1:
+                errors.append(f"{label}.keys: ALL must be the only key when used")
+    elif kind == "outputs-checker":
+        tool = binding.get("tool")
+        if not isinstance(tool, str) or not tool.startswith("tools/"):
+            errors.append(f"{label}.tool: must be a tools/-relative checker path")
+        elif not (ROOT / tool).exists():
+            errors.append(f"{label}.tool: checker not found: {tool}")
+        args = binding.get("args")
+        if args is not None and string_list(args) is None:
+            errors.append(f"{label}.args: must be a non-empty array of strings when present")
+    elif kind == "corpus-integrity":
+        note = binding.get("note")
+        if note is not None and (not isinstance(note, str) or not note):
+            errors.append(f"{label}.note: must be a non-empty string when present")
+    elif kind == "documented-evidence":
+        evidence = binding.get("evidence")
+        if not isinstance(evidence, str) or not evidence:
+            errors.append(f"{label}.evidence: must name the documented evidence surface")
+    return errors
+
+
 def coverage_target_errors(manifest_path: Path, payload: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     targets = payload.get("coverage_targets")
@@ -611,6 +680,9 @@ def coverage_target_errors(manifest_path: Path, payload: dict[str, Any]) -> list
 
         if not isinstance(target.get("description"), str) or not target.get("description"):
             errors.append(f"{prefix}.description: must be a non-empty string")
+
+        if VALIDATOR_BINDING_FIELD in target:
+            errors.extend(validator_binding_errors(target.get(VALIDATOR_BINDING_FIELD), prefix))
 
         rows = string_list(target.get("rows"))
         if rows is None:
