@@ -5,8 +5,9 @@
 This repository has a canonical atomized source tree and a generated runtime tree.
 
 - `atomics/skill/` is the canonical editable source.
-- `skill/` is generated local/CI compiled runtime output; it is ignored and not
-  tracked as source.
+- `skill/` is generated local/CI compiled runtime output. `skill/SKILL.md` is
+  force-tracked generated runtime; other `skill/**` paths remain ignored/generated.
+  The tracked copy is rebuilt from atomics and gate-checked in CI; never hand-edit it.
 - `tools/` contains compiler/checker scripts.
 - `tests/routing-fixtures/` contains static routing parity fixtures.
 - `docs/` contains architecture, audit, and workflow notes.
@@ -380,7 +381,9 @@ nearest repeated sentence.
 Repeated defect classes require Poka-yoke: add or strengthen a checker, fixture, release gate,
 or provenance check. Typical recurrence blockers are symbol inventory + control-effect checks,
 Natural Language Autoencoder AV/AR fixtures, release-claim integrity audits, Complementary SSOT
-parity checks, and `git ls-files skill == 0` after generated-runtime migration.
+parity checks, and the tracked-generated-runtime invariant: `git ls-files skill`
+returns exactly `skill/SKILL.md`, with CI failing on a stale tracked copy via
+`git diff --exit-code -- skill/SKILL.md` after rebuild.
 
 Smoke failure triage must use genchi genbutsu, gemba, andon, 5 Whys, and poka-yoke:
 inspect the real local artifacts, package, checker output, and canonical owners; work at
@@ -452,7 +455,8 @@ outcome, classify it as docs-only or ornamental risk.
   `∇×κ unresolved`, and `R(H,Δ): RECURSE` when they affect release, reread, or closure.
   It must not dump long algebraic/NLA/∇ exposition unless formalism/audit visibility is requested.
 - Source/runtime layout: `atomics/skill/**` is tracked canonical source; `skill/**` is
-  ignored generated runtime output; CI/local builds compile atomics into generated `skill/**`;
+  generated runtime output (ignored except the force-tracked `skill/SKILL.md`
+  freshness-gate surface); CI/local builds compile atomics into generated `skill/**`;
   the release `.skill` is the smaller compiled runtime artifact; raw atomics are not packaged
   as the `.skill` runtime.
 
@@ -1118,7 +1122,9 @@ __pycache__/
 
 Package the contents of `skill/`, not the `skill/` directory itself.
 `skill/` must be produced from tracked atomics by local or CI build before
-packaging; do not stage it as repository source.
+packaging; do not stage it as repository source. Exception: `skill/SKILL.md` is
+the force-tracked generated runtime surface kept fresh by the CI staleness gate;
+all other `skill/**` paths stay unstaged.
 Local Hermes helpers, temporary owner lists, raw campaign artifacts, local absolute paths, and
 machine-specific files are not package content.
 The `SKILL.md` frontmatter `description` must be 1024 characters or fewer; keep metadata concise

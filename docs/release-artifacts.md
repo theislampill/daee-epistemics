@@ -16,12 +16,20 @@ Copy-Item build\daee-epistemics-v0.4.2.0.skill.zip build\daee-epistemics-v0.4.2.
 
 The package script archives the canonical packageable contents selected from
 generated local/CI `skill/`, not raw atomics, not the repository root, and not
-the top-level `skill/` directory. Generated `skill/` is ignored and not tracked
-as source. The build writes a local `.skill.zip` payload; the published GitHub
+the top-level `skill/` directory. Generated `skill/` is not repository source:
+`skill/SKILL.md` is force-tracked as the generated-runtime freshness-gate surface
+(CI fails on a stale tracked copy via `git diff --exit-code -- skill/SKILL.md`
+after rebuild), and all other `skill/**` paths remain ignored/generated. The build writes a local `.skill.zip` payload; the published GitHub
 Release asset is the same checked payload renamed to `.skill`. Do not re-zip
 the repository root. `package.ps1` calls the manifest-backed Python packager,
 validates generated package shape, excludes repo/dev harness roots, and writes
 slash-safe archive entries.
+
+Tracking-status note for current claims: since the v0.4.3.0 source boundary
+(`9a57961395643a1b56a1c39fcb8026d17d1ca6d7`), `git ls-files skill` returns
+exactly `skill/SKILL.md`. Historical release-status rows below retain their
+original wording as historical facts and are not retroactively rewritten; see
+`docs/audits/v0.4.4.x-tracked-generated-skill-md-policy.md`.
 
 ## Artifact Evidence
 

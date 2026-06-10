@@ -60,6 +60,7 @@ sweep moves them.
 | `docs/audits/v0.4.2.0-underfixtured-module-coverage.md` | ACTIVE IMPLEMENTATION EVIDENCE | Under-fixtured module appendix and follow-up evidence. |
 | `docs/audits/v0.4.2.0-fixture-corpus-mining-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Fixture mining record and implemented fixture table. |
 | `docs/audits/v0.4.2.0-stale-surface-purge-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Stale-surface purge record and proof-boundary classifications. |
+| `docs/audits/v0.4.4.x-tracked-generated-skill-md-policy.md` | ACTIVE CURRENT TRUTH | Tracked generated `skill/SKILL.md` policy, CI staleness gate, and source/runtime wording reconciliation. |
 
 ## Current Docs/Index Evidence
 
