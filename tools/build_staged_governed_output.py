@@ -1353,6 +1353,164 @@ def land_gate_burdens(text: str) -> list[str]:
     ]
 
 
+PER_BURDEN_REREAD_NORMALIZE_RE = re.compile(r"R\(H,\s*Delta\)")
+
+
+def per_burden_block_field_parity_errors(label: str, block: Any, entry: dict[str, Any]) -> list[str]:
+    """Compare one parsed visible [Mid-Reread Pressure] block to one record.
+
+    Visible values must equal the per_burden_reread record verbatim (graph
+    delta compared through the canonical public rendering; R(H,Delta) spelling
+    normalized to R(H,Δ)). A valid-shaped block that diverges from the hidden
+    record is a parity failure, never a pass.
+    """
+    errors: list[str] = []
+
+    def expected(field_name: str) -> str:
+        return str(entry.get(field_name) or "")
+
+    def mismatch(display: str, visible: Any, wanted: str) -> None:
+        errors.append(
+            f"{label} {display} diverges from per_burden_reread: visible {str(visible)!r} != record {wanted!r}"
+        )
+
+    def normalize_reread(value: Any) -> str:
+        return PER_BURDEN_REREAD_NORMALIZE_RE.sub("R(H,Δ)", str(value or "").strip())
+
+    if block.target != expected("target"):
+        mismatch("Target", block.target, expected("target"))
+    if normalize_reread(block.reread) != normalize_reread(expected("reread")):
+        mismatch("R(H,Δ) reread", block.reread, expected("reread"))
+    if block.landed_delta != expected("landed_delta"):
+        mismatch("Landed delta", block.landed_delta, expected("landed_delta"))
+    activations = entry.get("pressure_activations") or {}
+    for key in PER_BURDEN_PRESSURE_KEY_ORDER:
+        wanted = str(activations.get(key) or "")
+        visible = block.pressure_lines.get(key)
+        if visible is None:
+            errors.append(f"{label} pressure slot {key} is missing from the visible block")
+        elif visible != wanted:
+            mismatch(f"pressure slot {key}", visible, wanted)
+    expected_divergence = per_burden_diag_body(expected("divergence"), PER_BURDEN_DIVERGENCE_PREFIX_RE)
+    expected_curl = per_burden_diag_body(expected("curl"), PER_BURDEN_CURL_PREFIX_RE)
+    if str(block.divergence or "").strip() != expected_divergence:
+        mismatch("field diagnostics ∇·B", block.divergence, expected_divergence)
+    if str(block.curl or "").strip() != expected_curl:
+        mismatch("field diagnostics ∇×κ", block.curl, expected_curl)
+    if block.route_gradient != expected("route_gradient"):
+        mismatch("Route-gradient", block.route_gradient, expected("route_gradient"))
+    if block.finding != expected("finding"):
+        mismatch("Finding", block.finding, expected("finding"))
+    if block.route_result_type != expected("route_result_type"):
+        mismatch("MRP route result type", block.route_result_type, expected("route_result_type"))
+    if block.mrp_resultant != expected("mrp_resultant"):
+        mismatch("MRP resultant", block.mrp_resultant, expected("mrp_resultant"))
+    expected_graph = public_per_burden_graph_value(expected("graph_delta"))
+    if block.graph_delta != expected_graph:
+        mismatch("Graph delta", block.graph_delta, expected_graph)
+    if block.preemption_basis != expected("preemption_basis"):
+        mismatch("Pre-emption basis", block.preemption_basis, expected("preemption_basis"))
+    if block.route != expected("route"):
+        mismatch("Route", block.route, expected("route"))
+    if block.boundary != expected("boundary"):
+        mismatch("Boundary", block.boundary, expected("boundary"))
+    return errors
+
+
+def visible_block_parity_errors(
+    output_text: str,
+    per_burden_reread: Any,
+    *,
+    label: str = "mrp record-surface parity",
+) -> list[str]:
+    """Require every visible [Mid-Reread Pressure] block to mirror its record.
+
+    This is the single-source record↔surface tooth: one block per line-start
+    superscript Land(ⁿB): landing window, every block field equal to the
+    stage-05 per_burden_reread record for that burden, and no unmatched
+    blocks, records, or gates in either direction. Block parsing reuses
+    tools/check_mid_reread_pressure.py so parse semantics cannot fork.
+    """
+    import check_mid_reread_pressure as mrp_checker
+
+    if (
+        not isinstance(per_burden_reread, list)
+        or not per_burden_reread
+        or not all(isinstance(entry, dict) for entry in per_burden_reread)
+    ):
+        return [f"{label}: stage-05 per_burden_reread records are required for record-surface parity"]
+    errors: list[str] = []
+    entry_by_burden: dict[str, dict[str, Any]] = {}
+    for entry in per_burden_reread:
+        burden_id = str(entry.get("burden_id") or "")
+        if not burden_id:
+            errors.append(f"{label}: per_burden_reread entry without burden_id")
+            continue
+        if burden_id in entry_by_burden:
+            errors.append(f"{label}: duplicate per_burden_reread entry for {burden_id}")
+        entry_by_burden[burden_id] = entry
+
+    gates = list(LAND_GATE_LINE_RE.finditer(output_text))
+    gate_burdens = [
+        f"B{match.group('burden')[:-1].translate(SUP_DIGITS)}" for match in gates
+    ]
+    duplicate_gates = sorted({burden for burden in gate_burdens if gate_burdens.count(burden) > 1})
+    if duplicate_gates:
+        errors.append(f"{label}: duplicate Land(ⁿB): landing gate(s) for {duplicate_gates}")
+    gateless_records = sorted(set(entry_by_burden) - set(gate_burdens))
+    if gateless_records:
+        errors.append(
+            f"{label}: per_burden_reread record(s) {gateless_records} have no visible Land(ⁿB): landing gate"
+        )
+    recordless_gates = sorted({burden for burden in gate_burdens if burden not in entry_by_burden})
+    if recordless_gates:
+        errors.append(
+            f"{label}: Land(ⁿB): landing gate(s) {recordless_gates} have no per_burden_reread record"
+        )
+
+    headings = [
+        match.start()
+        for match in re.finditer(mrp_checker.MRP_HEADING_RE, output_text, re.MULTILINE)
+    ]
+    blocks = mrp_checker.parse_mrps(output_text)
+    if len(blocks) != len(headings):
+        errors.append(
+            f"{label}: parsed {len(blocks)} block body(ies) for {len(headings)} visible heading(s)"
+        )
+        return errors
+    heading_blocks = list(zip(headings, blocks))
+    first_gate_start = gates[0].start() if gates else len(output_text)
+    stray_blocks = [position for position in headings if position < first_gate_start]
+    if stray_blocks:
+        errors.append(
+            f"{label}: {len(stray_blocks)} visible [Mid-Reread Pressure] block(s) appear before any "
+            "Land(ⁿB): landing gate and match no record"
+        )
+    for index, gate in enumerate(gates):
+        window_end = gates[index + 1].start() if index + 1 < len(gates) else len(output_text)
+        in_window = [
+            (position, block)
+            for position, block in heading_blocks
+            if gate.end() <= position < window_end
+        ]
+        burden_id = gate_burdens[index]
+        gate_label = f"{label}: Land({gate.group('burden')}):"
+        if not in_window:
+            errors.append(
+                f"{gate_label} no visible [Mid-Reread Pressure] block mirrors the {burden_id} record"
+            )
+            continue
+        if len(in_window) > 1:
+            errors.append(
+                f"{gate_label} {len(in_window)} visible blocks in one landing window; exactly one is licensed"
+            )
+        entry = entry_by_burden.get(burden_id)
+        if entry is None:
+            continue
+        errors.extend(per_burden_block_field_parity_errors(gate_label, in_window[0][1], entry))
+    return errors
+
+
 def act_partition_errors(
     partition: Any,
     *,
@@ -3082,6 +3240,103 @@ def run_self_test(root: Path) -> int:
         "invalid-sidecar-proof-claim",
         lambda payload, case_dir: replace_section_text(payload, case_dir, 5, "Stage 8 sidecar proof PASS.\n"),
     )
+
+    def parity_text(entries: list[dict[str, Any]], rendered: list[dict[str, Any]] | None = None) -> str:
+        rendered_entries = rendered if rendered is not None else entries
+        parts = ["Layer B - Bounded Governed Response"]
+        for entry in rendered_entries:
+            public = public_burden_token(str(entry["burden_id"])[1:])
+            parts.append(f"Land({public}): landed.")
+            parts.append("")
+            parts.append(render_mrp_block(entry))
+            parts.append("")
+        return "\n".join(parts) + "\n"
+
+    parity_entries = self_test_per_burden_chain(["B1", "B2"])
+    if visible_block_parity_errors(parity_text(parity_entries), parity_entries):
+        raise AssemblyError("self-test parity rejected a faithful record-rendered surface")
+    single_entry = [self_test_per_burden_entry("B1")]
+
+    def parity_must_fail(name: str, text: str, entries: list[dict[str, Any]], needle: str) -> None:
+        found = visible_block_parity_errors(text, entries)
+        if not found:
+            raise AssemblyError(f"self-test parity canary unexpectedly passed: {name}")
+        if not any(needle in error for error in found):
+            raise AssemblyError(f"self-test parity canary {name} missed expected error {needle!r}: {found}")
+
+    for field_name, needle in (
+        ("finding", "Finding diverges"),
+        ("route_result_type", "MRP route result type diverges"),
+        ("route", "Route diverges"),
+        ("graph_delta", "Graph delta diverges"),
+        ("preemption_basis", "Pre-emption basis diverges"),
+        ("target", "Target diverges"),
+        ("landed_delta", "Landed delta diverges"),
+        ("route_gradient", "Route-gradient diverges"),
+        ("mrp_resultant", "MRP resultant diverges"),
+        ("boundary", "Boundary diverges"),
+        ("reread", "reread diverges"),
+    ):
+        drifted = [dict(single_entry[0])]
+        drifted[0][field_name] = (
+            "B1 -> B2" if field_name == "graph_delta" else f"{drifted[0][field_name]} [surface-drift]"
+        )
+        parity_must_fail(
+            f"visible-{field_name}-drift",
+            parity_text(single_entry, rendered=drifted),
+            single_entry,
+            needle,
+        )
+    drifted_slot = [dict(single_entry[0])]
+    drifted_slot[0]["pressure_activations"] = dict(single_entry[0]["pressure_activations"])
+    drifted_slot[0]["pressure_activations"]["dependency-tug"] = "M8 — drifted slot read."
+    parity_must_fail(
+        "visible-pressure-slot-drift",
+        parity_text(single_entry, rendered=drifted_slot),
+        single_entry,
+        "pressure slot dependency-tug diverges",
+    )
+    drifted_diag = [dict(single_entry[0])]
+    drifted_diag[0]["divergence"] = "∇·B: settled / drifted reason"
+    parity_must_fail(
+        "visible-divergence-drift",
+        parity_text(single_entry, rendered=drifted_diag),
+        single_entry,
+        "field diagnostics ∇·B diverges",
+    )
+    missing_block_text = "Layer B - Bounded Governed Response\nLand(¹B): landed.\nNo block follows.\n"
+    parity_must_fail("record-without-visible-block", missing_block_text, single_entry, "no visible [Mid-Reread Pressure] block")
+    no_record_text = parity_text([self_test_per_burden_entry("B2")])
+    parity_must_fail("visible-block-without-record", no_record_text, single_entry, "have no visible Land")
+    stray_block_text = render_mrp_block(single_entry[0]) + "\n\n" + parity_text(single_entry)
+    parity_must_fail("block-before-any-gate", stray_block_text, single_entry, "before any")
+    double_block_text = parity_text(single_entry).replace(
+        "Boundary: T_lang does not imply guaranteed uptake.\n",
+        "Boundary: T_lang does not imply guaranteed uptake.\n\n" + render_mrp_block(single_entry[0]) + "\n",
+        1,
+    )
+    parity_must_fail("two-blocks-one-window", double_block_text, single_entry, "exactly one is licensed")
+
+    # The exact R1 false-pass shape: the hidden record says stable/no_new_resultant/STOP,
+    # the visible block says genuine-dependent/held_burden_activation/RECURSE. Both sides
+    # are individually valid under the shared entry contract; only parity may catch it.
+    r1_record = [self_test_per_burden_entry("B1")]
+    r1_surface = [self_test_per_burden_entry("B1", next_burden_id="B2")]
+    if per_burden_reread_entry_errors(r1_record):
+        raise AssemblyError("self-test R1 canary record side must be individually valid")
+    if per_burden_reread_entry_errors(r1_surface):
+        raise AssemblyError("self-test R1 canary surface side must be individually valid")
+    r1_errors = visible_block_parity_errors(parity_text(r1_record, rendered=r1_surface), r1_record)
+    for needle in (
+        "Finding diverges",
+        "MRP route result type diverges",
+        "Route diverges",
+        "Graph delta diverges",
+        "Pre-emption basis diverges",
+    ):
+        if not any(needle in error for error in r1_errors):
+            raise AssemblyError(f"self-test R1 false-pass canary missed {needle!r}: {r1_errors}")
+
     print("staged governed output assembly self-test: PASS")
     print(f"self-test run dir: {rel(base_dir, root)}")
     print(f"large output bytes: {large_record['output']['bytes']}")

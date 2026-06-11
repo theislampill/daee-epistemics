@@ -134,6 +134,7 @@ STAGE07_RELEASE_VALIDATION_ORDER = (
     "field_witness_convergence",
     "formal_reread_state_semantics",
     "mid_reread_pressure",
+    "mrp_record_surface_parity",
     "mrp_generated_burden",
     "graph_completeness_json",
     "manual_smoke_render_contract",
@@ -4706,6 +4707,26 @@ If this stage cannot be honestly completed, return the same JSON shape with
 """
 
 
+def stage07_single_output_mrp_surface_contract(previous_stages: list[dict[str, Any]]) -> str:
+    stage05 = stage_by_id(previous_stages, "stage-05-mrp-reread-terminal-state")
+    entries = stage05_per_burden_entries(stage05)
+    parts: list[str] = [
+        "Per-burden MRP record-surface contract (parity-validated):",
+        "- After each line-start superscript landing gate `Land(ⁿB):`, print exactly one `[Mid-Reread Pressure]` block rendered VERBATIM from the matching stage-05 `per_burden_reread` record below.",
+        "- Do not invent, merge, or rephrase pressure-activation slots; print all six slot values exactly as recorded.",
+        "- Do not summarize the per-burden rereads into one terminal closure block.",
+        "- Do not change controlled values: `Finding`, `MRP route result type`, `Route`, `Pre-emption basis`, `Graph delta`.",
+        "- If you cannot render a block faithfully from its record, stop and return a held/failed status rather than fabricating block content.",
+        "- A record-surface parity validator compares every visible block field to the stage-05 record; any divergence fails Stage 07 release validation.",
+    ]
+    for entry in entries:
+        public = public_burden_id(str(entry.get("burden_id") or ""))
+        parts.append("")
+        parts.append(f"Block for Land({public}): print exactly:")
+        parts.append(staged_output.render_mrp_block(entry))
+    return "\n".join(parts)
+
+
 def release_prompt(
     *,
     root: Path,
@@ -4718,6 +4739,7 @@ def release_prompt(
 ) -> str:
     previous = json.dumps(compact_state(previous_stages), ensure_ascii=False, indent=2)
     field_witness_contract = stage07_field_witness_contract_guidance(previous_stages)
+    mrp_surface_contract = stage07_single_output_mrp_surface_contract(previous_stages)
     return f"""Runtime SHA256: {skill_hash}
 
 You are executing stage-07-release-output for one bounded staged current-skill smoke.
@@ -4749,7 +4771,9 @@ Required public output surface:
 - Preserve the normal visible noetic-field opening/header.
 - Include the compact Layer A / Diagnostic IR opening header.
 - Include Layer B / ACT rows consistent with the validated Stage 04 state.
-- Include MRP/reread/terminal-state surface consistent with Stage 05.
+- Include MRP/reread/terminal-state surface consistent with Stage 05: one line-start
+  superscript `Land(ⁿB):` landing gate per terminal burden, each followed by its
+  record-rendered `[Mid-Reread Pressure]` block per the contract below.
 - Include parser-stable field_witness/NAR evidence consistent with Stage 06.
 - Include visible Closure/Reconstruction Witness diagnostics for `∇·B` and
   `∇×κ`, and include matching machine values in
@@ -4761,6 +4785,8 @@ Required public output surface:
   identical after status-head normalization.
 - Include Restorative Response.
 - Include Closing Formulation.
+
+{mrp_surface_contract}
 
 Stage07 checker-owned field_witness/NAR clone-state contract:
 {field_witness_contract}
@@ -5348,10 +5374,37 @@ def run_compiled_release_self_test(
     )
     assembly_record = assemble_compiled_manifest(manifest_path, root=root)
     compiled_output_path = root / assembly_record["output"]["path"]
-    compiled_validation = run_release_validators(root, compiled_output_path)
+    compiled_validation = run_release_validators(root, compiled_output_path, per_burden_entries)
     compiled_diagnostics = build_release_field_diagnostics(compiled_output_path)
     if compiled_diagnostics.get("matches") is not True:
         raise HarnessError("Compiled-mode self-test output did not produce matching release_field_diagnostics")
+    if compiled_validation.get("mrp_record_surface_parity") != "pass":
+        raise HarnessError("Compiled-mode self-test did not execute the MRP record-surface parity validator")
+
+    # R1 false-pass canary at the released-output level: tamper one controlled visible
+    # value so the block stays shape-valid for check_mid_reread_pressure but no longer
+    # mirrors the stage-05 record. Every pre-parity validator must still pass; only the
+    # record-surface parity tooth may catch the divergence.
+    compiled_text = compiled_output_path.read_text(encoding="utf-8", errors="replace")
+    tampered_text = compiled_text.replace("Finding: stable", "Finding: reorientation", 1)
+    if tampered_text == compiled_text:
+        raise HarnessError("Compiled-mode self-test parity canary could not stage the surface drift")
+    tampered_path = compiled_dir / "parity-canary-tampered-output.md"
+    write_text(tampered_path, tampered_text)
+    require_command_success(
+        [sys.executable, str(root / "tools" / "check_mid_reread_pressure.py"), "--outputs", str(tampered_path)],
+        cwd=root,
+    )
+    try:
+        run_release_validators(root, tampered_path, per_burden_entries)
+    except HarnessError as exc:
+        if "record-surface parity" not in str(exc):
+            raise
+    else:
+        raise HarnessError(
+            "Compiled-mode self-test accepted a shape-valid visible MRP block that diverges "
+            "from the stage-05 per_burden_reread record"
+        )
 
     stage07_local_record = base_record(
         "self-test-a9-science-source-stage07-compiled",
@@ -10158,6 +10211,14 @@ def run_self_test(root: Path) -> int:
         "For every `owner_activations[]` mirror whose `delta` carrier is `Δκ` / `Delta-kappa`",
         "`coverage_proof.diagnostic_completeness.live_registers`",
         "`normalized_activation_record.per_burden[]`",
+        "Per-burden MRP record-surface contract (parity-validated):",
+        "print exactly one `[Mid-Reread Pressure]` block rendered VERBATIM",
+        "Do not invent, merge, or rephrase pressure-activation slots",
+        "Do not summarize the per-burden rereads into one terminal closure block",
+        "stop and return a held/failed status rather than fabricating block content",
+        "any divergence fails Stage 07 release validation",
+        "Block for Land(¹B): print exactly:",
+        "Target: ¹B / bounded self-test burden",
     ):
         if required not in stage07_full_release_prompt:
             raise HarnessError(f"Self-test Stage 07 release prompt omitted witness clone-state scaffold: {required}")
@@ -11296,6 +11357,7 @@ def run_self_test(root: Path) -> int:
         "field_witness_convergence": "pass",
         "formal_reread_state_semantics": "pass",
         "mid_reread_pressure": "pass",
+        "mrp_record_surface_parity": "pass",
         "mrp_generated_burden": "pass",
         "graph_completeness_json": "pass",
         "manual_smoke_render_contract": "pass",
@@ -11642,7 +11704,11 @@ def build_release_field_diagnostics(output_path: Path) -> dict[str, Any]:
     }
 
 
-def run_release_validators(root: Path, output_path: Path) -> dict[str, str]:
+def run_release_validators(
+    root: Path,
+    output_path: Path,
+    per_burden_reread: list[dict[str, Any]],
+) -> dict[str, str]:
     visible_errors = visible_governed_output_errors(output_path)
     if visible_errors:
         raise HarnessError(
@@ -11697,6 +11763,18 @@ def run_release_validators(root: Path, output_path: Path) -> dict[str, str]:
     for key, command in validators:
         require_command_success(command, cwd=root)
         results[key] = "pass"
+        if key == "mid_reread_pressure":
+            parity_errors = staged_output.visible_block_parity_errors(
+                output_path.read_text(encoding="utf-8", errors="replace"),
+                per_burden_reread,
+            )
+            if parity_errors:
+                raise HarnessError(
+                    "stage-07-release-output: MRP record-surface parity failed; visible "
+                    "[Mid-Reread Pressure] blocks must mirror the stage-05 per_burden_reread "
+                    "records verbatim:\n- " + "\n- ".join(parity_errors)
+                )
+            results["mrp_record_surface_parity"] = "pass"
     missing = STAGE07_RELEASE_VALIDATION_KEYS - set(results)
     if missing:
         raise HarnessError(f"stage-07-release-output: internal validator set missing {sorted(missing)}")
@@ -12241,7 +12319,11 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 )
         if not output_path.exists() or output_path.stat().st_size == 0:
             raise HarnessError("stage-07-release-output: output.md was not produced")
-        release_validation = run_release_validators(root, output_path)
+        release_validation = run_release_validators(
+            root,
+            output_path,
+            stage05_per_burden_entries(stage_by_id(stages, "stage-05-mrp-reread-terminal-state")),
+        )
         release_field_diagnostics = build_release_field_diagnostics(output_path)
         stage05 = stage_by_id(stages, "stage-05-mrp-reread-terminal-state") or {}
         stage07 = {

@@ -157,6 +157,7 @@ STAGE07_RELEASE_VALIDATION_KEYS = {
     "field_witness_convergence",
     "formal_reread_state_semantics",
     "mid_reread_pressure",
+    "mrp_record_surface_parity",
     "mrp_generated_burden",
     "graph_completeness_json",
 }
