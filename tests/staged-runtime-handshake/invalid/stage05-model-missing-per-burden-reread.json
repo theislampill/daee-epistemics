@@ -1,8 +1,7 @@
 {
   "schema": "staged-runtime-handshake-v1",
-  "case_id": "stage06-normalized-nframe-details",
+  "case_id": "stage05-model-missing-per-burden-reread",
   "mode": "staged-current-skill-stage-local-smoke",
-  "legacy_contract": "pre-per-burden-reread",
   "user_interface_preserved": true,
   "stage_order": [
     "stage-01-intake",
@@ -155,52 +154,7 @@
           "operation": "self-grounding-test"
         }
       ],
-      "normalized_activation_record": {
-        "n_frame": "science-only-source-order-warrant",
-        "live_registers": [
-          "xi",
-          "kappa"
-        ],
-        "burden_floor": [
-          "B1"
-        ],
-        "per_burden": [
-          {
-            "burden_id": "B1",
-            "owner_id": "source-status-repair",
-            "operation": "source-order",
-            "delta_result": "science-source-bounded",
-            "mrp_route_result_type": "no_new_resultant",
-            "terminal_state": "landed",
-            "generation_depth": 0
-          },
-          {
-            "burden_id": "B1",
-            "owner_id": "M1",
-            "operation": "self-grounding-test",
-            "delta_result": "self-authorizing-standard-invalidated",
-            "mrp_route_result_type": "no_new_resultant",
-            "terminal_state": "landed",
-            "generation_depth": 0
-          }
-        ],
-        "n_frame_details": {
-          "selected": "science-only-source-order-warrant",
-          "held": [
-            "revelation-private-preference-frame"
-          ],
-          "held_details": [
-            {
-              "n_frame": "revelation-private-preference-frame",
-              "hold_reason": "revelation-private-preference-frame remains held while science-only-source-order-warrant is selected"
-            }
-          ]
-        },
-        "normalization": {
-          "n_frame_from_selected_detail": true,
-          "canonical_n_frame": "science-only-source-order-warrant"
-        }
-      },
+      "normalized_activation_record": true,
       "normalized_activation_record_details": {
         "n_frame": "science-only-source-order-warrant",
         "live_registers": [
@@ -300,7 +254,7 @@
   "model_scope": {
     "type": "focused-current-skill-stage-smoke",
     "case_count": 1,
-    "case_family": "stage06-normalized-nframe-details",
+    "case_family": "a9-science-source",
     "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"
   }
 }

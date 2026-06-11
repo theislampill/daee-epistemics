@@ -156,6 +156,7 @@ STAGE07_RELEASE_VALIDATION_KEYS = {
     "nla_semantic_faithfulness",
     "field_witness_convergence",
     "formal_reread_state_semantics",
+    "mid_reread_pressure",
     "mrp_generated_burden",
     "graph_completeness_json",
 }
@@ -1853,6 +1854,16 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
     release_terminal_states = stage07.get("release_terminal_states") if stage07 is not None else None
     if stage05 is not None:
         errors.extend(stage05_mrp_errors(label, stage02, stage03, stage04, stage05))
+        if (
+            record.get("mode") in MODEL_MODES
+            and stage05.get("status") in PASS_STATUS
+            and PER_BURDEN_REREAD_FIELD not in stage05
+            and record.get("legacy_contract") != "pre-per-burden-reread"
+        ):
+            errors.append(
+                f"{label}: stage-05 model-mode records require {PER_BURDEN_REREAD_FIELD}; "
+                "only pre-slice-B retained records may carry legacy_contract 'pre-per-burden-reread'"
+            )
     if stage06 is not None:
         errors.extend(stage06_witness_nar_errors(label, record, stage02, stage04, stage05, stage06))
     if stage07 is not None:

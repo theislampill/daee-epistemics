@@ -115,7 +115,34 @@
         "B1": "landed"
       },
       "dependency_graph_edges": [],
-      "no_new_resultant_proof": true
+      "no_new_resultant_proof": true,
+      "per_burden_reread": [
+        {
+          "burden_id": "B1",
+          "target": "¹B / science-only source-order warrant",
+          "reread": "R(H,Δ): held routes rechecked: none; live remainder: none load-bearing for this bounded reply; release/next: closure",
+          "landed_delta": "Δ¹B / Delta(B1) and Δκ: science-only source tribunal bounded; dependency radius collapses to bounded source-order correction",
+          "pressure_activations": {
+            "freeze-landed-move": "source-status-repair — science remains valid within measurable-domain authority; total source tribunal cleared",
+            "dependency-tug": "M1 — self-authorizing standard invalidated; no downstream burden required",
+            "hidden-framework-recoil": "pressure class: cleared — no broader hidden framework is needed to answer the stated source-order question",
+            "entailment-pressure": "pressure class: cleared — \"Islam answers by reason\" follows after the exclusion rule fails",
+            "doubt-churn-guard": "pressure class: cleared — sincere question remains answerable without proof-carousel escalation",
+            "reorientation-reminder": "P1 — return attention to fiṭrah and sound reason without forcing uptake"
+          },
+          "divergence": "∇·B: neutral / ¹B landed and no additional input-anchored burden remains",
+          "curl": "∇×κ: null / no circular dependency or doubt-churn loop remains",
+          "route_gradient": "no newly generated burden; Δ¹B leaves no load-bearing post-land recoil for this bounded source-order answer",
+          "finding": "stable",
+          "route_result_type": "no_new_resultant",
+          "mrp_resultant": "stable -> no new graph edge; STOP",
+          "graph_delta": "none",
+          "preemption_basis": "none",
+          "loopbreak": "not needed",
+          "route": "STOP",
+          "boundary": "T_lang does not imply guaranteed uptake"
+        }
+      ]
     },
     {
       "id": "stage-06-field-witness-nar",

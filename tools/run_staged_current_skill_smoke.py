@@ -133,6 +133,7 @@ STAGE07_RELEASE_VALIDATION_ORDER = (
     "nla_semantic_faithfulness",
     "field_witness_convergence",
     "formal_reread_state_semantics",
+    "mid_reread_pressure",
     "mrp_generated_burden",
     "graph_completeness_json",
     "manual_smoke_render_contract",
@@ -304,7 +305,12 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
     },
     "stage-05-mrp-reread-terminal-state": {
         "title": "MRP / reread / terminal state",
-        "produces": ["terminal_states", "dependency_graph_edges", "no_new_resultant_proof"],
+        "produces": [
+            "terminal_states",
+            "dependency_graph_edges",
+            "no_new_resultant_proof",
+            "per_burden_reread",
+        ],
         "requires": ["act_rows"],
         "instructions": (
             "Produce Stage 05 JSON only. Do not write final answer prose, field_witness, "
@@ -324,7 +330,30 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "If `terminal_state_details` is present, each row must name `burden_id` "
             "and a controlled `state` matching `terminal_states[burden_id]`; "
             "`terminal_state` may be normalized to `state` only when the two values "
-            "are identical and controlled."
+            "are identical and controlled. "
+            "`per_burden_reread` is REQUIRED: a JSON array carrying exactly one object per "
+            "`terminal_states` burden id, recording the real post-Land R(H,Δ) reread for that "
+            "burden. Required string fields per entry: `burden_id` (machine `B<n>`), `target` "
+            "(public burden read, e.g. `¹B / imported tribunal burden`), `reread` (must start "
+            "`R(H,` and record `held routes rechecked: ...; live remainder: ...; release/next: ...`), "
+            "`landed_delta` (must name Δ/Delta), `route_gradient`, `divergence` "
+            "(`<head> / <reason>` with head neutral|settled|bounded|non-neutral), `curl` "
+            "(`<head> / <reason>` with head null|resolved|held|non-null), `finding` "
+            "(stable|genuine-dependent|partial-real|hidden-framework-recoil|doubt-churn|reorientation), "
+            "`route_result_type` (held_burden_activation|generated_burden_instantiation|"
+            "no_new_resultant|loopbreak|hold_partial), `mrp_resultant`, `graph_delta` (`none` or "
+            "one ASCII edge `Bn -> Bm`), `preemption_basis` (none|graph-bound|commitment-bound|"
+            "framework-bound), `route` (STOP|HOLD|RECURSE|LoopBreak(∇×T)), and `boundary` "
+            "(must begin `T_lang does not imply guaranteed uptake`). `pressure_activations` must "
+            "be an object with exactly the six slots freeze-landed-move, dependency-tug, "
+            "hidden-framework-recoil, entailment-pressure, doubt-churn-guard, and "
+            "reorientation-reminder; every slot value must record the real pressure read for THIS "
+            "burden and begin with the owner/TTP id, `pressure class:`, or `coverage gap:` that "
+            "carried it — placeholder values like none/cleared/n/a are rejected. Consistency is "
+            "enforced: stable requires route STOP and graph_delta none; genuine-dependent requires "
+            "RECURSE and a graph edge; partial-real requires HOLD; any graph edge requires a "
+            "non-none preemption_basis. The harness renders the public [Mid-Reread Pressure] "
+            "blocks from these records; do not write the blocks yourself anywhere."
         ),
     },
     "stage-06-field-witness-nar": {
@@ -1437,6 +1466,18 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
     elif not isinstance(proof, bool):
         raise HarnessError("stage-05 no_new_resultant_proof must be boolean or object")
 
+    per_burden_errors = staged_output.per_burden_reread_entry_errors(
+        stage.get("per_burden_reread"),
+        label="stage-05 per_burden_reread",
+        terminal_state_ids=set(terminal_states),
+    )
+    if per_burden_errors:
+        raise HarnessError(
+            "stage-05 per_burden_reread is required: one honest reread record per terminal "
+            "burden; Stage 07 renders the visible [Mid-Reread Pressure] blocks from these "
+            "records and never fills missing fields. Problems:\n- " + "\n- ".join(per_burden_errors)
+        )
+
 
 def normalize_stage06_register_delta_value(
     value: Any,
@@ -2436,93 +2477,188 @@ def stage07_stop_proof(source: str) -> dict[str, Any]:
     }
 
 
+def per_burden_state_head(value: Any, prefix_re: re.Pattern[str]) -> str:
+    body = staged_output.per_burden_diag_body(str(value or ""), prefix_re)
+    return body.partition("/")[0].strip()
+
+
+def stage05_per_burden_entries(stage05: dict[str, Any] | None) -> list[dict[str, Any]]:
+    entries = stage05.get("per_burden_reread") if isinstance(stage05, dict) else None
+    if (
+        not isinstance(entries, list)
+        or not entries
+        or not all(isinstance(entry, dict) for entry in entries)
+    ):
+        raise HarnessError(
+            "stage-05 per_burden_reread records are required to derive visible MRP structure; "
+            "Stage 07 never synthesizes findings, rereads, or pressure slots from edges, "
+            "terminal states, or prose"
+        )
+    return [dict(entry) for entry in entries]
+
+
+def mrp_resultant_rows_from_entries(entries: list[dict[str, Any]]) -> list[dict[str, str]]:
+    return [
+        {
+            "source": str(entry.get("burden_id") or ""),
+            "type": str(entry.get("route_result_type") or ""),
+            "finding": str(entry.get("finding") or ""),
+            "graph": str(entry.get("graph_delta") or ""),
+            "route": str(entry.get("route") or ""),
+        }
+        for entry in entries
+    ]
+
+
+def self_test_reread_entry(
+    burden_id: str,
+    *,
+    next_burden_id: str | None = None,
+    **overrides: Any,
+) -> dict[str, Any]:
+    entry = staged_output.self_test_per_burden_entry(burden_id, next_burden_id=next_burden_id)
+    entry.update(overrides)
+    return entry
+
+
+def self_test_reread_hold_entry(burden_id: str) -> dict[str, Any]:
+    public = staged_output.public_burden_token(burden_id[1:])
+    return self_test_reread_entry(
+        burden_id,
+        reread=(
+            f"R(H,Δ): held routes rechecked: {public}; live remainder: {public}; release/next: HOLD."
+        ),
+        route_gradient=(
+            f"plain-gradient holds {public} as HOLD/PARTIAL after R(H,Δ); no new graph edge is licensed."
+        ),
+        divergence="∇·B: non-neutral / held burden remains live",
+        curl="∇×κ: held / held burden remains live",
+        finding="partial-real",
+        route_result_type="hold_partial",
+        mrp_resultant=f"partial-real -> no new graph edge; HOLD {public}",
+        graph_delta="none",
+        preemption_basis="none",
+        route="HOLD",
+    )
+
+
+def self_test_reread_generated_entry(parent: str, generated: str) -> dict[str, Any]:
+    parent_public = staged_output.public_burden_token(parent[1:])
+    generated_public = staged_output.public_burden_token(generated[1:])
+    return self_test_reread_entry(
+        parent,
+        reread=(
+            f"R(H,Δ): held routes rechecked: {generated_public}; live remainder: {generated_public}; "
+            f"release/next: RECURSE to {generated_public}."
+        ),
+        route_gradient=(
+            f"newly generated {generated_public} [generated-by: MRP({parent_public})] is absent from "
+            f"B_LA after Δ {parent_public} post-Land field-pressure."
+        ),
+        divergence="∇·B: non-neutral / generated burden remains live",
+        curl="∇×κ: held / generated burden hold",
+        finding="genuine-dependent",
+        route_result_type="generated_burden_instantiation",
+        mrp_resultant=f"genuine-dependent -> graph {parent} -> {generated}; RECURSE",
+        graph_delta=f"{parent} -> {generated}",
+        preemption_basis="graph-bound",
+        route="RECURSE",
+    )
+
+
 def stage07_formal_reread_states(
-    mrp_resultants: list[dict[str, str]],
+    per_burden_reread: list[dict[str, Any]],
     terminal_states: dict[str, str],
     unresolved_burdens: list[str] | None = None,
     owner_routes_by_burden: dict[str, list[str]] | None = None,
 ) -> list[dict[str, Any]]:
+    """Project stage-05 per_burden_reread records into formal_reread_states rows.
+
+    Rows are 1:1 projections of the producer records (current key schema, no new
+    keys); this function adds accounting metadata only and never invents reread
+    content.
+    """
+    if not isinstance(per_burden_reread, list) or not per_burden_reread:
+        raise HarnessError(
+            "stage07_formal_reread_states requires stage-05 per_burden_reread records; "
+            "formal_reread_states rows are 1:1 projections and are never synthesized"
+        )
     states: list[dict[str, Any]] = []
     unresolved = set(unresolved_burdens or [])
     owner_routes = owner_routes_by_burden or {}
-    for row in mrp_resultants:
-        source = row.get("source") or ""
+
+    def held_terminal(state_value: str) -> bool:
+        return re.search(
+            r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b",
+            state_value,
+        ) is not None
+
+    field_held_burdens = sorted(
+        set(unresolved)
+        | {
+            burden_id
+            for burden_id, state_value in terminal_states.items()
+            if held_terminal(str(state_value or ""))
+        }
+    )
+    for entry in per_burden_reread:
+        source = str(entry.get("burden_id") or "")
         if not source:
             continue
-        route_type = row.get("type") or "no_new_resultant"
-        route = row.get("route") or "STOP"
-        graph = row.get("graph") or "none"
+        route_type = str(entry.get("route_result_type") or "")
+        route = str(entry.get("route") or "")
+        graph = str(entry.get("graph_delta") or "")
         terminal_state = terminal_states.get(source, "landed")
-        held_or_partial = source in unresolved or re.search(
-            r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b",
-            terminal_state,
-        ) is not None
-        divergence_state = "non-neutral" if held_or_partial else "neutral"
-        curl_state = "unresolved" if held_or_partial else "null"
+        held_or_partial = source in unresolved or held_terminal(terminal_state)
         target = stage07_route_target_from_graph(graph)
-        public_graph = public_graph_value(graph)
-        public_source = public_burden_id(source)
-        public_target = public_graph_value(target or source)
         state: dict[str, Any] = {
             "source_burden": source,
             "prior_land": f"Land({source}): terminal state {terminal_state}.",
-            "delta": stage07_mrp_landed_delta(source, terminal_state, route_type),
+            "delta": str(entry.get("landed_delta") or ""),
             "reread": "R(H,Delta)",
-            "divergence_state": divergence_state,
-            "curl_state": curl_state,
-            "route_result_type": route_type,
-            "mrp_resultant": f"{row.get('finding') or 'stable'} -> graph {graph}; route {route}",
-            "graph_delta": graph,
-            "preemption_basis": (
-                f"bounded MRP row only; {public_source} remains {terminal_state} with HOLD/PARTIAL accounting"
-                if held_or_partial and str(graph).strip().lower() == "none"
-                else
-                "terminal states landed; B_MRP empty; no generated burden remains"
-                if str(graph).strip().lower() == "none"
-                else "graph-bound MRP route recorded"
+            "divergence_state": per_burden_state_head(
+                entry.get("divergence"), staged_output.PER_BURDEN_DIVERGENCE_PREFIX_RE
             ),
+            "curl_state": per_burden_state_head(
+                entry.get("curl"), staged_output.PER_BURDEN_CURL_PREFIX_RE
+            ),
+            "route_result_type": route_type,
+            "mrp_resultant": str(entry.get("mrp_resultant") or ""),
+            "graph_delta": graph,
+            "preemption_basis": str(entry.get("preemption_basis") or ""),
             "route": route,
+            "route_gradient": str(entry.get("route_gradient") or ""),
         }
         if route_type == "held_burden_activation":
-            state["route_gradient"] = (
-                f"already-held/initial burden gradient points to {route} through {public_graph} after R(H,Δ)."
-                if target
-                else f"held/B_LA route after {source}."
-            )
             if target:
                 state["next_burden"] = target
             state["owner_route"] = owner_routes.get(target) or ["held"]
         elif route_type == "generated_burden_instantiation":
-            state["route_gradient"] = (
-                f"generated-gradient points to {route} through {public_graph} after Delta {public_source}; "
-                f"newly generated {public_target} [generated-by: MRP({public_source})] is absent from 𝔅_LA "
-                "and comes from post-Land field-pressure."
-                if target
-                else f"generated/new MRP route absent from B_LA after Delta {source}."
-            )
             if target:
                 state["next_burden"] = target
             state["owner_route"] = owner_routes.get(target) or ["generated"]
             state["generated_by"] = f"MRP({source})"
-        else:
-            state["route_gradient"] = (
-                f"plain-gradient holds {public_source} as HOLD/PARTIAL after R(H,Δ); no new graph edge is licensed."
-                if held_or_partial
-                else f"plain-gradient points to {route} after {public_source}; no live pressure remains."
-            )
-            if route_type in {"no_new_resultant", "none", "stable"} or str(route).upper() == "STOP":
-                state["no_new_resultant_proof"] = (
-                    {
-                        "escape_routes_checked": [],
-                        "proved": False,
-                        "basis": (
-                            f"{source} remains {terminal_state}; no-new-resultant STOP is not licensed "
-                            "for coverage completion while the burden is unresolved."
-                        ),
-                    }
-                    if held_or_partial
-                    else stage07_stop_proof(source)
-                )
+        elif route_type == "no_new_resultant" or route.upper() == "STOP":
+            if held_or_partial:
+                state["no_new_resultant_proof"] = {
+                    "escape_routes_checked": [],
+                    "proved": False,
+                    "basis": (
+                        f"{source} remains {terminal_state}; no-new-resultant STOP is not licensed "
+                        "for coverage completion while the burden is unresolved."
+                    ),
+                }
+            elif field_held_burdens:
+                state["no_new_resultant_proof"] = {
+                    "escape_routes_checked": [],
+                    "proved": False,
+                    "basis": (
+                        f"MRP({source}) STOP is burden-local only; field-level no-new-resultant is not "
+                        f"licensed while {', '.join(field_held_burdens)} remain(s) held/unresolved."
+                    ),
+                }
+            else:
+                state["no_new_resultant_proof"] = stage07_stop_proof(source)
         states.append(state)
     return states
 
@@ -2554,16 +2690,6 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         for burden in b_total
     }
     edges = stage05_dependency_edges(stage05)
-    reread_state = stage05.get("reread_state")
-    if not isinstance(reread_state, dict):
-        reread_state = {}
-    final_source = burden_endpoint_id(reread_state.get("source_burden") or reread_state.get("source")) or (b_total[-1] if b_total else "")
-    final_type = str(reread_state.get("route_result_type") or "no_new_resultant").strip().rstrip(".;:,")
-    final_route = str(reread_state.get("route") or "STOP").strip().rstrip(".;:,")
-    if final_type in {"none", "stable", ""}:
-        final_type = "no_new_resultant"
-    if not final_route:
-        final_route = "STOP"
     unresolved_burdens = stage05_unresolved_burdens(stage05)
     terminal_states, unresolved_burdens = normalize_stage07_generated_terminal_accounting(
         generated_burdens=generated_burdens,
@@ -2572,65 +2698,8 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         unresolved_burdens=unresolved_burdens,
         executed_act_burdens=executed_act_burdens,
     )
-    def unresolved_terminal(burden: str) -> bool:
-        return burden in unresolved_burdens or re.search(
-            r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b",
-            terminal_states.get(burden, ""),
-        ) is not None
-
-    held_or_partial_burdens = stage07_held_or_partial_burdens(
-        b_total,
-        terminal_states,
-        unresolved_burdens,
-    )
-    if (
-        held_or_partial_burdens
-        and final_type in {"no_new_resultant", "none", "stable"}
-        and final_route.upper() == "STOP"
-    ):
-        final_source = held_or_partial_burdens[0]
-        final_type = "hold_partial"
-        final_route = "HOLD"
-    if edges and final_type == "no_new_resultant" and final_route.upper() == "STOP":
-        final_type = str(edges[0].get("type") or "generated_burden_instantiation")
-        final_route = "RECURSE"
-        final_source = edges[0]["from"]
-    mrp_resultants = [
-        {
-            "source": edge["from"],
-            "type": edge["type"],
-            "finding": "genuine-dependent",
-            "graph": f"{edge['from']} -> {edge['to']}",
-            "route": "RECURSE",
-        }
-        for edge in edges
-    ]
-    has_matching_final_resultant = any(
-        row["source"] == final_source and row["type"] == final_type for row in mrp_resultants
-    )
-    if final_source and not has_matching_final_resultant:
-        mrp_resultants.append(
-            {
-                "source": final_source,
-                "type": final_type,
-                "finding": "partial-real" if final_type == "hold_partial" else "stable",
-                "graph": "none",
-                "route": final_route,
-            }
-        )
-    if final_type == "hold_partial" and final_route.upper() == "HOLD":
-        for burden in held_or_partial_burdens:
-            if any(row["source"] == burden and row["type"] == "hold_partial" for row in mrp_resultants):
-                continue
-            mrp_resultants.append(
-                {
-                    "source": burden,
-                    "type": "hold_partial",
-                    "finding": "partial-real",
-                    "graph": "none",
-                    "route": "HOLD",
-                }
-            )
+    per_burden_entries = stage05_per_burden_entries(stage05)
+    mrp_resultants = mrp_resultant_rows_from_entries(per_burden_entries)
 
     for edge in edges:
         target = edge["to"]
@@ -2705,103 +2774,38 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
                 )
         return lines
 
-    def mrp_block_lines(row: dict[str, str]) -> list[str]:
-        source = row["source"]
-        graph = row["graph"]
-        route = row["route"]
-        route_type = row["type"]
-        finding = row["finding"]
-        public_graph = public_graph_value(graph)
-        public_source = public_burden_id(source)
-        target = stage07_route_target_from_graph(graph)
-        public_target = public_graph_value(target or source)
-        held_or_partial = route_type == "hold_partial" or unresolved_terminal(source)
-        landed_state = terminal_states.get(source, "landed")
-        if route_type == "generated_burden_instantiation" and graph != "none":
-            route_gradient = (
-                f"generated-gradient points to {route} through {public_graph} after Delta {public_source}; "
-                f"newly generated {public_target} [generated-by: MRP({public_source})] is absent from 𝔅_LA "
-                "and comes from post-Land field-pressure."
-            )
-        elif route_type == "held_burden_activation" and graph != "none":
-            route_gradient = (
-                f"already-held/initial burden gradient points to {route} through {public_graph} after R(H,Δ)."
-            )
-        else:
-            route_gradient = (
-                f"plain-gradient points to {route} through {public_graph} after R(H,Δ)."
-                if graph != "none"
-                else (
-                    f"plain-gradient holds {public_source} as HOLD/PARTIAL after R(H,Δ); no new graph edge is licensed."
-                    if held_or_partial
-                    else f"plain-gradient points to {route} after {public_source}; no live pressure remains."
-                )
-            )
-        reread_line = (
-            f"R(H,Δ): held routes rechecked: {public_graph}; "
-            f"live remainder: {public_graph_value(target or source)}; release/next: {route}."
-            if graph != "none"
-            else (
-                f"R(H,Δ): held routes rechecked: none; live remainder: {public_source}; release/next: HOLD."
-                if held_or_partial
-                else f"R(H,Δ): held routes rechecked: none; live remainder: no remaining burden; "
-                f"release/next: {route} after {public_source}."
-            )
-        )
-        preemption_basis = (
-            f"bounded MRP row only; {public_source} remains {landed_state} with HOLD/PARTIAL accounting"
-            if held_or_partial and graph == "none"
-            else "terminal states landed; B_MRP empty; no generated burden remains"
-            if graph == "none"
-            else "graph-bound MRP route recorded"
-        )
-        landed_delta = stage07_mrp_landed_delta(source, landed_state, route_type)
-        return [
-            "[Mid-Reread Pressure]",
-            f"Target: MRP({public_source}) / Stage 05 terminal MRP source",
-            reread_line,
-            f"Landed delta: {landed_delta}",
-            (
-                "Field diagnostics: del-dot B: non-neutral / unresolved burden remains; "
-                "del-cross kappa: unresolved / generated burden hold."
-                if held_or_partial
-                else "Field diagnostics: del-dot B: neutral / no remaining burden; del-cross kappa: null / no circular dependency."
-            ),
-            f"Route-gradient: {route_gradient}",
-            matched_route_line(target or source),
-            f"Finding: {finding}",
-            f"MRP route result type: {route_type}",
-            f"MRP resultant: {finding} -> graph {public_graph}; route {route}",
-            f"Graph delta: {public_graph}",
-            f"Pre-emption basis: {preemption_basis}",
-            "LoopBreak: not needed",
-            f"Route: {route}",
-            "Boundary: T_lang does not imply guaranteed uptake.",
-        ]
-
     terminal_lines = [
         f"{public_burden_id(burden)}: {terminal_states.get(burden, 'landed')}"
         for burden in b_total
     ]
-    visible_lines: list[str] = []
-    for row in mrp_resultants:
-        visible_lines.extend(mrp_block_lines(row))
-    visible_lines.extend(generated_heading_lines())
-    visible_lines.extend(["Terminal states:", *terminal_lines])
+    preview_lines: list[str] = []
+    for entry in per_burden_entries:
+        preview_lines.extend(staged_output.render_mrp_block(entry).splitlines())
+        preview_lines.append("")
+    ledger_lines = [
+        "MRP terminal reconstruction floor:",
+        "Route-state ledger:",
+        *[
+            f"- MRP({public_burden_id(row['source'])}): type={row['type']}; finding={row['finding']}; "
+            f"graph={public_graph_value(row['graph'])}; route={row['route']}"
+            for row in mrp_resultants
+        ],
+        *generated_heading_lines(),
+        "Terminal states:",
+        *terminal_lines,
+    ]
     lines = [
         "",
-        "Stage 07 public MRP block contract:",
-        "- Print these checker-complete public MRP blocks in the MRP/reread/terminal section before prose expansion:",
-        *[f"  {line}" for line in visible_lines],
-        "- Emit one `[Mid-Reread Pressure]` block for every Stage 05 / field_witness `mrp_resultants[]` source; do not summarize a B1-B6 chain as one MRP block.",
-        "- `Target:` is required and must name the Stage 05 MRP source burden in public notation, for example `MRP(⁴B)`; do not leave the target implicit in prose.",
-        "- `Landed delta:` must use the exact same canonical delta string as `field_witness.formal_reread_states[].delta`.",
-        "- `MRP route result type:` must be one canonical token with no trailing punctuation: `held_burden_activation`, `generated_burden_instantiation`, `no_new_resultant`, `loopbreak`, or `hold_partial`.",
-        "- `MRP resultant:`, `Graph delta:`, `Pre-emption basis:`, and `Route:` are required public fields; field_witness and Closure/Reconstruction Witness mirrors do not replace them.",
-        "- For terminal STOP/no-new-resultant, use `Graph delta: none`, `Route: STOP`, and do not invent a graph edge.",
-        "- For generated or held routes, use the exact Stage 05 graph edge in `Graph delta:` and `MRP resultant:`.",
-        "- Do not print any extra public `[Mid-Reread Pressure]` or `MRP(G)` source outside this scaffold; every visible MRP source must have matching `field_witness.formal_reread_states[]` and `field_witness.mrp_resultants[]` rows, or remain non-MRP held-route prose.",
-        "- Do not rely on a later `MRP(ⁿB): ...` closure-ledger row as the only public MRP evidence; the `[Mid-Reread Pressure]` block itself must be parseable.",
+        "Stage 07 per-burden MRP visibility contract:",
+        "- The harness injects one canonical `[Mid-Reread Pressure]` block immediately after each line-start superscript `Land(ⁿB):` landing gate, rendered verbatim from the Stage 05 `per_burden_reread` records. Do NOT print any `[Mid-Reread Pressure]` heading or block yourself, in any section; a model-authored heading fails assembly.",
+        "- In the Layer B / ACT sections, print exactly one line-start superscript landing gate per terminal burden, for example `Land(¹B): landed.`; machine ⟦ACT⟧ rows and ASCII `Land(B1)` aliases do not count as public landing gates.",
+        "- Every landing gate must match one Stage 05 per_burden_reread record and every record must match one gate; assembly fails on either mismatch or on a duplicate gate.",
+        "- Harness-injected blocks for this case (reference only; never print these yourself):",
+        *[f"  {line}" for line in preview_lines],
+        "- The MRP/reread/terminal section is ledger-only: print the reconstruction floor, route-state ledger, and terminal states below; no `[Mid-Reread Pressure]` heading block:",
+        *[f"  {line}" for line in ledger_lines],
+        "- `field_witness.formal_reread_states[]` and `field_witness.mrp_resultants[]` must mirror the Stage 05 per_burden_reread records 1:1: same burden order, `route_result_type`, graph delta, and route; `formal_reread_states[].delta` must equal the record's `landed_delta`.",
+        "- Do not rely on a later `MRP(ⁿB): ...` closure-ledger row as the only public MRP evidence; the harness-injected blocks carry the public per-burden reread proof.",
     ]
     return "\n".join(lines)
 
@@ -3299,46 +3303,10 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
                         "after_body_ref": str(after.get("body_ref") or "").strip(),
                     }
                 )
-    mrp_resultants = [
-        {
-            "source": edge["from"],
-            "type": edge["type"],
-            "finding": "genuine-dependent",
-            "graph": f"{edge['from']} -> {edge['to']}",
-            "route": "RECURSE",
-        }
-        for edge in edges
-    ]
-    has_matching_final_resultant = any(
-        row["source"] == final_source and row["type"] == final_type for row in mrp_resultants
-    )
-    if final_source and not has_matching_final_resultant and (
-        final_type in {"no_new_resultant", "none", "stable", "hold_partial"} or final_route.upper() in {"STOP", "HOLD"}
-    ):
-        mrp_resultants.append(
-            {
-                "source": final_source,
-                "type": final_type,
-                "finding": "partial-real" if final_type == "hold_partial" else "stable",
-                "graph": "none",
-                "route": final_route,
-            }
-        )
-    if final_type == "hold_partial" and final_route.upper() == "HOLD":
-        for burden in held_or_partial_burdens:
-            if any(row["source"] == burden and row["type"] == "hold_partial" for row in mrp_resultants):
-                continue
-            mrp_resultants.append(
-                {
-                    "source": burden,
-                    "type": "hold_partial",
-                    "finding": "partial-real",
-                    "graph": "none",
-                    "route": "HOLD",
-                }
-            )
+    per_burden_entries = stage05_per_burden_entries(stage05)
+    mrp_resultants = mrp_resultant_rows_from_entries(per_burden_entries)
     formal_reread_states = stage07_formal_reread_states(
-        mrp_resultants,
+        per_burden_entries,
         terminal_states,
         unresolved_burdens=unresolved_burdens,
         owner_routes_by_burden=owner_routes_by_burden,
@@ -3545,7 +3513,7 @@ def contract_scaffold_lines(contract: str, marker: str) -> list[str]:
 
 def stage07_mrp_reread_section_scaffold(previous_stages: list[dict[str, Any]]) -> str:
     contract = stage07_mrp_reread_contract_guidance(previous_stages)
-    lines = contract_scaffold_lines(contract, "Print these checker-complete public MRP blocks")
+    lines = contract_scaffold_lines(contract, "ledger-only: print the reconstruction floor")
     if not lines:
         return ""
     return "\n".join(lines).rstrip() + "\n"
@@ -5195,7 +5163,9 @@ def release_section_expansion_prompt(
         ),
         "mrp_reread_terminal": (
             "Expand MRP reread, terminal-state, graph-delta, and field-diagnostic detail without "
-            "changing the route result."
+            "changing the route result. This section is ledger-only: never print a "
+            "`[Mid-Reread Pressure]` heading or block; the harness injects the canonical "
+            "per-burden blocks after each `Land(ⁿB):` landing gate from the Stage 05 records."
         ),
         "restorative_response": (
             "Preserve the exact Restorative Response heading and keep the parser-stable lines "
@@ -5254,6 +5224,7 @@ def write_compiled_release_manifest(
     raw_input_path: Path,
     section_entries: list[dict[str, str]],
     output_path: Path,
+    per_burden_reread: list[dict[str, Any]],
     target_output_kb: int = 0,
     act_partition: dict[str, Any] | None = None,
     section_budgets: dict[str, Any] | None = None,
@@ -5275,6 +5246,7 @@ def write_compiled_release_manifest(
             for entry in section_entries
         ],
         "output": {"path": rel(output_path, manifest_dir), "target_output_kb": int(target_output_kb or 0)},
+        "per_burden_reread": per_burden_reread,
         "non_claims": {
             "not_release_provenance": True,
             "not_model_behavior_by_itself": True,
@@ -5358,11 +5330,21 @@ def run_compiled_release_self_test(
 ) -> None:
     compiled_dir = run_dir / "compiled-release-self-test"
     source_text = replay_output_path.read_text(encoding="utf-8", errors="replace")
+    stage05_replay = stage_by_id(replay["stages"], "stage-05-mrp-reread-terminal-state")
+    per_burden_entries = stage05_per_burden_entries(stage05_replay)
+    mrp_ledger_section = stage07_mrp_reread_section_scaffold(replay["stages"])
+    if not mrp_ledger_section.strip():
+        raise HarnessError("Compiled-mode self-test could not derive the ledger-only MRP terminal section")
+    section_specs = [
+        (section_id, role, mrp_ledger_section if role == "mrp_reread_terminal" else text)
+        for section_id, role, text in split_text_for_compiled_self_test(source_text)
+    ]
     manifest_path = staged_output.manifest_for_sections(
         compiled_dir,
         case_id="self-test-a9-science-source-stage07-compiled",
         source_input=rel(replay_output_path, root),
-        section_specs=split_text_for_compiled_self_test(source_text),
+        section_specs=section_specs,
+        per_burden_reread=per_burden_entries,
     )
     assembly_record = assemble_compiled_manifest(manifest_path, root=root)
     compiled_output_path = root / assembly_record["output"]["path"]
@@ -6409,6 +6391,7 @@ def run_self_test(root: Path) -> int:
             }
         ],
         output_path=manifest_fixture / "output.md",
+        per_burden_reread=[staged_output.self_test_per_burden_entry("B1")],
         transport_resume={
             "schema": TRANSPORT_RESUME_SCHEMA,
             "resumed": True,
@@ -7150,6 +7133,12 @@ def run_self_test(root: Path) -> int:
                 "status": "pass",
                 "terminal_states": {"B1": "landed", "B2": "landed", "B3": "landed", "B4": "landed"},
                 "reread_state": {"source_burden": "B4", "route_result_type": "no_new_resultant", "route": "STOP"},
+                "per_burden_reread": [
+                    self_test_reread_entry("B1"),
+                    self_test_reread_entry("B2"),
+                    self_test_reread_entry("B3"),
+                    self_test_reread_entry("B4"),
+                ],
             },
             {
                 "id": "stage-06-field-witness-nar",
@@ -8509,6 +8498,7 @@ def run_self_test(root: Path) -> int:
                 "basis": "Stage 04 ACT burden B1 landed; reread produced no generated burden.",
                 "unresolved_burdens": [],
             },
+            "per_burden_reread": [self_test_reread_entry("B1")],
             "terminal_state_details": [
                 {
                     "burden_id": "B1",
@@ -8618,6 +8608,10 @@ def run_self_test(root: Path) -> int:
                     "generated_by": "MRP(B1)",
                     "terminal_state": "carried-RECURSE",
                 }
+            ],
+            "per_burden_reread": [
+                self_test_reread_generated_entry("B1", "B2"),
+                self_test_reread_hold_entry("B2"),
             ],
             "unresolved_burdens": ["B2"],
             "no_new_resultant_proof": {
@@ -9127,27 +9121,31 @@ def run_self_test(root: Path) -> int:
         assigned_body_refs=None,
     )
     for required in (
-        "Stage 07 public MRP block contract:",
+        "Stage 07 per-burden MRP visibility contract:",
         "[Mid-Reread Pressure]",
-        "Target: MRP(¹B) / Stage 05 terminal MRP source",
+        "Target: ¹B / bounded self-test burden",
         "R(H,Δ): held routes rechecked: none; live remainder: no remaining burden; release/next: STOP after ¹B.",
-        "Landed delta: Delta B1: terminal state landed; MRP route result type no_new_resultant.",
+        "Landed delta: Δ¹B / Delta(B1): bounded-self-test-delta recorded.",
         "Route-gradient: plain-gradient points to STOP after ¹B; no live pressure remains.",
         "Finding: stable",
         "MRP route result type: no_new_resultant",
-        "MRP resultant: stable -> graph none; route STOP",
+        "MRP resultant: stable -> no new graph edge; STOP",
         "Graph delta: none",
-        "Pre-emption basis: terminal states landed; B_MRP empty; no generated burden remains",
+        "Pre-emption basis: none",
         "Route: STOP",
-        "`Landed delta:` must use the exact same canonical delta string as `field_witness.formal_reread_states[].delta`.",
-        "`MRP route result type:` must be one canonical token with no trailing punctuation",
-        "field_witness and Closure/Reconstruction Witness mirrors do not replace them",
-        "Do not print any extra public `[Mid-Reread Pressure]` or `MRP(G)` source outside this scaffold",
+        "Boundary: T_lang does not imply guaranteed uptake.",
+        "Do NOT print any `[Mid-Reread Pressure]` heading or block yourself",
+        "print exactly one line-start superscript landing gate per terminal burden",
+        "`formal_reread_states[].delta` must equal the record's `landed_delta`",
+        "ledger-only: print the reconstruction floor",
+        "- MRP(¹B): type=no_new_resultant; finding=stable; graph=none; route=STOP",
     ):
         if required not in stage07_mrp_prompt:
-            raise HarnessError(f"Self-test Stage 07 MRP prompt omitted public-block scaffold: {required}")
+            raise HarnessError(f"Self-test Stage 07 MRP prompt omitted per-burden scaffold: {required}")
     if "MRP route result type: no_new_resultant." in stage07_mrp_prompt:
         raise HarnessError("Self-test Stage 07 MRP prompt allowed trailing punctuation on no_new_resultant")
+    if "terminal states landed; B_MRP empty; no generated burden remains" in stage07_mrp_prompt:
+        raise HarnessError("Self-test Stage 07 MRP prompt resurrected the invalid pre-emption literal")
     stage07_act_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
@@ -9956,6 +9954,7 @@ def run_self_test(root: Path) -> int:
                 "generated_burdens": [],
                 "dependency_graph_edges": [],
                 "no_new_resultant_proof": {"proved": True, "unresolved_burdens": []},
+                "per_burden_reread": [self_test_reread_entry("B1")],
             },
             {
                 "id": "stage-06-field-witness-nar",
@@ -10185,6 +10184,10 @@ def run_self_test(root: Path) -> int:
                 "route_result_type": "generated_burden_instantiation",
                 "route": "RECURSE",
             },
+            "per_burden_reread": [
+                self_test_reread_generated_entry("B1", "B2"),
+                self_test_reread_hold_entry("B2"),
+            ],
             "no_new_resultant_proof": {
                 "proved": False,
                 "basis": "self-test generated B2 remains unresolved",
@@ -10230,35 +10233,49 @@ def run_self_test(root: Path) -> int:
             raise HarnessError(f"Self-test Stage 07 generated-burden prompt omitted scaffold: {required}")
     if "MRP(B2): type=generated_burden_instantiation" in generated_stage07_witness_prompt:
         raise HarnessError("Self-test Stage 07 generated-burden prompt synthesized an MRP(B2) graph=none row")
-    wide_mrp_resultants = [
-        {"source": "B1", "type": "held_burden_activation", "finding": "genuine-dependent", "graph": "B1 -> B2", "route": "RECURSE"},
-        {"source": "B2", "type": "held_burden_activation", "finding": "genuine-dependent", "graph": "B2 -> B3", "route": "RECURSE"},
-        {"source": "B3", "type": "held_burden_activation", "finding": "genuine-dependent", "graph": "B3 -> B4", "route": "RECURSE"},
-        {"source": "B4", "type": "held_burden_activation", "finding": "genuine-dependent", "graph": "B4 -> B5", "route": "RECURSE"},
-        {"source": "B5", "type": "generated_burden_instantiation", "finding": "genuine-dependent", "graph": "B5 -> B6", "route": "RECURSE"},
-        {"source": "B6", "type": "no_new_resultant", "finding": "stable", "graph": "none", "route": "STOP"},
+    wide_per_burden_entries = [
+        self_test_reread_entry("B1", next_burden_id="B2"),
+        self_test_reread_entry("B2", next_burden_id="B3"),
+        self_test_reread_entry("B3", next_burden_id="B4"),
+        self_test_reread_entry("B4", next_burden_id="B5"),
+        self_test_reread_generated_entry("B5", "B6"),
+        self_test_reread_hold_entry("B6"),
     ]
     wide_states = stage07_formal_reread_states(
-        wide_mrp_resultants,
+        wide_per_burden_entries,
         {"B1": "landed", "B2": "landed", "B3": "landed", "B4": "landed", "B5": "landed", "B6": "carried-RECURSE"},
         unresolved_burdens=["B6"],
     )
     if [row.get("source_burden") for row in wide_states] != ["B1", "B2", "B3", "B4", "B5", "B6"]:
         raise HarnessError("Self-test Stage 07 wide MRP formal reread states did not preserve B1-B6 source registration")
-    if any(row.get("curl_state") != "null" for row in wide_states[:-1]):
+    if any(row.get("curl_state") != "null" for row in wide_states[:4]):
         raise HarnessError("Self-test Stage 07 wide MRP landed formal reread states emitted non-string/null curl_state")
+    for row, entry in zip(wide_states, wide_per_burden_entries):
+        if row.get("delta") != entry["landed_delta"]:
+            raise HarnessError("Self-test Stage 07 formal reread states did not mirror per_burden_reread landed_delta 1:1")
+        if row.get("route_gradient") != entry["route_gradient"]:
+            raise HarnessError("Self-test Stage 07 formal reread states did not mirror per_burden_reread route_gradient 1:1")
+        if row.get("preemption_basis") != entry["preemption_basis"]:
+            raise HarnessError("Self-test Stage 07 formal reread states did not mirror per_burden_reread preemption_basis 1:1")
+        if row.get("mrp_resultant") != entry["mrp_resultant"]:
+            raise HarnessError("Self-test Stage 07 formal reread states did not mirror per_burden_reread mrp_resultant 1:1")
     b6_state = wide_states[-1]
-    if b6_state.get("divergence_state") != "non-neutral" or b6_state.get("curl_state") != "unresolved":
-        raise HarnessError("Self-test Stage 07 B6 unresolved row did not mirror visible non-neutral/unresolved field diagnostics")
-    if b6_state.get("route_result_type") != "no_new_resultant" or b6_state.get("route") != "STOP":
-        raise HarnessError("Self-test Stage 07 B6 terminal row did not preserve STOP/no_new_resultant accounting")
-    proof = b6_state.get("no_new_resultant_proof")
-    if not isinstance(proof, dict) or proof.get("proved") is not False:
-        raise HarnessError("Self-test Stage 07 B6 unresolved row claimed clean no-new-resultant proof")
+    if b6_state.get("divergence_state") != "non-neutral" or b6_state.get("curl_state") != "held":
+        raise HarnessError("Self-test Stage 07 B6 held row did not mirror the per-burden non-neutral/held field diagnostics")
+    if b6_state.get("route_result_type") != "hold_partial" or b6_state.get("route") != "HOLD":
+        raise HarnessError("Self-test Stage 07 B6 held row did not preserve HOLD/hold_partial accounting")
+    if "no_new_resultant_proof" in b6_state:
+        raise HarnessError("Self-test Stage 07 B6 held row attached a terminal STOP proof to a held burden")
     if "plain-gradient holds ⁶B as HOLD/PARTIAL" not in str(b6_state.get("route_gradient")):
-        raise HarnessError("Self-test Stage 07 B6 unresolved row omitted public-token HOLD/PARTIAL route-gradient")
-    if "⁶B remains carried-RECURSE" not in str(b6_state.get("preemption_basis")):
-        raise HarnessError("Self-test Stage 07 B6 unresolved row omitted generated-burden HOLD/PARTIAL accounting")
+        raise HarnessError("Self-test Stage 07 B6 held row omitted public-token HOLD/PARTIAL route-gradient")
+    unresolved_stop_states = stage07_formal_reread_states(
+        [self_test_reread_entry("B6")],
+        {"B6": "carried-RECURSE"},
+        unresolved_burdens=["B6"],
+    )
+    unresolved_stop_proof = unresolved_stop_states[0].get("no_new_resultant_proof")
+    if not isinstance(unresolved_stop_proof, dict) or unresolved_stop_proof.get("proved") is not False:
+        raise HarnessError("Self-test Stage 07 unresolved STOP projection claimed a clean no-new-resultant proof")
     wide_stage02 = dict(normalized_stage02)
     wide_stage02["burden_floor"] = ["B1", "B2", "B3", "B4", "B5"]
     wide_stage05 = normalized_stage(
@@ -10290,6 +10307,14 @@ def run_self_test(root: Path) -> int:
                     "reason": "self-test generated burden remains live",
                 }
             ],
+            "per_burden_reread": [
+                self_test_reread_entry("B1", next_burden_id="B2"),
+                self_test_reread_entry("B2", next_burden_id="B3"),
+                self_test_reread_entry("B3", next_burden_id="B4"),
+                self_test_reread_entry("B4", next_burden_id="B5"),
+                self_test_reread_generated_entry("B5", "B6"),
+                self_test_reread_hold_entry("B6"),
+            ],
             "no_new_resultant_proof": {
                 "proved": False,
                 "basis": "self-test generated B6 remains unresolved",
@@ -10315,17 +10340,20 @@ def run_self_test(root: Path) -> int:
         assigned_body_refs=None,
     )
     for required in (
-        "Emit one `[Mid-Reread Pressure]` block for every Stage 05 / field_witness `mrp_resultants[]` source",
-        "Target: MRP(¹B) / Stage 05 terminal MRP source",
-        "Target: MRP(²B) / Stage 05 terminal MRP source",
-        "Target: MRP(³B) / Stage 05 terminal MRP source",
-        "Target: MRP(⁴B) / Stage 05 terminal MRP source",
-        "Target: MRP(⁵B) / Stage 05 terminal MRP source",
-        "Target: MRP(⁶B) / Stage 05 terminal MRP source",
+        "The harness injects one canonical `[Mid-Reread Pressure]` block immediately after each line-start superscript `Land(ⁿB):` landing gate",
+        "Do NOT print any `[Mid-Reread Pressure]` heading or block yourself",
+        "Every landing gate must match one Stage 05 per_burden_reread record",
+        "Target: ¹B / bounded self-test burden",
+        "Target: ²B / bounded self-test burden",
+        "Target: ³B / bounded self-test burden",
+        "Target: ⁴B / bounded self-test burden",
+        "Target: ⁵B / bounded self-test burden",
+        "Target: ⁶B / bounded self-test burden",
         "MRP route result type: generated_burden_instantiation",
         "MRP route result type: hold_partial",
         "Route: HOLD",
-        "do not summarize a B1-B6 chain as one MRP block",
+        "- MRP(⁶B): type=hold_partial; finding=partial-real; graph=none; route=HOLD",
+        "ledger-only: print the reconstruction floor",
     ):
         if required not in wide_stage07_mrp_prompt:
             raise HarnessError(f"Self-test Stage 07 wide MRP prompt omitted scaffold: {required}")
@@ -10350,7 +10378,7 @@ def run_self_test(root: Path) -> int:
         '"route_result_type": "hold_partial"',
         '"route": "HOLD"',
         '"curl_state": "null"',
-        '"curl_state": "unresolved"',
+        '"curl_state": "held"',
         '"coverage_complete": false',
         '"id": "B6"',
         '"generated_by": "MRP(B5)"',
@@ -10409,6 +10437,11 @@ def run_self_test(root: Path) -> int:
                 "route_result_type": "no_new_resultant",
                 "route": "STOP",
             },
+            "per_burden_reread": [
+                self_test_reread_entry("B1"),
+                self_test_reread_hold_entry("B2"),
+                self_test_reread_entry("B3"),
+            ],
             "no_new_resultant_proof": {
                 "proved": False,
                 "basis": "baseline B_LA burden remains held; whole-field STOP is not licensed",
@@ -10431,12 +10464,14 @@ def run_self_test(root: Path) -> int:
     if baseline_held_payload is None:
         raise HarnessError("Self-test baseline-held canary did not emit field_witness JSON")
     for required in (
-        "Target: MRP(²B) / Stage 05 terminal MRP source",
-        "MRP route result type: hold_partial",
-        "Route: HOLD",
+        "MRP terminal reconstruction floor:",
+        "- MRP(²B): type=hold_partial; finding=partial-real; graph=none; route=HOLD",
+        "²B: held-with-reason",
     ):
         if required not in baseline_held_mrp_text:
-            raise HarnessError(f"Self-test baseline-held MRP prompt omitted scaffold: {required}")
+            raise HarnessError(f"Self-test baseline-held MRP ledger omitted scaffold: {required}")
+    if "[Mid-Reread Pressure]" in baseline_held_mrp_text:
+        raise HarnessError("Self-test baseline-held MRP ledger must stay ledger-only without heading blocks")
     if "coverage_complete=false; unresolved_burdens=[B2]" not in baseline_held_witness_text:
         raise HarnessError("Self-test baseline-held witness omitted coverage_complete=false for B2")
     if "b_la_hold_open=[B2]" not in baseline_held_witness_text:
@@ -10451,9 +10486,9 @@ def run_self_test(root: Path) -> int:
     if not b2_state:
         raise HarnessError("Self-test baseline-held canary omitted B2 formal reread state")
     if b2_state.get("route_result_type") != "hold_partial" or b2_state.get("route") != "HOLD":
-        raise HarnessError("Self-test baseline-held canary did not convert false STOP to HOLD/PARTIAL")
-    if b2_state.get("divergence_state") != "non-neutral" or b2_state.get("curl_state") != "unresolved":
-        raise HarnessError("Self-test baseline-held canary did not mirror non-neutral/unresolved diagnostics")
+        raise HarnessError("Self-test baseline-held canary did not preserve the held HOLD/PARTIAL record")
+    if b2_state.get("divergence_state") != "non-neutral" or b2_state.get("curl_state") != "held":
+        raise HarnessError("Self-test baseline-held canary did not mirror non-neutral/held diagnostics")
     if "no_new_resultant_proof" in b2_state:
         raise HarnessError("Self-test baseline-held canary attached terminal STOP proof to held burden")
     if any(
@@ -10510,6 +10545,19 @@ def run_self_test(root: Path) -> int:
                 "route_result_type": "no_new_resultant" if executed else "generated_burden_instantiation",
                 "route": "STOP" if executed else "RECURSE",
             },
+            "per_burden_reread": [
+                *(
+                    self_test_reread_entry(burden)
+                    for burden in generated_topology_stage02["burden_floor"]
+                    if burden != parent
+                ),
+                self_test_reread_generated_entry(parent, generated),
+                (
+                    self_test_reread_entry(generated)
+                    if executed
+                    else self_test_reread_hold_entry(generated)
+                ),
+            ],
         }
         if executed:
             payload["no_new_resultant_proof"] = {
@@ -10704,18 +10752,19 @@ def run_self_test(root: Path) -> int:
     if not canonical_mrp_event:
         raise HarnessError("Self-test Stage 07 structural MRP canonicalization did not record an event")
     for required in (
-        "Target: MRP(⁵B) / Stage 05 terminal MRP source",
-        "Route-gradient: generated-gradient points to RECURSE through ⁵B → ⁶B after Delta ⁵B",
+        "MRP terminal reconstruction floor:",
+        "- MRP(⁵B): type=generated_burden_instantiation; finding=genuine-dependent; graph=⁵B → ⁶B; route=RECURSE",
         "## Burden 6 / ⁶B [generated-by: MRP(⁵B)]",
         "HOLD(⁶B): generated MRP burden remains unresolved/unexecuted",
-        "Target: MRP(⁶B) / Stage 05 terminal MRP source",
-        "MRP route result type: hold_partial",
-        "Route: HOLD",
+        "- MRP(⁶B): type=hold_partial; finding=partial-real; graph=none; route=HOLD",
+        "⁶B: carried-RECURSE",
     ):
         if required not in canonical_mrp_text:
             raise HarnessError(f"Self-test Stage 07 structural MRP canonicalization omitted scaffold: {required}")
     if "old model prose only" in canonical_mrp_text:
         raise HarnessError("Self-test Stage 07 structural MRP canonicalization retained drifted model MRP prose")
+    if "[Mid-Reread Pressure]" in canonical_mrp_text:
+        raise HarnessError("Self-test Stage 07 structural MRP canonicalization must replace heading blocks with the ledger-only section")
 
     drifted_field_witness = (
         "Closure/Reconstruction Witness\n"
@@ -10743,7 +10792,7 @@ def run_self_test(root: Path) -> int:
         '"source_burden": "B6"',
         '"route_result_type": "hold_partial"',
         '"divergence_state": "non-neutral"',
-        '"curl_state": "unresolved"',
+        '"curl_state": "held"',
         '"coverage_complete": false',
         '"owner_route": [\n        "source-status-repair.source-order",\n        "P7.scope-boundary"\n      ]',
     ):
@@ -10801,18 +10850,22 @@ def run_self_test(root: Path) -> int:
         assigned_body_refs=None,
     )
     for required in (
-        "Target: MRP(¹B) / Stage 05 terminal MRP source",
-        "R(H,Δ): held routes rechecked: ¹B → ²B; live remainder: ²B; release/next: RECURSE.",
-        "Landed delta: Delta B1: terminal state landed; MRP route result type generated_burden_instantiation.",
-        "Route-gradient: generated-gradient points to RECURSE through ¹B → ²B after Delta ¹B; newly generated ²B [generated-by: MRP(¹B)] is absent from 𝔅_LA and comes from post-Land field-pressure.",
+        "Target: ¹B / bounded self-test burden",
+        "R(H,Δ): held routes rechecked: ²B; live remainder: ²B; release/next: RECURSE to ²B.",
+        "Landed delta: Δ¹B / Delta(B1): bounded-self-test-delta recorded.",
+        "Route-gradient: newly generated ²B [generated-by: MRP(¹B)] is absent from B_LA after Δ ¹B post-Land field-pressure.",
         "Matched owner/TTP route: [source-status-repair.source-order], [P7.scope-boundary]",
         "Finding: genuine-dependent",
         "MRP route result type: generated_burden_instantiation",
-        "MRP resultant: genuine-dependent -> graph ¹B → ²B; route RECURSE",
+        "MRP resultant: genuine-dependent -> graph B1 -> B2; RECURSE",
         "Graph delta: ¹B → ²B",
-        "Pre-emption basis: graph-bound MRP route recorded",
+        "Pre-emption basis: graph-bound",
         "Route: RECURSE",
-        "For generated or held routes, use the exact Stage 05 graph edge in `Graph delta:`",
+        "MRP route result type: hold_partial",
+        "Route: HOLD",
+        "- MRP(¹B): type=generated_burden_instantiation; finding=genuine-dependent; graph=¹B → ²B; route=RECURSE",
+        "- MRP(²B): type=hold_partial; finding=partial-real; graph=none; route=HOLD",
+        "must mirror the Stage 05 per_burden_reread records 1:1",
     ):
         if required not in generated_stage07_mrp_prompt:
             raise HarnessError(f"Self-test Stage 07 generated MRP prompt omitted scaffold: {required}")
@@ -11242,6 +11295,7 @@ def run_self_test(root: Path) -> int:
         "nla_semantic_faithfulness": "pass",
         "field_witness_convergence": "pass",
         "formal_reread_state_semantics": "pass",
+        "mid_reread_pressure": "pass",
         "mrp_generated_burden": "pass",
         "graph_completeness_json": "pass",
         "manual_smoke_render_contract": "pass",
@@ -11607,6 +11661,10 @@ def run_release_validators(root: Path, output_path: Path) -> dict[str, str]:
         (
             "formal_reread_state_semantics",
             [sys.executable, str(root / "tools" / "check_formal_reread_state_semantics.py"), "--outputs", str(output_path)],
+        ),
+        (
+            "mid_reread_pressure",
+            [sys.executable, str(root / "tools" / "check_mid_reread_pressure.py"), "--outputs", str(output_path)],
         ),
         (
             "mrp_generated_burden",
@@ -12132,6 +12190,9 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 raw_input_path=raw_input,
                 section_entries=section_entries,
                 output_path=output_path,
+                per_burden_reread=stage05_per_burden_entries(
+                    stage_by_id(stages, "stage-05-mrp-reread-terminal-state")
+                ),
                 target_output_kb=args.target_output_kb,
                 act_partition=act_partition,
                 section_budgets=section_budgets,
