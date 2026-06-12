@@ -1361,11 +1361,12 @@ def public_per_burden_graph_value(value: str) -> str:
 
 
 def public_per_burden_mrp_resultant_value(value: str) -> str:
-    return re.sub(
+    rendered = re.sub(
         r"\bB([1-9][0-9]*)\s*(?:->|→)\s*B([1-9][0-9]*)\b",
         lambda match: f"{public_burden_token(match.group(1))} → {public_burden_token(match.group(2))}",
         str(value or ""),
     )
+    return public_per_burden_text_value(rendered)
 
 
 def public_per_burden_text_value(value: str) -> str:
@@ -3415,6 +3416,7 @@ def run_self_test(root: Path) -> int:
     public_alias_entry["pressure_activations"][
         "dependency-tug"
     ] = "P1: reread finds B1-B4 already landed while B5 remains the local closure target."
+    public_alias_entry["mrp_resultant"] = "none / B5 produces no generated burden and no remaining dependency edge"
     public_alias_block = render_mrp_block(public_alias_entry)
     public_alias_probe = re.sub(r"(?i)Delta\(\s*B[1-9][0-9]*\s*\)", "", public_alias_block)
     if re.search(r"\bB[1-9][0-9]*\b", public_alias_probe):

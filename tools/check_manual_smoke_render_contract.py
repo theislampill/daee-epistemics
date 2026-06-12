@@ -503,6 +503,7 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
         re.compile(
             r"(?i)\b(?:source[- ]status|source status|authority[- ]order|source authority|"
             r"source[- ]order|Qur'?anic source order|revealed source(?:s| order)?|"
+            r"moral bench|external tribunal|final authority|higher court|"
             r"proof[- ]stack|broader proof[- ]texts?|hidden rescue|"
             r"source-correct(?:ed|ion)|revelation define|let revelation define|"
             r"source-use|source[- ]functions?|source[- ]function[- ][a-z-]+|source-prestige|source accumulation|proof[- ]text|"
@@ -589,6 +590,11 @@ SOURCE_EXECUTION_RE = re.compile(
     r"exegetical warrant|textual warrant|proof[- ]stack|broader proof[- ]texts?|"
     r"hidden rescue|hidden authority|judge over the text|source[- ]order office|"
     r"non[- ]load[- ]bearing rescue material)\b"
+)
+DO_SECOND_LOOP_ACTION_RE = re.compile(
+    r"(?is)\b(?:bound|bounds|bounded|narrow|narrows|narrowed|calibrate|calibrates|"
+    r"calibrated|separate|separates|separated|sequence|sequenced|warn|warning|"
+    r"guide|guidance|persuade|persuasion|coerce|coercion|compel|compelling)\b"
 )
 OWNER_NAME_ONLY_RE = re.compile(
     r"(?i)\b(?:is named here|named here,\s*so|so .{0,80}\bis handled)\b"
@@ -1151,6 +1157,56 @@ def operation_body_has_state_delta(operation_body: str, result: str, contributio
     return bool(STATE_CHANGE_RE.search(delta_text) and contribution_explains_land(contribution))
 
 
+def target_word_contact(target: str, text: str) -> bool:
+    target_words = [
+        word.lower()
+        for word in re.findall(r"[A-Za-z][A-Za-z']{2,}", re.sub(r"[-_/]", " ", target))
+        if word.lower()
+        not in {
+            "the",
+            "this",
+            "that",
+            "claim",
+            "claims",
+            "move",
+            "burden",
+            "route",
+            "pressure",
+            "local",
+        }
+    ]
+    if len(target_words) < 2:
+        return False
+    operation_words = {
+        word.lower()
+        for word in re.findall(r"[A-Za-z][A-Za-z']{2,}", re.sub(r"[-_/]", " ", text))
+    }
+    return any(
+        word in operation_words
+        or (
+            len(word) >= 6
+            and any(candidate.startswith(word[:6]) or word.startswith(candidate[:6]) for candidate in operation_words)
+        )
+        for word in target_words
+    )
+
+
+def do_second_loop_pressure_action_backed(
+    owner: str,
+    target: str,
+    operation_text: str,
+    operation_scope: str,
+) -> bool:
+    if owner_family(owner) != "DO_SECOND_LOOP":
+        return False
+    payload = " ".join((operation_text, operation_scope))
+    if not target_word_contact(target, operation_text):
+        return False
+    if not owner_specific_operation_performed(owner, payload):
+        return False
+    return bool(STATE_CHANGE_RE.search(payload) and DO_SECOND_LOOP_ACTION_RE.search(payload))
+
+
 def source_repair_state_change_visible(
     owner: str,
     result: str,
@@ -1517,6 +1573,12 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
     owner = submove_owner(block)
     if owner_family(owner) == "PROOF_METHOD" and proof_method_carrier_transition_visible(block):
         return True
+    family_pressure_action = do_second_loop_pressure_action_backed(
+        owner,
+        target,
+        operation_text,
+        operation_scope,
+    )
     owner_performed = owner_specific_operation_performed(owner, operation_scope)
     if not (OPERATION_MECHANISM_RE.search(combined) or owner_performed):
         return False
@@ -1528,7 +1590,7 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
     if semantic_categories < 2 and not owner_performed:
         return False
     heading = next((line.strip() for line in block.splitlines() if line.strip()), "")
-    if not OPERATION_ACTION_RE.search(f"{heading} {operation_text}"):
+    if not OPERATION_ACTION_RE.search(f"{heading} {operation_text}") and not family_pressure_action:
         return False
     if not owner_performed:
         return False
@@ -1537,7 +1599,7 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
         or source_repair_state_change_visible(owner, result, contribution, operation_body)
     ):
         return False
-    if not operation_acts_on_pressure(target, operation_text):
+    if not operation_acts_on_pressure(target, operation_text) and not family_pressure_action:
         return False
     if not operation_body_has_state_delta(operation_body, result, contribution):
         return False

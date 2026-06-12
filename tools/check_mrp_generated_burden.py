@@ -221,7 +221,7 @@ SOURCE_OWNED_ACT_OPERATIONS = {
 BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
     "M8": {"consequence-traced", "dependency-exposed"},
     "PATTERN_PROFILE": {"carrier-function-typed", "proof-packet-reconstructed"},
-    "PROOF_METHOD": {"proof-family-carrier-typed"},
+    "PROOF_METHOD": {"proof-family-carrier-typed", "proof-route-status-clarified"},
     "SOURCE": {
         "authority-order-repaired",
         "source-order-repaired",
@@ -1446,6 +1446,25 @@ def target_word_contact(target: str, text: str) -> bool:
     )
 
 
+def pattern_profile_compact_target_backed(
+    owner: str,
+    target: str,
+    operation_text: str,
+    operation_scope: str,
+) -> bool:
+    if strict_owner_family(owner) != "PATTERN_PROFILE":
+        return False
+    payload = " ".join((operation_text, operation_scope))
+    if not target_word_contact(target, operation_text):
+        return False
+    if not owner_specific_operation_performed(FAMILY_OPERATION_OWNER["PATTERN_PROFILE"], payload):
+        return False
+    return bool(
+        PATTERN_PROFILE_LOADED_LABEL_RE.search(payload)
+        and PATTERN_PROFILE_LOADED_LABEL_STATE_RE.search(payload)
+    )
+
+
 def do_second_loop_pressure_action_backed(
     owner: str,
     target: str,
@@ -1488,11 +1507,20 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
         operation_text,
         operation_scope,
     )
-    if not target_pressure_identifiable(target) and not p7_scope_boundary_target_backed(
-        owner,
-        target,
+    if (
+        not target_pressure_identifiable(target)
+        and not p7_scope_boundary_target_backed(
+            owner,
+            target,
             operation_text,
             operation_scope,
+        )
+        and not pattern_profile_compact_target_backed(
+            owner,
+            target,
+            operation_text,
+            operation_scope,
+        )
     ):
         return False
     owner_performed = owner_specific_operation_performed(owner, operation_scope)
@@ -1571,10 +1599,9 @@ def delta_result_has_concrete_state_change(record: ActRecord, family: str, block
         and record.delta_result in BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get("PATTERN_PROFILE", set())
     ):
         return pattern_profile_delta_result_has_body_backing(record, block)
-    if (
-        family == "PROOF_METHOD"
-        and record.operation == "proof-family-and-carrier-audit"
-        and record.delta_result == "proof-family-carrier-typed"
+    if family == "PROOF_METHOD" and record.delta_result in BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get(
+        "PROOF_METHOD",
+        set(),
     ):
         return proof_method_carrier_transition_visible(block)
     if (
