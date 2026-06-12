@@ -111,6 +111,7 @@ PUBLIC_MACHINE_PAYLOAD_LINE_RE = re.compile(
 STAGE05_TERMINAL_BURDEN_ID_RE = re.compile(r"^B[1-9][0-9]*$")
 BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*)?$")
 ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
+STAGE05_REREAD_PREFIX_RE = re.compile(r"^R\(H,\s*(?:Delta(?:\([^)]*\))?|Δ[^)]*)\)\s*:\s*")
 CONTROLLED_STAGE05_TERMINAL_STATES = {
     "landed",
     "cleared",
@@ -878,6 +879,34 @@ def canonical_burden_id_from_text(value: str, allowed_ids: set[str] | None = Non
     return matches[0] if len(matches) == 1 else None
 
 
+def canonicalize_stage05_reread_invocation(stage: dict[str, Any]) -> None:
+    entries = stage.get("per_burden_reread")
+    if not isinstance(entries, list):
+        return
+    rewrites: list[dict[str, str]] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        raw = entry.get("reread")
+        if not isinstance(raw, str) or not raw.strip():
+            continue
+        canonical = STAGE05_REREAD_PREFIX_RE.sub("R(H,Δ): ", raw.strip(), count=1)
+        if canonical == raw:
+            continue
+        entry["reread"] = canonical
+        rewrites.append(
+            {
+                "burden_id": str(entry.get("burden_id") or ""),
+                "raw_reread": raw,
+                "canonical_reread": canonical,
+            }
+        )
+    if rewrites:
+        normalization = normalization_object(stage)
+        normalization["per_burden_reread_rh_delta_canonicalizations"] = rewrites
+        stage["normalization"] = normalization
+
+
 def normalize_stage02_diagnostic_fields(stage: dict[str, Any]) -> None:
     normalization = normalization_object(stage)
 
@@ -1471,6 +1500,7 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
     elif not isinstance(proof, bool):
         raise HarnessError("stage-05 no_new_resultant_proof must be boolean or object")
 
+    canonicalize_stage05_reread_invocation(stage)
     per_burden_errors = staged_output.per_burden_reread_entry_errors(
         stage.get("per_burden_reread"),
         label="stage-05 per_burden_reread",
@@ -4402,12 +4432,63 @@ def compiled_section_budget_guardrail(
     }
 
 
+def canonicalize_visible_act_rows_from_stage04(
+    section_role: str,
+    text: str,
+    previous_stages: list[dict[str, Any]],
+) -> tuple[str, dict[str, Any] | None]:
+    if section_role != "layer_b_act" or "⟦ACT" not in text:
+        return text, None
+    stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    act_details = stage04_act_details_by_ref(stage04)
+    if not act_details:
+        return text, None
+    replacements: list[dict[str, str]] = []
+    lines: list[str] = []
+    for line in text.splitlines(keepends=True):
+        if "⟦ACT" not in line:
+            lines.append(line)
+            continue
+        ref_match = ACT_BODY_REF_RE.search(line)
+        if ref_match is None:
+            lines.append(line)
+            continue
+        body_ref = ref_match.group(1)
+        canonical = act_details.get(body_ref)
+        if canonical is None:
+            lines.append(line)
+            continue
+        canonical_row = str(canonical.get("row") or "")
+        if not canonical_row or line.strip() == canonical_row:
+            lines.append(line)
+            continue
+        newline = "\n" if line.endswith("\n") else ""
+        lines.append(canonical_row + newline)
+        replacements.append({"body_ref": body_ref})
+    if not replacements:
+        return text, None
+    normalized = "".join(lines)
+    return normalized, {
+        "role": section_role,
+        "canonicalized_visible_act_rows_from_stage04": True,
+        "replacement_count": len(replacements),
+        "body_refs": [item["body_ref"] for item in replacements],
+        "original_bytes": len(text.encode("utf-8")),
+        "canonical_bytes": len(normalized.encode("utf-8")),
+    }
+
+
 def canonical_compiled_structural_section(
     section_role: str,
     text: str,
     previous_stages: list[dict[str, Any]],
 ) -> tuple[str, dict[str, Any] | None]:
     text, mixed_concealment_event = canonicalize_mixed_concealment_projection(
+        section_role,
+        text,
+        previous_stages,
+    )
+    text, visible_act_event = canonicalize_visible_act_rows_from_stage04(
         section_role,
         text,
         previous_stages,
@@ -4433,6 +4514,9 @@ def canonical_compiled_structural_section(
                 event["demoted_duplicate_own_section_headings"] = duplicate_heading_event[
                     "demoted_duplicate_own_section_headings"
                 ]
+            if event is not None and visible_act_event is not None and event is not visible_act_event:
+                event["canonicalized_visible_act_rows_from_stage04"] = True
+                event["visible_act_row_replacement_count"] = visible_act_event["replacement_count"]
             return text, event
         scaffold = stage07_restorative_response_section_scaffold(previous_stages)
         body = re.sub(
@@ -4444,7 +4528,13 @@ def canonical_compiled_structural_section(
         if body:
             scaffold = scaffold.rstrip() + "\n\n" + body.rstrip() + "\n"
     else:
-        event = public_alias_event or owner_transition_event or mixed_concealment_event or duplicate_heading_event
+        event = (
+            public_alias_event
+            or owner_transition_event
+            or mixed_concealment_event
+            or duplicate_heading_event
+            or visible_act_event
+        )
         if event is not None and public_alias_event is not None and event is not public_alias_event:
             event["canonicalized_public_burden_aliases"] = True
             event["public_alias_replacement_count"] = public_alias_event["replacement_count"]
@@ -4452,6 +4542,9 @@ def canonical_compiled_structural_section(
             event["demoted_duplicate_own_section_headings"] = duplicate_heading_event[
                 "demoted_duplicate_own_section_headings"
             ]
+        if event is not None and visible_act_event is not None and event is not visible_act_event:
+            event["canonicalized_visible_act_rows_from_stage04"] = True
+            event["visible_act_row_replacement_count"] = visible_act_event["replacement_count"]
         return text, event
     if not scaffold:
         return text, mixed_concealment_event or duplicate_heading_event
@@ -4478,12 +4571,139 @@ def canonical_compiled_structural_section(
     return scaffold, event
 
 
+def stage05_closed_terminal_state(value: Any) -> bool:
+    return str(value or "").strip() in {"landed", "cleared", "discharged-as-derivative"}
+
+
+def stage05_edge_endpoints(edge: Any) -> tuple[str, str, str]:
+    if not isinstance(edge, dict):
+        return "", "", ""
+    source = burden_endpoint_id(edge.get("from") or edge.get("source"))
+    target = burden_endpoint_id(edge.get("to") or edge.get("target"))
+    edge_type = str(edge.get("type") or "").strip()
+    return source, target, edge_type
+
+
+def normalize_stage05_initial_burden_continuations(
+    stage04: dict[str, Any] | None,
+    stage05: dict[str, Any] | None,
+) -> None:
+    """Map intermediate local STOP rows onto the existing held-burden RECURSE shape."""
+    if not isinstance(stage04, dict) or not isinstance(stage05, dict):
+        return
+    terminal_states = stage05.get("terminal_states")
+    entries = stage05.get("per_burden_reread")
+    if (
+        not isinstance(terminal_states, dict)
+        or not isinstance(entries, list)
+        or not all(isinstance(entry, dict) for entry in entries)
+    ):
+        return
+    burden_order = ordered_unique(list_field(stage04, "act_burdens") or list_field(stage04, "act_targets"))
+    burden_order = [burden for burden in burden_order if burden in terminal_states]
+    if len(burden_order) <= 1:
+        return
+    entry_by_burden = {
+        str(entry.get("burden_id") or ""): entry
+        for entry in entries
+        if isinstance(entry.get("burden_id"), str)
+    }
+    edges = stage05.get("dependency_graph_edges")
+    if not isinstance(edges, list):
+        return
+    edge_keys = {
+        (source, target, edge_type or "held_burden_activation")
+        for source, target, edge_type in (stage05_edge_endpoints(edge) for edge in edges)
+        if source and target
+    }
+    rewrites: list[dict[str, str]] = []
+    for source, target in zip(burden_order, burden_order[1:]):
+        entry = entry_by_burden.get(source)
+        if entry is None:
+            continue
+        if not stage05_closed_terminal_state(terminal_states.get(source)):
+            continue
+        if not stage05_closed_terminal_state(terminal_states.get(target)):
+            continue
+        if (
+            str(entry.get("finding") or "") != "stable"
+            or str(entry.get("route_result_type") or "") != "no_new_resultant"
+            or str(entry.get("route") or "") != "STOP"
+            or str(entry.get("graph_delta") or "") != "none"
+            or str(entry.get("preemption_basis") or "") != "none"
+        ):
+            continue
+        public_source = public_burden_id(source)
+        public_target = public_burden_id(target)
+        rewrites.append(
+            {
+                "source_burden": source,
+                "next_burden": target,
+                "raw_route_result_type": "no_new_resultant",
+                "canonical_route_result_type": "held_burden_activation",
+            }
+        )
+        entry["reread"] = (
+            f"R(H,Δ): held routes rechecked: {public_target}; live remainder: "
+            f"{public_target} remains as the next already-routed initial burden; "
+            f"release/next: RECURSE to {public_target}."
+        )
+        entry["route_gradient"] = (
+            f"already-held {public_target} from the initial burden set remains live "
+            f"after R(H,Δ) from {public_source}."
+        )
+        entry["finding"] = "genuine-dependent"
+        entry["route_result_type"] = "held_burden_activation"
+        entry["mrp_resultant"] = f"genuine-dependent -> graph {source} -> {target}; RECURSE"
+        entry["graph_delta"] = f"{source} -> {target}"
+        entry["preemption_basis"] = "graph-bound"
+        entry["route"] = "RECURSE"
+        activations = entry.get("pressure_activations")
+        if isinstance(activations, dict):
+            activations["dependency-tug"] = (
+                f"pressure class: dependency-scan — {public_target} remains the next "
+                f"already-routed initial burden after {public_source}."
+            )
+            activations["entailment-pressure"] = (
+                f"M8 — route consequence points from {public_source} to {public_target} "
+                "without generating a new burden."
+            )
+        edge_key = (source, target, "held_burden_activation")
+        if edge_key not in edge_keys:
+            edges.append({"from": source, "to": target, "type": "held_burden_activation"})
+            edge_keys.add(edge_key)
+    if not rewrites:
+        return
+    proof = stage05.get("no_new_resultant_proof")
+    if isinstance(proof, dict) and proof.get("proved") is True:
+        proof["basis"] = (
+            "No generated B_MRP burden was produced; intermediate original B_LA "
+            "continuations are recorded separately as held_burden_activation graph "
+            "edges until the final terminal burden."
+        )
+    normalization = normalization_object(stage05)
+    normalization["per_burden_intermediate_stop_continuations"] = rewrites
+    stage05["normalization"] = normalization
+    per_burden_errors = staged_output.per_burden_reread_entry_errors(
+        entries,
+        label="stage-05 per_burden_reread",
+        terminal_state_ids=set(str(key) for key in terminal_states),
+    )
+    if per_burden_errors:
+        raise HarnessError(
+            "stage-05 per_burden continuation normalization produced invalid records:\n- "
+            + "\n- ".join(per_burden_errors)
+        )
+
+
 def validate_incremental_handoffs(stages: list[dict[str, Any]]) -> None:
     stage02 = stage_by_id(stages, "stage-02-layer-a-diagnostic-ir")
     stage03 = stage_by_id(stages, "stage-03-routing-owner-gate")
     stage04 = stage_by_id(stages, "stage-04-burden-execution-act")
     stage05 = stage_by_id(stages, "stage-05-mrp-reread-terminal-state")
     stage06 = stage_by_id(stages, "stage-06-field-witness-nar")
+    if stage04 and stage05:
+        normalize_stage05_initial_burden_continuations(stage04, stage05)
     if stage02 and stage03:
         if set(list_field(stage02, "burden_floor")) != set(list_field(stage03, "route_targets")):
             raise HarnessError("stage-03 route_targets must match stage-02 burden_floor")
@@ -8652,6 +8872,50 @@ def run_self_test(root: Path) -> int:
     terminal_basis = terminal_detail.get("basis")
     if not isinstance(terminal_basis, list) or len(terminal_basis) != 2:
         raise HarnessError("Self-test failed to preserve Stage 05 terminal_state detail list basis")
+    two_burden_stage04 = dict(normalized_stage04)
+    two_burden_stage04["act_targets"] = ["B1", "B2"]
+    two_burden_stage04["act_burdens"] = ["B1", "B2"]
+    two_stop_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "landed"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after either terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [
+                self_test_reread_entry("B1"),
+                self_test_reread_entry(
+                    "B2",
+                    reread=(
+                        "R(H,Δ²B): held routes rechecked: none; live remainder: "
+                        "no remaining burden; release/next: STOP after ²B."
+                    ),
+                ),
+            ],
+        },
+    )
+    validate_incremental_handoffs([two_burden_stage04, two_stop_stage05])
+    continuation_entries = {
+        str(entry["burden_id"]): entry
+        for entry in two_stop_stage05["per_burden_reread"]
+    }
+    b1_continuation = continuation_entries["B1"]
+    if b1_continuation.get("route_result_type") != "held_burden_activation":
+        raise HarnessError("Self-test failed to normalize intermediate B1 STOP into held_burden_activation")
+    if b1_continuation.get("route") != "RECURSE" or b1_continuation.get("graph_delta") != "B1 -> B2":
+        raise HarnessError("Self-test failed to normalize intermediate B1 route/graph continuation")
+    if not any(
+        stage05_edge_endpoints(edge) == ("B1", "B2", "held_burden_activation")
+        for edge in two_stop_stage05.get("dependency_graph_edges", [])
+    ):
+        raise HarnessError("Self-test failed to record held_burden_activation edge for intermediate STOP")
+    if not str(continuation_entries["B2"].get("reread") or "").startswith("R(H,Δ):"):
+        raise HarnessError("Self-test failed to canonicalize burden-specific R(H,Δn) reread invocation")
     try:
         normalized_stage(
             "stage-05-mrp-reread-terminal-state",
@@ -9331,6 +9595,16 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
+    drifted_visible_act = canonical_act_row.replace("Land(¹B)+", "Land(additional burden 1)+")
+    canonical_act_text, canonical_act_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        "Layer B - Bounded Governed Response\n" + drifted_visible_act + "\n",
+        [normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+    )
+    if canonical_act_row not in canonical_act_text or "Land(additional burden 1)" in canonical_act_text:
+        raise HarnessError("Self-test Stage 07 ACT canonicalizer did not restore exact Stage 04 row")
+    if not canonical_act_event or canonical_act_event.get("canonicalized_visible_act_rows_from_stage04") is not True:
+        raise HarnessError("Self-test Stage 07 ACT canonicalizer did not record an event")
     proof_pattern_rows = [
         "⟦ACT ¹B₁[proof-method-audit.proof-family-and-carrier-audit] :: "
         "π=logic-tree-carrier-compression :: body_ref=¹B₁ :: "
