@@ -1368,6 +1368,40 @@ def public_per_burden_mrp_resultant_value(value: str) -> str:
     )
 
 
+def public_per_burden_text_value(value: str) -> str:
+    text = str(value or "")
+    protected_delta_identities: list[str] = []
+
+    def protect_delta_identity(match: re.Match[str]) -> str:
+        protected_delta_identities.append(match.group(0))
+        return f"@@DAEE_DELTA_IDENTITY_{len(protected_delta_identities) - 1}@@"
+
+    text = re.sub(r"(?i)Delta\(\s*B[1-9][0-9]*\s*\)", protect_delta_identity, text)
+    text = re.sub(
+        r"ΔB([1-9][0-9]*)\b",
+        lambda match: f"Δ{public_burden_token(match.group(1))}",
+        text,
+    )
+    text = re.sub(
+        r"\b(MRP|Land|HOLD)\(\s*B([1-9][0-9]*)\s*\)",
+        lambda match: f"{match.group(1)}({public_burden_token(match.group(2))})",
+        text,
+    )
+    text = re.sub(
+        r"\bB([1-9][0-9]*)\s*-\s*B([1-9][0-9]*)\b",
+        lambda match: f"{public_burden_token(match.group(1))}-{public_burden_token(match.group(2))}",
+        text,
+    )
+    text = re.sub(
+        r"\bB([1-9][0-9]*)\b",
+        lambda match: public_burden_token(match.group(1)),
+        text,
+    )
+    for index, original in enumerate(protected_delta_identities):
+        text = text.replace(f"@@DAEE_DELTA_IDENTITY_{index}@@", original)
+    return text
+
+
 def render_mrp_block(entry: dict[str, Any]) -> str:
     """Render one checker-canonical [Mid-Reread Pressure] block from one record.
 
@@ -1378,14 +1412,18 @@ def render_mrp_block(entry: dict[str, Any]) -> str:
     activations = entry.get("pressure_activations") or {}
     lines = [
         MRP_HEADING_TEXT,
-        f"Target: {entry['target']}",
-        str(entry["reread"]),
-        f"Landed delta: {entry['landed_delta']}",
+        f"Target: {public_per_burden_text_value(entry['target'])}",
+        public_per_burden_text_value(str(entry["reread"])),
+        f"Landed delta: {public_per_burden_text_value(entry['landed_delta'])}",
         "Pressure activations:",
     ]
-    lines.extend(f"- {key}: {activations[key]}" for key in PER_BURDEN_PRESSURE_KEY_ORDER)
+    lines.extend(
+        f"- {key}: {public_per_burden_text_value(activations[key])}"
+        for key in PER_BURDEN_PRESSURE_KEY_ORDER
+    )
     matched_route = str(entry.get("matched_route") or "").strip()
     if matched_route:
+        matched_route = public_per_burden_text_value(matched_route)
         if re.match(r"(?i)^\s*Matched owner/TTP route\s*:", matched_route):
             lines.append(matched_route)
         else:
@@ -1394,16 +1432,16 @@ def render_mrp_block(entry: dict[str, Any]) -> str:
     curl = per_burden_diag_body(entry["curl"], PER_BURDEN_CURL_PREFIX_RE)
     lines.extend(
         [
-            f"Field diagnostics: ∇·B: {divergence}; ∇×κ: {curl}",
-            f"Route-gradient: {entry['route_gradient']}",
+            f"Field diagnostics: ∇·B: {public_per_burden_text_value(divergence)}; ∇×κ: {public_per_burden_text_value(curl)}",
+            f"Route-gradient: {public_per_burden_text_value(entry['route_gradient'])}",
             f"Finding: {entry['finding']}",
             f"MRP route result type: {entry['route_result_type']}",
             f"MRP resultant: {public_per_burden_mrp_resultant_value(entry['mrp_resultant'])}",
             f"Graph delta: {public_per_burden_graph_value(entry['graph_delta'])}",
-            f"Pre-emption basis: {entry['preemption_basis']}",
-            f"LoopBreak: {entry.get('loopbreak') or 'not needed'}",
+            f"Pre-emption basis: {public_per_burden_text_value(entry['preemption_basis'])}",
+            f"LoopBreak: {public_per_burden_text_value(entry.get('loopbreak') or 'not needed')}",
             f"Route: {entry['route']}",
-            f"Boundary: {entry['boundary']}",
+            f"Boundary: {public_per_burden_text_value(entry['boundary'])}",
         ]
     )
     return "\n".join(lines)
@@ -1477,28 +1515,32 @@ def per_burden_block_field_parity_errors(label: str, block: Any, entry: dict[str
     def normalize_reread(value: Any) -> str:
         return PER_BURDEN_REREAD_NORMALIZE_RE.sub("R(H,Δ)", str(value or "").strip())
 
-    if block.target != expected("target"):
-        mismatch("Target", block.target, expected("target"))
-    if normalize_reread(block.reread) != normalize_reread(expected("reread")):
-        mismatch("R(H,Δ) reread", block.reread, expected("reread"))
-    if block.landed_delta != expected("landed_delta"):
-        mismatch("Landed delta", block.landed_delta, expected("landed_delta"))
+    if block.target != public_per_burden_text_value(expected("target")):
+        mismatch("Target", block.target, public_per_burden_text_value(expected("target")))
+    if normalize_reread(block.reread) != normalize_reread(public_per_burden_text_value(expected("reread"))):
+        mismatch("R(H,Δ) reread", block.reread, public_per_burden_text_value(expected("reread")))
+    if block.landed_delta != public_per_burden_text_value(expected("landed_delta")):
+        mismatch("Landed delta", block.landed_delta, public_per_burden_text_value(expected("landed_delta")))
     activations = entry.get("pressure_activations") or {}
     for key in PER_BURDEN_PRESSURE_KEY_ORDER:
-        wanted = str(activations.get(key) or "")
+        wanted = public_per_burden_text_value(str(activations.get(key) or ""))
         visible = block.pressure_lines.get(key)
         if visible is None:
             errors.append(f"{label} pressure slot {key} is missing from the visible block")
         elif visible != wanted:
             mismatch(f"pressure slot {key}", visible, wanted)
-    expected_divergence = per_burden_diag_body(expected("divergence"), PER_BURDEN_DIVERGENCE_PREFIX_RE)
-    expected_curl = per_burden_diag_body(expected("curl"), PER_BURDEN_CURL_PREFIX_RE)
+    expected_divergence = public_per_burden_text_value(
+        per_burden_diag_body(expected("divergence"), PER_BURDEN_DIVERGENCE_PREFIX_RE)
+    )
+    expected_curl = public_per_burden_text_value(
+        per_burden_diag_body(expected("curl"), PER_BURDEN_CURL_PREFIX_RE)
+    )
     if str(block.divergence or "").strip() != expected_divergence:
         mismatch("field diagnostics ∇·B", block.divergence, expected_divergence)
     if str(block.curl or "").strip() != expected_curl:
         mismatch("field diagnostics ∇×κ", block.curl, expected_curl)
-    if block.route_gradient != expected("route_gradient"):
-        mismatch("Route-gradient", block.route_gradient, expected("route_gradient"))
+    if block.route_gradient != public_per_burden_text_value(expected("route_gradient")):
+        mismatch("Route-gradient", block.route_gradient, public_per_burden_text_value(expected("route_gradient")))
     if block.finding != expected("finding"):
         mismatch("Finding", block.finding, expected("finding"))
     if block.route_result_type != expected("route_result_type"):
@@ -1509,12 +1551,16 @@ def per_burden_block_field_parity_errors(label: str, block: Any, entry: dict[str
     expected_graph = public_per_burden_graph_value(expected("graph_delta"))
     if block.graph_delta != expected_graph:
         mismatch("Graph delta", block.graph_delta, expected_graph)
-    if block.preemption_basis != expected("preemption_basis"):
-        mismatch("Pre-emption basis", block.preemption_basis, expected("preemption_basis"))
+    if block.preemption_basis != public_per_burden_text_value(expected("preemption_basis")):
+        mismatch(
+            "Pre-emption basis",
+            block.preemption_basis,
+            public_per_burden_text_value(expected("preemption_basis")),
+        )
     if block.route != expected("route"):
         mismatch("Route", block.route, expected("route"))
-    if block.boundary != expected("boundary"):
-        mismatch("Boundary", block.boundary, expected("boundary"))
+    if block.boundary != public_per_burden_text_value(expected("boundary")):
+        mismatch("Boundary", block.boundary, public_per_burden_text_value(expected("boundary")))
     return errors
 
 
@@ -3361,6 +3407,20 @@ def run_self_test(root: Path) -> int:
     parity_entries = self_test_per_burden_chain(["B1", "B2"])
     if visible_block_parity_errors(parity_text(parity_entries), parity_entries):
         raise AssemblyError("self-test parity rejected a faithful record-rendered surface")
+    public_alias_entry = self_test_per_burden_entry("B5")
+    public_alias_entry["reread"] = (
+        "R(H,Δ): held routes rechecked: B1-B4 already landed; live remainder: B5 closes."
+    )
+    public_alias_entry["pressure_activations"] = dict(public_alias_entry["pressure_activations"])
+    public_alias_entry["pressure_activations"][
+        "dependency-tug"
+    ] = "P1: reread finds B1-B4 already landed while B5 remains the local closure target."
+    public_alias_block = render_mrp_block(public_alias_entry)
+    public_alias_probe = re.sub(r"(?i)Delta\(\s*B[1-9][0-9]*\s*\)", "", public_alias_block)
+    if re.search(r"\bB[1-9][0-9]*\b", public_alias_probe):
+        raise AssemblyError("self-test MRP renderer leaked public ASCII burden aliases")
+    if "¹B-⁴B" not in public_alias_block or "⁵B" not in public_alias_block:
+        raise AssemblyError("self-test MRP renderer failed to publicize burden range prose")
     single_entry = [self_test_per_burden_entry("B1")]
 
     def parity_must_fail(name: str, text: str, entries: list[dict[str, Any]], needle: str) -> None:

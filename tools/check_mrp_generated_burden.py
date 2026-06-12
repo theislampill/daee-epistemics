@@ -265,6 +265,11 @@ DO_SECOND_LOOP_STATE_RE = re.compile(
     r"(?is)\b(?:narrowed|bounded|calibrated|separated|blocked|sequenced|no longer measured|"
     r"no longer carries|warning|record|accountability)\b"
 )
+DO_SECOND_LOOP_ACTION_RE = re.compile(
+    r"(?is)\b(?:bound|bounds|bounded|narrow|narrows|narrowed|calibrate|calibrates|"
+    r"calibrated|separate|separates|separated|sequence|sequenced|warn|warning|"
+    r"guide|guidance|persuade|persuasion|coerce|coercion|compel|compelling)\b"
+)
 PROOF_METHOD_CARRIER_RE = re.compile(
     r"(?is)\b(?:proof[- ]family|proof[- ]carrier|proof carrier|logic tree|"
     r"formal derivation|formal display|diagram|symbolic conflict|compression device|"
@@ -1407,6 +1412,60 @@ def p7_scope_boundary_target_backed(
     )
 
 
+def target_word_contact(target: str, text: str) -> bool:
+    target_words = [
+        word.lower()
+        for word in re.findall(r"[A-Za-z][A-Za-z']{2,}", re.sub(r"[-_/]", " ", target))
+        if word.lower()
+        not in {
+            "the",
+            "this",
+            "that",
+            "claim",
+            "claims",
+            "move",
+            "burden",
+            "route",
+            "pressure",
+            "local",
+        }
+    ]
+    if len(target_words) < 2:
+        return False
+    operation_words = {
+        word.lower()
+        for word in re.findall(r"[A-Za-z][A-Za-z']{2,}", re.sub(r"[-_/]", " ", text))
+    }
+    return any(
+        word in operation_words
+        or (
+            len(word) >= 6
+            and any(candidate.startswith(word[:6]) or word.startswith(candidate[:6]) for candidate in operation_words)
+        )
+        for word in target_words
+    )
+
+
+def do_second_loop_pressure_action_backed(
+    owner: str,
+    target: str,
+    operation_text: str,
+    operation_scope: str,
+) -> bool:
+    if strict_owner_family(owner) != "DO_SECOND_LOOP":
+        return False
+    payload = " ".join((operation_text, operation_scope))
+    if not target_word_contact(target, operation_text):
+        return False
+    if not owner_specific_operation_performed(FAMILY_OPERATION_OWNER["DO_SECOND_LOOP"], payload):
+        return False
+    return bool(
+        DO_SECOND_LOOP_BACKING_RE.search(payload)
+        and DO_SECOND_LOOP_STATE_RE.search(payload)
+        and DO_SECOND_LOOP_ACTION_RE.search(payload)
+    )
+
+
 def is_mrp_operation_shaped_submove(block: str) -> bool:
     target = field_body(block, "Target")
     operation = field_body_any(block, ("Operation", "What it does"))
@@ -1423,11 +1482,17 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
     operation_scope = " ".join((operation_text, result, contribution))
     combined = " ".join((target, operation_text, result, contribution))
     owner = submove_owner(block)
-    if not target_pressure_identifiable(target) and not p7_scope_boundary_target_backed(
+    family_pressure_action = do_second_loop_pressure_action_backed(
         owner,
         target,
         operation_text,
         operation_scope,
+    )
+    if not target_pressure_identifiable(target) and not p7_scope_boundary_target_backed(
+        owner,
+        target,
+            operation_text,
+            operation_scope,
     ):
         return False
     owner_performed = owner_specific_operation_performed(owner, operation_scope)
@@ -1441,7 +1506,7 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
     if semantic_categories < 2 and not owner_performed:
         return False
     heading = next((line.strip() for line in block.splitlines() if line.strip()), "")
-    if not OPERATION_ACTION_RE.search(f"{heading} {operation_text}"):
+    if not OPERATION_ACTION_RE.search(f"{heading} {operation_text}") and not family_pressure_action:
         return False
     if not owner_performed:
         return False
@@ -1452,7 +1517,7 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
         return False
     if GENERIC_CONTRIBUTION_RE.fullmatch(contribution.strip()):
         return False
-    if not operation_acts_on_pressure(target, operation_text):
+    if not operation_acts_on_pressure(target, operation_text) and not family_pressure_action:
         return False
     if not operation_body_has_state_delta(operation_body, result, contribution):
         return False
@@ -1542,7 +1607,12 @@ def do_family_delta_result_has_body_backing(record: ActRecord, family: str, bloc
     owner = FAMILY_OPERATION_OWNER.get(family, record.owner)
     if not owner_specific_operation_performed(owner, payload):
         return False
-    if not operation_acts_on_pressure(target, " ".join((operation, body))):
+    operation_text = " ".join((operation, body))
+    operation_scope = " ".join((operation_text, result, contribution))
+    if not operation_acts_on_pressure(target, operation_text) and not (
+        family == "DO_SECOND_LOOP"
+        and do_second_loop_pressure_action_backed(record.owner, target, operation_text, operation_scope)
+    ):
         return False
     if not contribution_explains_land(contribution):
         return False
