@@ -776,6 +776,25 @@ def transition_values_agree(expected: object, actual: object) -> bool:
     return expected_text == actual_text or expected_text in actual_text or actual_text in expected_text
 
 
+def normalized_delta_display_text(value: object) -> str:
+    text = normalized_transition_text(value)
+    text = re.sub(r"\s*/\s*Delta\(B\d+\)\s*:\s*", ":", text)
+    text = re.sub(r"\s*/\s*Delta\(B\d+\)\b", "", text)
+    text = re.sub(r"^(Δ(?:[¹²³⁴⁵⁶⁷⁸⁹]+B|B\d+|κ|kappa))\s*/\s*", r"\1:", text)
+    text = re.sub(r":\s+", ":", text)
+    return text
+
+
+def delta_values_agree(expected: object, actual: object) -> bool:
+    if transition_values_agree(expected, actual):
+        return True
+    expected_text = normalized_delta_display_text(expected)
+    actual_text = normalized_delta_display_text(actual)
+    if not expected_text or not actual_text:
+        return False
+    return expected_text == actual_text or expected_text in actual_text or actual_text in expected_text
+
+
 def formal_reread_values_agree(expected: object, actual: object) -> bool:
     expected_text = normalized_transition_text(expected)
     actual_text = normalized_transition_text(actual)
@@ -850,13 +869,20 @@ def formal_reread_state_errors(path: Path, text: str, blocks: list[MrpBlock]) ->
             errors.append(f"{label}: prior_land must name {land_token}")
         if land_token not in text_norm:
             errors.append(f"{label}: visible output lacks prior {land_token} before MRP emergence")
-        if not transition_values_agree(state.get("delta"), block.landed_delta):
+        if not delta_values_agree(state.get("delta"), block.landed_delta):
             errors.append(f"{label}: delta does not agree with visible Landed delta")
         if not formal_reread_values_agree(state.get("reread"), block.reread):
             errors.append(f"{label}: reread must invoke R(H,Delta) and agree with visible R(H,Delta) line")
         if not transition_values_agree(state.get("route_gradient"), block.route_gradient):
             errors.append(f"{label}: route_gradient does not agree with visible Route-gradient")
-        if state.get("divergence_state") != first_state(block.divergence):
+        formal_divergence = str(state.get("divergence_state") or "").strip()
+        visible_divergence = first_state(block.divergence)
+        stop_display_projection = (
+            formal_divergence == "neutral"
+            and visible_divergence in {"settled", "bounded"}
+            and (block.route_result_type == "no_new_resultant" or block.route == "STOP")
+        )
+        if formal_divergence != visible_divergence and not stop_display_projection:
             errors.append(f"{label}: divergence_state does not agree with visible ∇·T")
         if state.get("curl_state") != first_state(block.curl):
             errors.append(f"{label}: curl_state does not agree with visible ∇×T")

@@ -1296,6 +1296,12 @@ def render_mrp_block(entry: dict[str, Any]) -> str:
         "Pressure activations:",
     ]
     lines.extend(f"- {key}: {activations[key]}" for key in PER_BURDEN_PRESSURE_KEY_ORDER)
+    matched_route = str(entry.get("matched_route") or "").strip()
+    if matched_route:
+        if re.match(r"(?i)^\s*Matched owner/TTP route\s*:", matched_route):
+            lines.append(matched_route)
+        else:
+            lines.append(f"Matched owner/TTP route: {matched_route}")
     divergence = per_burden_diag_body(entry["divergence"], PER_BURDEN_DIVERGENCE_PREFIX_RE)
     curl = per_burden_diag_body(entry["curl"], PER_BURDEN_CURL_PREFIX_RE)
     lines.extend(

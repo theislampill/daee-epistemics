@@ -1501,6 +1501,7 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
         raise HarnessError("stage-05 no_new_resultant_proof must be boolean or object")
 
     canonicalize_stage05_reread_invocation(stage)
+    normalize_stage05_per_burden_extra_fields(stage)
     per_burden_errors = staged_output.per_burden_reread_entry_errors(
         stage.get("per_burden_reread"),
         label="stage-05 per_burden_reread",
@@ -1512,6 +1513,26 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
             "burden; Stage 07 renders the visible [Mid-Reread Pressure] blocks from these "
             "records and never fills missing fields. Problems:\n- " + "\n- ".join(per_burden_errors)
         )
+
+
+def normalize_stage05_per_burden_extra_fields(stage: dict[str, Any]) -> None:
+    entries = stage.get("per_burden_reread")
+    if not isinstance(entries, list):
+        return
+    stripped: list[str] = []
+    for entry in entries:
+        if not isinstance(entry, dict) or "no_new_resultant_proof" not in entry:
+            continue
+        route_type = str(entry.get("route_result_type") or "").strip()
+        route = str(entry.get("route") or "").strip().upper()
+        if route_type == "no_new_resultant" and route == "STOP":
+            entry.pop("no_new_resultant_proof", None)
+            burden = str(entry.get("burden_id") or "").strip()
+            stripped.append(burden or "<unknown>")
+    if stripped:
+        normalization = normalization_object(stage)
+        normalization["stripped_per_burden_no_new_resultant_proof"] = stripped
+        stage["normalization"] = normalization
 
 
 def normalize_stage06_register_delta_value(
@@ -1973,6 +1994,11 @@ def stage04_owner_routes_by_burden(stage04: dict[str, Any] | None) -> dict[str, 
         token = f"{owner}.{operation}" if operation else owner
         routes.setdefault(burden, []).append(token)
     return {burden: ordered_unique(tokens) for burden, tokens in routes.items()}
+
+
+def matched_owner_route_line(tokens: list[str]) -> str:
+    route_tokens = ordered_unique([str(token).strip() for token in tokens if str(token).strip()])
+    return "Matched owner/TTP route: " + ", ".join(f"[{token}]" for token in route_tokens)
 
 
 def stage06_owner_activation_details_by_ref(stage06: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
@@ -4603,6 +4629,7 @@ def normalize_stage05_initial_burden_continuations(
     burden_order = [burden for burden in burden_order if burden in terminal_states]
     if len(burden_order) <= 1:
         return
+    owner_routes = stage04_owner_routes_by_burden(stage04)
     entry_by_burden = {
         str(entry.get("burden_id") or ""): entry
         for entry in entries
@@ -4658,6 +4685,9 @@ def normalize_stage05_initial_burden_continuations(
         entry["graph_delta"] = f"{source} -> {target}"
         entry["preemption_basis"] = "graph-bound"
         entry["route"] = "RECURSE"
+        route_tokens = owner_routes.get(target) or []
+        if route_tokens:
+            entry["matched_route"] = matched_owner_route_line(route_tokens)
         activations = entry.get("pressure_activations")
         if isinstance(activations, dict):
             activations["dependency-tug"] = (
@@ -8872,9 +8902,39 @@ def run_self_test(root: Path) -> int:
     terminal_basis = terminal_detail.get("basis")
     if not isinstance(terminal_basis, list) or len(terminal_basis) != 2:
         raise HarnessError("Self-test failed to preserve Stage 05 terminal_state detail list basis")
-    two_burden_stage04 = dict(normalized_stage04)
-    two_burden_stage04["act_targets"] = ["B1", "B2"]
-    two_burden_stage04["act_burdens"] = ["B1", "B2"]
+    two_burden_act_rows = [
+        canonical_act_row,
+        (
+            "⟦ACT ²B₁[M8.consequence-trace] :: "
+            "π=next-burden-pressure :: body_ref=²B₁ :: "
+            "Δ=Δ²B:consequence-traced :: Land(²B)+⟧"
+        ),
+    ]
+    two_burden_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1", "B2"],
+            "act_burdens": ["B1", "B2"],
+            "act_rows": two_burden_act_rows,
+            "act_row_details": self_test_act_row_details(
+                two_burden_act_rows,
+                {"¹B₁": "σ", "²B₁": "κ"},
+            ),
+        },
+    )
+    b2_stop_entry_with_nested_proof = self_test_reread_entry(
+        "B2",
+        reread=(
+            "R(H,Δ²B): held routes rechecked: none; live remainder: "
+            "no remaining burden; release/next: STOP after ²B."
+        ),
+    )
+    b2_stop_entry_with_nested_proof["no_new_resultant_proof"] = {
+        "escape_routes_checked": ["self-test route"],
+        "proved": True,
+    }
     two_stop_stage05 = normalized_stage(
         "stage-05-mrp-reread-terminal-state",
         {
@@ -8889,13 +8949,7 @@ def run_self_test(root: Path) -> int:
             },
             "per_burden_reread": [
                 self_test_reread_entry("B1"),
-                self_test_reread_entry(
-                    "B2",
-                    reread=(
-                        "R(H,Δ²B): held routes rechecked: none; live remainder: "
-                        "no remaining burden; release/next: STOP after ²B."
-                    ),
-                ),
+                b2_stop_entry_with_nested_proof,
             ],
         },
     )
@@ -8909,11 +8963,18 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize intermediate B1 STOP into held_burden_activation")
     if b1_continuation.get("route") != "RECURSE" or b1_continuation.get("graph_delta") != "B1 -> B2":
         raise HarnessError("Self-test failed to normalize intermediate B1 route/graph continuation")
+    if b1_continuation.get("matched_route") != "Matched owner/TTP route: [M8.consequence-trace]":
+        raise HarnessError("Self-test failed to project B2 matched owner route onto intermediate B1 MRP")
+    rendered_continuation = staged_output.render_mrp_block(b1_continuation)
+    if "Matched owner/TTP route: [M8.consequence-trace]" not in rendered_continuation:
+        raise HarnessError("Self-test failed to render matched owner route in normalized MRP block")
     if not any(
         stage05_edge_endpoints(edge) == ("B1", "B2", "held_burden_activation")
         for edge in two_stop_stage05.get("dependency_graph_edges", [])
     ):
         raise HarnessError("Self-test failed to record held_burden_activation edge for intermediate STOP")
+    if "no_new_resultant_proof" in continuation_entries["B2"]:
+        raise HarnessError("Self-test failed to strip wrongly nested per-burden no_new_resultant_proof")
     if not str(continuation_entries["B2"].get("reread") or "").startswith("R(H,Δ):"):
         raise HarnessError("Self-test failed to canonicalize burden-specific R(H,Δn) reread invocation")
     try:
