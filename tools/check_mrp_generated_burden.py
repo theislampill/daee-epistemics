@@ -1371,14 +1371,48 @@ def operation_payload(block: str) -> str:
     )
 
 
+def p7_scope_boundary_target_backed(
+    owner: str,
+    target: str,
+    operation_text: str,
+    operation_scope: str,
+) -> bool:
+    if strict_owner_family(owner) != "P7":
+        return False
+    target_words = [
+        word.lower()
+        for word in re.findall(r"[A-Za-z][A-Za-z']{2,}", re.sub(r"[-_/]", " ", target))
+        if word.lower()
+        not in {
+            "the",
+            "this",
+            "that",
+            "claim",
+            "claims",
+            "move",
+            "burden",
+            "route",
+            "pressure",
+        }
+    ]
+    if len(target_words) < 2:
+        return False
+    if not operation_acts_on_pressure(target, operation_text):
+        return False
+    if not owner_specific_operation_performed(owner, operation_scope):
+        return False
+    return all(
+        pattern.search(operation_scope)
+        for pattern in (P7_STOP_SCOPE_RE, P7_REOPEN_RE, P7_HELD_ROUTE_RE)
+    )
+
+
 def is_mrp_operation_shaped_submove(block: str) -> bool:
     target = field_body(block, "Target")
     operation = field_body_any(block, ("Operation", "What it does"))
     result = field_body_any(block, ("Result", "Result/state-change"))
     contribution = contribution_body(block)
     if not (target and operation and result and contribution):
-        return False
-    if not target_pressure_identifiable(target):
         return False
     if not contribution_explains_land(contribution):
         return False
@@ -1389,6 +1423,13 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
     operation_scope = " ".join((operation_text, result, contribution))
     combined = " ".join((target, operation_text, result, contribution))
     owner = submove_owner(block)
+    if not target_pressure_identifiable(target) and not p7_scope_boundary_target_backed(
+        owner,
+        target,
+        operation_text,
+        operation_scope,
+    ):
+        return False
     owner_performed = owner_specific_operation_performed(owner, operation_scope)
     if not (OPERATION_MECHANISM_RE.search(combined) or owner_performed):
         return False

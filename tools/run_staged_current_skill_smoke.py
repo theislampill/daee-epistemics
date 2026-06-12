@@ -31,6 +31,7 @@ from delta_result_vocabulary import (
     OWNER_OPERATION_VOCABULARY,
     canonical_delta_owner,
     delta_result_vocabulary_errors,
+    family_alias_execution_owner,
     family_alias_as_executable_owner_errors,
     owner_operation_delta_result_errors,
     owner_operation_vocabulary_errors,
@@ -1075,16 +1076,42 @@ def normalize_stage03_route_targets(stage: dict[str, Any]) -> None:
     raise HarnessError("stage-03 route_targets must be a non-empty list of burden-id strings")
 
 
+def canonicalize_stage03_owner_route_alias(
+    route: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, str] | None]:
+    canonical = dict(route)
+    raw_owner = non_empty_string(canonical.get("owner_id") or canonical.get("owner"))
+    if raw_owner is None:
+        return canonical, None
+    operation = non_empty_string(canonical.get("operation") or canonical.get("owner_operation"))
+    family, callable_owner = family_alias_execution_owner(raw_owner, operation)
+    if not family or not callable_owner or " or " in callable_owner:
+        return canonical, None
+    canonical["owner_id"] = callable_owner
+    if "owner" in canonical and "owner_id" not in route:
+        canonical.pop("owner", None)
+    canonical.setdefault("classification_family", family)
+    return canonical, {
+        "burden_id": str(canonical.get("burden_id") or canonical.get("target") or ""),
+        "raw_owner_id": raw_owner,
+        "canonical_owner_id": callable_owner,
+        "classification_family": family,
+    }
+
+
 def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
     routes = stage.get("owner_routes")
     if isinstance(routes, list) and routes and all(isinstance(item, dict) for item in routes):
         canonical: list[dict[str, Any]] = []
         details: list[dict[str, Any]] = []
+        alias_events: list[dict[str, str]] = []
         for index, route in enumerate(routes):
             burden_id = non_empty_string(route.get("burden_id"))
             owner_id = non_empty_string(route.get("owner_id"))
             if burden_id is not None and owner_id is not None:
-                canonical_row = dict(route)
+                canonical_row, alias_event = canonicalize_stage03_owner_route_alias(route)
+                if alias_event is not None:
+                    alias_events.append(alias_event)
                 route_errors = route_owner_vocabulary_errors(f"stage-03 owner_routes[{index}]", canonical_row)
                 if route_errors:
                     raise HarnessError(route_errors[0])
@@ -1118,6 +1145,9 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
                 eligibility = non_empty_string(route.get("classification") or route.get("policy_id"))
                 if eligibility is not None:
                     canonical_row["eligibility"] = eligibility
+                canonical_row, alias_event = canonicalize_stage03_owner_route_alias(canonical_row)
+                if alias_event is not None:
+                    alias_events.append(alias_event)
                 route_errors = route_owner_vocabulary_errors(
                     f"stage-03 owner_routes[{index}].required[{required_index}]",
                     canonical_row,
@@ -1129,10 +1159,13 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
         if not canonical:
             raise HarnessError("stage-03 owner_routes must name at least one owner route")
         stage["owner_routes"] = canonical
-        if details:
+        if details or alias_events:
             stage["owner_route_details"] = details
             normalization = normalization_object(stage)
-            normalization["owner_routes_from_required_details"] = True
+            if details:
+                normalization["owner_routes_from_required_details"] = True
+            if alias_events:
+                normalization["owner_route_family_aliases"] = alias_events
             normalization["canonical_owner_routes"] = [
                 {"burden_id": row.get("burden_id"), "owner_id": row.get("owner_id")} for row in canonical
             ]
@@ -4767,6 +4800,25 @@ def stage05_edge_endpoints(edge: Any) -> tuple[str, str, str]:
     return source, target, edge_type
 
 
+def stage05_entry_graph_target(
+    entry: dict[str, Any],
+    edge_targets_by_source: dict[str, str],
+) -> str:
+    source = b_id(entry.get("burden_id"))
+    if not source:
+        return ""
+    target = b_id(entry.get("next_burden"))
+    if target:
+        return target
+    graph_target = stage07_route_target_from_graph(entry.get("graph_delta"))
+    if graph_target:
+        return graph_target
+    graph_target = stage07_route_target_from_graph(entry.get("mrp_resultant"))
+    if graph_target:
+        return graph_target
+    return edge_targets_by_source.get(source, "")
+
+
 def normalize_stage05_initial_burden_continuations(
     stage04: dict[str, Any] | None,
     stage05: dict[str, Any] | None,
@@ -4800,6 +4852,30 @@ def normalize_stage05_initial_burden_continuations(
         for source, target, edge_type in (stage05_edge_endpoints(edge) for edge in edges)
         if source and target
     }
+    edge_targets_by_source = {
+        source: target
+        for source, target, edge_type in (stage05_edge_endpoints(edge) for edge in edges)
+        if source and target and (edge_type or "held_burden_activation") == "held_burden_activation"
+    }
+    matched_route_hydrations: list[dict[str, str]] = []
+    for entry in entries:
+        source = b_id(entry.get("burden_id"))
+        if not source or str(entry.get("route_result_type") or "") != "held_burden_activation":
+            continue
+        if str(entry.get("matched_route") or "").strip():
+            continue
+        target = stage05_entry_graph_target(entry, edge_targets_by_source)
+        route_tokens = owner_routes.get(target) or []
+        if not target or not route_tokens:
+            continue
+        entry["matched_route"] = matched_owner_route_line(route_tokens)
+        matched_route_hydrations.append(
+            {
+                "source_burden": source,
+                "next_burden": target,
+                "matched_route": entry["matched_route"],
+            }
+        )
     rewrites: list[dict[str, str]] = []
     for source, target in zip(burden_order, burden_order[1:]):
         entry = entry_by_burden.get(source)
@@ -4860,6 +4936,10 @@ def normalize_stage05_initial_burden_continuations(
             edges.append({"from": source, "to": target, "type": "held_burden_activation"})
             edge_keys.add(edge_key)
     if not rewrites:
+        if matched_route_hydrations:
+            normalization = normalization_object(stage05)
+            normalization["matched_route_hydrations"] = matched_route_hydrations
+            stage05["normalization"] = normalization
         return
     proof = stage05.get("no_new_resultant_proof")
     if isinstance(proof, dict) and proof.get("proved") is True:
@@ -4870,6 +4950,8 @@ def normalize_stage05_initial_burden_continuations(
         )
     normalization = normalization_object(stage05)
     normalization["per_burden_intermediate_stop_continuations"] = rewrites
+    if matched_route_hydrations:
+        normalization["matched_route_hydrations"] = matched_route_hydrations
     stage05["normalization"] = normalization
     per_burden_errors = staged_output.per_burden_reread_entry_errors(
         entries,
@@ -7406,6 +7488,29 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize rich Stage 03 owner_routes into owner identities")
     if not isinstance(normalized_owner_routes.get("owner_route_details"), list):
         raise HarnessError("Self-test failed to preserve rich Stage 03 owner-route details")
+    normalized_alias_owner_routes = normalized_stage(
+        "stage-03-routing-owner-gate",
+        {
+            "id": "stage-03-routing-owner-gate",
+            "status": "pass",
+            "route_targets": ["B1"],
+            "owner_routes": [
+                {
+                    "burden_id": "B1",
+                    "owner_id": "PROOF_METHOD",
+                    "operation": "proof-family-and-carrier-audit",
+                }
+            ],
+        },
+    )
+    alias_route = normalized_alias_owner_routes.get("owner_routes", [{}])[0]
+    if alias_route.get("owner_id") != "proof-method-audit":
+        raise HarnessError("Self-test failed to canonicalize PROOF_METHOD Stage 03 owner route")
+    if alias_route.get("classification_family") != "PROOF_METHOD":
+        raise HarnessError("Self-test failed to preserve PROOF_METHOD as route classification metadata")
+    alias_events = (normalized_alias_owner_routes.get("normalization") or {}).get("owner_route_family_aliases")
+    if not isinstance(alias_events, list) or not alias_events:
+        raise HarnessError("Self-test failed to record PROOF_METHOD owner-route alias normalization")
     try:
         normalized_stage(
             "stage-03-routing-owner-gate",
@@ -9147,6 +9252,35 @@ def run_self_test(root: Path) -> int:
     rendered_continuation = staged_output.render_mrp_block(b1_continuation)
     if "Matched owner/TTP route: [M8.consequence-trace]" not in rendered_continuation:
         raise HarnessError("Self-test failed to render matched owner route in normalized MRP block")
+    two_held_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "landed"},
+            "dependency_graph_edges": [
+                {"from": "B1", "to": "B2", "type": "held_burden_activation"}
+            ],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after either terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [
+                self_test_reread_entry("B1", next_burden_id="B2"),
+                self_test_reread_entry("B2"),
+            ],
+        },
+    )
+    validate_incremental_handoffs([two_burden_stage04, two_held_stage05])
+    held_entries = {
+        str(entry["burden_id"]): entry
+        for entry in two_held_stage05["per_burden_reread"]
+    }
+    if held_entries["B1"].get("matched_route") != "Matched owner/TTP route: [M8.consequence-trace]":
+        raise HarnessError("Self-test failed to hydrate matched route for already-held MRP activation")
+    if not ((two_held_stage05.get("normalization") or {}).get("matched_route_hydrations")):
+        raise HarnessError("Self-test failed to record already-held matched route hydration metadata")
     if not any(
         stage05_edge_endpoints(edge) == ("B1", "B2", "held_burden_activation")
         for edge in two_stop_stage05.get("dependency_graph_edges", [])
