@@ -116,7 +116,8 @@ FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     (
         "guaranteed T_lang uptake claim",
         re.compile(
-            r"T_lang\s+guarantees|guarantees\s+interlocutor\s+uptake|guarantees\s+uptake",
+            r"T_lang\s+guarantees|guaranteed\s+T_lang\s+uptake|"
+            r"guarantees\s+interlocutor\s+uptake|guarantees\s+uptake",
             re.IGNORECASE,
         ),
     ),
@@ -1166,11 +1167,15 @@ def per_burden_reread_entry_errors(
                 errors.append(f"{entry_label}.{field_name}: must be a non-empty string")
             elif "\n" in value:
                 errors.append(f"{entry_label}.{field_name}: must be a single-line value")
+            else:
+                errors.extend(forbidden_text_errors(value, f"{entry_label}.{field_name}"))
         for field_name in PER_BURDEN_OPTIONAL_STRING_FIELDS:
             if field_name in entry:
                 value = entry.get(field_name)
                 if not isinstance(value, str) or not value.strip() or "\n" in value:
                     errors.append(f"{entry_label}.{field_name}: must be a non-empty single-line string when present")
+                else:
+                    errors.extend(forbidden_text_errors(value, f"{entry_label}.{field_name}"))
         burden_id = entry.get("burden_id")
         if isinstance(burden_id, str) and burden_id:
             if not PER_BURDEN_BURDEN_ID_RE.match(burden_id):
@@ -1244,6 +1249,7 @@ def per_burden_reread_entry_errors(
                     errors.append(
                         f"{entry_label}.pressure_activations.{key}: must begin with an owner/TTP id, 'pressure class:', or 'coverage gap:'"
                     )
+                errors.extend(forbidden_text_errors(value, f"{entry_label}.pressure_activations.{key}"))
         # Fail-early consistency rules mirroring tools/check_mid_reread_pressure.py.
         finding = entry.get("finding")
         route = entry.get("route")

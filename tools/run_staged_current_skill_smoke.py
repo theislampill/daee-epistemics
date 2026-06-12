@@ -353,7 +353,9 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "carried it — placeholder values like none/cleared/n/a are rejected. Consistency is "
             "enforced: stable requires route STOP and graph_delta none; genuine-dependent requires "
             "RECURSE and a graph edge; partial-real requires HOLD; any graph edge requires a "
-            "non-none preemption_basis. The harness renders the public [Mid-Reread Pressure] "
+            "non-none preemption_basis. Do not write `guaranteed T_lang uptake` in any "
+            "`per_burden_reread` string field; use the exact boundary prefix instead. "
+            "The harness renders the public [Mid-Reread Pressure] "
             "blocks from these records; do not write the blocks yourself anywhere."
         ),
     },
@@ -401,7 +403,9 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "non-empty string array, or as a list of objects with `register` plus `delta` "
             "as a non-empty string or non-empty string array. Do not put register deltas "
             "only inside `normalized_activation_record`; any NAR register-delta mirror is "
-            "supplemental and must not replace the top-level Stage 06 field. "
+            "supplemental and must not replace the top-level Stage 06 field. Any NAR row "
+            "carrying `mrp_route_result_type` must match the matching Stage 05 "
+            "`per_burden_reread[].route_result_type`. "
             "If Stage 06 cannot honestly mirror ACT/terminal evidence, "
             "return status fail or partial; do not invent witness proof."
         ),
@@ -2483,6 +2487,36 @@ def per_burden_state_head(value: Any, prefix_re: re.Pattern[str]) -> str:
     return body.partition("/")[0].strip()
 
 
+def has_raw_machine_burden(value: Any, burden_id: str) -> bool:
+    return re.search(rf"(?<![A-Za-z0-9_]){re.escape(burden_id)}(?![A-Za-z0-9_])", str(value or "")) is not None
+
+
+def stage07_formal_delta(value: Any, source: str) -> str:
+    text = str(value or "").strip()
+    if not text or has_raw_machine_burden(text, source):
+        return text
+    if re.fullmatch(r"B[1-9][0-9]*", source):
+        public = staged_output.public_burden_token(source[1:])
+        public_delta = f"Δ{public}"
+        if text.startswith(public_delta):
+            rest = text[len(public_delta):].lstrip()
+            if rest.startswith(":"):
+                rest = rest[1:].lstrip()
+                return f"{public_delta} / Delta({source}): {rest}"
+        return f"{text} / Delta({source})"
+    return text
+
+
+def stage07_formal_divergence_state(entry: dict[str, Any], route_type: str, route: str) -> str:
+    head = per_burden_state_head(entry.get("divergence"), staged_output.PER_BURDEN_DIVERGENCE_PREFIX_RE)
+    if (route_type in {"no_new_resultant", "none", "stable"} or route.upper() == "STOP") and head in {
+        "settled",
+        "bounded",
+    }:
+        return "neutral"
+    return head
+
+
 def stage05_per_burden_entries(stage05: dict[str, Any] | None) -> list[dict[str, Any]]:
     entries = stage05.get("per_burden_reread") if isinstance(stage05, dict) else None
     if (
@@ -2496,6 +2530,55 @@ def stage05_per_burden_entries(stage05: dict[str, Any] | None) -> list[dict[str,
             "terminal states, or prose"
         )
     return [dict(entry) for entry in entries]
+
+
+def stage05_mrp_route_types_by_burden(stage05: dict[str, Any] | None) -> dict[str, set[str]]:
+    entries = stage05.get("per_burden_reread") if isinstance(stage05, dict) else None
+    if not isinstance(entries, list):
+        return {}
+    result: dict[str, set[str]] = {}
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        burden_id = str(entry.get("burden_id") or "").strip()
+        route_type = str(entry.get("route_result_type") or "").strip()
+        if burden_id and route_type:
+            result.setdefault(burden_id, set()).add(route_type)
+    return result
+
+
+def stage06_nar_objects(stage06: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
+    result: list[tuple[str, dict[str, Any]]] = []
+    for key in ("normalized_activation_record", "normalized_activation_record_details"):
+        value = stage06.get(key)
+        if isinstance(value, dict):
+            result.append((key, value))
+    return result
+
+
+def validate_stage06_nar_route_types_against_stage05(stage05: dict[str, Any], stage06: dict[str, Any]) -> None:
+    expected_by_burden = stage05_mrp_route_types_by_burden(stage05)
+    if not expected_by_burden:
+        return
+    for nar_label, nar in stage06_nar_objects(stage06):
+        rows = nar.get("per_burden")
+        if not isinstance(rows, list):
+            continue
+        for index, row in enumerate(rows):
+            if not isinstance(row, dict):
+                continue
+            burden_id = str(row.get("burden_id") or "").strip()
+            if not burden_id:
+                continue
+            expected = expected_by_burden.get(burden_id)
+            route_type = str(row.get("mrp_route_result_type") or row.get("route_result_type") or "").strip()
+            if route_type and expected and route_type not in expected:
+                expected_text = ", ".join(sorted(expected))
+                raise HarnessError(
+                    f"stage-06 {nar_label}.per_burden[{index}].mrp_route_result_type "
+                    f"must match stage-05 per_burden_reread route_result_type(s) for {burden_id}: "
+                    f"{expected_text}; got {route_type}"
+                )
 
 
 def mrp_resultant_rows_from_entries(entries: list[dict[str, Any]]) -> list[dict[str, str]]:
@@ -2615,11 +2698,9 @@ def stage07_formal_reread_states(
         state: dict[str, Any] = {
             "source_burden": source,
             "prior_land": f"Land({source}): terminal state {terminal_state}.",
-            "delta": str(entry.get("landed_delta") or ""),
+            "delta": stage07_formal_delta(entry.get("landed_delta"), source),
             "reread": "R(H,Delta)",
-            "divergence_state": per_burden_state_head(
-                entry.get("divergence"), staged_output.PER_BURDEN_DIVERGENCE_PREFIX_RE
-            ),
+            "divergence_state": stage07_formal_divergence_state(entry, route_type, route),
             "curl_state": per_burden_state_head(
                 entry.get("curl"), staged_output.PER_BURDEN_CURL_PREFIX_RE
             ),
@@ -2805,7 +2886,7 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         *[f"  {line}" for line in preview_lines],
         "- The MRP/reread/terminal section is ledger-only: print the reconstruction floor, route-state ledger, and terminal states below; no `[Mid-Reread Pressure]` heading block:",
         *[f"  {line}" for line in ledger_lines],
-        "- `field_witness.formal_reread_states[]` and `field_witness.mrp_resultants[]` must mirror the Stage 05 per_burden_reread records 1:1: same burden order, `route_result_type`, graph delta, and route; `formal_reread_states[].delta` must equal the record's `landed_delta`.",
+        "- `field_witness.formal_reread_states[]` and `field_witness.mrp_resultants[]` must mirror the Stage 05 per_burden_reread records 1:1: same burden order, `route_result_type`, graph delta, and route; `formal_reread_states[].delta` preserves the public `landed_delta` notation while also carrying machine `Delta(Bn)` identity.",
         "- Do not rely on a later `MRP(ⁿB): ...` closure-ledger row as the only public MRP evidence; the harness-injected blocks carry the public per-burden reread proof.",
     ]
     return "\n".join(lines)
@@ -4426,6 +4507,7 @@ def validate_incremental_handoffs(stages: list[dict[str, Any]]) -> None:
             missing = sorted(set(terminal_states) - set(list_field(stage06, "nar_burdens")))
             if missing:
                 raise HarnessError(f"stage-06 nar_burdens missing terminal-state burden(s): {missing}")
+        validate_stage06_nar_route_types_against_stage05(stage05, stage06)
     if stage05 and stage05.get("terminal_states") in ({}, None):
         raise HarnessError("stage-05 terminal_states must be non-empty")
     if stage04 and stage05:
@@ -8777,6 +8859,7 @@ def run_self_test(root: Path) -> int:
                 "owner_id": "source-status-repair",
                 "operation": "source-order-repair",
                 "delta_result": "source-order-repaired",
+                "mrp_route_result_type": "no_new_resultant",
                 "terminal_state": "landed",
                 "generation_depth": 0,
             }
@@ -8815,6 +8898,17 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize Stage 06 owner_activations into body-ref strings")
     if not isinstance(normalized_stage06.get("owner_activation_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 06 owner_activation_details")
+    mismatched_route_stage06 = copy.deepcopy(normalized_stage06)
+    mismatched_route_stage06["normalized_activation_record"]["per_burden"][0][
+        "mrp_route_result_type"
+    ] = "generated_burden_instantiation"
+    try:
+        validate_incremental_handoffs([replay["stages"][3], normalized_stage05, mismatched_route_stage06])
+    except HarnessError as exc:
+        if "must match stage-05 per_burden_reread route_result_type" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test failed to reject Stage 06 NAR route type mismatch against Stage 05")
     nested_only_nar = dict(structured_nar)
     nested_only_nar["register_deltas"] = {"xi": "source-order-repaired"}
     try:
@@ -9189,7 +9283,7 @@ def run_self_test(root: Path) -> int:
         "Boundary: T_lang does not imply guaranteed uptake.",
         "Do NOT print any `[Mid-Reread Pressure]` heading or block yourself",
         "print exactly one line-start superscript landing gate per terminal burden",
-        "`formal_reread_states[].delta` must equal the record's `landed_delta`",
+        "`formal_reread_states[].delta` preserves the public `landed_delta` notation while also carrying machine `Delta(Bn)` identity",
         "ledger-only: print the reconstruction floor",
         "- MRP(¹B): type=no_new_resultant; finding=stable; graph=none; route=STOP",
     ):
@@ -10312,8 +10406,8 @@ def run_self_test(root: Path) -> int:
     if any(row.get("curl_state") != "null" for row in wide_states[:4]):
         raise HarnessError("Self-test Stage 07 wide MRP landed formal reread states emitted non-string/null curl_state")
     for row, entry in zip(wide_states, wide_per_burden_entries):
-        if row.get("delta") != entry["landed_delta"]:
-            raise HarnessError("Self-test Stage 07 formal reread states did not mirror per_burden_reread landed_delta 1:1")
+        if row.get("delta") != stage07_formal_delta(entry["landed_delta"], str(entry.get("burden_id") or "")):
+            raise HarnessError("Self-test Stage 07 formal reread states did not preserve landed_delta with machine identity")
         if row.get("route_gradient") != entry["route_gradient"]:
             raise HarnessError("Self-test Stage 07 formal reread states did not mirror per_burden_reread route_gradient 1:1")
         if row.get("preemption_basis") != entry["preemption_basis"]:
@@ -10329,6 +10423,17 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test Stage 07 B6 held row attached a terminal STOP proof to a held burden")
     if "plain-gradient holds ⁶B as HOLD/PARTIAL" not in str(b6_state.get("route_gradient")):
         raise HarnessError("Self-test Stage 07 B6 held row omitted public-token HOLD/PARTIAL route-gradient")
+    stop_display_entry = self_test_reread_entry(
+        "B1",
+        divergence="∇·B: settled / visible public wording remains richer than the machine row",
+        landed_delta="Δ¹B: glyph-only public delta before formal projection",
+    )
+    stop_display_states = stage07_formal_reread_states([stop_display_entry], {"B1": "landed"})
+    stop_display_state = stop_display_states[0]
+    if stop_display_state.get("divergence_state") != "neutral":
+        raise HarnessError("Self-test Stage 07 STOP formal reread state did not normalize settled/bounded divergence to neutral")
+    if "Delta(B1)" not in str(stop_display_state.get("delta")):
+        raise HarnessError("Self-test Stage 07 STOP formal reread state did not add machine Delta(B1) identity")
     unresolved_stop_states = stage07_formal_reread_states(
         [self_test_reread_entry("B6")],
         {"B6": "carried-RECURSE"},

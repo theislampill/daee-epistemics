@@ -33,7 +33,7 @@ Finding: stable
 MRP route result type: no_new_resultant
 MRP resultant: stable -> graph none; route STOP
 Graph delta: none
-Pre-emption basis: terminal states landed; B_MRP empty; no generated burden remains
+Pre-emption basis: none
 Route: STOP
 
 ### Closure/Reconstruction Witness
@@ -53,7 +53,7 @@ Route: STOP
     {"source": "B1", "target": "B1", "owner": "M1", "operation": "self-grounding-test", "pressure": "self-authorizing-standard", "body_ref": "¹B₁", "delta": "D7:self-authorizing-standard-invalidated", "land": "Land(¹B)+"}
   ],
   "formal_reread_states": [
-    {"source_burden": "B1", "prior_land": "Land(B1)", "delta": "D7 / self-authorizing-standard-invalidated.", "reread": "R(H,Δ): held routes rechecked: none; live remainder: none in current scope; release/next: STOP.", "route_gradient": "plain-gradient points to STOP.", "divergence_state": "neutral", "curl_state": "null", "route_result_type": "no_new_resultant", "mrp_resultant": "stable -> graph none; route STOP", "graph_delta": "none", "preemption_basis": "terminal states landed; B_MRP empty; no generated burden remains", "route": "STOP"}
+    {"source_burden": "B1", "prior_land": "Land(B1)", "delta": "D7 / self-authorizing-standard-invalidated.", "reread": "R(H,Δ): held routes rechecked: none; live remainder: none in current scope; release/next: STOP.", "route_gradient": "plain-gradient points to STOP.", "divergence_state": "neutral", "curl_state": "null", "route_result_type": "no_new_resultant", "mrp_resultant": "stable -> graph none; route STOP", "graph_delta": "none", "preemption_basis": "none", "route": "STOP"}
   ],
   "mrp_resultants": [
     {"source": "B1", "type": "no_new_resultant", "finding": "stable", "graph": "none", "route": "STOP"}

@@ -1,0 +1,263 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "stage06-nar-route-type-mismatch-stage05",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_order": [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir",
+    "stage-03-routing-owner-gate",
+    "stage-04-burden-execution-act",
+    "stage-05-mrp-reread-terminal-state",
+    "stage-06-field-witness-nar"
+  ],
+  "stages": [
+    {
+      "id": "stage-01-intake",
+      "status": "pass",
+      "produces": [
+        "input_digest"
+      ],
+      "requires": [],
+      "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_boundary_preserved": true
+    },
+    {
+      "id": "stage-02-layer-a-diagnostic-ir",
+      "status": "pass",
+      "produces": [
+        "burden_floor",
+        "selected_n_frame",
+        "live_registers"
+      ],
+      "requires": [
+        "input_digest"
+      ],
+      "burden_floor": [
+        "B1"
+      ],
+      "selected_n_frame": "source-order-repair",
+      "live_registers": [
+        "xi"
+      ],
+      "unresolved_state": "none"
+    },
+    {
+      "id": "stage-03-routing-owner-gate",
+      "status": "pass",
+      "produces": [
+        "route_targets",
+        "owner_routes"
+      ],
+      "requires": [
+        "burden_floor"
+      ],
+      "route_targets": [
+        "B1"
+      ],
+      "owner_routes": [
+        {
+          "burden_id": "B1",
+          "owner_id": "source-status-repair",
+          "eligibility": "catalogue-backed"
+        }
+      ]
+    },
+    {
+      "id": "stage-04-burden-execution-act",
+      "status": "pass",
+      "produces": [
+        "act_targets",
+        "act_body_refs",
+        "act_rows"
+      ],
+      "requires": [
+        "route_targets",
+        "owner_routes"
+      ],
+      "act_targets": [
+        "B1"
+      ],
+      "act_burdens": [
+        "B1"
+      ],
+      "act_body_refs": [
+        "B1_1"
+      ],
+      "act_rows": [
+        "⟦ACT B1_1[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=B1_1 :: Δ=ΔB1:science-source-bounded :: Land(B1)+⟧"
+      ]
+    },
+    {
+      "id": "stage-05-mrp-reread-terminal-state",
+      "status": "pass",
+      "produces": [
+        "terminal_states",
+        "dependency_graph_edges",
+        "no_new_resultant_proof"
+      ],
+      "requires": [
+        "act_rows"
+      ],
+      "terminal_states": {
+        "B1": "landed"
+      },
+      "dependency_graph_edges": [],
+      "no_new_resultant_proof": {
+        "proved": true,
+        "basis": "B1 landed and no dependency edge or generated burden remains live.",
+        "unresolved_burdens": []
+      },
+      "terminal_state_details": [
+        {
+          "burden_id": "B1",
+          "terminal_state": "landed",
+          "basis": [
+            "ACT row Land(B1)+ landed the routed burden.",
+            "No generated burden or dependency edge remains live after reread."
+          ]
+        }
+      ],
+      "per_burden_reread": [
+        {
+          "burden_id": "B1",
+          "target": "¹B / source-order diagnostic burden",
+          "reread": "R(H,Δ): held routes rechecked: none; live remainder: no remaining burden; release/next: STOP after ¹B.",
+          "landed_delta": "Δ¹B / Delta(B1): science-source-bounded recorded.",
+          "pressure_activations": {
+            "freeze-landed-move": "source-status-repair - Land(¹B) frozen before reread.",
+            "dependency-tug": "pressure class: dependency-scan - no dependency remains live.",
+            "hidden-framework-recoil": "FPD - no hidden framework support reopens the landed move.",
+            "entailment-pressure": "M8 - no entailment pressure remains against the bounded source order.",
+            "doubt-churn-guard": "doubt-vs-skepticism - no churn or proof-carousel loop is live.",
+            "reorientation-reminder": "P1 - reorientation reminder cleared toward landed signs."
+          },
+          "divergence": "∇·B: neutral / no remaining burden pressure",
+          "curl": "∇×κ: null / no circular dependency",
+          "route_gradient": "plain-gradient points to STOP after ¹B; no live pressure remains.",
+          "finding": "stable",
+          "route_result_type": "no_new_resultant",
+          "mrp_resultant": "stable -> no new graph edge; STOP",
+          "graph_delta": "none",
+          "preemption_basis": "none",
+          "route": "STOP",
+          "boundary": "T_lang does not imply guaranteed uptake."
+        }
+      ]
+    },
+    {
+      "id": "stage-06-field-witness-nar",
+      "status": "pass",
+      "produces": [
+        "field_witness_body_refs",
+        "nar_burdens",
+        "normalized_activation_record"
+      ],
+      "requires": [
+        "terminal_states",
+        "act_body_refs"
+      ],
+      "field_witness_body_refs": [
+        "B1_1"
+      ],
+      "nar_burdens": [
+        "B1"
+      ],
+      "owner_activations": [
+        "B1_1"
+      ],
+      "normalized_activation_record": {
+        "n_frame": "source-order-repair",
+        "live_registers": [
+          "xi"
+        ],
+        "burden_floor": [
+          "B1"
+        ],
+        "per_burden": [
+          {
+            "burden_id": "B1",
+            "owner_id": "source-status-repair",
+            "operation": "source-order",
+            "delta_result": "science-source-bounded",
+            "mrp_route_result_type": "generated_burden_instantiation",
+            "terminal_state": "landed",
+            "generation_depth": 0
+          }
+        ]
+      },
+      "register_deltas": {
+        "xi": "science-source-bounded"
+      }
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "stage-01-intake",
+      "to": "stage-02-layer-a-diagnostic-ir",
+      "checks": [
+        "input_boundary_preserved"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-02-layer-a-diagnostic-ir",
+      "to": "stage-03-routing-owner-gate",
+      "checks": [
+        "burden_floor_to_route_targets",
+        "n_frame_present",
+        "live_registers_present"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-03-routing-owner-gate",
+      "to": "stage-04-burden-execution-act",
+      "checks": [
+        "route_targets_to_act_targets",
+        "owner_eligibility_backed"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-04-burden-execution-act",
+      "to": "stage-05-mrp-reread-terminal-state",
+      "checks": [
+        "act_rows_present",
+        "act_body_refs_present"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-05-mrp-reread-terminal-state",
+      "to": "stage-06-field-witness-nar",
+      "checks": [
+        "terminal_states_to_field_witness",
+        "dependency_graph_explicit"
+      ],
+      "status": "pass"
+    }
+  ],
+  "non_claims": {
+    "not_model_smoke": false,
+    "not_broad_model_behavior": true,
+    "not_broad_model_matrix": true,
+    "not_runtime_default_emission_proof": true,
+    "not_arbitrary_nl_ir_parser": true,
+    "not_package_provenance": true,
+    "not_guaranteed_t_lang_uptake": true,
+    "not_graphify_or_activegraph_proof": true
+  },
+  "stage_scope": {
+    "stop_after_stage": "stage-06-field-witness-nar",
+    "stage_count": 6,
+    "not_release_output": true,
+    "not_verifier_sidecars": true
+  },
+  "model_scope": {
+    "type": "focused-current-skill-stage-smoke",
+    "case_count": 1,
+    "case_family": "stage06-nar-route-type-mismatch-stage05",
+    "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"
+  }
+}

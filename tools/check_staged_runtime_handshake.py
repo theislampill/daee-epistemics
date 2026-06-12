@@ -181,6 +181,16 @@ REREAD_ROUTE_RESULT_TYPES = {
     "loopbreak",
 }
 REREAD_ROUTES = {"STOP", "HOLD", "PARTIAL", "RECURSE", "LoopBreak", "LOOPBREAK"}
+STAGE05_FORBIDDEN_PER_BURDEN_TEXT_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
+    (
+        "guaranteed T_lang uptake claim",
+        re.compile(
+            r"T_lang\s+guarantees|guaranteed\s+T_lang\s+uptake|"
+            r"guarantees\s+interlocutor\s+uptake|guarantees\s+uptake",
+            re.IGNORECASE,
+        ),
+    ),
+]
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 ACT_OWNER_RE = re.compile(r"^⟦ACT\s+[^\[]+\[([^\.\]]+)\.[^\]]+\]")
@@ -308,6 +318,31 @@ def canonical_stage04_act_burdens(stage04: dict[str, Any] | None) -> set[str]:
             return set(canonical)
         return set(raw)
     return act_targets
+
+
+def stage05_forbidden_per_burden_text_errors(label: str, value: Any) -> list[str]:
+    if not isinstance(value, str):
+        return []
+    return [
+        f"{label}: forbidden {name}"
+        for name, pattern in STAGE05_FORBIDDEN_PER_BURDEN_TEXT_PATTERNS
+        if pattern.search(value)
+    ]
+
+
+def stage05_route_types_by_burden(stage05: dict[str, Any] | None) -> dict[str, set[str]]:
+    entries = stage05.get(PER_BURDEN_REREAD_FIELD) if isinstance(stage05, dict) else None
+    if not isinstance(entries, list):
+        return {}
+    result: dict[str, set[str]] = {}
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        burden_id = entry.get("burden_id")
+        route_type = entry.get("route_result_type")
+        if isinstance(burden_id, str) and burden_id and isinstance(route_type, str) and route_type:
+            result.setdefault(burden_id, set()).add(route_type)
+    return result
 
 
 def stage_map(record: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -659,6 +694,7 @@ def nar_object_errors(
     burden_floor: set[str],
     nar_burdens: set[str],
     terminal_burdens: set[str],
+    expected_route_types: dict[str, set[str]] | None = None,
 ) -> list[str]:
     if not isinstance(nar, dict):
         return [f"{label}: stage-06 normalized activation record details must be an object"]
@@ -740,6 +776,12 @@ def nar_object_errors(
                 errors.append(f"{label}: stage-06 NAR per_burden[{index}].burden_id must be a non-empty string")
             else:
                 row_burdens.add(burden_id)
+                route_type = str(row.get("mrp_route_result_type") or row.get("route_result_type") or "").strip()
+                expected = (expected_route_types or {}).get(burden_id)
+                if route_type and expected and route_type not in expected:
+                    errors.append(
+                        f"{label}: stage-06 NAR per_burden[{index}].mrp_route_result_type must match stage-05 per_burden_reread route_result_type"
+                    )
             for key in ("owner_id", "operation", "terminal_state"):
                 value = row.get(key)
                 if value is not None and (not isinstance(value, str) or not value):
@@ -777,6 +819,7 @@ def stage06_witness_nar_errors(
     burden_floor = set(list_field(stage02 or {}, "burden_floor"))
     terminal_states = stage05.get("terminal_states") if isinstance(stage05, dict) else {}
     terminal_burdens = set(terminal_states) if isinstance(terminal_states, dict) else set()
+    expected_route_types = stage05_route_types_by_burden(stage05)
 
     field_refs = as_string_list(stage06.get("field_witness_body_refs"))
     if field_refs is None or not field_refs:
@@ -846,6 +889,7 @@ def stage06_witness_nar_errors(
                 burden_floor=burden_floor,
                 nar_burdens=nar_burdens,
                 terminal_burdens=terminal_burdens,
+                expected_route_types=expected_route_types,
             )
         )
     else:
@@ -858,6 +902,7 @@ def stage06_witness_nar_errors(
                 burden_floor=burden_floor,
                 nar_burdens=nar_burdens,
                 terminal_burdens=terminal_burdens,
+                expected_route_types=expected_route_types,
             )
         )
 
@@ -1251,6 +1296,8 @@ def per_burden_reread_errors(label: str, stage05: dict[str, Any]) -> list[str]:
             value = entry.get(field)
             if not isinstance(value, str) or not value.strip():
                 errors.append(f"{entry_label}.{field} must be a non-empty string")
+            else:
+                errors.extend(stage05_forbidden_per_burden_text_errors(f"{entry_label}.{field}", value))
         burden_id = entry.get("burden_id")
         if isinstance(burden_id, str) and burden_id:
             if burden_id in seen:
@@ -1290,6 +1337,12 @@ def per_burden_reread_errors(label: str, stage05: dict[str, Any]) -> list[str]:
         for key, value in activations.items():
             if not isinstance(value, str) or not value.strip():
                 errors.append(f"{entry_label}.pressure_activations.{key} must be a non-empty string")
+            else:
+                errors.extend(
+                    stage05_forbidden_per_burden_text_errors(
+                        f"{entry_label}.pressure_activations.{key}", value
+                    )
+                )
     return errors
 
 
