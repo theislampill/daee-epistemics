@@ -222,8 +222,49 @@ BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
     "M8": {"consequence-traced", "dependency-exposed"},
     "PATTERN_PROFILE": {"carrier-function-typed", "proof-packet-reconstructed"},
     "PROOF_METHOD": {"proof-family-carrier-typed"},
-    "SOURCE": {"authority-order-repaired", "source-order-repaired"},
+    "SOURCE": {
+        "authority-order-repaired",
+        "source-order-repaired",
+        "hidden-support-blocked",
+        "proof-text-hidden-support-blocked",
+        "proof-text-sorted",
+        "source-function-bounded",
+    },
+    "DO_ATTRIBUTE": {
+        "attribute-precision-typed",
+        "person-nature-transfer-blocked",
+        "attribute-multiplicity-bounded",
+        "predicate-identity-separated",
+    },
+    "DO_SECOND_LOOP": {
+        "accountability-hujjah-narrowed",
+        "coercive-guidance-demand-bounded",
+        "fitrah-ayat-baseline-established",
+        "punishment-proportionality-calibrated",
+    },
 }
+SOURCE_ORDER_REPAIR_DELTA_RESULTS = {
+    "source-order-repaired",
+    "hidden-support-blocked",
+    "proof-text-hidden-support-blocked",
+    "proof-text-sorted",
+    "source-function-bounded",
+}
+DO_ATTRIBUTE_BACKING_RE = re.compile(
+    r"(?is)\b(?:attribute[- ]precision|person/nature|person[- ]nature|predicate|category|"
+    r"attribute|cruelty|kindness|generosity|multiplicity|transfer|typed|typing)\b"
+)
+DO_ATTRIBUTE_STATE_RE = re.compile(
+    r"(?is)\b(?:typed|classified|separated|blocked|bounded|no longer transferred|category transfer)\b"
+)
+DO_SECOND_LOOP_BACKING_RE = re.compile(
+    r"(?is)\b(?:accountability|hujjah|ḥujjah|warning|knowledge|capacity|record|culpability|"
+    r"guidance|coercion|persuasion|punishment|proportionality|mercy|justice|judge)\b"
+)
+DO_SECOND_LOOP_STATE_RE = re.compile(
+    r"(?is)\b(?:narrowed|bounded|calibrated|separated|blocked|sequenced|no longer measured|"
+    r"no longer carries|warning|record|accountability)\b"
+)
 PROOF_METHOD_CARRIER_RE = re.compile(
     r"(?is)\b(?:proof[- ]family|proof[- ]carrier|proof carrier|logic tree|"
     r"formal derivation|formal display|diagram|symbolic conflict|compression device|"
@@ -1295,10 +1336,11 @@ def source_owned_operation_errors(record: ActRecord, family: str, block: str) ->
                     "authority/rank/tribunal/source-sovereignty transition evidence"
                 )
         if operation_key == "source-order-repair":
-            if record.delta_result != "source-order-repaired":
+            if record.delta_result not in SOURCE_ORDER_REPAIR_DELTA_RESULTS:
+                allowed_text = ", ".join(sorted(SOURCE_ORDER_REPAIR_DELTA_RESULTS))
                 errors.append(
                     f"ACT {record.submove_ref} SOURCE source-order-repair must use "
-                    "delta_result 'source-order-repaired'"
+                    f"one source-order delta_result token: {allowed_text}"
                 )
             if transition_kind != "source-order":
                 errors.append(
@@ -1422,6 +1464,11 @@ def delta_result_has_concrete_state_change(record: ActRecord, family: str, block
         and record.delta_result == "proof-family-carrier-typed"
     ):
         return proof_method_carrier_transition_visible(block)
+    if (
+        family in {"DO_ATTRIBUTE", "DO_SECOND_LOOP"}
+        and record.delta_result in BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get(family, set())
+    ):
+        return do_family_delta_result_has_body_backing(record, family, block)
     if STATE_CHANGE_RE.search(record.delta_result):
         return True
     supported = BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get(family, set())
@@ -1433,6 +1480,31 @@ def delta_result_has_concrete_state_change(record: ActRecord, family: str, block
     if family == "SOURCE":
         return source_repair_state_change_visible(record.owner, result, contribution, operation)
     return bool(STATE_CHANGE_RE.search(" ".join((result, contribution, operation))))
+
+
+def do_family_delta_result_has_body_backing(record: ActRecord, family: str, block: str) -> bool:
+    target = field_body(block, "Target")
+    operation = field_body_any(block, ("Operation", "What it does"))
+    result = field_body_any(block, ("Result", "Result/state-change"))
+    contribution = contribution_body(block)
+    body = submove_operation_body(block)
+    if not (target and operation and result and contribution and body):
+        return False
+    payload = " ".join((record.pi, target, operation, result, contribution, body))
+    owner = FAMILY_OPERATION_OWNER.get(family, record.owner)
+    if not owner_specific_operation_performed(owner, payload):
+        return False
+    if not operation_acts_on_pressure(target, " ".join((operation, body))):
+        return False
+    if not contribution_explains_land(contribution):
+        return False
+    if not STATE_CHANGE_RE.search(payload):
+        return False
+    if family == "DO_ATTRIBUTE":
+        return bool(DO_ATTRIBUTE_BACKING_RE.search(payload) and DO_ATTRIBUTE_STATE_RE.search(payload))
+    if family == "DO_SECOND_LOOP":
+        return bool(DO_SECOND_LOOP_BACKING_RE.search(payload) and DO_SECOND_LOOP_STATE_RE.search(payload))
+    return False
 
 
 def pattern_profile_delta_result_has_body_backing(record: ActRecord, block: str) -> bool:

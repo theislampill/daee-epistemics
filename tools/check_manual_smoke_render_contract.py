@@ -169,6 +169,7 @@ OPERATION_ACTION_RE = re.compile(
     r"prevent|audit|apply|tests?|"
     r"identify|identification|reclassify|refuse|sequence|show why|demonstrate|bar|route|bind|isolate|"
     r"name|names|named|naming|define|anchor|anchors|anchored|anchoring|clarify|vet|reconstruct|dissolve|dissolves|dissolved|triage|prioritize|map|"
+    r"type|types|typed|typing|calibrate|calibrates|calibrated|calibrating|"
     r"assume|assumes|assumed|assuming|follow|follows|followed|following|"
     r"shifts?|smuggl|reopen|supplies|explains|cannot retroactively|does not mean|"
     r"answered according|sort|bound|stop|break|restores?|return|orient|reorient|re-home|honor)\b"
@@ -232,7 +233,9 @@ SOURCE_AUTHORITY_REPAIR_STATE_RE = re.compile(
     r"(?is)\b(?:authority[- ]order[- ]repaired|authority order is repaired)\b"
 )
 SOURCE_ORDER_REPAIR_STATE_RE = re.compile(
-    r"(?is)\b(?:source[- ]order[- ]repaired|source order is repaired)\b"
+    r"(?is)\b(?:source[- ]order[- ]repaired|source order is repaired|"
+    r"proof[- ]text[- ]hidden[- ]support[- ]blocked|hidden[- ]support[- ]blocked|"
+    r"proof[- ]text[- ]sorted|source[- ]function[- ]bounded)\b"
 )
 SOURCE_AUTHORITY_REPAIR_EVIDENCE_RE = re.compile(
     r"(?is)\b(?:authority|rank|tribunal|judge|judging office|court|higher court|"

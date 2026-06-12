@@ -356,6 +356,9 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "RECURSE and a graph edge; partial-real requires HOLD; any graph edge requires a "
             "non-none preemption_basis. Do not write `guaranteed T_lang uptake` in any "
             "`per_burden_reread` string field; use the exact boundary prefix instead. "
+            "Return one syntactically valid JSON object only: every array item must have exactly "
+            "one object-closing brace before a comma, every string quote inside a value must be "
+            "escaped, and no prose or second object may appear outside the root object. "
             "The harness renders the public [Mid-Reread Pressure] "
             "blocks from these records; do not write the blocks yourself anywhere."
         ),
@@ -2573,6 +2576,13 @@ def stage07_formal_divergence_state(entry: dict[str, Any], route_type: str, rout
     return head
 
 
+def stage07_formal_curl_state(entry: dict[str, Any], route_type: str, route: str) -> str:
+    head = per_burden_state_head(entry.get("curl"), staged_output.PER_BURDEN_CURL_PREFIX_RE)
+    if (route_type in {"no_new_resultant", "none", "stable"} or route.upper() == "STOP") and head == "resolved":
+        return "null"
+    return head
+
+
 def stage05_per_burden_entries(stage05: dict[str, Any] | None) -> list[dict[str, Any]]:
     entries = stage05.get("per_burden_reread") if isinstance(stage05, dict) else None
     if (
@@ -2757,9 +2767,7 @@ def stage07_formal_reread_states(
             "delta": stage07_formal_delta(entry.get("landed_delta"), source),
             "reread": "R(H,Delta)",
             "divergence_state": stage07_formal_divergence_state(entry, route_type, route),
-            "curl_state": per_burden_state_head(
-                entry.get("curl"), staged_output.PER_BURDEN_CURL_PREFIX_RE
-            ),
+            "curl_state": stage07_formal_curl_state(entry, route_type, route),
             "route_result_type": route_type,
             "mrp_resultant": str(entry.get("mrp_resultant") or ""),
             "graph_delta": graph,
@@ -3737,6 +3745,22 @@ SOURCE_SOURCE_ORDER_BODY_BACKED_RE = re.compile(
     r"inherited claim|source priority|source precedence|evidential dependency|"
     r"derivation order|source chain|testimony source|report source)\b"
 )
+DO_ATTRIBUTE_BODY_BACKED_RE = re.compile(
+    r"(?is)\b(?:attribute[- ]precision|person/nature|person[- ]nature|attribute|predicate|"
+    r"category confusion|category transfer|cruelty|kindness|generosity|typed|typing)\b"
+)
+DO_ATTRIBUTE_TRANSITION_BACKED_RE = re.compile(
+    r"(?is)\b(?:types?|typed|typing|separates?|separated|blocking?|blocked|bounded|"
+    r"classifies?|classified|category transfer|category confusion|predicate level)\b"
+)
+DO_SECOND_LOOP_BODY_BACKED_RE = re.compile(
+    r"(?is)\b(?:accountability|hujjah|ḥujjah|warning|knowledge|capacity|record|culpability|"
+    r"guidance|coercion|persuasion|punishment|proportionality|mercy|justice|judge)\b"
+)
+DO_SECOND_LOOP_TRANSITION_BACKED_RE = re.compile(
+    r"(?is)\b(?:narrows?|narrowed|bounds?|bounded|calibrates?|calibrated|separates?|"
+    r"separated|blocks?|blocked|sequences?|sequenced|no longer)\b"
+)
 SECTION_ROLE_HEADING_PATTERNS = {
     "restorative_response": re.compile(
         r"(?i)^\s*(?:#{1,6}\s*)?(?:(?:\*\*|__|\*|_)\s*)?"
@@ -3902,6 +3926,16 @@ def owner_transition_body_backed(detail: dict[str, str], block: str) -> bool:
         return bool(SOURCE_AUTHORITY_ORDER_BODY_BACKED_RE.search(operation_body))
     if family == "SOURCE" and operation == "source-order-repair":
         return bool(SOURCE_SOURCE_ORDER_BODY_BACKED_RE.search(operation_body))
+    if family == "DO_ATTRIBUTE" and operation == "attribute-precision":
+        return bool(
+            DO_ATTRIBUTE_BODY_BACKED_RE.search(operation_body)
+            and DO_ATTRIBUTE_TRANSITION_BACKED_RE.search(operation_body)
+        )
+    if family == "DO_SECOND_LOOP":
+        return bool(
+            DO_SECOND_LOOP_BODY_BACKED_RE.search(operation_body)
+            and DO_SECOND_LOOP_TRANSITION_BACKED_RE.search(operation_body)
+        )
     return False
 
 
@@ -3945,6 +3979,32 @@ def state_change_sentence_for_owner_transition(detail: dict[str, str]) -> str:
         return (
             " State change: the source lineage, source priority, and evidential dependency "
             "are explicitly ordered, so the inherited claim no longer travels as an unworked source chain."
+        )
+    if family == "DO_ATTRIBUTE" and operation == "attribute-precision":
+        return (
+            " State change: the attribute-precision operation types the attribute or predicate relation, "
+            "separates the relevant levels, and blocks the category transfer from carrying the burden."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "accountability-hujjah-compression":
+        return (
+            " State change: the hujjah/accountability compression is narrowed through warning, knowledge, "
+            "capacity, record, and response sequencing, so bare non-belief no longer carries the burden."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "coercive-guidance-demand":
+        return (
+            " State change: guidance, warning, persuasion, and coercion are separated, so the demand for "
+            "compelling disclosure no longer carries the burden."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "fitrah-ayat-baseline":
+        return (
+            " State change: the fitrah/ayat baseline is established as a guidance-order route, so the "
+            "burden is no longer carried by a bare neutrality claim."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "punishment-proportionality-accountability":
+        return (
+            " State change: punishment proportionality is calibrated through accountability, warning, "
+            "knowledge, capacity, record, and the Judge's right, so raw affective magnitude no longer "
+            "carries the burden."
         )
     return ""
 
@@ -3994,7 +4054,51 @@ def land_license_sentence_for_owner_transition(detail: dict[str, str], public_bu
             "evidential dependency are explicitly ordered, so the inherited claim no longer travels "
             "as an unworked source chain."
         )
+    if family == "DO_ATTRIBUTE" and operation == "attribute-precision":
+        return (
+            f"This licenses Land({land_target}) because attribute precision types the attribute or "
+            "predicate relation, separates the relevant levels, and blocks the category transfer from "
+            "carrying proof force."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "accountability-hujjah-compression":
+        return (
+            f"This licenses Land({land_target}) because the hujjah/accountability compression is "
+            "narrowed through warning, knowledge, capacity, record, and response sequencing."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "coercive-guidance-demand":
+        return (
+            f"This licenses Land({land_target}) because guidance, warning, persuasion, and coercion "
+            "are separated, so coercive-disclosure pressure is bounded."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "fitrah-ayat-baseline":
+        return (
+            f"This licenses Land({land_target}) because the fitrah/ayat baseline is established as "
+            "guidance-order evidence rather than a bare neutrality claim."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "punishment-proportionality-accountability":
+        return (
+            f"This licenses Land({land_target}) because punishment proportionality is calibrated "
+            "through accountability, warning, knowledge, capacity, record, and the Judge's right."
+        )
     return ""
+
+
+def checker_stable_state_for_owner_transition(detail: dict[str, str], body: str) -> bool:
+    family = canonical_delta_owner(str(detail.get("owner") or "").strip()) or str(detail.get("owner") or "").strip()
+    if family in {"DO_ATTRIBUTE", "DO_SECOND_LOOP"}:
+        sentence = state_change_sentence_for_owner_transition(detail).strip()
+        return bool(sentence and sentence in body)
+    return bool(CHECKER_STABLE_STATE_RE.search(body))
+
+
+def checker_stable_contribution_for_owner_transition(detail: dict[str, str], body: str) -> bool:
+    family = canonical_delta_owner(str(detail.get("owner") or "").strip()) or str(detail.get("owner") or "").strip()
+    if family in {"DO_ATTRIBUTE", "DO_SECOND_LOOP"}:
+        land_target = str(detail.get("burden_id") or "").strip()
+        public_land = public_burden_id(land_target) if land_target else ""
+        license_sentence = land_license_sentence_for_owner_transition(detail, public_land)
+        return bool(license_sentence and license_sentence in body)
+    return bool(CHECKER_STABLE_CONTRIBUTION_RE.search(body))
 
 
 def canonicalize_layer_b_owner_transition_facets(
@@ -4032,6 +4136,22 @@ def canonicalize_layer_b_owner_transition_facets(
             and str(detail.get("operation") or "").strip()
             in {"authority-order-repair", "source-order-repair"}
         )
+        or (
+            (canonical_delta_owner(str(detail.get("owner") or "").strip()) or "")
+            == "DO_ATTRIBUTE"
+            and str(detail.get("operation") or "").strip() == "attribute-precision"
+        )
+        or (
+            (canonical_delta_owner(str(detail.get("owner") or "").strip()) or "")
+            == "DO_SECOND_LOOP"
+            and str(detail.get("operation") or "").strip()
+            in {
+                "accountability-hujjah-compression",
+                "coercive-guidance-demand",
+                "fitrah-ayat-baseline",
+                "punishment-proportionality-accountability",
+            }
+        )
     }
     if not details_by_public_ref:
         return text, None
@@ -4050,7 +4170,7 @@ def canonicalize_layer_b_owner_transition_facets(
 
         def replace_result_line(result_match: re.Match[str]) -> str:
             body = result_match.group("body").rstrip()
-            if CHECKER_STABLE_STATE_RE.search(body):
+            if checker_stable_state_for_owner_transition(detail, body):
                 return result_match.group(0)
             return f"{result_match.group('prefix')}{body.rstrip('.')}." + sentence
 
@@ -4064,7 +4184,7 @@ def canonicalize_layer_b_owner_transition_facets(
         def replace_contribution_line(contribution_match: re.Match[str]) -> str:
             nonlocal land_license_changed
             body = contribution_match.group("body").strip()
-            if CHECKER_STABLE_CONTRIBUTION_RE.search(body):
+            if checker_stable_contribution_for_owner_transition(detail, body):
                 return contribution_match.group(0)
             public_burden = contribution_match.group("land").strip()
             land_license = land_license_sentence_for_owner_transition(detail, public_burden)
@@ -10030,6 +10150,131 @@ def run_self_test(root: Path) -> int:
     )
     if authority_only_event:
         raise HarnessError("Self-test Stage 07 SOURCE source-order canonicalization upgraded authority-only prose")
+    proof_text_source_row = (
+        "⟦ACT ¹B₁[source-status-repair.source-order-repair] :: "
+        "π=proof-text-source-order :: body_ref=¹B₁ :: "
+        "Δ=Δ¹B:proof-text-hidden-support-blocked :: Land(¹B)+⟧"
+    )
+    proof_text_source_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [proof_text_source_row],
+            "act_row_details": self_test_act_row_details(
+                [proof_text_source_row],
+                {"¹B₁": "σ"},
+            ),
+        },
+    )
+    proof_text_source_layer = "\n".join(
+        [
+            "## Burden 1 / ¹B — proof-text source order",
+            proof_text_source_row,
+            "",
+            "### ¹B₁[source-status-repair] - source-order-repair over proof-text-source-order",
+            "Target: proof-text-source-order.",
+            "Operation: source-order-repair audits the proof-text-source-order with owner family source-status-repair.",
+            "Result/state-change: proof-text-hidden-support-blocked.",
+            "Contribution-to-Land(¹B): This contributes because source priority and evidential dependency become explicit.",
+            "TTP Operation Body:",
+            "The source-order repair distinguishes the proof-text source lineage, quotation chain, inherited-claim order, source priority, derivation order, and evidential dependency before the burden lands.",
+            "Land(¹B): proof-text hidden support is blocked by source-order repair.",
+            "",
+        ]
+    )
+    canonical_proof_text_source, proof_text_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        proof_text_source_layer,
+        [normalized_stage02, proof_text_source_stage04, normalized_stage05, normalized_stage06],
+    )
+    if not proof_text_event or not proof_text_event.get("canonicalized_owner_transition_facets"):
+        raise HarnessError("Self-test Stage 07 SOURCE proof-text hidden-support canonicalization did not record an event")
+    if "proof-text-hidden-support-blocked" not in canonical_proof_text_source:
+        raise HarnessError("Self-test Stage 07 SOURCE proof-text delta was not preserved")
+    do_family_rows = [
+        (
+            "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+            "π=eternal-punishment-proportionality-mercy-justice-accountability :: "
+            "body_ref=¹B₁ :: Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+        ),
+        (
+            "⟦ACT ¹B₂[do-attribute-precision.attribute-precision] :: "
+            "π=cruelty-inhumanity-kindness-generosity-predication-on-judgment :: "
+            "body_ref=¹B₂ :: Δ=Δ¹B:attribute-precision-typed :: Land(¹B)+⟧"
+        ),
+    ]
+    do_family_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁", "¹B₂"],
+            "act_rows": do_family_rows,
+            "act_row_details": self_test_act_row_details(
+                do_family_rows,
+                {"¹B₁": "κ", "¹B₂": "Ω"},
+            ),
+        },
+    )
+    thin_do_family_layer = "\n".join(
+        [
+            "## Burden 1 / ¹B — punishment and attribute pressure",
+            do_family_rows[0],
+            "",
+            "### ¹B₁[do-second-loop] - punishment-proportionality-accountability over eternal-punishment-proportionality-mercy-justice-accountability",
+            "Target: eternal-punishment-proportionality-mercy-justice-accountability.",
+            "Operation: punishment-proportionality-accountability must act on eternal-punishment-proportionality-mercy-justice-accountability with owner family do-second-loop.",
+            "Result/state-change: punishment-proportionality-calibrated.",
+            "Contribution-to-Land(¹B): This contributes because proportionality is evaluated through accountability instead of raw affective magnitude.",
+            "TTP Operation Body:",
+            "The do-second-loop operation calibrates punishment proportionality through accountability, warning, knowledge, capacity, record, culpability, mercy, justice, and the Judge's right before the burden lands.",
+            "",
+            do_family_rows[1],
+            "",
+            "### ¹B₂[do-attribute-precision] - attribute-precision over cruelty-inhumanity-kindness-generosity-predication-on-judgment",
+            "Target: cruelty-inhumanity-kindness-generosity-predication-on-judgment.",
+            "Operation: attribute-precision must act on cruelty-inhumanity-kindness-generosity-predication-on-judgment with owner family do-attribute-precision.",
+            "Result/state-change: attribute-precision-typed.",
+            "Contribution-to-Land(¹B): This contributes because cruelty and kindness predicates are typed before judgment is classified.",
+            "TTP Operation Body:",
+            "The do-attribute-precision operation types the attribute relation, separates the predicate level, and names the category transfer that would otherwise carry the burden.",
+            "Land(¹B): punishment proportionality and attribute precision land locally.",
+            "",
+        ]
+    )
+    canonical_do_family, do_family_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        thin_do_family_layer,
+        [normalized_stage02, do_family_stage04, normalized_stage05, normalized_stage06],
+    )
+    if not do_family_event or not do_family_event.get("canonicalized_owner_transition_facets"):
+        raise HarnessError("Self-test Stage 07 DO-family facet canonicalization did not record an event")
+    for required in (
+        "punishment proportionality is calibrated through accountability, warning, knowledge, capacity, record",
+        "attribute-precision operation types the attribute or predicate relation",
+    ):
+        if required not in canonical_do_family:
+            raise HarnessError(f"Self-test Stage 07 DO-family canonicalization omitted: {required}")
+    label_only_do_family = thin_do_family_layer.replace(
+        "The do-second-loop operation calibrates punishment proportionality through accountability, warning, knowledge, capacity, record, culpability, mercy, justice, and the Judge's right before the burden lands.",
+        "The do-second-loop owner is named, so the route is handled.",
+    ).replace(
+        "The do-attribute-precision operation types the attribute relation, separates the predicate level, and names the category transfer that would otherwise carry the burden.",
+        "The do-attribute-precision owner is named, so the route is handled.",
+    )
+    _, label_only_do_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        label_only_do_family,
+        [normalized_stage02, do_family_stage04, normalized_stage05, normalized_stage06],
+    )
+    if label_only_do_event:
+        raise HarnessError("Self-test Stage 07 DO-family canonicalization upgraded label-only owner prose")
     stage07_m8_prompt = release_section_prompt(
         root=root,
         case_name="self-test-m8-operation",
@@ -10769,6 +11014,13 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test Stage 07 STOP formal reread state did not normalize settled/bounded divergence to neutral")
     if "Delta(B1)" not in str(stop_display_state.get("delta")):
         raise HarnessError("Self-test Stage 07 STOP formal reread state did not add machine Delta(B1) identity")
+    resolved_stop_entry = self_test_reread_entry(
+        "B1",
+        curl="∇×κ: resolved / visible public wording says the loop is resolved",
+    )
+    resolved_stop_state = stage07_formal_reread_states([resolved_stop_entry], {"B1": "landed"})[0]
+    if resolved_stop_state.get("curl_state") != "null":
+        raise HarnessError("Self-test Stage 07 STOP formal reread state did not normalize resolved curl to null")
     unresolved_stop_states = stage07_formal_reread_states(
         [self_test_reread_entry("B6")],
         {"B6": "carried-RECURSE"},
