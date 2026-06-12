@@ -1576,6 +1576,7 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
         raise HarnessError("stage-05 no_new_resultant_proof must be boolean or object")
 
     canonicalize_stage05_reread_invocation(stage)
+    normalize_stage05_stage_level_pressure_activations(stage)
     normalize_stage05_per_burden_extra_fields(stage)
     per_burden_errors = staged_output.per_burden_reread_entry_errors(
         stage.get("per_burden_reread"),
@@ -1588,6 +1589,29 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
             "burden; Stage 07 renders the visible [Mid-Reread Pressure] blocks from these "
             "records and never fills missing fields. Problems:\n- " + "\n- ".join(per_burden_errors)
         )
+
+
+def normalize_stage05_stage_level_pressure_activations(stage: dict[str, Any]) -> None:
+    entries = stage.get("per_burden_reread")
+    top_level = stage.get("pressure_activations")
+    if not isinstance(entries, list) or not entries or not isinstance(top_level, dict):
+        return
+    if any(not isinstance(entry, dict) for entry in entries):
+        return
+    if any("pressure_activations" in entry for entry in entries):
+        return
+    if set(top_level) != staged_output.PER_BURDEN_PRESSURE_KEYS:
+        return
+    if not all(isinstance(value, str) and value.strip() for value in top_level.values()):
+        return
+    hydrated: list[str] = []
+    for entry in entries:
+        entry["pressure_activations"] = copy.deepcopy(top_level)
+        burden = str(entry.get("burden_id") or "").strip()
+        hydrated.append(burden or "<unknown>")
+    normalization = normalization_object(stage)
+    normalization["per_burden_pressure_activations_from_stage_level"] = hydrated
+    stage["normalization"] = normalization
 
 
 def normalize_stage05_per_burden_extra_fields(stage: dict[str, Any]) -> None:
@@ -2679,7 +2703,11 @@ def stage07_formal_divergence_state(entry: dict[str, Any], route_type: str, rout
 
 def stage07_formal_curl_state(entry: dict[str, Any], route_type: str, route: str) -> str:
     head = per_burden_state_head(entry.get("curl"), staged_output.PER_BURDEN_CURL_PREFIX_RE)
-    if (route_type in {"no_new_resultant", "none", "stable"} or route.upper() == "STOP") and head == "resolved":
+    if (route_type in {"no_new_resultant", "none", "stable"} or route.upper() == "STOP") and head in {
+        "resolved",
+        "held",
+        "non-null",
+    }:
         return "null"
     return head
 
@@ -9313,6 +9341,31 @@ def run_self_test(root: Path) -> int:
             ],
         },
     )
+    top_level_pressure_entry = self_test_reread_entry("B1")
+    expected_pressure_activations = copy.deepcopy(top_level_pressure_entry["pressure_activations"])
+    top_level_pressure_entry.pop("pressure_activations")
+    top_level_pressure_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after the terminal read.",
+                "unresolved_burdens": [],
+            },
+            "pressure_activations": expected_pressure_activations,
+            "per_burden_reread": [top_level_pressure_entry],
+        },
+    )
+    hydrated_pressure = top_level_pressure_stage05["per_burden_reread"][0].get("pressure_activations")
+    if hydrated_pressure != expected_pressure_activations:
+        raise HarnessError("Self-test failed to hydrate per-burden pressure slots from Stage 05 top-level object")
+    pressure_normalization = top_level_pressure_stage05.get("normalization", {})
+    if pressure_normalization.get("per_burden_pressure_activations_from_stage_level") != ["B1"]:
+        raise HarnessError("Self-test Stage 05 pressure-slot hydration did not record normalization")
     validate_incremental_handoffs([two_burden_stage04, two_stop_stage05])
     continuation_entries = {
         str(entry["burden_id"]): entry
@@ -11290,6 +11343,13 @@ def run_self_test(root: Path) -> int:
     resolved_stop_state = stage07_formal_reread_states([resolved_stop_entry], {"B1": "landed"})[0]
     if resolved_stop_state.get("curl_state") != "null":
         raise HarnessError("Self-test Stage 07 STOP formal reread state did not normalize resolved curl to null")
+    held_display_stop_entry = self_test_reread_entry(
+        "B1",
+        curl="∇×κ: held / visible public wording names a bounded held-route boundary",
+    )
+    held_display_stop_state = stage07_formal_reread_states([held_display_stop_entry], {"B1": "landed"})[0]
+    if held_display_stop_state.get("curl_state") != "null":
+        raise HarnessError("Self-test Stage 07 STOP formal reread state did not normalize held curl to null")
     unresolved_stop_states = stage07_formal_reread_states(
         [self_test_reread_entry("B6")],
         {"B6": "carried-RECURSE"},
