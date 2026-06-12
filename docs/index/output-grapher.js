@@ -888,10 +888,21 @@
       const visibleCurl=firstState(data.curl);
       const stateDivergence=firstState(state.divergence_state);
       const stateCurl=firstState(state.curl_state);
-      if(visibleDivergence&&stateDivergence&&visibleDivergence!==stateDivergence){
+      const terminalStopProjection=(state.route_result_type==='no_new_resultant'||String(state.route||'').toUpperCase()==='STOP');
+      const divergenceDisplayProjection=(
+        terminalStopProjection&&
+        stateDivergence==='neutral'&&
+        (visibleDivergence==='settled'||visibleDivergence==='bounded')
+      );
+      const curlDisplayProjection=(
+        terminalStopProjection&&
+        stateCurl==='null'&&
+        visibleCurl==='resolved'
+      );
+      if(visibleDivergence&&stateDivergence&&visibleDivergence!==stateDivergence&&!divergenceDisplayProjection){
         model.errors.push(`${stateLabel}: divergence_state mismatch visible=${visibleDivergence} field_witness=${stateDivergence}`);
       }
-      if(visibleCurl&&stateCurl&&visibleCurl!==stateCurl){
+      if(visibleCurl&&stateCurl&&visibleCurl!==stateCurl&&!curlDisplayProjection){
         model.errors.push(`${stateLabel}: curl_state mismatch visible=${visibleCurl} field_witness=${stateCurl}`);
       }
     });

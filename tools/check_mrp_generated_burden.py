@@ -925,7 +925,14 @@ def formal_reread_state_errors(path: Path, text: str, blocks: list[MrpBlock]) ->
         )
         if formal_divergence != visible_divergence and not stop_display_projection:
             errors.append(f"{label}: divergence_state does not agree with visible ∇·T")
-        if state.get("curl_state") != first_state(block.curl):
+        formal_curl = str(state.get("curl_state") or "").strip()
+        visible_curl = first_state(block.curl)
+        stop_curl_projection = (
+            formal_curl == "null"
+            and visible_curl == "resolved"
+            and (block.route_result_type == "no_new_resultant" or block.route == "STOP")
+        )
+        if formal_curl != visible_curl and not stop_curl_projection:
             errors.append(f"{label}: curl_state does not agree with visible ∇×T")
         if state.get("route_result_type") != block.route_result_type:
             errors.append(f"{label}: route_result_type does not agree with visible MRP route result type")

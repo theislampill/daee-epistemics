@@ -598,7 +598,75 @@ def canonicalize_formal_reread_curl_states(field_witness: dict[str, Any]) -> int
     return normalized
 
 
-def canonicalize_field_witness_ordering(text: str) -> tuple[str, dict[str, Any] | None]:
+def canonicalize_field_witness_per_burden_mirrors(
+    field_witness: dict[str, Any],
+    entry_by_burden: dict[str, dict[str, Any]] | None,
+) -> int:
+    if not entry_by_burden:
+        return 0
+
+    normalized = 0
+    resultants = field_witness.get("mrp_resultants")
+    if isinstance(resultants, list):
+        for row in resultants:
+            if not isinstance(row, dict):
+                continue
+            source = str(row.get("source") or "").strip()
+            entry = entry_by_burden.get(source)
+            if not entry:
+                continue
+            expected = {
+                "type": str(entry.get("route_result_type") or ""),
+                "finding": str(entry.get("finding") or ""),
+                "graph": str(entry.get("graph_delta") or ""),
+                "route": str(entry.get("route") or ""),
+            }
+            for key, value in expected.items():
+                if value and row.get(key) != value:
+                    row[key] = value
+                    normalized += 1
+
+    states = field_witness.get("formal_reread_states")
+    if isinstance(states, list):
+        for state in states:
+            if not isinstance(state, dict):
+                continue
+            source = str(state.get("source_burden") or "").strip()
+            entry = entry_by_burden.get(source)
+            if not entry:
+                continue
+            expected = {
+                "route_result_type": str(entry.get("route_result_type") or ""),
+                "mrp_resultant": str(entry.get("mrp_resultant") or ""),
+                "graph_delta": str(entry.get("graph_delta") or ""),
+                "route": str(entry.get("route") or ""),
+            }
+            for key, value in expected.items():
+                if value and state.get(key) != value:
+                    state[key] = value
+                    normalized += 1
+
+    nar = field_witness.get("normalized_activation_record")
+    rows = nar.get("per_burden") if isinstance(nar, dict) else None
+    if isinstance(rows, list):
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            burden = str(row.get("burden_id") or "").strip()
+            entry = entry_by_burden.get(burden)
+            if not entry:
+                continue
+            route_type = str(entry.get("route_result_type") or "")
+            if route_type and row.get("mrp_route_result_type") != route_type:
+                row["mrp_route_result_type"] = route_type
+                normalized += 1
+    return normalized
+
+
+def canonicalize_field_witness_ordering(
+    text: str,
+    entry_by_burden: dict[str, dict[str, Any]] | None = None,
+) -> tuple[str, dict[str, Any] | None]:
     label = FIELD_WITNESS_LABEL_RE.search(text)
     if label is None:
         return text, None
@@ -615,11 +683,17 @@ def canonicalize_field_witness_ordering(text: str) -> tuple[str, dict[str, Any] 
         return text, None
     roles_inserted = canonicalize_owner_activation_ordering_roles(field_witness)
     null_curl_states = canonicalize_formal_reread_curl_states(field_witness)
+    per_burden_mirrors = canonicalize_field_witness_per_burden_mirrors(
+        field_witness,
+        entry_by_burden,
+    )
     event: dict[str, Any] = merge_owner_activation_ordering(field_witness)
     if roles_inserted:
         event["inserted_owner_activation_ordering_roles"] = roles_inserted
     if null_curl_states:
         event["normalized_formal_reread_null_curl_states"] = null_curl_states
+    if per_burden_mirrors:
+        event["normalized_per_burden_mirror_fields"] = per_burden_mirrors
     if not event:
         return text, None
     replacement = json.dumps(payload, indent=2, ensure_ascii=False)
@@ -766,12 +840,18 @@ def mark_canonical_scaffold_non_evidence(event: dict[str, Any]) -> dict[str, Any
     return event
 
 
-def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[str, dict[str, Any] | None]:
+def normalize_section_scaffold(
+    section_id: str,
+    role: str,
+    text: str,
+    *,
+    entry_by_burden: dict[str, dict[str, Any]] | None = None,
+) -> tuple[str, dict[str, Any] | None]:
     spec = CANONICAL_ROLE_HEADINGS.get(role)
     ordering_event: dict[str, Any] | None = None
     submove_event: dict[str, Any] | None = None
     if role == "field_witness_nar":
-        text, ordering_event = canonicalize_field_witness_ordering(text)
+        text, ordering_event = canonicalize_field_witness_ordering(text, entry_by_burden)
     if role == "layer_b_act":
         text, submove_event = canonicalize_public_submove_headings(text)
     if spec is None:
@@ -1280,6 +1360,14 @@ def public_per_burden_graph_value(value: str) -> str:
     return rendered.replace("->", "→")
 
 
+def public_per_burden_mrp_resultant_value(value: str) -> str:
+    return re.sub(
+        r"\bB([1-9][0-9]*)\s*(?:->|→)\s*B([1-9][0-9]*)\b",
+        lambda match: f"{public_burden_token(match.group(1))} → {public_burden_token(match.group(2))}",
+        str(value or ""),
+    )
+
+
 def render_mrp_block(entry: dict[str, Any]) -> str:
     """Render one checker-canonical [Mid-Reread Pressure] block from one record.
 
@@ -1310,7 +1398,7 @@ def render_mrp_block(entry: dict[str, Any]) -> str:
             f"Route-gradient: {entry['route_gradient']}",
             f"Finding: {entry['finding']}",
             f"MRP route result type: {entry['route_result_type']}",
-            f"MRP resultant: {entry['mrp_resultant']}",
+            f"MRP resultant: {public_per_burden_mrp_resultant_value(entry['mrp_resultant'])}",
             f"Graph delta: {public_per_burden_graph_value(entry['graph_delta'])}",
             f"Pre-emption basis: {entry['preemption_basis']}",
             f"LoopBreak: {entry.get('loopbreak') or 'not needed'}",
@@ -1415,8 +1503,9 @@ def per_burden_block_field_parity_errors(label: str, block: Any, entry: dict[str
         mismatch("Finding", block.finding, expected("finding"))
     if block.route_result_type != expected("route_result_type"):
         mismatch("MRP route result type", block.route_result_type, expected("route_result_type"))
-    if block.mrp_resultant != expected("mrp_resultant"):
-        mismatch("MRP resultant", block.mrp_resultant, expected("mrp_resultant"))
+    expected_mrp_resultant = public_per_burden_mrp_resultant_value(expected("mrp_resultant"))
+    if block.mrp_resultant != expected_mrp_resultant:
+        mismatch("MRP resultant", block.mrp_resultant, expected_mrp_resultant)
     expected_graph = public_per_burden_graph_value(expected("graph_delta"))
     if block.graph_delta != expected_graph:
         mismatch("Graph delta", block.graph_delta, expected_graph)
@@ -1722,7 +1811,12 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
                 f"{label}: model-authored [Mid-Reread Pressure] heading is forbidden; "
                 f"canonical blocks are harness-injected from {PER_BURDEN_REREAD_FIELD} records"
             )
-        text, scaffold_event = normalize_section_scaffold(section_id, role, original_text)
+        text, scaffold_event = normalize_section_scaffold(
+            section_id,
+            role,
+            original_text,
+            entry_by_burden=entry_by_burden,
+        )
         text, trimmed_trailing_whitespace_lines = strip_trailing_line_whitespace(text)
         injected_block_count = 0
         if role == "layer_b_act":

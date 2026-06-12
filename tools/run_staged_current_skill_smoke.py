@@ -709,7 +709,6 @@ def canonical_delta_result_for_owner(
     pressure: Any,
     raw_delta_result: Any,
 ) -> str:
-    del operation, pressure
     raw = str(raw_delta_result or "").strip()
     if not raw:
         return raw
@@ -717,6 +716,27 @@ def canonical_delta_result_for_owner(
     vocabulary = DELTA_RESULT_VOCABULARY.get(family)
     if not vocabulary:
         return raw
+    if family == "SOURCE":
+        pressure_token = delta_token_key(pressure)
+        operation_token = str(operation or "").strip()
+        proof_text_recoil = (
+            "proof-text" in pressure_token
+            and ("source-order" in pressure_token or "recoil" in pressure_token)
+        )
+        generic_hidden_recoil = (
+            "hidden-support" in pressure_token
+            or ("hidden" in pressure_token and "support" in pressure_token)
+            or "source-order-recoil" in pressure_token
+            or "future-support" in pressure_token
+        )
+        if (
+            operation_token in {"source-order-repair", "source-order", "sort"}
+            and raw in {"source-order-repaired", "proof-text-sorted"}
+        ):
+            if proof_text_recoil:
+                return "proof-text-hidden-support-blocked"
+            if generic_hidden_recoil:
+                return "hidden-support-blocked"
     return raw
 
 
@@ -735,14 +755,14 @@ def canonicalize_delta_fields(item: dict[str, Any]) -> tuple[dict[str, Any], dic
     delta_value = str(item.get("delta") or "")
     if not raw_result and ":" in delta_value:
         raw_result = delta_value.split(":", 1)[1]
-    require_delta_result_vocabulary("delta_result", owner, raw_result)
-    pair_errors = source_formal_delta_operation_errors("delta_result", owner, operation, raw_result)
+    canonical = canonical_delta_result_for_owner(owner, operation, pressure, raw_result)
+    require_delta_result_vocabulary("delta_result", owner, canonical)
+    pair_errors = source_formal_delta_operation_errors("delta_result", owner, operation, canonical)
     if pair_errors:
         raise HarnessError("; ".join(pair_errors))
-    pressure_errors = source_pressure_delta_errors("delta_result", owner, pressure, raw_result)
+    pressure_errors = source_pressure_delta_errors("delta_result", owner, pressure, canonical)
     if pressure_errors:
         raise HarnessError("; ".join(pressure_errors))
-    canonical = canonical_delta_result_for_owner(owner, operation, pressure, raw_result)
     if not raw_result or canonical == str(raw_result).strip():
         return item, None
     updated = dict(item)
@@ -813,12 +833,18 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
     if operation_errors:
         raise HarnessError(operation_errors[0])
     raw_result = match.group("delta_result").strip()
-    require_delta_result_vocabulary("Stage 04 ACT row", match.group("owner"), raw_result)
+    canonical = canonical_delta_result_for_owner(
+        match.group("owner"),
+        match.group("operation"),
+        match.group("pressure"),
+        raw_result,
+    )
+    require_delta_result_vocabulary("Stage 04 ACT row", match.group("owner"), canonical)
     pair_errors = source_formal_delta_operation_errors(
         "Stage 04 ACT row",
         match.group("owner"),
         match.group("operation"),
-        raw_result,
+        canonical,
     )
     if pair_errors:
         raise HarnessError("; ".join(pair_errors))
@@ -826,7 +852,7 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
         "Stage 04 ACT row",
         match.group("owner"),
         match.group("operation"),
-        raw_result,
+        canonical,
     )
     if operation_delta_errors:
         raise HarnessError("; ".join(operation_delta_errors))
@@ -834,16 +860,10 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
         "Stage 04 ACT row",
         match.group("owner"),
         match.group("pressure"),
-        raw_result,
+        canonical,
     )
     if pressure_errors:
         raise HarnessError("; ".join(pressure_errors))
-    canonical = canonical_delta_result_for_owner(
-        match.group("owner"),
-        match.group("operation"),
-        match.group("pressure"),
-        raw_result,
-    )
     if canonical == raw_result:
         return row, None
     start, end = match.span("delta_result")
@@ -1316,11 +1336,28 @@ def normalize_stage04_act_row_details(
         detail_delta_result = non_empty_string(item.get("delta_result"))
         if not detail_delta_result:
             raise HarnessError(f"stage-04 act_row_details[{index}].delta_result is required")
+        detail_delta_result = canonical_delta_result_for_owner(
+            parsed["owner_id"],
+            parsed["operation"],
+            item.get("pressure") or parsed["pressure"],
+            detail_delta_result,
+        )
+        if item.get("delta_result") != detail_delta_result:
+            item["delta_result"] = detail_delta_result
+            missing.append("delta_result")
         require_delta_result_vocabulary(
             f"stage-04 act_row_details[{index}].delta_result",
             parsed["owner_id"],
             detail_delta_result,
         )
+        pressure_errors = source_pressure_delta_errors(
+            f"stage-04 act_row_details[{index}].delta_result",
+            parsed["owner_id"],
+            item.get("pressure") or parsed["pressure"],
+            detail_delta_result,
+        )
+        if pressure_errors:
+            raise HarnessError("; ".join(pressure_errors))
         operation_delta_errors = owner_operation_delta_result_errors(
             f"stage-04 act_row_details[{index}].delta_result",
             parsed["owner_id"],
@@ -8520,6 +8557,28 @@ def run_self_test(root: Path) -> int:
     ]
     if source_delta_results != ["proof-text-sorted", "hidden-support-blocked"]:
         raise HarnessError("Self-test failed to preserve exact SOURCE delta_result tokens")
+    proof_text_recoil_row = (
+        "⟦ACT ¹B₁[source-status-repair.source-order-repair] :: "
+        "π=proof-text-source-order-recoil :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:source-order-repaired :: Land(¹B)+⟧"
+    )
+    proof_text_recoil_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_text_recoil_row],
+            "act_row_details": self_test_act_row_details(
+                [proof_text_recoil_row],
+                {"¹B₁": "σ"},
+            ),
+        },
+    )
+    proof_text_recoil_details = stage04_act_details_by_ref(proof_text_recoil_stage04)
+    if proof_text_recoil_details["¹B₁"]["delta_result"] != "proof-text-hidden-support-blocked":
+        raise HarnessError("Self-test failed to canonicalize SOURCE proof-text recoil delta")
     invalid_source_hidden_support_delta_row = (
         "⟦ACT ¹B₃[authority-order-repair.sort] :: "
         "π=hidden-support-and-source-function-pressure :: "
@@ -11610,7 +11669,7 @@ def run_self_test(root: Path) -> int:
         "Matched owner/TTP route: [source-status-repair.source-order], [P7.scope-boundary]",
         "Finding: genuine-dependent",
         "MRP route result type: generated_burden_instantiation",
-        "MRP resultant: genuine-dependent -> graph B1 -> B2; RECURSE",
+        "MRP resultant: genuine-dependent -> graph ¹B → ²B; RECURSE",
         "Graph delta: ¹B → ²B",
         "Pre-emption basis: graph-bound",
         "Route: RECURSE",

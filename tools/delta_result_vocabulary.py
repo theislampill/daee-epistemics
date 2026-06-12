@@ -260,8 +260,11 @@ def source_pressure_delta_errors(label: str, owner: str, pressure: str, delta_re
         return []
 
     token = str(delta_result or "").strip()
-    is_proof_text_hidden_support = has_hidden_support and any(
+    has_proof_text_marker = any(
         marker in pressure_token for marker in PROOF_TEXT_HIDDEN_SUPPORT_PRESSURE_TOKENS
+    )
+    is_proof_text_hidden_support = has_proof_text_marker and (
+        has_hidden_support or has_source_recoil or "source-order" in pressure_token
     )
     if is_proof_text_hidden_support:
         if token == "proof-text-hidden-support-blocked":

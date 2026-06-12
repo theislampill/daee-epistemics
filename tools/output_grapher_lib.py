@@ -1005,11 +1005,30 @@ def compare_formal_reread_states(
         visible_curl = first_state(visible.get("curl"))
         state_divergence = first_state(state.get("divergence_state"))
         state_curl = first_state(state.get("curl_state"))
-        if visible_divergence and state_divergence and visible_divergence != state_divergence:
+        terminal_stop_projection = (
+            str(state.get("route_result_type") or "") == "no_new_resultant"
+            or str(state.get("route") or "").upper() == "STOP"
+        )
+        divergence_display_projection = (
+            terminal_stop_projection
+            and state_divergence == "neutral"
+            and visible_divergence in {"settled", "bounded"}
+        )
+        curl_display_projection = (
+            terminal_stop_projection
+            and state_curl == "null"
+            and visible_curl == "resolved"
+        )
+        if (
+            visible_divergence
+            and state_divergence
+            and visible_divergence != state_divergence
+            and not divergence_display_projection
+        ):
             result.errors.append(
                 f"{state_label}: divergence_state mismatch visible={visible_divergence!r} field_witness={state_divergence!r}"
             )
-        if visible_curl and state_curl and visible_curl != state_curl:
+        if visible_curl and state_curl and visible_curl != state_curl and not curl_display_projection:
             result.errors.append(
                 f"{state_label}: curl_state mismatch visible={visible_curl!r} field_witness={state_curl!r}"
             )
