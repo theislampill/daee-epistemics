@@ -355,8 +355,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "carried it — placeholder values like none/cleared/n/a are rejected. Consistency is "
             "enforced: stable requires route STOP and graph_delta none; genuine-dependent requires "
             "RECURSE and a graph edge; partial-real requires HOLD; any graph edge requires a "
-            "non-none preemption_basis. Do not write `guaranteed T_lang uptake` in any "
-            "`per_burden_reread` string field; use the exact boundary prefix instead. "
+            "non-none preemption_basis. The required boundary prefix is allowed and required; "
+            "do not write affirmative uptake-guarantee claims such as `T_lang guarantees uptake`, "
+            "`guaranteed T_lang uptake`, or `guarantees interlocutor uptake` in any "
+            "`per_burden_reread` string field. "
             "Return one syntactically valid JSON object only: every array item must have exactly "
             "one object-closing brace before a comma, every string quote inside a value must be "
             "escaped, and no prose or second object may appear outside the root object. "
@@ -1864,6 +1866,35 @@ def list_field(stage: dict[str, Any] | None, key: str) -> list[str]:
     if isinstance(value, list):
         return [item for item in value if isinstance(item, str)]
     return []
+
+
+def stage04_held_target_burdens(stage04: dict[str, Any] | None) -> set[str]:
+    if not isinstance(stage04, dict):
+        return set()
+    held: set[str] = set()
+    for value in list_field(stage04, "held_act_targets"):
+        burden_id = canonical_burden_id(value)
+        if re.fullmatch(r"B[1-9][0-9]*", burden_id):
+            held.add(burden_id)
+    for key in ("held_act_details", "hold_partial", "hold_partial_routes", "held_or_partial_routes"):
+        value = stage04.get(key)
+        if not isinstance(value, list):
+            continue
+        for item in value:
+            if isinstance(item, str):
+                burden_id = canonical_burden_id(item)
+                if re.fullmatch(r"B[1-9][0-9]*", burden_id):
+                    held.add(burden_id)
+                continue
+            if not isinstance(item, dict):
+                continue
+            raw_burden = item.get("burden_id") or item.get("target") or item.get("land_target")
+            if not isinstance(raw_burden, str):
+                continue
+            burden_id = canonical_burden_id(raw_burden)
+            if re.fullmatch(r"B[1-9][0-9]*", burden_id):
+                held.add(burden_id)
+    return held
 
 
 def stage_by_id(stages: list[dict[str, Any]], stage_id: str) -> dict[str, Any] | None:
@@ -4977,8 +5008,18 @@ def validate_incremental_handoffs(stages: list[dict[str, Any]]) -> None:
         if set(list_field(stage02, "burden_floor")) != set(list_field(stage03, "route_targets")):
             raise HarnessError("stage-03 route_targets must match stage-02 burden_floor")
     if stage03 and stage04:
-        if set(list_field(stage03, "route_targets")) != set(list_field(stage04, "act_targets")):
-            raise HarnessError("stage-04 act_targets must match stage-03 route_targets")
+        route_targets = set(list_field(stage03, "route_targets"))
+        act_targets = set(list_field(stage04, "act_targets"))
+        held_targets = stage04_held_target_burdens(stage04)
+        extra_act_targets = sorted(act_targets - route_targets)
+        if extra_act_targets:
+            raise HarnessError(f"stage-04 act_targets not routed by stage-03: {extra_act_targets}")
+        missing_route_targets = sorted(route_targets - act_targets - held_targets)
+        if missing_route_targets:
+            raise HarnessError(
+                "stage-04 route_targets must be covered by act_targets or held_act_targets: "
+                f"{missing_route_targets}"
+            )
     if stage04 and stage06:
         if list_field(stage04, "act_body_refs") != list_field(stage06, "field_witness_body_refs"):
             raise HarnessError("stage-06 field_witness_body_refs must match stage-04 act_body_refs")
@@ -7836,6 +7877,41 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to derive Stage 04 act_body_refs from canonical ACT rows")
     if not isinstance(normalized_stage04.get("act_row_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 04 act_row_details")
+    validate_incremental_handoffs(
+        [
+            {
+                "id": "stage-03-routing-owner-gate",
+                "status": "partial",
+                "route_targets": ["B1", "B2"],
+            },
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "held_act_targets": ["B2"],
+            },
+        ]
+    )
+    try:
+        validate_incremental_handoffs(
+            [
+                {
+                    "id": "stage-03-routing-owner-gate",
+                    "status": "partial",
+                    "route_targets": ["B1", "B2"],
+                },
+                {
+                    "id": "stage-04-burden-execution-act",
+                    "status": "pass",
+                    "act_targets": ["B1"],
+                },
+            ]
+        )
+    except HarnessError as exc:
+        if "route_targets must be covered by act_targets or held_act_targets" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted Stage 04 route target missing from ACT and held coverage")
     missing_slot_separators_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] "
         "body_ref=¹B₁ π=scientific-explanations-only-knowledge-source "

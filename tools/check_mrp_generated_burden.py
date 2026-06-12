@@ -1701,7 +1701,7 @@ def proof_method_carrier_transition_visible(block: str) -> bool:
         return False
     if not operation_body_has_state_delta(body, result, contribution):
         return False
-    if "proof-route-status-audit" in payload and not PROOF_METHOD_ROUTE_STATUS_BODY_RE.search(
+    if "proof-route-status-audit" in operation.lower() and not PROOF_METHOD_ROUTE_STATUS_BODY_RE.search(
         " ".join((operation, result, contribution, body))
     ):
         return False

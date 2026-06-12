@@ -1634,6 +1634,32 @@ def stage04_hold_partial_burdens(stage04: dict[str, Any]) -> set[str]:
     return held
 
 
+def stage04_held_target_burdens(stage04: dict[str, Any] | None) -> set[str]:
+    if not isinstance(stage04, dict):
+        return set()
+    held: set[str] = set(stage04_hold_partial_burdens(stage04))
+    for value in as_string_list(stage04.get("held_act_targets")) or []:
+        canonical = canonical_burden_id_from_text(value)
+        if canonical:
+            held.add(canonical)
+    details = stage04.get("held_act_details")
+    if isinstance(details, list):
+        for item in details:
+            if isinstance(item, str):
+                canonical = canonical_burden_id_from_text(item)
+                if canonical:
+                    held.add(canonical)
+                continue
+            if not isinstance(item, dict):
+                continue
+            burden_id = item.get("burden_id") or item.get("target") or item.get("land_target")
+            if isinstance(burden_id, str):
+                canonical = canonical_burden_id_from_text(burden_id)
+                if canonical:
+                    held.add(canonical)
+    return held
+
+
 def stage04_act_errors(
     label: str,
     stage03: dict[str, Any] | None,
@@ -1682,9 +1708,10 @@ def stage04_act_errors(
 
     semantic_act_burdens = canonical_stage04_act_burdens(stage04)
     hold_partial_burdens = stage04_hold_partial_burdens(stage04)
+    held_target_burdens = stage04_held_target_burdens(stage04)
     if hold_partial_burdens and stage04.get("status") == "pass":
         errors.append(f"{label}: stage-04 status must be held/partial/fail when hold_partial route evidence is present")
-    missing_burdens = sorted(set(act_targets) - semantic_act_burdens - hold_partial_burdens)
+    missing_burdens = sorted(set(act_targets) - semantic_act_burdens - held_target_burdens)
     if missing_burdens:
         errors.append(f"{label}: stage-04 act_burdens missing act target(s): {missing_burdens}")
     duplicate_refs = sorted({ref for ref in act_body_refs if act_body_refs.count(ref) > 1})
@@ -1901,8 +1928,17 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
                 allow_descriptive_burdens=failed_model_prefix_order(record) is not None,
             )
         )
-    if stage03 is not None and stage04 is not None and act_targets != route_targets:
-        errors.append(f"{label}: stage-04 act_targets must match stage-03 route_targets")
+    if stage03 is not None and stage04 is not None:
+        held_targets = stage04_held_target_burdens(stage04)
+        extra_act_targets = sorted(act_targets - route_targets)
+        missing_route_targets = sorted(route_targets - act_targets - held_targets)
+        if extra_act_targets:
+            errors.append(f"{label}: stage-04 act_targets not routed by stage-03: {extra_act_targets}")
+        if missing_route_targets:
+            errors.append(
+                f"{label}: stage-04 route_targets must be covered by act_targets or held_act_targets: "
+                f"{missing_route_targets}"
+            )
 
     terminal_states = stage05.get("terminal_states") if stage05 is not None else None
     release_terminal_states = stage07.get("release_terminal_states") if stage07 is not None else None

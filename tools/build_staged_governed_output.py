@@ -136,6 +136,16 @@ FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
         re.compile(r"Graphify[^.\n]{0,80}\bproof\b|ActiveGraph[^.\n]{0,80}\bproof\b", re.IGNORECASE),
     ),
 ]
+OPTIONAL_TOOLING_PROOF_NONCLAIM_RE = re.compile(
+    r"\b(?:no|not|without)\b[^.\n]{0,80}\b(?:Graphify|ActiveGraph)\b"
+    r"[^.\n]{0,120}\b(?:proof|proofs|claim|claimed|claims)\b",
+    re.IGNORECASE,
+)
+OPTIONAL_TOOLING_POSITIVE_PROOF_RE = re.compile(
+    r"\b(?:Graphify|ActiveGraph)\b[^.\n]{0,80}\b"
+    r"(?:proves|proved|passed|verified|built|complete|success|certifies|certified)\b",
+    re.IGNORECASE,
+)
 PUBLIC_META_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     (
         "private planning or self-talk in public section",
@@ -300,7 +310,18 @@ def resolve_output_path(root: Path, manifest_dir: Path, value: Any, label: str) 
 
 
 def forbidden_text_errors(text: str, label: str) -> list[str]:
-    return [f"{label}: forbidden {name}" for name, pattern in FORBIDDEN_PATTERNS if pattern.search(text)]
+    errors: list[str] = []
+    for name, pattern in FORBIDDEN_PATTERNS:
+        if not pattern.search(text):
+            continue
+        if (
+            name == "Graphify/ActiveGraph proof claim"
+            and OPTIONAL_TOOLING_PROOF_NONCLAIM_RE.search(text)
+            and not OPTIONAL_TOOLING_POSITIVE_PROOF_RE.search(text)
+        ):
+            continue
+        errors.append(f"{label}: forbidden {name}")
+    return errors
 
 
 def public_meta_text_errors(text: str, label: str) -> list[str]:
@@ -3504,6 +3525,20 @@ def run_self_test(root: Path) -> int:
     ):
         if not any(needle in error for error in r1_errors):
             raise AssemblyError(f"self-test R1 false-pass canary missed {needle!r}: {r1_errors}")
+
+    optional_nonclaim_entry = self_test_per_burden_entry("B1")
+    optional_nonclaim_entry["pressure_activations"]["reorientation-reminder"] = (
+        "coverage gap: no Graphify, ActiveGraph, package, or release proof is claimed."
+    )
+    if per_burden_reread_entry_errors([optional_nonclaim_entry]):
+        raise AssemblyError("self-test rejected explicit optional-tooling proof nonclaim")
+    optional_claim_entry = self_test_per_burden_entry("B1")
+    optional_claim_entry["pressure_activations"]["reorientation-reminder"] = (
+        "coverage gap: Graphify proof passed this stage-local MRP terminal reread."
+    )
+    optional_claim_errors = per_burden_reread_entry_errors([optional_claim_entry])
+    if not any("Graphify/ActiveGraph proof claim" in error for error in optional_claim_errors):
+        raise AssemblyError("self-test accepted positive optional-tooling proof claim")
 
     print("staged governed output assembly self-test: PASS")
     print(f"self-test run dir: {rel(base_dir, root)}")

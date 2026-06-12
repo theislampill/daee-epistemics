@@ -33,6 +33,7 @@ Pressure activations:
 - freeze-landed-move: terminal-state accounting - freeze ¹B.
 - dependency-tug: pressure class: cleared - carrier dependencies are visible.
 - hidden-framework-recoil: pressure class: cleared - no hidden proof reserve remains.
+Matched owner/TTP route: [proof-method-audit.proof-route-status-audit]
 Field diagnostics: ∇·B: neutral / proof carrier dependency is visible; ∇×κ: null / no loop remains.
 Route-gradient: ∇ points to STOP because the proof family and carrier relation has landed.
 Finding: stable
