@@ -157,7 +157,9 @@ OPERATION_MECHANISM_RE = re.compile(
     r"whole[- ]system|exhaust|reopen|would require|unworked held route|non[- ]load[- ]bearing|"
     r"predicate|predication|category|monotheism[- ]counting|exclusive[- ]counting|"
     r"fatal[- ]harm(?:[- ]at[- ]t1)?|lexical[- ]equivalence|chronology[- ]completion|"
-    r"attribute[- ]precision|definition[- ]pressure|scope[- ]pressure|"
+    r"attribute[- ]precision|claim[- ]context[- ]boundary|definition[-_ ]boundary|"
+    r"definition[- ]pressure|scope[- ]pressure|"
+    r"moral[- ]intuition|ungrounded[- ]moral[- ]intuition|moral[- ]reaction|orphaned[- ]intuition|"
     r"dependency|criterion|immunity|recoil|framework|"
     r"broader material|held material|state change|delta|consequence|entailment|"
     r"self[- ]refutation|performative contradiction|internal contradiction|semantic|referent|"
@@ -167,9 +169,11 @@ OPERATION_MECHANISM_RE = re.compile(
     r"non[- ]coercive guidance)\b"
 )
 OPERATION_ACTION_RE = re.compile(
-    r"(?i)\b(?:expose|distinguish|distinguishes|distinguished|distinguishing|block|repair|repairs|repaired|repairing|"
+    r"(?i)\b(?:expose|distinguish|distinguishes|distinguished|distinguishing|"
+    r"block|blocks|blocked|blocking|repair|repairs|repaired|repairing|"
     r"trace|ground|test|split|splits|splitting|separate|separates|separated|separating|"
     r"prevent|audit|apply|tests?|integrate|integrates|integrated|integrating|"
+    r"relocate|relocates|relocated|relocating|recognize|recognizes|recognized|recognizing|"
     r"identify|identification|reclassify|refuse|sequence|show why|demonstrate|bar|route|bind|isolate|"
     r"name|names|named|naming|define|anchor|anchors|anchored|anchoring|clarify|vet|reconstruct|dissolve|dissolves|dissolved|triage|prioritize|map|"
     r"type|types|typed|typing|calibrate|calibrates|calibrated|calibrating|"
