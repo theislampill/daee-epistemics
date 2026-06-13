@@ -157,6 +157,7 @@ STAGE04_PROOF_FAMILY_CLASSIFICATION_CARRIER_RE = re.compile(
 )
 STAGE04_PROOF_FAMILY_LABEL_RE = re.compile(r"(?i)\bproof[- ]family[- ]label\b")
 STAGE04_REGISTER_AXIS_FALLBACKS = {
+    ("proof-method-audit", "proof-overreach-audit", "H"): "τ",
     ("proof-method-audit", "proof-route-status-audit", "H"): "τ",
     ("do-second-loop", "accountability-hujjah-compression", "H"): "κ",
     ("do-second-loop", "coercive-guidance-demand", "H"): "κ",
@@ -9428,6 +9429,19 @@ def run_self_test(root: Path) -> int:
     )
     if proof_overreach_tau_stage04["act_row_details"][0].get("register_axis") != "τ":
         raise HarnessError("Self-test failed to accept proof-overreach tribunal/burden-function register_axis")
+    proof_overreach_h_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_overreach_tau_row],
+            "act_row_details": self_test_act_row_details([proof_overreach_tau_row], {"¹B₁": "H"}),
+        },
+    )
+    if proof_overreach_h_stage04["act_row_details"][0].get("register_axis") != "τ":
+        raise HarnessError("Self-test failed to canonicalize proof-overreach H fallback to tribunal axis")
     invalid_proof_method_operation_row = (
         "⟦ACT ¹B₁[proof-method-audit.proof-stack-routed] :: "
         "π=proof-family-carrier-pressure :: "

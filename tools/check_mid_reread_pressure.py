@@ -57,13 +57,15 @@ PRESSURE_KEYS = {
 }
 ALLOWED_DIVERGENCE = {"neutral", "settled", "bounded", "non-neutral"}
 ALLOWED_CURL = {"null", "resolved", "held", "non-null"}
-REREAD_RE = re.compile(r"R\(H,\s*(?:Delta|Δ)\)")
+DELTA_READ_SUFFIX_RE = r"(?:(?:B[1-9][0-9]*)|\(B[1-9][0-9]*\)|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)?"
+DELTA_READ_TOKEN_RE = rf"(?:Delta{DELTA_READ_SUFFIX_RE}|Δ{DELTA_READ_SUFFIX_RE})"
+REREAD_RE = re.compile(rf"R\(H,\s*{DELTA_READ_TOKEN_RE}\)")
 LANDED_DELTA_RE = re.compile(r"(?:Delta|Δ|ΔⁿB)")
 DIRECT_REREAD_RE = re.compile(
-    r"(?im)^\s*(?:[-*]\s*)?(?:\*\*)?`?R\(H,\s*(?:Delta|Δ)\)`?\s*:\s*(?:\*\*)?\s*(?P<body>\S.*)$"
+    rf"(?im)^\s*(?:[-*]\s*)?(?:\*\*)?`?R\(H,\s*{DELTA_READ_TOKEN_RE}\)`?\s*:\s*(?:\*\*)?\s*(?P<body>\S.*)$"
 )
 BARE_DIRECT_REREAD_RE = re.compile(
-    r"(?im)^\s*(?:[-*]\s*)?(?:\*\*)?`?R\(H,\s*(?:Delta|Δ)\)`?\s*:\s*(?:\*\*)?\s*$"
+    rf"(?im)^\s*(?:[-*]\s*)?(?:\*\*)?`?R\(H,\s*{DELTA_READ_TOKEN_RE}\)`?\s*:\s*(?:\*\*)?\s*$"
 )
 FIELD_DIAGNOSTICS_DIVERGENCE_RE = re.compile(
     r"(?:∇\s*·\s*B|del[- ]dot\s*B)\s*:\s*(?P<body>[^;\n]+)",
@@ -419,7 +421,9 @@ LIVE_PRESSURE_RE = re.compile(
 )
 UNRELEASED_ROUTE_RE = re.compile(
     r"(?i)\b(?:identified but not released|not released as a new burden|unreleased|"
-    r"held outside (?:this )?scope|remain outside|remains outside|held broad routes remain|"
+    r"held outside (?:this )?scope|"
+    r"(?:route|routes|burden|burdens|pressure|pressures|prooftext|prooftexts|proof[- ]text routes?|"
+    r"broad .* routes?) remain(?:s)? outside(?: (?:this |current )?scope)?|held broad routes remain|"
     r"broad .* routes remain unreleased)\b"
 )
 NEGATED_UNRELEASED_RE = re.compile(
