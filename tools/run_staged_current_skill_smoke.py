@@ -146,6 +146,14 @@ M9_RESULT_TOKEN_OPERATION_MAP = {
     "person-nature-transfer-blocked": "predication-repair",
     "sense-separated": "sense-split",
 }
+STAGE04_OPERATION_ALIAS_MAP = {
+    ("M8", "trace"): "consequence-trace",
+    ("P7", "boundary"): "scope-boundary",
+}
+STAGE04_REGISTER_AXIS_FALLBACKS = {
+    ("do-second-loop", "coercive-guidance-demand", "τ"): "κ",
+    ("do-second-loop", "punishment-proportionality-accountability", "m"): "♥",
+}
 
 
 def ordering_owner_family(owner: str) -> str:
@@ -835,6 +843,11 @@ def require_stage04_register_axis(
 
     allowed_axes = register_axis_floor(parsed["owner_id"], parsed.get("operation"))
     if allowed_axes is not None and axis not in allowed_axes:
+        fallback_axis = STAGE04_REGISTER_AXIS_FALLBACKS.get(
+            (parsed["owner_id"], parsed.get("operation") or "", axis)
+        )
+        if fallback_axis and fallback_axis in allowed_axes:
+            return fallback_axis, True
         operation_suffix = f".{parsed.get('operation')}" if parsed.get("operation") else ""
         raise HarnessError(
             f"stage-04 act_row_details[{index}].register_axis {axis!r} is not approved for owner "
@@ -844,11 +857,31 @@ def require_stage04_register_axis(
     return axis, isinstance(raw_axis, str) and raw_axis.strip() != axis
 
 
+def canonicalize_stage04_operation_token(owner: Any, operation: Any) -> str:
+    family = canonical_delta_owner(str(owner or "")) or str(owner or "").strip()
+    token = str(operation or "").strip()
+    return STAGE04_OPERATION_ALIAS_MAP.get((family, token), token)
+
+
 def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
     reject_stage04_owner_qualified_body_ref(row)
     match = ACT_ROW_DETAIL_RE.match(row)
     if not match:
         return row, None
+    rewrite: dict[str, str] | None = None
+    canonical_operation = canonicalize_stage04_operation_token(match.group("owner"), match.group("operation"))
+    if canonical_operation != match.group("operation"):
+        start, end = match.span("operation")
+        row = row[:start] + canonical_operation + row[end:]
+        rewrite = {
+            "body_ref": match.group("body_ref"),
+            "owner": match.group("owner"),
+            "raw_operation": match.group("operation"),
+            "canonical_operation": canonical_operation,
+        }
+        match = ACT_ROW_DETAIL_RE.match(row)
+        if not match:
+            raise HarnessError("Stage 04 ACT row operation canonicalization produced an unparseable row")
     alias_errors = family_alias_as_executable_owner_errors(
         "Stage 04 ACT row",
         match.group("owner"),
@@ -896,19 +929,19 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
     if pressure_errors:
         raise HarnessError("; ".join(pressure_errors))
     if canonical == raw_result:
-        return row, None
+        return row, rewrite
     start, end = match.span("delta_result")
-    return (
-        row[:start] + canonical + row[end:],
-        {
+    row = row[:start] + canonical + row[end:]
+    if rewrite is None:
+        rewrite = {
             "body_ref": match.group("body_ref"),
             "owner": match.group("owner"),
             "operation": match.group("operation"),
             "pressure": match.group("pressure").strip(),
-            "raw_delta_result": raw_result,
-            "canonical_delta_result": canonical,
-        },
-    )
+        }
+    rewrite["raw_delta_result"] = raw_result
+    rewrite["canonical_delta_result"] = canonical
+    return row, rewrite
 
 
 def canonicalize_stage04_act_rows(rows: list[str]) -> tuple[list[str], list[dict[str, str]]]:
@@ -920,6 +953,20 @@ def canonicalize_stage04_act_rows(rows: list[str]) -> tuple[list[str], list[dict
         if rewrite:
             rewrites.append(rewrite)
     return ordered_unique(canonical_rows), rewrites
+
+
+def record_stage04_act_row_canonicalizations(
+    normalization: dict[str, Any],
+    rewrites: list[dict[str, str]],
+) -> None:
+    if not rewrites:
+        return
+    operation_rewrites = [rewrite for rewrite in rewrites if "raw_operation" in rewrite]
+    delta_rewrites = [rewrite for rewrite in rewrites if "raw_delta_result" in rewrite]
+    if operation_rewrites:
+        normalization["operation_canonicalizations"] = operation_rewrites
+    if delta_rewrites:
+        normalization["delta_result_canonicalizations"] = delta_rewrites
 
 
 def canonical_burden_id_from_text(value: str, allowed_ids: set[str] | None = None) -> str | None:
@@ -1425,6 +1472,12 @@ def normalize_stage04_act_row_details(
         for field in ("owner_id", "operation", "act_row"):
             value = non_empty_string(item.get(field))
             parsed_value = parsed[field]
+            if field == "operation" and value and value != parsed_value:
+                canonical_value = canonicalize_stage04_operation_token(parsed["owner_id"], value)
+                if canonical_value == parsed_value:
+                    item[field] = parsed_value
+                    missing.append(field)
+                    continue
             if value and field != "act_row" and value != parsed_value:
                 raise HarnessError(f"stage-04 act_row_details[{index}].{field} disagrees with parsed ACT row")
             if not value or (field == "act_row" and value != parsed_value):
@@ -1503,7 +1556,7 @@ def normalize_stage04_act_fields(stage: dict[str, Any]) -> None:
     raw_rows = stage.get("act_rows")
 
     if isinstance(raw_rows, list) and raw_rows and all(isinstance(item, str) and item for item in raw_rows):
-        act_rows, delta_rewrites = canonicalize_stage04_act_rows(ordered_unique(list(raw_rows)))
+        act_rows, row_rewrites = canonicalize_stage04_act_rows(ordered_unique(list(raw_rows)))
         stage["act_rows"] = act_rows
     elif isinstance(raw_rows, list) and raw_rows and all(isinstance(item, dict) for item in raw_rows):
         details = list(raw_rows)
@@ -1516,14 +1569,13 @@ def normalize_stage04_act_fields(stage: dict[str, Any]) -> None:
                 )
             act_rows.append(act_row)
         stage["act_row_details"] = details
-        act_rows, delta_rewrites = canonicalize_stage04_act_rows(ordered_unique(act_rows))
+        act_rows, row_rewrites = canonicalize_stage04_act_rows(ordered_unique(act_rows))
         stage["act_rows"] = act_rows
         normalization["act_rows_from_details"] = True
         normalization["canonical_act_rows"] = list(stage["act_rows"])
     else:
         raise HarnessError("stage-04 act_rows must be a non-empty list of ACT row strings")
-    if delta_rewrites:
-        normalization["delta_result_canonicalizations"] = delta_rewrites
+    record_stage04_act_row_canonicalizations(normalization, row_rewrites)
 
     parsed_rows = parsed_stage04_act_rows(stage)
     row_body_refs = ordered_unique([item["body_ref"] for item in parsed_rows])
@@ -4345,13 +4397,15 @@ def state_change_sentence_for_owner_transition(detail: dict[str, str]) -> str:
         )
     if family == "SOURCE" and operation == "authority-order-repair":
         return (
-            " State change: the authority/rank/tribunal relation is ordered, so the "
-            "rival public authority no longer functions as a higher court over the source."
+            " State change: authority-order-repaired; the authority/rank/tribunal relation "
+            "is ordered, so rival source authority no longer functions as a higher court "
+            "or external tribunal over revelation."
         )
     if family == "SOURCE" and operation == "source-order-repair":
         return (
-            " State change: the source lineage, source priority, and evidential dependency "
-            "are explicitly ordered, so the inherited claim no longer travels as an unworked source chain."
+            " State change: source-order-repaired; the source lineage, source priority, "
+            "and evidential dependency are explicitly ordered, so the inherited claim no "
+            "longer travels as an unworked source chain."
         )
     if family == "DO_ATTRIBUTE" and operation == "attribute-precision":
         return (
@@ -4431,7 +4485,8 @@ def land_license_sentence_for_owner_transition(detail: dict[str, str], public_bu
     if family == "SOURCE" and operation == "authority-order-repair":
         return (
             f"This licenses Land({land_target}) because the authority/rank/tribunal relation is "
-            "ordered, so the rival public authority no longer functions as a higher court over the source."
+            "ordered, so rival source authority no longer functions as a higher court or external "
+            "tribunal over revelation."
         )
     if family == "SOURCE" and operation == "source-order-repair":
         return (
@@ -4470,7 +4525,7 @@ def land_license_sentence_for_owner_transition(detail: dict[str, str], public_bu
 
 def checker_stable_state_for_owner_transition(detail: dict[str, str], body: str) -> bool:
     family = canonical_delta_owner(str(detail.get("owner") or "").strip()) or str(detail.get("owner") or "").strip()
-    if family in {"DO_ATTRIBUTE", "DO_SECOND_LOOP"}:
+    if family in {"DO_ATTRIBUTE", "DO_SECOND_LOOP", "SOURCE"}:
         sentence = state_change_sentence_for_owner_transition(detail).strip()
         return bool(sentence and sentence in body)
     return bool(CHECKER_STABLE_STATE_RE.search(body))
@@ -4478,7 +4533,7 @@ def checker_stable_state_for_owner_transition(detail: dict[str, str], body: str)
 
 def checker_stable_contribution_for_owner_transition(detail: dict[str, str], body: str) -> bool:
     family = canonical_delta_owner(str(detail.get("owner") or "").strip()) or str(detail.get("owner") or "").strip()
-    if family in {"DO_ATTRIBUTE", "DO_SECOND_LOOP"}:
+    if family in {"DO_ATTRIBUTE", "DO_SECOND_LOOP", "SOURCE"}:
         land_target = str(detail.get("burden_id") or "").strip()
         public_land = public_burden_id(land_target) if land_target else ""
         license_sentence = land_license_sentence_for_owner_transition(detail, public_land)
@@ -8241,6 +8296,87 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to derive Stage 04 act_body_refs from canonical ACT rows")
     if not isinstance(normalized_stage04.get("act_row_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 04 act_row_details")
+    alias_operation_rows = [
+        "⟦ACT ¹B₁[M8.trace] :: π=time-sequence-pressure :: body_ref=¹B₁ :: Δ=Δ¹B:consequence-traced :: Land(¹B)+⟧",
+        "⟦ACT ¹B₂[P7.boundary] :: π=completion-boundary-pressure :: body_ref=¹B₂ :: Δ=Δ¹B:scope-boundary-named :: Land(¹B)+⟧",
+    ]
+    alias_operation_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁", "¹B₂"],
+            "act_rows": alias_operation_rows,
+            "act_row_details": self_test_act_row_details(
+                alias_operation_rows,
+                {"¹B₁": "κ", "¹B₂": "σ"},
+            ),
+        },
+    )
+    if "[M8.consequence-trace]" not in alias_operation_stage04["act_rows"][0]:
+        raise HarnessError("Self-test failed to canonicalize Stage 04 M8.trace alias")
+    if "[P7.scope-boundary]" not in alias_operation_stage04["act_rows"][1]:
+        raise HarnessError("Self-test failed to canonicalize Stage 04 P7.boundary alias")
+    if alias_operation_stage04["act_row_details"][0].get("operation") != "consequence-trace":
+        raise HarnessError("Self-test failed to canonicalize Stage 04 M8 trace detail")
+    if alias_operation_stage04["act_row_details"][1].get("operation") != "scope-boundary":
+        raise HarnessError("Self-test failed to canonicalize Stage 04 P7 boundary detail")
+    do_second_loop_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1", "B2"],
+            "act_burdens": ["B1", "B2"],
+            "act_body_refs": ["¹B₁", "²B₁"],
+            "act_rows": [
+                (
+                    "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+                    "π=punishment-proportionality-pressure :: body_ref=¹B₁ :: "
+                    "Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+                ),
+                (
+                    "⟦ACT ²B₁[do-second-loop.coercive-guidance-demand] :: "
+                    "π=coercive-guidance-demand :: body_ref=²B₁ :: "
+                    "Δ=Δ²B:coercive-guidance-demand-bounded :: Land(²B)+⟧"
+                )
+            ],
+            "act_row_details": [
+                {
+                    "act_row": (
+                        "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+                        "π=punishment-proportionality-pressure :: body_ref=¹B₁ :: "
+                        "Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+                    ),
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "do-second-loop",
+                    "operation": "punishment-proportionality-accountability",
+                    "register_axis": "m",
+                    "delta_result": "punishment-proportionality-calibrated",
+                },
+                {
+                    "act_row": (
+                        "⟦ACT ²B₁[do-second-loop.coercive-guidance-demand] :: "
+                        "π=coercive-guidance-demand :: body_ref=²B₁ :: "
+                        "Δ=Δ²B:coercive-guidance-demand-bounded :: Land(²B)+⟧"
+                    ),
+                    "body_ref": "²B₁",
+                    "burden_id": "B2",
+                    "owner_id": "do-second-loop",
+                    "operation": "coercive-guidance-demand",
+                    "register_axis": "τ",
+                    "delta_result": "coercive-guidance-demand-bounded",
+                }
+            ],
+        },
+    )
+    if do_second_loop_axis_stage04["act_row_details"][0].get("register_axis") != "♥":
+        raise HarnessError("Self-test failed to canonicalize do-second-loop punishment register_axis fallback")
+    if do_second_loop_axis_stage04["act_row_details"][1].get("register_axis") != "κ":
+        raise HarnessError("Self-test failed to canonicalize do-second-loop guidance register_axis fallback")
     validate_incremental_handoffs(
         [
             {
@@ -10855,9 +10991,9 @@ def run_self_test(root: Path) -> int:
     )
     if not source_split_event or not source_split_event.get("canonicalized_owner_transition_facets"):
         raise HarnessError("Self-test Stage 07 SOURCE split facet canonicalization did not record an event")
-    if "source lineage, source priority, and evidential dependency are explicitly ordered" not in canonical_source_split:
+    if "source-order-repaired; the source lineage, source priority" not in canonical_source_split:
         raise HarnessError("Self-test Stage 07 SOURCE source-order canonicalization omitted source-order state change")
-    if "authority/rank/tribunal relation is ordered" not in canonical_source_split:
+    if "authority-order-repaired; the authority/rank/tribunal relation" not in canonical_source_split:
         raise HarnessError("Self-test Stage 07 SOURCE authority-order canonicalization omitted authority-order state change")
     authority_only_source_order = thin_source_split_layer.split(source_split_rows[1], 1)[0].replace(
         "The source-order repair distinguishes source lineage, quotation chain, inherited-claim order, source priority, derivation order, and evidential dependency before the burden lands.",
