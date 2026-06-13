@@ -157,6 +157,7 @@ OPERATION_MECHANISM_RE = re.compile(
     r"whole[- ]system|exhaust|reopen|would require|unworked held route|non[- ]load[- ]bearing|"
     r"predicate|predication|category|monotheism[- ]counting|exclusive[- ]counting|"
     r"fatal[- ]harm(?:[- ]at[- ]t1)?|lexical[- ]equivalence|chronology[- ]completion|"
+    r"attribute[- ]precision|definition[- ]pressure|scope[- ]pressure|"
     r"dependency|criterion|immunity|recoil|framework|"
     r"broader material|held material|state change|delta|consequence|entailment|"
     r"self[- ]refutation|performative contradiction|internal contradiction|semantic|referent|"
@@ -508,7 +509,8 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
         "SOURCE",
         re.compile(
             r"(?i)\b(?:source[- ]status|source status|authority[- ]order|source authority|"
-            r"source[- ]order|Qur'?anic source order|revealed source(?:s| order)?|"
+            r"source[- ]order|source lineage|source priority|evidential dependency|"
+            r"inherited[- ]claim(?: order)?|quotation order|Qur'?anic source order|revealed source(?:s| order)?|"
             r"moral bench|external tribunal|final authority|higher court|"
             r"proof[- ]stack|broader proof[- ]texts?|hidden rescue|"
             r"source-correct(?:ed|ion)|revelation define|let revelation define|"
