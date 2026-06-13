@@ -278,7 +278,9 @@ DO_ATTRIBUTE_STATE_RE = re.compile(
 )
 DO_SECOND_LOOP_BACKING_RE = re.compile(
     r"(?is)\b(?:accountability|hujjah|ḥujjah|warning|knowledge|capacity|record|culpability|"
-    r"guidance|coercion|persuasion|punishment|proportionality|mercy|justice|judge)\b"
+    r"guidance|coercion|persuasion|punishment|proportionality|mercy|justice|judge|"
+    r"fitrah|ayat|signs?|conscience|revelation|responsibility|created disposition|"
+    r"spiritual(?:ly)?|summons|moral recognition)\b"
 )
 DO_SECOND_LOOP_STATE_RE = re.compile(
     r"(?is)\b(?:narrowed|bounded|calibrated|separated|blocked|sequenced|no longer measured|"

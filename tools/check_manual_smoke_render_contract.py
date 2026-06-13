@@ -458,7 +458,8 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
         re.compile(
             r"(?i)\b(?:proof[- ]method|proof grammar|proof family|method audit|"
             r"formal derivation|logic tree|inferential standard|what the proof establishes|"
-            r"premise strength|invalid inference)\b"
+            r"proof carrier|premise[- ]set|inference grammar|conclusion scope|"
+            r"premise strength|invalid inference|proof[- ]overreach)\b"
         ),
     ),
     (
@@ -629,12 +630,13 @@ V10_STATE_RE = re.compile(
 )
 DOUBT_SINCERE_RE = re.compile(
     r"(?is)\b(?:sincere doubter?|sincere doubt|normal doubt|concrete doubt|"
-    r"doubt function|person seeking clarity|real struggle)\b"
+    r"honest doubt|real doubt|doubt function|confused seeker|wounded protester|"
+    r"person seeking clarity|real struggle)\b"
 )
 DOUBT_METHOD_RE = re.compile(
     r"(?is)\b(?:skeptic(?:al|ism)?[- ]method|skeptical methodology|self[- ]sealing skeptic|"
     r"self[- ]sealing standards?|evidence[- ]demand tribunal|evidence bar|"
-    r"burden inversion|proof demand)\b"
+    r"self[- ]authored terms|final tribunal|burden inversion|proof demand)\b"
 )
 DOUBT_ACTION_RE = re.compile(
     r"(?is)\b(?:distinguish(?:es|ed|ing)?|separat(?:e|es|ed|ing)|expos(?:e|es|ed|ing)|"

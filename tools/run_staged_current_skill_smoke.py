@@ -163,6 +163,7 @@ STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("do-second-loop", "coercive-guidance-demand", "τ"): "κ",
     ("do-second-loop", "fitrah-ayat-baseline", "N"): "ξ",
     ("do-second-loop", "punishment-proportionality-accountability", "m"): "♥",
+    ("V2", "reason-role-repair", "σ"): "ξ",
     ("V2", "reconstituting-reason", "m"): "ξ",
 }
 
@@ -9125,6 +9126,28 @@ def run_self_test(root: Path) -> int:
     )
     if v2_reason_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
         raise HarnessError("Self-test failed to canonicalize V2 reconstituting-reason register_axis fallback")
+    v2_reason_role_row = (
+        "⟦ACT ¹B₁[V2.reason-role-repair] :: π=reason-revelation-rank-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:reason-role-repaired :: Land(¹B)+⟧"
+    )
+    v2_reason_role_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [v2_reason_role_row],
+            "act_row_details": self_test_act_row_details(
+                [v2_reason_role_row],
+                {
+                    "¹B₁": "σ",
+                },
+            ),
+        },
+    )
+    if v2_reason_role_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to canonicalize V2 reason-role-repair register_axis fallback")
     selected_model_controlled_rows = [
         "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: π=selected-model-person-nature-transfer :: body_ref=¹B₁ :: Δ=Δ¹B:trinitarian-model-identified :: Land(¹B)+⟧",
         "⟦ACT ¹B₂[M9.predication-repair] :: π=selected-only-true-god-predicate-transfer :: body_ref=¹B₂ :: Δ=Δ¹B:person-nature-transfer-blocked :: Land(¹B)+⟧",
