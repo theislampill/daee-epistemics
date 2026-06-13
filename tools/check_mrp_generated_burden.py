@@ -242,6 +242,10 @@ BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
         "fitrah-ayat-baseline-established",
         "punishment-proportionality-calibrated",
     },
+    "V6": {
+        "convergence-pattern-integrated",
+        "register-conflict-converted",
+    },
 }
 SOURCE_ORDER_REPAIR_DELTA_RESULTS = {
     "source-order-repaired",
