@@ -121,7 +121,8 @@ INLINE_REREAD_HEADING_RE = re.compile(
 HIGH_MASS_TERMS_RE = re.compile(
     r"(?i)\b(?:source[- ]worldview|worldview|proof[- ]stack|textual|canon|Christology|"
     r"independent lordship|hidden premise|dependency radius|source authority|authority-order|"
-    r"predication|category|moral tribunal|worship[- ]worthiness|hiddenness|coercive guidance|"
+    r"predication|category|moral tribunal|worship[- ]worthiness|hiddenness|"
+    r"expose[-_ ]neutrality[-_ ]burden|neutrality[-_ ](?:burden|claim)|coercive guidance|"
     r"accountability|culpability|arbitrary command|command authority|mystery shield|"
     r"immunity|recoil|epistemology|self[- ]refutation|"
     r"performative contradiction|consequence trace|LoopBreak|proof[- ]carousel)\b"
@@ -153,7 +154,8 @@ PLACEHOLDER_OWNER_RE = re.compile(
 )
 OPERATION_MECHANISM_RE = re.compile(
     r"(?i)\b(?:hidden premise|escape route|smuggl|burden shift|proof[- ]stack|source[- ]order|"
-    r"source authority|authority frame|scope gate|bounded claim|local claim|neutrality[- ]claim|total[- ]system|"
+    r"source authority|authority frame|scope gate|bounded claim|local claim|"
+    r"expose[-_ ]neutrality[-_ ]burden|neutrality[-_ ](?:burden|claim)|total[- ]system|"
     r"whole[- ]system|exhaust|reopen|would require|unworked held route|non[- ]load[- ]bearing|"
     r"predicate|predication|category|monotheism[- ]counting|exclusive[- ]counting|"
     r"fatal[- ]harm(?:[- ]at[- ]t1)?|lexical[- ]equivalence|chronology[- ]completion|"
@@ -365,8 +367,9 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     (
         "M1-P",
         re.compile(
-            r"(?i)\b(?:performative contradiction|act of (?:making|asserting)|presupposes|"
-            r"cannot ground its own assertion|speech act|claiming it requires)\b"
+            r"(?i)\b(?:performative[- ]contradiction|act of (?:making|asserting)|presupposes|"
+            r"cannot ground its own assertion|speech act|claiming it requires|"
+            r"denies dependence while functioning)\b"
         ),
     ),
     (
@@ -644,9 +647,9 @@ DOUBT_SINCERE_RE = re.compile(
     r"person seeking clarity|real struggle)\b"
 )
 DOUBT_METHOD_RE = re.compile(
-    r"(?is)\b(?:skeptic(?:al|ism)?[- ]method|skeptical methodology|self[- ]sealing skeptic|"
+    r"(?is)\b(?:skeptic(?:al|ism)?[- ]method|skeptical[- ]methodology|self[- ]sealing skeptic|"
     r"self[- ]sealing standards?|evidence[- ]demand tribunal|evidence bar|"
-    r"self[- ]authored terms|final tribunal|burden inversion|proof demand)\b"
+    r"self[- ]authored terms|final tribunal|burden inversion|proof[- ]demand)\b"
 )
 DOUBT_ACTION_RE = re.compile(
     r"(?is)\b(?:distinguish(?:es|ed|ing)?|separat(?:e|es|ed|ing)|expos(?:e|es|ed|ing)|"
@@ -1128,6 +1131,32 @@ def owner_specific_operation_performed(owner: str, combined: str) -> bool:
         and OPERATION_ACTION_RE.search(combined)
         and STATE_CHANGE_RE.search(combined)
     )
+
+
+def self_test_owner_specific_operation_patterns() -> list[str]:
+    errors: list[str] = []
+    doubt_probe = (
+        "Operation: method-distinction separates honest unresolved doubt from a method "
+        "that predefines acceptable evidence so narrowly that guidance is always rejected. "
+        "Result/state-change: doubt-distinguished-from-skeptical-methodology; it "
+        "distinguishes sincere confusion from skeptical proof-demand posture. "
+        "TTP Operation Body: honest doubt can be engaged with reasons and mercy, while "
+        "the proof-demand posture narrows acceptable evidence until guidance is rejected."
+    )
+    if not owner_specific_operation_performed("doubt-vs-skepticism", doubt_probe):
+        errors.append(
+            "self-test doubt-vs-skepticism rejected hyphenated proof-demand posture"
+        )
+    m1p_probe = (
+        "Operation: performative-test acts on the neutrality burden with owner family M1-P. "
+        "Result/state-change: performative-contradiction-exposed. "
+        "Land-license: the neutrality burden is landed because the operative contradiction "
+        "has been exposed locally: the frame denies dependence while functioning through "
+        "contested commitments."
+    )
+    if not owner_specific_operation_performed("M1-P", m1p_probe):
+        errors.append("self-test M1-P rejected hyphenated performative-contradiction state")
+    return errors
 
 
 GENERIC_TARGET_RE = re.compile(
@@ -2285,6 +2314,7 @@ def main() -> int:
     errors: list[str] = []
     if not args.skip_skill_contract:
         errors.extend(check_compiled_skill_contract(Path("skill/SKILL.md")))
+    errors.extend(self_test_owner_specific_operation_patterns())
 
     valid, invalid = iter_fixtures(args.root)
     valid_checked = 0

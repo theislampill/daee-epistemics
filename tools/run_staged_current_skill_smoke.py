@@ -166,6 +166,7 @@ STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("do-second-loop", "coercive-guidance-demand", "τ"): "κ",
     ("do-second-loop", "fitrah-ayat-baseline", "N"): "ξ",
     ("do-second-loop", "punishment-proportionality-accountability", "m"): "♥",
+    ("V2", "proof-burden-order", "H"): "ξ",
     ("V2", "proof-burden-order", "τ"): "ξ",
     ("V2", "reason-role-repair", "σ"): "ξ",
     ("V2", "reconstituting-reason", "m"): "ξ",
@@ -9232,6 +9233,24 @@ def run_self_test(root: Path) -> int:
     )
     if v2_proof_burden_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
         raise HarnessError("Self-test failed to canonicalize V2 proof-burden-order register_axis fallback")
+    v2_proof_burden_h_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [v2_proof_burden_order_row],
+            "act_row_details": self_test_act_row_details(
+                [v2_proof_burden_order_row],
+                {
+                    "¹B₁": "H",
+                },
+            ),
+        },
+    )
+    if v2_proof_burden_h_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to canonicalize V2 proof-burden-order H-axis fallback")
     if (
         v2_proof_burden_axis_stage04["act_row_details"][0].get("delta_result")
         != "proof-burden-order-restored"

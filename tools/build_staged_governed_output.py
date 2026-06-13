@@ -1423,6 +1423,11 @@ def public_per_burden_text_value(value: str) -> str:
 
     text = re.sub(r"(?i)Delta\(\s*B[1-9][0-9]*\s*\)", protect_delta_identity, text)
     text = re.sub(
+        r"(?i)\bB[knm]\s*(?:->|→)\s*B[knm](?:\s+edge)?\b",
+        "burden-to-burden edge",
+        text,
+    )
+    text = re.sub(
         r"ΔB([1-9][0-9]*)\b",
         lambda match: f"Δ{public_burden_token(match.group(1))}",
         text,
@@ -3496,6 +3501,11 @@ def run_self_test(root: Path) -> int:
         raise AssemblyError("self-test MRP renderer leaked public ASCII burden aliases")
     if "¹B-⁴B" not in public_alias_block or "⁵B" not in public_alias_block:
         raise AssemblyError("self-test MRP renderer failed to publicize burden range prose")
+    generic_edge_probe = public_per_burden_text_value(
+        "no remaining chronology edge because the operation produced no remaining Bn -> Bm edge"
+    )
+    if "Bn" in generic_edge_probe or "Bm" in generic_edge_probe or "->" in generic_edge_probe:
+        raise AssemblyError("self-test MRP renderer leaked generic Bn -> Bm placeholder prose")
     single_entry = [self_test_per_burden_entry("B1")]
     burden_qualified_delta_entry = self_test_per_burden_entry("B1")
     burden_qualified_delta_entry["reread"] = (
