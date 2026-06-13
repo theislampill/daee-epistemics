@@ -154,6 +154,7 @@ STAGE04_OPERATION_ALIAS_MAP = {
 STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("proof-method-audit", "proof-route-status-audit", "H"): "τ",
     ("do-second-loop", "accountability-hujjah-compression", "H"): "κ",
+    ("do-second-loop", "coercive-guidance-demand", "H"): "κ",
     ("do-second-loop", "coercive-guidance-demand", "τ"): "κ",
     ("do-second-loop", "fitrah-ayat-baseline", "N"): "ξ",
     ("do-second-loop", "punishment-proportionality-accountability", "m"): "♥",
@@ -2799,6 +2800,14 @@ def stage02_detail_register_projection(item: dict[str, Any]) -> list[str]:
     return field_witness_registers_from_values(scalars)
 
 
+def stage02_live_register_fallback_coverage(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
+    coverage: dict[str, list[str]] = {}
+    for burden, raw in zip(burdens, list_field(stage02, "live_registers")):
+        for register in field_witness_registers_in_text(raw):
+            coverage.setdefault(register, []).append(burden)
+    return coverage
+
+
 def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
     coverage: dict[str, list[str]] = {}
     if isinstance(stage02, dict):
@@ -2813,15 +2822,13 @@ def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]
                     continue
                 for register in registers:
                     coverage.setdefault(register, []).append(burden)
+    fallback_coverage = stage02_live_register_fallback_coverage(stage02, burdens)
+    for register, ids in fallback_coverage.items():
+        if register not in coverage:
+            coverage[register] = ids
     if coverage:
         return {register: ordered_unique(ids) for register, ids in coverage.items()}
-    return {
-        register: [burden]
-        for register, burden in zip(
-            field_witness_registers_from_values(list_field(stage02, "live_registers")),
-            burdens,
-        )
-    }
+    return {}
 
 
 def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
@@ -2837,13 +2844,15 @@ def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[
                 if not burden or not values:
                     continue
                 burden_registers[burden] = values
+    for burden, raw in zip(burdens, list_field(stage02, "live_registers")):
+        if burden in burden_registers:
+            continue
+        registers = field_witness_registers_in_text(raw)
+        if registers:
+            burden_registers[burden] = registers
     if burden_registers:
         return burden_registers
-    return {
-        burden: registers
-        for burden, raw in zip(burdens, list_field(stage02, "live_registers"))
-        if (registers := field_witness_registers_in_text(raw))
-    }
+    return {}
 
 
 def stage02_public_live_registers(stage02: dict[str, Any] | None, burdens: list[str]) -> list[str]:
@@ -7852,6 +7861,37 @@ def run_self_test(root: Path) -> int:
     worldview_registers = stage02_public_live_registers(worldview_stage02, worldview_stage02["burden_floor"])
     if worldview_registers != ["Omega", "xi"]:
         raise HarnessError("Self-test Stage 02 worldview live registers did not normalize to Omega/xi")
+    partial_register_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "selected-route-partial-register-coverage-self-test",
+            "live_registers": ["definition", "epistemology", "metaphysics"],
+            "burden_floor": ["B1", "B2", "B3"],
+            "burden_floor_details": [
+                {"id": "B1", "label": "definition_and_scope"},
+                {
+                    "id": "B2",
+                    "label": "epistemic_authority",
+                    "diagnostic_role": "Test whether the governing knowledge standard has authority.",
+                },
+                {"id": "B3", "label": "normative_grounding"},
+            ],
+        },
+    )
+    partial_register_coverage = stage02_register_coverage(
+        partial_register_stage02,
+        partial_register_stage02["burden_floor"],
+    )
+    if partial_register_coverage.get("Omega") != ["B3"]:
+        raise HarnessError("Self-test Stage 02 partial detail coverage lost live-register Omega fallback for B3")
+    partial_register_types = stage02_burden_register_types(
+        partial_register_stage02,
+        partial_register_stage02["burden_floor"],
+    )
+    if partial_register_types.get("B3") != ["Omega"]:
+        raise HarnessError("Self-test Stage 02 partial detail coverage lost B3 Omega register typing")
     registers_alias_stage02 = normalized_stage(
         "stage-02-layer-a-diagnostic-ir",
         {
@@ -8541,6 +8581,25 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to canonicalize do-second-loop fitrah/ayat register_axis fallback")
     if do_second_loop_axis_stage04["act_row_details"][3].get("register_axis") != "κ":
         raise HarnessError("Self-test failed to canonicalize do-second-loop hujjah/accountability register_axis fallback")
+    do_second_loop_h_guidance_row = (
+        "⟦ACT ¹B₁[do-second-loop.coercive-guidance-demand] :: "
+        "π=coercive-guidance-demand :: body_ref=¹B₁ :: "
+        "Δ=Δ¹B:coercive-guidance-demand-bounded :: Land(¹B)+⟧"
+    )
+    do_second_loop_h_guidance_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [do_second_loop_h_guidance_row],
+            "act_row_details": self_test_act_row_details([do_second_loop_h_guidance_row], {"¹B₁": "H"}),
+        },
+    )
+    if do_second_loop_h_guidance_stage04["act_row_details"][0].get("register_axis") != "κ":
+        raise HarnessError("Self-test failed to canonicalize do-second-loop H guidance register_axis fallback")
     validate_incremental_handoffs(
         [
             {
@@ -9232,6 +9291,24 @@ def run_self_test(root: Path) -> int:
     )
     if proof_method_tau_stage04["act_row_details"][0].get("register_axis") != "τ":
         raise HarnessError("Self-test failed to accept proof-method tribunal/burden-function register_axis")
+    proof_overreach_tau_row = (
+        "⟦ACT ¹B₁[proof-method-audit.proof-overreach-audit] :: "
+        "π=formalization-validity :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:proof-overreach-bounded :: Land(¹B)+⟧"
+    )
+    proof_overreach_tau_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_overreach_tau_row],
+            "act_row_details": self_test_act_row_details([proof_overreach_tau_row], {"¹B₁": "τ"}),
+        },
+    )
+    if proof_overreach_tau_stage04["act_row_details"][0].get("register_axis") != "τ":
+        raise HarnessError("Self-test failed to accept proof-overreach tribunal/burden-function register_axis")
     invalid_proof_method_operation_row = (
         "⟦ACT ¹B₁[proof-method-audit.proof-stack-routed] :: "
         "π=proof-family-carrier-pressure :: "
