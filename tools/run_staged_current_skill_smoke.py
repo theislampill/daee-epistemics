@@ -163,6 +163,7 @@ STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("do-second-loop", "coercive-guidance-demand", "τ"): "κ",
     ("do-second-loop", "fitrah-ayat-baseline", "N"): "ξ",
     ("do-second-loop", "punishment-proportionality-accountability", "m"): "♥",
+    ("V2", "proof-burden-order", "τ"): "ξ",
     ("V2", "reason-role-repair", "σ"): "ξ",
     ("V2", "reconstituting-reason", "m"): "ξ",
 }
@@ -788,6 +789,12 @@ def canonical_delta_result_for_owner(
                 return "proof-text-hidden-support-blocked"
             if generic_hidden_recoil:
                 return "hidden-support-blocked"
+    if (
+        family == "V2"
+        and str(operation or "").strip() == "proof-burden-order"
+        and raw == "burden-order-repaired"
+    ):
+        return "proof-burden-order-restored"
     return raw
 
 
@@ -9148,6 +9155,33 @@ def run_self_test(root: Path) -> int:
     )
     if v2_reason_role_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
         raise HarnessError("Self-test failed to canonicalize V2 reason-role-repair register_axis fallback")
+    v2_proof_burden_order_row = (
+        "⟦ACT ¹B₁[V2.proof-burden-order] :: π=moral-theological-burden-order :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:burden-order-repaired :: Land(¹B)+⟧"
+    )
+    v2_proof_burden_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [v2_proof_burden_order_row],
+            "act_row_details": self_test_act_row_details(
+                [v2_proof_burden_order_row],
+                {
+                    "¹B₁": "τ",
+                },
+            ),
+        },
+    )
+    if v2_proof_burden_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to canonicalize V2 proof-burden-order register_axis fallback")
+    if (
+        v2_proof_burden_axis_stage04["act_row_details"][0].get("delta_result")
+        != "proof-burden-order-restored"
+    ):
+        raise HarnessError("Self-test failed to canonicalize V2 proof-burden-order delta_result fallback")
     selected_model_controlled_rows = [
         "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: π=selected-model-person-nature-transfer :: body_ref=¹B₁ :: Δ=Δ¹B:trinitarian-model-identified :: Land(¹B)+⟧",
         "⟦ACT ¹B₂[M9.predication-repair] :: π=selected-only-true-god-predicate-transfer :: body_ref=¹B₂ :: Δ=Δ¹B:person-nature-transfer-blocked :: Land(¹B)+⟧",
