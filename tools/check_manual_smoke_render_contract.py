@@ -157,6 +157,7 @@ OPERATION_MECHANISM_RE = re.compile(
     r"whole[- ]system|exhaust|reopen|would require|unworked held route|non[- ]load[- ]bearing|"
     r"predicate|predication|category|monotheism[- ]counting|exclusive[- ]counting|"
     r"fatal[- ]harm(?:[- ]at[- ]t1)?|lexical[- ]equivalence|chronology[- ]completion|"
+    r"t1[- ]t2[- ]causation[- ]collapse|"
     r"attribute[- ]precision|claim[- ]context[- ]boundary|definition[-_ ]boundary|"
     r"definition[- ]pressure|scope[- ]pressure|"
     r"moral[- ]intuition|ungrounded[- ]moral[- ]intuition|moral[- ]reaction|orphaned[- ]intuition|"

@@ -8617,6 +8617,40 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to canonicalize do-second-loop fitrah/ayat register_axis fallback")
     if do_second_loop_axis_stage04["act_row_details"][3].get("register_axis") != "κ":
         raise HarnessError("Self-test failed to canonicalize do-second-loop hujjah/accountability register_axis fallback")
+    do_second_loop_tau_punishment_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [
+                (
+                    "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+                    "π=punishment-proportionality :: body_ref=¹B₁ :: "
+                    "Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+                )
+            ],
+            "act_row_details": [
+                {
+                    "act_row": (
+                        "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+                        "π=punishment-proportionality :: body_ref=¹B₁ :: "
+                        "Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+                    ),
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "do-second-loop",
+                    "operation": "punishment-proportionality-accountability",
+                    "register_axis": "τ",
+                    "delta_result": "punishment-proportionality-calibrated",
+                }
+            ],
+        },
+    )
+    if do_second_loop_tau_punishment_stage04["act_row_details"][0].get("register_axis") != "τ":
+        raise HarnessError("Self-test failed to accept do-second-loop punishment τ register_axis")
     do_second_loop_h_guidance_row = (
         "⟦ACT ¹B₁[do-second-loop.coercive-guidance-demand] :: "
         "π=coercive-guidance-demand :: body_ref=¹B₁ :: "
