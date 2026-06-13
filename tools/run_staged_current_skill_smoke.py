@@ -36,6 +36,7 @@ from delta_result_vocabulary import (
     owner_operation_delta_result_errors,
     owner_operation_vocabulary_errors,
     route_owner_vocabulary_errors,
+    route_owner_family_hint_execution_owner,
     source_formal_delta_operation_errors,
     source_pressure_delta_errors,
 )
@@ -1177,6 +1178,34 @@ def canonicalize_stage03_owner_route_alias(
     }
 
 
+def canonicalize_stage03_owner_route_family_hint(
+    route: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, str] | None]:
+    canonical = dict(route)
+    raw_owner = non_empty_string(canonical.get("owner_id") or canonical.get("owner"))
+    raw_family = non_empty_string(canonical.get("owner_family") or canonical.get("classification_family"))
+    operation = non_empty_string(canonical.get("operation") or canonical.get("owner_operation"))
+    if raw_owner is None or raw_family is None or operation is None:
+        return canonical, None
+    execution_owner = route_owner_family_hint_execution_owner(canonical)
+    if not execution_owner:
+        return canonical, None
+    family = canonical_delta_owner(raw_family)
+    canonical["owner_id"] = execution_owner
+    if "owner" in canonical and "owner_id" not in route:
+        canonical.pop("owner", None)
+    if family:
+        canonical.setdefault("classification_family", family)
+    return canonical, {
+        "burden_id": str(canonical.get("burden_id") or canonical.get("target") or ""),
+        "raw_owner_id": raw_owner,
+        "owner_family": raw_family,
+        "canonical_owner_id": execution_owner,
+        "operation": operation,
+        "classification_family": family or raw_family,
+    }
+
+
 def canonicalize_stage03_owner_route_operation(
     route: dict[str, Any],
 ) -> tuple[dict[str, Any], dict[str, str] | None]:
@@ -1209,11 +1238,16 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
         canonical: list[dict[str, Any]] = []
         details: list[dict[str, Any]] = []
         alias_events: list[dict[str, str]] = []
+        family_hint_events: list[dict[str, str]] = []
         operation_events: list[dict[str, str]] = []
         for index, route in enumerate(routes):
             burden_id = non_empty_string(route.get("burden_id"))
             owner_id = non_empty_string(route.get("owner_id"))
             if burden_id is not None and owner_id is not None:
+                canonical_row, family_hint_event = canonicalize_stage03_owner_route_family_hint(route)
+                if family_hint_event is not None:
+                    family_hint_events.append(family_hint_event)
+                route = canonical_row
                 canonical_row, alias_event = canonicalize_stage03_owner_route_alias(route)
                 if alias_event is not None:
                     alias_events.append(alias_event)
@@ -1253,6 +1287,12 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
                 eligibility = non_empty_string(route.get("classification") or route.get("policy_id"))
                 if eligibility is not None:
                     canonical_row["eligibility"] = eligibility
+                raw_family = non_empty_string(required_row.get("owner_family") or required_row.get("classification_family"))
+                if raw_family is not None:
+                    canonical_row["owner_family"] = raw_family
+                canonical_row, family_hint_event = canonicalize_stage03_owner_route_family_hint(canonical_row)
+                if family_hint_event is not None:
+                    family_hint_events.append(family_hint_event)
                 canonical_row, alias_event = canonicalize_stage03_owner_route_alias(canonical_row)
                 if alias_event is not None:
                     alias_events.append(alias_event)
@@ -1270,13 +1310,15 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
         if not canonical:
             raise HarnessError("stage-03 owner_routes must name at least one owner route")
         stage["owner_routes"] = canonical
-        if details or alias_events or operation_events:
+        if details or alias_events or family_hint_events or operation_events:
             stage["owner_route_details"] = details
             normalization = normalization_object(stage)
             if details:
                 normalization["owner_routes_from_required_details"] = True
             if alias_events:
                 normalization["owner_route_family_aliases"] = alias_events
+            if family_hint_events:
+                normalization["owner_route_family_hints"] = family_hint_events
             if operation_events:
                 normalization["owner_route_operation_result_tokens"] = operation_events
             normalization["canonical_owner_routes"] = [
@@ -8059,6 +8101,53 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted prefixed owner alias as a Stage 03 operation token")
+
+    normalized_p7_family_hint_route = normalized_stage(
+        "stage-03-routing-owner-gate",
+        {
+            "id": "stage-03-routing-owner-gate",
+            "status": "pass",
+            "route_targets": ["B1"],
+            "owner_routes": [
+                {
+                    "burden_id": "B1",
+                    "owner_id": "scope-boundary",
+                    "owner_family": "P7",
+                    "operation": "scope-boundary",
+                    "owner_operation": "scope-boundary",
+                    "route_status": "executable",
+                }
+            ],
+        },
+    )
+    p7_hint_route = normalized_p7_family_hint_route.get("owner_routes", [{}])[0]
+    if p7_hint_route.get("owner_id") != "P7":
+        raise HarnessError("Self-test failed to canonicalize P7 operation token owner_id from owner_family")
+    p7_hint_events = (normalized_p7_family_hint_route.get("normalization") or {}).get("owner_route_family_hints")
+    if not isinstance(p7_hint_events, list) or not p7_hint_events:
+        raise HarnessError("Self-test failed to record P7 owner-family hint normalization")
+    try:
+        normalized_stage(
+            "stage-03-routing-owner-gate",
+            {
+                "id": "stage-03-routing-owner-gate",
+                "status": "pass",
+                "route_targets": ["B1"],
+                "owner_routes": [
+                    {
+                        "burden_id": "B1",
+                        "owner_id": "scope-boundary",
+                        "operation": "scope-boundary",
+                        "route_status": "executable",
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "executable owner route 'scope-boundary' has no controlled owner family" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted operation token as owner_id without owner_family evidence")
 
     normalized_m8_dependency_route = normalized_stage(
         "stage-03-routing-owner-gate",
