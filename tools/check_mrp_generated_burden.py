@@ -81,9 +81,12 @@ MRP_CLOSURE_RESULTANT_RE = re.compile(
 )
 COMMON_EXAMPLE_OWNERS = {"FPD", "M1", "M1-P", "M1P", "M8"}
 M1_RECONSTRUCTIBLE_RE = re.compile(
-    r"(?i)\b(?:self[- ]refutation|self[- ]grounding|internal contradiction|"
+    r"(?i)\b(?:self[- ]refutation|self[- ]grounding|internal[- ]contradiction|"
     r"own standard|own rule|own source[- ]appeal standard|own appeal to (?:Scripture|the source|the text|evidence)|"
     r"proof[- ]stack becomes circular|circular (?:protection|appeal|proof[- ]stack)|"
+    r"imported premise|loaded premise|disputed premise|inserted premise|"
+    r"premise (?:is )?(?:imported|loaded|disputed|inserted|not established)|"
+    r"checks whether .* (?:established|imported)|must prove|"
     r"appeal circular|pre-controls? every reading|by its own rule|cannot authorize its own|collapses under its own)\b"
 )
 P7_STOP_SCOPE_RE = re.compile(
@@ -130,8 +133,11 @@ SOURCE_OWNED_ACT_OPERATIONS = {
             r"internal contradiction|cannot authorize its own|test(?:s|ed)? that rule)\b"
         ),
         "test": re.compile(
-            r"(?is)\b(?:self[- ]grounding|own (?:rule|standard)|internal contradiction|"
+            r"(?is)\b(?:self[- ]grounding|own (?:rule|standard)|internal[- ]contradiction|"
             r"circular (?:protection|appeal)|own source[- ]appeal test|"
+            r"imported[- ]contradiction|imported premise|loaded premise|disputed premise|"
+            r"inserted premise|premise (?:is )?(?:imported|loaded|disputed|inserted|not established)|"
+            r"checks whether .* (?:established|imported)|must prove|"
             r"test(?:s|ed)? (?:the|that) claim)\b"
         ),
     },
@@ -162,7 +168,7 @@ SOURCE_OWNED_ACT_OPERATIONS = {
     },
     "M9": {
         "predication-repair": re.compile(
-            r"(?is)\b(?:predicat|category|predicate transfer|reliability|reliable|separate|separated)\b"
+            r"(?is)\b(?:predicat\w*|category|predicate transfer|reliability|reliable|separate|separated)\b"
         ),
         "sense-split": re.compile(
             r"(?is)\b(?:sense|referent|meaning[- ]conditions?|semantic|predicat|category|"
@@ -1568,9 +1574,11 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
 
 
 def is_reconstructible_owner_operation(block: str) -> bool:
+    family = strict_owner_family(submove_owner(block))
+    if family == "PROOF_METHOD":
+        return proof_method_carrier_transition_visible(block)
     if not is_mrp_operation_shaped_submove(block):
         return False
-    family = strict_owner_family(submove_owner(block))
     payload = operation_payload(block)
     if family == "M1":
         return bool(M1_RECONSTRUCTIBLE_RE.search(payload))

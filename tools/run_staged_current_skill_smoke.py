@@ -151,6 +151,11 @@ STAGE04_OPERATION_ALIAS_MAP = {
     ("M8", "trace"): "consequence-trace",
     ("P7", "boundary"): "scope-boundary",
 }
+STAGE04_PROOF_FAMILY_CLASSIFICATION_CARRIER_RE = re.compile(
+    r"(?i)\b(?:proof[- ]family[- ]classification[- ]pressure|"
+    r"proof[- ]family[- ]carrier[- ]pressure|proof[- ]carrier[- ]tribunal[- ]function)\b"
+)
+STAGE04_PROOF_FAMILY_LABEL_RE = re.compile(r"(?i)\bproof[- ]family[- ]label\b")
 STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("proof-method-audit", "proof-route-status-audit", "H"): "τ",
     ("do-second-loop", "accountability-hujjah-compression", "H"): "κ",
@@ -863,9 +868,24 @@ def require_stage04_register_axis(
     return axis, isinstance(raw_axis, str) and raw_axis.strip() != axis
 
 
-def canonicalize_stage04_operation_token(owner: Any, operation: Any) -> str:
+def canonicalize_stage04_operation_token(
+    owner: Any,
+    operation: Any,
+    pressure: Any = None,
+    delta_result: Any = None,
+) -> str:
     family = canonical_delta_owner(str(owner or "")) or str(owner or "").strip()
     token = str(operation or "").strip()
+    pressure_text = str(pressure or "").strip()
+    result_text = str(delta_result or "").strip()
+    if (
+        family == "PROOF_METHOD"
+        and token == "proof-family-classification"
+        and result_text == "proof-family-carrier-typed"
+        and STAGE04_PROOF_FAMILY_CLASSIFICATION_CARRIER_RE.search(pressure_text)
+        and not STAGE04_PROOF_FAMILY_LABEL_RE.search(pressure_text)
+    ):
+        return "proof-family-and-carrier-audit"
     return STAGE04_OPERATION_ALIAS_MAP.get((family, token), token)
 
 
@@ -875,7 +895,12 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
     if not match:
         return row, None
     rewrite: dict[str, str] | None = None
-    canonical_operation = canonicalize_stage04_operation_token(match.group("owner"), match.group("operation"))
+    canonical_operation = canonicalize_stage04_operation_token(
+        match.group("owner"),
+        match.group("operation"),
+        match.group("pressure"),
+        match.group("delta_result").strip(),
+    )
     if canonical_operation != match.group("operation"):
         start, end = match.span("operation")
         row = row[:start] + canonical_operation + row[end:]
@@ -1520,7 +1545,12 @@ def normalize_stage04_act_row_details(
             value = non_empty_string(item.get(field))
             parsed_value = parsed[field]
             if field == "operation" and value and value != parsed_value:
-                canonical_value = canonicalize_stage04_operation_token(parsed["owner_id"], value)
+                canonical_value = canonicalize_stage04_operation_token(
+                    parsed["owner_id"],
+                    value,
+                    item.get("pressure") or parsed["pressure"],
+                    item.get("delta_result") or parsed["delta_result"],
+                )
                 if canonical_value == parsed_value:
                     item[field] = parsed_value
                     missing.append(field)
@@ -9383,6 +9413,41 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted generic proof-method tau register_axis")
+    valid_proof_family_classification_pressure_row = (
+        "⟦ACT ¹B₁[proof-method-audit.proof-family-classification] :: "
+        "π=proof-family-classification-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:proof-family-carrier-typed :: Land(¹B)+⟧"
+    )
+    normalized_proof_family_classification_pressure_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [valid_proof_family_classification_pressure_row],
+            "act_row_details": self_test_act_row_details(
+                [valid_proof_family_classification_pressure_row],
+                {"¹B₁": "τ"},
+            ),
+        },
+    )
+    valid_proof_family_classification_pressure_detail = stage04_act_details_by_ref(
+        normalized_proof_family_classification_pressure_stage04
+    )["¹B₁"]
+    valid_proof_family_classification_pressure_typed_detail = (
+        normalized_proof_family_classification_pressure_stage04["act_row_details"][0]
+    )
+    if valid_proof_family_classification_pressure_detail.get("operation") != "proof-family-and-carrier-audit":
+        raise HarnessError(
+            "Self-test failed to canonicalize proof-family-classification-pressure "
+            "to proof-family-and-carrier-audit"
+        )
+    if valid_proof_family_classification_pressure_typed_detail.get("register_axis") != "τ":
+        raise HarnessError(
+            "Self-test failed to preserve tribunal/burden-function register_axis for "
+            "proof-family-classification-pressure"
+        )
     valid_do_attribute_delta_row = (
         "⟦ACT ¹B₁[do-attribute-precision.attribute-precision] :: "
         "π=predicate-identity-pressure :: "

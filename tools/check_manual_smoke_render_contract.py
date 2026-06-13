@@ -364,8 +364,11 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
         "M1",
         re.compile(
             r"(?i)\b(?:self[- ]refutation|self[- ]grounding|self[- ]authoriz\w+|"
-            r"self[- ]enthronement|internal contradiction|own standard|"
+            r"self[- ]enthronement|internal[- ]contradiction|own standard|"
             r"own rules?|unproved premise|unsupported premise|premise (?:must be )?established|"
+            r"imported premise|loaded premise|disputed premise|inserted premise|"
+            r"premise (?:is )?(?:imported|loaded|disputed|inserted|not established)|"
+            r"checks whether .* (?:established|imported)|must prove|"
             r"assum(?:e|es|ed|ing) (?:the )?(?:very )?conclusion|begs? the question|"
             r"own (?:source[- ]appeal|textual|evidential|proof[- ]stack) standard|"
             r"own appeal to (?:scripture|the source|the text|evidence)|"
