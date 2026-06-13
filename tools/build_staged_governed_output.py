@@ -136,6 +136,19 @@ FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
         re.compile(r"Graphify[^.\n]{0,80}\bproof\b|ActiveGraph[^.\n]{0,80}\bproof\b", re.IGNORECASE),
     ),
 ]
+TLANG_UPTAKE_NONCLAIM_RE = re.compile(
+    r"(?is)\b(?:does\s+not\s+(?:claim|imply)|not\s+(?:claim|guarantee)|no|without)\b"
+    r"[^.\n;]{0,180}\b(?:guarantees?\s+uptake|guaranteed\s+(?:T_lang\s+)?uptake|"
+    r"interlocutor\s+uptake)\b"
+)
+
+
+def match_sentence(text: str, start: int, end: int) -> str:
+    left = max(text.rfind("\n", 0, start), text.rfind(".", 0, start), text.rfind(";", 0, start))
+    right_candidates = [pos for pos in (text.find("\n", end), text.find(".", end), text.find(";", end)) if pos != -1]
+    right = min(right_candidates) if right_candidates else len(text)
+    return text[left + 1 : right]
+
 OPTIONAL_TOOLING_PROOF_NONCLAIM_RE = re.compile(
     r"\b(?:no|not|without)\b[^.\n]{0,80}\b(?:Graphify|ActiveGraph)\b"
     r"[^.\n]{0,120}\b(?:proof|proofs|claim|claimed|claims)\b",
@@ -312,8 +325,17 @@ def resolve_output_path(root: Path, manifest_dir: Path, value: Any, label: str) 
 def forbidden_text_errors(text: str, label: str) -> list[str]:
     errors: list[str] = []
     for name, pattern in FORBIDDEN_PATTERNS:
-        if not pattern.search(text):
+        matches = list(pattern.finditer(text))
+        if not matches:
             continue
+        if name == "guaranteed T_lang uptake claim":
+            positive_matches = [
+                match
+                for match in matches
+                if not TLANG_UPTAKE_NONCLAIM_RE.search(match_sentence(text, match.start(), match.end()))
+            ]
+            if not positive_matches:
+                continue
         if (
             name == "Graphify/ActiveGraph proof claim"
             and OPTIONAL_TOOLING_PROOF_NONCLAIM_RE.search(text)
@@ -3417,6 +3439,25 @@ def run_self_test(root: Path) -> int:
             payload, case_dir, 5, "T_lang guarantees interlocutor uptake.\n"
         ),
     )
+    valid_nonclaim_dir = base_dir / "valid-guaranteed-uptake-nonclaim"
+    valid_nonclaim_manifest = manifest_for_sections(
+        valid_nonclaim_dir,
+        case_id="valid-guaranteed-uptake-nonclaim",
+        source_input="valid-guaranteed-uptake-nonclaim/input.md",
+        section_specs=small_sections(),
+    )
+    valid_nonclaim_payload = read_json(valid_nonclaim_manifest)
+    if not isinstance(valid_nonclaim_payload, dict):
+        raise AssemblyError("self-test valid nonclaim manifest payload must be an object")
+    replace_section_text(
+        valid_nonclaim_payload,
+        valid_nonclaim_dir,
+        5,
+        "Closing Formulation\n"
+        "This scoped close does not claim that this formulation guarantees uptake by the interlocutor.\n",
+    )
+    write_json(valid_nonclaim_manifest, valid_nonclaim_payload)
+    assemble_manifest(valid_nonclaim_manifest, root=root)
     expect_invalid(
         root,
         base_dir,

@@ -599,6 +599,69 @@ DO_SECOND_LOOP_ACTION_RE = re.compile(
 OWNER_NAME_ONLY_RE = re.compile(
     r"(?i)\b(?:is named here|named here,\s*so|so .{0,80}\bis handled)\b"
 )
+V10_ACTION_RE = re.compile(
+    r"(?is)\b(?:vets?|vetting|sorts?|sorted|orders?|ordered|bounds?|bounded|"
+    r"constrains?|constrained|limits?|limited)\b"
+)
+V10_NEGATED_ACTION_RE = re.compile(
+    r"(?is)\b(?:does\s+not|did\s+not|not|without)\s+(?:\w+\s+){0,4}"
+    r"(?:vet|vets|vetting|sort|sorts|sorted|order|orders|ordered|"
+    r"bound|bounds|bounded|constrain|constrains|constrained|limit|limits|limited)\b"
+)
+V10_PROVENANCE_RE = re.compile(
+    r"(?is)\b(?:provenance|transmission|textual field|source pressure|source chain|"
+    r"public materials|published tenets|public positions|public[- ]source)\b"
+)
+V10_CONTENT_RE = re.compile(
+    r"(?is)\b(?:content|what they actually assert|content[- ]based|public claims|"
+    r"belief[- ]system critique)\b"
+)
+V10_AUTHORITY_RE = re.compile(
+    r"(?is)\b(?:authority|authority/status|status|standard|citation discipline|"
+    r"source role|source function)\b"
+)
+V10_STATE_RE = re.compile(
+    r"(?is)\b(?:sorted|bounded|ordered|constrained|limited|harmonization|"
+    r"valid discharge|public materials|content[- ]based|private motive|identity proof)\b"
+)
+DOUBT_SINCERE_RE = re.compile(
+    r"(?is)\b(?:sincere doubter?|sincere doubt|normal doubt|concrete doubt|"
+    r"doubt function|person seeking clarity|real struggle)\b"
+)
+DOUBT_METHOD_RE = re.compile(
+    r"(?is)\b(?:skeptic(?:al|ism)?[- ]method|skeptical methodology|self[- ]sealing skeptic|"
+    r"self[- ]sealing standards?|evidence[- ]demand tribunal|evidence bar|"
+    r"burden inversion|proof demand)\b"
+)
+DOUBT_ACTION_RE = re.compile(
+    r"(?is)\b(?:distinguish(?:es|ed|ing)?|separat(?:e|es|ed|ing)|expos(?:e|es|ed|ing)|"
+    r"blocks?|no longer conflated)\b"
+)
+
+
+def v10_operation_performed(combined: str) -> bool:
+    """Accept V10 only when provenance/content/authority are positively worked."""
+    for match in V10_ACTION_RE.finditer(combined):
+        prefix = combined[max(0, match.start() - 32) : match.start() + 96]
+        window = combined[match.start() : match.start() + 480]
+        if V10_NEGATED_ACTION_RE.search(prefix) or V10_NEGATED_ACTION_RE.search(window[:180]):
+            continue
+        if (
+            V10_PROVENANCE_RE.search(window)
+            and V10_CONTENT_RE.search(window)
+            and V10_AUTHORITY_RE.search(window)
+            and V10_STATE_RE.search(window)
+        ):
+            return True
+    return False
+
+
+def doubt_skepticism_operation_performed(combined: str) -> bool:
+    return bool(
+        DOUBT_SINCERE_RE.search(combined)
+        and DOUBT_METHOD_RE.search(combined)
+        and DOUBT_ACTION_RE.search(combined)
+    )
 
 OWNER_ROUTE_LINE_RE = re.compile(
     r"(?im)^\s*(?:[-*]\s*)?(?:Matched owner/TTP route|Matched TTP route|"
@@ -1037,6 +1100,10 @@ def owner_specific_operation_performed(owner: str, combined: str) -> bool:
     if OWNER_NAME_ONLY_RE.search(combined):
         return False
     family = owner_family(owner)
+    if family == "V10":
+        return v10_operation_performed(combined)
+    if family == "DOUBT_SKEPTICISM":
+        return doubt_skepticism_operation_performed(combined)
     if family:
         return any(key == family and pattern.search(combined) for key, pattern in OWNER_OPERATION_PATTERNS)
     if not owner:

@@ -230,6 +230,15 @@ BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
         "proof-text-sorted",
         "source-function-bounded",
     },
+    "V10": {
+        "proof-text-sorted",
+        "source-function-bounded",
+    },
+    "DOUBT_SKEPTICISM": {
+        "doubt-distinguished-from-skeptical-methodology",
+        "doubt-methodology-separated",
+        "doubt-method-separated-from-sincere-question",
+    },
     "DO_ATTRIBUTE": {
         "attribute-precision-typed",
         "person-nature-transfer-blocked",
