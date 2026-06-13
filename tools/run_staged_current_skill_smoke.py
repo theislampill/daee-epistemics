@@ -102,6 +102,20 @@ CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0
 PUBLIC_ASCII_SUBMOVE_RE = re.compile(r"\bB([1-9][0-9]*)[_\.]([1-9][0-9]*)(\[[^\]\n]+\])?")
 PUBLIC_ASCII_BURDEN_RE = re.compile(r"\bB([1-9][0-9]*)\b")
 PUBLIC_ASCII_EDGE_RE = re.compile(r"\bB([1-9][0-9]*)\s*(?:->|→)\s*B([1-9][0-9]*)\b")
+PUBLIC_ASCII_EDGE_REFERENCE_RE = re.compile(
+    r"\b(?P<article>(?:a|an|the)\s+)?"
+    r"(?P<source>B[1-9][0-9]*)\s*(?:->|→)\s*"
+    r"(?P<target>B[1-9][0-9]*)"
+    r"(?:\s+(?P<kind>graph\s+edge|edge|route))?\b",
+    re.IGNORECASE,
+)
+PUBLIC_SUP_EDGE_REFERENCE_RE = re.compile(
+    r"\b(?P<article>(?:a|an|the)\s+)?"
+    r"(?P<source>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\s*(?:->|→)\s*"
+    r"(?P<target>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)"
+    r"(?:\s+(?P<kind>graph\s+edge|edge|route))?\b",
+    re.IGNORECASE,
+)
 PUBLIC_ASCII_LAND_RE = re.compile(r"\b(Land|HOLD)\(B([1-9][0-9]*)\)", re.IGNORECASE)
 PUBLIC_ASCII_MRP_RE = re.compile(r"\bMRP\(B([1-9][0-9]*)\)")
 PUBLIC_MACHINE_PAYLOAD_LINE_RE = re.compile(
@@ -120,6 +134,17 @@ CONTROLLED_STAGE05_TERMINAL_STATES = {
     "carried-PARTIAL",
     "carried-RECURSE",
     "discharged-as-derivative",
+}
+NEGATIVE_NON_EDGE_REFERENCE_RE = re.compile(
+    r"(?i)\b(?:does\s+not|do\s+not|no|without|not)\b"
+    r"(?:(?!\n).){0,120}\b(?:license|create|creating|generate|generating|new|extra|downstream|edge|route)\b"
+)
+M9_RESULT_TOKEN_OPERATION_MAP = {
+    "predicate-separated": "predication-repair",
+    "category-separated": "predication-repair",
+    "referent-separated": "predication-repair",
+    "person-nature-transfer-blocked": "predication-repair",
+    "sense-separated": "sense-split",
 }
 
 
@@ -1101,12 +1126,39 @@ def canonicalize_stage03_owner_route_alias(
     }
 
 
+def canonicalize_stage03_owner_route_operation(
+    route: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, str] | None]:
+    canonical = dict(route)
+    owner = non_empty_string(canonical.get("owner_id") or canonical.get("owner"))
+    operation = non_empty_string(canonical.get("operation") or canonical.get("owner_operation"))
+    if owner is None or operation is None:
+        return canonical, None
+    family = canonical_delta_owner(owner)
+    if family != "M9":
+        return canonical, None
+    canonical_operation = M9_RESULT_TOKEN_OPERATION_MAP.get(operation)
+    if canonical_operation is None:
+        return canonical, None
+    canonical["operation"] = canonical_operation
+    if "owner_operation" in canonical:
+        canonical["owner_operation"] = canonical_operation
+    return canonical, {
+        "burden_id": str(canonical.get("burden_id") or canonical.get("target") or ""),
+        "owner_id": owner,
+        "raw_operation": operation,
+        "canonical_operation": canonical_operation,
+        "classification_family": family,
+    }
+
+
 def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
     routes = stage.get("owner_routes")
     if isinstance(routes, list) and routes and all(isinstance(item, dict) for item in routes):
         canonical: list[dict[str, Any]] = []
         details: list[dict[str, Any]] = []
         alias_events: list[dict[str, str]] = []
+        operation_events: list[dict[str, str]] = []
         for index, route in enumerate(routes):
             burden_id = non_empty_string(route.get("burden_id"))
             owner_id = non_empty_string(route.get("owner_id"))
@@ -1114,6 +1166,9 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
                 canonical_row, alias_event = canonicalize_stage03_owner_route_alias(route)
                 if alias_event is not None:
                     alias_events.append(alias_event)
+                canonical_row, operation_event = canonicalize_stage03_owner_route_operation(canonical_row)
+                if operation_event is not None:
+                    operation_events.append(operation_event)
                 route_errors = route_owner_vocabulary_errors(f"stage-03 owner_routes[{index}]", canonical_row)
                 if route_errors:
                     raise HarnessError(route_errors[0])
@@ -1150,6 +1205,9 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
                 canonical_row, alias_event = canonicalize_stage03_owner_route_alias(canonical_row)
                 if alias_event is not None:
                     alias_events.append(alias_event)
+                canonical_row, operation_event = canonicalize_stage03_owner_route_operation(canonical_row)
+                if operation_event is not None:
+                    operation_events.append(operation_event)
                 route_errors = route_owner_vocabulary_errors(
                     f"stage-03 owner_routes[{index}].required[{required_index}]",
                     canonical_row,
@@ -1161,13 +1219,15 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
         if not canonical:
             raise HarnessError("stage-03 owner_routes must name at least one owner route")
         stage["owner_routes"] = canonical
-        if details or alias_events:
+        if details or alias_events or operation_events:
             stage["owner_route_details"] = details
             normalization = normalization_object(stage)
             if details:
                 normalization["owner_routes_from_required_details"] = True
             if alias_events:
                 normalization["owner_route_family_aliases"] = alias_events
+            if operation_events:
+                normalization["owner_route_operation_result_tokens"] = operation_events
             normalization["canonical_owner_routes"] = [
                 {"burden_id": row.get("burden_id"), "owner_id": row.get("owner_id")} for row in canonical
             ]
@@ -1577,6 +1637,7 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
 
     canonicalize_stage05_reread_invocation(stage)
     normalize_stage05_stage_level_pressure_activations(stage)
+    normalize_stage05_negative_non_edge_public_burden_references(stage)
     normalize_stage05_per_burden_extra_fields(stage)
     per_burden_errors = staged_output.per_burden_reread_entry_errors(
         stage.get("per_burden_reread"),
@@ -1612,6 +1673,120 @@ def normalize_stage05_stage_level_pressure_activations(stage: dict[str, Any]) ->
     normalization = normalization_object(stage)
     normalization["per_burden_pressure_activations_from_stage_level"] = hydrated
     stage["normalization"] = normalization
+
+
+def stage05_known_burden_ids(stage: dict[str, Any]) -> set[str]:
+    known: set[str] = set()
+    for key in ("terminal_states",):
+        value = stage.get(key)
+        if isinstance(value, dict):
+            known.update(b_id(raw) for raw in value.keys())
+    for key in ("B_LA", "B_total", "nodes"):
+        value = stage.get(key)
+        if not isinstance(value, list):
+            continue
+        for item in value:
+            if isinstance(item, dict):
+                known.add(b_id(item.get("burden_id") or item.get("id") or item.get("target")))
+            else:
+                known.add(b_id(item))
+    generated = stage.get("generated_burdens")
+    if isinstance(generated, list):
+        for item in generated:
+            if isinstance(item, dict):
+                known.add(b_id(item.get("burden_id") or item.get("id") or item.get("target")))
+            else:
+                known.add(b_id(item))
+    entries = stage.get("per_burden_reread")
+    if isinstance(entries, list):
+        for entry in entries:
+            if isinstance(entry, dict):
+                known.add(b_id(entry.get("burden_id")))
+    return {burden for burden in known if burden}
+
+
+def normalize_negative_non_edge_public_text(
+    value: str,
+    *,
+    known_burdens: set[str],
+) -> tuple[str, list[dict[str, str]]]:
+    text = str(value or "")
+    if not NEGATIVE_NON_EDGE_REFERENCE_RE.search(text):
+        return text, []
+    rewrites: list[dict[str, str]] = []
+
+    def replace_edge(match: re.Match[str]) -> str:
+        source = canonical_burden_id(match.group("source"))
+        target = canonical_burden_id(match.group("target"))
+        if not target or target in known_burdens:
+            return match.group(0)
+        rewrites.append(
+            {
+                "raw_edge": match.group(0),
+                "source_burden": source,
+                "unknown_target_burden": target,
+                "canonical_text": "an extra downstream edge",
+            }
+        )
+        return "an extra downstream edge"
+
+    normalized = PUBLIC_ASCII_EDGE_REFERENCE_RE.sub(replace_edge, text)
+    normalized = PUBLIC_SUP_EDGE_REFERENCE_RE.sub(replace_edge, normalized)
+    return normalized, rewrites
+
+
+def normalize_stage05_negative_non_edge_public_burden_references(stage: dict[str, Any]) -> None:
+    known_burdens = stage05_known_burden_ids(stage)
+    if not known_burdens:
+        return
+    rewrites: list[dict[str, str]] = []
+
+    def normalize_activation_map(
+        activations: Any,
+        *,
+        burden_id: str,
+        field_prefix: str,
+    ) -> None:
+        if not isinstance(activations, dict):
+            return
+        for key, raw in list(activations.items()):
+            if not isinstance(raw, str):
+                continue
+            normalized, field_rewrites = normalize_negative_non_edge_public_text(
+                raw,
+                known_burdens=known_burdens,
+            )
+            if not field_rewrites:
+                continue
+            activations[key] = normalized
+            for event in field_rewrites:
+                rewrites.append(
+                    {
+                        "burden_id": burden_id,
+                        "field": f"{field_prefix}.{key}",
+                        **event,
+                    }
+                )
+
+    normalize_activation_map(
+        stage.get("pressure_activations"),
+        burden_id="<stage>",
+        field_prefix="pressure_activations",
+    )
+    entries = stage.get("per_burden_reread")
+    if isinstance(entries, list):
+        for entry in entries:
+            if not isinstance(entry, dict):
+                continue
+            normalize_activation_map(
+                entry.get("pressure_activations"),
+                burden_id=str(entry.get("burden_id") or ""),
+                field_prefix="pressure_activations",
+            )
+    if rewrites:
+        normalization = normalization_object(stage)
+        normalization["negative_non_edge_public_burden_references"] = rewrites
+        stage["normalization"] = normalization
 
 
 def normalize_stage05_per_burden_extra_fields(stage: dict[str, Any]) -> None:
@@ -2712,6 +2887,18 @@ def stage07_formal_curl_state(entry: dict[str, Any], route_type: str, route: str
     return head
 
 
+def stage07_formal_route_gradient(entry: dict[str, Any], route_type: str, target: str) -> str:
+    gradient = str(entry.get("route_gradient") or "")
+    if (
+        route_type == "held_burden_activation"
+        and target
+        and not has_raw_machine_burden(gradient, target)
+        and re.search(r"(?i)\b(?:already[- ]held|held|B_LA|initial)\b", gradient) is None
+    ):
+        return gradient.rstrip() + f" already-held {target} from B_LA."
+    return gradient
+
+
 def stage05_per_burden_entries(stage05: dict[str, Any] | None) -> list[dict[str, Any]]:
     entries = stage05.get("per_burden_reread") if isinstance(stage05, dict) else None
     if (
@@ -2902,7 +3089,7 @@ def stage07_formal_reread_states(
             "graph_delta": graph,
             "preemption_basis": str(entry.get("preemption_basis") or ""),
             "route": route,
-            "route_gradient": str(entry.get("route_gradient") or ""),
+            "route_gradient": stage07_formal_route_gradient(entry, route_type, target),
         }
         if route_type == "held_burden_activation":
             if target:
@@ -3829,6 +4016,7 @@ PUBLIC_SUBMOVE_HEADING_RE = re.compile(
     r"(?P<ref>(?:[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*))"
     r"\[(?P<owner>[A-Za-z][A-Za-z0-9_/\-]*)\]"
 )
+OPERATION_LINE_RE = re.compile(r"(?im)^(?P<prefix>\s*(?:[-*]\s*)?Operation\s*:\s*)(?P<body>.*)$")
 RESULT_STATE_LINE_RE = re.compile(r"(?im)^(?P<prefix>\s*(?:[-*]\s*)?Result(?:/state-change)?\s*:\s*)(?P<body>.*)$")
 CONTRIBUTION_LAND_LINE_RE = re.compile(
     r"(?im)^(?P<prefix>\s*(?:[-*]\s*)?Contribution-to-Land\((?P<land>[^)]*)\)\s*:\s*)(?P<body>.*)$"
@@ -4138,6 +4326,18 @@ def state_change_sentence_for_owner_transition(detail: dict[str, str]) -> str:
     return ""
 
 
+def operation_sentence_for_owner_transition(detail: dict[str, str]) -> str:
+    owner = str(detail.get("owner") or "").strip()
+    operation = str(detail.get("operation") or "").strip()
+    family = canonical_delta_owner(owner) or owner
+    if family == "FPD" and operation == "foreign-premise-detection":
+        return (
+            "foreign-premise-detection: expose the foreign premise and imported criterion "
+            "functioning as proof for this burden."
+        )
+    return ""
+
+
 def land_license_sentence_for_owner_transition(detail: dict[str, str], public_burden: str) -> str:
     owner = str(detail.get("owner") or "").strip()
     operation = str(detail.get("operation") or "").strip()
@@ -4296,6 +4496,18 @@ def canonicalize_layer_b_owner_transition_facets(
         sentence = state_change_sentence_for_owner_transition(detail)
         if not sentence:
             continue
+        operation_sentence = operation_sentence_for_owner_transition(detail)
+        operation_line_changed = False
+
+        def replace_operation_line(operation_match: re.Match[str]) -> str:
+            nonlocal operation_line_changed
+            if not operation_sentence:
+                return operation_match.group(0)
+            body = operation_match.group("body").strip()
+            if operation_sentence in body:
+                return operation_match.group(0)
+            operation_line_changed = True
+            return f"{operation_match.group('prefix')}{operation_sentence}"
 
         def replace_result_line(result_match: re.Match[str]) -> str:
             body = result_match.group("body").rstrip()
@@ -4303,9 +4515,14 @@ def canonicalize_layer_b_owner_transition_facets(
                 return result_match.group(0)
             return f"{result_match.group('prefix')}{body.rstrip('.')}." + sentence
 
+        normalized_block, _operation_replacement_count = OPERATION_LINE_RE.subn(
+            replace_operation_line,
+            block,
+            count=1,
+        )
         normalized_block, result_replacement_count = RESULT_STATE_LINE_RE.subn(
             replace_result_line,
-            block,
+            normalized_block,
             count=1,
         )
         land_license_changed = False
@@ -4327,7 +4544,11 @@ def canonicalize_layer_b_owner_transition_facets(
             normalized_block,
             count=1,
         )
-        if (result_replacement_count <= 0 and not land_license_changed) or normalized_block == block:
+        if (
+            not operation_line_changed
+            and result_replacement_count <= 0
+            and not land_license_changed
+        ) or normalized_block == block:
             continue
         chunks.append(text[cursor : match.start()])
         chunks.append(normalized_block)
@@ -7619,6 +7840,35 @@ def run_self_test(root: Path) -> int:
         }
     ]:
         raise HarnessError("Self-test failed to accept controlled M9 Stage 03 operation")
+    normalized_m9_result_operation_route = normalized_stage(
+        "stage-03-routing-owner-gate",
+        {
+            "id": "stage-03-routing-owner-gate",
+            "status": "pass",
+            "route_targets": ["B3"],
+            "owner_routes": [
+                {
+                    "burden_id": "B3",
+                    "owner_id": "M9",
+                    "operation": "referent-separated",
+                    "owner_operation": "referent-separated",
+                    "pressure": "proof-text-referent-and-predicate-function",
+                    "delta_result": "referent-separated",
+                }
+            ],
+        },
+    )
+    normalized_m9_result_operation_row = normalized_m9_result_operation_route["owner_routes"][0]
+    if (
+        normalized_m9_result_operation_row.get("operation") != "predication-repair"
+        or normalized_m9_result_operation_row.get("owner_operation") != "predication-repair"
+    ):
+        raise HarnessError("Self-test failed to normalize M9 result token in operation slot")
+    result_operation_events = (
+        normalized_m9_result_operation_route.get("normalization") or {}
+    ).get("owner_route_operation_result_tokens")
+    if not isinstance(result_operation_events, list) or not result_operation_events:
+        raise HarnessError("Self-test failed to record M9 result-token operation normalization")
     try:
         normalized_stage(
             "stage-03-routing-owner-gate",
@@ -9366,6 +9616,34 @@ def run_self_test(root: Path) -> int:
     pressure_normalization = top_level_pressure_stage05.get("normalization", {})
     if pressure_normalization.get("per_burden_pressure_activations_from_stage_level") != ["B1"]:
         raise HarnessError("Self-test Stage 05 pressure-slot hydration did not record normalization")
+    non_edge_pressure_entry = self_test_reread_entry("B1")
+    non_edge_pressure_entry["pressure_activations"]["dependency-tug"] = (
+        "dependency-tug: P7.scope-boundary pressure class: dependency-tug -- "
+        "remaining dependency pressure is bounded and does not license a B1 -> B2 edge."
+    )
+    non_edge_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after the terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [non_edge_pressure_entry],
+        },
+    )
+    sanitized_non_edge = non_edge_stage05["per_burden_reread"][0]["pressure_activations"]["dependency-tug"]
+    if "B2" in sanitized_non_edge or "-> B2" in sanitized_non_edge:
+        raise HarnessError("Self-test Stage 05 negative non-edge public burden reference was not sanitized")
+    non_edge_events = (
+        non_edge_stage05.get("normalization") or {}
+    ).get("negative_non_edge_public_burden_references")
+    if not isinstance(non_edge_events, list) or not non_edge_events:
+        raise HarnessError("Self-test Stage 05 negative non-edge sanitation did not record normalization")
     validate_incremental_handoffs([two_burden_stage04, two_stop_stage05])
     continuation_entries = {
         str(entry["burden_id"]): entry
@@ -10357,6 +10635,8 @@ def run_self_test(root: Path) -> int:
     )
     if not fpd_event or not fpd_event.get("canonicalized_owner_transition_facets"):
         raise HarnessError("Self-test Stage 07 FPD canonicalization did not record an event")
+    if "Operation: foreign-premise-detection: expose the foreign premise and imported criterion" not in canonical_fpd:
+        raise HarnessError("Self-test Stage 07 FPD canonicalization omitted parser-stable operation action")
     if "the foreign premise and imported criterion are exposed" not in canonical_fpd:
         raise HarnessError("Self-test Stage 07 FPD canonicalization omitted parser-stable state change")
     label_only_fpd = thin_fpd_layer.replace(
@@ -11310,12 +11590,32 @@ def run_self_test(root: Path) -> int:
     for row, entry in zip(wide_states, wide_per_burden_entries):
         if row.get("delta") != stage07_formal_delta(entry["landed_delta"], str(entry.get("burden_id") or "")):
             raise HarnessError("Self-test Stage 07 formal reread states did not preserve landed_delta with machine identity")
-        if row.get("route_gradient") != entry["route_gradient"]:
-            raise HarnessError("Self-test Stage 07 formal reread states did not mirror per_burden_reread route_gradient 1:1")
+        expected_route_gradient = stage07_formal_route_gradient(
+            entry,
+            str(entry.get("route_result_type") or ""),
+            stage07_route_target_from_graph(entry.get("graph_delta")),
+        )
+        if row.get("route_gradient") != expected_route_gradient:
+            raise HarnessError("Self-test Stage 07 formal reread states did not preserve formal route_gradient projection")
         if row.get("preemption_basis") != entry["preemption_basis"]:
             raise HarnessError("Self-test Stage 07 formal reread states did not mirror per_burden_reread preemption_basis 1:1")
         if row.get("mrp_resultant") != entry["mrp_resultant"]:
             raise HarnessError("Self-test Stage 07 formal reread states did not mirror per_burden_reread mrp_resultant 1:1")
+    held_identity_entry = self_test_reread_entry(
+        "B2",
+        next_burden_id="B3",
+        route_gradient=(
+            "∇ route: predication/scope repair reduces contradiction pressure but routes "
+            "remaining compression pressure to the proof-carrier audit."
+        ),
+    )
+    held_identity_state = stage07_formal_reread_states(
+        [held_identity_entry],
+        {"B2": "landed", "B3": "landed"},
+    )[0]
+    held_identity_gradient = str(held_identity_state.get("route_gradient") or "")
+    if "already-held B3 from B_LA" not in held_identity_gradient:
+        raise HarnessError("Self-test Stage 07 held route_gradient did not add raw B3/B_LA identity")
     b6_state = wide_states[-1]
     if b6_state.get("divergence_state") != "non-neutral" or b6_state.get("curl_state") != "held":
         raise HarnessError("Self-test Stage 07 B6 held row did not mirror the per-burden non-neutral/held field diagnostics")
