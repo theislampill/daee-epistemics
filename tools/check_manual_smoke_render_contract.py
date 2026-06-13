@@ -644,7 +644,7 @@ V10_STATE_RE = re.compile(
 DOUBT_SINCERE_RE = re.compile(
     r"(?is)\b(?:sincere doubter?|sincere doubt|normal doubt|concrete doubt|"
     r"honest doubt|real doubt|doubt function|confused seeker|wounded protester|"
-    r"person seeking clarity|real struggle)\b"
+    r"person seeking clarity|real struggle|sincere uncertainty|honest question)\b"
 )
 DOUBT_METHOD_RE = re.compile(
     r"(?is)\b(?:skeptic(?:al|ism)?[- ]method|skeptical[- ]methodology|self[- ]sealing skeptic|"

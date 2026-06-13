@@ -1486,6 +1486,40 @@ def pattern_profile_compact_target_backed(
     )
 
 
+M8_CHRONOLOGY_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*chronology\.?\s*$")
+M8_CHRONOLOGY_BACKING_RE = re.compile(
+    r"(?is)\b(?:t1|t2|time[- ]indexed|Khaybar|poison|poisoning|later death|"
+    r"final illness|fatal success|completed fatal|survival|years later)\b"
+)
+M9_ARABIC_LEXICAL_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*arabic[_-]lexical\.?\s*$")
+M9_ARABIC_LEXICAL_BACKING_RE = re.compile(
+    r"(?is)\b(?:al[- ]wateen|al[- ]abhar|Qur'?anic|hadith|Arabic|lexical|"
+    r"translation|referent|semantic|sense|identity|overlap|dictionary)\b"
+)
+
+
+def family_compact_target_backed(
+    owner: str,
+    target: str,
+    operation_text: str,
+    operation_scope: str,
+) -> bool:
+    family = strict_owner_family(owner)
+    payload = " ".join((operation_text, operation_scope))
+    if family == "M8" and M8_CHRONOLOGY_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and M8_CHRONOLOGY_BACKING_RE.search(payload)
+        )
+    if family == "M9" and M9_ARABIC_LEXICAL_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            target_word_contact(target, operation_text)
+            and owner_specific_operation_performed(owner, payload)
+            and M9_ARABIC_LEXICAL_BACKING_RE.search(payload)
+        )
+    return False
+
+
 def do_second_loop_pressure_action_backed(
     owner: str,
     target: str,
@@ -1537,6 +1571,12 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
             operation_scope,
         )
         and not pattern_profile_compact_target_backed(
+            owner,
+            target,
+            operation_text,
+            operation_scope,
+        )
+        and not family_compact_target_backed(
             owner,
             target,
             operation_text,

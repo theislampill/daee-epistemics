@@ -13612,6 +13612,15 @@ def run_self_test(root: Path) -> int:
                 f"Self-test Stage 07 visible-output probe {name} missed {expected!r}; found: {found}"
             )
 
+    def assert_visible_output_accepts(name: str, text: str) -> None:
+        probe_path = run_dir / f"{name}.valid.md"
+        probe_path.write_text(text, encoding="utf-8")
+        found = visible_governed_output_errors(probe_path)
+        if found:
+            raise HarnessError(
+                f"Self-test Stage 07 visible-output probe {name} unexpectedly failed: {found}"
+            )
+
     assert_visible_output_rejects(
         "stage07-field-witness-heading-only",
         visible_probe_base.rsplit("\nfield_witness\n", 1)[0] + "\nfield_witness\nB_LA: B1\n",
@@ -13636,6 +13645,12 @@ def run_self_test(root: Path) -> int:
         "stage07-activegraph-proof-claim",
         visible_probe_base + "\nActiveGraph proof confirms retained closure.\n",
         "Graphify/ActiveGraph proof claim",
+    )
+    assert_visible_output_accepts(
+        "stage07-optional-tooling-proof-nonclaim",
+        visible_probe_base
+        + "\nField diagnostics: dependency and restoration pressure were landed without claiming "
+        + "package, release, Graphify, ActiveGraph, or broad model proof.\n",
     )
     assert_visible_output_rejects(
         "stage07-duplicate-restorative-response",
@@ -13821,7 +13836,23 @@ def visible_governed_output_errors(output_path: Path) -> list[str]:
         ("guaranteed T_lang uptake claim", r"T_lang guarantees|guaranteed T_lang uptake|guarantees interlocutor uptake"),
         ("Graphify/ActiveGraph proof claim", r"Graphify[^.\n]{0,80}\bproof\b|ActiveGraph[^.\n]{0,80}\bproof\b"),
     ]
-    errors.extend(label for label, pattern in forbidden if re.search(pattern, text, re.IGNORECASE))
+    for label, pattern in forbidden:
+        matches = list(re.finditer(pattern, text, re.IGNORECASE))
+        if label == "Graphify/ActiveGraph proof claim":
+            matches = [
+                match
+                for match in matches
+                if not (
+                    staged_output.OPTIONAL_TOOLING_PROOF_NONCLAIM_RE.search(
+                        staged_output.match_sentence(text, match.start(), match.end())
+                    )
+                    and not staged_output.OPTIONAL_TOOLING_POSITIVE_PROOF_RE.search(
+                        staged_output.match_sentence(text, match.start(), match.end())
+                    )
+                )
+            ]
+        if matches:
+            errors.append(label)
     return errors
 
 
