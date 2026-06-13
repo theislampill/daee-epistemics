@@ -225,7 +225,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "objects. `burden_floor_details` should be a list of detail objects; a "
             "keyed object map is compatibility-normalized only when its keys exactly "
             "match the bare `burden_floor` ids and every value preserves burden "
-            "identity. Do not release a final answer."
+            "identity. Do not attempt filesystem reads or return `status=fail` "
+            "because `skill/SKILL.md` is unavailable as a readable path; use the "
+            "runtime identity, prompt contract, raw input, and previous validated "
+            "stage state supplied by the harness. Do not release a final answer."
         ),
     },
     "stage-03-routing-owner-gate": {
@@ -1638,6 +1641,7 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
     canonicalize_stage05_reread_invocation(stage)
     normalize_stage05_stage_level_pressure_activations(stage)
     normalize_stage05_negative_non_edge_public_burden_references(stage)
+    normalize_stage05_held_route_gradient_identity(stage)
     normalize_stage05_per_burden_extra_fields(stage)
     per_burden_errors = staged_output.per_burden_reread_entry_errors(
         stage.get("per_burden_reread"),
@@ -1786,6 +1790,48 @@ def normalize_stage05_negative_non_edge_public_burden_references(stage: dict[str
     if rewrites:
         normalization = normalization_object(stage)
         normalization["negative_non_edge_public_burden_references"] = rewrites
+        stage["normalization"] = normalization
+
+
+def stage05_route_gradient_has_held_identity(gradient: str, target: str) -> bool:
+    if has_raw_machine_burden(gradient, target) or public_burden_id(target) in gradient:
+        return True
+    if re.search(r"(?i)\b(?:held|initial|already[- ]inventoried|already named)\b", gradient):
+        return True
+    if re.search(r"(?:B[1-9][0-9]*|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\s*(?:->|→)\s*(?:B[1-9][0-9]*|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)", gradient):
+        return True
+    return False
+
+
+def normalize_stage05_held_route_gradient_identity(stage: dict[str, Any]) -> None:
+    entries = stage.get("per_burden_reread")
+    if not isinstance(entries, list):
+        return
+    rewrites: list[dict[str, str]] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        route_type = str(entry.get("route_result_type") or "").strip()
+        if route_type != "held_burden_activation":
+            continue
+        target = stage07_route_target_from_graph(entry.get("graph_delta"))
+        if not target:
+            continue
+        gradient = str(entry.get("route_gradient") or "")
+        if not gradient.strip() or stage05_route_gradient_has_held_identity(gradient, target):
+            continue
+        canonical = gradient.rstrip(". ") + f". already-held {target} from B_LA."
+        entry["route_gradient"] = canonical
+        rewrites.append(
+            {
+                "source_burden": str(entry.get("burden_id") or ""),
+                "target_burden": target,
+                "canonical_route_gradient": canonical,
+            }
+        )
+    if rewrites:
+        normalization = normalization_object(stage)
+        normalization["held_route_gradient_identity"] = rewrites
         stage["normalization"] = normalization
 
 
@@ -2593,6 +2639,16 @@ def stage05_dependency_edges(stage05: dict[str, Any] | None) -> list[dict[str, s
         elif isinstance(item, list) and len(item) == 2:
             source = burden_endpoint_id(item[0])
             target = burden_endpoint_id(item[1])
+        elif isinstance(item, str):
+            match = re.search(
+                r"(?P<source>B[1-9][0-9]*|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\s*(?:->|→)\s*"
+                r"(?P<target>B[1-9][0-9]*|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)",
+                item,
+            )
+            if not match:
+                continue
+            source = burden_endpoint_id(match.group("source"))
+            target = burden_endpoint_id(match.group("target"))
         else:
             continue
         if source and target:
@@ -5516,6 +5572,9 @@ def stage_prompt(
 
 You are executing one bounded repo/dev staged current-skill smoke for daee-epistemics.
 Use the generated runtime surface at `skill/SKILL.md` as the governing skill source.
+The harness supplies the runtime hash, stage contract, raw input, and prior validated stage state;
+do not attempt filesystem reads, shell commands, or path access, and do not return `status=fail`
+solely because `skill/SKILL.md` is unavailable as a readable file inside the model context.
 This is stage only: {stage_id} — {spec['title']}.
 
 Hard boundaries:
@@ -5605,6 +5664,9 @@ def release_prompt(
 
 You are executing stage-07-release-output for one bounded staged current-skill smoke.
 Use the generated runtime surface at `skill/SKILL.md` as the governing skill source.
+The harness supplies the runtime hash, release contract, raw input, and prior validated stage state;
+do not attempt filesystem reads, shell commands, or path access, and do not fail solely because
+`skill/SKILL.md` is unavailable as a readable file inside the model context.
 
 Public interface boundary:
 - Preserve `/daee-epistemics` governed output shape.
@@ -6927,6 +6989,30 @@ def run_self_test(root: Path) -> int:
     ):
         if invariant not in prompt_a:
             raise HarnessError(f"Self-test Stage 01 custody prompt missing invariant {invariant!r}")
+    stage02_prompt = stage_prompt(
+        root=root,
+        stage_id="stage-02-layer-a-diagnostic-ir",
+        case_name="self-test-a9-science-source",
+        raw_input_path=DEFAULT_INPUT,
+        input_text="/daee-epistemics refute secularism",
+        input_digest="0" * 64,
+        skill_hash="1" * 64,
+        previous_stages=[
+            {
+                "id": "stage-01-intake",
+                "status": "pass",
+                "input_digest": "0" * 64,
+            }
+        ],
+    )
+    for invariant in (
+        "do not attempt filesystem reads",
+        "do not return `status=fail`",
+        "`skill/SKILL.md` is unavailable as a readable path",
+        "`skill/SKILL.md` is unavailable as a readable file",
+    ):
+        if invariant not in stage02_prompt:
+            raise HarnessError(f"Self-test Stage 02 prompt missing no-filesystem-read invariant {invariant!r}")
     run_dir = root / ".daee" / "validation" / f"staged-current-skill-harness-self-test-{uuid.uuid4().hex}"
     stages_dir = run_dir / "stages"
     stages_dir.mkdir(parents=True, exist_ok=True)
@@ -9693,6 +9779,38 @@ def run_self_test(root: Path) -> int:
         for edge in two_stop_stage05.get("dependency_graph_edges", [])
     ):
         raise HarnessError("Self-test failed to record held_burden_activation edge for intermediate STOP")
+    string_edges = stage05_dependency_edges(
+        {"dependency_graph_edges": ["B1 -> B2", "¹B → ²B"]}
+    )
+    if not any(edge == {"from": "B1", "to": "B2", "type": "held_burden_activation"} for edge in string_edges):
+        raise HarnessError("Self-test failed to parse Stage 05 string dependency graph edge")
+    held_gradient_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "landed"},
+            "dependency_graph_edges": ["B1 -> B2"],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after either terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [
+                self_test_reread_entry(
+                    "B1",
+                    next_burden_id="B2",
+                    route_gradient="plain-gradient keeps route pressure after R(H,Δ)",
+                ),
+                self_test_reread_entry("B2"),
+            ],
+        },
+    )
+    held_gradient = str(held_gradient_stage05["per_burden_reread"][0].get("route_gradient") or "")
+    if "already-held B2 from B_LA" not in held_gradient:
+        raise HarnessError("Self-test failed to add held-route machine identity to visible Stage 05 gradient")
+    if not ((held_gradient_stage05.get("normalization") or {}).get("held_route_gradient_identity")):
+        raise HarnessError("Self-test failed to record Stage 05 held route-gradient identity normalization")
     if "no_new_resultant_proof" in continuation_entries["B2"]:
         raise HarnessError("Self-test failed to strip wrongly nested per-burden no_new_resultant_proof")
     if not str(continuation_entries["B2"].get("reread") or "").startswith("R(H,Δ):"):
