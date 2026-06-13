@@ -646,7 +646,7 @@ def v10_operation_performed(combined: str) -> bool:
     """Accept V10 only when provenance/content/authority are positively worked."""
     for match in V10_ACTION_RE.finditer(combined):
         prefix = combined[max(0, match.start() - 32) : match.start() + 96]
-        window = combined[match.start() : match.start() + 480]
+        window = combined[match.start() : match.start() + 900]
         if V10_NEGATED_ACTION_RE.search(prefix) or V10_NEGATED_ACTION_RE.search(window[:180]):
             continue
         if (

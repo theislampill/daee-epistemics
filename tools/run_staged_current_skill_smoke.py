@@ -5856,9 +5856,9 @@ Stage07 checker-owned field_witness/NAR clone-state contract:
 Do not include JSON-only stage scratch as the public answer.
 Do not include commentary about this harness.
 Do not build or claim verifier sidecars, collapse certificates, Grapher output,
-B.5 projection sidecars, retained promotion, package/provenance, guaranteed
-uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or
-ActiveGraph proof.
+B.5 projection sidecars, retained promotion, package operations or provenance
+claims, guaranteed uptake, broad model behavior, broad A/B/C/D closure,
+Graphify proof, or ActiveGraph proof.
 """
 
 
@@ -6109,7 +6109,7 @@ def release_section_prompt(
             "`Held/scoped/reopenable remainder: ...`. "
             "The remainder line must name any generated or unresolved B_MRP pressure that remains held/scoped/reopenable. "
             "Do not include Closing Formulation here. "
-            "Do not claim guaranteed uptake, package/provenance, sidecar proof, retained promotion, "
+            "Do not claim guaranteed uptake, package operations or provenance claims, sidecar proof, retained promotion, "
             "broad model behavior, or broad A/B/C/D closure."
         ),
         "closing_formulation": (
@@ -6119,7 +6119,7 @@ def release_section_prompt(
             "It must include explicit high-mass slots for "
             "Established failure, Restored criterion/orientation, and Scoped boundary or Reopen boundary. "
             "Use these exact subsection labels: `### Established failure`, `### Restored criterion/orientation`, and either `### Scoped boundary` or `### Reopen boundary`. "
-            "Do not claim guaranteed uptake, package/provenance, sidecar proof, retained promotion, "
+            "Do not claim guaranteed uptake, package operations or provenance claims, sidecar proof, retained promotion, "
             "broad model behavior, or broad A/B/C/D closure."
         ),
     }
@@ -6180,9 +6180,9 @@ Public interface boundary:
 - Do not include private planning, self-talk, scratch analysis, "final answer only"
   reminders, checklist prose, or notes about what you need to write.
 - Do not build or claim verifier sidecars, collapse certificates, Grapher output,
-  B.5 projection sidecars, retained promotion, package/provenance, guaranteed
-  uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or
-  ActiveGraph proof.
+  B.5 projection sidecars, retained promotion, package operations or provenance
+  claims, guaranteed uptake, broad model behavior, broad A/B/C/D closure,
+  Graphify proof, or ActiveGraph proof.
 - ACT fence syntax is global across the assembled public output: outside
   `layer_b_act` sections, do not emit any line beginning with `⟦ACT`. Inside
   `layer_b_act`, every visible `⟦ACT ...⟧` row must be copied exactly from the
@@ -6289,7 +6289,7 @@ Expansion contract:
 - Do not repeat the whole section.
 - Do not contradict or replace existing text.
 - Do not include JSON or code fences unless the section role itself requires JSON and the added text is valid for that role.
-- Do not claim verifier sidecars, retained promotion, package/provenance, guaranteed uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or ActiveGraph proof.
+- Do not claim verifier sidecars, retained promotion, package operations or provenance claims, guaranteed uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or ActiveGraph proof.
 - Do not mention this harness, expansion loop, byte budget, manifest, or compiler.
 - Do not include private planning, self-talk, scratch analysis, "final answer only"
   reminders, checklist prose, or notes about what you need to write.
@@ -11793,6 +11793,39 @@ def run_self_test(root: Path) -> int:
         section_min_bytes=1024,
         assigned_body_refs=None,
     )
+    stage07_full_prompt = release_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+    )
+    stage07_expansion_prompt = release_section_expansion_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        section_id="restorative-response",
+        section_role="restorative_response",
+        section_min_bytes=1024,
+        current_bytes=512,
+        expansion_round=1,
+        max_rounds=1,
+        assigned_body_refs=None,
+        existing_text="Restorative Response\n\nHeld/scoped/reopenable remainder: none.\n",
+    )
+    for label, prompt in {
+        "stage07_full": stage07_full_prompt,
+        "stage07_v10": stage07_v10_prompt,
+        "stage07_restorative": stage07_restorative_prompt,
+        "stage07_closing": stage07_closing_prompt,
+        "stage07_expansion": stage07_expansion_prompt,
+    }.items():
+        if "package/provenance" in prompt:
+            raise HarnessError(f"Self-test Stage 07 prompt leaked package/provenance shorthand: {label}")
     for required in (
         "Begin with the exact public role heading `Closing Formulation`",
         "Emit that heading exactly once as the first line; do not repeat `Closing Formulation`",
