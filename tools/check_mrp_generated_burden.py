@@ -1496,6 +1496,18 @@ M9_ARABIC_LEXICAL_BACKING_RE = re.compile(
     r"(?is)\b(?:al[- ]wateen|al[- ]abhar|Qur'?anic|hadith|Arabic|lexical|"
     r"translation|referent|semantic|sense|identity|overlap|dictionary)\b"
 )
+M7_DEFINITION_ANCHOR_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*definition[-_]anchor\.?\s*$")
+M7_DEFINITION_ANCHOR_BACKING_RE = re.compile(
+    r"(?is)\b(?:definition|term(?:s)?|meaning|semantic|predicate|word(?:s)?)\b"
+    r".{0,180}\b(?:anchor(?:ed|s)?|fix(?:ed|es)?|bound(?:ed|s)?|stabili[sz](?:ed|es)?|"
+    r"no longer|semantic drift)\b"
+)
+P7_CLAIM_BOUNDARY_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*claim[_-]boundary\.?\s*$")
+SOURCE_LINEAGE_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*source[-_]lineage\.?\s*$")
+SOURCE_LINEAGE_BACKING_RE = re.compile(
+    r"(?is)\b(?:source lineage|source priority|quotation chain|quotation order|"
+    r"evidential dependency|inherited claim|source chain)\b"
+)
 
 
 def family_compact_target_backed(
@@ -1506,6 +1518,16 @@ def family_compact_target_backed(
 ) -> bool:
     family = strict_owner_family(owner)
     payload = " ".join((operation_text, operation_scope))
+    if family == "M7" and M7_DEFINITION_ANCHOR_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and M7_DEFINITION_ANCHOR_BACKING_RE.search(payload)
+        )
+    if family == "P7" and P7_CLAIM_BOUNDARY_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and all(pattern.search(payload) for pattern in (P7_STOP_SCOPE_RE, P7_REOPEN_RE, P7_HELD_ROUTE_RE))
+        )
     if family == "M8" and M8_CHRONOLOGY_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
         return bool(
             owner_specific_operation_performed(owner, payload)
@@ -1516,6 +1538,11 @@ def family_compact_target_backed(
             target_word_contact(target, operation_text)
             and owner_specific_operation_performed(owner, payload)
             and M9_ARABIC_LEXICAL_BACKING_RE.search(payload)
+        )
+    if family == "SOURCE" and SOURCE_LINEAGE_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and SOURCE_LINEAGE_BACKING_RE.search(payload)
         )
     return False
 

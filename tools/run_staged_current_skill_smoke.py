@@ -1273,11 +1273,79 @@ def canonicalize_stage03_owner_route_operation(
     }
 
 
+def controlled_detail_delta_value(owner: str, value: Any) -> bool:
+    if isinstance(value, str):
+        return not delta_result_vocabulary_errors("owner_route_details.delta_result", owner, value)
+    if isinstance(value, list) and value:
+        return all(
+            isinstance(item, str)
+            and item.strip()
+            and not delta_result_vocabulary_errors("owner_route_details.delta_result", owner, item)
+            for item in value
+        )
+    return False
+
+
+def detail_backed_stage03_owner_route_family_hint(
+    route: dict[str, Any],
+    details: list[dict[str, Any]],
+) -> tuple[dict[str, Any], dict[str, str] | None]:
+    canonical = dict(route)
+    raw_owner = non_empty_string(canonical.get("owner_id") or canonical.get("owner"))
+    operation = non_empty_string(canonical.get("operation") or canonical.get("owner_operation"))
+    burden_id = non_empty_string(canonical.get("burden_id") or canonical.get("target"))
+    if raw_owner is None or operation is None or burden_id is None:
+        return canonical, None
+    if canonical_delta_owner(raw_owner):
+        return canonical, None
+    if non_empty_string(canonical.get("owner_family") or canonical.get("classification_family")) is not None:
+        return canonical, None
+    for detail in details:
+        detail_burden = non_empty_string(detail.get("burden_id") or detail.get("target"))
+        detail_owner = non_empty_string(detail.get("owner_id") or detail.get("owner"))
+        detail_operation = non_empty_string(detail.get("operation") or detail.get("owner_operation"))
+        detail_family = non_empty_string(detail.get("owner_family") or detail.get("classification_family"))
+        if detail_burden != burden_id or detail_operation != operation or detail_family is None:
+            continue
+        if detail_owner is not None and detail_owner not in {raw_owner, operation}:
+            continue
+        candidate = dict(canonical)
+        candidate["owner_family"] = detail_family
+        execution_owner = route_owner_family_hint_execution_owner(candidate)
+        if not execution_owner:
+            continue
+        for key in (
+            "delta_result",
+            "delta_result_floor",
+            "delta_result_vocabulary",
+            "allowed_delta_results",
+            "delta_results",
+        ):
+            if (
+                key in detail
+                and key not in candidate
+                and controlled_detail_delta_value(execution_owner, detail[key])
+            ):
+                candidate[key] = detail[key]
+        return candidate, {
+            "burden_id": burden_id,
+            "raw_owner_id": raw_owner,
+            "owner_family": detail_family,
+            "canonical_owner_id": execution_owner,
+            "operation": operation,
+            "source": "owner_route_details",
+        }
+    return canonical, None
+
+
 def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
     routes = stage.get("owner_routes")
     if isinstance(routes, list) and routes and all(isinstance(item, dict) for item in routes):
         canonical: list[dict[str, Any]] = []
         details: list[dict[str, Any]] = []
+        incoming_details = [
+            item for item in (stage.get("owner_route_details") or []) if isinstance(item, dict)
+        ]
         alias_events: list[dict[str, str]] = []
         family_hint_events: list[dict[str, str]] = []
         operation_events: list[dict[str, str]] = []
@@ -1285,6 +1353,13 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
             burden_id = non_empty_string(route.get("burden_id"))
             owner_id = non_empty_string(route.get("owner_id"))
             if burden_id is not None and owner_id is not None:
+                canonical_row, detail_hint_event = detail_backed_stage03_owner_route_family_hint(
+                    route,
+                    incoming_details,
+                )
+                if detail_hint_event is not None:
+                    family_hint_events.append(detail_hint_event)
+                    route = canonical_row
                 canonical_row, family_hint_event = canonicalize_stage03_owner_route_family_hint(route)
                 if family_hint_event is not None:
                     family_hint_events.append(family_hint_event)
@@ -7164,6 +7239,78 @@ def run_self_test(root: Path) -> int:
     ):
         if invariant not in stage02_prompt:
             raise HarnessError(f"Self-test Stage 02 prompt missing no-filesystem-read invariant {invariant!r}")
+    detail_backed_stage03 = {
+        "id": "stage-03-routing-owner-gate",
+        "status": "pass",
+        "route_targets": ["B1", "B2", "B3", "B4", "B5", "B6"],
+        "owner_routes": [
+            {"burden_id": "B1", "owner_id": "definition-anchor", "operation": "definition-anchor"},
+            {"burden_id": "B2", "owner_id": "scope-boundary", "operation": "scope-boundary"},
+            {"burden_id": "B3", "owner_id": "authority-order-repair", "operation": "authority-order-repair"},
+            {"burden_id": "B4", "owner_id": "self-grounding-test", "operation": "self-grounding-test"},
+            {"burden_id": "B5", "owner_id": "dependency-trace", "operation": "dependency-trace"},
+            {"burden_id": "B6", "owner_id": "consequence-trace", "operation": "consequence-trace"},
+        ],
+        "owner_route_details": [
+            {
+                "burden_id": "B1",
+                "owner_id": "definition-anchor",
+                "owner_family": "M7",
+                "operation": "definition-anchor",
+                "delta_result_floor": "definition-anchored",
+            },
+            {
+                "burden_id": "B2",
+                "owner_id": "scope-boundary",
+                "owner_family": "P7",
+                "operation": "scope-boundary",
+                "delta_result_floor": "scope-bounded",
+            },
+            {
+                "burden_id": "B3",
+                "owner_id": "authority-order-repair",
+                "owner_family": "SOURCE",
+                "operation": "authority-order-repair",
+                "delta_result_floor": "authority-order-repaired",
+            },
+            {
+                "burden_id": "B4",
+                "owner_id": "self-grounding-test",
+                "owner_family": "M1",
+                "operation": "self-grounding-test",
+                "delta_result_floor": "self-authorizing-standard-invalidated",
+            },
+            {
+                "burden_id": "B5",
+                "owner_id": "dependency-trace",
+                "owner_family": "M8",
+                "operation": "dependency-trace",
+                "delta_result_floor": "dependency-exposed",
+            },
+            {
+                "burden_id": "B6",
+                "owner_id": "consequence-trace",
+                "owner_family": "M8",
+                "operation": "consequence-trace",
+                "delta_result_floor": "consequence-traced",
+            },
+        ],
+    }
+    normalize_stage03_owner_routes(detail_backed_stage03)
+    detail_backed_owners = [
+        row.get("owner_id") for row in detail_backed_stage03.get("owner_routes", [])
+    ]
+    if detail_backed_owners != ["M7", "P7", "authority-order-repair", "M1", "M8", "M8"]:
+        raise HarnessError(
+            "Self-test Stage03 detail-backed operation-token owner rows did not canonicalize "
+            f"to callable owner ids: {detail_backed_owners!r}"
+        )
+    p7_detail_backed_route = detail_backed_stage03["owner_routes"][1]
+    if p7_detail_backed_route.get("delta_result_floor") == "scope-bounded":
+        raise HarnessError("Self-test Stage03 preserved invalid detail-only P7 delta_result_floor")
+    m8_dependency_route = detail_backed_stage03["owner_routes"][4]
+    if m8_dependency_route.get("delta_result_floor") != "dependency-exposed":
+        raise HarnessError("Self-test Stage03 failed to preserve valid M8 dependency delta_result_floor")
     run_dir = root / ".daee" / "validation" / f"staged-current-skill-harness-self-test-{uuid.uuid4().hex}"
     stages_dir = run_dir / "stages"
     stages_dir.mkdir(parents=True, exist_ok=True)
