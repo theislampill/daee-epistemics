@@ -1560,6 +1560,9 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
         contribution = contribution_match.group("body").strip()
     if not (target and operation and result and contribution):
         return False
+    owner = submove_owner(block)
+    if owner_family(owner) == "PROOF_METHOD" and proof_method_carrier_transition_visible(block):
+        return True
     if not target_pressure_identifiable(target):
         return False
     if not contribution_explains_land(contribution):
@@ -1570,9 +1573,6 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
     combined = " ".join((target, operation_text, result, contribution))
     if not operation_body and not low_mass_license:
         return False
-    owner = submove_owner(block)
-    if owner_family(owner) == "PROOF_METHOD" and proof_method_carrier_transition_visible(block):
-        return True
     family_pressure_action = do_second_loop_pressure_action_backed(
         owner,
         target,

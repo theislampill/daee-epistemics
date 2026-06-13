@@ -154,7 +154,9 @@ STAGE04_OPERATION_ALIAS_MAP = {
 STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("proof-method-audit", "proof-route-status-audit", "H"): "τ",
     ("do-second-loop", "coercive-guidance-demand", "τ"): "κ",
+    ("do-second-loop", "fitrah-ayat-baseline", "N"): "ξ",
     ("do-second-loop", "punishment-proportionality-accountability", "m"): "♥",
+    ("V2", "reconstituting-reason", "m"): "ξ",
 }
 
 
@@ -8419,9 +8421,9 @@ def run_self_test(root: Path) -> int:
         {
             "id": "stage-04-burden-execution-act",
             "status": "pass",
-            "act_targets": ["B1", "B2"],
-            "act_burdens": ["B1", "B2"],
-            "act_body_refs": ["¹B₁", "²B₁"],
+            "act_targets": ["B1", "B2", "B3"],
+            "act_burdens": ["B1", "B2", "B3"],
+            "act_body_refs": ["¹B₁", "²B₁", "³B₁"],
             "act_rows": [
                 (
                     "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
@@ -8432,7 +8434,12 @@ def run_self_test(root: Path) -> int:
                     "⟦ACT ²B₁[do-second-loop.coercive-guidance-demand] :: "
                     "π=coercive-guidance-demand :: body_ref=²B₁ :: "
                     "Δ=Δ²B:coercive-guidance-demand-bounded :: Land(²B)+⟧"
-                )
+                ),
+                (
+                    "⟦ACT ³B₁[do-second-loop.fitrah-ayat-baseline] :: "
+                    "π=fitrah-ayat-baseline :: body_ref=³B₁ :: "
+                    "Δ=Δ³B:fitrah-ayat-baseline-established :: Land(³B)+⟧"
+                ),
             ],
             "act_row_details": [
                 {
@@ -8460,7 +8467,20 @@ def run_self_test(root: Path) -> int:
                     "operation": "coercive-guidance-demand",
                     "register_axis": "τ",
                     "delta_result": "coercive-guidance-demand-bounded",
-                }
+                },
+                {
+                    "act_row": (
+                        "⟦ACT ³B₁[do-second-loop.fitrah-ayat-baseline] :: "
+                        "π=fitrah-ayat-baseline :: body_ref=³B₁ :: "
+                        "Δ=Δ³B:fitrah-ayat-baseline-established :: Land(³B)+⟧"
+                    ),
+                    "body_ref": "³B₁",
+                    "burden_id": "B3",
+                    "owner_id": "do-second-loop",
+                    "operation": "fitrah-ayat-baseline",
+                    "register_axis": "N",
+                    "delta_result": "fitrah-ayat-baseline-established",
+                },
             ],
         },
     )
@@ -8468,6 +8488,8 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to canonicalize do-second-loop punishment register_axis fallback")
     if do_second_loop_axis_stage04["act_row_details"][1].get("register_axis") != "κ":
         raise HarnessError("Self-test failed to canonicalize do-second-loop guidance register_axis fallback")
+    if do_second_loop_axis_stage04["act_row_details"][2].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to canonicalize do-second-loop fitrah/ayat register_axis fallback")
     validate_incremental_handoffs(
         [
             {
@@ -8947,6 +8969,24 @@ def run_self_test(root: Path) -> int:
             ),
         },
     )
+    v2_reason_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [v2_pattern_rows[0]],
+            "act_row_details": self_test_act_row_details(
+                [v2_pattern_rows[0]],
+                {
+                    "¹B₁": "m",
+                },
+            ),
+        },
+    )
+    if v2_reason_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to canonicalize V2 reconstituting-reason register_axis fallback")
     selected_model_controlled_rows = [
         "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: π=selected-model-person-nature-transfer :: body_ref=¹B₁ :: Δ=Δ¹B:trinitarian-model-identified :: Land(¹B)+⟧",
         "⟦ACT ¹B₂[M9.predication-repair] :: π=selected-only-true-god-predicate-transfer :: body_ref=¹B₂ :: Δ=Δ¹B:person-nature-transfer-blocked :: Land(¹B)+⟧",
