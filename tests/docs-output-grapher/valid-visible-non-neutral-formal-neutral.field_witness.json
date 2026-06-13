@@ -1,0 +1,37 @@
+{
+  "nodes": ["B1"],
+  "edges": [],
+  "ledger": {
+    "B_LA": ["B1"],
+    "B_MRP": [],
+    "B_total": ["B1"]
+  },
+  "mrp_resultants": [
+    {"source": "B1", "type": "no_new_resultant", "finding": "stable", "graph": "none", "route": "STOP"}
+  ],
+  "formal_reread_states": [
+    {
+      "source_burden": "B1",
+      "prior_land": "Land(B1): dependency pressure exposed.",
+      "delta": "Delta B1: dependency-exposed",
+      "reread": "R(H,Delta)",
+      "route_gradient": "STOP after B1; no new pressure remains",
+      "divergence_state": "neutral",
+      "curl_state": "null",
+      "route_result_type": "no_new_resultant",
+      "mrp_resultant": "stable -> no new graph edge; STOP",
+      "graph_delta": "none",
+      "preemption_basis": "none",
+      "route": "STOP"
+    }
+  ],
+  "terminal_states": {
+    "B1": "landed"
+  },
+  "coverage_proof": {
+    "initial_burden_set": ["B1"],
+    "terminal_states": {"B1": "landed"},
+    "dependency_graph": {"nodes": ["B1"], "edges": [], "roots": ["B1"], "acyclic": true},
+    "coverage_complete": true
+  }
+}

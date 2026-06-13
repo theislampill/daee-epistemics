@@ -892,7 +892,7 @@
       const divergenceDisplayProjection=(
         terminalStopProjection&&
         stateDivergence==='neutral'&&
-        (visibleDivergence==='settled'||visibleDivergence==='bounded')
+        (visibleDivergence==='settled'||visibleDivergence==='bounded'||visibleDivergence==='non-neutral')
       );
       const curlDisplayProjection=(
         terminalStopProjection&&

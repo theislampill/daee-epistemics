@@ -1012,7 +1012,7 @@ def compare_formal_reread_states(
         divergence_display_projection = (
             terminal_stop_projection
             and state_divergence == "neutral"
-            and visible_divergence in {"settled", "bounded"}
+            and visible_divergence in {"settled", "bounded", "non-neutral"}
         )
         curl_display_projection = (
             terminal_stop_projection

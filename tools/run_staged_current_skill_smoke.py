@@ -158,7 +158,9 @@ STAGE04_PROOF_FAMILY_CLASSIFICATION_CARRIER_RE = re.compile(
 STAGE04_PROOF_FAMILY_LABEL_RE = re.compile(r"(?i)\bproof[- ]family[- ]label\b")
 STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("proof-method-audit", "proof-overreach-audit", "H"): "τ",
+    ("proof-method-audit", "proof-overreach-audit", "m"): "τ",
     ("proof-method-audit", "proof-route-status-audit", "H"): "τ",
+    ("M3", "orphaned-intuition", "m"): "♥",
     ("do-second-loop", "accountability-hujjah-compression", "H"): "κ",
     ("do-second-loop", "coercive-guidance-demand", "H"): "κ",
     ("do-second-loop", "coercive-guidance-demand", "τ"): "κ",
@@ -9105,6 +9107,24 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test Stage 04 guidance laundered an M9 delta/result label into operation space")
     if "SOURCE operations: authority-order-repair, sort, source-order, source-order-repair, status" in selected_model_delta_guidance:
         raise HarnessError("Self-test Stage 04 guidance exposed SOURCE status as a callable operation")
+    m3_orphaned_row = (
+        "⟦ACT ¹B₁[M3.orphaned-intuition] :: "
+        "π=moral-recognition-grounding-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:normativity-restored-to-ground :: Land(¹B)+⟧"
+    )
+    m3_orphaned_m_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [m3_orphaned_row],
+            "act_row_details": self_test_act_row_details([m3_orphaned_row], {"¹B₁": "m"}),
+        },
+    )
+    if m3_orphaned_m_stage04["act_row_details"][0].get("register_axis") != "♥":
+        raise HarnessError("Self-test failed to canonicalize M3 orphaned-intuition m fallback to heart axis")
     do_second_loop_guidance = stage04_delta_vocabulary_guidance(
         [
             {
@@ -9442,6 +9462,19 @@ def run_self_test(root: Path) -> int:
     )
     if proof_overreach_h_stage04["act_row_details"][0].get("register_axis") != "τ":
         raise HarnessError("Self-test failed to canonicalize proof-overreach H fallback to tribunal axis")
+    proof_overreach_m_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_overreach_tau_row],
+            "act_row_details": self_test_act_row_details([proof_overreach_tau_row], {"¹B₁": "m"}),
+        },
+    )
+    if proof_overreach_m_stage04["act_row_details"][0].get("register_axis") != "τ":
+        raise HarnessError("Self-test failed to canonicalize proof-overreach m fallback to tribunal axis")
     invalid_proof_method_operation_row = (
         "⟦ACT ¹B₁[proof-method-audit.proof-stack-routed] :: "
         "π=proof-family-carrier-pressure :: "

@@ -1536,7 +1536,9 @@ def land_gate_burdens(text: str) -> list[str]:
     ]
 
 
-PER_BURDEN_REREAD_NORMALIZE_RE = re.compile(r"R\(H,\s*Delta\)")
+PER_BURDEN_REREAD_NORMALIZE_RE = re.compile(
+    r"R\(H,\s*Delta(?:(?:B[1-9][0-9]*)|\(B[1-9][0-9]*\)|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)?\)"
+)
 
 
 def per_burden_block_field_parity_errors(label: str, block: Any, entry: dict[str, Any]) -> list[str]:
@@ -3495,6 +3497,19 @@ def run_self_test(root: Path) -> int:
     if "¹B-⁴B" not in public_alias_block or "⁵B" not in public_alias_block:
         raise AssemblyError("self-test MRP renderer failed to publicize burden range prose")
     single_entry = [self_test_per_burden_entry("B1")]
+    burden_qualified_delta_entry = self_test_per_burden_entry("B1")
+    burden_qualified_delta_entry["reread"] = (
+        "R(H,DeltaB1): held routes rechecked: none; live remainder: none; release/next: STOP"
+    )
+    burden_qualified_delta_errors = visible_block_parity_errors(
+        parity_text([burden_qualified_delta_entry]),
+        [burden_qualified_delta_entry],
+    )
+    if burden_qualified_delta_errors:
+        raise AssemblyError(
+            "self-test parity rejected burden-qualified Delta reread projection: "
+            + "; ".join(burden_qualified_delta_errors)
+        )
 
     def parity_must_fail(name: str, text: str, entries: list[dict[str, Any]], needle: str) -> None:
         found = visible_block_parity_errors(text, entries)
