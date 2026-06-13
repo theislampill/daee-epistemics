@@ -3022,6 +3022,7 @@ def stage07_formal_divergence_state(entry: dict[str, Any], route_type: str, rout
     if (route_type in {"no_new_resultant", "none", "stable"} or route.upper() == "STOP") and head in {
         "settled",
         "bounded",
+        "non-neutral",
     }:
         return "neutral"
     return head
@@ -11993,6 +11994,13 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test Stage 07 STOP formal reread state did not normalize settled/bounded divergence to neutral")
     if "Delta(B1)" not in str(stop_display_state.get("delta")):
         raise HarnessError("Self-test Stage 07 STOP formal reread state did not add machine Delta(B1) identity")
+    non_neutral_stop_entry = self_test_reread_entry(
+        "B1",
+        divergence="∇·B: non-neutral / visible public wording names the exposed framework before terminal STOP",
+    )
+    non_neutral_stop_state = stage07_formal_reread_states([non_neutral_stop_entry], {"B1": "landed"})[0]
+    if non_neutral_stop_state.get("divergence_state") != "neutral":
+        raise HarnessError("Self-test Stage 07 STOP formal reread state did not normalize non-neutral divergence to neutral")
     resolved_stop_entry = self_test_reread_entry(
         "B1",
         curl="∇×κ: resolved / visible public wording says the loop is resolved",

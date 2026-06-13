@@ -427,12 +427,22 @@ NEGATED_UNRELEASED_RE = re.compile(
     r"(?:remaining\s+|identified\s+|post-Land\s+|input-anchored\s+)*"
     r"(?:(?:burden(?:s)?|route(?:s)?|pressure)?\s*(?:remain(?:s)?\s+)?unreleased|live|remaining live)\b"
 )
+SCOPED_NON_ROUTE_OUTSIDE_RE = re.compile(
+    r"(?i)\b(?:full public (?:polemical )?closure|downstream public refutation)\s+"
+    r"remains\s+(?:out of scope|outside\b.{0,80}\bartifact\b)"
+)
+EXPLICIT_UNRELEASED_RE = re.compile(
+    r"(?i)\b(?:identified but not released|not released as a new burden|unreleased|held broad routes remain|"
+    r"broad .* routes remain unreleased)\b"
+)
 
 
 def has_unreleased_route(body: str) -> bool:
     if not UNRELEASED_ROUTE_RE.search(body):
         return False
     if re.search(r"(?i)\bno\b.{0,80}\b(?:remain(?:s|ing)?\s+)?unreleased\b", body):
+        return False
+    if SCOPED_NON_ROUTE_OUTSIDE_RE.search(body) and not EXPLICIT_UNRELEASED_RE.search(body):
         return False
     return not NEGATED_UNRELEASED_RE.search(body)
 

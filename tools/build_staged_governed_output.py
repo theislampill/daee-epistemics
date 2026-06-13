@@ -774,7 +774,8 @@ def canonicalize_public_submove_headings(text: str) -> tuple[str, dict[str, Any]
 
 def canonicalize_public_graph_alias_line(line: str) -> str:
     updated = line
-    if re.search(r"(?i)\b(?:no|not|without|absent)\b", updated):
+    protected_machine_row = "body_ref=" in updated or "⟦ACT " in updated
+    if not protected_machine_row and re.search(r"(?i)\b(?:no|not|without|absent)\b", updated):
         updated = re.sub(
             r"\bB([5-9][0-9]*)\b",
             lambda match: f"additional burden {match.group(1)}",
@@ -2902,6 +2903,14 @@ def run_self_test(root: Path) -> int:
             raise AssemblyError(f"self-test public graph alias canonicalization omitted {required}")
     if '"B_LA": ["B1"]' not in graph_alias_output:
         raise AssemblyError("self-test public graph alias canonicalization changed field_witness JSON machine IDs")
+    protected_act_alias = canonicalize_public_graph_alias_line(
+        "⟦ACT B5_1[M7.definition-anchor] :: π=logic shifts without anchored predicates :: "
+        "body_ref=B5_1 :: Δ=ΔB5:definition-anchored :: Land(B5)+⟧"
+    )
+    if "Land(additional burden 5)" in protected_act_alias or "body_ref=⁵B" in protected_act_alias:
+        raise AssemblyError("self-test public graph alias canonicalization rewrote a machine ACT Land/body_ref row")
+    if "Land(⁵B)+" not in protected_act_alias or "body_ref=B5_1" not in protected_act_alias:
+        raise AssemblyError("self-test public graph alias canonicalization failed to preserve ACT Land/body_ref identity")
     graph_alias_scaffold = graph_alias_record.get("canonical_scaffold")
     graph_alias_events = (
         graph_alias_scaffold.get("events", [])
