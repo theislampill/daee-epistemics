@@ -151,6 +151,7 @@ STAGE04_OPERATION_ALIAS_MAP = {
     ("P7", "boundary"): "scope-boundary",
 }
 STAGE04_REGISTER_AXIS_FALLBACKS = {
+    ("proof-method-audit", "proof-route-status-audit", "H"): "τ",
     ("do-second-loop", "coercive-guidance-demand", "τ"): "κ",
     ("do-second-loop", "punishment-proportionality-accountability", "m"): "♥",
 }
@@ -9089,6 +9090,19 @@ def run_self_test(root: Path) -> int:
     )
     if proof_route_status_tau_stage04["act_row_details"][0].get("register_axis") != "τ":
         raise HarnessError("Self-test failed to accept proof-route-status tribunal/burden-function register_axis")
+    proof_route_status_h_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_route_status_tau_row],
+            "act_row_details": self_test_act_row_details([proof_route_status_tau_row], {"¹B₁": "H"}),
+        },
+    )
+    if proof_route_status_h_stage04["act_row_details"][0].get("register_axis") != "τ":
+        raise HarnessError("Self-test failed to canonicalize proof-route-status H fallback to tribunal axis")
     invalid_proof_method_tau_row = (
         "⟦ACT ¹B₁[proof-method-audit.proof-family-classification] :: "
         "π=proof-family-label :: "
