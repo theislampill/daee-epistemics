@@ -127,7 +127,7 @@ PUBLIC_MACHINE_PAYLOAD_LINE_RE = re.compile(
 STAGE05_TERMINAL_BURDEN_ID_RE = re.compile(r"^B[1-9][0-9]*$")
 BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*)?$")
 ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
-STAGE05_REREAD_PREFIX_RE = re.compile(r"^R\(H,\s*(?:Delta(?:\([^)]*\))?|Δ[^)]*)\)\s*:\s*")
+STAGE05_REREAD_PREFIX_RE = re.compile(r"^R\(H,\s*(?:Delta(?:\([^)]*\))?|Δ[^)]*)\)\s*:?\s*")
 CONTROLLED_STAGE05_TERMINAL_STATES = {
     "landed",
     "cleared",
@@ -5360,8 +5360,6 @@ def normalize_stage05_initial_burden_continuations(
             continue
         if not stage05_closed_terminal_state(terminal_states.get(source)):
             continue
-        if not stage05_closed_terminal_state(terminal_states.get(target)):
-            continue
         if (
             str(entry.get("finding") or "") != "stable"
             or str(entry.get("route_result_type") or "") != "no_new_resultant"
@@ -10099,6 +10097,31 @@ def run_self_test(root: Path) -> int:
     terminal_basis = terminal_detail.get("basis")
     if not isinstance(terminal_basis, list) or len(terminal_basis) != 2:
         raise HarnessError("Self-test failed to preserve Stage 05 terminal_state detail list basis")
+    complex_delta_reread_entry = self_test_reread_entry(
+        "B1",
+        reread=(
+            "R(H,ΔB1:source-order-repaired+ΔB1:source-function-bounded) "
+            "held routes rechecked: none; live remainder: no source burden remains; "
+            "release/next: STOP."
+        ),
+    )
+    complex_delta_reread_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after the terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [complex_delta_reread_entry],
+        },
+    )
+    if not str(complex_delta_reread_stage05["per_burden_reread"][0].get("reread") or "").startswith("R(H,Δ):"):
+        raise HarnessError("Self-test failed to canonicalize complex burden-delta R(H,Δ...) reread invocation")
     two_burden_act_rows = [
         canonical_act_row,
         (
@@ -10218,6 +10241,31 @@ def run_self_test(root: Path) -> int:
     rendered_continuation = staged_output.render_mrp_block(b1_continuation)
     if "Matched owner/TTP route: [M8.consequence-trace]" not in rendered_continuation:
         raise HarnessError("Self-test failed to render matched owner route in normalized MRP block")
+    held_with_reason_target_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "held-with-reason"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after either terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [
+                self_test_reread_entry("B1"),
+                self_test_reread_entry("B2"),
+            ],
+        },
+    )
+    validate_incremental_handoffs([two_burden_stage04, held_with_reason_target_stage05])
+    held_with_reason_entries = {
+        str(entry["burden_id"]): entry
+        for entry in held_with_reason_target_stage05["per_burden_reread"]
+    }
+    if held_with_reason_entries["B1"].get("route_result_type") != "held_burden_activation":
+        raise HarnessError("Self-test failed to normalize intermediate STOP before held-with-reason burden")
     two_held_stage05 = normalized_stage(
         "stage-05-mrp-reread-terminal-state",
         {
