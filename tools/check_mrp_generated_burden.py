@@ -946,7 +946,7 @@ def formal_reread_state_errors(path: Path, text: str, blocks: list[MrpBlock]) ->
         visible_divergence = first_state(block.divergence)
         stop_display_projection = (
             formal_divergence == "neutral"
-            and visible_divergence in {"settled", "bounded"}
+            and visible_divergence in {"settled", "bounded", "non-neutral"}
             and (block.route_result_type == "no_new_resultant" or block.route == "STOP")
         )
         if formal_divergence != visible_divergence and not stop_display_projection:

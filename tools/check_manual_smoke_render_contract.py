@@ -156,6 +156,7 @@ OPERATION_MECHANISM_RE = re.compile(
     r"source authority|authority frame|scope gate|bounded claim|local claim|neutrality[- ]claim|total[- ]system|"
     r"whole[- ]system|exhaust|reopen|would require|unworked held route|non[- ]load[- ]bearing|"
     r"predicate|predication|category|monotheism[- ]counting|exclusive[- ]counting|"
+    r"fatal[- ]harm(?:[- ]at[- ]t1)?|lexical[- ]equivalence|chronology[- ]completion|"
     r"dependency|criterion|immunity|recoil|framework|"
     r"broader material|held material|state change|delta|consequence|entailment|"
     r"self[- ]refutation|performative contradiction|internal contradiction|semantic|referent|"
