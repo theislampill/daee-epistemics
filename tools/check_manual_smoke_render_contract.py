@@ -153,7 +153,7 @@ PLACEHOLDER_OWNER_RE = re.compile(
 )
 OPERATION_MECHANISM_RE = re.compile(
     r"(?i)\b(?:hidden premise|escape route|smuggl|burden shift|proof[- ]stack|source[- ]order|"
-    r"source authority|authority frame|scope gate|bounded claim|local claim|total[- ]system|"
+    r"source authority|authority frame|scope gate|bounded claim|local claim|neutrality[- ]claim|total[- ]system|"
     r"whole[- ]system|exhaust|reopen|would require|unworked held route|non[- ]load[- ]bearing|"
     r"predicate|predication|category|monotheism[- ]counting|exclusive[- ]counting|"
     r"dependency|criterion|immunity|recoil|framework|"
