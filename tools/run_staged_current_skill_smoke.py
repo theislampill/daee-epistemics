@@ -153,6 +153,7 @@ STAGE04_OPERATION_ALIAS_MAP = {
 }
 STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("proof-method-audit", "proof-route-status-audit", "H"): "τ",
+    ("do-second-loop", "accountability-hujjah-compression", "H"): "κ",
     ("do-second-loop", "coercive-guidance-demand", "τ"): "κ",
     ("do-second-loop", "fitrah-ayat-baseline", "N"): "ξ",
     ("do-second-loop", "punishment-proportionality-accountability", "m"): "♥",
@@ -7821,6 +7822,36 @@ def run_self_test(root: Path) -> int:
     id_alias_registers = stage02_burden_register_types(id_alias_stage02, id_alias_stage02["burden_floor"])
     if id_alias_registers.get("B3") != ["kappa"]:
         raise HarnessError("Self-test Stage 02 id alias lost B3 kappa register typing")
+    worldview_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "selected-route-worldview-register-coverage-self-test",
+            "live_registers": ["ontology", "authority"],
+            "burden_floor": ["B1", "B2"],
+            "burden_floor_details": [
+                {
+                    "id": "B1",
+                    "canonical_role": "define_target_claim",
+                    "diagnostic_note": "Secularism must be specified as a worldview or governing public reason claim before refutation can proceed.",
+                },
+                {
+                    "id": "B2",
+                    "canonical_role": "identify_authority_and_warrant",
+                    "diagnostic_note": "The live pressure concerns what source licenses authority when revelation is excluded or privatized.",
+                },
+            ],
+        },
+    )
+    worldview_coverage = stage02_register_coverage(worldview_stage02, worldview_stage02["burden_floor"])
+    if worldview_coverage.get("Omega") != ["B1"]:
+        raise HarnessError("Self-test Stage 02 worldview detail lost Omega diagnostic coverage for B1")
+    if "mu" in worldview_coverage:
+        raise HarnessError("Self-test Stage 02 worldview detail treated the word 'must' as mu coverage")
+    worldview_registers = stage02_public_live_registers(worldview_stage02, worldview_stage02["burden_floor"])
+    if worldview_registers != ["Omega", "xi"]:
+        raise HarnessError("Self-test Stage 02 worldview live registers did not normalize to Omega/xi")
     registers_alias_stage02 = normalized_stage(
         "stage-02-layer-a-diagnostic-ir",
         {
@@ -8421,9 +8452,9 @@ def run_self_test(root: Path) -> int:
         {
             "id": "stage-04-burden-execution-act",
             "status": "pass",
-            "act_targets": ["B1", "B2", "B3"],
-            "act_burdens": ["B1", "B2", "B3"],
-            "act_body_refs": ["¹B₁", "²B₁", "³B₁"],
+            "act_targets": ["B1", "B2", "B3", "B4"],
+            "act_burdens": ["B1", "B2", "B3", "B4"],
+            "act_body_refs": ["¹B₁", "²B₁", "³B₁", "⁴B₁"],
             "act_rows": [
                 (
                     "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
@@ -8439,6 +8470,11 @@ def run_self_test(root: Path) -> int:
                     "⟦ACT ³B₁[do-second-loop.fitrah-ayat-baseline] :: "
                     "π=fitrah-ayat-baseline :: body_ref=³B₁ :: "
                     "Δ=Δ³B:fitrah-ayat-baseline-established :: Land(³B)+⟧"
+                ),
+                (
+                    "⟦ACT ⁴B₁[do-second-loop.accountability-hujjah-compression] :: "
+                    "π=accountability-hujjah-compression :: body_ref=⁴B₁ :: "
+                    "Δ=Δ⁴B:accountability-hujjah-narrowed :: Land(⁴B)+⟧"
                 ),
             ],
             "act_row_details": [
@@ -8481,6 +8517,19 @@ def run_self_test(root: Path) -> int:
                     "register_axis": "N",
                     "delta_result": "fitrah-ayat-baseline-established",
                 },
+                {
+                    "act_row": (
+                        "⟦ACT ⁴B₁[do-second-loop.accountability-hujjah-compression] :: "
+                        "π=accountability-hujjah-compression :: body_ref=⁴B₁ :: "
+                        "Δ=Δ⁴B:accountability-hujjah-narrowed :: Land(⁴B)+⟧"
+                    ),
+                    "body_ref": "⁴B₁",
+                    "burden_id": "B4",
+                    "owner_id": "do-second-loop",
+                    "operation": "accountability-hujjah-compression",
+                    "register_axis": "H",
+                    "delta_result": "accountability-hujjah-narrowed",
+                },
             ],
         },
     )
@@ -8490,6 +8539,8 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to canonicalize do-second-loop guidance register_axis fallback")
     if do_second_loop_axis_stage04["act_row_details"][2].get("register_axis") != "ξ":
         raise HarnessError("Self-test failed to canonicalize do-second-loop fitrah/ayat register_axis fallback")
+    if do_second_loop_axis_stage04["act_row_details"][3].get("register_axis") != "κ":
+        raise HarnessError("Self-test failed to canonicalize do-second-loop hujjah/accountability register_axis fallback")
     validate_incremental_handoffs(
         [
             {

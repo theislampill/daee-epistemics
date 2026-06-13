@@ -93,6 +93,9 @@ REGISTER_BURDEN_KEYWORDS = {
         "omega",
         "ontolog",
         "predication",
+        "worldview",
+        "source-worldview",
+        "metaphysic",
         "predicate",
         "parsimony",
         "simplicity",
@@ -244,9 +247,21 @@ def registers_in_text(text: str) -> list[str]:
         if register not in found:
             found.append(register)
     for register, keywords in REGISTER_BURDEN_KEYWORDS.items():
-        if any(keyword in lowered for keyword in keywords) and register not in found:
+        if any(register_keyword_in_text(keyword, lowered) for keyword in keywords) and register not in found:
             found.append(register)
     return found
+
+
+def register_keyword_in_text(keyword: str, lowered_text: str) -> bool:
+    lowered_keyword = keyword.lower()
+    if re.fullmatch(r"[a-z]{1,3}", lowered_keyword):
+        return bool(
+            re.search(
+                rf"(?<![a-z0-9_-]){re.escape(lowered_keyword)}(?![a-z0-9_-])",
+                lowered_text,
+            )
+        )
+    return lowered_keyword in lowered_text
 
 
 def live_register_obligations(text: str) -> list[str]:

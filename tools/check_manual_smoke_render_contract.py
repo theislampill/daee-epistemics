@@ -166,7 +166,7 @@ OPERATION_MECHANISM_RE = re.compile(
 OPERATION_ACTION_RE = re.compile(
     r"(?i)\b(?:expose|distinguish|distinguishes|distinguished|distinguishing|block|repair|repairs|repaired|repairing|"
     r"trace|ground|test|split|splits|splitting|separate|separates|separated|separating|"
-    r"prevent|audit|apply|tests?|"
+    r"prevent|audit|apply|tests?|integrate|integrates|integrated|integrating|"
     r"identify|identification|reclassify|refuse|sequence|show why|demonstrate|bar|route|bind|isolate|"
     r"name|names|named|naming|define|anchor|anchors|anchored|anchoring|clarify|vet|reconstruct|dissolve|dissolves|dissolved|triage|prioritize|map|"
     r"type|types|typed|typing|calibrate|calibrates|calibrated|calibrating|"
