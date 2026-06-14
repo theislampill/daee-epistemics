@@ -137,7 +137,8 @@ FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ),
 ]
 TLANG_UPTAKE_NONCLAIM_RE = re.compile(
-    r"(?is)\b(?:does\s+not\s+(?:claim|imply)|not\s+(?:claim|guarantee)|no|without)\b"
+    r"(?is)\b(?:does\s+not\s+(?:claim|imply)|may\s+not\s+say|"
+    r"not\s+(?:claim|guarantee)|no|without)\b"
     r"[^.\n;]{0,180}\b(?:guarantees?\s+uptake|guaranteed\s+(?:T_lang\s+)?uptake|"
     r"interlocutor\s+uptake)\b"
 )
@@ -3500,6 +3501,27 @@ def run_self_test(root: Path) -> int:
     )
     write_json(valid_nonclaim_manifest, valid_nonclaim_payload)
     assemble_manifest(valid_nonclaim_manifest, root=root)
+    valid_may_not_say_nonclaim_dir = base_dir / "valid-guaranteed-uptake-may-not-say-nonclaim"
+    valid_may_not_say_nonclaim_manifest = manifest_for_sections(
+        valid_may_not_say_nonclaim_dir,
+        case_id="valid-guaranteed-uptake-may-not-say-nonclaim",
+        source_input="valid-guaranteed-uptake-may-not-say-nonclaim/input.md",
+        section_specs=small_sections(),
+    )
+    valid_may_not_say_nonclaim_payload = read_json(valid_may_not_say_nonclaim_manifest)
+    if not isinstance(valid_may_not_say_nonclaim_payload, dict):
+        raise AssemblyError("self-test valid may-not-say uptake nonclaim manifest payload must be an object")
+    replace_section_text(
+        valid_may_not_say_nonclaim_payload,
+        valid_may_not_say_nonclaim_dir,
+        5,
+        "Closing Formulation\n"
+        "This closes the public burden at the assertion level. It may not say: this particular "
+        "person's inward state is known, that every non-believer has identical culpability, "
+        "or that the answer guarantees uptake.\n",
+    )
+    write_json(valid_may_not_say_nonclaim_manifest, valid_may_not_say_nonclaim_payload)
+    assemble_manifest(valid_may_not_say_nonclaim_manifest, root=root)
     expect_invalid(
         root,
         base_dir,
