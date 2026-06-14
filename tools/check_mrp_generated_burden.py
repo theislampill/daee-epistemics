@@ -194,6 +194,11 @@ SOURCE_OWNED_ACT_OPERATIONS = {
             r"reason\b[^.\n]{0,120}\b(?:recogniz|instrument|tribunal|sovereign|proper rank)|"
             r"autonomous sovereign|rational faculty)\b"
         ),
+        "proof-burden-order": re.compile(
+            r"(?is)\b(?:proof[- ]burden|burden[- ]order|warrant[- ]order|"
+            r"claimant'?s? burden|must prove|stronger inference|burden is restored|"
+            r"burden remains on)\b"
+        ),
     },
     "SOURCE": {
         "authority-order-repair": re.compile(
@@ -271,6 +276,7 @@ BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
     },
     "V2": {
         "reason-role-repaired",
+        "proof-burden-order-restored",
     },
     "V6": {
         "convergence-pattern-integrated",

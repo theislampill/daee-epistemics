@@ -306,7 +306,8 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
             r"(?i)\b(?:conception of reason|role of reason|sound reason|reconstitut\w+ reason|"
             r"reason is (?:not|more than)|reason[- ]role|rational faculty|type reason|"
             r"reason as (?:access|recognition|recognizer)|epistemic role|order of discovery|"
-            r"order of reality)\b"
+            r"order of reality|proof[- ]burden|burden[- ]order|warrant[- ]order|"
+            r"claimant'?s? burden|must prove|stronger inference)\b"
         ),
     ),
     (
@@ -1203,6 +1204,14 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
     )
     if not owner_specific_operation_performed("P6", p6_probe):
         errors.append("self-test P6 rejected worldview-binding normativity operation")
+    v2_proof_burden_probe = (
+        "Operation: proof-burden-order acts on shared-salvific-necessity-proof-burden "
+        "with owner family V2. Result/state-change: proof-burden-order-restored. "
+        "State change: shared necessity no longer functions as automatic proof; the "
+        "claimant's burden is restored and the stronger inference must be proven."
+    )
+    if not owner_specific_operation_performed("V2", v2_proof_burden_probe):
+        errors.append("self-test V2 rejected proof-burden-order operation wording")
     m7_definition_burden_block = """
 ### ¹B₁[M7] - definition-anchor over definition-burden
 

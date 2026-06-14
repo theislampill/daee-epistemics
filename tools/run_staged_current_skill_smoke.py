@@ -164,6 +164,7 @@ STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("proof-method-audit", "proof-family-and-carrier-audit", "m"): "μ",
     ("proof-method-audit", "proof-route-status-audit", "H"): "τ",
     ("M3", "orphaned-intuition", "m"): "♥",
+    ("M3", "orphaned-intuition", "τ"): "♥",
     ("do-second-loop", "accountability-hujjah-compression", "H"): "κ",
     ("do-second-loop", "coercive-guidance-demand", "H"): "κ",
     ("do-second-loop", "coercive-guidance-demand", "τ"): "κ",
@@ -9604,6 +9605,19 @@ def run_self_test(root: Path) -> int:
     )
     if m3_orphaned_m_stage04["act_row_details"][0].get("register_axis") != "♥":
         raise HarnessError("Self-test failed to canonicalize M3 orphaned-intuition m fallback to heart axis")
+    m3_orphaned_tau_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [m3_orphaned_row],
+            "act_row_details": self_test_act_row_details([m3_orphaned_row], {"¹B₁": "τ"}),
+        },
+    )
+    if m3_orphaned_tau_stage04["act_row_details"][0].get("register_axis") != "♥":
+        raise HarnessError("Self-test failed to canonicalize M3 orphaned-intuition tau fallback to heart axis")
     do_second_loop_guidance = stage04_delta_vocabulary_guidance(
         [
             {
