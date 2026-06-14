@@ -162,8 +162,13 @@ def match_sentence(text: str, start: int, end: int) -> str:
     return text[left + 1 : right]
 
 OPTIONAL_TOOLING_PROOF_NONCLAIM_RE = re.compile(
+    r"(?:"
     r"\b(?:no|not|without)\b[^.\n]{0,80}\b(?:Graphify|ActiveGraph)\b"
-    r"[^.\n]{0,120}\b(?:proof|proofs|claim|claimed|claims)\b",
+    r"[^.\n]{0,120}\b(?:proof|proofs|claim|claimed|claims)\b"
+    r"|"
+    r"\b(?:Graphify|ActiveGraph)\b[^.\n]{0,80}\b(?:proof|proofs|claim|claims)\b"
+    r"[^.\n]{0,120}\b(?:remain(?:s)?\s+held|held|not\s+(?:claimed|inferred)|non[- ]claim)\b"
+    r")",
     re.IGNORECASE,
 )
 OPTIONAL_TOOLING_POSITIVE_PROOF_RE = re.compile(
@@ -3677,6 +3682,14 @@ def run_self_test(root: Path) -> int:
     )
     if per_burden_reread_entry_errors([optional_nonclaim_entry]):
         raise AssemblyError("self-test rejected explicit optional-tooling proof nonclaim")
+    optional_held_nonclaim_entry = self_test_per_burden_entry("B1")
+    optional_held_nonclaim_entry["reread"] = (
+        "R(H,\u0394\u00b9B): held routes rechecked: case-library retrieval, release provenance, "
+        "Graphify proof, and general model behavior remain held; live remainder: none; "
+        "release/next: STOP."
+    )
+    if per_burden_reread_entry_errors([optional_held_nonclaim_entry]):
+        raise AssemblyError("self-test rejected held optional-tooling proof nonclaim")
     optional_claim_entry = self_test_per_burden_entry("B1")
     optional_claim_entry["pressure_activations"]["reorientation-reminder"] = (
         "coverage gap: Graphify proof passed this stage-local MRP terminal reread."

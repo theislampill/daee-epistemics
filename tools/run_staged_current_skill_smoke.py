@@ -14324,6 +14324,12 @@ def run_self_test(root: Path) -> int:
         + "\nField diagnostics: dependency and restoration pressure were landed without claiming "
         + "package, release, Graphify, ActiveGraph, or broad model proof.\n",
     )
+    assert_visible_output_accepts(
+        "stage07-held-optional-tooling-proof-nonclaim",
+        visible_probe_base
+        + "\nField diagnostics: held routes rechecked: case-library retrieval, release provenance, "
+        + "Graphify proof, and general model behavior remain held; no optional sidecar proof is inferred.\n",
+    )
     assert_visible_output_rejects(
         "stage07-duplicate-restorative-response",
         visible_probe_base.replace(

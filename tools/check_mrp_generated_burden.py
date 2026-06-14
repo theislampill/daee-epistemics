@@ -183,6 +183,18 @@ SOURCE_OWNED_ACT_OPERATIONS = {
             r"(?is)\b(?:scope|boundary|bounded|held-with-reason|anti[- ]fluctuation|reopen condition|PARTIAL)\b"
         ),
     },
+    "V2": {
+        "repair": re.compile(
+            r"(?is)\b(?:reconstitut\w+ reason|role of reason|reason[- ]role|sound reason|"
+            r"reason\b[^.\n]{0,120}\b(?:recogniz|instrument|tribunal|sovereign|proper rank)|"
+            r"autonomous sovereign|rational faculty)\b"
+        ),
+        "reconstituting-reason": re.compile(
+            r"(?is)\b(?:reconstitut\w+ reason|role of reason|reason[- ]role|sound reason|"
+            r"reason\b[^.\n]{0,120}\b(?:recogniz|instrument|tribunal|sovereign|proper rank)|"
+            r"autonomous sovereign|rational faculty)\b"
+        ),
+    },
     "SOURCE": {
         "authority-order-repair": re.compile(
             r"(?is)\b(?:authority|rank|tribunal|judge|judging office|court|higher court|"
@@ -256,6 +268,9 @@ BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
         "coercive-guidance-demand-bounded",
         "fitrah-ayat-baseline-established",
         "punishment-proportionality-calibrated",
+    },
+    "V2": {
+        "reason-role-repaired",
     },
     "V6": {
         "convergence-pattern-integrated",
