@@ -180,7 +180,7 @@ OPERATION_ACTION_RE = re.compile(
     r"(?i)\b(?:expose|distinguish|distinguishes|distinguished|distinguishing|"
     r"block|blocks|blocked|blocking|repair|repairs|repaired|repairing|"
     r"trace|ground|test|split|splits|splitting|separate|separates|separated|separating|"
-    r"prevent|audit|apply|tests?|integrate|integrates|integrated|integrating|"
+    r"prevent|audit|apply|tests?|act(?:s|ing)?\s+with\s+(?:M3|owner\s+family\s+M3)\s+on|integrate|integrates|integrated|integrating|"
     r"relocate|relocates|relocated|relocating|recognize|recognizes|recognized|recognizing|"
     r"identify|identification|reclassify|refuse|sequence|show why|demonstrate|bar|route|bind|isolate|"
     r"name|names|named|naming|define|anchor|anchors|anchored|anchoring|clarify|vet|reconstruct|dissolve|dissolves|dissolved|triage|prioritize|map|"
@@ -1253,6 +1253,36 @@ TTP Operation Body: Before this submove, secularism could affirm human dignity, 
 """
     if not is_operation_shaped_submove(m3_moral_purpose_block):
         errors.append("self-test M3 rejected moral-purpose grounding operation-shaped submove")
+    m3_moral_standard_block = """
+### ¹B₂[M3] - orphaned-intuition over orphaned-moral-standard-pressure
+
+Target: orphaned-moral-standard-pressure.
+
+Operation: orphaned-intuition acts with M3 on the moral predicates "cruel," "inhumane," "not kind," "not generous," and "not worthy."
+
+Result/state-change: orphaned-intuition-identified. State change: the moral standard doing the judging is exposed as a live burden rather than treated as neutral authority.
+
+TTP Operation Body: Before this submove, the statement used moral revulsion as if it were already a complete tribunal over God. The operation asks where the moral standard comes from, what gives it authority, and whether it can condemn divine justice while depending on borrowed categories such as justice, mercy, dignity, guilt, and goodness. If the objection rests only on personal disgust, it does not yet prove moral falsity. If it invokes objective moral reality, it must explain why that reality is authoritative and why it should outrank revelation, divine knowledge, and final accountability.
+
+Contribution-to-Land(¹B): this licenses Land(¹B) because the burden-local after-state now identifies the orphaned moral intuition instead of allowing it to operate invisibly as judge, source, and conclusion. Together with proportionality calibration, the moral objection is landed as an accountable moral argument, not a self-authenticating verdict.
+"""
+    if not is_operation_shaped_submove(m3_moral_standard_block):
+        errors.append("self-test M3 rejected acts-with-M3 moral-standard operation-shaped submove")
+    m8_grounding_burden_block = """
+³B₁[M8] - dependency-trace over grounding_burden
+
+Target: grounding_burden.
+
+Operation: dependency-trace acts on the grounding burden with owner family M8.
+
+Result/state-change: State change: the dependency is exposed. Secularism is no longer treated as self-grounding for reason, normativity, moral obligation, dignity, and public authority; those goods are shown to depend on a borrowed account of intelligibility, obligation, and human worth that the secular frame brackets.
+
+Contribution-to-Land(³B): This licenses Land(³B) because the burden-local BEFORE state allowed secularism to use reason, moral obligation, dignity, and authority as if they were available without deeper grounding, while the AFTER state exposes a dependency edge: the secular frame relies on normative and noetic goods it cannot generate from its own exclusionary posture. The grounding burden is landed because the dependency-radius change is visible: Δκ exposes the borrowed grounding relation.
+
+TTP Operation Body: Before this submove, secularism could speak as though rational obligation, moral dignity, public justice, and human worth simply arrive as neutral civic materials. M8 traces the dependency path: public reason presupposes intelligibility and trust in rational normativity; moral obligation presupposes more than preference or power; human dignity presupposes a stable account of the person; public authority presupposes an obligation to obey what is just rather than merely what is enacted. If secularism brackets the theistic/noetic field that grounds creation, accountability, fitrah, and sound reason, it still continues to spend those goods in public argument. After the trace, the burden changes: secularism is not functioning as an independent ground but as a frame borrowing the very rational, moral, and anthropological capital it excludes from public authority. DELTA: Δκ names the dependency-radius transition, and "dependency-exposed" names the local result. LAND-LICENSE: Land is licensed because the concrete dependency carrier relation has been exposed rather than left hidden; this burden does not require HOLD/PARTIAL at the local grounding level.
+"""
+    if not is_operation_shaped_submove(m8_grounding_burden_block):
+        errors.append("self-test M8 rejected compact grounding_burden operation-shaped submove")
     return errors
 
 
@@ -1263,6 +1293,9 @@ GENERIC_TARGET_RE = re.compile(
 DEFINITION_BURDEN_TARGET_RE = re.compile(
     r"(?i)^\s*(?:definition[-_ ]burden|definition[-_ ]stabilization|definition[-_ ]scope|"
     r"epistemic[-_ ]authority|target[-_ ]thesis|define\s+target\s+thesis)\s*$"
+)
+COMPACT_OPERATION_TARGET_RE = re.compile(
+    r"(?i)^\s*(?:grounding[-_ ]burden)\s*$"
 )
 CONTRIBUTION_EXPLANATION_RE = re.compile(
     r"(?i)\b(?:because|so that|therefore|thereby|by |rather than|instead of|licenses?|"
@@ -1279,6 +1312,8 @@ def target_pressure_identifiable(target: str) -> bool:
     if not cleaned or GENERIC_TARGET_RE.fullmatch(cleaned):
         return False
     if DEFINITION_BURDEN_TARGET_RE.fullmatch(cleaned):
+        return True
+    if COMPACT_OPERATION_TARGET_RE.fullmatch(cleaned):
         return True
     if OPERATION_MECHANISM_RE.search(cleaned) or HIGH_MASS_TERMS_RE.search(cleaned):
         return True
