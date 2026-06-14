@@ -261,6 +261,9 @@ BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
         "convergence-pattern-integrated",
         "register-conflict-converted",
     },
+    "M1-P": {
+        "speech-act-presupposition-named",
+    },
 }
 SOURCE_ORDER_REPAIR_DELTA_RESULTS = {
     "source-order-repaired",

@@ -555,7 +555,11 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ),
     (
         "P6",
-        re.compile(r"(?i)\b(?:universal aqidah|universal ʿaqīdah|aqidah principle|creedal principle)\b"),
+        re.compile(
+            r"(?i)\b(?:universal aqidah|universal ʿaqīdah|aqidah principle|creedal principle|"
+            r"worldview[- ]binding|binding normativity|binding worldview|binds public reason|"
+            r"public reason|moral authority|human purpose|final tribunal|chosen authority order)\b"
+        ),
     ),
     (
         "P7",
@@ -1182,6 +1186,16 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         errors.append("self-test owner-name-only guard overmatched source-order handled-first prose")
     if not owner_specific_operation_performed("source-status-repair", source_order_probe):
         errors.append("self-test SOURCE rejected proof-text stack source-order operation")
+    p6_probe = (
+        "Operation: bind acts on worldview-binding pressure with owner family P6. "
+        "Result/state-change: worldview-binding-exposed. State change: secularism "
+        "is exposed as a worldview that binds public reason, moral authority, and "
+        "human purpose to a chosen authority order. TTP Operation Body: P6.bind "
+        "tests which anthropology, which moral source, which account of obligation, "
+        "and which final tribunal remain operative."
+    )
+    if not owner_specific_operation_performed("P6", p6_probe):
+        errors.append("self-test P6 rejected worldview-binding normativity operation")
     return errors
 
 

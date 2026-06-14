@@ -141,6 +141,12 @@ TLANG_UPTAKE_NONCLAIM_RE = re.compile(
     r"[^.\n;]{0,180}\b(?:guarantees?\s+uptake|guaranteed\s+(?:T_lang\s+)?uptake|"
     r"interlocutor\s+uptake)\b"
 )
+SIDECAR_PROOF_NONCLAIM_RE = re.compile(
+    r"(?is)\b(?:does\s+not|do\s+not|not|no|without)\b[^.\n;]{0,180}"
+    r"\b(?:create|claim|build|produce|emit|include|make|generated?)?\b[^.\n;]{0,80}"
+    r"\b(?:verifier\s+sidecars?|sidecar\s+proof|release\s+proof|proof\s+artifacts?|"
+    r"downstream\s+artifacts?|Stage\s*8)\b"
+)
 
 
 def match_sentence(text: str, start: int, end: int) -> str:
@@ -333,6 +339,14 @@ def forbidden_text_errors(text: str, label: str) -> list[str]:
                 match
                 for match in matches
                 if not TLANG_UPTAKE_NONCLAIM_RE.search(match_sentence(text, match.start(), match.end()))
+            ]
+            if not positive_matches:
+                continue
+        if name == "sidecar proof claim before Stage 8":
+            positive_matches = [
+                match
+                for match in matches
+                if not SIDECAR_PROOF_NONCLAIM_RE.search(match_sentence(text, match.start(), match.end()))
             ]
             if not positive_matches:
                 continue
@@ -3471,6 +3485,26 @@ def run_self_test(root: Path) -> int:
         "invalid-sidecar-proof-claim",
         lambda payload, case_dir: replace_section_text(payload, case_dir, 5, "Stage 8 sidecar proof PASS.\n"),
     )
+    valid_sidecar_nonclaim_dir = base_dir / "valid-sidecar-proof-nonclaim"
+    valid_sidecar_nonclaim_manifest = manifest_for_sections(
+        valid_sidecar_nonclaim_dir,
+        case_id="valid-sidecar-proof-nonclaim",
+        source_input="valid-sidecar-proof-nonclaim/input.md",
+        section_specs=small_sections(),
+    )
+    valid_sidecar_nonclaim_payload = read_json(valid_sidecar_nonclaim_manifest)
+    if not isinstance(valid_sidecar_nonclaim_payload, dict):
+        raise AssemblyError("self-test valid sidecar nonclaim manifest payload must be an object")
+    replace_section_text(
+        valid_sidecar_nonclaim_payload,
+        valid_sidecar_nonclaim_dir,
+        5,
+        "Closing Formulation\n"
+        "Stage 05 does not create public sources, verifier sidecars, release proof, "
+        "or downstream artifacts.\n",
+    )
+    write_json(valid_sidecar_nonclaim_manifest, valid_sidecar_nonclaim_payload)
+    assemble_manifest(valid_sidecar_nonclaim_manifest, root=root)
 
     def parity_text(entries: list[dict[str, Any]], rendered: list[dict[str, Any]] | None = None) -> str:
         rendered_entries = rendered if rendered is not None else entries
