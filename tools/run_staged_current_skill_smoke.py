@@ -169,6 +169,7 @@ STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("do-second-loop", "punishment-proportionality-accountability", "m"): "♥",
     ("V2", "proof-burden-order", "H"): "ξ",
     ("V2", "proof-burden-order", "τ"): "ξ",
+    ("V2", "reason-role-repair", "m"): "ξ",
     ("V2", "reason-role-repair", "σ"): "ξ",
     ("V2", "reconstituting-reason", "m"): "ξ",
 }
@@ -9496,6 +9497,24 @@ def run_self_test(root: Path) -> int:
     )
     if v2_reason_role_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
         raise HarnessError("Self-test failed to canonicalize V2 reason-role-repair register_axis fallback")
+    v2_reason_role_m_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [v2_reason_role_row],
+            "act_row_details": self_test_act_row_details(
+                [v2_reason_role_row],
+                {
+                    "¹B₁": "m",
+                },
+            ),
+        },
+    )
+    if v2_reason_role_m_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to canonicalize V2 reason-role-repair m-axis fallback")
     v2_proof_burden_order_row = (
         "⟦ACT ¹B₁[V2.proof-burden-order] :: π=moral-theological-burden-order :: "
         "body_ref=¹B₁ :: Δ=Δ¹B:burden-order-repaired :: Land(¹B)+⟧"
