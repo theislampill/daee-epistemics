@@ -614,7 +614,14 @@ DO_SECOND_LOOP_ACTION_RE = re.compile(
     r"guide|guidance|persuade|persuasion|coerce|coercion|compel|compelling)\b"
 )
 OWNER_NAME_ONLY_RE = re.compile(
-    r"(?i)\b(?:is named here|named here,\s*so|so .{0,80}\bis handled)\b"
+    r"(?i)\b(?:"
+    r"is named here|"
+    r"named here,\s*so|"
+    r"owner\s+is\s+named,\s*so\s+(?:the\s+)?"
+    r"(?:proof\s+carrier|carrier|proof\s+packet|proof\s+route\s+status|"
+    r"foreign-premise-detection\s+route|route)\s+is\s+handled|"
+    r"(?:Land\([^)]*\):\s*)?(?:the\s+)?route\s+is\s+handled"
+    r")\b"
 )
 V10_ACTION_RE = re.compile(
     r"(?is)\b(?:vets?|vetting|sorts?|sorted|orders?|ordered|bounds?|bounded|"
@@ -1156,6 +1163,25 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
     )
     if not owner_specific_operation_performed("M1-P", m1p_probe):
         errors.append("self-test M1-P rejected hyphenated performative-contradiction state")
+    owner_label_probe = (
+        "The proof-method-audit proof-route-status-audit owner is named, "
+        "so the proof route status is handled."
+    )
+    if not OWNER_NAME_ONLY_RE.search(owner_label_probe):
+        errors.append("self-test owner-name-only guard missed label-only proof-route wording")
+    source_order_probe = (
+        "Operation: source-order-repair acts on the use of John 1:1 and "
+        "1 John 5:20 as imported texts against the immediate grammar of John 17:3. "
+        "Result/state-change: source-order-repaired. State change: the proof-text "
+        "stack is reordered so that John 17:3's local claim is handled first, "
+        "while John 1:1 and 1 John 5:20 remain secondary support texts requiring "
+        "separate interpretation. TTP Operation Body: The source-status-repair "
+        "operation restores source order and repairs the evidential order."
+    )
+    if OWNER_NAME_ONLY_RE.search(source_order_probe):
+        errors.append("self-test owner-name-only guard overmatched source-order handled-first prose")
+    if not owner_specific_operation_performed("source-status-repair", source_order_probe):
+        errors.append("self-test SOURCE rejected proof-text stack source-order operation")
     return errors
 
 

@@ -1508,6 +1508,13 @@ SOURCE_LINEAGE_BACKING_RE = re.compile(
     r"(?is)\b(?:source lineage|source priority|quotation chain|quotation order|"
     r"evidential dependency|inherited claim|source chain)\b"
 )
+SOURCE_PROOFTEXT_STACK_COMPACT_TARGET_RE = re.compile(
+    r"(?i)^\s*(?:John_1_1_and_1John_5_20_stack|proof[-_ ]text[-_ ]stack)\.?\s*$"
+)
+SOURCE_PROOFTEXT_STACK_BACKING_RE = re.compile(
+    r"(?is)\b(?:source[- ]order|source[- ]priority|evidential order|proof[- ]text stack|"
+    r"imported texts?|local grammar|immediate verse|John\s+17:3|John\s+1:1|1\s+John\s+5:20)\b"
+)
 V6_PROOFTEXT_INTEGRATION_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*prooftext[-_]integration\.?\s*$")
 V6_PROOFTEXT_INTEGRATION_BACKING_RE = re.compile(
     r"(?is)\b(?:prooftexts?|proof[- ]text|cited texts?|Johannine|John\s+1:1|1\s+John\s+5:20)\b"
@@ -1518,6 +1525,15 @@ V6_PROOFTEXT_INTEGRATION_BACKING_RE = re.compile(
 V6_PROOFTEXT_INTEGRATION_STATE_RE = re.compile(
     r"(?is)\b(?:bounded integration|without erasure|changed from erasure|no longer functioning|"
     r"do(?:es)? not remove|cannot cancel|not override|not erasing|not erased|held in a bounded integration)\b"
+)
+V6_INTEGRATION_PRESSURE_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*integration[-_]pressure\.?\s*$")
+V6_INTEGRATION_PRESSURE_BACKING_RE = re.compile(
+    r"(?is)\b(?:hadith chronology|martyrdom framing|scoped protection|lexical distinction|"
+    r"proof audit|poison(?:ing)? report|reports?|protection|formal proof)\b"
+)
+V6_INTEGRATION_PRESSURE_STATE_RE = re.compile(
+    r"(?is)\b(?:converg(?:e|es|ed|ing)|competing answers|false choice|bounded answer|"
+    r"unsupported contradiction|without forcing|no longer treated as competing)\b"
 )
 
 
@@ -1555,11 +1571,22 @@ def family_compact_target_backed(
             owner_specific_operation_performed(owner, payload)
             and SOURCE_LINEAGE_BACKING_RE.search(payload)
         )
+    if family == "SOURCE" and SOURCE_PROOFTEXT_STACK_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and SOURCE_PROOFTEXT_STACK_BACKING_RE.search(payload)
+        )
     if family == "V6" and V6_PROOFTEXT_INTEGRATION_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
         return bool(
             owner_specific_operation_performed(owner, payload)
             and V6_PROOFTEXT_INTEGRATION_BACKING_RE.search(payload)
             and V6_PROOFTEXT_INTEGRATION_STATE_RE.search(payload)
+        )
+    if family == "V6" and V6_INTEGRATION_PRESSURE_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and V6_INTEGRATION_PRESSURE_BACKING_RE.search(payload)
+            and V6_INTEGRATION_PRESSURE_STATE_RE.search(payload)
         )
     return False
 
