@@ -372,8 +372,8 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     (
         "M1-P",
         re.compile(
-            r"(?i)\b(?:performative[- ]contradiction|act of (?:making|asserting)|presupposes|"
-            r"cannot ground its own assertion|speech act|claiming it requires|"
+            r"(?i)\b(?:performative[- ]contradiction|act of (?:making|asserting)|presuppos\w+|"
+            r"cannot ground its own assertion|speech[- ]act|claiming it requires|must already assume|"
             r"denies dependence while functioning)\b"
         ),
     ),
