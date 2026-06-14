@@ -168,6 +168,7 @@ STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("do-second-loop", "coercive-guidance-demand", "H"): "κ",
     ("do-second-loop", "coercive-guidance-demand", "τ"): "κ",
     ("do-second-loop", "fitrah-ayat-baseline", "N"): "ξ",
+    ("do-second-loop", "punishment-proportionality-accountability", "H"): "♥",
     ("do-second-loop", "punishment-proportionality-accountability", "m"): "♥",
     ("V2", "proof-burden-order", "H"): "ξ",
     ("V2", "proof-burden-order", "τ"): "ξ",
@@ -9028,6 +9029,42 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to canonicalize do-second-loop fitrah/ayat register_axis fallback")
     if do_second_loop_axis_stage04["act_row_details"][3].get("register_axis") != "κ":
         raise HarnessError("Self-test failed to canonicalize do-second-loop hujjah/accountability register_axis fallback")
+    do_second_loop_punishment_h_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [
+                (
+                    "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+                    "π=punishment-accountability-pressure :: body_ref=¹B₁ :: "
+                    "Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+                ),
+            ],
+            "act_row_details": [
+                {
+                    "act_row": (
+                        "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+                        "π=punishment-accountability-pressure :: body_ref=¹B₁ :: "
+                        "Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+                    ),
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "do-second-loop",
+                    "operation": "punishment-proportionality-accountability",
+                    "register_axis": "H",
+                    "delta_result": "punishment-proportionality-calibrated",
+                },
+            ],
+        },
+    )
+    if do_second_loop_punishment_h_axis_stage04["act_row_details"][0].get("register_axis") != "♥":
+        raise HarnessError(
+            "Self-test failed to canonicalize do-second-loop punishment H register_axis fallback"
+        )
     proof_method_m_axis_stage04 = normalized_stage(
         "stage-04-burden-execution-act",
         {

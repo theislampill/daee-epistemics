@@ -1196,12 +1196,32 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
     )
     if not owner_specific_operation_performed("P6", p6_probe):
         errors.append("self-test P6 rejected worldview-binding normativity operation")
+    m7_definition_burden_block = """
+### ¹B₁[M7] - definition-anchor over definition-burden
+
+Target: definition-burden.
+
+Operation: definition-anchor must act on definition-burden with owner family M7.
+
+Result/state-change: definition-anchored; State change: secularism is no longer treated as an undefined object of refutation.
+
+Contribution-to-Land(¹B): This licenses Land(¹B) because the burden-local state changed from refute an unspecified secularism to evaluate a bounded secular claim without subtype-switching.
+
+TTP Operation Body: Before this submove, the live pressure was that secularism could mean metaphysical naturalism, political secularism, moral autonomy, epistemic neutrality, or a blended public ideology. M7.definition-anchor fixes the refutation target enough to stop the answer from attacking one version while inheriting another. After the operation, the response may test secularism as a governing worldview posture, but it must not pretend every political arrangement or every secular school has already been exhaustively handled. DELTA: Delta(B1): definition-anchored. LAND-LICENSE: the target-thesis pressure has been bounded, so this burden is landed.
+"""
+    if not target_pressure_identifiable("definition-burden"):
+        errors.append("self-test target_pressure_identifiable rejected definition-burden")
+    if not is_operation_shaped_submove(m7_definition_burden_block):
+        errors.append("self-test M7 rejected definition-burden operation-shaped submove")
     return errors
 
 
 GENERIC_TARGET_RE = re.compile(
     r"(?i)^\s*(?:the\s+)?(?:baseline|target|pressure|claim|move|burden|route|issue|"
     r"local issue|generated note|scope note|thing|it|this)\.?\s*$"
+)
+DEFINITION_BURDEN_TARGET_RE = re.compile(
+    r"(?i)^\s*(?:definition[-_ ]burden|target[-_ ]thesis|define\s+target\s+thesis)\s*$"
 )
 CONTRIBUTION_EXPLANATION_RE = re.compile(
     r"(?i)\b(?:because|so that|therefore|thereby|by |rather than|instead of|licenses?|"
@@ -1217,6 +1237,8 @@ def target_pressure_identifiable(target: str) -> bool:
     cleaned = re.sub(r"\s+", " ", target.strip(" .;:-")).strip()
     if not cleaned or GENERIC_TARGET_RE.fullmatch(cleaned):
         return False
+    if DEFINITION_BURDEN_TARGET_RE.fullmatch(cleaned):
+        return True
     if OPERATION_MECHANISM_RE.search(cleaned) or HIGH_MASS_TERMS_RE.search(cleaned):
         return True
     if RELATIONAL_PRESSURE_RE.search(cleaned):
