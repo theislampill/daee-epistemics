@@ -153,12 +153,14 @@ STAGE04_OPERATION_ALIAS_MAP = {
 }
 STAGE04_PROOF_FAMILY_CLASSIFICATION_CARRIER_RE = re.compile(
     r"(?i)\b(?:proof[- ]family[- ]classification[- ]pressure|"
-    r"proof[- ]family[- ]carrier[- ]pressure|proof[- ]carrier[- ]tribunal[- ]function)\b"
+    r"proof[- ]family[- ]carrier[- ]pressure|proof[- ]carrier[- ]tribunal[- ]function|"
+    r"proof[- ]method[- ]control)\b"
 )
 STAGE04_PROOF_FAMILY_LABEL_RE = re.compile(r"(?i)\bproof[- ]family[- ]label\b")
 STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("proof-method-audit", "proof-overreach-audit", "H"): "τ",
     ("proof-method-audit", "proof-overreach-audit", "m"): "τ",
+    ("proof-method-audit", "proof-family-and-carrier-audit", "H"): "τ",
     ("proof-method-audit", "proof-family-and-carrier-audit", "m"): "μ",
     ("proof-method-audit", "proof-route-status-audit", "H"): "τ",
     ("M3", "orphaned-intuition", "m"): "♥",
@@ -2935,6 +2937,14 @@ def stage05_dependency_edges(stage05: dict[str, Any] | None) -> list[dict[str, s
 
 
 STAGE02_BURDEN_REGISTER_KEYS = ("register_types", "registers", "burden_types", "types")
+STAGE04_AXIS_FIELD_WITNESS_REGISTERS = {
+    "♥": "heart",
+    "Ω": "Omega",
+    "ξ": "xi",
+    "σ": "xi",
+    "μ": "mu",
+    "κ": "kappa",
+}
 
 
 def field_witness_registers_in_text(value: object) -> list[str]:
@@ -3002,9 +3012,53 @@ def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]
     for register, ids in fallback_coverage.items():
         if register not in coverage:
             coverage[register] = ids
+    global_coverage = stage02_global_register_fallback_coverage(stage02, burdens, coverage)
+    for register, ids in global_coverage.items():
+        coverage[register] = ordered_unique([*(coverage.get(register) or []), *ids])
     if coverage:
         return {register: ordered_unique(ids) for register, ids in coverage.items()}
     return {}
+
+
+def stage02_global_register_fallback_coverage(
+    stage02: dict[str, Any] | None,
+    burdens: list[str],
+    existing_coverage: dict[str, list[str]],
+) -> dict[str, list[str]]:
+    if not isinstance(stage02, dict) or not burdens:
+        return {}
+    live_registers = field_witness_registers_from_values(list_field(stage02, "live_registers"))
+    if "Omega" not in live_registers or existing_coverage.get("Omega"):
+        return {}
+    global_parts = [
+        str(stage02.get("selected_n_frame") or ""),
+        " ".join(str(value) for value in list_field(stage02, "live_registers")),
+    ]
+    diagnostic_ir = stage02.get("diagnostic_ir")
+    if isinstance(diagnostic_ir, dict):
+        global_parts.extend(str(value) for value in diagnostic_ir.values() if not isinstance(value, (dict, list)))
+    global_text = " ".join(global_parts).lower()
+    if not re.search(r"\b(?:worldview|metaphysic|ontology|ontological|secularism|transcendent)\b", global_text):
+        return {}
+    details = stage02.get("burden_floor_details") or stage02.get("burden_floor_detail")
+    detail_by_burden: dict[str, str] = {}
+    if isinstance(details, list):
+        for item in details:
+            if not isinstance(item, dict):
+                continue
+            burden = b_id(item.get("burden_id") or item.get("id"))
+            if not burden:
+                continue
+            detail_by_burden[burden] = " ".join(
+                str(value)
+                for value in item.values()
+                if isinstance(value, str)
+            ).lower()
+    for burden in burdens:
+        detail_text = detail_by_burden.get(burden, "")
+        if re.search(r"\b(?:definition|scope|target|meaning|specified|specify)\b", detail_text):
+            return {"Omega": [burden]}
+    return {"Omega": [burdens[0]]}
 
 
 def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
@@ -3026,9 +3080,56 @@ def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[
         registers = field_witness_registers_in_text(raw)
         if registers:
             burden_registers[burden] = registers
+    for register, ids in stage02_register_coverage(stage02, burdens).items():
+        for burden in ids:
+            if burden not in burden_registers:
+                burden_registers[burden] = []
+            if register not in burden_registers[burden]:
+                burden_registers[burden].append(register)
     if burden_registers:
         return burden_registers
     return {}
+
+
+def stage04_register_coverage(stage04: dict[str, Any] | None, live_registers: list[str]) -> dict[str, list[str]]:
+    if not isinstance(stage04, dict):
+        return {}
+    live = set(live_registers)
+    coverage: dict[str, list[str]] = {}
+    details = stage04.get("act_row_details")
+    if not isinstance(details, list):
+        return coverage
+    for item in details:
+        if not isinstance(item, dict):
+            continue
+        burden = b_id(item.get("burden_id") or item.get("target"))
+        axis = canonicalize_register_axis(item.get("register_axis") or item.get("axis"))
+        register = STAGE04_AXIS_FIELD_WITNESS_REGISTERS.get(axis or "")
+        if not burden or not register or (live and register not in live):
+            continue
+        coverage.setdefault(register, []).append(burden)
+    return {register: ordered_unique(ids) for register, ids in coverage.items()}
+
+
+def merge_register_coverage(*coverages: dict[str, list[str]]) -> dict[str, list[str]]:
+    merged: dict[str, list[str]] = {}
+    for coverage in coverages:
+        for register, ids in coverage.items():
+            merged[register] = ordered_unique([*(merged.get(register) or []), *ids])
+    return merged
+
+
+def merge_burden_register_types(
+    base: dict[str, list[str]],
+    coverage: dict[str, list[str]],
+) -> dict[str, list[str]]:
+    merged = {burden: list(registers) for burden, registers in base.items()}
+    for register, burdens in coverage.items():
+        for burden in burdens:
+            merged.setdefault(burden, [])
+            if register not in merged[burden]:
+                merged[burden].append(register)
+    return merged
 
 
 def stage02_public_live_registers(stage02: dict[str, Any] | None, burdens: list[str]) -> list[str]:
@@ -3922,8 +4023,13 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         final_type = "hold_partial"
         final_route = "HOLD"
     live_registers = stage02_public_live_registers(stage02, burden_floor)
-    diagnostic_coverage = stage02_register_coverage(stage02, burden_floor)
-    burden_registers = stage02_burden_register_types(stage02, burden_floor)
+    stage02_coverage = stage02_register_coverage(stage02, burden_floor)
+    stage04_coverage = stage04_register_coverage(stage04, live_registers)
+    diagnostic_coverage = merge_register_coverage(stage02_coverage, stage04_coverage)
+    burden_registers = merge_burden_register_types(
+        stage02_burden_register_types(stage02, burden_floor),
+        stage04_coverage,
+    )
     for edge in edges:
         target = edge["to"]
         if target not in generated_burdens:
@@ -8184,6 +8290,55 @@ def run_self_test(root: Path) -> int:
     )
     if partial_register_types.get("B3") != ["Omega"]:
         raise HarnessError("Self-test Stage 02 partial detail coverage lost B3 Omega register typing")
+    secularism_worldview_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "N_fitrah_aql_sarih",
+            "live_registers": [
+                "diagnostic",
+                "theological",
+                "philosophical",
+                "worldview",
+                "public-reason",
+            ],
+            "burden_floor": ["B1", "B2", "B3"],
+            "burden_floor_details": [
+                {
+                    "id": "B1",
+                    "label": "definition_and_scope_floor",
+                    "reason": "The command asks to refute secularism, so the first live burden is to identify the operative meaning before refutation.",
+                },
+                {
+                    "id": "B2",
+                    "label": "authority_and_public_reason_floor",
+                    "reason": "The live dispute concerns whether final authority is confined to immanent human ordering.",
+                },
+                {
+                    "id": "B3",
+                    "label": "coherence_and_grounds_floor",
+                    "reason": "A refutation must test whether secularism can ground normativity without borrowing from the excluded transcendent frame.",
+                },
+            ],
+            "diagnostic_ir": {
+                "surface_topic": "secularism",
+                "selected_route_pressure": "worldview_refutation",
+            },
+        },
+    )
+    secularism_worldview_coverage = stage02_register_coverage(
+        secularism_worldview_stage02,
+        secularism_worldview_stage02["burden_floor"],
+    )
+    if secularism_worldview_coverage.get("Omega") != ["B1"]:
+        raise HarnessError("Self-test Stage 02 secularism worldview fallback lost Omega coverage for B1")
+    secularism_worldview_register_types = stage02_burden_register_types(
+        secularism_worldview_stage02,
+        secularism_worldview_stage02["burden_floor"],
+    )
+    if secularism_worldview_register_types.get("B1") != ["Omega"]:
+        raise HarnessError("Self-test Stage 02 secularism worldview fallback lost B1 Omega register typing")
     registers_alias_stage02 = normalized_stage(
         "stage-02-layer-a-diagnostic-ir",
         {
@@ -9906,6 +10061,41 @@ def run_self_test(root: Path) -> int:
         raise HarnessError(
             "Self-test failed to preserve tribunal/burden-function register_axis for "
             "proof-family-classification-pressure"
+        )
+    valid_proof_family_method_control_row = (
+        "⟦ACT ¹B₁[proof-method-audit.proof-family-classification] :: "
+        "π=definition-scope-and-proof-method-control :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:proof-family-carrier-typed :: Land(¹B)+⟧"
+    )
+    normalized_proof_family_method_control_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [valid_proof_family_method_control_row],
+            "act_row_details": self_test_act_row_details(
+                [valid_proof_family_method_control_row],
+                {"¹B₁": "H"},
+            ),
+        },
+    )
+    valid_proof_family_method_control_detail = stage04_act_details_by_ref(
+        normalized_proof_family_method_control_stage04
+    )["¹B₁"]
+    valid_proof_family_method_control_typed_detail = (
+        normalized_proof_family_method_control_stage04["act_row_details"][0]
+    )
+    if valid_proof_family_method_control_detail.get("operation") != "proof-family-and-carrier-audit":
+        raise HarnessError(
+            "Self-test failed to canonicalize definition-scope-and-proof-method-control "
+            "to proof-family-and-carrier-audit"
+        )
+    if valid_proof_family_method_control_typed_detail.get("register_axis") != "τ":
+        raise HarnessError(
+            "Self-test failed to canonicalize proof-family method-control H fallback "
+            "to tribunal/burden-function register_axis"
         )
     valid_do_attribute_delta_row = (
         "⟦ACT ¹B₁[do-attribute-precision.attribute-precision] :: "
@@ -12546,6 +12736,147 @@ def run_self_test(root: Path) -> int:
     )
     if '"kappa": [\n          "B3"\n        ]' not in stage07_id_alias_witness_prompt:
         raise HarnessError("Self-test Stage 07 scaffold lost kappa diagnostic coverage from Stage 02 id alias")
+    aggregate_heart_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "aggregate-affective-register-self-test",
+            "live_registers": ["rhetorical_affective_pressure"],
+            "burden_floor": ["B1", "B2", "B3"],
+            "burden_floor_details": [
+                {"id": "B1", "name": "claim_extraction"},
+                {"id": "B2", "name": "accountability"},
+                {"id": "B3", "name": "punishment_proportionality"},
+            ],
+        },
+    )
+    aggregate_heart_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1", "B2", "B3"],
+            "act_burdens": ["B1", "B2", "B3"],
+            "act_rows": [
+                "⟦ACT ¹B₁[M7.definition-anchor] :: π=claim-extraction :: body_ref=¹B₁ :: Δ=Δ¹B:definition-anchored :: Land(¹B)+⟧",
+                "⟦ACT ²B₁[do-second-loop.coercive-guidance-demand] :: π=guidance-accountability :: body_ref=²B₁ :: Δ=Δ²B:coercive-guidance-demand-bounded :: Land(²B)+⟧",
+                "⟦ACT ³B₁[do-second-loop.punishment-proportionality-accountability] :: π=moral-theodicy-punishment-proportionality :: body_ref=³B₁ :: Δ=Δ³B:punishment-proportionality-calibrated :: Land(³B)+⟧",
+            ],
+            "act_row_details": [
+                {
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "M7",
+                    "operation": "definition-anchor",
+                    "register_axis": "τ",
+                    "delta_result": "definition-anchored",
+                },
+                {
+                    "body_ref": "²B₁",
+                    "burden_id": "B2",
+                    "owner_id": "do-second-loop",
+                    "operation": "coercive-guidance-demand",
+                    "register_axis": "κ",
+                    "delta_result": "coercive-guidance-demand-bounded",
+                },
+                {
+                    "body_ref": "³B₁",
+                    "burden_id": "B3",
+                    "owner_id": "do-second-loop",
+                    "operation": "punishment-proportionality-accountability",
+                    "register_axis": "♥",
+                    "delta_result": "punishment-proportionality-calibrated",
+                },
+            ],
+        },
+    )
+    aggregate_heart_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "landed", "B3": "landed"},
+            "dependency_graph_edges": [
+                {"from": "B1", "to": "B2", "type": "held_burden_activation"},
+                {"from": "B2", "to": "B3", "type": "held_burden_activation"},
+            ],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "all aggregate affective register burdens landed",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": staged_output.self_test_per_burden_chain(["B1", "B2", "B3"]),
+        },
+    )
+    aggregate_heart_stage06 = normalized_stage(
+        "stage-06-field-witness-nar",
+        {
+            "id": "stage-06-field-witness-nar",
+            "status": "pass",
+            "field_witness_body_refs": ["¹B₁", "²B₁", "³B₁"],
+            "nar_burdens": ["B1", "B2", "B3"],
+            "owner_activations": ["¹B₁", "²B₁", "³B₁"],
+            "register_deltas": {
+                "heart": "punishment-proportionality-calibrated",
+                "kappa": "coercive-guidance-demand-bounded",
+            },
+            "normalized_activation_record": {
+                "n_frame": "aggregate-affective-register-self-test",
+                "live_registers": ["rhetorical_affective_pressure"],
+                "burden_floor": ["B1", "B2", "B3"],
+                "per_burden": [
+                    {
+                        "burden_id": "B1",
+                        "owner_id": "M7",
+                        "operation": "definition-anchor",
+                        "delta_result": "definition-anchored",
+                        "mrp_route_result_type": "held_burden_activation",
+                        "terminal_state": "landed",
+                    },
+                    {
+                        "burden_id": "B2",
+                        "owner_id": "do-second-loop",
+                        "operation": "coercive-guidance-demand",
+                        "delta_result": "coercive-guidance-demand-bounded",
+                        "mrp_route_result_type": "held_burden_activation",
+                        "terminal_state": "landed",
+                    },
+                    {
+                        "burden_id": "B3",
+                        "owner_id": "do-second-loop",
+                        "operation": "punishment-proportionality-accountability",
+                        "delta_result": "punishment-proportionality-calibrated",
+                        "mrp_route_result_type": "no_new_resultant",
+                        "terminal_state": "landed",
+                    },
+                ],
+            },
+        },
+    )
+    aggregate_heart_payload = extract_field_witness(
+        extract_embedded_field_witness(
+            stage07_field_witness_section_scaffold(
+                [aggregate_heart_stage02, aggregate_heart_stage04, aggregate_heart_stage05, aggregate_heart_stage06]
+            )
+        )
+    )
+    if aggregate_heart_payload is None:
+        raise HarnessError("Self-test aggregate heart Stage 07 scaffold did not emit field_witness JSON")
+    aggregate_heart_coverage = (
+        aggregate_heart_payload.get("coverage_proof", {})
+        .get("diagnostic_completeness", {})
+        .get("coverage", {})
+    )
+    if "B3" not in aggregate_heart_coverage.get("heart", []):
+        raise HarnessError("Self-test Stage 07 aggregate heart scaffold lost Stage04 heart coverage for B3")
+    aggregate_heart_nodes = {
+        node.get("id"): node.get("register_types")
+        for node in aggregate_heart_payload.get("nodes", [])
+        if isinstance(node, dict)
+    }
+    if aggregate_heart_nodes.get("B3") != ["heart"]:
+        raise HarnessError("Self-test Stage 07 aggregate heart scaffold lost B3 heart register_types")
     stage07_kappa_witness_prompt = release_section_prompt(
         root=root,
         case_name="self-test-kappa-carrier",
