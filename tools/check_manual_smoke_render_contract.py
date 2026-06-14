@@ -161,7 +161,7 @@ OPERATION_MECHANISM_RE = re.compile(
     r"fatal[- ]harm(?:[- ]at[- ]t1)?|lexical[- ]equivalence|chronology[- ]completion|"
     r"chronology[- ]collapse|t1[- ]t2[- ]chronology[- ]collapse|"
     r"t1[- ]t2[- ]causation[- ]collapse|"
-    r"attribute[- ]precision|claim[- ]context[- ]boundary|definition[-_ ]boundary|"
+    r"attribute[- ]precision|claim[- ]context[- ]boundary|claim[-_ ]reconstruction[-_ ]pressure|definition[-_ ]boundary|"
     r"definition[- ]pressure|scope[- ]pressure|"
     r"moral[- ]intuition|ungrounded[- ]moral[- ]intuition|moral[- ]reaction|orphaned[- ]intuition|"
     r"dependency|criterion|immunity|recoil|framework|"

@@ -1287,6 +1287,38 @@ def controlled_detail_delta_value(owner: str, value: Any) -> bool:
     return False
 
 
+def drop_invalid_stage03_delta_values(route: dict[str, Any], owner: str) -> dict[str, Any]:
+    canonical = dict(route)
+    for key in (
+        "delta_result",
+        "delta_result_floor",
+        "delta_result_vocabulary",
+        "allowed_delta_results",
+        "delta_results",
+    ):
+        if key in canonical and not controlled_detail_delta_value(owner, canonical[key]):
+            canonical.pop(key, None)
+    return canonical
+
+
+def detail_hint_tokens(value: str | None) -> list[str]:
+    if value is None:
+        return []
+    return [
+        token.strip()
+        for token in re.split(r"\s*(?:\+|/|,|\band\b)\s*", value)
+        if token.strip()
+    ]
+
+
+def detail_hint_matches(value: str | None, expected: str) -> bool:
+    if value is None:
+        return False
+    if value == expected:
+        return True
+    return expected in detail_hint_tokens(value)
+
+
 def detail_backed_stage03_owner_route_family_hint(
     route: dict[str, Any],
     details: list[dict[str, Any]],
@@ -1305,16 +1337,36 @@ def detail_backed_stage03_owner_route_family_hint(
         detail_burden = non_empty_string(detail.get("burden_id") or detail.get("target"))
         detail_owner = non_empty_string(detail.get("owner_id") or detail.get("owner"))
         detail_operation = non_empty_string(detail.get("operation") or detail.get("owner_operation"))
-        detail_family = non_empty_string(detail.get("owner_family") or detail.get("classification_family"))
-        if detail_burden != burden_id or detail_operation != operation or detail_family is None:
+        detail_family = non_empty_string(
+            detail.get("owner_family")
+            or detail.get("classification_family")
+            or detail.get("eligible_owner_family")
+        )
+        if detail_burden != burden_id or detail_family is None:
             continue
-        if detail_owner is not None and detail_owner not in {raw_owner, operation}:
+        if detail_operation is None or not detail_hint_matches(detail_operation, operation):
             continue
-        candidate = dict(canonical)
-        candidate["owner_family"] = detail_family
-        execution_owner = route_owner_family_hint_execution_owner(candidate)
-        if not execution_owner:
+        if detail_owner is not None and not (
+            detail_hint_matches(detail_owner, raw_owner)
+            or detail_hint_matches(detail_owner, operation)
+        ):
             continue
+        family_hints = detail_hint_tokens(detail_family) or [detail_family]
+        candidate: dict[str, Any] | None = None
+        execution_owner = ""
+        selected_family = ""
+        for family_hint in family_hints:
+            probe = dict(canonical)
+            probe["owner_family"] = family_hint
+            probe_owner = route_owner_family_hint_execution_owner(probe)
+            if probe_owner:
+                candidate = probe
+                execution_owner = probe_owner
+                selected_family = family_hint
+                break
+        if candidate is None or not execution_owner:
+            continue
+        candidate = drop_invalid_stage03_delta_values(candidate, execution_owner)
         for key in (
             "delta_result",
             "delta_result_floor",
@@ -1331,10 +1383,11 @@ def detail_backed_stage03_owner_route_family_hint(
         return candidate, {
             "burden_id": burden_id,
             "raw_owner_id": raw_owner,
-            "owner_family": detail_family,
+            "owner_family": selected_family,
+            "raw_owner_family": detail_family,
             "canonical_owner_id": execution_owner,
             "operation": operation,
-            "source": "owner_route_details",
+            "source": str(detail.get("__source_key") or "owner_route_details"),
         }
     return canonical, None
 
@@ -1344,9 +1397,13 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
     if isinstance(routes, list) and routes and all(isinstance(item, dict) for item in routes):
         canonical: list[dict[str, Any]] = []
         details: list[dict[str, Any]] = []
-        incoming_details = [
-            item for item in (stage.get("owner_route_details") or []) if isinstance(item, dict)
-        ]
+        incoming_details: list[dict[str, Any]] = []
+        for source_key in ("owner_route_details", "route_target_details"):
+            for item in stage.get(source_key) or []:
+                if isinstance(item, dict):
+                    detail = dict(item)
+                    detail["__source_key"] = source_key
+                    incoming_details.append(detail)
         alias_events: list[dict[str, str]] = []
         family_hint_events: list[dict[str, str]] = []
         operation_events: list[dict[str, str]] = []
@@ -7312,6 +7369,52 @@ def run_self_test(root: Path) -> int:
     m8_dependency_route = detail_backed_stage03["owner_routes"][4]
     if m8_dependency_route.get("delta_result_floor") != "dependency-exposed":
         raise HarnessError("Self-test Stage03 failed to preserve valid M8 dependency delta_result_floor")
+    route_target_detail_backed_stage03 = {
+        "id": "stage-03-routing-owner-gate",
+        "status": "pass",
+        "route_targets": ["B1", "B2"],
+        "owner_routes": [
+            {
+                "burden_id": "B1",
+                "owner_id": "scope-boundary",
+                "operation": "scope-boundary",
+                "delta_result": "scope-bounded",
+            },
+            {
+                "burden_id": "B2",
+                "owner_id": "sense-split",
+                "operation": "sense-split",
+                "delta_result": "sense-split",
+            },
+        ],
+        "route_target_details": [
+            {
+                "burden_id": "B1",
+                "eligible_owner_family": "P7",
+                "owner_id": "scope-boundary",
+                "operation": "scope-boundary",
+                "activation_basis": "The burden asks for a boundary on the protection claim.",
+            },
+            {
+                "burden_id": "B2",
+                "eligible_owner_family": "SOURCE/M9",
+                "owner_id": "source-status-repair + sense-split",
+                "operation": "source-order-repair + sense-split",
+                "activation_basis": "Source lineage routes to source-status-repair while lexical equivocation routes to M9 sense-split.",
+            },
+        ],
+    }
+    normalize_stage03_owner_routes(route_target_detail_backed_stage03)
+    route_target_detail_route = route_target_detail_backed_stage03["owner_routes"][0]
+    if route_target_detail_route.get("owner_id") != "P7":
+        raise HarnessError("Self-test Stage03 route-target-detail family hint did not canonicalize scope-boundary to P7")
+    if route_target_detail_route.get("delta_result") == "scope-bounded":
+        raise HarnessError("Self-test Stage03 route-target-detail rescue preserved invalid operation-token delta_result")
+    route_target_detail_sense_route = route_target_detail_backed_stage03["owner_routes"][1]
+    if route_target_detail_sense_route.get("owner_id") != "M9":
+        raise HarnessError("Self-test Stage03 compound route-target-detail family hint did not canonicalize sense-split to M9")
+    if route_target_detail_sense_route.get("delta_result") == "sense-split":
+        raise HarnessError("Self-test Stage03 compound route-target-detail rescue preserved invalid operation-token delta_result")
     run_dir = root / ".daee" / "validation" / f"staged-current-skill-harness-self-test-{uuid.uuid4().hex}"
     stages_dir = run_dir / "stages"
     stages_dir.mkdir(parents=True, exist_ok=True)
