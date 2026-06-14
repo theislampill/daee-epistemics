@@ -3113,6 +3113,58 @@ def stage04_register_coverage(stage04: dict[str, Any] | None, live_registers: li
     return {register: ordered_unique(ids) for register, ids in coverage.items()}
 
 
+def burden_ids_from_delta_carrier(value: Any) -> list[str]:
+    ids: list[str] = []
+    if isinstance(value, list):
+        for item in value:
+            ids.extend(burden_ids_from_delta_carrier(item))
+        return ordered_unique(ids)
+    if isinstance(value, dict):
+        for key in ("burden_id", "id", "target", "source_burden"):
+            burden = b_id(value.get(key))
+            if burden:
+                ids.append(burden)
+        for item in value.values():
+            ids.extend(burden_ids_from_delta_carrier(item))
+        return ordered_unique(ids)
+    text = str(value or "")
+    ids.extend(f"B{match.group(1)}" for match in CANONICAL_BURDEN_ID_RE.finditer(text))
+    ids.extend(f"B{match.group(1).translate(SUP_DIGITS)}" for match in re.finditer(r"([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B", text))
+    return ordered_unique(ids)
+
+
+def stage06_register_delta_coverage(
+    stage06: dict[str, Any] | None,
+    live_registers: list[str],
+    burden_floor: list[str],
+) -> dict[str, list[str]]:
+    if not isinstance(stage06, dict):
+        return {}
+    live = set(live_registers)
+    floor = set(burden_floor)
+    coverage: dict[str, list[str]] = {}
+    delta_maps: list[dict[str, Any]] = []
+    top_level = stage06.get("register_deltas")
+    if isinstance(top_level, dict):
+        delta_maps.append(top_level)
+    nar = stage06.get("normalized_activation_record")
+    if isinstance(nar, dict) and isinstance(nar.get("register_deltas"), dict):
+        delta_maps.append(nar["register_deltas"])
+    for delta_map in delta_maps:
+        for raw_register, delta_value in delta_map.items():
+            registers = field_witness_registers_from_values([raw_register])
+            if not registers:
+                continue
+            burdens = [burden for burden in burden_ids_from_delta_carrier(delta_value) if burden in floor]
+            if not burdens:
+                continue
+            for register in registers:
+                if live and register not in live:
+                    continue
+                coverage[register] = ordered_unique([*(coverage.get(register) or []), *burdens])
+    return coverage
+
+
 def merge_register_coverage(*coverages: dict[str, list[str]]) -> dict[str, list[str]]:
     merged: dict[str, list[str]] = {}
     for coverage in coverages:
@@ -4027,10 +4079,11 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
     live_registers = stage02_public_live_registers(stage02, burden_floor)
     stage02_coverage = stage02_register_coverage(stage02, burden_floor)
     stage04_coverage = stage04_register_coverage(stage04, live_registers)
-    diagnostic_coverage = merge_register_coverage(stage02_coverage, stage04_coverage)
+    stage06_coverage = stage06_register_delta_coverage(stage06, live_registers, burden_floor)
+    diagnostic_coverage = merge_register_coverage(stage02_coverage, stage04_coverage, stage06_coverage)
     burden_registers = merge_burden_register_types(
         stage02_burden_register_types(stage02, burden_floor),
-        stage04_coverage,
+        merge_register_coverage(stage04_coverage, stage06_coverage),
     )
     for edge in edges:
         target = edge["to"]
@@ -12928,6 +12981,176 @@ def run_self_test(root: Path) -> int:
     }
     if aggregate_heart_nodes.get("B3") != ["heart"]:
         raise HarnessError("Self-test Stage 07 aggregate heart scaffold lost B3 heart register_types")
+    stage06_delta_heart_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "N_fitri_aql_sarih",
+            "live_registers": [
+                "definition_scope",
+                "epistemic_authority",
+                "metaphysical_grounding",
+                "moral_normativity",
+                "public_order",
+                "rhetorical_posture",
+            ],
+            "burden_floor": ["B1", "B2", "B3"],
+            "burden_floor_details": [
+                {"id": "B1", "label": "definition_scope"},
+                {"id": "B2", "label": "neutrality_burden"},
+                {"id": "B3", "label": "grounding_burden"},
+            ],
+        },
+    )
+    stage06_delta_heart_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1", "B2", "B3"],
+            "act_burdens": ["B1", "B2", "B3"],
+            "act_rows": [
+                "⟦ACT ¹B₁[M7.definition-anchor] :: π=definition_scope :: body_ref=¹B₁ :: Δ=Δ¹B:definition-anchored :: Land(¹B)+⟧",
+                "⟦ACT ²B₁[M1-P.performative-test] :: π=neutrality_burden :: body_ref=²B₁ :: Δ=Δ²B:performative-contradiction-exposed :: Land(²B)+⟧",
+                "⟦ACT ³B₁[M8.dependency-trace] :: π=grounding_burden :: body_ref=³B₁ :: Δ=Δκ:dependency-exposed :: Land(³B)+⟧",
+            ],
+            "act_row_details": [
+                {
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "M7",
+                    "operation": "definition-anchor",
+                    "register_axis": "σ",
+                    "delta_result": "definition-anchored",
+                },
+                {
+                    "body_ref": "²B₁",
+                    "burden_id": "B2",
+                    "owner_id": "M1-P",
+                    "operation": "performative-test",
+                    "register_axis": "τ",
+                    "delta_result": "performative-contradiction-exposed",
+                },
+                {
+                    "body_ref": "³B₁",
+                    "burden_id": "B3",
+                    "owner_id": "M8",
+                    "operation": "dependency-trace",
+                    "register_axis": "κ",
+                    "delta_result": "dependency-exposed",
+                },
+            ],
+        },
+    )
+    stage06_delta_heart_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "landed", "B3": "landed"},
+            "dependency_graph_edges": [
+                {"from": "B1", "to": "B2", "type": "held_burden_activation"},
+                {"from": "B2", "to": "B3", "type": "held_burden_activation"},
+            ],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "bounded secularism route landed",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": staged_output.self_test_per_burden_chain(["B1", "B2", "B3"]),
+        },
+    )
+    stage06_delta_heart_stage06 = normalized_stage(
+        "stage-06-field-witness-nar",
+        {
+            "id": "stage-06-field-witness-nar",
+            "status": "pass",
+            "field_witness_body_refs": ["¹B₁", "²B₁", "³B₁"],
+            "nar_burdens": ["B1", "B2", "B3"],
+            "owner_activations": ["¹B₁", "²B₁", "³B₁"],
+            "register_deltas": {
+                "definition_scope": "Δ¹B:definition-anchored",
+                "epistemic_authority": "Δκ:dependency-exposed",
+                "metaphysical_grounding": "Δκ:dependency-exposed",
+                "moral_normativity": [
+                    "Δ²B:performative-contradiction-exposed",
+                    "Δκ:dependency-exposed",
+                ],
+                "public_order": [
+                    "Δ²B:performative-contradiction-exposed",
+                    "Δκ:dependency-exposed",
+                ],
+                "rhetorical_posture": "Δ¹B:definition-anchored",
+            },
+            "normalized_activation_record": {
+                "n_frame": "N_fitri_aql_sarih",
+                "live_registers": [
+                    "definition_scope",
+                    "epistemic_authority",
+                    "metaphysical_grounding",
+                    "moral_normativity",
+                    "public_order",
+                    "rhetorical_posture",
+                ],
+                "burden_floor": ["B1", "B2", "B3"],
+                "per_burden": [
+                    {
+                        "burden_id": "B1",
+                        "owner_id": "M7",
+                        "operation": "definition-anchor",
+                        "delta_result": "definition-anchored",
+                        "terminal_state": "landed",
+                        "mrp_route_result_type": "held_burden_activation",
+                    },
+                    {
+                        "burden_id": "B2",
+                        "owner_id": "M1-P",
+                        "operation": "performative-test",
+                        "delta_result": "performative-contradiction-exposed",
+                        "terminal_state": "landed",
+                        "mrp_route_result_type": "held_burden_activation",
+                    },
+                    {
+                        "burden_id": "B3",
+                        "owner_id": "M8",
+                        "operation": "dependency-trace",
+                        "delta_result": "dependency-exposed",
+                        "terminal_state": "landed",
+                        "mrp_route_result_type": "no_new_resultant",
+                    },
+                ],
+            },
+        },
+    )
+    stage06_delta_heart_payload = extract_field_witness(
+        extract_embedded_field_witness(
+            stage07_field_witness_section_scaffold(
+                [
+                    stage06_delta_heart_stage02,
+                    stage06_delta_heart_stage04,
+                    stage06_delta_heart_stage05,
+                    stage06_delta_heart_stage06,
+                ]
+            )
+        )
+    )
+    if stage06_delta_heart_payload is None:
+        raise HarnessError("Self-test Stage 07 Stage06 register-delta scaffold did not emit field_witness JSON")
+    stage06_delta_heart_coverage = (
+        stage06_delta_heart_payload.get("coverage_proof", {})
+        .get("diagnostic_completeness", {})
+        .get("coverage", {})
+    )
+    if "B1" not in stage06_delta_heart_coverage.get("heart", []):
+        raise HarnessError("Self-test Stage 07 scaffold lost Stage06 rhetorical_posture heart coverage for B1")
+    stage06_delta_heart_nodes = {
+        node.get("id"): node.get("register_types")
+        for node in stage06_delta_heart_payload.get("nodes", [])
+        if isinstance(node, dict)
+    }
+    if "heart" not in (stage06_delta_heart_nodes.get("B1") or []):
+        raise HarnessError("Self-test Stage 07 scaffold lost Stage06 rhetorical_posture heart node register type for B1")
     stage07_kappa_witness_prompt = release_section_prompt(
         root=root,
         case_name="self-test-kappa-carrier",

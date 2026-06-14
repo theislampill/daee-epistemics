@@ -146,7 +146,9 @@ SOURCE_OWNED_ACT_OPERATIONS = {
             r"(?is)\b(?:orphaned intuition|ungrounded intuition|intuition without|moral intuition|"
             r"orphaned moral|ground is orphaned|grounded? intuition|intuition has a home|"
             r"moral deliverance|moral recognition|recognition remains honored|retained while its ground|"
-            r"restored to (?:a )?ground|cannot remain severed from its ground)\b"
+            r"restored to (?:a )?ground|cannot remain severed from its ground|"
+            r"binding (?:moral )?judgments?|moral terms as more than|borrowed moral capital|"
+            r"moral tribunal|standard of justice|verdict binding)\b"
         ),
     },
     "M7": {

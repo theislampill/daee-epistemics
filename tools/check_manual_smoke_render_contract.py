@@ -403,7 +403,9 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
         re.compile(
             r"(?i)\b(?:orphaned intuition|ungrounded intuition|intuition without|moral intuition|"
             r"orphaned moral|ground is orphaned|grounded? intuition|intuition has a home|"
-            r"moral deliverance|moral recognition|recognition remains honored|retained while its ground)\b"
+            r"moral deliverance|moral recognition|recognition remains honored|retained while its ground|"
+            r"binding (?:moral )?judgments?|moral terms as more than|borrowed moral capital|"
+            r"moral tribunal|standard of justice|verdict binding)\b"
         ),
     ),
     (
