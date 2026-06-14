@@ -147,6 +147,12 @@ SIDECAR_PROOF_NONCLAIM_RE = re.compile(
     r"\b(?:verifier\s+sidecars?|sidecar\s+proof|release\s+proof|proof\s+artifacts?|"
     r"downstream\s+artifacts?|Stage\s*8)\b"
 )
+PACKAGE_PROVENANCE_RELEASE_NONCLAIM_RE = re.compile(
+    r"(?is)\b(?:does\s+not|do\s+not|not|no|without|non-claim)\b[^.\n;]{0,220}"
+    r"\b(?:GitHub\s+Release|release\s+(?:asset|package|evidence|proof)|"
+    r"package\s+provenance|published\s+provenance|"
+    r"provenance\s+(?:asset|publication|proof)|\.skill\s+archive)\b"
+)
 
 
 def match_sentence(text: str, start: int, end: int) -> str:
@@ -347,6 +353,16 @@ def forbidden_text_errors(text: str, label: str) -> list[str]:
                 match
                 for match in matches
                 if not SIDECAR_PROOF_NONCLAIM_RE.search(match_sentence(text, match.start(), match.end()))
+            ]
+            if not positive_matches:
+                continue
+        if name == "package/provenance/release claim":
+            positive_matches = [
+                match
+                for match in matches
+                if not PACKAGE_PROVENANCE_RELEASE_NONCLAIM_RE.search(
+                    match_sentence(text, match.start(), match.end())
+                )
             ]
             if not positive_matches:
                 continue
@@ -3505,6 +3521,26 @@ def run_self_test(root: Path) -> int:
     )
     write_json(valid_sidecar_nonclaim_manifest, valid_sidecar_nonclaim_payload)
     assemble_manifest(valid_sidecar_nonclaim_manifest, root=root)
+    valid_release_nonclaim_dir = base_dir / "valid-release-provenance-nonclaim"
+    valid_release_nonclaim_manifest = manifest_for_sections(
+        valid_release_nonclaim_dir,
+        case_id="valid-release-provenance-nonclaim",
+        source_input="valid-release-provenance-nonclaim/input.md",
+        section_specs=small_sections(),
+    )
+    valid_release_nonclaim_payload = read_json(valid_release_nonclaim_manifest)
+    if not isinstance(valid_release_nonclaim_payload, dict):
+        raise AssemblyError("self-test valid release/provenance nonclaim manifest payload must be an object")
+    replace_section_text(
+        valid_release_nonclaim_payload,
+        valid_release_nonclaim_dir,
+        1,
+        "Layer A - Diagnostic IR\n"
+        "Non-claim: Layer A records diagnostic state and burden floor only; it is not "
+        "downstream proof, release evidence, provenance proof, or a guarantee of uptake.\n",
+    )
+    write_json(valid_release_nonclaim_manifest, valid_release_nonclaim_payload)
+    assemble_manifest(valid_release_nonclaim_manifest, root=root)
 
     def parity_text(entries: list[dict[str, Any]], rendered: list[dict[str, Any]] | None = None) -> str:
         rendered_entries = rendered if rendered is not None else entries

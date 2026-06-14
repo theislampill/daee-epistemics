@@ -1490,6 +1490,9 @@ def pattern_profile_compact_target_backed(
 
 
 M8_CHRONOLOGY_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*chronology\.?\s*$")
+M8_HISTORICAL_CAUSATION_COMPACT_TARGET_RE = re.compile(
+    r"(?i)^\s*historical[-_]causation[-_]burden\.?\s*$"
+)
 M8_CHRONOLOGY_BACKING_RE = re.compile(
     r"(?is)\b(?:t1|t2|time[- ]indexed|Khaybar|poison|poisoning|later death|"
     r"final illness|fatal success|completed fatal|survival|years later)\b"
@@ -1500,6 +1503,9 @@ M9_ARABIC_LEXICAL_BACKING_RE = re.compile(
     r"translation|referent|semantic|sense|identity|overlap|dictionary)\b"
 )
 M7_DEFINITION_ANCHOR_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*definition[-_]anchor\.?\s*$")
+M7_LEXICAL_EVIDENCE_COMPACT_TARGET_RE = re.compile(
+    r"(?i)^\s*lexical[-_]evidence[-_]burden\.?\s*$"
+)
 M7_DEFINITION_ANCHOR_BACKING_RE = re.compile(
     r"(?is)\b(?:definition|term(?:s)?|meaning|semantic|predicate|word(?:s)?)\b"
     r".{0,180}\b(?:anchor(?:ed|s)?|fix(?:ed|es)?|bound(?:ed|s)?|stabili[sz](?:ed|es)?|"
@@ -1553,12 +1559,23 @@ def family_compact_target_backed(
             owner_specific_operation_performed(owner, payload)
             and M7_DEFINITION_ANCHOR_BACKING_RE.search(payload)
         )
+    if family == "M7" and M7_LEXICAL_EVIDENCE_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and M9_ARABIC_LEXICAL_BACKING_RE.search(payload)
+            and M7_DEFINITION_ANCHOR_BACKING_RE.search(payload)
+        )
     if family == "P7" and P7_CLAIM_BOUNDARY_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
         return bool(
             owner_specific_operation_performed(owner, payload)
             and all(pattern.search(payload) for pattern in (P7_STOP_SCOPE_RE, P7_REOPEN_RE, P7_HELD_ROUTE_RE))
         )
     if family == "M8" and M8_CHRONOLOGY_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and M8_CHRONOLOGY_BACKING_RE.search(payload)
+        )
+    if family == "M8" and M8_HISTORICAL_CAUSATION_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
         return bool(
             owner_specific_operation_performed(owner, payload)
             and M8_CHRONOLOGY_BACKING_RE.search(payload)
