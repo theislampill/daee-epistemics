@@ -121,7 +121,8 @@ INLINE_REREAD_HEADING_RE = re.compile(
 HIGH_MASS_TERMS_RE = re.compile(
     r"(?i)\b(?:source[- ]worldview|worldview|proof[- ]stack|textual|canon|Christology|"
     r"independent lordship|hidden premise|dependency radius|source authority|authority-order|"
-    r"predication|category|moral tribunal|worship[- ]worthiness|hiddenness|"
+    r"predication|category|moral tribunal|worship[-_ ]worthiness|"
+    r"divine[-_ ]hiddenness|hiddenness|source[-_ ]governance|chronology\+causality|chronology[-_ ]causality|"
     r"expose[-_ ]neutrality[-_ ]burden|neutrality[-_ ](?:burden|claim)|coercive guidance|"
     r"accountability|culpability|arbitrary command|command authority|mystery shield|"
     r"immunity|recoil|epistemology|self[- ]refutation|"

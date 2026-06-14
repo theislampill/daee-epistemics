@@ -784,6 +784,7 @@ def matched_owner_route_tokens(scope: str) -> set[str]:
 
 
 def parser_self_errors() -> list[str]:
+    errors: list[str] = []
     route_scope = "Matched owner/TTP route: [source-status-repair.source-order], [authority-order-repair.sort]"
     found = matched_owner_route_tokens(route_scope)
     expected = {
@@ -792,11 +793,25 @@ def parser_self_errors() -> list[str]:
     }
     missing = expected - found
     if missing:
-        return [
+        errors.append(
             "checker self-canary: hyphenated owner.operation route tokens did not normalize "
             f"to owner families; missing {sorted(missing)} from {sorted(found)}"
-        ]
-    return []
+        )
+    chronology_causality_block = """
+⁴B₁[M8] - consequence-trace over chronology+causality
+- Target: chronology+causality.
+- Operation: consequence-trace acts on the t1-to-t2 sequence with owner family M8.
+- Result/state-change: consequence-traced. State change: the poison narrative is dependency-exposed and entailment-bounded; t1 exposure, later pain, final illness, and death are no longer collapsed into immediate fatal human success at t1.
+- Contribution-to-Land(⁴B): Land(⁴B) is licensed because the burden-local BEFORE state treated delayed consequence language as if it proved H(t1). The AFTER state traces the sequence and blocks that entailment: t1 exposure may explain later pain or martyrdom framing, but it does not entail that the human plot successfully killed him at t1 or prevented mission completion.
+
+TTP Operation Body:
+The tested consequence is this: if the Khaybar poison is treated as fatal human success at t1, then the Prophet's survival for years and the completion frame must be ignored or absorbed into the same predicate. That consequence is unacceptable because the argument's own time markers distinguish the poisoning event from the later final illness. Causal continuity may be acknowledged without granting the stronger conclusion. The later report can be read as bodily consequence and martyrdom language, while the formal contradiction still fails because the required time-indexed fatal-success claim is not established.
+"""
+    if not is_mrp_operation_shaped_submove(chronology_causality_block):
+        errors.append(
+            "checker self-canary: M8 body-backed chronology+causality compact target did not normalize"
+        )
+    return errors
 
 
 def contribution_body(block: str) -> str:
@@ -1512,7 +1527,9 @@ def pattern_profile_compact_target_backed(
     )
 
 
-M8_CHRONOLOGY_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*chronology\.?\s*$")
+M8_CHRONOLOGY_COMPACT_TARGET_RE = re.compile(
+    r"(?i)^\s*(?:chronology|chronology\+causality|chronology[-_]causality)\.?\s*$"
+)
 M8_HISTORICAL_CAUSATION_COMPACT_TARGET_RE = re.compile(
     r"(?i)^\s*historical[-_]causation[-_]burden\.?\s*$"
 )
