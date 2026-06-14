@@ -1566,6 +1566,22 @@ V6_INTEGRATION_PRESSURE_STATE_RE = re.compile(
     r"(?is)\b(?:converg(?:e|es|ed|ing)|competing answers|false choice|bounded answer|"
     r"unsupported contradiction|without forcing|no longer treated as competing)\b"
 )
+OWNER_BACKED_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*[a-z0-9]+(?:[-_][a-z0-9]+)+\.?\s*$")
+OWNER_BACKED_COMPACT_TARGET_GENERIC_PARTS = {
+    "burden",
+    "claim",
+    "delta",
+    "generic",
+    "land",
+    "move",
+    "operation",
+    "owner",
+    "pressure",
+    "result",
+    "route",
+    "state",
+    "target",
+}
 
 
 def family_compact_target_backed(
@@ -1638,6 +1654,38 @@ def family_compact_target_backed(
     return False
 
 
+def owner_backed_compact_target(
+    owner: str,
+    target: str,
+    operation_text: str,
+    operation_scope: str,
+    operation_body: str,
+    result: str,
+    contribution: str,
+) -> bool:
+    target_text = str(target or "").strip().rstrip(".")
+    if not OWNER_BACKED_COMPACT_TARGET_RE.fullmatch(target_text):
+        return False
+    parts = [part for part in re.split(r"[-_]+", target_text.lower()) if part]
+    if len(parts) < 2:
+        return False
+    if not any(part not in OWNER_BACKED_COMPACT_TARGET_GENERIC_PARTS for part in parts):
+        return False
+    family = strict_owner_family(owner)
+    if not family:
+        return False
+    payload = " ".join((operation_text, operation_scope))
+    owner_token = FAMILY_OPERATION_OWNER.get(family, owner)
+    owner_performed = owner_specific_operation_performed(owner, payload)
+    if owner_token != owner:
+        owner_performed = owner_performed or owner_specific_operation_performed(owner_token, payload)
+    return bool(
+        owner_performed
+        and operation_acts_on_pressure(target, operation_text)
+        and operation_body_has_state_delta(operation_body, result, contribution)
+    )
+
+
 def do_second_loop_pressure_action_backed(
     owner: str,
     target: str,
@@ -1699,6 +1747,15 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
             target,
             operation_text,
             operation_scope,
+        )
+        and not owner_backed_compact_target(
+            owner,
+            target,
+            operation_text,
+            operation_scope,
+            operation_body,
+            result,
+            contribution,
         )
     ):
         return False
