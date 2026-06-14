@@ -140,6 +140,14 @@ NEGATIVE_NON_EDGE_REFERENCE_RE = re.compile(
     r"(?i)\b(?:does\s+not|do\s+not|no|without|not)\b"
     r"(?:(?!\n).){0,120}\b(?:license|create|creating|generate|generating|new|extra|downstream|edge|route)\b"
 )
+STAGE05_LINEAR_DEPENDENCY_CURL_RE = re.compile(
+    r"(?i)\b(?:depends on|downstream|directed dependency|linear(?:ly)? traversable|"
+    r"remaining live burden|cannot be closed as proof without)\b"
+)
+STAGE05_STRICT_CURL_REASON_RE = re.compile(
+    r"(?i)\b(?:circular|rotation|rotational|rotated|churn|recoil|label-pressure|"
+    r"self-reinforcing|regress|wisw[āa]s)\b"
+)
 M9_RESULT_TOKEN_OPERATION_MAP = {
     "predicate-separated": "predication-repair",
     "category-separated": "predication-repair",
@@ -1920,6 +1928,7 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
     canonicalize_stage05_reread_invocation(stage)
     normalize_stage05_stage_level_pressure_activations(stage)
     normalize_stage05_negative_non_edge_public_burden_references(stage)
+    normalize_stage05_linear_dependency_curl(stage)
     normalize_stage05_held_route_gradient_identity(stage)
     normalize_stage05_per_burden_extra_fields(stage)
     per_burden_errors = staged_output.per_burden_reread_entry_errors(
@@ -2069,6 +2078,44 @@ def normalize_stage05_negative_non_edge_public_burden_references(stage: dict[str
     if rewrites:
         normalization = normalization_object(stage)
         normalization["negative_non_edge_public_burden_references"] = rewrites
+        stage["normalization"] = normalization
+
+
+def normalize_stage05_linear_dependency_curl(stage: dict[str, Any]) -> None:
+    entries = stage.get("per_burden_reread")
+    if not isinstance(entries, list):
+        return
+    rewrites: list[dict[str, str]] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        route_type = str(entry.get("route_result_type") or "").strip()
+        route = str(entry.get("route") or "").strip().upper()
+        if route_type != "hold_partial" and route != "HOLD":
+            continue
+        curl = str(entry.get("curl") or "").strip()
+        curl_head = per_burden_state_head(curl, staged_output.PER_BURDEN_CURL_PREFIX_RE)
+        if curl_head not in {"held", "non-null"}:
+            continue
+        if not STAGE05_LINEAR_DEPENDENCY_CURL_RE.search(curl):
+            continue
+        if STAGE05_STRICT_CURL_REASON_RE.search(curl):
+            continue
+        canonical = (
+            "∇×κ: null / no loop because downstream verification remains held in "
+            "the ∇·B/HOLD route state rather than curl"
+        )
+        entry["curl"] = canonical
+        rewrites.append(
+            {
+                "burden_id": str(entry.get("burden_id") or ""),
+                "raw_curl": curl,
+                "canonical_curl": canonical,
+            }
+        )
+    if rewrites:
+        normalization = normalization_object(stage)
+        normalization["linear_dependency_curl_to_null"] = rewrites
         stage["normalization"] = normalization
 
 
@@ -13395,6 +13442,29 @@ def run_self_test(root: Path) -> int:
     held_display_stop_state = stage07_formal_reread_states([held_display_stop_entry], {"B1": "landed"})[0]
     if held_display_stop_state.get("curl_state") != "null":
         raise HarnessError("Self-test Stage 07 STOP formal reread state did not normalize held curl to null")
+    linear_hold_stage05 = {
+        "id": "stage-05-mrp-reread-terminal-state",
+        "status": "pass",
+        "terminal_states": {"B3": "held-with-reason"},
+        "dependency_graph_edges": [],
+        "no_new_resultant_proof": {
+            "proved": True,
+            "basis": "No generated burden; source verification remains held with reason.",
+            "unresolved_burdens": [],
+        },
+        "per_burden_reread": [
+            self_test_reread_hold_entry(
+                "B3",
+            )
+            | {
+                "curl": "∇×κ: held / source proof cannot be closed without downstream verification",
+            }
+        ],
+    }
+    normalize_stage05_mrp_fields(linear_hold_stage05)
+    linear_hold_curl = str(linear_hold_stage05["per_burden_reread"][0].get("curl") or "")
+    if not linear_hold_curl.startswith("∇×κ: null"):
+        raise HarnessError("Self-test Stage 05 linear HOLD dependency did not normalize curl to null")
     unresolved_stop_states = stage07_formal_reread_states(
         [self_test_reread_entry("B6")],
         {"B6": "carried-RECURSE"},

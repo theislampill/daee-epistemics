@@ -1230,6 +1230,9 @@ TTP Operation Body: Before this submove, the live pressure was that secularism c
 """
     if not target_pressure_identifiable("definition-burden"):
         errors.append("self-test target_pressure_identifiable rejected definition-burden")
+    for target in ("definition-stabilization", "definition_scope", "epistemic_authority"):
+        if not target_pressure_identifiable(target):
+            errors.append(f"self-test target_pressure_identifiable rejected compact target {target}")
     if not is_operation_shaped_submove(m7_definition_burden_block):
         errors.append("self-test M7 rejected definition-burden operation-shaped submove")
     return errors
@@ -1240,7 +1243,8 @@ GENERIC_TARGET_RE = re.compile(
     r"local issue|generated note|scope note|thing|it|this)\.?\s*$"
 )
 DEFINITION_BURDEN_TARGET_RE = re.compile(
-    r"(?i)^\s*(?:definition[-_ ]burden|target[-_ ]thesis|define\s+target\s+thesis)\s*$"
+    r"(?i)^\s*(?:definition[-_ ]burden|definition[-_ ]stabilization|definition[-_ ]scope|"
+    r"epistemic[-_ ]authority|target[-_ ]thesis|define\s+target\s+thesis)\s*$"
 )
 CONTRIBUTION_EXPLANATION_RE = re.compile(
     r"(?i)\b(?:because|so that|therefore|thereby|by |rather than|instead of|licenses?|"
