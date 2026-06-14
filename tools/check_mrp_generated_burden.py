@@ -1508,6 +1508,17 @@ SOURCE_LINEAGE_BACKING_RE = re.compile(
     r"(?is)\b(?:source lineage|source priority|quotation chain|quotation order|"
     r"evidential dependency|inherited claim|source chain)\b"
 )
+V6_PROOFTEXT_INTEGRATION_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*prooftext[-_]integration\.?\s*$")
+V6_PROOFTEXT_INTEGRATION_BACKING_RE = re.compile(
+    r"(?is)\b(?:prooftexts?|proof[- ]text|cited texts?|Johannine|John\s+1:1|1\s+John\s+5:20)\b"
+    r".{0,220}\b(?:integrat(?:e|es|ed|ing|ion)|convergence)\b|"
+    r"\b(?:integrat(?:e|es|ed|ing|ion)|convergence)\b"
+    r".{0,220}\b(?:prooftexts?|proof[- ]text|cited texts?|Johannine|John\s+1:1|1\s+John\s+5:20)\b"
+)
+V6_PROOFTEXT_INTEGRATION_STATE_RE = re.compile(
+    r"(?is)\b(?:bounded integration|without erasure|changed from erasure|no longer functioning|"
+    r"do(?:es)? not remove|cannot cancel|not override|not erasing|not erased|held in a bounded integration)\b"
+)
 
 
 def family_compact_target_backed(
@@ -1543,6 +1554,12 @@ def family_compact_target_backed(
         return bool(
             owner_specific_operation_performed(owner, payload)
             and SOURCE_LINEAGE_BACKING_RE.search(payload)
+        )
+    if family == "V6" and V6_PROOFTEXT_INTEGRATION_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and V6_PROOFTEXT_INTEGRATION_BACKING_RE.search(payload)
+            and V6_PROOFTEXT_INTEGRATION_STATE_RE.search(payload)
         )
     return False
 

@@ -32,6 +32,7 @@ from register_axis_contract import register_axis_errors
 from stage05_basis_contract import normalize_terminal_detail_basis
 import check_nla_decode_semantic_faithfulness as nla_decode
 import check_retained_proof_corpus as retained
+import build_staged_governed_output as staged_output
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -952,8 +953,78 @@ def visible_governed_output_errors(label: str, output_path: Path, text: str) -> 
         ("Graphify/ActiveGraph proof claim", r"Graphify[^.\n]{0,80}\bproof\b|ActiveGraph[^.\n]{0,80}\bproof\b"),
     ]
     for claim_label, pattern in forbidden_patterns:
-        if re.search(pattern, text, re.IGNORECASE):
+        matches = list(re.finditer(pattern, text, re.IGNORECASE))
+        if claim_label == "Graphify/ActiveGraph proof claim":
+            matches = [
+                match
+                for match in matches
+                if not (
+                    staged_output.OPTIONAL_TOOLING_PROOF_NONCLAIM_RE.search(
+                        staged_output.match_sentence(text, match.start(), match.end())
+                    )
+                    and not staged_output.OPTIONAL_TOOLING_POSITIVE_PROOF_RE.search(
+                        staged_output.match_sentence(text, match.start(), match.end())
+                    )
+                )
+            ]
+        if matches:
             errors.append(f"{label}: stage-07 output {rel(output_path)} contains forbidden {claim_label}")
+    return errors
+
+
+def self_test_visible_optional_tooling_nonclaims() -> list[str]:
+    base_output = """NOETIC FIELD EXECUTION
+
+## Layer A / Diagnostic IR Header
+- Initial burden set: [B1]
+
+## Layer B / Burden 1
+ACT records:
+⟦ACT B1_1[M7.definition-anchor] :: π=definition-pressure :: body_ref=B1_1 :: Δ=ΔB1:definition-anchored :: Land(B1)+⟧
+
+Land(B1): definition anchored.
+MRP(B1): type=no_new_resultant; graph=none; route=STOP
+
+## Restorative Response
+The response is governed and visible.
+
+## Closing Formulation
+The closure is bounded to the visible state.
+
+field_witness
+{
+  "B_LA": ["B1"],
+  "B_MRP": [],
+  "B_total": ["B1"],
+  "normalized_activation_record": {},
+  "terminal_states": {"B1": "landed"}
+}
+"""
+    output_path = ROOT / "tests" / "staged-runtime-handshake" / "self-test-output.md"
+    errors: list[str] = []
+    accepted_nonclaims = {
+        "stage07-optional-tooling-proof-nonclaim-does-not-claim": (
+            "Boundary: T_lang does not imply guaranteed uptake; this reread records only "
+            "the runtime field transition and does not claim interlocutor acceptance, "
+            "package proof, Graphify proof, or ActiveGraph proof."
+        ),
+        "stage07-optional-tooling-proof-nonclaim-without-claiming": (
+            "coverage gap: public rendering must reorient from formal explosion rhetoric "
+            "to the landed burden order B1-B5 without claiming release proof, packaging, "
+            "Graphify proof, or guaranteed interlocutor uptake."
+        ),
+    }
+    for case_id, line in accepted_nonclaims.items():
+        found = visible_governed_output_errors(case_id, output_path, f"{base_output}\n{line}\n")
+        if found:
+            errors.append(f"{case_id}: rejected optional-tooling proof nonclaim: {found}")
+    positive = visible_governed_output_errors(
+        "stage07-optional-tooling-positive-proof-claim",
+        output_path,
+        f"{base_output}\nGraphify proof confirms retained closure.\n",
+    )
+    if not any("Graphify/ActiveGraph proof claim" in error for error in positive):
+        errors.append("stage07-optional-tooling-positive-proof-claim: accepted forbidden proof claim")
     return errors
 
 
@@ -2274,6 +2345,8 @@ def main() -> int:
     valid_checked = 0
     invalid_checked = 0
     records_checked = 0
+
+    errors.extend(self_test_visible_optional_tooling_nonclaims())
 
     valid, invalid = iter_fixtures(args.root)
     for path in valid:
