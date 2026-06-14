@@ -70,6 +70,10 @@ ROUTING_OR_BOUNDARY_PROOF_RE = re.compile(
     r"not needed for (?:this|the) (?:scoped|bounded|local) claim|scope gate|"
     r"local closure only|partial closure)\b"
 )
+NEGATED_FUTURE_BURDEN_PREFIX_RE = re.compile(
+    r"(?i)(?:\brather than|\binstead of|\bwithout|\bnot)\s+"
+    r"(?:opening|instantiating|generating|creating|releasing)\s+$"
+)
 
 
 def _sup_to_int(raw: str) -> int:
@@ -235,15 +239,26 @@ def allowed_paired_alias_context(line: str) -> bool:
     )
 
 
+def non_graph_future_burden_mention(line: str, start: int) -> bool:
+    """Ignore explicit non-instantiation guards such as "rather than opening ⁴B"."""
+
+    prefix = str(line or "")[:start]
+    return bool(NEGATED_FUTURE_BURDEN_PREFIX_RE.search(prefix[-96:]))
+
+
 def extract_burdens(line: str, result: ParseResult, line_no: int) -> list[str]:
     found: list[str] = []
     for match in CANONICAL_BURDEN_RE.finditer(line):
+        if non_graph_future_burden_mention(line, match.start()):
+            continue
         token = match.group(0)
         if token not in found:
             found.append(token)
     canonical_indices = canonical_burden_indices(line)
     paired_alias_context = allowed_paired_alias_context(line)
     for match in ASCII_BURDEN_RE.finditer(line):
+        if non_graph_future_burden_mention(line, match.start()):
+            continue
         token = burden_token(match.group(1))
         if token not in found:
             found.append(token)

@@ -159,6 +159,7 @@ STAGE04_PROOF_FAMILY_LABEL_RE = re.compile(r"(?i)\bproof[- ]family[- ]label\b")
 STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("proof-method-audit", "proof-overreach-audit", "H"): "τ",
     ("proof-method-audit", "proof-overreach-audit", "m"): "τ",
+    ("proof-method-audit", "proof-family-and-carrier-audit", "m"): "μ",
     ("proof-method-audit", "proof-route-status-audit", "H"): "τ",
     ("M3", "orphaned-intuition", "m"): "♥",
     ("do-second-loop", "accountability-hujjah-compression", "H"): "κ",
@@ -8768,6 +8769,40 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to canonicalize do-second-loop fitrah/ayat register_axis fallback")
     if do_second_loop_axis_stage04["act_row_details"][3].get("register_axis") != "κ":
         raise HarnessError("Self-test failed to canonicalize do-second-loop hujjah/accountability register_axis fallback")
+    proof_method_m_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [
+                (
+                    "⟦ACT ¹B₁[proof-method-audit.proof-family-and-carrier-audit] :: "
+                    "π=analogy-carrier-proof-method-status :: body_ref=¹B₁ :: "
+                    "Δ=Δ¹B:proof-family-carrier-typed :: Land(¹B)+⟧"
+                )
+            ],
+            "act_row_details": [
+                {
+                    "act_row": (
+                        "⟦ACT ¹B₁[proof-method-audit.proof-family-and-carrier-audit] :: "
+                        "π=analogy-carrier-proof-method-status :: body_ref=¹B₁ :: "
+                        "Δ=Δ¹B:proof-family-carrier-typed :: Land(¹B)+⟧"
+                    ),
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "proof-method-audit",
+                    "operation": "proof-family-and-carrier-audit",
+                    "register_axis": "m",
+                    "delta_result": "proof-family-carrier-typed",
+                }
+            ],
+        },
+    )
+    if proof_method_m_axis_stage04["act_row_details"][0].get("register_axis") != "μ":
+        raise HarnessError("Self-test failed to canonicalize proof-method carrier m register_axis fallback")
     do_second_loop_tau_punishment_stage04 = normalized_stage(
         "stage-04-burden-execution-act",
         {

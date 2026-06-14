@@ -330,7 +330,9 @@
   function lineBurdens(line,model,lineNo){
     const found=[];
     const canonicalIndices=new Set();
+    const isNonGraphFutureMention=(index)=>/(?:\brather than|\binstead of|\bwithout|\bnot)\s+(?:opening|instantiating|generating|creating|releasing)\s*$/i.test(String(line||'').slice(Math.max(0,index-96),index));
     for(const m of line.matchAll(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B(?![₀₁₂₃₄₅₆₇₈₉])/g)){
+      if(isNonGraphFutureMention(m.index||0)) continue;
       if(!found.includes(m[0])) found.push(m[0]);
       canonicalIndices.add(String(Number(supNum(m[1]))));
     }
@@ -339,6 +341,7 @@
     const machinePayloadLine=/^\s*["{[\]},]/.test(line)
       && /"(?:B_LA|B_MRP|B_total|id|source|target|from|to|nodes|edges|terminal_states|owner_activations|coverage_proof|graph|body_ref|loopbreak_target)"\s*:/.test(line);
     for(const m of line.matchAll(/\bB(\d+)\b/g)){
+      if(isNonGraphFutureMention(m.index||0)) continue;
       const t=burden(m[1]); if(!found.includes(t)) found.push(t);
       const isDeltaAlias=new RegExp(`\\\\bDelta\\\\(\\\\s*${m[0]}\\\\s*\\\\)`,'i').test(line);
       const isPaired=canonicalIndices.has(m[1]) || (formalPairedContext && isDeltaAlias);
