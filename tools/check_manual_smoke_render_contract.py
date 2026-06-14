@@ -539,7 +539,11 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ),
     (
         "P2",
-        re.compile(r"(?i)\b(?:objection mapping|maps? the objection|claim map|support map|objection structure)\b"),
+        re.compile(
+            r"(?i)\b(?:objection mapping|maps? the objection|claim map|support map|"
+            r"objection structure|claim[- ]reconstruction|objection[- ]topology|"
+            r"structured claim|load[- ]bearing parts)\b"
+        ),
     ),
     (
         "P3",
