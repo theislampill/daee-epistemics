@@ -406,6 +406,9 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
             r"orphaned moral|ground is orphaned|grounded? intuition|intuition has a home|"
             r"moral deliverance|moral recognition|recognition remains honored|retained while its ground|"
             r"binding (?:moral )?judgments?|moral terms as more than|borrowed moral capital|"
+            r"moral[- ]purpose|moral obligation|objective obligation|intrinsic dignity|"
+            r"final human purpose|teleological intuitions?|inherited moral furniture|"
+            r"preference can describe|convention can describe|utility can describe|"
             r"moral tribunal|standard of justice|verdict binding)\b"
         ),
     ),
@@ -1235,6 +1238,21 @@ TTP Operation Body: Before this submove, the live pressure was that secularism c
             errors.append(f"self-test target_pressure_identifiable rejected compact target {target}")
     if not is_operation_shaped_submove(m7_definition_burden_block):
         errors.append("self-test M7 rejected definition-burden operation-shaped submove")
+    m3_moral_purpose_block = """
+### ³B₁[M3] - orphaned-intuition over moral-purpose-grounding
+
+Target: moral-purpose-grounding.
+
+Operation: orphaned-intuition acts on moral-purpose-grounding with owner family M3.
+
+Result/state-change: State change: orphaned-intuition-identified. Claims about objective value, obligation, dignity, and telos are no longer treated as grounded merely because they are asserted, preferred, socially useful, or widely shared.
+
+Contribution-to-Land(³B): Land is licensed because the burden-local AFTER state changed from moral-purpose confidence without a grounding account to a classified orphaned-intuition state.
+
+TTP Operation Body: Before this submove, secularism could affirm human dignity, moral obligation, justice, meaning, or progress while treating these as available without a transcendent grounding source. M3.orphaned-intuition tests whether those claims are supported by the worldview's own foundations or whether they remain inherited moral furniture. Preference can describe what people want; convention can describe what communities enforce; utility can describe what produces outcomes. None of those, by itself, establishes objective obligation, intrinsic dignity, or final human purpose. After the operation, the moral-purpose burden is landed because the local state identifies the pressure point: secularism often preserves moral and teleological intuitions while detaching them from the grounding needed to make them objective rather than merely asserted. Delta: Δ³B:orphaned-intuition-identified. Land-license: the burden asked whether objective value and purpose are grounded; the state now classifies the relevant claims as orphaned intuitions unless a sufficient grounding account is supplied.
+"""
+    if not is_operation_shaped_submove(m3_moral_purpose_block):
+        errors.append("self-test M3 rejected moral-purpose grounding operation-shaped submove")
     return errors
 
 
