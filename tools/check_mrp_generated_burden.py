@@ -1511,6 +1511,13 @@ M7_DEFINITION_ANCHOR_BACKING_RE = re.compile(
     r".{0,180}\b(?:anchor(?:ed|s)?|fix(?:ed|es)?|bound(?:ed|s)?|stabili[sz](?:ed|es)?|"
     r"no longer|semantic drift)\b"
 )
+P3_T1_T2_ORDER_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*t1[-_]t2[-_]collapse[-_]pressure\.?\s*$")
+P3_T1_T2_ORDER_BACKING_RE = re.compile(
+    r"(?is)\b(?:t1|t2|Khaybar|628\s*CE|632\s*CE|surviv(?:al|ed)|"
+    r"message completion|completion|final illness|death)\b"
+    r".{0,260}\b(?:order(?:ed|s|ing)?|sequence(?:d|s)?|distinct|"
+    r"non[- ]collapsed|collapse|retroactive|read back)\b"
+)
 P7_CLAIM_BOUNDARY_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*claim[_-]boundary\.?\s*$")
 SOURCE_LINEAGE_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*source[-_]lineage\.?\s*$")
 SOURCE_LINEAGE_BACKING_RE = re.compile(
@@ -1564,6 +1571,11 @@ def family_compact_target_backed(
             owner_specific_operation_performed(owner, payload)
             and M9_ARABIC_LEXICAL_BACKING_RE.search(payload)
             and M7_DEFINITION_ANCHOR_BACKING_RE.search(payload)
+        )
+    if family == "P3" and P3_T1_T2_ORDER_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and P3_T1_T2_ORDER_BACKING_RE.search(payload)
         )
     if family == "P7" and P7_CLAIM_BOUNDARY_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
         return bool(
