@@ -172,6 +172,9 @@ OPERATION_MECHANISM_RE = re.compile(
     r"guidance[- ]vs[- ]compulsion|source[- ]function|conveyance|warning|tawf[iī]q|"
     r"non[- ]coercive guidance)\b"
 )
+DO_ATTRIBUTE_CLAIM_PRECISION_TARGET_RE = re.compile(
+    r"(?i)attribute[-_ ]claim[-_ ]precision"
+)
 OPERATION_ACTION_RE = re.compile(
     r"(?i)\b(?:expose|distinguish|distinguishes|distinguished|distinguishing|"
     r"block|blocks|blocked|blocking|repair|repairs|repaired|repairing|"
@@ -1261,6 +1264,25 @@ def target_pressure_identifiable(target: str) -> bool:
     return not is_label_like_value(cleaned)
 
 
+def do_attribute_claim_precision_target_backed(
+    owner: str,
+    target: str,
+    operation: str,
+    result: str,
+    contribution: str,
+) -> bool:
+    if owner_family(owner) != "DO_ATTRIBUTE":
+        return False
+    cleaned = re.sub(r"\s+", " ", target.strip(" .;:-")).strip()
+    if not DO_ATTRIBUTE_CLAIM_PRECISION_TARGET_RE.fullmatch(cleaned):
+        return False
+    operation_scope = " ".join((operation, result, contribution))
+    return bool(
+        owner_specific_operation_performed(owner, operation_scope)
+        and operation_acts_on_pressure(target, operation_scope)
+    )
+
+
 def target_keywords(target: str) -> set[str]:
     stopwords = {
         "the",
@@ -1736,7 +1758,15 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
     owner = submove_owner(block)
     if owner_family(owner) == "PROOF_METHOD" and proof_method_carrier_transition_visible(block):
         return True
-    if not target_pressure_identifiable(target):
+    if not target_pressure_identifiable(
+        target
+    ) and not do_attribute_claim_precision_target_backed(
+        owner,
+        target,
+        operation,
+        result,
+        contribution,
+    ):
         return False
     if not contribution_explains_land(contribution):
         return False

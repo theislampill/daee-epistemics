@@ -95,11 +95,11 @@ P7_STOP_SCOPE_RE = re.compile(
 )
 P7_REOPEN_RE = re.compile(
     r"(?i)\b(?:reopen condition|reopen gate|would require|requires (?:a )?(?:new|fixed|stable)|"
-    r"must be (?:stated|routed|worked)|new burden)\b"
+    r"must be (?:stated|routed|worked)|new burden|unless they show)\b"
 )
 P7_HELD_ROUTE_RE = re.compile(
     r"(?i)\b(?:held route|held material|held-with-reason|non[- ]load[- ]bearing|"
-    r"not load[- ]bearing|unworked material|outside scope)\b"
+    r"not load[- ]bearing|unworked material|outside scope|acknowledged without granting)\b"
 )
 SUBMOVE_REF = rf"(?:{TOKEN}(?:[{SUB}]+|[_\.]\d+))"
 ACT_LINE_RE = re.compile(r"(?m)^\s*\u27e6ACT\b.*\u27e7\s*$")
