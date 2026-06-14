@@ -171,6 +171,7 @@ STAGE04_REGISTER_AXIS_FALLBACKS = {
     ("proof-method-audit", "proof-family-and-carrier-audit", "H"): "τ",
     ("proof-method-audit", "proof-family-and-carrier-audit", "m"): "μ",
     ("proof-method-audit", "proof-route-status-audit", "H"): "τ",
+    ("pattern-profiling", "loaded-label-carrier-audit", "N"): "μ",
     ("M3", "orphaned-intuition", "m"): "♥",
     ("M3", "orphaned-intuition", "τ"): "♥",
     ("do-second-loop", "accountability-hujjah-compression", "H"): "κ",
@@ -9687,6 +9688,27 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test Stage 04 guidance laundered an M9 delta/result label into operation space")
     if "SOURCE operations: authority-order-repair, sort, source-order, source-order-repair, status" in selected_model_delta_guidance:
         raise HarnessError("Self-test Stage 04 guidance exposed SOURCE status as a callable operation")
+    pattern_loaded_label_n_axis_row = (
+        "⟦ACT ¹B₁[pattern-profiling.loaded-label-carrier-audit] :: "
+        "π=identity-label-and-claim-boundary :: body_ref=¹B₁ :: "
+        "Δ=Δ¹B:carrier-function-typed :: Land(¹B)+⟧"
+    )
+    pattern_loaded_label_n_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [pattern_loaded_label_n_axis_row],
+            "act_row_details": self_test_act_row_details(
+                [pattern_loaded_label_n_axis_row],
+                {"¹B₁": "N"},
+            ),
+        },
+    )
+    if pattern_loaded_label_n_axis_stage04["act_row_details"][0].get("register_axis") != "μ":
+        raise HarnessError("Self-test failed to canonicalize pattern-profiling loaded-label N axis to μ")
     m3_orphaned_row = (
         "⟦ACT ¹B₁[M3.orphaned-intuition] :: "
         "π=moral-recognition-grounding-pressure :: "
