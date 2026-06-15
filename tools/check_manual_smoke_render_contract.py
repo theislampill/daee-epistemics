@@ -1233,7 +1233,17 @@ TTP Operation Body: Before this submove, the live pressure was that secularism c
 """
     if not target_pressure_identifiable("definition-burden"):
         errors.append("self-test target_pressure_identifiable rejected definition-burden")
-    for target in ("definition-stabilization", "definition_scope", "epistemic_authority"):
+    for target in (
+        "definition-stabilization",
+        "definition_scope",
+        "epistemic_authority",
+        "charitable-reconstruction",
+        "identity-boundary",
+        "attribute-coherence",
+        "hujjah-baseline",
+        "evidential-method",
+        "normative_grounding",
+    ):
         if not target_pressure_identifiable(target):
             errors.append(f"self-test target_pressure_identifiable rejected compact target {target}")
     if not is_operation_shaped_submove(m7_definition_burden_block):
@@ -1295,7 +1305,9 @@ DEFINITION_BURDEN_TARGET_RE = re.compile(
     r"epistemic[-_ ]authority|target[-_ ]thesis|define\s+target\s+thesis)\s*$"
 )
 COMPACT_OPERATION_TARGET_RE = re.compile(
-    r"(?i)^\s*(?:grounding[-_ ]burden)\s*$"
+    r"(?i)^\s*(?:grounding[-_ ]burden|charitable[-_ ]reconstruction|"
+    r"identity[-_ ]boundary|attribute[-_ ]coherence|hujjah[-_ ]baseline|"
+    r"evidential[-_ ]method|normative[-_ ]grounding)\s*$"
 )
 CONTRIBUTION_EXPLANATION_RE = re.compile(
     r"(?i)\b(?:because|so that|therefore|thereby|by |rather than|instead of|licenses?|"
