@@ -1243,6 +1243,7 @@ TTP Operation Body: Before this submove, the live pressure was that secularism c
         "hujjah-baseline",
         "evidential-method",
         "normative_grounding",
+        "public_order",
     ):
         if not target_pressure_identifiable(target):
             errors.append(f"self-test target_pressure_identifiable rejected compact target {target}")
@@ -1307,7 +1308,7 @@ DEFINITION_BURDEN_TARGET_RE = re.compile(
 COMPACT_OPERATION_TARGET_RE = re.compile(
     r"(?i)^\s*(?:grounding[-_ ]burden|charitable[-_ ]reconstruction|"
     r"identity[-_ ]boundary|attribute[-_ ]coherence|hujjah[-_ ]baseline|"
-    r"evidential[-_ ]method|normative[-_ ]grounding)\s*$"
+    r"evidential[-_ ]method|normative[-_ ]grounding|public[-_ ]order)\s*$"
 )
 CONTRIBUTION_EXPLANATION_RE = re.compile(
     r"(?i)\b(?:because|so that|therefore|thereby|by |rather than|instead of|licenses?|"
