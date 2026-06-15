@@ -2,6 +2,7 @@
   "schema": "staged-runtime-handshake-v1",
   "case_id": "stage05-model-failure-prefix-descriptive-act-burdens",
   "mode": "staged-current-skill-smoke",
+  "legacy_contract": "pre-per-burden-reread",
   "user_interface_preserved": true,
   "stage_order": [
     "stage-01-intake",

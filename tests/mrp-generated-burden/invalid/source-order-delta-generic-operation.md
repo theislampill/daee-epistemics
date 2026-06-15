@@ -37,7 +37,7 @@ Finding: stable
 MRP route result type: no_new_resultant
 MRP resultant: stable -> graph none; route STOP
 Graph delta: none
-Pre-emption basis: terminal states landed; B_MRP empty; no generated burden remains
+Pre-emption basis: none
 Route: STOP
 
 ### Closure/Reconstruction Witness

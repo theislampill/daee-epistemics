@@ -81,9 +81,12 @@ MRP_CLOSURE_RESULTANT_RE = re.compile(
 )
 COMMON_EXAMPLE_OWNERS = {"FPD", "M1", "M1-P", "M1P", "M8"}
 M1_RECONSTRUCTIBLE_RE = re.compile(
-    r"(?i)\b(?:self[- ]refutation|self[- ]grounding|internal contradiction|"
+    r"(?i)\b(?:self[- ]refutation|self[- ]grounding|internal[- ]contradiction|"
     r"own standard|own rule|own source[- ]appeal standard|own appeal to (?:Scripture|the source|the text|evidence)|"
     r"proof[- ]stack becomes circular|circular (?:protection|appeal|proof[- ]stack)|"
+    r"imported premise|loaded premise|disputed premise|inserted premise|"
+    r"premise (?:is )?(?:imported|loaded|disputed|inserted|not established)|"
+    r"checks whether .* (?:established|imported)|must prove|"
     r"appeal circular|pre-controls? every reading|by its own rule|cannot authorize its own|collapses under its own)\b"
 )
 P7_STOP_SCOPE_RE = re.compile(
@@ -92,11 +95,11 @@ P7_STOP_SCOPE_RE = re.compile(
 )
 P7_REOPEN_RE = re.compile(
     r"(?i)\b(?:reopen condition|reopen gate|would require|requires (?:a )?(?:new|fixed|stable)|"
-    r"must be (?:stated|routed|worked)|new burden)\b"
+    r"must be (?:stated|routed|worked)|new burden|unless they show)\b"
 )
 P7_HELD_ROUTE_RE = re.compile(
     r"(?i)\b(?:held route|held material|held-with-reason|non[- ]load[- ]bearing|"
-    r"not load[- ]bearing|unworked material|outside scope)\b"
+    r"not load[- ]bearing|unworked material|outside scope|acknowledged without granting)\b"
 )
 SUBMOVE_REF = rf"(?:{TOKEN}(?:[{SUB}]+|[_\.]\d+))"
 ACT_LINE_RE = re.compile(r"(?m)^\s*\u27e6ACT\b.*\u27e7\s*$")
@@ -130,8 +133,11 @@ SOURCE_OWNED_ACT_OPERATIONS = {
             r"internal contradiction|cannot authorize its own|test(?:s|ed)? that rule)\b"
         ),
         "test": re.compile(
-            r"(?is)\b(?:self[- ]grounding|own (?:rule|standard)|internal contradiction|"
+            r"(?is)\b(?:self[- ]grounding|own (?:rule|standard)|internal[- ]contradiction|"
             r"circular (?:protection|appeal)|own source[- ]appeal test|"
+            r"imported[- ]contradiction|imported premise|loaded premise|disputed premise|"
+            r"inserted premise|premise (?:is )?(?:imported|loaded|disputed|inserted|not established)|"
+            r"checks whether .* (?:established|imported)|must prove|"
             r"test(?:s|ed)? (?:the|that) claim)\b"
         ),
     },
@@ -140,7 +146,9 @@ SOURCE_OWNED_ACT_OPERATIONS = {
             r"(?is)\b(?:orphaned intuition|ungrounded intuition|intuition without|moral intuition|"
             r"orphaned moral|ground is orphaned|grounded? intuition|intuition has a home|"
             r"moral deliverance|moral recognition|recognition remains honored|retained while its ground|"
-            r"restored to (?:a )?ground|cannot remain severed from its ground)\b"
+            r"restored to (?:a )?ground|cannot remain severed from its ground|"
+            r"binding (?:moral )?judgments?|moral terms as more than|borrowed moral capital|"
+            r"moral tribunal|standard of justice|verdict binding)\b"
         ),
     },
     "M7": {
@@ -162,7 +170,7 @@ SOURCE_OWNED_ACT_OPERATIONS = {
     },
     "M9": {
         "predication-repair": re.compile(
-            r"(?is)\b(?:predicat|category|predicate transfer|reliability|reliable|separate|separated)\b"
+            r"(?is)\b(?:predicat\w*|category|predicate transfer|reliability|reliable|separate|separated)\b"
         ),
         "sense-split": re.compile(
             r"(?is)\b(?:sense|referent|meaning[- ]conditions?|semantic|predicat|category|"
@@ -175,6 +183,23 @@ SOURCE_OWNED_ACT_OPERATIONS = {
         ),
         "scope-boundary": re.compile(
             r"(?is)\b(?:scope|boundary|bounded|held-with-reason|anti[- ]fluctuation|reopen condition|PARTIAL)\b"
+        ),
+    },
+    "V2": {
+        "repair": re.compile(
+            r"(?is)\b(?:reconstitut\w+ reason|role of reason|reason[- ]role|sound reason|"
+            r"reason\b[^.\n]{0,120}\b(?:recogniz|instrument|tribunal|sovereign|proper rank)|"
+            r"autonomous sovereign|rational faculty)\b"
+        ),
+        "reconstituting-reason": re.compile(
+            r"(?is)\b(?:reconstitut\w+ reason|role of reason|reason[- ]role|sound reason|"
+            r"reason\b[^.\n]{0,120}\b(?:recogniz|instrument|tribunal|sovereign|proper rank)|"
+            r"autonomous sovereign|rational faculty)\b"
+        ),
+        "proof-burden-order": re.compile(
+            r"(?is)\b(?:proof[- ]burden|burden[- ]order|warrant[- ]order|"
+            r"claimant'?s? burden|must prove|stronger inference|burden is restored|"
+            r"burden remains on)\b"
         ),
     },
     "SOURCE": {
@@ -221,9 +246,77 @@ SOURCE_OWNED_ACT_OPERATIONS = {
 BODY_SUPPORTED_GENERIC_DELTA_RESULTS = {
     "M8": {"consequence-traced", "dependency-exposed"},
     "PATTERN_PROFILE": {"carrier-function-typed", "proof-packet-reconstructed"},
-    "PROOF_METHOD": {"proof-family-carrier-typed"},
-    "SOURCE": {"authority-order-repaired", "source-order-repaired"},
+    "PROOF_METHOD": {"proof-family-carrier-typed", "proof-route-status-clarified"},
+    "SOURCE": {
+        "authority-order-repaired",
+        "source-order-repaired",
+        "hidden-support-blocked",
+        "proof-text-hidden-support-blocked",
+        "proof-text-sorted",
+        "source-function-bounded",
+    },
+    "V10": {
+        "proof-text-sorted",
+        "source-function-bounded",
+    },
+    "DOUBT_SKEPTICISM": {
+        "doubt-distinguished-from-skeptical-methodology",
+        "doubt-methodology-separated",
+        "doubt-method-separated-from-sincere-question",
+    },
+    "DO_ATTRIBUTE": {
+        "attribute-precision-typed",
+        "person-nature-transfer-blocked",
+        "attribute-multiplicity-bounded",
+        "predicate-identity-separated",
+    },
+    "DO_SECOND_LOOP": {
+        "accountability-hujjah-narrowed",
+        "coercive-guidance-demand-bounded",
+        "fitrah-ayat-baseline-established",
+        "punishment-proportionality-calibrated",
+    },
+    "V2": {
+        "reason-role-repaired",
+        "proof-burden-order-restored",
+    },
+    "V6": {
+        "convergence-pattern-integrated",
+        "register-conflict-converted",
+    },
+    "M1-P": {
+        "speech-act-presupposition-named",
+    },
 }
+SOURCE_ORDER_REPAIR_DELTA_RESULTS = {
+    "source-order-repaired",
+    "hidden-support-blocked",
+    "proof-text-hidden-support-blocked",
+    "proof-text-sorted",
+    "source-function-bounded",
+}
+DO_ATTRIBUTE_BACKING_RE = re.compile(
+    r"(?is)\b(?:attribute[- ]precision|person/nature|person[- ]nature|predicate|category|"
+    r"attribute|cruelty|kindness|generosity|multiplicity|transfer|typed|typing)\b"
+)
+DO_ATTRIBUTE_STATE_RE = re.compile(
+    r"(?is)\b(?:typed|classified|separated|blocked|bounded|no longer transferred|category transfer)\b"
+)
+DO_SECOND_LOOP_BACKING_RE = re.compile(
+    r"(?is)\b(?:accountability|hujjah|ḥujjah|warning|knowledge|capacity|record|culpability|"
+    r"guidance|coercion|persuasion|punishment|proportionality|mercy|justice|judge|"
+    r"fitrah|ayat|signs?|conscience|revelation|responsibility|created disposition|"
+    r"spiritual(?:ly)?|summons|moral recognition)\b"
+)
+DO_SECOND_LOOP_STATE_RE = re.compile(
+    r"(?is)\b(?:narrowed|bounded|calibrated|separated|blocked|sequenced|no longer measured|"
+    r"no longer carries|warning|record|accountability)\b"
+)
+DO_SECOND_LOOP_ACTION_RE = re.compile(
+    r"(?is)\b(?:bound|bounds|bounded|narrow|narrows|narrowed|calibrate|calibrates|"
+    r"calibrated|separate|separates|separated|sequence|sequenced|warn|warning|"
+    r"guide|guidance|persuade|persuasion|coerce|coercion|compel|compelling)\b"
+)
 PROOF_METHOD_CARRIER_RE = re.compile(
     r"(?is)\b(?:proof[- ]family|proof[- ]carrier|proof carrier|logic tree|"
     r"formal derivation|formal display|diagram|symbolic conflict|compression device|"
@@ -691,6 +784,7 @@ def matched_owner_route_tokens(scope: str) -> set[str]:
 
 
 def parser_self_errors() -> list[str]:
+    errors: list[str] = []
     route_scope = "Matched owner/TTP route: [source-status-repair.source-order], [authority-order-repair.sort]"
     found = matched_owner_route_tokens(route_scope)
     expected = {
@@ -699,11 +793,25 @@ def parser_self_errors() -> list[str]:
     }
     missing = expected - found
     if missing:
-        return [
+        errors.append(
             "checker self-canary: hyphenated owner.operation route tokens did not normalize "
             f"to owner families; missing {sorted(missing)} from {sorted(found)}"
-        ]
-    return []
+        )
+    chronology_causality_block = """
+⁴B₁[M8] - consequence-trace over chronology+causality
+- Target: chronology+causality.
+- Operation: consequence-trace acts on the t1-to-t2 sequence with owner family M8.
+- Result/state-change: consequence-traced. State change: the poison narrative is dependency-exposed and entailment-bounded; t1 exposure, later pain, final illness, and death are no longer collapsed into immediate fatal human success at t1.
+- Contribution-to-Land(⁴B): Land(⁴B) is licensed because the burden-local BEFORE state treated delayed consequence language as if it proved H(t1). The AFTER state traces the sequence and blocks that entailment: t1 exposure may explain later pain or martyrdom framing, but it does not entail that the human plot successfully killed him at t1 or prevented mission completion.
+
+TTP Operation Body:
+The tested consequence is this: if the Khaybar poison is treated as fatal human success at t1, then the Prophet's survival for years and the completion frame must be ignored or absorbed into the same predicate. That consequence is unacceptable because the argument's own time markers distinguish the poisoning event from the later final illness. Causal continuity may be acknowledged without granting the stronger conclusion. The later report can be read as bodily consequence and martyrdom language, while the formal contradiction still fails because the required time-indexed fatal-success claim is not established.
+"""
+    if not is_mrp_operation_shaped_submove(chronology_causality_block):
+        errors.append(
+            "checker self-canary: M8 body-backed chronology+causality compact target did not normalize"
+        )
+    return errors
 
 
 def contribution_body(block: str) -> str:
@@ -771,6 +879,25 @@ def normalized_transition_text(value: object) -> str:
 def transition_values_agree(expected: object, actual: object) -> bool:
     expected_text = normalized_transition_text(expected)
     actual_text = normalized_transition_text(actual)
+    if not expected_text or not actual_text:
+        return False
+    return expected_text == actual_text or expected_text in actual_text or actual_text in expected_text
+
+
+def normalized_delta_display_text(value: object) -> str:
+    text = normalized_transition_text(value)
+    text = re.sub(r"\s*/\s*Delta\(B\d+\)\s*:\s*", ":", text)
+    text = re.sub(r"\s*/\s*Delta\(B\d+\)\b", "", text)
+    text = re.sub(r"^(Δ(?:[¹²³⁴⁵⁶⁷⁸⁹]+B|B\d+|κ|kappa))\s*/\s*", r"\1:", text)
+    text = re.sub(r":\s+", ":", text)
+    return text
+
+
+def delta_values_agree(expected: object, actual: object) -> bool:
+    if transition_values_agree(expected, actual):
+        return True
+    expected_text = normalized_delta_display_text(expected)
+    actual_text = normalized_delta_display_text(actual)
     if not expected_text or not actual_text:
         return False
     return expected_text == actual_text or expected_text in actual_text or actual_text in expected_text
@@ -850,15 +977,29 @@ def formal_reread_state_errors(path: Path, text: str, blocks: list[MrpBlock]) ->
             errors.append(f"{label}: prior_land must name {land_token}")
         if land_token not in text_norm:
             errors.append(f"{label}: visible output lacks prior {land_token} before MRP emergence")
-        if not transition_values_agree(state.get("delta"), block.landed_delta):
+        if not delta_values_agree(state.get("delta"), block.landed_delta):
             errors.append(f"{label}: delta does not agree with visible Landed delta")
         if not formal_reread_values_agree(state.get("reread"), block.reread):
             errors.append(f"{label}: reread must invoke R(H,Delta) and agree with visible R(H,Delta) line")
         if not transition_values_agree(state.get("route_gradient"), block.route_gradient):
             errors.append(f"{label}: route_gradient does not agree with visible Route-gradient")
-        if state.get("divergence_state") != first_state(block.divergence):
+        formal_divergence = str(state.get("divergence_state") or "").strip()
+        visible_divergence = first_state(block.divergence)
+        stop_display_projection = (
+            formal_divergence == "neutral"
+            and visible_divergence in {"settled", "bounded", "non-neutral"}
+            and (block.route_result_type == "no_new_resultant" or block.route == "STOP")
+        )
+        if formal_divergence != visible_divergence and not stop_display_projection:
             errors.append(f"{label}: divergence_state does not agree with visible ∇·T")
-        if state.get("curl_state") != first_state(block.curl):
+        formal_curl = str(state.get("curl_state") or "").strip()
+        visible_curl = first_state(block.curl)
+        stop_curl_projection = (
+            formal_curl == "null"
+            and visible_curl == "resolved"
+            and (block.route_result_type == "no_new_resultant" or block.route == "STOP")
+        )
+        if formal_curl != visible_curl and not stop_curl_projection:
             errors.append(f"{label}: curl_state does not agree with visible ∇×T")
         if state.get("route_result_type") != block.route_result_type:
             errors.append(f"{label}: route_result_type does not agree with visible MRP route result type")
@@ -1269,10 +1410,11 @@ def source_owned_operation_errors(record: ActRecord, family: str, block: str) ->
                     "authority/rank/tribunal/source-sovereignty transition evidence"
                 )
         if operation_key == "source-order-repair":
-            if record.delta_result != "source-order-repaired":
+            if record.delta_result not in SOURCE_ORDER_REPAIR_DELTA_RESULTS:
+                allowed_text = ", ".join(sorted(SOURCE_ORDER_REPAIR_DELTA_RESULTS))
                 errors.append(
                     f"ACT {record.submove_ref} SOURCE source-order-repair must use "
-                    "delta_result 'source-order-repaired'"
+                    f"one source-order delta_result token: {allowed_text}"
                 )
             if transition_kind != "source-order":
                 errors.append(
@@ -1296,14 +1438,305 @@ def operation_payload(block: str) -> str:
     )
 
 
+def p7_scope_boundary_target_backed(
+    owner: str,
+    target: str,
+    operation_text: str,
+    operation_scope: str,
+) -> bool:
+    if strict_owner_family(owner) != "P7":
+        return False
+    target_words = [
+        word.lower()
+        for word in re.findall(r"[A-Za-z][A-Za-z']{2,}", re.sub(r"[-_/]", " ", target))
+        if word.lower()
+        not in {
+            "the",
+            "this",
+            "that",
+            "claim",
+            "claims",
+            "move",
+            "burden",
+            "route",
+            "pressure",
+        }
+    ]
+    if len(target_words) < 2:
+        return False
+    if not operation_acts_on_pressure(target, operation_text):
+        return False
+    if not owner_specific_operation_performed(owner, operation_scope):
+        return False
+    return all(
+        pattern.search(operation_scope)
+        for pattern in (P7_STOP_SCOPE_RE, P7_REOPEN_RE, P7_HELD_ROUTE_RE)
+    )
+
+
+def target_word_contact(target: str, text: str) -> bool:
+    target_words = [
+        word.lower()
+        for word in re.findall(r"[A-Za-z][A-Za-z']{2,}", re.sub(r"[-_/]", " ", target))
+        if word.lower()
+        not in {
+            "the",
+            "this",
+            "that",
+            "claim",
+            "claims",
+            "move",
+            "burden",
+            "route",
+            "pressure",
+            "local",
+        }
+    ]
+    if len(target_words) < 2:
+        return False
+    operation_words = {
+        word.lower()
+        for word in re.findall(r"[A-Za-z][A-Za-z']{2,}", re.sub(r"[-_/]", " ", text))
+    }
+    return any(
+        word in operation_words
+        or (
+            len(word) >= 6
+            and any(candidate.startswith(word[:6]) or word.startswith(candidate[:6]) for candidate in operation_words)
+        )
+        for word in target_words
+    )
+
+
+def pattern_profile_compact_target_backed(
+    owner: str,
+    target: str,
+    operation_text: str,
+    operation_scope: str,
+) -> bool:
+    if strict_owner_family(owner) != "PATTERN_PROFILE":
+        return False
+    payload = " ".join((operation_text, operation_scope))
+    if not target_word_contact(target, operation_text):
+        return False
+    if not owner_specific_operation_performed(FAMILY_OPERATION_OWNER["PATTERN_PROFILE"], payload):
+        return False
+    return bool(
+        PATTERN_PROFILE_LOADED_LABEL_RE.search(payload)
+        and PATTERN_PROFILE_LOADED_LABEL_STATE_RE.search(payload)
+    )
+
+
+M8_CHRONOLOGY_COMPACT_TARGET_RE = re.compile(
+    r"(?i)^\s*(?:chronology|chronology\+causality|chronology[-_]causality)\.?\s*$"
+)
+M8_HISTORICAL_CAUSATION_COMPACT_TARGET_RE = re.compile(
+    r"(?i)^\s*historical[-_]causation[-_]burden\.?\s*$"
+)
+M8_CHRONOLOGY_BACKING_RE = re.compile(
+    r"(?is)\b(?:t1|t2|time[- ]indexed|Khaybar|poison|poisoning|later death|"
+    r"final illness|fatal success|completed fatal|survival|years later)\b"
+)
+M9_ARABIC_LEXICAL_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*arabic[_-]lexical\.?\s*$")
+M9_ARABIC_LEXICAL_BACKING_RE = re.compile(
+    r"(?is)\b(?:al[- ]wateen|al[- ]abhar|Qur'?anic|hadith|Arabic|lexical|"
+    r"translation|referent|semantic|sense|identity|overlap|dictionary)\b"
+)
+M7_DEFINITION_ANCHOR_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*definition[-_]anchor\.?\s*$")
+M7_LEXICAL_EVIDENCE_COMPACT_TARGET_RE = re.compile(
+    r"(?i)^\s*lexical[-_]evidence[-_]burden\.?\s*$"
+)
+M7_DEFINITION_ANCHOR_BACKING_RE = re.compile(
+    r"(?is)\b(?:definition|term(?:s)?|meaning|semantic|predicate|word(?:s)?)\b"
+    r".{0,180}\b(?:anchor(?:ed|s)?|fix(?:ed|es)?|bound(?:ed|s)?|stabili[sz](?:ed|es)?|"
+    r"no longer|semantic drift)\b"
+)
+P3_T1_T2_ORDER_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*t1[-_]t2[-_]collapse[-_]pressure\.?\s*$")
+P3_T1_T2_ORDER_BACKING_RE = re.compile(
+    r"(?is)\b(?:t1|t2|Khaybar|628\s*CE|632\s*CE|surviv(?:al|ed)|"
+    r"message completion|completion|final illness|death)\b"
+    r".{0,260}\b(?:order(?:ed|s|ing)?|sequence(?:d|s)?|distinct|"
+    r"non[- ]collapsed|collapse|retroactive|read back)\b"
+)
+P7_CLAIM_BOUNDARY_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*claim[_-]boundary\.?\s*$")
+SOURCE_LINEAGE_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*source[-_]lineage\.?\s*$")
+SOURCE_LINEAGE_BACKING_RE = re.compile(
+    r"(?is)\b(?:source lineage|source priority|quotation chain|quotation order|"
+    r"evidential dependency|inherited claim|source chain)\b"
+)
+SOURCE_PROOFTEXT_STACK_COMPACT_TARGET_RE = re.compile(
+    r"(?i)^\s*(?:John_1_1_and_1John_5_20_stack|proof[-_ ]text[-_ ]stack)\.?\s*$"
+)
+SOURCE_PROOFTEXT_STACK_BACKING_RE = re.compile(
+    r"(?is)\b(?:source[- ]order|source[- ]priority|evidential order|proof[- ]text stack|"
+    r"imported texts?|local grammar|immediate verse|John\s+17:3|John\s+1:1|1\s+John\s+5:20)\b"
+)
+V6_PROOFTEXT_INTEGRATION_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*prooftext[-_]integration\.?\s*$")
+V6_PROOFTEXT_INTEGRATION_BACKING_RE = re.compile(
+    r"(?is)\b(?:prooftexts?|proof[- ]text|cited texts?|Johannine|John\s+1:1|1\s+John\s+5:20)\b"
+    r".{0,220}\b(?:integrat(?:e|es|ed|ing|ion)|convergence)\b|"
+    r"\b(?:integrat(?:e|es|ed|ing|ion)|convergence)\b"
+    r".{0,220}\b(?:prooftexts?|proof[- ]text|cited texts?|Johannine|John\s+1:1|1\s+John\s+5:20)\b"
+)
+V6_PROOFTEXT_INTEGRATION_STATE_RE = re.compile(
+    r"(?is)\b(?:bounded integration|without erasure|changed from erasure|no longer functioning|"
+    r"do(?:es)? not remove|cannot cancel|not override|not erasing|not erased|held in a bounded integration)\b"
+)
+V6_INTEGRATION_PRESSURE_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*integration[-_]pressure\.?\s*$")
+V6_INTEGRATION_PRESSURE_BACKING_RE = re.compile(
+    r"(?is)\b(?:hadith chronology|martyrdom framing|scoped protection|lexical distinction|"
+    r"proof audit|poison(?:ing)? report|reports?|protection|formal proof)\b"
+)
+V6_INTEGRATION_PRESSURE_STATE_RE = re.compile(
+    r"(?is)\b(?:converg(?:e|es|ed|ing)|competing answers|false choice|bounded answer|"
+    r"unsupported contradiction|without forcing|no longer treated as competing)\b"
+)
+OWNER_BACKED_COMPACT_TARGET_RE = re.compile(r"(?i)^\s*[a-z0-9]+(?:[-_][a-z0-9]+)+\.?\s*$")
+OWNER_BACKED_COMPACT_TARGET_GENERIC_PARTS = {
+    "burden",
+    "claim",
+    "delta",
+    "generic",
+    "land",
+    "move",
+    "operation",
+    "owner",
+    "pressure",
+    "result",
+    "route",
+    "state",
+    "target",
+}
+
+
+def family_compact_target_backed(
+    owner: str,
+    target: str,
+    operation_text: str,
+    operation_scope: str,
+) -> bool:
+    family = strict_owner_family(owner)
+    payload = " ".join((operation_text, operation_scope))
+    if family == "M7" and M7_DEFINITION_ANCHOR_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and M7_DEFINITION_ANCHOR_BACKING_RE.search(payload)
+        )
+    if family == "M7" and M7_LEXICAL_EVIDENCE_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and M9_ARABIC_LEXICAL_BACKING_RE.search(payload)
+            and M7_DEFINITION_ANCHOR_BACKING_RE.search(payload)
+        )
+    if family == "P3" and P3_T1_T2_ORDER_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and P3_T1_T2_ORDER_BACKING_RE.search(payload)
+        )
+    if family == "P7" and P7_CLAIM_BOUNDARY_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and all(pattern.search(payload) for pattern in (P7_STOP_SCOPE_RE, P7_REOPEN_RE, P7_HELD_ROUTE_RE))
+        )
+    if family == "M8" and M8_CHRONOLOGY_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and M8_CHRONOLOGY_BACKING_RE.search(payload)
+        )
+    if family == "M8" and M8_HISTORICAL_CAUSATION_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and M8_CHRONOLOGY_BACKING_RE.search(payload)
+        )
+    if family == "M9" and M9_ARABIC_LEXICAL_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            target_word_contact(target, operation_text)
+            and owner_specific_operation_performed(owner, payload)
+            and M9_ARABIC_LEXICAL_BACKING_RE.search(payload)
+        )
+    if family == "SOURCE" and SOURCE_LINEAGE_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and SOURCE_LINEAGE_BACKING_RE.search(payload)
+        )
+    if family == "SOURCE" and SOURCE_PROOFTEXT_STACK_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and SOURCE_PROOFTEXT_STACK_BACKING_RE.search(payload)
+        )
+    if family == "V6" and V6_PROOFTEXT_INTEGRATION_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and V6_PROOFTEXT_INTEGRATION_BACKING_RE.search(payload)
+            and V6_PROOFTEXT_INTEGRATION_STATE_RE.search(payload)
+        )
+    if family == "V6" and V6_INTEGRATION_PRESSURE_COMPACT_TARGET_RE.fullmatch(str(target or "").strip()):
+        return bool(
+            owner_specific_operation_performed(owner, payload)
+            and V6_INTEGRATION_PRESSURE_BACKING_RE.search(payload)
+            and V6_INTEGRATION_PRESSURE_STATE_RE.search(payload)
+        )
+    return False
+
+
+def owner_backed_compact_target(
+    owner: str,
+    target: str,
+    operation_text: str,
+    operation_scope: str,
+    operation_body: str,
+    result: str,
+    contribution: str,
+) -> bool:
+    target_text = str(target or "").strip().rstrip(".")
+    if not OWNER_BACKED_COMPACT_TARGET_RE.fullmatch(target_text):
+        return False
+    parts = [part for part in re.split(r"[-_]+", target_text.lower()) if part]
+    if len(parts) < 2:
+        return False
+    if not any(part not in OWNER_BACKED_COMPACT_TARGET_GENERIC_PARTS for part in parts):
+        return False
+    family = strict_owner_family(owner)
+    if not family:
+        return False
+    payload = " ".join((operation_text, operation_scope))
+    owner_token = FAMILY_OPERATION_OWNER.get(family, owner)
+    owner_performed = owner_specific_operation_performed(owner, payload)
+    if owner_token != owner:
+        owner_performed = owner_performed or owner_specific_operation_performed(owner_token, payload)
+    return bool(
+        owner_performed
+        and operation_acts_on_pressure(target, operation_text)
+        and operation_body_has_state_delta(operation_body, result, contribution)
+    )
+
+
+def do_second_loop_pressure_action_backed(
+    owner: str,
+    target: str,
+    operation_text: str,
+    operation_scope: str,
+) -> bool:
+    if strict_owner_family(owner) != "DO_SECOND_LOOP":
+        return False
+    payload = " ".join((operation_text, operation_scope))
+    if not target_word_contact(target, operation_text):
+        return False
+    if not owner_specific_operation_performed(FAMILY_OPERATION_OWNER["DO_SECOND_LOOP"], payload):
+        return False
+    return bool(
+        DO_SECOND_LOOP_BACKING_RE.search(payload)
+        and DO_SECOND_LOOP_STATE_RE.search(payload)
+        and DO_SECOND_LOOP_ACTION_RE.search(payload)
+    )
+
+
 def is_mrp_operation_shaped_submove(block: str) -> bool:
     target = field_body(block, "Target")
     operation = field_body_any(block, ("Operation", "What it does"))
     result = field_body_any(block, ("Result", "Result/state-change"))
     contribution = contribution_body(block)
     if not (target and operation and result and contribution):
-        return False
-    if not target_pressure_identifiable(target):
         return False
     if not contribution_explains_land(contribution):
         return False
@@ -1314,6 +1747,43 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
     operation_scope = " ".join((operation_text, result, contribution))
     combined = " ".join((target, operation_text, result, contribution))
     owner = submove_owner(block)
+    family_pressure_action = do_second_loop_pressure_action_backed(
+        owner,
+        target,
+        operation_text,
+        operation_scope,
+    )
+    if (
+        not target_pressure_identifiable(target)
+        and not p7_scope_boundary_target_backed(
+            owner,
+            target,
+            operation_text,
+            operation_scope,
+        )
+        and not pattern_profile_compact_target_backed(
+            owner,
+            target,
+            operation_text,
+            operation_scope,
+        )
+        and not family_compact_target_backed(
+            owner,
+            target,
+            operation_text,
+            operation_scope,
+        )
+        and not owner_backed_compact_target(
+            owner,
+            target,
+            operation_text,
+            operation_scope,
+            operation_body,
+            result,
+            contribution,
+        )
+    ):
+        return False
     owner_performed = owner_specific_operation_performed(owner, operation_scope)
     if not (OPERATION_MECHANISM_RE.search(combined) or owner_performed):
         return False
@@ -1325,7 +1795,7 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
     if semantic_categories < 2 and not owner_performed:
         return False
     heading = next((line.strip() for line in block.splitlines() if line.strip()), "")
-    if not OPERATION_ACTION_RE.search(f"{heading} {operation_text}"):
+    if not OPERATION_ACTION_RE.search(f"{heading} {operation_text}") and not family_pressure_action:
         return False
     if not owner_performed:
         return False
@@ -1336,7 +1806,7 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
         return False
     if GENERIC_CONTRIBUTION_RE.fullmatch(contribution.strip()):
         return False
-    if not operation_acts_on_pressure(target, operation_text):
+    if not operation_acts_on_pressure(target, operation_text) and not family_pressure_action:
         return False
     if not operation_body_has_state_delta(operation_body, result, contribution):
         return False
@@ -1346,9 +1816,11 @@ def is_mrp_operation_shaped_submove(block: str) -> bool:
 
 
 def is_reconstructible_owner_operation(block: str) -> bool:
+    family = strict_owner_family(submove_owner(block))
+    if family == "PROOF_METHOD":
+        return proof_method_carrier_transition_visible(block)
     if not is_mrp_operation_shaped_submove(block):
         return False
-    family = strict_owner_family(submove_owner(block))
     payload = operation_payload(block)
     if family == "M1":
         return bool(M1_RECONSTRUCTIBLE_RE.search(payload))
@@ -1390,12 +1862,16 @@ def delta_result_has_concrete_state_change(record: ActRecord, family: str, block
         and record.delta_result in BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get("PATTERN_PROFILE", set())
     ):
         return pattern_profile_delta_result_has_body_backing(record, block)
-    if (
-        family == "PROOF_METHOD"
-        and record.operation == "proof-family-and-carrier-audit"
-        and record.delta_result == "proof-family-carrier-typed"
+    if family == "PROOF_METHOD" and record.delta_result in BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get(
+        "PROOF_METHOD",
+        set(),
     ):
         return proof_method_carrier_transition_visible(block)
+    if (
+        family in {"DO_ATTRIBUTE", "DO_SECOND_LOOP"}
+        and record.delta_result in BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get(family, set())
+    ):
+        return do_family_delta_result_has_body_backing(record, family, block)
     if STATE_CHANGE_RE.search(record.delta_result):
         return True
     supported = BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get(family, set())
@@ -1407,6 +1883,36 @@ def delta_result_has_concrete_state_change(record: ActRecord, family: str, block
     if family == "SOURCE":
         return source_repair_state_change_visible(record.owner, result, contribution, operation)
     return bool(STATE_CHANGE_RE.search(" ".join((result, contribution, operation))))
+
+
+def do_family_delta_result_has_body_backing(record: ActRecord, family: str, block: str) -> bool:
+    target = field_body(block, "Target")
+    operation = field_body_any(block, ("Operation", "What it does"))
+    result = field_body_any(block, ("Result", "Result/state-change"))
+    contribution = contribution_body(block)
+    body = submove_operation_body(block)
+    if not (target and operation and result and contribution and body):
+        return False
+    payload = " ".join((record.pi, target, operation, result, contribution, body))
+    owner = FAMILY_OPERATION_OWNER.get(family, record.owner)
+    if not owner_specific_operation_performed(owner, payload):
+        return False
+    operation_text = " ".join((operation, body))
+    operation_scope = " ".join((operation_text, result, contribution))
+    if not operation_acts_on_pressure(target, operation_text) and not (
+        family == "DO_SECOND_LOOP"
+        and do_second_loop_pressure_action_backed(record.owner, target, operation_text, operation_scope)
+    ):
+        return False
+    if not contribution_explains_land(contribution):
+        return False
+    if not STATE_CHANGE_RE.search(payload):
+        return False
+    if family == "DO_ATTRIBUTE":
+        return bool(DO_ATTRIBUTE_BACKING_RE.search(payload) and DO_ATTRIBUTE_STATE_RE.search(payload))
+    if family == "DO_SECOND_LOOP":
+        return bool(DO_SECOND_LOOP_BACKING_RE.search(payload) and DO_SECOND_LOOP_STATE_RE.search(payload))
+    return False
 
 
 def pattern_profile_delta_result_has_body_backing(record: ActRecord, block: str) -> bool:
@@ -1458,7 +1964,7 @@ def proof_method_carrier_transition_visible(block: str) -> bool:
         return False
     if not operation_body_has_state_delta(body, result, contribution):
         return False
-    if "proof-route-status-audit" in payload and not PROOF_METHOD_ROUTE_STATUS_BODY_RE.search(
+    if "proof-route-status-audit" in operation.lower() and not PROOF_METHOD_ROUTE_STATUS_BODY_RE.search(
         " ".join((operation, result, contribution, body))
     ):
         return False

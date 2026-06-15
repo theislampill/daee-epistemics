@@ -38,7 +38,7 @@ Pressure activations:
 - entailment-pressure: pressure class: cleared — no entailment remains.
 - doubt-churn-guard: pressure class: cleared — no loop remains.
 - reorientation-reminder: P7 — STOP is scoped.
-Field diagnostics: ∇·B: neutral / no remaining burden; ∇×κ: null / no circular dependency.
+Field diagnostics: ∇·B: settled / no remaining burden; ∇×κ: null / no circular dependency.
 Route-gradient: ∇ points to STOP because the selected boundary has a formal no-new proof.
 Finding: stable
 MRP route result type: no_new_resultant
@@ -97,7 +97,7 @@ Boundary: T_lang does not imply guaranteed uptake.
     {
       "source_burden": "B1",
       "prior_land": "Land(B1)",
-      "delta": "Δ¹B / scope-boundary-named.",
+      "delta": "Δ¹B / Delta(B1): scope-boundary-named.",
       "reread": "R(H,Δ): held routes rechecked: selected typed remainder; live remainder: none; release/next: STOP.",
       "route_gradient": "∇ points to STOP because the selected boundary has a formal no-new proof.",
       "divergence_state": "neutral",

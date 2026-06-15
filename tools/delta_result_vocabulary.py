@@ -260,8 +260,11 @@ def source_pressure_delta_errors(label: str, owner: str, pressure: str, delta_re
         return []
 
     token = str(delta_result or "").strip()
-    is_proof_text_hidden_support = has_hidden_support and any(
+    has_proof_text_marker = any(
         marker in pressure_token for marker in PROOF_TEXT_HIDDEN_SUPPORT_PRESSURE_TOKENS
+    )
+    is_proof_text_hidden_support = has_proof_text_marker and (
+        has_hidden_support or has_source_recoil or "source-order" in pressure_token
     )
     if is_proof_text_hidden_support:
         if token == "proof-text-hidden-support-blocked":
@@ -325,6 +328,38 @@ def split_owner_operation_token(owner: str, operation: Any = None) -> tuple[str,
         if owner_part.strip() and operation_part.strip():
             return owner_part.strip(), operation_token or operation_part.strip()
     return owner_token, operation_token
+
+
+def route_owner_family_hint_execution_owner(route: dict[str, Any]) -> str:
+    """Recover a callable owner when a route puts an operation token in owner_id.
+
+    This is intentionally narrower than owner aliasing: the row must also carry a
+    source-owned owner family hint and a matching controlled operation token.
+    """
+
+    raw_owner = route.get("owner_id") or route.get("owner")
+    raw_operation = route.get("operation") or route.get("owner_operation")
+    raw_family = route.get("owner_family") or route.get("classification_family")
+    if not isinstance(raw_owner, str) or not isinstance(raw_operation, str) or not isinstance(raw_family, str):
+        return ""
+    owner_token = raw_owner.strip().strip("[]")
+    operation_token = raw_operation.strip()
+    if not owner_token or not operation_token:
+        return ""
+    if canonical_delta_owner(owner_token):
+        return ""
+    family = canonical_delta_owner(raw_family)
+    if not family:
+        return ""
+    operations = OWNER_OPERATION_VOCABULARY.get(family)
+    if not operations or operation_token not in operations:
+        return ""
+    if owner_token != operation_token and owner_token not in operations:
+        return ""
+    alias_family, callable_owner = family_alias_execution_owner(family, operation_token)
+    if alias_family and callable_owner and " or " not in callable_owner:
+        return callable_owner
+    return family
 
 
 def owner_operation_delta_result_errors(
@@ -399,7 +434,12 @@ def route_owner_vocabulary_errors(label: str, route: dict[str, Any]) -> list[str
     raw_owner = route.get("owner_id") or route.get("owner")
     if not isinstance(raw_owner, str) or not raw_owner.strip():
         return [f"{label}: owner route must carry a non-empty owner_id"]
-    owner, operation = split_owner_operation_token(raw_owner, route.get("operation") or route.get("owner_operation"))
+    family_hint_owner = route_owner_family_hint_execution_owner(route)
+    if family_hint_owner:
+        owner = family_hint_owner
+        operation = str(route.get("operation") or route.get("owner_operation") or "").strip()
+    else:
+        owner, operation = split_owner_operation_token(raw_owner, route.get("operation") or route.get("owner_operation"))
     alias_errors = family_alias_as_executable_owner_errors(label, owner, operation)
     if alias_errors:
         return alias_errors

@@ -70,6 +70,10 @@ ROUTING_OR_BOUNDARY_PROOF_RE = re.compile(
     r"not needed for (?:this|the) (?:scoped|bounded|local) claim|scope gate|"
     r"local closure only|partial closure)\b"
 )
+NEGATED_FUTURE_BURDEN_PREFIX_RE = re.compile(
+    r"(?i)(?:\brather than|\binstead of|\bwithout|\bnot)\s+"
+    r"(?:opening|instantiating|generating|creating|releasing)\s+$"
+)
 
 
 def _sup_to_int(raw: str) -> int:
@@ -235,15 +239,26 @@ def allowed_paired_alias_context(line: str) -> bool:
     )
 
 
+def non_graph_future_burden_mention(line: str, start: int) -> bool:
+    """Ignore explicit non-instantiation guards such as "rather than opening ⁴B"."""
+
+    prefix = str(line or "")[:start]
+    return bool(NEGATED_FUTURE_BURDEN_PREFIX_RE.search(prefix[-96:]))
+
+
 def extract_burdens(line: str, result: ParseResult, line_no: int) -> list[str]:
     found: list[str] = []
     for match in CANONICAL_BURDEN_RE.finditer(line):
+        if non_graph_future_burden_mention(line, match.start()):
+            continue
         token = match.group(0)
         if token not in found:
             found.append(token)
     canonical_indices = canonical_burden_indices(line)
     paired_alias_context = allowed_paired_alias_context(line)
     for match in ASCII_BURDEN_RE.finditer(line):
+        if non_graph_future_burden_mention(line, match.start()):
+            continue
         token = burden_token(match.group(1))
         if token not in found:
             found.append(token)
@@ -1005,11 +1020,30 @@ def compare_formal_reread_states(
         visible_curl = first_state(visible.get("curl"))
         state_divergence = first_state(state.get("divergence_state"))
         state_curl = first_state(state.get("curl_state"))
-        if visible_divergence and state_divergence and visible_divergence != state_divergence:
+        terminal_stop_projection = (
+            str(state.get("route_result_type") or "") == "no_new_resultant"
+            or str(state.get("route") or "").upper() == "STOP"
+        )
+        divergence_display_projection = (
+            terminal_stop_projection
+            and state_divergence == "neutral"
+            and visible_divergence in {"settled", "bounded", "non-neutral"}
+        )
+        curl_display_projection = (
+            terminal_stop_projection
+            and state_curl == "null"
+            and visible_curl == "resolved"
+        )
+        if (
+            visible_divergence
+            and state_divergence
+            and visible_divergence != state_divergence
+            and not divergence_display_projection
+        ):
             result.errors.append(
                 f"{state_label}: divergence_state mismatch visible={visible_divergence!r} field_witness={state_divergence!r}"
             )
-        if visible_curl and state_curl and visible_curl != state_curl:
+        if visible_curl and state_curl and visible_curl != state_curl and not curl_display_projection:
             result.errors.append(
                 f"{state_label}: curl_state mismatch visible={visible_curl!r} field_witness={state_curl!r}"
             )

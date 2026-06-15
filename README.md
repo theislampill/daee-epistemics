@@ -302,6 +302,17 @@ The former external recursive-audit prompt is deprecated for normal use. Its use
 
 ### Canonical File-Retained Execution
 
+File-retained execution is the canonical hard-case transport on hosts whose
+final-chat channel caps or compresses long governed output: multi-burden
+compound cases keep full per-burden traversal — including one visible
+`[Mid-Reread Pressure]` block per landed burden — in `output.md` instead of a
+thinned chat answer. The maintainer staged harness
+(`tools/run_staged_current_skill_smoke.py`) is repo/dev machinery over the same
+contract; there is no separate `staged-compact` public output contract, and
+per-burden MRP visibility applies identically across chat, file-retained, and
+staged transports (`tools/check_mid_reread_pressure.py` enforces the per-Land
+coverage rule).
+
 Use file-retained execution when the host can read/write files or when hard cases would be
 compressed in final chat:
 

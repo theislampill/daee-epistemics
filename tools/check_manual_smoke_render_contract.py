@@ -121,7 +121,9 @@ INLINE_REREAD_HEADING_RE = re.compile(
 HIGH_MASS_TERMS_RE = re.compile(
     r"(?i)\b(?:source[- ]worldview|worldview|proof[- ]stack|textual|canon|Christology|"
     r"independent lordship|hidden premise|dependency radius|source authority|authority-order|"
-    r"predication|category|moral tribunal|worship[- ]worthiness|hiddenness|coercive guidance|"
+    r"predication|category|moral tribunal|worship[-_ ]worthiness|"
+    r"divine[-_ ]hiddenness|hiddenness|source[-_ ]governance|chronology\+causality|chronology[-_ ]causality|"
+    r"expose[-_ ]neutrality[-_ ]burden|neutrality[-_ ](?:burden|claim)|coercive guidance|"
     r"accountability|culpability|arbitrary command|command authority|mystery shield|"
     r"immunity|recoil|epistemology|self[- ]refutation|"
     r"performative contradiction|consequence trace|LoopBreak|proof[- ]carousel)\b"
@@ -153,9 +155,17 @@ PLACEHOLDER_OWNER_RE = re.compile(
 )
 OPERATION_MECHANISM_RE = re.compile(
     r"(?i)\b(?:hidden premise|escape route|smuggl|burden shift|proof[- ]stack|source[- ]order|"
-    r"source authority|authority frame|scope gate|bounded claim|local claim|total[- ]system|"
+    r"source authority|authority frame|scope gate|bounded claim|local claim|"
+    r"expose[-_ ]neutrality[-_ ]burden|neutrality[-_ ](?:burden|claim)|total[- ]system|"
     r"whole[- ]system|exhaust|reopen|would require|unworked held route|non[- ]load[- ]bearing|"
-    r"predicate|predication|category|dependency|criterion|immunity|recoil|framework|"
+    r"predicate|predication|category|monotheism[- ]counting|exclusive[- ]counting|"
+    r"fatal[- ]harm(?:[- ]at[- ]t1)?|lexical[- ]equivalence|chronology[- ]completion|"
+    r"chronology[- ]collapse|t1[- ]t2[- ]chronology[- ]collapse|"
+    r"t1[- ]t2[- ]causation[- ]collapse|"
+    r"attribute[- ]precision|claim[- ]context[- ]boundary|claim[-_ ]reconstruction[-_ ]pressure|definition[-_ ]boundary|"
+    r"definition[- ]pressure|scope[- ]pressure|"
+    r"moral[- ]intuition|ungrounded[- ]moral[- ]intuition|moral[- ]reaction|orphaned[- ]intuition|"
+    r"dependency|criterion|immunity|recoil|framework|"
     r"broader material|held material|state change|delta|consequence|entailment|"
     r"self[- ]refutation|performative contradiction|internal contradiction|semantic|referent|"
     r"authority[- ]order|proof[- ]carousel|stop condition|closure boundary|circularity|"
@@ -163,12 +173,18 @@ OPERATION_MECHANISM_RE = re.compile(
     r"guidance[- ]vs[- ]compulsion|source[- ]function|conveyance|warning|tawf[iī]q|"
     r"non[- ]coercive guidance)\b"
 )
+DO_ATTRIBUTE_CLAIM_PRECISION_TARGET_RE = re.compile(
+    r"(?i)attribute[-_ ]claim[-_ ]precision"
+)
 OPERATION_ACTION_RE = re.compile(
-    r"(?i)\b(?:expose|distinguish|distinguishes|distinguished|distinguishing|block|repair|repairs|repaired|repairing|"
+    r"(?i)\b(?:expose|distinguish|distinguishes|distinguished|distinguishing|"
+    r"block|blocks|blocked|blocking|repair|repairs|repaired|repairing|"
     r"trace|ground|test|split|splits|splitting|separate|separates|separated|separating|"
-    r"prevent|audit|apply|tests?|"
+    r"prevent|audit|apply|tests?|act(?:s|ing)?\s+with\s+(?:M3|owner\s+family\s+M3)\s+on|integrate|integrates|integrated|integrating|"
+    r"relocate|relocates|relocated|relocating|recognize|recognizes|recognized|recognizing|"
     r"identify|identification|reclassify|refuse|sequence|show why|demonstrate|bar|route|bind|isolate|"
     r"name|names|named|naming|define|anchor|anchors|anchored|anchoring|clarify|vet|reconstruct|dissolve|dissolves|dissolved|triage|prioritize|map|"
+    r"type|types|typed|typing|calibrate|calibrates|calibrated|calibrating|"
     r"assume|assumes|assumed|assuming|follow|follows|followed|following|"
     r"shifts?|smuggl|reopen|supplies|explains|cannot retroactively|does not mean|"
     r"answered according|sort|bound|stop|break|restores?|return|orient|reorient|re-home|honor)\b"
@@ -232,7 +248,9 @@ SOURCE_AUTHORITY_REPAIR_STATE_RE = re.compile(
     r"(?is)\b(?:authority[- ]order[- ]repaired|authority order is repaired)\b"
 )
 SOURCE_ORDER_REPAIR_STATE_RE = re.compile(
-    r"(?is)\b(?:source[- ]order[- ]repaired|source order is repaired)\b"
+    r"(?is)\b(?:source[- ]order[- ]repaired|source order is repaired|"
+    r"proof[- ]text[- ]hidden[- ]support[- ]blocked|hidden[- ]support[- ]blocked|"
+    r"proof[- ]text[- ]sorted|source[- ]function[- ]bounded)\b"
 )
 SOURCE_AUTHORITY_REPAIR_EVIDENCE_RE = re.compile(
     r"(?is)\b(?:authority|rank|tribunal|judge|judging office|court|higher court|"
@@ -289,7 +307,8 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
             r"(?i)\b(?:conception of reason|role of reason|sound reason|reconstitut\w+ reason|"
             r"reason is (?:not|more than)|reason[- ]role|rational faculty|type reason|"
             r"reason as (?:access|recognition|recognizer)|epistemic role|order of discovery|"
-            r"order of reality)\b"
+            r"order of reality|proof[- ]burden|burden[- ]order|warrant[- ]order|"
+            r"claimant'?s? burden|must prove|stronger inference)\b"
         ),
     ),
     (
@@ -353,16 +372,20 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     (
         "M1-P",
         re.compile(
-            r"(?i)\b(?:performative contradiction|act of (?:making|asserting)|presupposes|"
-            r"cannot ground its own assertion|speech act|claiming it requires)\b"
+            r"(?i)\b(?:performative[- ]contradiction|act of (?:making|asserting)|presuppos\w+|"
+            r"cannot ground its own assertion|speech[- ]act|claiming it requires|must already assume|"
+            r"denies dependence while functioning)\b"
         ),
     ),
     (
         "M1",
         re.compile(
             r"(?i)\b(?:self[- ]refutation|self[- ]grounding|self[- ]authoriz\w+|"
-            r"self[- ]enthronement|internal contradiction|own standard|"
+            r"self[- ]enthronement|internal[- ]contradiction|own standard|"
             r"own rules?|unproved premise|unsupported premise|premise (?:must be )?established|"
+            r"imported premise|loaded premise|disputed premise|inserted premise|"
+            r"premise (?:is )?(?:imported|loaded|disputed|inserted|not established)|"
+            r"checks whether .* (?:established|imported)|must prove|"
             r"assum(?:e|es|ed|ing) (?:the )?(?:very )?conclusion|begs? the question|"
             r"own (?:source[- ]appeal|textual|evidential|proof[- ]stack) standard|"
             r"own appeal to (?:scripture|the source|the text|evidence)|"
@@ -381,7 +404,12 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
         re.compile(
             r"(?i)\b(?:orphaned intuition|ungrounded intuition|intuition without|moral intuition|"
             r"orphaned moral|ground is orphaned|grounded? intuition|intuition has a home|"
-            r"moral deliverance|moral recognition|recognition remains honored|retained while its ground)\b"
+            r"moral deliverance|moral recognition|recognition remains honored|retained while its ground|"
+            r"binding (?:moral )?judgments?|moral terms as more than|borrowed moral capital|"
+            r"moral[- ]purpose|moral obligation|objective obligation|intrinsic dignity|"
+            r"final human purpose|teleological intuitions?|inherited moral furniture|"
+            r"preference can describe|convention can describe|utility can describe|"
+            r"moral tribunal|standard of justice|verdict binding)\b"
         ),
     ),
     (
@@ -452,7 +480,8 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
         re.compile(
             r"(?i)\b(?:proof[- ]method|proof grammar|proof family|method audit|"
             r"formal derivation|logic tree|inferential standard|what the proof establishes|"
-            r"premise strength|invalid inference)\b"
+            r"proof carrier|premise[- ]set|inference grammar|conclusion scope|"
+            r"premise strength|invalid inference|proof[- ]overreach)\b"
         ),
     ),
     (
@@ -499,7 +528,9 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
         "SOURCE",
         re.compile(
             r"(?i)\b(?:source[- ]status|source status|authority[- ]order|source authority|"
-            r"source[- ]order|Qur'?anic source order|revealed source(?:s| order)?|"
+            r"source[- ]order|source lineage|source priority|evidential dependency|"
+            r"inherited[- ]claim(?: order)?|quotation order|Qur'?anic source order|revealed source(?:s| order)?|"
+            r"moral bench|external tribunal|final authority|higher court|"
             r"proof[- ]stack|broader proof[- ]texts?|hidden rescue|"
             r"source-correct(?:ed|ion)|revelation define|let revelation define|"
             r"source-use|source[- ]functions?|source[- ]function[- ][a-z-]+|source-prestige|source accumulation|proof[- ]text|"
@@ -515,7 +546,11 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ),
     (
         "P2",
-        re.compile(r"(?i)\b(?:objection mapping|maps? the objection|claim map|support map|objection structure)\b"),
+        re.compile(
+            r"(?i)\b(?:objection mapping|maps? the objection|claim map|support map|"
+            r"objection structure|claim[- ]reconstruction|objection[- ]topology|"
+            r"structured claim|load[- ]bearing parts)\b"
+        ),
     ),
     (
         "P3",
@@ -534,7 +569,11 @@ OWNER_OPERATION_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ),
     (
         "P6",
-        re.compile(r"(?i)\b(?:universal aqidah|universal ʿaqīdah|aqidah principle|creedal principle)\b"),
+        re.compile(
+            r"(?i)\b(?:universal aqidah|universal ʿaqīdah|aqidah principle|creedal principle|"
+            r"worldview[- ]binding|binding normativity|binding worldview|binds public reason|"
+            r"public reason|moral authority|human purpose|final tribunal|chosen authority order)\b"
+        ),
     ),
     (
         "P7",
@@ -587,9 +626,85 @@ SOURCE_EXECUTION_RE = re.compile(
     r"hidden rescue|hidden authority|judge over the text|source[- ]order office|"
     r"non[- ]load[- ]bearing rescue material)\b"
 )
-OWNER_NAME_ONLY_RE = re.compile(
-    r"(?i)\b(?:is named here|named here,\s*so|so .{0,80}\bis handled)\b"
+DO_SECOND_LOOP_ACTION_RE = re.compile(
+    r"(?is)\b(?:bound|bounds|bounded|narrow|narrows|narrowed|calibrate|calibrates|"
+    r"calibrated|separate|separates|separated|sequence|sequenced|warn|warning|"
+    r"guide|guidance|persuade|persuasion|coerce|coercion|compel|compelling)\b"
 )
+OWNER_NAME_ONLY_RE = re.compile(
+    r"(?i)\b(?:"
+    r"is named here|"
+    r"named here,\s*so|"
+    r"owner\s+is\s+named,\s*so\s+(?:the\s+)?"
+    r"(?:proof\s+carrier|carrier|proof\s+packet|proof\s+route\s+status|"
+    r"foreign-premise-detection\s+route|route)\s+is\s+handled|"
+    r"(?:Land\([^)]*\):\s*)?(?:the\s+)?route\s+is\s+handled"
+    r")\b"
+)
+V10_ACTION_RE = re.compile(
+    r"(?is)\b(?:vets?|vetting|sorts?|sorted|orders?|ordered|bounds?|bounded|"
+    r"constrains?|constrained|limits?|limited)\b"
+)
+V10_NEGATED_ACTION_RE = re.compile(
+    r"(?is)\b(?:does\s+not|did\s+not|not|without)\s+(?:\w+\s+){0,4}"
+    r"(?:vet|vets|vetting|sort|sorts|sorted|order|orders|ordered|"
+    r"bound|bounds|bounded|constrain|constrains|constrained|limit|limits|limited)\b"
+)
+V10_PROVENANCE_RE = re.compile(
+    r"(?is)\b(?:provenance|transmission|textual field|source pressure|source chain|"
+    r"public materials|published tenets|public positions|public[- ]source)\b"
+)
+V10_CONTENT_RE = re.compile(
+    r"(?is)\b(?:content|what they actually assert|content[- ]based|public claims|"
+    r"belief[- ]system critique)\b"
+)
+V10_AUTHORITY_RE = re.compile(
+    r"(?is)\b(?:authority|authority/status|status|standard|citation discipline|"
+    r"source role|source function)\b"
+)
+V10_STATE_RE = re.compile(
+    r"(?is)\b(?:sorted|bounded|ordered|constrained|limited|harmonization|"
+    r"valid discharge|public materials|content[- ]based|private motive|identity proof)\b"
+)
+DOUBT_SINCERE_RE = re.compile(
+    r"(?is)\b(?:sincere doubter?|sincere doubt|normal doubt|concrete doubt|"
+    r"honest doubt|real doubt|doubt function|confused seeker|wounded protester|"
+    r"person seeking clarity|real struggle|sincere uncertainty|honest question)\b"
+)
+DOUBT_METHOD_RE = re.compile(
+    r"(?is)\b(?:skeptic(?:al|ism)?[- ]method|skeptical[- ]methodology|self[- ]sealing skeptic|"
+    r"self[- ]sealing standards?|evidence[- ]demand tribunal|evidence bar|"
+    r"self[- ]authored terms|final tribunal|burden inversion|proof[- ]demand)\b"
+)
+DOUBT_ACTION_RE = re.compile(
+    r"(?is)\b(?:distinguish(?:es|ed|ing)?|separat(?:e|es|ed|ing)|expos(?:e|es|ed|ing)|"
+    r"blocks?|no longer conflated)\b"
+)
+
+
+def v10_operation_performed(combined: str) -> bool:
+    """Accept V10 only when provenance/content/authority are positively worked."""
+    for match in V10_ACTION_RE.finditer(combined):
+        prefix = combined[max(0, match.start() - 32) : match.start() + 96]
+        window = combined[match.start() : match.start() + 900]
+        if V10_NEGATED_ACTION_RE.search(prefix) or V10_NEGATED_ACTION_RE.search(window[:180]):
+            continue
+        if (
+            V10_PROVENANCE_RE.search(window)
+            and V10_CONTENT_RE.search(window)
+            and V10_AUTHORITY_RE.search(window)
+            and V10_STATE_RE.search(window)
+        ):
+            return True
+    return False
+
+
+def doubt_skepticism_operation_performed(combined: str) -> bool:
+    return bool(
+        DOUBT_SINCERE_RE.search(combined)
+        and DOUBT_METHOD_RE.search(combined)
+        and DOUBT_ACTION_RE.search(combined)
+    )
 
 OWNER_ROUTE_LINE_RE = re.compile(
     r"(?im)^\s*(?:[-*]\s*)?(?:Matched owner/TTP route|Matched TTP route|"
@@ -1028,6 +1143,10 @@ def owner_specific_operation_performed(owner: str, combined: str) -> bool:
     if OWNER_NAME_ONLY_RE.search(combined):
         return False
     family = owner_family(owner)
+    if family == "V10":
+        return v10_operation_performed(combined)
+    if family == "DOUBT_SKEPTICISM":
+        return doubt_skepticism_operation_performed(combined)
     if family:
         return any(key == family and pattern.search(combined) for key, pattern in OWNER_OPERATION_PATTERNS)
     if not owner:
@@ -1039,9 +1158,157 @@ def owner_specific_operation_performed(owner: str, combined: str) -> bool:
     )
 
 
+def self_test_owner_specific_operation_patterns() -> list[str]:
+    errors: list[str] = []
+    doubt_probe = (
+        "Operation: method-distinction separates honest unresolved doubt from a method "
+        "that predefines acceptable evidence so narrowly that guidance is always rejected. "
+        "Result/state-change: doubt-distinguished-from-skeptical-methodology; it "
+        "distinguishes sincere confusion from skeptical proof-demand posture. "
+        "TTP Operation Body: honest doubt can be engaged with reasons and mercy, while "
+        "the proof-demand posture narrows acceptable evidence until guidance is rejected."
+    )
+    if not owner_specific_operation_performed("doubt-vs-skepticism", doubt_probe):
+        errors.append(
+            "self-test doubt-vs-skepticism rejected hyphenated proof-demand posture"
+        )
+    m1p_probe = (
+        "Operation: performative-test acts on the neutrality burden with owner family M1-P. "
+        "Result/state-change: performative-contradiction-exposed. "
+        "Land-license: the neutrality burden is landed because the operative contradiction "
+        "has been exposed locally: the frame denies dependence while functioning through "
+        "contested commitments."
+    )
+    if not owner_specific_operation_performed("M1-P", m1p_probe):
+        errors.append("self-test M1-P rejected hyphenated performative-contradiction state")
+    owner_label_probe = (
+        "The proof-method-audit proof-route-status-audit owner is named, "
+        "so the proof route status is handled."
+    )
+    if not OWNER_NAME_ONLY_RE.search(owner_label_probe):
+        errors.append("self-test owner-name-only guard missed label-only proof-route wording")
+    source_order_probe = (
+        "Operation: source-order-repair acts on the use of John 1:1 and "
+        "1 John 5:20 as imported texts against the immediate grammar of John 17:3. "
+        "Result/state-change: source-order-repaired. State change: the proof-text "
+        "stack is reordered so that John 17:3's local claim is handled first, "
+        "while John 1:1 and 1 John 5:20 remain secondary support texts requiring "
+        "separate interpretation. TTP Operation Body: The source-status-repair "
+        "operation restores source order and repairs the evidential order."
+    )
+    if OWNER_NAME_ONLY_RE.search(source_order_probe):
+        errors.append("self-test owner-name-only guard overmatched source-order handled-first prose")
+    if not owner_specific_operation_performed("source-status-repair", source_order_probe):
+        errors.append("self-test SOURCE rejected proof-text stack source-order operation")
+    p6_probe = (
+        "Operation: bind acts on worldview-binding pressure with owner family P6. "
+        "Result/state-change: worldview-binding-exposed. State change: secularism "
+        "is exposed as a worldview that binds public reason, moral authority, and "
+        "human purpose to a chosen authority order. TTP Operation Body: P6.bind "
+        "tests which anthropology, which moral source, which account of obligation, "
+        "and which final tribunal remain operative."
+    )
+    if not owner_specific_operation_performed("P6", p6_probe):
+        errors.append("self-test P6 rejected worldview-binding normativity operation")
+    v2_proof_burden_probe = (
+        "Operation: proof-burden-order acts on shared-salvific-necessity-proof-burden "
+        "with owner family V2. Result/state-change: proof-burden-order-restored. "
+        "State change: shared necessity no longer functions as automatic proof; the "
+        "claimant's burden is restored and the stronger inference must be proven."
+    )
+    if not owner_specific_operation_performed("V2", v2_proof_burden_probe):
+        errors.append("self-test V2 rejected proof-burden-order operation wording")
+    m7_definition_burden_block = """
+### ¹B₁[M7] - definition-anchor over definition-burden
+
+Target: definition-burden.
+
+Operation: definition-anchor must act on definition-burden with owner family M7.
+
+Result/state-change: definition-anchored; State change: secularism is no longer treated as an undefined object of refutation.
+
+Contribution-to-Land(¹B): This licenses Land(¹B) because the burden-local state changed from refute an unspecified secularism to evaluate a bounded secular claim without subtype-switching.
+
+TTP Operation Body: Before this submove, the live pressure was that secularism could mean metaphysical naturalism, political secularism, moral autonomy, epistemic neutrality, or a blended public ideology. M7.definition-anchor fixes the refutation target enough to stop the answer from attacking one version while inheriting another. After the operation, the response may test secularism as a governing worldview posture, but it must not pretend every political arrangement or every secular school has already been exhaustively handled. DELTA: Delta(B1): definition-anchored. LAND-LICENSE: the target-thesis pressure has been bounded, so this burden is landed.
+"""
+    if not target_pressure_identifiable("definition-burden"):
+        errors.append("self-test target_pressure_identifiable rejected definition-burden")
+    for target in (
+        "definition-stabilization",
+        "definition_scope",
+        "epistemic_authority",
+        "charitable-reconstruction",
+        "identity-boundary",
+        "attribute-coherence",
+        "hujjah-baseline",
+        "evidential-method",
+        "normative_grounding",
+        "public_order",
+    ):
+        if not target_pressure_identifiable(target):
+            errors.append(f"self-test target_pressure_identifiable rejected compact target {target}")
+    if not is_operation_shaped_submove(m7_definition_burden_block):
+        errors.append("self-test M7 rejected definition-burden operation-shaped submove")
+    m3_moral_purpose_block = """
+### ³B₁[M3] - orphaned-intuition over moral-purpose-grounding
+
+Target: moral-purpose-grounding.
+
+Operation: orphaned-intuition acts on moral-purpose-grounding with owner family M3.
+
+Result/state-change: State change: orphaned-intuition-identified. Claims about objective value, obligation, dignity, and telos are no longer treated as grounded merely because they are asserted, preferred, socially useful, or widely shared.
+
+Contribution-to-Land(³B): Land is licensed because the burden-local AFTER state changed from moral-purpose confidence without a grounding account to a classified orphaned-intuition state.
+
+TTP Operation Body: Before this submove, secularism could affirm human dignity, moral obligation, justice, meaning, or progress while treating these as available without a transcendent grounding source. M3.orphaned-intuition tests whether those claims are supported by the worldview's own foundations or whether they remain inherited moral furniture. Preference can describe what people want; convention can describe what communities enforce; utility can describe what produces outcomes. None of those, by itself, establishes objective obligation, intrinsic dignity, or final human purpose. After the operation, the moral-purpose burden is landed because the local state identifies the pressure point: secularism often preserves moral and teleological intuitions while detaching them from the grounding needed to make them objective rather than merely asserted. Delta: Δ³B:orphaned-intuition-identified. Land-license: the burden asked whether objective value and purpose are grounded; the state now classifies the relevant claims as orphaned intuitions unless a sufficient grounding account is supplied.
+"""
+    if not is_operation_shaped_submove(m3_moral_purpose_block):
+        errors.append("self-test M3 rejected moral-purpose grounding operation-shaped submove")
+    m3_moral_standard_block = """
+### ¹B₂[M3] - orphaned-intuition over orphaned-moral-standard-pressure
+
+Target: orphaned-moral-standard-pressure.
+
+Operation: orphaned-intuition acts with M3 on the moral predicates "cruel," "inhumane," "not kind," "not generous," and "not worthy."
+
+Result/state-change: orphaned-intuition-identified. State change: the moral standard doing the judging is exposed as a live burden rather than treated as neutral authority.
+
+TTP Operation Body: Before this submove, the statement used moral revulsion as if it were already a complete tribunal over God. The operation asks where the moral standard comes from, what gives it authority, and whether it can condemn divine justice while depending on borrowed categories such as justice, mercy, dignity, guilt, and goodness. If the objection rests only on personal disgust, it does not yet prove moral falsity. If it invokes objective moral reality, it must explain why that reality is authoritative and why it should outrank revelation, divine knowledge, and final accountability.
+
+Contribution-to-Land(¹B): this licenses Land(¹B) because the burden-local after-state now identifies the orphaned moral intuition instead of allowing it to operate invisibly as judge, source, and conclusion. Together with proportionality calibration, the moral objection is landed as an accountable moral argument, not a self-authenticating verdict.
+"""
+    if not is_operation_shaped_submove(m3_moral_standard_block):
+        errors.append("self-test M3 rejected acts-with-M3 moral-standard operation-shaped submove")
+    m8_grounding_burden_block = """
+³B₁[M8] - dependency-trace over grounding_burden
+
+Target: grounding_burden.
+
+Operation: dependency-trace acts on the grounding burden with owner family M8.
+
+Result/state-change: State change: the dependency is exposed. Secularism is no longer treated as self-grounding for reason, normativity, moral obligation, dignity, and public authority; those goods are shown to depend on a borrowed account of intelligibility, obligation, and human worth that the secular frame brackets.
+
+Contribution-to-Land(³B): This licenses Land(³B) because the burden-local BEFORE state allowed secularism to use reason, moral obligation, dignity, and authority as if they were available without deeper grounding, while the AFTER state exposes a dependency edge: the secular frame relies on normative and noetic goods it cannot generate from its own exclusionary posture. The grounding burden is landed because the dependency-radius change is visible: Δκ exposes the borrowed grounding relation.
+
+TTP Operation Body: Before this submove, secularism could speak as though rational obligation, moral dignity, public justice, and human worth simply arrive as neutral civic materials. M8 traces the dependency path: public reason presupposes intelligibility and trust in rational normativity; moral obligation presupposes more than preference or power; human dignity presupposes a stable account of the person; public authority presupposes an obligation to obey what is just rather than merely what is enacted. If secularism brackets the theistic/noetic field that grounds creation, accountability, fitrah, and sound reason, it still continues to spend those goods in public argument. After the trace, the burden changes: secularism is not functioning as an independent ground but as a frame borrowing the very rational, moral, and anthropological capital it excludes from public authority. DELTA: Δκ names the dependency-radius transition, and "dependency-exposed" names the local result. LAND-LICENSE: Land is licensed because the concrete dependency carrier relation has been exposed rather than left hidden; this burden does not require HOLD/PARTIAL at the local grounding level.
+"""
+    if not is_operation_shaped_submove(m8_grounding_burden_block):
+        errors.append("self-test M8 rejected compact grounding_burden operation-shaped submove")
+    return errors
+
+
 GENERIC_TARGET_RE = re.compile(
     r"(?i)^\s*(?:the\s+)?(?:baseline|target|pressure|claim|move|burden|route|issue|"
     r"local issue|generated note|scope note|thing|it|this)\.?\s*$"
+)
+DEFINITION_BURDEN_TARGET_RE = re.compile(
+    r"(?i)^\s*(?:definition[-_ ]burden|definition[-_ ]stabilization|definition[-_ ]scope|"
+    r"epistemic[-_ ]authority|target[-_ ]thesis|define\s+target\s+thesis)\s*$"
+)
+COMPACT_OPERATION_TARGET_RE = re.compile(
+    r"(?i)^\s*(?:grounding[-_ ]burden|charitable[-_ ]reconstruction|"
+    r"identity[-_ ]boundary|attribute[-_ ]coherence|hujjah[-_ ]baseline|"
+    r"evidential[-_ ]method|normative[-_ ]grounding|public[-_ ]order)\s*$"
 )
 CONTRIBUTION_EXPLANATION_RE = re.compile(
     r"(?i)\b(?:because|so that|therefore|thereby|by |rather than|instead of|licenses?|"
@@ -1057,6 +1324,10 @@ def target_pressure_identifiable(target: str) -> bool:
     cleaned = re.sub(r"\s+", " ", target.strip(" .;:-")).strip()
     if not cleaned or GENERIC_TARGET_RE.fullmatch(cleaned):
         return False
+    if DEFINITION_BURDEN_TARGET_RE.fullmatch(cleaned):
+        return True
+    if COMPACT_OPERATION_TARGET_RE.fullmatch(cleaned):
+        return True
     if OPERATION_MECHANISM_RE.search(cleaned) or HIGH_MASS_TERMS_RE.search(cleaned):
         return True
     if RELATIONAL_PRESSURE_RE.search(cleaned):
@@ -1077,6 +1348,25 @@ def target_pressure_identifiable(target: str) -> bool:
     if len(load_words) >= 3:
         return True
     return not is_label_like_value(cleaned)
+
+
+def do_attribute_claim_precision_target_backed(
+    owner: str,
+    target: str,
+    operation: str,
+    result: str,
+    contribution: str,
+) -> bool:
+    if owner_family(owner) != "DO_ATTRIBUTE":
+        return False
+    cleaned = re.sub(r"\s+", " ", target.strip(" .;:-")).strip()
+    if not DO_ATTRIBUTE_CLAIM_PRECISION_TARGET_RE.fullmatch(cleaned):
+        return False
+    operation_scope = " ".join((operation, result, contribution))
+    return bool(
+        owner_specific_operation_performed(owner, operation_scope)
+        and operation_acts_on_pressure(target, operation_scope)
+    )
 
 
 def target_keywords(target: str) -> set[str]:
@@ -1146,6 +1436,56 @@ def contribution_explains_land(contribution: str) -> bool:
 def operation_body_has_state_delta(operation_body: str, result: str, contribution: str) -> bool:
     delta_text = " ".join((operation_body, result, contribution))
     return bool(STATE_CHANGE_RE.search(delta_text) and contribution_explains_land(contribution))
+
+
+def target_word_contact(target: str, text: str) -> bool:
+    target_words = [
+        word.lower()
+        for word in re.findall(r"[A-Za-z][A-Za-z']{2,}", re.sub(r"[-_/]", " ", target))
+        if word.lower()
+        not in {
+            "the",
+            "this",
+            "that",
+            "claim",
+            "claims",
+            "move",
+            "burden",
+            "route",
+            "pressure",
+            "local",
+        }
+    ]
+    if len(target_words) < 2:
+        return False
+    operation_words = {
+        word.lower()
+        for word in re.findall(r"[A-Za-z][A-Za-z']{2,}", re.sub(r"[-_/]", " ", text))
+    }
+    return any(
+        word in operation_words
+        or (
+            len(word) >= 6
+            and any(candidate.startswith(word[:6]) or word.startswith(candidate[:6]) for candidate in operation_words)
+        )
+        for word in target_words
+    )
+
+
+def do_second_loop_pressure_action_backed(
+    owner: str,
+    target: str,
+    operation_text: str,
+    operation_scope: str,
+) -> bool:
+    if owner_family(owner) != "DO_SECOND_LOOP":
+        return False
+    payload = " ".join((operation_text, operation_scope))
+    if not target_word_contact(target, operation_text):
+        return False
+    if not owner_specific_operation_performed(owner, payload):
+        return False
+    return bool(STATE_CHANGE_RE.search(payload) and DO_SECOND_LOOP_ACTION_RE.search(payload))
 
 
 def source_repair_state_change_visible(
@@ -1501,7 +1841,18 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
         contribution = contribution_match.group("body").strip()
     if not (target and operation and result and contribution):
         return False
-    if not target_pressure_identifiable(target):
+    owner = submove_owner(block)
+    if owner_family(owner) == "PROOF_METHOD" and proof_method_carrier_transition_visible(block):
+        return True
+    if not target_pressure_identifiable(
+        target
+    ) and not do_attribute_claim_precision_target_backed(
+        owner,
+        target,
+        operation,
+        result,
+        contribution,
+    ):
         return False
     if not contribution_explains_land(contribution):
         return False
@@ -1511,9 +1862,12 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
     combined = " ".join((target, operation_text, result, contribution))
     if not operation_body and not low_mass_license:
         return False
-    owner = submove_owner(block)
-    if owner_family(owner) == "PROOF_METHOD" and proof_method_carrier_transition_visible(block):
-        return True
+    family_pressure_action = do_second_loop_pressure_action_backed(
+        owner,
+        target,
+        operation_text,
+        operation_scope,
+    )
     owner_performed = owner_specific_operation_performed(owner, operation_scope)
     if not (OPERATION_MECHANISM_RE.search(combined) or owner_performed):
         return False
@@ -1525,7 +1879,7 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
     if semantic_categories < 2 and not owner_performed:
         return False
     heading = next((line.strip() for line in block.splitlines() if line.strip()), "")
-    if not OPERATION_ACTION_RE.search(f"{heading} {operation_text}"):
+    if not OPERATION_ACTION_RE.search(f"{heading} {operation_text}") and not family_pressure_action:
         return False
     if not owner_performed:
         return False
@@ -1534,7 +1888,7 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
         or source_repair_state_change_visible(owner, result, contribution, operation_body)
     ):
         return False
-    if not operation_acts_on_pressure(target, operation_text):
+    if not operation_acts_on_pressure(target, operation_text) and not family_pressure_action:
         return False
     if not operation_body_has_state_delta(operation_body, result, contribution):
         return False
@@ -2138,6 +2492,7 @@ def main() -> int:
     errors: list[str] = []
     if not args.skip_skill_contract:
         errors.extend(check_compiled_skill_contract(Path("skill/SKILL.md")))
+    errors.extend(self_test_owner_specific_operation_patterns())
 
     valid, invalid = iter_fixtures(args.root)
     valid_checked = 0

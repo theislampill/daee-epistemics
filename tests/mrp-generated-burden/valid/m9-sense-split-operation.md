@@ -40,7 +40,7 @@ Finding: stable
 MRP route result type: no_new_resultant
 MRP resultant: stable -> graph none; route STOP
 Graph delta: none
-Pre-emption basis: terminal states landed; B_MRP empty; no generated burden remains
+Pre-emption basis: none
 LoopBreak: not needed
 Route: STOP
 Boundary: T_lang does not imply guaranteed uptake.
@@ -86,7 +86,7 @@ Boundary: T_lang does not imply guaranteed uptake.
       "route_result_type": "no_new_resultant",
       "mrp_resultant": "stable -> graph none; route STOP",
       "graph_delta": "none",
-      "preemption_basis": "terminal states landed; B_MRP empty; no generated burden remains",
+      "preemption_basis": "none",
       "route": "STOP"
     }
   ],

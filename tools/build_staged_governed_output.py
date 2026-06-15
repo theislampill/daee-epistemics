@@ -116,7 +116,8 @@ FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     (
         "guaranteed T_lang uptake claim",
         re.compile(
-            r"T_lang\s+guarantees|guarantees\s+interlocutor\s+uptake|guarantees\s+uptake",
+            r"T_lang\s+guarantees|guaranteed\s+T_lang\s+uptake|"
+            r"guarantees\s+interlocutor\s+uptake|guarantees\s+uptake",
             re.IGNORECASE,
         ),
     ),
@@ -135,6 +136,47 @@ FORBIDDEN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
         re.compile(r"Graphify[^.\n]{0,80}\bproof\b|ActiveGraph[^.\n]{0,80}\bproof\b", re.IGNORECASE),
     ),
 ]
+TLANG_UPTAKE_NONCLAIM_RE = re.compile(
+    r"(?is)\b(?:does\s+not\s+(?:claim|imply)|may\s+not\s+say|"
+    r"not\s+(?:claim|guarantee)|no|without)\b"
+    r"[^.\n;]{0,180}\b(?:guarantees?\s+uptake|guaranteed\s+(?:T_lang\s+)?uptake|"
+    r"interlocutor\s+uptake)\b"
+)
+SIDECAR_PROOF_NONCLAIM_RE = re.compile(
+    r"(?is)\b(?:does\s+not|do\s+not|not|no|without)\b[^.\n;]{0,180}"
+    r"\b(?:create|claim|build|produce|emit|include|make|generated?)?\b[^.\n;]{0,80}"
+    r"\b(?:verifier\s+sidecars?|sidecar\s+proof|release\s+proof|proof\s+artifacts?|"
+    r"downstream\s+artifacts?|Stage\s*8)\b"
+)
+PACKAGE_PROVENANCE_RELEASE_NONCLAIM_RE = re.compile(
+    r"(?is)\b(?:does\s+not|do\s+not|not|no|without|non-claim)\b[^.\n;]{0,220}"
+    r"\b(?:GitHub\s+Release|release\s+(?:asset|package|evidence|proof)|"
+    r"package\s+provenance|published\s+provenance|"
+    r"provenance\s+(?:asset|publication|proof)|\.skill\s+archive)\b"
+)
+
+
+def match_sentence(text: str, start: int, end: int) -> str:
+    left = max(text.rfind("\n", 0, start), text.rfind(".", 0, start), text.rfind(";", 0, start))
+    right_candidates = [pos for pos in (text.find("\n", end), text.find(".", end), text.find(";", end)) if pos != -1]
+    right = min(right_candidates) if right_candidates else len(text)
+    return text[left + 1 : right]
+
+OPTIONAL_TOOLING_PROOF_NONCLAIM_RE = re.compile(
+    r"(?:"
+    r"\b(?:no|not|without)\b[^.\n]{0,80}\b(?:Graphify|ActiveGraph)\b"
+    r"[^.\n]{0,120}\b(?:proof|proofs|claim|claimed|claims)\b"
+    r"|"
+    r"\b(?:Graphify|ActiveGraph)\b[^.\n]{0,80}\b(?:proof|proofs|claim|claims)\b"
+    r"[^.\n]{0,120}\b(?:remain(?:s)?\s+held|held|not\s+(?:claimed|inferred)|non[- ]claim)\b"
+    r")",
+    re.IGNORECASE,
+)
+OPTIONAL_TOOLING_POSITIVE_PROOF_RE = re.compile(
+    r"\b(?:Graphify|ActiveGraph)\b[^.\n]{0,80}\b"
+    r"(?:proves|proved|passed|verified|built|complete|success|certifies|certified)\b",
+    re.IGNORECASE,
+)
 PUBLIC_META_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     (
         "private planning or self-talk in public section",
@@ -299,7 +341,45 @@ def resolve_output_path(root: Path, manifest_dir: Path, value: Any, label: str) 
 
 
 def forbidden_text_errors(text: str, label: str) -> list[str]:
-    return [f"{label}: forbidden {name}" for name, pattern in FORBIDDEN_PATTERNS if pattern.search(text)]
+    errors: list[str] = []
+    for name, pattern in FORBIDDEN_PATTERNS:
+        matches = list(pattern.finditer(text))
+        if not matches:
+            continue
+        if name == "guaranteed T_lang uptake claim":
+            positive_matches = [
+                match
+                for match in matches
+                if not TLANG_UPTAKE_NONCLAIM_RE.search(match_sentence(text, match.start(), match.end()))
+            ]
+            if not positive_matches:
+                continue
+        if name == "sidecar proof claim before Stage 8":
+            positive_matches = [
+                match
+                for match in matches
+                if not SIDECAR_PROOF_NONCLAIM_RE.search(match_sentence(text, match.start(), match.end()))
+            ]
+            if not positive_matches:
+                continue
+        if name == "package/provenance/release claim":
+            positive_matches = [
+                match
+                for match in matches
+                if not PACKAGE_PROVENANCE_RELEASE_NONCLAIM_RE.search(
+                    match_sentence(text, match.start(), match.end())
+                )
+            ]
+            if not positive_matches:
+                continue
+        if (
+            name == "Graphify/ActiveGraph proof claim"
+            and OPTIONAL_TOOLING_PROOF_NONCLAIM_RE.search(text)
+            and not OPTIONAL_TOOLING_POSITIVE_PROOF_RE.search(text)
+        ):
+            continue
+        errors.append(f"{label}: forbidden {name}")
+    return errors
 
 
 def public_meta_text_errors(text: str, label: str) -> list[str]:
@@ -597,7 +677,75 @@ def canonicalize_formal_reread_curl_states(field_witness: dict[str, Any]) -> int
     return normalized
 
 
-def canonicalize_field_witness_ordering(text: str) -> tuple[str, dict[str, Any] | None]:
+def canonicalize_field_witness_per_burden_mirrors(
+    field_witness: dict[str, Any],
+    entry_by_burden: dict[str, dict[str, Any]] | None,
+) -> int:
+    if not entry_by_burden:
+        return 0
+
+    normalized = 0
+    resultants = field_witness.get("mrp_resultants")
+    if isinstance(resultants, list):
+        for row in resultants:
+            if not isinstance(row, dict):
+                continue
+            source = str(row.get("source") or "").strip()
+            entry = entry_by_burden.get(source)
+            if not entry:
+                continue
+            expected = {
+                "type": str(entry.get("route_result_type") or ""),
+                "finding": str(entry.get("finding") or ""),
+                "graph": str(entry.get("graph_delta") or ""),
+                "route": str(entry.get("route") or ""),
+            }
+            for key, value in expected.items():
+                if value and row.get(key) != value:
+                    row[key] = value
+                    normalized += 1
+
+    states = field_witness.get("formal_reread_states")
+    if isinstance(states, list):
+        for state in states:
+            if not isinstance(state, dict):
+                continue
+            source = str(state.get("source_burden") or "").strip()
+            entry = entry_by_burden.get(source)
+            if not entry:
+                continue
+            expected = {
+                "route_result_type": str(entry.get("route_result_type") or ""),
+                "mrp_resultant": str(entry.get("mrp_resultant") or ""),
+                "graph_delta": str(entry.get("graph_delta") or ""),
+                "route": str(entry.get("route") or ""),
+            }
+            for key, value in expected.items():
+                if value and state.get(key) != value:
+                    state[key] = value
+                    normalized += 1
+
+    nar = field_witness.get("normalized_activation_record")
+    rows = nar.get("per_burden") if isinstance(nar, dict) else None
+    if isinstance(rows, list):
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            burden = str(row.get("burden_id") or "").strip()
+            entry = entry_by_burden.get(burden)
+            if not entry:
+                continue
+            route_type = str(entry.get("route_result_type") or "")
+            if route_type and row.get("mrp_route_result_type") != route_type:
+                row["mrp_route_result_type"] = route_type
+                normalized += 1
+    return normalized
+
+
+def canonicalize_field_witness_ordering(
+    text: str,
+    entry_by_burden: dict[str, dict[str, Any]] | None = None,
+) -> tuple[str, dict[str, Any] | None]:
     label = FIELD_WITNESS_LABEL_RE.search(text)
     if label is None:
         return text, None
@@ -614,11 +762,17 @@ def canonicalize_field_witness_ordering(text: str) -> tuple[str, dict[str, Any] 
         return text, None
     roles_inserted = canonicalize_owner_activation_ordering_roles(field_witness)
     null_curl_states = canonicalize_formal_reread_curl_states(field_witness)
+    per_burden_mirrors = canonicalize_field_witness_per_burden_mirrors(
+        field_witness,
+        entry_by_burden,
+    )
     event: dict[str, Any] = merge_owner_activation_ordering(field_witness)
     if roles_inserted:
         event["inserted_owner_activation_ordering_roles"] = roles_inserted
     if null_curl_states:
         event["normalized_formal_reread_null_curl_states"] = null_curl_states
+    if per_burden_mirrors:
+        event["normalized_per_burden_mirror_fields"] = per_burden_mirrors
     if not event:
         return text, None
     replacement = json.dumps(payload, indent=2, ensure_ascii=False)
@@ -678,7 +832,8 @@ def canonicalize_public_submove_headings(text: str) -> tuple[str, dict[str, Any]
 
 def canonicalize_public_graph_alias_line(line: str) -> str:
     updated = line
-    if re.search(r"(?i)\b(?:no|not|without|absent)\b", updated):
+    protected_machine_row = "body_ref=" in updated or "⟦ACT " in updated
+    if not protected_machine_row and re.search(r"(?i)\b(?:no|not|without|absent)\b", updated):
         updated = re.sub(
             r"\bB([5-9][0-9]*)\b",
             lambda match: f"additional burden {match.group(1)}",
@@ -765,12 +920,18 @@ def mark_canonical_scaffold_non_evidence(event: dict[str, Any]) -> dict[str, Any
     return event
 
 
-def normalize_section_scaffold(section_id: str, role: str, text: str) -> tuple[str, dict[str, Any] | None]:
+def normalize_section_scaffold(
+    section_id: str,
+    role: str,
+    text: str,
+    *,
+    entry_by_burden: dict[str, dict[str, Any]] | None = None,
+) -> tuple[str, dict[str, Any] | None]:
     spec = CANONICAL_ROLE_HEADINGS.get(role)
     ordering_event: dict[str, Any] | None = None
     submove_event: dict[str, Any] | None = None
     if role == "field_witness_nar":
-        text, ordering_event = canonicalize_field_witness_ordering(text)
+        text, ordering_event = canonicalize_field_witness_ordering(text, entry_by_burden)
     if role == "layer_b_act":
         text, submove_event = canonicalize_public_submove_headings(text)
     if spec is None:
@@ -1047,6 +1208,544 @@ def body_refs_in_act_section(text: str) -> list[str]:
     return refs
 
 
+PER_BURDEN_REREAD_FIELD = "per_burden_reread"
+PER_BURDEN_PRESSURE_KEY_ORDER = (
+    "freeze-landed-move",
+    "dependency-tug",
+    "hidden-framework-recoil",
+    "entailment-pressure",
+    "doubt-churn-guard",
+    "reorientation-reminder",
+)
+PER_BURDEN_PRESSURE_KEYS = frozenset(PER_BURDEN_PRESSURE_KEY_ORDER)
+PER_BURDEN_FINDINGS = {
+    "stable",
+    "genuine-dependent",
+    "partial-real",
+    "hidden-framework-recoil",
+    "doubt-churn",
+    "reorientation",
+}
+PER_BURDEN_ROUTE_RESULT_TYPES = {
+    "held_burden_activation",
+    "generated_burden_instantiation",
+    "no_new_resultant",
+    "loopbreak",
+    "hold_partial",
+}
+PER_BURDEN_ROUTES = {"STOP", "HOLD", "RECURSE", "LoopBreak(∇×T)"}
+PER_BURDEN_PREEMPTION_BASES = {"none", "graph-bound", "commitment-bound", "framework-bound"}
+PER_BURDEN_BOUNDARY_PREFIX = "T_lang does not imply guaranteed uptake"
+PER_BURDEN_DIVERGENCE_HEADS = {"neutral", "settled", "bounded", "non-neutral"}
+PER_BURDEN_CURL_HEADS = {"null", "resolved", "held", "non-null"}
+PER_BURDEN_REQUIRED_STRING_FIELDS = (
+    "burden_id",
+    "target",
+    "reread",
+    "landed_delta",
+    "route_gradient",
+    "divergence",
+    "curl",
+    "finding",
+    "route_result_type",
+    "mrp_resultant",
+    "graph_delta",
+    "preemption_basis",
+    "route",
+    "boundary",
+)
+PER_BURDEN_OPTIONAL_STRING_FIELDS = ("loopbreak", "matched_route")
+PER_BURDEN_ALLOWED_FIELDS = frozenset(PER_BURDEN_REQUIRED_STRING_FIELDS) | frozenset(
+    PER_BURDEN_OPTIONAL_STRING_FIELDS
+) | {"pressure_activations"}
+PER_BURDEN_FORBIDDEN_SLOT_VALUES = {"none", "cleared", "n/a", "na", "-"}
+PER_BURDEN_SLOT_START_RE = re.compile(
+    r"^(?:pressure class:|coverage gap:|FPD\b|M1P\b|M\d+\b|V\d+\b|R\d+\b|P\d+\b|LoopBreak\b|"
+    r"field_witness\b|[A-Za-z0-9]+-[A-Za-z0-9-]+\b)"
+)
+PER_BURDEN_BURDEN_ID_RE = re.compile(r"^B[1-9][0-9]*$")
+PER_BURDEN_GRAPH_EDGE_RE = re.compile(r"^B[1-9][0-9]* -> B[1-9][0-9]*$")
+PER_BURDEN_DIVERGENCE_PREFIX_RE = re.compile(r"^(?:∇\s*·\s*B|del[- ]dot\s*B)\s*:\s*", re.IGNORECASE)
+PER_BURDEN_CURL_PREFIX_RE = re.compile(r"^(?:∇\s*×\s*(?:κ|kappa)|del[- ]cross\s*(?:κ|kappa))\s*:\s*", re.IGNORECASE)
+MRP_HEADING_TEXT = "[Mid-Reread Pressure]"
+# Mirrors tools/check_mid_reread_pressure.py MRP_HEADING_RE so the producer
+# forbids exactly what the checker would recognize as a block heading.
+MRP_HEADING_LINE_RE = re.compile(
+    r"(?im)^\s*(?:#{1,6}\s*)?(?:[-*]\s*)?(?:\*\*)?\[Mid-Reread Pressure\](?:\*\*)?\s*$"
+)
+# Mirrors tools/check_mid_reread_pressure.py LAND_GATE_RE: superscript-only and
+# line-start so ASCII Land(B1) machine rows never count as public landing gates.
+LAND_GATE_LINE_RE = re.compile(r"(?m)^Land\((?P<burden>[¹²³⁴⁵⁶⁷⁸⁹]B)\):")
+
+
+def per_burden_diag_body(value: str, prefix_re: re.Pattern[str]) -> str:
+    return prefix_re.sub("", str(value or "").strip(), count=1).strip()
+
+
+def per_burden_diag_errors(label: str, value: str, prefix_re: re.Pattern[str], heads: set[str]) -> list[str]:
+    body = per_burden_diag_body(value, prefix_re)
+    errors: list[str] = []
+    if ";" in body or "\n" in body:
+        errors.append(f"{label} must be a single-line value without ';'")
+        return errors
+    head, separator, reason = body.partition("/")
+    if head.strip() not in heads:
+        errors.append(f"{label} head must be one of {sorted(heads)}")
+    if not separator or not reason.strip():
+        errors.append(f"{label} must carry '<head> / <reason>'")
+    return errors
+
+
+def per_burden_reread_entry_errors(
+    entries: Any,
+    *,
+    label: str = PER_BURDEN_REREAD_FIELD,
+    terminal_state_ids: set[str] | None = None,
+) -> list[str]:
+    """Shared producer-side validator for stage-05 per_burden_reread entries.
+
+    One entry per terminal burden; entries are the only licensed source for the
+    visible [Mid-Reread Pressure] blocks. Stage07 must not fill, infer, or
+    repair missing fields, so this validator fails early and lists every
+    problem instead of letting downstream rendering guess.
+    """
+    if not isinstance(entries, list) or not entries:
+        return [f"{label}: must be a non-empty list of per-burden reread records"]
+    errors: list[str] = []
+    seen: set[str] = set()
+    for index, entry in enumerate(entries):
+        entry_label = f"{label}[{index}]"
+        if not isinstance(entry, dict):
+            errors.append(f"{entry_label}: must be an object")
+            continue
+        unknown = sorted(set(entry) - PER_BURDEN_ALLOWED_FIELDS)
+        if unknown:
+            errors.append(f"{entry_label}: unknown field(s) {unknown}; allowed fields are {sorted(PER_BURDEN_ALLOWED_FIELDS)}")
+        for field_name in PER_BURDEN_REQUIRED_STRING_FIELDS:
+            value = entry.get(field_name)
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"{entry_label}.{field_name}: must be a non-empty string")
+            elif "\n" in value:
+                errors.append(f"{entry_label}.{field_name}: must be a single-line value")
+            else:
+                errors.extend(forbidden_text_errors(value, f"{entry_label}.{field_name}"))
+        for field_name in PER_BURDEN_OPTIONAL_STRING_FIELDS:
+            if field_name in entry:
+                value = entry.get(field_name)
+                if not isinstance(value, str) or not value.strip() or "\n" in value:
+                    errors.append(f"{entry_label}.{field_name}: must be a non-empty single-line string when present")
+                else:
+                    errors.extend(forbidden_text_errors(value, f"{entry_label}.{field_name}"))
+        burden_id = entry.get("burden_id")
+        if isinstance(burden_id, str) and burden_id:
+            if not PER_BURDEN_BURDEN_ID_RE.match(burden_id):
+                errors.append(f"{entry_label}.burden_id: must be machine form B<n>")
+            if burden_id in seen:
+                errors.append(f"{entry_label}.burden_id: duplicates {burden_id}")
+            seen.add(burden_id)
+        target = entry.get("target")
+        if isinstance(target, str) and target and "B" not in target:
+            errors.append(f"{entry_label}.target: must name a burden")
+        reread = entry.get("reread")
+        if isinstance(reread, str) and reread:
+            if not reread.startswith("R(H,"):
+                errors.append(f"{entry_label}.reread: must start with the R(H,Δ) reread invocation")
+            for marker in ("held routes rechecked", "live remainder:", "release/next:"):
+                if marker not in reread:
+                    errors.append(f"{entry_label}.reread: must record '{marker}'")
+        landed_delta = entry.get("landed_delta")
+        if isinstance(landed_delta, str) and landed_delta and "Δ" not in landed_delta and "Delta" not in landed_delta:
+            errors.append(f"{entry_label}.landed_delta: must name Δ/Delta")
+        if entry.get("finding") not in PER_BURDEN_FINDINGS:
+            errors.append(f"{entry_label}.finding: must be a controlled finding token")
+        if entry.get("route_result_type") not in PER_BURDEN_ROUTE_RESULT_TYPES:
+            errors.append(f"{entry_label}.route_result_type: must be a controlled MRP route result type")
+        if entry.get("route") not in PER_BURDEN_ROUTES:
+            errors.append(f"{entry_label}.route: must be STOP, HOLD, RECURSE, or LoopBreak(∇×T)")
+        if entry.get("preemption_basis") not in PER_BURDEN_PREEMPTION_BASES:
+            errors.append(f"{entry_label}.preemption_basis: must be none, graph-bound, commitment-bound, or framework-bound")
+        boundary = entry.get("boundary")
+        if isinstance(boundary, str) and boundary and not boundary.startswith(PER_BURDEN_BOUNDARY_PREFIX):
+            errors.append(f"{entry_label}.boundary: must begin with the T_lang non-uptake boundary")
+        divergence = entry.get("divergence")
+        if isinstance(divergence, str) and divergence:
+            errors.extend(
+                per_burden_diag_errors(
+                    f"{entry_label}.divergence", divergence, PER_BURDEN_DIVERGENCE_PREFIX_RE, PER_BURDEN_DIVERGENCE_HEADS
+                )
+            )
+        curl = entry.get("curl")
+        if isinstance(curl, str) and curl:
+            errors.extend(
+                per_burden_diag_errors(f"{entry_label}.curl", curl, PER_BURDEN_CURL_PREFIX_RE, PER_BURDEN_CURL_HEADS)
+            )
+        graph_delta = entry.get("graph_delta")
+        has_edge = False
+        if isinstance(graph_delta, str) and graph_delta:
+            if PER_BURDEN_GRAPH_EDGE_RE.match(graph_delta):
+                has_edge = True
+            elif graph_delta != "none":
+                errors.append(f"{entry_label}.graph_delta: must be 'none' or one ASCII edge 'Bn -> Bm'")
+        activations = entry.get("pressure_activations")
+        if not isinstance(activations, dict):
+            errors.append(f"{entry_label}.pressure_activations: must be an object carrying the six fixed slots")
+        else:
+            missing = sorted(PER_BURDEN_PRESSURE_KEYS - set(activations))
+            extra = sorted(set(activations) - PER_BURDEN_PRESSURE_KEYS)
+            if missing:
+                errors.append(f"{entry_label}.pressure_activations: missing slot(s) {missing}")
+            if extra:
+                errors.append(f"{entry_label}.pressure_activations: unknown slot(s) {extra}")
+            for key in sorted(set(activations) & PER_BURDEN_PRESSURE_KEYS):
+                value = activations.get(key)
+                if not isinstance(value, str) or not value.strip() or "\n" in value:
+                    errors.append(f"{entry_label}.pressure_activations.{key}: must be a non-empty single-line string")
+                    continue
+                if value.strip().rstrip(".").lower() in PER_BURDEN_FORBIDDEN_SLOT_VALUES:
+                    errors.append(
+                        f"{entry_label}.pressure_activations.{key}: placeholder value forbidden; record the real owner/TTP, pressure class, or coverage gap read"
+                    )
+                elif not PER_BURDEN_SLOT_START_RE.match(value.strip()):
+                    errors.append(
+                        f"{entry_label}.pressure_activations.{key}: must begin with an owner/TTP id, 'pressure class:', or 'coverage gap:'"
+                    )
+                errors.extend(forbidden_text_errors(value, f"{entry_label}.pressure_activations.{key}"))
+        # Fail-early consistency rules mirroring tools/check_mid_reread_pressure.py.
+        finding = entry.get("finding")
+        route = entry.get("route")
+        if finding == "stable" and (route != "STOP" or graph_delta != "none"):
+            errors.append(f"{entry_label}: stable finding requires route STOP and graph_delta none")
+        if finding == "genuine-dependent" and (route != "RECURSE" or not has_edge):
+            errors.append(f"{entry_label}: genuine-dependent finding requires route RECURSE and a graph edge")
+        if finding == "partial-real" and route != "HOLD":
+            errors.append(f"{entry_label}: partial-real finding requires route HOLD")
+        if has_edge and entry.get("preemption_basis") == "none":
+            errors.append(f"{entry_label}: graph-edge pre-emption requires graph/commitment/framework-bound basis")
+    if terminal_state_ids is not None and not errors:
+        missing_entries = sorted(terminal_state_ids - seen)
+        extra_entries = sorted(seen - terminal_state_ids)
+        if missing_entries:
+            errors.append(f"{label}: missing entry for terminal burden(s) {missing_entries}")
+        if extra_entries:
+            errors.append(f"{label}: entry burden(s) {extra_entries} not present in terminal_states")
+    return errors
+
+
+def public_per_burden_graph_value(value: str) -> str:
+    rendered = re.sub(
+        r"\bB([1-9][0-9]*)\b",
+        lambda match: public_burden_token(match.group(1)),
+        str(value or ""),
+    )
+    return rendered.replace("->", "→")
+
+
+def public_per_burden_mrp_resultant_value(value: str) -> str:
+    rendered = re.sub(
+        r"\bB([1-9][0-9]*)\s*(?:->|→)\s*B([1-9][0-9]*)\b",
+        lambda match: f"{public_burden_token(match.group(1))} → {public_burden_token(match.group(2))}",
+        str(value or ""),
+    )
+    return public_per_burden_text_value(rendered)
+
+
+def public_per_burden_text_value(value: str) -> str:
+    text = str(value or "")
+    protected_delta_identities: list[str] = []
+
+    def protect_delta_identity(match: re.Match[str]) -> str:
+        protected_delta_identities.append(match.group(0))
+        return f"@@DAEE_DELTA_IDENTITY_{len(protected_delta_identities) - 1}@@"
+
+    text = re.sub(r"(?i)Delta\(\s*B[1-9][0-9]*\s*\)", protect_delta_identity, text)
+    text = re.sub(
+        r"(?i)\bB[knm]\s*(?:->|→)\s*B[knm](?:\s+edge)?\b",
+        "burden-to-burden edge",
+        text,
+    )
+    text = re.sub(
+        r"ΔB([1-9][0-9]*)\b",
+        lambda match: f"Δ{public_burden_token(match.group(1))}",
+        text,
+    )
+    text = re.sub(
+        r"\b(MRP|Land|HOLD)\(\s*B([1-9][0-9]*)\s*\)",
+        lambda match: f"{match.group(1)}({public_burden_token(match.group(2))})",
+        text,
+    )
+    text = re.sub(
+        r"\bB([1-9][0-9]*)\s*-\s*B([1-9][0-9]*)\b",
+        lambda match: f"{public_burden_token(match.group(1))}-{public_burden_token(match.group(2))}",
+        text,
+    )
+    text = re.sub(
+        r"\bB([1-9][0-9]*)\b",
+        lambda match: public_burden_token(match.group(1)),
+        text,
+    )
+    for index, original in enumerate(protected_delta_identities):
+        text = text.replace(f"@@DAEE_DELTA_IDENTITY_{index}@@", original)
+    return text
+
+
+def render_mrp_block(entry: dict[str, Any]) -> str:
+    """Render one checker-canonical [Mid-Reread Pressure] block from one record.
+
+    The line shape mirrors tools/check_mid_reread_pressure.py field parsing.
+    Every visible value comes from the validated per_burden_reread entry; the
+    renderer adds no content beyond the canonical field labels.
+    """
+    activations = entry.get("pressure_activations") or {}
+    lines = [
+        MRP_HEADING_TEXT,
+        f"Target: {public_per_burden_text_value(entry['target'])}",
+        public_per_burden_text_value(str(entry["reread"])),
+        f"Landed delta: {public_per_burden_text_value(entry['landed_delta'])}",
+        "Pressure activations:",
+    ]
+    lines.extend(
+        f"- {key}: {public_per_burden_text_value(activations[key])}"
+        for key in PER_BURDEN_PRESSURE_KEY_ORDER
+    )
+    matched_route = str(entry.get("matched_route") or "").strip()
+    if matched_route:
+        matched_route = public_per_burden_text_value(matched_route)
+        if re.match(r"(?i)^\s*Matched owner/TTP route\s*:", matched_route):
+            lines.append(matched_route)
+        else:
+            lines.append(f"Matched owner/TTP route: {matched_route}")
+    divergence = per_burden_diag_body(entry["divergence"], PER_BURDEN_DIVERGENCE_PREFIX_RE)
+    curl = per_burden_diag_body(entry["curl"], PER_BURDEN_CURL_PREFIX_RE)
+    lines.extend(
+        [
+            f"Field diagnostics: ∇·B: {public_per_burden_text_value(divergence)}; ∇×κ: {public_per_burden_text_value(curl)}",
+            f"Route-gradient: {public_per_burden_text_value(entry['route_gradient'])}",
+            f"Finding: {entry['finding']}",
+            f"MRP route result type: {entry['route_result_type']}",
+            f"MRP resultant: {public_per_burden_mrp_resultant_value(entry['mrp_resultant'])}",
+            f"Graph delta: {public_per_burden_graph_value(entry['graph_delta'])}",
+            f"Pre-emption basis: {public_per_burden_text_value(entry['preemption_basis'])}",
+            f"LoopBreak: {public_per_burden_text_value(entry.get('loopbreak') or 'not needed')}",
+            f"Route: {entry['route']}",
+            f"Boundary: {public_per_burden_text_value(entry['boundary'])}",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def inject_per_burden_mrp_blocks(
+    text: str,
+    entry_by_burden: dict[str, dict[str, Any]],
+    label: str,
+) -> tuple[str, list[str], list[str]]:
+    """Inject one canonical MRP block after each superscript Land(ⁿB): gate line.
+
+    Returns (new_text, gated_burden_ids_in_order, errors). Gates without a
+    per_burden_reread record are hard errors; Stage07 never invents block
+    content from terminal states, resultants, or prose.
+    """
+    errors: list[str] = []
+    gates: list[str] = []
+    out_lines: list[str] = []
+    for line in text.splitlines():
+        out_lines.append(line)
+        match = LAND_GATE_LINE_RE.match(line)
+        if not match:
+            continue
+        public_burden = match.group("burden")
+        burden_id = f"B{public_burden[:-1].translate(SUP_DIGITS)}"
+        gates.append(burden_id)
+        entry = entry_by_burden.get(burden_id)
+        if entry is None:
+            errors.append(
+                f"{label}: Land({public_burden}): gate has no {PER_BURDEN_REREAD_FIELD} record for {burden_id}"
+            )
+            continue
+        out_lines.append("")
+        out_lines.extend(render_mrp_block(entry).splitlines())
+        out_lines.append("")
+    new_text = "\n".join(out_lines)
+    if text.endswith("\n") and not new_text.endswith("\n"):
+        new_text += "\n"
+    return new_text, gates, errors
+
+
+def land_gate_burdens(text: str) -> list[str]:
+    return [
+        f"B{match.group('burden')[:-1].translate(SUP_DIGITS)}"
+        for match in LAND_GATE_LINE_RE.finditer(text)
+    ]
+
+
+PER_BURDEN_REREAD_NORMALIZE_RE = re.compile(
+    r"R\(H,\s*Delta(?:(?:B[1-9][0-9]*)|\(B[1-9][0-9]*\)|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)?\)"
+)
+
+
+def per_burden_block_field_parity_errors(label: str, block: Any, entry: dict[str, Any]) -> list[str]:
+    """Compare one parsed visible [Mid-Reread Pressure] block to one record.
+
+    Visible values must equal the per_burden_reread record verbatim (graph
+    delta compared through the canonical public rendering; R(H,Delta) spelling
+    normalized to R(H,Δ)). A valid-shaped block that diverges from the hidden
+    record is a parity failure, never a pass.
+    """
+    errors: list[str] = []
+
+    def expected(field_name: str) -> str:
+        return str(entry.get(field_name) or "")
+
+    def mismatch(display: str, visible: Any, wanted: str) -> None:
+        errors.append(
+            f"{label} {display} diverges from per_burden_reread: visible {str(visible)!r} != record {wanted!r}"
+        )
+
+    def normalize_reread(value: Any) -> str:
+        return PER_BURDEN_REREAD_NORMALIZE_RE.sub("R(H,Δ)", str(value or "").strip())
+
+    if block.target != public_per_burden_text_value(expected("target")):
+        mismatch("Target", block.target, public_per_burden_text_value(expected("target")))
+    if normalize_reread(block.reread) != normalize_reread(public_per_burden_text_value(expected("reread"))):
+        mismatch("R(H,Δ) reread", block.reread, public_per_burden_text_value(expected("reread")))
+    if block.landed_delta != public_per_burden_text_value(expected("landed_delta")):
+        mismatch("Landed delta", block.landed_delta, public_per_burden_text_value(expected("landed_delta")))
+    activations = entry.get("pressure_activations") or {}
+    for key in PER_BURDEN_PRESSURE_KEY_ORDER:
+        wanted = public_per_burden_text_value(str(activations.get(key) or ""))
+        visible = block.pressure_lines.get(key)
+        if visible is None:
+            errors.append(f"{label} pressure slot {key} is missing from the visible block")
+        elif visible != wanted:
+            mismatch(f"pressure slot {key}", visible, wanted)
+    expected_divergence = public_per_burden_text_value(
+        per_burden_diag_body(expected("divergence"), PER_BURDEN_DIVERGENCE_PREFIX_RE)
+    )
+    expected_curl = public_per_burden_text_value(
+        per_burden_diag_body(expected("curl"), PER_BURDEN_CURL_PREFIX_RE)
+    )
+    if str(block.divergence or "").strip() != expected_divergence:
+        mismatch("field diagnostics ∇·B", block.divergence, expected_divergence)
+    if str(block.curl or "").strip() != expected_curl:
+        mismatch("field diagnostics ∇×κ", block.curl, expected_curl)
+    if block.route_gradient != public_per_burden_text_value(expected("route_gradient")):
+        mismatch("Route-gradient", block.route_gradient, public_per_burden_text_value(expected("route_gradient")))
+    if block.finding != expected("finding"):
+        mismatch("Finding", block.finding, expected("finding"))
+    if block.route_result_type != expected("route_result_type"):
+        mismatch("MRP route result type", block.route_result_type, expected("route_result_type"))
+    expected_mrp_resultant = public_per_burden_mrp_resultant_value(expected("mrp_resultant"))
+    if block.mrp_resultant != expected_mrp_resultant:
+        mismatch("MRP resultant", block.mrp_resultant, expected_mrp_resultant)
+    expected_graph = public_per_burden_graph_value(expected("graph_delta"))
+    if block.graph_delta != expected_graph:
+        mismatch("Graph delta", block.graph_delta, expected_graph)
+    if block.preemption_basis != public_per_burden_text_value(expected("preemption_basis")):
+        mismatch(
+            "Pre-emption basis",
+            block.preemption_basis,
+            public_per_burden_text_value(expected("preemption_basis")),
+        )
+    if block.route != expected("route"):
+        mismatch("Route", block.route, expected("route"))
+    if block.boundary != public_per_burden_text_value(expected("boundary")):
+        mismatch("Boundary", block.boundary, public_per_burden_text_value(expected("boundary")))
+    return errors
+
+
+def visible_block_parity_errors(
+    output_text: str,
+    per_burden_reread: Any,
+    *,
+    label: str = "mrp record-surface parity",
+) -> list[str]:
+    """Require every visible [Mid-Reread Pressure] block to mirror its record.
+
+    This is the single-source record↔surface tooth: one block per line-start
+    superscript Land(ⁿB): landing window, every block field equal to the
+    stage-05 per_burden_reread record for that burden, and no unmatched
+    blocks, records, or gates in either direction. Block parsing reuses
+    tools/check_mid_reread_pressure.py so parse semantics cannot fork.
+    """
+    import check_mid_reread_pressure as mrp_checker
+
+    if (
+        not isinstance(per_burden_reread, list)
+        or not per_burden_reread
+        or not all(isinstance(entry, dict) for entry in per_burden_reread)
+    ):
+        return [f"{label}: stage-05 per_burden_reread records are required for record-surface parity"]
+    errors: list[str] = []
+    entry_by_burden: dict[str, dict[str, Any]] = {}
+    for entry in per_burden_reread:
+        burden_id = str(entry.get("burden_id") or "")
+        if not burden_id:
+            errors.append(f"{label}: per_burden_reread entry without burden_id")
+            continue
+        if burden_id in entry_by_burden:
+            errors.append(f"{label}: duplicate per_burden_reread entry for {burden_id}")
+        entry_by_burden[burden_id] = entry
+
+    gates = list(LAND_GATE_LINE_RE.finditer(output_text))
+    gate_burdens = [
+        f"B{match.group('burden')[:-1].translate(SUP_DIGITS)}" for match in gates
+    ]
+    duplicate_gates = sorted({burden for burden in gate_burdens if gate_burdens.count(burden) > 1})
+    if duplicate_gates:
+        errors.append(f"{label}: duplicate Land(ⁿB): landing gate(s) for {duplicate_gates}")
+    gateless_records = sorted(set(entry_by_burden) - set(gate_burdens))
+    if gateless_records:
+        errors.append(
+            f"{label}: per_burden_reread record(s) {gateless_records} have no visible Land(ⁿB): landing gate"
+        )
+    recordless_gates = sorted({burden for burden in gate_burdens if burden not in entry_by_burden})
+    if recordless_gates:
+        errors.append(
+            f"{label}: Land(ⁿB): landing gate(s) {recordless_gates} have no per_burden_reread record"
+        )
+
+    headings = [
+        match.start()
+        for match in re.finditer(mrp_checker.MRP_HEADING_RE, output_text, re.MULTILINE)
+    ]
+    blocks = mrp_checker.parse_mrps(output_text)
+    if len(blocks) != len(headings):
+        errors.append(
+            f"{label}: parsed {len(blocks)} block body(ies) for {len(headings)} visible heading(s)"
+        )
+        return errors
+    heading_blocks = list(zip(headings, blocks))
+    first_gate_start = gates[0].start() if gates else len(output_text)
+    stray_blocks = [position for position in headings if position < first_gate_start]
+    if stray_blocks:
+        errors.append(
+            f"{label}: {len(stray_blocks)} visible [Mid-Reread Pressure] block(s) appear before any "
+            "Land(ⁿB): landing gate and match no record"
+        )
+    for index, gate in enumerate(gates):
+        window_end = gates[index + 1].start() if index + 1 < len(gates) else len(output_text)
+        in_window = [
+            (position, block)
+            for position, block in heading_blocks
+            if gate.end() <= position < window_end
+        ]
+        burden_id = gate_burdens[index]
+        gate_label = f"{label}: Land({gate.group('burden')}):"
+        if not in_window:
+            errors.append(
+                f"{gate_label} no visible [Mid-Reread Pressure] block mirrors the {burden_id} record"
+            )
+            continue
+        if len(in_window) > 1:
+            errors.append(
+                f"{gate_label} {len(in_window)} visible blocks in one landing window; exactly one is licensed"
+            )
+        entry = entry_by_burden.get(burden_id)
+        if entry is None:
+            continue
+        errors.extend(per_burden_block_field_parity_errors(gate_label, in_window[0][1], entry))
+    return errors
+
+
 def act_partition_errors(
     partition: Any,
     *,
@@ -1172,6 +1871,13 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
         errors.append("case_id: must be a non-empty string")
     errors.extend(validate_non_claims(payload.get("non_claims")))
 
+    per_burden_entries = payload.get(PER_BURDEN_REREAD_FIELD)
+    per_burden_errors = per_burden_reread_entry_errors(per_burden_entries, label=PER_BURDEN_REREAD_FIELD)
+    errors.extend(per_burden_errors)
+    entry_by_burden: dict[str, dict[str, Any]] = {}
+    if not per_burden_errors and isinstance(per_burden_entries, list):
+        entry_by_burden = {str(entry["burden_id"]): entry for entry in per_burden_entries}
+
     output = payload.get("output")
     target_output_kb = 0
     target_min_bytes = 0
@@ -1199,6 +1905,7 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
     seen_ids: set[str] = set()
     role_counts: dict[str, int] = {role: 0 for role in ROLE_ORDER}
     previous_role_index = -1
+    land_gate_sequence: list[str] = []
 
     for index, section in enumerate(sections):
         label = f"sections[{index}]"
@@ -1233,8 +1940,31 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
         original_text = section_path.read_text(encoding="utf-8", errors="replace")
         errors.extend(forbidden_text_errors(original_text, label))
         errors.extend(public_meta_text_errors(original_text, label))
-        text, scaffold_event = normalize_section_scaffold(section_id, role, original_text)
+        if MRP_HEADING_LINE_RE.search(original_text):
+            errors.append(
+                f"{label}: model-authored [Mid-Reread Pressure] heading is forbidden; "
+                f"canonical blocks are harness-injected from {PER_BURDEN_REREAD_FIELD} records"
+            )
+        text, scaffold_event = normalize_section_scaffold(
+            section_id,
+            role,
+            original_text,
+            entry_by_burden=entry_by_burden,
+        )
         text, trimmed_trailing_whitespace_lines = strip_trailing_line_whitespace(text)
+        injected_block_count = 0
+        if role == "layer_b_act":
+            text, section_gates, injection_errors = inject_per_burden_mrp_blocks(text, entry_by_burden, label)
+            errors.extend(injection_errors)
+            land_gate_sequence.extend(section_gates)
+            injected_block_count = sum(1 for burden_id in section_gates if burden_id in entry_by_burden)
+        else:
+            stray_gates = land_gate_burdens(text)
+            if stray_gates:
+                errors.append(
+                    f"{label}: superscript Land(ⁿB): landing gate(s) {sorted(set(stray_gates))} "
+                    "are only allowed inside layer_b_act sections"
+                )
         errors.extend(forbidden_text_errors(text, label))
         errors.extend(public_meta_text_errors(text, label))
         section_texts.append(text)
@@ -1248,6 +1978,8 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
             "bytes": len(original_text.encode("utf-8")),
             "assembled_bytes": len(text.encode("utf-8")),
         }
+        if injected_block_count:
+            record["injected_mrp_blocks"] = injected_block_count
         if trimmed_trailing_whitespace_lines:
             record["trimmed_trailing_whitespace_lines"] = trimmed_trailing_whitespace_lines
         if scaffold_event is not None:
@@ -1260,6 +1992,16 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
     duplicate_singletons = [role for role in sorted(SINGLETON_ROLES) if role_counts.get(role, 0) > 1]
     if duplicate_singletons:
         errors.append(f"sections: singleton role(s) repeated: {duplicate_singletons}")
+
+    duplicate_gates = sorted({burden_id for burden_id in land_gate_sequence if land_gate_sequence.count(burden_id) > 1})
+    if duplicate_gates:
+        errors.append(f"{PER_BURDEN_REREAD_FIELD}: duplicate Land(ⁿB): landing gate(s) for {duplicate_gates}")
+    if not per_burden_errors and entry_by_burden:
+        ungated_entries = sorted(set(entry_by_burden) - set(land_gate_sequence))
+        if ungated_entries:
+            errors.append(
+                f"{PER_BURDEN_REREAD_FIELD}: entry burden(s) {ungated_entries} have no visible Land(ⁿB): landing gate"
+            )
 
     assembled = ""
     for text in section_texts:
@@ -1320,6 +2062,10 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
             "under_target_allowed": allow_under_target,
         },
         "sections": section_records,
+        "per_burden_mrp": {
+            "entry_burdens": sorted(entry_by_burden),
+            "land_gates": land_gate_sequence,
+        },
         "non_claims": {key: payload["non_claims"].get(key) for key in sorted(REQUIRED_NON_CLAIMS)},
     }
     if payload.get("act_partition") is not None:
@@ -1344,6 +2090,71 @@ def assemble_manifest(manifest_path: Path, *, root: Path = ROOT, allow_under_tar
     return record
 
 
+def self_test_per_burden_entry(burden_id: str, *, next_burden_id: str | None = None) -> dict[str, Any]:
+    public = public_burden_token(burden_id[1:])
+    if next_burden_id is None:
+        reread = (
+            f"R(H,Δ): held routes rechecked: none; live remainder: no remaining burden; "
+            f"release/next: STOP after {public}."
+        )
+        entry_tail: dict[str, Any] = {
+            "route_gradient": f"plain-gradient points to STOP after {public}; no live pressure remains.",
+            "finding": "stable",
+            "route_result_type": "no_new_resultant",
+            "mrp_resultant": "stable -> no new graph edge; STOP",
+            "graph_delta": "none",
+            "preemption_basis": "none",
+            "route": "STOP",
+        }
+        dependency_tug = "pressure class: dependency-scan — no κ dependency remains live."
+        entailment = "M8 — no entailment pressure remains against the bounded close."
+    else:
+        next_public = public_burden_token(next_burden_id[1:])
+        reread = (
+            f"R(H,Δ): held routes rechecked: {next_public}; live remainder: {next_public}; "
+            f"release/next: RECURSE to {next_public}."
+        )
+        entry_tail = {
+            "route_gradient": (
+                f"already-held {next_public} from the initial burden set carries the highest pressure after R(H,Δ)."
+            ),
+            "finding": "genuine-dependent",
+            "route_result_type": "held_burden_activation",
+            "mrp_resultant": f"genuine-dependent -> graph {burden_id} -> {next_burden_id}; RECURSE",
+            "graph_delta": f"{burden_id} -> {next_burden_id}",
+            "preemption_basis": "graph-bound",
+            "route": "RECURSE",
+        }
+        dependency_tug = f"pressure class: dependency-scan — {next_public} dependency stays live."
+        entailment = f"M8 — entailment presses toward {next_public}."
+    return {
+        "burden_id": burden_id,
+        "target": f"{public} / bounded self-test burden",
+        "reread": reread,
+        "landed_delta": f"Δ{public} / Delta({burden_id}): bounded-self-test-delta recorded.",
+        "pressure_activations": {
+            "freeze-landed-move": f"diagnostic-render-contract — Land({public}) frozen before reread.",
+            "dependency-tug": dependency_tug,
+            "hidden-framework-recoil": "FPD — no hidden framework support reopens the landed move.",
+            "entailment-pressure": entailment,
+            "doubt-churn-guard": "doubt-vs-skepticism — no churn or proof-carousel loop is live.",
+            "reorientation-reminder": "P1 — reorientation reminder cleared toward landed signs.",
+        },
+        "divergence": "∇·B: neutral / no remaining burden pressure",
+        "curl": "∇×κ: null / no circular dependency",
+        **entry_tail,
+        "boundary": "T_lang does not imply guaranteed uptake.",
+    }
+
+
+def self_test_per_burden_chain(burden_ids: list[str]) -> list[dict[str, Any]]:
+    entries: list[dict[str, Any]] = []
+    for index, burden_id in enumerate(burden_ids):
+        next_burden_id = burden_ids[index + 1] if index + 1 < len(burden_ids) else None
+        entries.append(self_test_per_burden_entry(burden_id, next_burden_id=next_burden_id))
+    return entries
+
+
 def manifest_for_sections(
     case_dir: Path,
     *,
@@ -1355,6 +2166,7 @@ def manifest_for_sections(
     act_partition: dict[str, Any] | None = None,
     section_budgets: dict[str, Any] | None = None,
     section_expansions: dict[str, Any] | None = None,
+    per_burden_reread: list[dict[str, Any]] | None = None,
 ) -> Path:
     sections_dir = case_dir / "sections"
     sections_dir.mkdir(parents=True, exist_ok=True)
@@ -1377,6 +2189,11 @@ def manifest_for_sections(
         "source_input": source_input,
         "sections": sections_payload,
         "output": {"path": output_name, "target_output_kb": target_output_kb},
+        PER_BURDEN_REREAD_FIELD: (
+            per_burden_reread
+            if per_burden_reread is not None
+            else [self_test_per_burden_entry("B1")]
+        ),
         "non_claims": {
             "not_release_provenance": True,
             "not_model_behavior_by_itself": True,
@@ -1409,10 +2226,9 @@ def small_sections(*, act_text: str = "Layer B - Bounded Governed Response\nACT 
         (
             "mrp",
             "mrp_reread_terminal",
-            "[Mid-Reread Pressure]\n"
-            "Target: B1\n"
-            "R(H,Delta): held routes rechecked: none; live remainder: none; release/next: closure.\n"
-            "MRP route result type: no_new_resultant\n"
+            "MRP terminal reconstruction floor\n"
+            "Route-state ledger:\n"
+            "- MRP(B1): type=no_new_resultant; finding=stable; graph=none; route=STOP\n"
             "Terminal states: B1=landed.\n"
             "Field diagnostics: ∇·B: neutral / no remaining burden; ∇×κ: null / no circular dependency.\n"
         ),
@@ -1506,18 +2322,30 @@ def act_partition_payload(assignments: list[tuple[str, list[str]]]) -> dict[str,
     }
 
 
-def act_section(section_id: str, *body_refs: str) -> tuple[str, str, str]:
+def act_section(
+    section_id: str,
+    *body_refs: str,
+    land_burdens: list[str] | None = None,
+) -> tuple[str, str, str]:
     rows = []
+    burdens_in_order: list[str] = []
     for body_ref in body_refs:
         burden_id = body_ref_burden_id(body_ref) or "B1"
+        if burden_id not in burdens_in_order:
+            burdens_in_order.append(burden_id)
         rows.append(
             f"⟦ACT {body_ref}[M9.predication-repair] :: π=predicate-transfer :: "
             f"body_ref={body_ref} :: Δ=Δ{burden_id}:predicate-transfer-blocked :: Land({burden_id})+⟧"
         )
+    if land_burdens is None:
+        land_burdens = burdens_in_order or ["B1"]
+    gate_lines = "".join(
+        f"Land({public_burden_token(burden_id[1:])}): landed.\n" for burden_id in land_burdens
+    )
     return (
         section_id,
         "layer_b_act",
-        "Layer B - Bounded Governed Response\nACT records:\n" + "\n".join(rows) + "\nLand(B1): landed.\n",
+        "Layer B - Bounded Governed Response\nACT records:\n" + "\n".join(rows) + "\n" + gate_lines,
     )
 
 
@@ -1550,6 +2378,32 @@ def run_self_test(root: Path) -> int:
     small_record = assemble_manifest(small_manifest, root=root)
     if small_record["output"]["bytes"] <= 0:
         raise AssemblyError("self-test valid small assembly wrote an empty output")
+    small_output = (base_dir / "valid-small" / "output.md").read_text(encoding="utf-8")
+    if small_output.count("[Mid-Reread Pressure]") != 1:
+        raise AssemblyError("self-test valid small assembly must inject exactly one MRP block")
+    small_gate_at = small_output.find("Land(¹B):")
+    small_block_at = small_output.find("[Mid-Reread Pressure]")
+    if small_gate_at < 0 or small_block_at < 0 or small_block_at < small_gate_at:
+        raise AssemblyError("self-test valid small assembly must inject the MRP block after the landing gate")
+    for required in (
+        "Target: ¹B / bounded self-test burden",
+        "- freeze-landed-move: diagnostic-render-contract — Land(¹B) frozen before reread.",
+        "Field diagnostics: ∇·B: neutral / no remaining burden pressure; ∇×κ: null / no circular dependency",
+        "MRP route result type: no_new_resultant",
+        "Pre-emption basis: none",
+        "LoopBreak: not needed",
+        "Boundary: T_lang does not imply guaranteed uptake.",
+    ):
+        if required not in small_output:
+            raise AssemblyError(f"self-test valid small injected MRP block omitted {required}")
+    if not any(
+        section.get("injected_mrp_blocks") == 1
+        for section in small_record.get("sections", [])
+        if isinstance(section, dict)
+    ):
+        raise AssemblyError("self-test valid small assembly did not record injected MRP block metadata")
+    if small_record.get("per_burden_mrp") != {"entry_burdens": ["B1"], "land_gates": ["B1"]}:
+        raise AssemblyError("self-test valid small assembly did not record per-burden MRP accounting")
     if not public_meta_text_errors("Final answer only text?\nNeed include public rows.\n", "self-test"):
         raise AssemblyError("self-test public meta guard did not catch planning prose")
 
@@ -1597,7 +2451,14 @@ def run_self_test(root: Path) -> int:
         (
             f"act-body-{index}",
             "layer_b_act",
-            ("Layer B - Bounded Governed Response\nACT body_ref=B1.s%s.\nOperation: bounded section work.\nLand(B1): landed.\n" % index) * 900,
+            (
+                "Layer B - Bounded Governed Response\n"
+                f"ACT body_ref=B{index}.s1.\n"
+                "Operation: bounded section work.\n"
+                "Result/state-change: bounded section landing notes continue.\n"
+            )
+            * 900
+            + f"Land({public_burden_token(str(index))}): landed.\n",
         )
         for index in range(1, 5)
     ]
@@ -1611,10 +2472,14 @@ def run_self_test(root: Path) -> int:
             *small_sections()[3:],
         ],
         target_output_kb=200,
+        per_burden_reread=self_test_per_burden_chain(["B1", "B2", "B3", "B4"]),
     )
     large_record = assemble_manifest(large_manifest, root=root)
     if large_record["output"]["bytes"] < 200 * 1024:
         raise AssemblyError("self-test valid large assembly did not reach 200KB")
+    large_output = (base_dir / "valid-large" / "output.md").read_text(encoding="utf-8")
+    if large_output.count("[Mid-Reread Pressure]") != 4:
+        raise AssemblyError("self-test valid large assembly must inject one MRP block per landing gate")
 
     valid_100kb_manifest = manifest_for_sections(
         base_dir / "valid-100kb",
@@ -1626,6 +2491,7 @@ def run_self_test(root: Path) -> int:
             *small_sections()[3:],
         ],
         target_output_kb=100,
+        per_burden_reread=self_test_per_burden_chain(["B1", "B2"]),
     )
     valid_100kb_record = assemble_manifest(valid_100kb_manifest, root=root)
     if valid_100kb_record["output"]["bytes"] < 100 * 1024:
@@ -2094,13 +2960,22 @@ def run_self_test(root: Path) -> int:
         "Contribution-to-Land(¹B)",
         "no additional burden 5 generated because ¹B is already landed",
         "Land(¹B)",
-        "Target: MRP(¹B)",
+        "[Mid-Reread Pressure]",
+        "Target: ¹B / bounded self-test burden",
         "R(H,Δ)",
     ):
         if required not in graph_alias_output:
             raise AssemblyError(f"self-test public graph alias canonicalization omitted {required}")
     if '"B_LA": ["B1"]' not in graph_alias_output:
         raise AssemblyError("self-test public graph alias canonicalization changed field_witness JSON machine IDs")
+    protected_act_alias = canonicalize_public_graph_alias_line(
+        "⟦ACT B5_1[M7.definition-anchor] :: π=logic shifts without anchored predicates :: "
+        "body_ref=B5_1 :: Δ=ΔB5:definition-anchored :: Land(B5)+⟧"
+    )
+    if "Land(additional burden 5)" in protected_act_alias or "body_ref=⁵B" in protected_act_alias:
+        raise AssemblyError("self-test public graph alias canonicalization rewrote a machine ACT Land/body_ref row")
+    if "Land(⁵B)+" not in protected_act_alias or "body_ref=B5_1" not in protected_act_alias:
+        raise AssemblyError("self-test public graph alias canonicalization failed to preserve ACT Land/body_ref identity")
     graph_alias_scaffold = graph_alias_record.get("canonical_scaffold")
     graph_alias_events = (
         graph_alias_scaffold.get("events", [])
@@ -2145,6 +3020,7 @@ def run_self_test(root: Path) -> int:
         case_id="valid-public-submove-heading-canonicalization",
         source_input="valid-public-submove-heading-canonicalization/input.md",
         section_specs=public_submove_sections,
+        per_burden_reread=self_test_per_burden_chain(["B2", "B3"]),
     )
     public_submove_record = assemble_manifest(public_submove_manifest, root=root)
     assert_scaffold_events_non_evidence(public_submove_record, "public submove")
@@ -2262,6 +3138,7 @@ def run_self_test(root: Path) -> int:
         assignments: list[tuple[str, list[str]]],
         *,
         valid: bool,
+        per_burden: list[dict[str, Any]] | None = None,
     ) -> None:
         manifest = manifest_for_sections(
             base_dir / name,
@@ -2269,6 +3146,7 @@ def run_self_test(root: Path) -> int:
             source_input=f"{name}/input.md",
             section_specs=[*small_sections()[:2], *act_sections, *small_sections()[3:]],
             act_partition=act_partition_payload(assignments),
+            per_burden_reread=per_burden,
         )
         try:
             assemble_manifest(manifest, root=root)
@@ -2281,7 +3159,10 @@ def run_self_test(root: Path) -> int:
 
     assemble_partition_case(
         "valid-act-partition-disjoint",
-        [act_section("act-body-1", "B1_1"), act_section("act-body-2", "B1_2")],
+        [
+            act_section("act-body-1", "B1_1", land_burdens=[]),
+            act_section("act-body-2", "B1_2", land_burdens=["B1"]),
+        ],
         [("act-body-1", ["B1_1"]), ("act-body-2", ["B1_2"])],
         valid=True,
     )
@@ -2290,56 +3171,173 @@ def run_self_test(root: Path) -> int:
         [act_section("act-body-1", "B1_1"), act_section("act-body-2", "B2_1")],
         [("act-body-1", ["B1_1"]), ("act-body-2", ["B2_1"])],
         valid=True,
+        per_burden=self_test_per_burden_chain(["B1", "B2"]),
     )
     assemble_partition_case(
         "valid-act-partition-contiguous-burden-groups",
         [act_section("act-body-1", "B1_1", "B1_2"), act_section("act-body-2", "B2_1", "B2_2", "B3_1")],
         [("act-body-1", ["B1_1", "B1_2"]), ("act-body-2", ["B2_1", "B2_2", "B3_1"])],
         valid=True,
+        per_burden=self_test_per_burden_chain(["B1", "B2", "B3"]),
     )
     assemble_partition_case(
         "valid-act-partition-unicode-contiguous-burden-groups",
         [act_section("act-body-1", "¹B₁", "¹B₂", "¹B₃"), act_section("act-body-2", "²B₁", "²B₂")],
         [("act-body-1", ["¹B₁", "¹B₂", "¹B₃"]), ("act-body-2", ["²B₁", "²B₂"])],
         valid=True,
+        per_burden=self_test_per_burden_chain(["B1", "B2"]),
     )
     assemble_partition_case(
         "invalid-act-partition-spliced-burden-groups",
-        [act_section("act-body-1", "B1_1", "B3_1"), act_section("act-body-2", "B1_2", "B2_1")],
+        [
+            act_section("act-body-1", "B1_1", "B3_1", land_burdens=["B3"]),
+            act_section("act-body-2", "B1_2", "B2_1", land_burdens=["B1", "B2"]),
+        ],
         [("act-body-1", ["B1_1", "B3_1"]), ("act-body-2", ["B1_2", "B2_1"])],
         valid=False,
+        per_burden=self_test_per_burden_chain(["B1", "B2", "B3"]),
     )
     assemble_partition_case(
         "invalid-act-partition-unicode-burden-submove-axis-swap",
-        [act_section("act-body-1", "¹B₁", "²B₁", "³B₁"), act_section("act-body-2", "¹B₂", "²B₂")],
+        [
+            act_section("act-body-1", "¹B₁", "²B₁", "³B₁", land_burdens=["B3"]),
+            act_section("act-body-2", "¹B₂", "²B₂", land_burdens=["B1", "B2"]),
+        ],
         [("act-body-1", ["¹B₁", "²B₁", "³B₁"]), ("act-body-2", ["¹B₂", "²B₂"])],
         valid=False,
+        per_burden=self_test_per_burden_chain(["B1", "B2", "B3"]),
     )
     assemble_partition_case(
         "invalid-act-partition-duplicate-visible",
-        [act_section("act-body-1", "B1_1"), act_section("act-body-2", "B1_1")],
+        [
+            act_section("act-body-1", "B1_1", land_burdens=[]),
+            act_section("act-body-2", "B1_1", land_burdens=["B1"]),
+        ],
         [("act-body-1", ["B1_1"]), ("act-body-2", ["B1_1"])],
         valid=False,
     )
     assemble_partition_case(
         "invalid-act-partition-missing-assigned",
-        [act_section("act-body-1", "B1_1"), act_section("act-body-2")],
+        [act_section("act-body-1", "B1_1"), act_section("act-body-2", land_burdens=[])],
         [("act-body-1", ["B1_1"]), ("act-body-2", ["B1_2"])],
         valid=False,
     )
     assemble_partition_case(
         "invalid-act-partition-unassigned-visible",
-        [act_section("act-body-1", "B1_1"), act_section("act-body-2", "B1_2")],
+        [
+            act_section("act-body-1", "B1_1", land_burdens=[]),
+            act_section("act-body-2", "B1_2", land_burdens=["B1"]),
+        ],
         [("act-body-1", ["B1_1"]), ("act-body-2", ["B2_1"])],
         valid=False,
     )
     assemble_partition_case(
         "invalid-act-partition-section-emits-all-rows",
-        [act_section("act-body-1", "B1_1", "B1_2"), act_section("act-body-2", "B1_2")],
+        [
+            act_section("act-body-1", "B1_1", "B1_2", land_burdens=[]),
+            act_section("act-body-2", "B1_2", land_burdens=["B1"]),
+        ],
         [("act-body-1", ["B1_1"]), ("act-body-2", ["B1_2"])],
         valid=False,
     )
 
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-missing-per-burden-reread",
+        lambda payload, _case_dir: payload.pop(PER_BURDEN_REREAD_FIELD),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-per-burden-missing-field",
+        lambda payload, _case_dir: payload[PER_BURDEN_REREAD_FIELD][0].pop("finding"),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-per-burden-missing-pressure-slot",
+        lambda payload, _case_dir: payload[PER_BURDEN_REREAD_FIELD][0]["pressure_activations"].pop("dependency-tug"),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-per-burden-placeholder-pressure-slot",
+        lambda payload, _case_dir: payload[PER_BURDEN_REREAD_FIELD][0]["pressure_activations"].__setitem__(
+            "dependency-tug", "none"
+        ),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-per-burden-preemption-literal",
+        lambda payload, _case_dir: payload[PER_BURDEN_REREAD_FIELD][0].__setitem__(
+            "preemption_basis", "terminal states landed; B_MRP empty; no generated burden remains"
+        ),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-model-authored-mrp-heading",
+        lambda payload, case_dir: replace_section_text(
+            payload,
+            case_dir,
+            2,
+            "Layer B - Bounded Governed Response\n"
+            "ACT row body_ref=¹B₁.\n"
+            "\n"
+            "[Mid-Reread Pressure]\n"
+            "Target: ¹B\n"
+            "Land(¹B): landed.\n",
+        ),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-gate-without-entry",
+        lambda payload, case_dir: replace_section_text(
+            payload,
+            case_dir,
+            2,
+            "Layer B - Bounded Governed Response\n"
+            "ACT row body_ref=¹B₁.\n"
+            "Land(¹B): landed.\n"
+            "ACT row body_ref=²B₁.\n"
+            "Land(²B): landed.\n",
+        ),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-entry-without-gate",
+        lambda payload, _case_dir: payload[PER_BURDEN_REREAD_FIELD][0].__setitem__("burden_id", "B2"),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-duplicate-land-gate",
+        lambda payload, case_dir: replace_section_text(
+            payload,
+            case_dir,
+            2,
+            "Layer B - Bounded Governed Response\n"
+            "ACT row body_ref=¹B₁.\n"
+            "Land(¹B): landed.\n"
+            "Additional bounded detail.\n"
+            "Land(¹B): landed.\n",
+        ),
+    )
+    expect_invalid(
+        root,
+        base_dir,
+        "invalid-gate-outside-act-section",
+        lambda payload, case_dir: replace_section_text(
+            payload,
+            case_dir,
+            4,
+            "Restorative Response\nRestored orientation.\nLand(¹B): landed.\n",
+        ),
+    )
     expect_invalid(
         root,
         base_dir,
@@ -2484,12 +3482,244 @@ def run_self_test(root: Path) -> int:
             payload, case_dir, 5, "T_lang guarantees interlocutor uptake.\n"
         ),
     )
+    valid_nonclaim_dir = base_dir / "valid-guaranteed-uptake-nonclaim"
+    valid_nonclaim_manifest = manifest_for_sections(
+        valid_nonclaim_dir,
+        case_id="valid-guaranteed-uptake-nonclaim",
+        source_input="valid-guaranteed-uptake-nonclaim/input.md",
+        section_specs=small_sections(),
+    )
+    valid_nonclaim_payload = read_json(valid_nonclaim_manifest)
+    if not isinstance(valid_nonclaim_payload, dict):
+        raise AssemblyError("self-test valid nonclaim manifest payload must be an object")
+    replace_section_text(
+        valid_nonclaim_payload,
+        valid_nonclaim_dir,
+        5,
+        "Closing Formulation\n"
+        "This scoped close does not claim that this formulation guarantees uptake by the interlocutor.\n",
+    )
+    write_json(valid_nonclaim_manifest, valid_nonclaim_payload)
+    assemble_manifest(valid_nonclaim_manifest, root=root)
+    valid_may_not_say_nonclaim_dir = base_dir / "valid-guaranteed-uptake-may-not-say-nonclaim"
+    valid_may_not_say_nonclaim_manifest = manifest_for_sections(
+        valid_may_not_say_nonclaim_dir,
+        case_id="valid-guaranteed-uptake-may-not-say-nonclaim",
+        source_input="valid-guaranteed-uptake-may-not-say-nonclaim/input.md",
+        section_specs=small_sections(),
+    )
+    valid_may_not_say_nonclaim_payload = read_json(valid_may_not_say_nonclaim_manifest)
+    if not isinstance(valid_may_not_say_nonclaim_payload, dict):
+        raise AssemblyError("self-test valid may-not-say uptake nonclaim manifest payload must be an object")
+    replace_section_text(
+        valid_may_not_say_nonclaim_payload,
+        valid_may_not_say_nonclaim_dir,
+        5,
+        "Closing Formulation\n"
+        "This closes the public burden at the assertion level. It may not say: this particular "
+        "person's inward state is known, that every non-believer has identical culpability, "
+        "or that the answer guarantees uptake.\n",
+    )
+    write_json(valid_may_not_say_nonclaim_manifest, valid_may_not_say_nonclaim_payload)
+    assemble_manifest(valid_may_not_say_nonclaim_manifest, root=root)
     expect_invalid(
         root,
         base_dir,
         "invalid-sidecar-proof-claim",
         lambda payload, case_dir: replace_section_text(payload, case_dir, 5, "Stage 8 sidecar proof PASS.\n"),
     )
+    valid_sidecar_nonclaim_dir = base_dir / "valid-sidecar-proof-nonclaim"
+    valid_sidecar_nonclaim_manifest = manifest_for_sections(
+        valid_sidecar_nonclaim_dir,
+        case_id="valid-sidecar-proof-nonclaim",
+        source_input="valid-sidecar-proof-nonclaim/input.md",
+        section_specs=small_sections(),
+    )
+    valid_sidecar_nonclaim_payload = read_json(valid_sidecar_nonclaim_manifest)
+    if not isinstance(valid_sidecar_nonclaim_payload, dict):
+        raise AssemblyError("self-test valid sidecar nonclaim manifest payload must be an object")
+    replace_section_text(
+        valid_sidecar_nonclaim_payload,
+        valid_sidecar_nonclaim_dir,
+        5,
+        "Closing Formulation\n"
+        "Stage 05 does not create public sources, verifier sidecars, release proof, "
+        "or downstream artifacts.\n",
+    )
+    write_json(valid_sidecar_nonclaim_manifest, valid_sidecar_nonclaim_payload)
+    assemble_manifest(valid_sidecar_nonclaim_manifest, root=root)
+    valid_release_nonclaim_dir = base_dir / "valid-release-provenance-nonclaim"
+    valid_release_nonclaim_manifest = manifest_for_sections(
+        valid_release_nonclaim_dir,
+        case_id="valid-release-provenance-nonclaim",
+        source_input="valid-release-provenance-nonclaim/input.md",
+        section_specs=small_sections(),
+    )
+    valid_release_nonclaim_payload = read_json(valid_release_nonclaim_manifest)
+    if not isinstance(valid_release_nonclaim_payload, dict):
+        raise AssemblyError("self-test valid release/provenance nonclaim manifest payload must be an object")
+    replace_section_text(
+        valid_release_nonclaim_payload,
+        valid_release_nonclaim_dir,
+        1,
+        "Layer A - Diagnostic IR\n"
+        "Non-claim: Layer A records diagnostic state and burden floor only; it is not "
+        "downstream proof, release evidence, provenance proof, or a guarantee of uptake.\n",
+    )
+    write_json(valid_release_nonclaim_manifest, valid_release_nonclaim_payload)
+    assemble_manifest(valid_release_nonclaim_manifest, root=root)
+
+    def parity_text(entries: list[dict[str, Any]], rendered: list[dict[str, Any]] | None = None) -> str:
+        rendered_entries = rendered if rendered is not None else entries
+        parts = ["Layer B - Bounded Governed Response"]
+        for entry in rendered_entries:
+            public = public_burden_token(str(entry["burden_id"])[1:])
+            parts.append(f"Land({public}): landed.")
+            parts.append("")
+            parts.append(render_mrp_block(entry))
+            parts.append("")
+        return "\n".join(parts) + "\n"
+
+    parity_entries = self_test_per_burden_chain(["B1", "B2"])
+    if visible_block_parity_errors(parity_text(parity_entries), parity_entries):
+        raise AssemblyError("self-test parity rejected a faithful record-rendered surface")
+    public_alias_entry = self_test_per_burden_entry("B5")
+    public_alias_entry["reread"] = (
+        "R(H,Δ): held routes rechecked: B1-B4 already landed; live remainder: B5 closes."
+    )
+    public_alias_entry["pressure_activations"] = dict(public_alias_entry["pressure_activations"])
+    public_alias_entry["pressure_activations"][
+        "dependency-tug"
+    ] = "P1: reread finds B1-B4 already landed while B5 remains the local closure target."
+    public_alias_entry["mrp_resultant"] = "none / B5 produces no generated burden and no remaining dependency edge"
+    public_alias_block = render_mrp_block(public_alias_entry)
+    public_alias_probe = re.sub(r"(?i)Delta\(\s*B[1-9][0-9]*\s*\)", "", public_alias_block)
+    if re.search(r"\bB[1-9][0-9]*\b", public_alias_probe):
+        raise AssemblyError("self-test MRP renderer leaked public ASCII burden aliases")
+    if "¹B-⁴B" not in public_alias_block or "⁵B" not in public_alias_block:
+        raise AssemblyError("self-test MRP renderer failed to publicize burden range prose")
+    generic_edge_probe = public_per_burden_text_value(
+        "no remaining chronology edge because the operation produced no remaining Bn -> Bm edge"
+    )
+    if "Bn" in generic_edge_probe or "Bm" in generic_edge_probe or "->" in generic_edge_probe:
+        raise AssemblyError("self-test MRP renderer leaked generic Bn -> Bm placeholder prose")
+    single_entry = [self_test_per_burden_entry("B1")]
+    burden_qualified_delta_entry = self_test_per_burden_entry("B1")
+    burden_qualified_delta_entry["reread"] = (
+        "R(H,DeltaB1): held routes rechecked: none; live remainder: none; release/next: STOP"
+    )
+    burden_qualified_delta_errors = visible_block_parity_errors(
+        parity_text([burden_qualified_delta_entry]),
+        [burden_qualified_delta_entry],
+    )
+    if burden_qualified_delta_errors:
+        raise AssemblyError(
+            "self-test parity rejected burden-qualified Delta reread projection: "
+            + "; ".join(burden_qualified_delta_errors)
+        )
+
+    def parity_must_fail(name: str, text: str, entries: list[dict[str, Any]], needle: str) -> None:
+        found = visible_block_parity_errors(text, entries)
+        if not found:
+            raise AssemblyError(f"self-test parity canary unexpectedly passed: {name}")
+        if not any(needle in error for error in found):
+            raise AssemblyError(f"self-test parity canary {name} missed expected error {needle!r}: {found}")
+
+    for field_name, needle in (
+        ("finding", "Finding diverges"),
+        ("route_result_type", "MRP route result type diverges"),
+        ("route", "Route diverges"),
+        ("graph_delta", "Graph delta diverges"),
+        ("preemption_basis", "Pre-emption basis diverges"),
+        ("target", "Target diverges"),
+        ("landed_delta", "Landed delta diverges"),
+        ("route_gradient", "Route-gradient diverges"),
+        ("mrp_resultant", "MRP resultant diverges"),
+        ("boundary", "Boundary diverges"),
+        ("reread", "reread diverges"),
+    ):
+        drifted = [dict(single_entry[0])]
+        drifted[0][field_name] = (
+            "B1 -> B2" if field_name == "graph_delta" else f"{drifted[0][field_name]} [surface-drift]"
+        )
+        parity_must_fail(
+            f"visible-{field_name}-drift",
+            parity_text(single_entry, rendered=drifted),
+            single_entry,
+            needle,
+        )
+    drifted_slot = [dict(single_entry[0])]
+    drifted_slot[0]["pressure_activations"] = dict(single_entry[0]["pressure_activations"])
+    drifted_slot[0]["pressure_activations"]["dependency-tug"] = "M8 — drifted slot read."
+    parity_must_fail(
+        "visible-pressure-slot-drift",
+        parity_text(single_entry, rendered=drifted_slot),
+        single_entry,
+        "pressure slot dependency-tug diverges",
+    )
+    drifted_diag = [dict(single_entry[0])]
+    drifted_diag[0]["divergence"] = "∇·B: settled / drifted reason"
+    parity_must_fail(
+        "visible-divergence-drift",
+        parity_text(single_entry, rendered=drifted_diag),
+        single_entry,
+        "field diagnostics ∇·B diverges",
+    )
+    missing_block_text = "Layer B - Bounded Governed Response\nLand(¹B): landed.\nNo block follows.\n"
+    parity_must_fail("record-without-visible-block", missing_block_text, single_entry, "no visible [Mid-Reread Pressure] block")
+    no_record_text = parity_text([self_test_per_burden_entry("B2")])
+    parity_must_fail("visible-block-without-record", no_record_text, single_entry, "have no visible Land")
+    stray_block_text = render_mrp_block(single_entry[0]) + "\n\n" + parity_text(single_entry)
+    parity_must_fail("block-before-any-gate", stray_block_text, single_entry, "before any")
+    double_block_text = parity_text(single_entry).replace(
+        "Boundary: T_lang does not imply guaranteed uptake.\n",
+        "Boundary: T_lang does not imply guaranteed uptake.\n\n" + render_mrp_block(single_entry[0]) + "\n",
+        1,
+    )
+    parity_must_fail("two-blocks-one-window", double_block_text, single_entry, "exactly one is licensed")
+
+    # The exact R1 false-pass shape: the hidden record says stable/no_new_resultant/STOP,
+    # the visible block says genuine-dependent/held_burden_activation/RECURSE. Both sides
+    # are individually valid under the shared entry contract; only parity may catch it.
+    r1_record = [self_test_per_burden_entry("B1")]
+    r1_surface = [self_test_per_burden_entry("B1", next_burden_id="B2")]
+    if per_burden_reread_entry_errors(r1_record):
+        raise AssemblyError("self-test R1 canary record side must be individually valid")
+    if per_burden_reread_entry_errors(r1_surface):
+        raise AssemblyError("self-test R1 canary surface side must be individually valid")
+    r1_errors = visible_block_parity_errors(parity_text(r1_record, rendered=r1_surface), r1_record)
+    for needle in (
+        "Finding diverges",
+        "MRP route result type diverges",
+        "Route diverges",
+        "Graph delta diverges",
+        "Pre-emption basis diverges",
+    ):
+        if not any(needle in error for error in r1_errors):
+            raise AssemblyError(f"self-test R1 false-pass canary missed {needle!r}: {r1_errors}")
+
+    optional_nonclaim_entry = self_test_per_burden_entry("B1")
+    optional_nonclaim_entry["pressure_activations"]["reorientation-reminder"] = (
+        "coverage gap: no Graphify, ActiveGraph, package, or release proof is claimed."
+    )
+    if per_burden_reread_entry_errors([optional_nonclaim_entry]):
+        raise AssemblyError("self-test rejected explicit optional-tooling proof nonclaim")
+    optional_held_nonclaim_entry = self_test_per_burden_entry("B1")
+    optional_held_nonclaim_entry["reread"] = (
+        "R(H,\u0394\u00b9B): held routes rechecked: case-library retrieval, release provenance, "
+        "Graphify proof, and general model behavior remain held; live remainder: none; "
+        "release/next: STOP."
+    )
+    if per_burden_reread_entry_errors([optional_held_nonclaim_entry]):
+        raise AssemblyError("self-test rejected held optional-tooling proof nonclaim")
+    optional_claim_entry = self_test_per_burden_entry("B1")
+    optional_claim_entry["pressure_activations"]["reorientation-reminder"] = (
+        "coverage gap: Graphify proof passed this stage-local MRP terminal reread."
+    )
+    optional_claim_errors = per_burden_reread_entry_errors([optional_claim_entry])
+    if not any("Graphify/ActiveGraph proof claim" in error for error in optional_claim_errors):
+        raise AssemblyError("self-test accepted positive optional-tooling proof claim")
+
     print("staged governed output assembly self-test: PASS")
     print(f"self-test run dir: {rel(base_dir, root)}")
     print(f"large output bytes: {large_record['output']['bytes']}")

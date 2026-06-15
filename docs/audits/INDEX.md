@@ -60,6 +60,9 @@ sweep moves them.
 | `docs/audits/v0.4.2.0-underfixtured-module-coverage.md` | ACTIVE IMPLEMENTATION EVIDENCE | Under-fixtured module appendix and follow-up evidence. |
 | `docs/audits/v0.4.2.0-fixture-corpus-mining-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Fixture mining record and implemented fixture table. |
 | `docs/audits/v0.4.2.0-stale-surface-purge-audit.md` | ACTIVE IMPLEMENTATION EVIDENCE | Stale-surface purge record and proof-boundary classifications. |
+| `docs/audits/v0.4.4.x-tracked-generated-skill-md-policy.md` | ACTIVE CURRENT TRUTH | Tracked generated `skill/SKILL.md` policy, CI staleness gate, and source/runtime wording reconciliation. |
+| `docs/audits/v0.4.4.x-retained-corpus-row-claim-reconciliation.md` | ACTIVE CURRENT TRUTH | Row-scoped retained-corpus claim reconciliation: validator bindings, claims-replay driver, contract notes, C.4 narrowing, and D3 blocker preservation. |
+| `docs/audits/v0.4.4.x-d3-staged-mrp-visibility-slice-a.md` | ACTIVE IMPLEMENTATION EVIDENCE | D3 slice A: per-Land MRP coverage rule, frozen Gate88-shape canary, stage-05 per_burden_reread contract shape, D10 transport docs, and the line-mapped producer slice-B packet. |
 
 ## Current Docs/Index Evidence
 

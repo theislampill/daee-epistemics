@@ -484,6 +484,8 @@ Land(B1): the body burden lands.
 R(H,Delta): no further pressure remains.
 MRP(B1): stable
 Route: STOP
+Pressure activations:
+- dependency-tug: this closes the dependency rather than opening B2.
 
 Closure/Reconstruction Witness
 coverage_complete=true

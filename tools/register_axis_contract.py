@@ -50,8 +50,10 @@ OWNER_REGISTER_AXIS_FLOORS = {
 
 
 OWNER_OPERATION_REGISTER_AXIS_FLOORS = {
+    ("do-second-loop", "punishment-proportionality-accountability"): {"♥", "ξ", "Ω", "κ", "σ", "τ"},
     ("proof-method-audit", "proof-family-and-carrier-audit"): {"σ", "ξ", "μ", "κ", "τ"},
     ("proof-method-audit", "proof-route-status-audit"): {"σ", "ξ", "μ", "κ", "τ"},
+    ("proof-method-audit", "proof-overreach-audit"): {"σ", "ξ", "μ", "κ", "τ"},
 }
 
 

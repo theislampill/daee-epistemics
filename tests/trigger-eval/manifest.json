@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "scope": "Static trigger-eval taxonomy for the daee-epistemics activation surface. Maps should-trigger, should-not-trigger, and ambiguous-trigger prompt cases to the frontmatter description tokens they exercise. No-model taxonomy discipline only; host/model grading is a separate, explicitly authorized future lane.",
+  "non_claims": {
+    "not_live_host_behavior_proof": true,
+    "not_installed_skill_trigger_proof": true,
+    "not_release_evidence": true
+  },
+  "activation_surface": {
+    "source_path": "atomics/skill/SKILL.md",
+    "description_tokens": [
+      "theological",
+      "epistemological",
+      "philosophical",
+      "shubhah",
+      "objection",
+      "refutation",
+      "source",
+      "worldview",
+      "noetic-structure",
+      "da'wah",
+      "Muslim-internal crisis"
+    ]
+  },
+  "cases": [
+    {
+      "id": "st-trinity-john173",
+      "prompt": "If Jesus said 'the Father is greater than I', how can Christians claim he is fully God? Doesn't John 17:3 settle this?",
+      "expected_class": "should-trigger",
+      "rationale": "Live theological objection with predication and proof-text pressure; squarely inside the diagnostic scope.",
+      "activation_surface_tokens": ["theological", "objection"]
+    },
+    {
+      "id": "st-quran-preservation",
+      "prompt": "My coworker says the Quran was standardized under Uthman and variant codices were burned, so we cannot trust the text we have. How do I respond?",
+      "expected_class": "should-trigger",
+      "rationale": "Transmission and source-authentication objection against revealed text; requires source-status and testimony discipline.",
+      "activation_surface_tokens": ["source", "objection"]
+    },
+    {
+      "id": "st-scientism-criterion",
+      "prompt": "Science is the only reliable way to know anything; religion is just unfalsifiable belief, so it does not count as knowledge.",
+      "expected_class": "should-trigger",
+      "rationale": "Imported epistemic criterion installed as sole tribunal; classic scientism worldview case for criterion diagnosis.",
+      "activation_surface_tokens": ["epistemological", "worldview"]
+    },
+    {
+      "id": "st-grief-divine-justice",
+      "prompt": "After my mother died last month I cannot stop asking why Allah lets innocent people suffer like she did. I feel my faith slipping.",
+      "expected_class": "should-trigger",
+      "rationale": "Grief-register theological pressure inside a believer's crisis; needs register-hold discipline before argument.",
+      "activation_surface_tokens": ["theological", "Muslim-internal crisis"]
+    },
+    {
+      "id": "st-hadith-shubhah",
+      "prompt": "I keep seeing a shubhah online that Bukhari was compiled two centuries after the Prophet, so the hadith corpus cannot be reliable.",
+      "expected_class": "should-trigger",
+      "rationale": "Named shubhah targeting hadith authentication and source reliability; direct activation-surface match.",
+      "activation_surface_tokens": ["shubhah", "source"]
+    },
+    {
+      "id": "st-dawah-moral-naturalism",
+      "prompt": "I'm doing da'wah with an atheist friend who insists morality is just an evolutionary byproduct, so no God is needed for ethics. Where do I start?",
+      "expected_class": "should-trigger",
+      "rationale": "Da'wah engagement against a naturalist moral-grounding worldview; requires routed diagnosis, not an argument dump.",
+      "activation_surface_tokens": ["da'wah", "worldview"]
+    },
+    {
+      "id": "st-infinite-regress",
+      "prompt": "An infinite regress of causes seems perfectly coherent to me, so cosmological arguments fail and theism loses its best support.",
+      "expected_class": "should-trigger",
+      "rationale": "Philosophical objection on causal series and regress; routes to causal-series taxonomy and proof-method discipline.",
+      "activation_surface_tokens": ["philosophical", "objection"]
+    },
+    {
+      "id": "st-noetic-structure-mapping",
+      "prompt": "He's not hostile to Islam, he just inherited secular assumptions he has never examined. Can you map what is actually driving his disbelief?",
+      "expected_class": "should-trigger",
+      "rationale": "Explicit request for noetic-structure diagnosis of inherited assumptions rather than content rebuttal.",
+      "activation_surface_tokens": ["noetic-structure"]
+    },
+    {
+      "id": "st-testimony-epistemology",
+      "prompt": "Why should testimony count as knowledge at all? I only accept what I can verify for myself, so reports about miracles mean nothing.",
+      "expected_class": "should-trigger",
+      "rationale": "Epistemological challenge to testimony as a knowledge source with a self-undermining verification criterion.",
+      "activation_surface_tokens": ["epistemological"]
+    },
+    {
+      "id": "st-internal-crisis-iman",
+      "prompt": "I'm Muslim but lately the rulings feel arbitrary to me and I'm scared I'm losing my iman. I haven't told anyone.",
+      "expected_class": "should-trigger",
+      "rationale": "Muslim-internal crisis with authority fatigue and fear; the description names this case family directly.",
+      "activation_surface_tokens": ["Muslim-internal crisis"]
+    },
+    {
+      "id": "st-secular-neutrality",
+      "prompt": "Secularism isn't a worldview, it's just the neutral ground everyone should accept for public debate. Religious premises are private bias.",
+      "expected_class": "should-trigger",
+      "rationale": "Neutrality-claim worldview case needing refutation of the hidden tribunal rather than topical debate.",
+      "activation_surface_tokens": ["worldview", "refutation"]
+    },
+    {
+      "id": "st-refutation-request",
+      "prompt": "Refute this claim: the Quran says Christians worship Mary as part of the Trinity, which proves its author misunderstood Christian doctrine.",
+      "expected_class": "should-trigger",
+      "rationale": "Direct refutation request on a theological misreading claim; activation tokens match the requested operation.",
+      "activation_surface_tokens": ["refutation", "theological", "objection"]
+    },
+    {
+      "id": "snt-python-keyerror",
+      "prompt": "My Python script throws KeyError when parsing this JSON config. Can you fix the bug?",
+      "expected_class": "should-not-trigger",
+      "rationale": "Pure software-engineering request; no epistemic, theological, or noetic burden is live."
+    },
+    {
+      "id": "snt-istanbul-itinerary",
+      "prompt": "Plan a five-day Istanbul itinerary for a family with two kids, mixing museums and parks.",
+      "expected_class": "should-not-trigger",
+      "rationale": "Travel-planning request; geographic mention of a Muslim-majority city is not a noetic case signal."
+    },
+    {
+      "id": "snt-lentil-recipe",
+      "prompt": "Give me a quick weeknight red lentil soup recipe with pantry ingredients.",
+      "expected_class": "should-not-trigger",
+      "rationale": "Cooking request with no activation-surface content; ordinary assistant behavior suffices."
+    },
+    {
+      "id": "snt-sales-bullets",
+      "prompt": "Summarize this quarterly sales report into five bullet points for the leadership meeting.",
+      "expected_class": "should-not-trigger",
+      "rationale": "Business summarization task; the word 'report' carries no epistemic-diagnostic burden."
+    },
+    {
+      "id": "snt-zakat-calculation",
+      "prompt": "How do I calculate zakat on my 401k and employer stock units this year?",
+      "expected_class": "should-not-trigger",
+      "rationale": "Practical fiqh calculation question, not an epistemological, objection, or noetic-structure case; the skill is a diagnostic framework, not a rulings calculator."
+    },
+    {
+      "id": "snt-arabic-translation",
+      "prompt": "Translate this paragraph into Modern Standard Arabic and keep the formal register.",
+      "expected_class": "should-not-trigger",
+      "rationale": "Translation task; Arabic language alone is not an activation signal without a live case."
+    },
+    {
+      "id": "snt-abbasid-dates",
+      "prompt": "When did the Abbasid caliphate fall, and to whom did Baghdad fall?",
+      "expected_class": "should-not-trigger",
+      "rationale": "Plain historical factual question with no objection, doubt, or worldview pressure attached."
+    },
+    {
+      "id": "snt-flexbox-centering",
+      "prompt": "Why is my flexbox centering broken on Safari but fine on Chrome?",
+      "expected_class": "should-not-trigger",
+      "rationale": "Frontend debugging request; entirely outside the activation surface."
+    },
+    {
+      "id": "amb-religion-opinion",
+      "prompt": "What do you think about religion?",
+      "expected_class": "ambiguous-trigger",
+      "rationale": "Underdetermined worldview probe: could be casual chat or a live noetic case; clarification must precede any diagnosis.",
+      "ambiguous_disposition": "activate-with-clarification",
+      "activation_surface_tokens": ["worldview"]
+    },
+    {
+      "id": "amb-kant-hume-essay",
+      "prompt": "Write a 2000-word essay comparing Kant and Hume on causality for my philosophy class.",
+      "expected_class": "ambiguous-trigger",
+      "rationale": "Philosophical vocabulary without a live noetic burden; academic deliverable shape suggests declining governed diagnosis and answering as an ordinary assignment boundary.",
+      "ambiguous_disposition": "decline-with-boundary",
+      "activation_surface_tokens": ["philosophical"]
+    },
+    {
+      "id": "amb-sunni-shia-info",
+      "prompt": "Explain the main differences between Sunni and Shia Islam.",
+      "expected_class": "ambiguous-trigger",
+      "rationale": "Could be neutral informational comparison or a destabilization context; clarify whether an objection or crisis is live before governed traversal.",
+      "ambiguous_disposition": "activate-with-clarification"
+    },
+    {
+      "id": "amb-meaning-drift",
+      "prompt": "Lately I keep wondering whether anything actually matters at all.",
+      "expected_class": "ambiguous-trigger",
+      "rationale": "Possible existential worldview pressure or passing mood; register-aware clarification is required before diagnosing a noetic case.",
+      "ambiguous_disposition": "activate-with-clarification",
+      "activation_surface_tokens": ["worldview"]
+    }
+  ]
+}

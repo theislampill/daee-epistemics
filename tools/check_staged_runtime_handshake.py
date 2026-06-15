@@ -32,6 +32,7 @@ from register_axis_contract import register_axis_errors
 from stage05_basis_contract import normalize_terminal_detail_basis
 import check_nla_decode_semantic_faithfulness as nla_decode
 import check_retained_proof_corpus as retained
+import build_staged_governed_output as staged_output
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -156,6 +157,8 @@ STAGE07_RELEASE_VALIDATION_KEYS = {
     "nla_semantic_faithfulness",
     "field_witness_convergence",
     "formal_reread_state_semantics",
+    "mid_reread_pressure",
+    "mrp_record_surface_parity",
     "mrp_generated_burden",
     "graph_completeness_json",
 }
@@ -179,6 +182,16 @@ REREAD_ROUTE_RESULT_TYPES = {
     "loopbreak",
 }
 REREAD_ROUTES = {"STOP", "HOLD", "PARTIAL", "RECURSE", "LoopBreak", "LOOPBREAK"}
+STAGE05_FORBIDDEN_PER_BURDEN_TEXT_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
+    (
+        "guaranteed T_lang uptake claim",
+        re.compile(
+            r"T_lang\s+guarantees|guaranteed\s+T_lang\s+uptake|"
+            r"guarantees\s+interlocutor\s+uptake|guarantees\s+uptake",
+            re.IGNORECASE,
+        ),
+    ),
+]
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 ACT_BODY_REF_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
 ACT_OWNER_RE = re.compile(r"^⟦ACT\s+[^\[]+\[([^\.\]]+)\.[^\]]+\]")
@@ -306,6 +319,31 @@ def canonical_stage04_act_burdens(stage04: dict[str, Any] | None) -> set[str]:
             return set(canonical)
         return set(raw)
     return act_targets
+
+
+def stage05_forbidden_per_burden_text_errors(label: str, value: Any) -> list[str]:
+    if not isinstance(value, str):
+        return []
+    return [
+        f"{label}: forbidden {name}"
+        for name, pattern in STAGE05_FORBIDDEN_PER_BURDEN_TEXT_PATTERNS
+        if pattern.search(value)
+    ]
+
+
+def stage05_route_types_by_burden(stage05: dict[str, Any] | None) -> dict[str, set[str]]:
+    entries = stage05.get(PER_BURDEN_REREAD_FIELD) if isinstance(stage05, dict) else None
+    if not isinstance(entries, list):
+        return {}
+    result: dict[str, set[str]] = {}
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        burden_id = entry.get("burden_id")
+        route_type = entry.get("route_result_type")
+        if isinstance(burden_id, str) and burden_id and isinstance(route_type, str) and route_type:
+            result.setdefault(burden_id, set()).add(route_type)
+    return result
 
 
 def stage_map(record: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -657,6 +695,7 @@ def nar_object_errors(
     burden_floor: set[str],
     nar_burdens: set[str],
     terminal_burdens: set[str],
+    expected_route_types: dict[str, set[str]] | None = None,
 ) -> list[str]:
     if not isinstance(nar, dict):
         return [f"{label}: stage-06 normalized activation record details must be an object"]
@@ -738,6 +777,12 @@ def nar_object_errors(
                 errors.append(f"{label}: stage-06 NAR per_burden[{index}].burden_id must be a non-empty string")
             else:
                 row_burdens.add(burden_id)
+                route_type = str(row.get("mrp_route_result_type") or row.get("route_result_type") or "").strip()
+                expected = (expected_route_types or {}).get(burden_id)
+                if route_type and expected and route_type not in expected:
+                    errors.append(
+                        f"{label}: stage-06 NAR per_burden[{index}].mrp_route_result_type must match stage-05 per_burden_reread route_result_type"
+                    )
             for key in ("owner_id", "operation", "terminal_state"):
                 value = row.get(key)
                 if value is not None and (not isinstance(value, str) or not value):
@@ -775,6 +820,7 @@ def stage06_witness_nar_errors(
     burden_floor = set(list_field(stage02 or {}, "burden_floor"))
     terminal_states = stage05.get("terminal_states") if isinstance(stage05, dict) else {}
     terminal_burdens = set(terminal_states) if isinstance(terminal_states, dict) else set()
+    expected_route_types = stage05_route_types_by_burden(stage05)
 
     field_refs = as_string_list(stage06.get("field_witness_body_refs"))
     if field_refs is None or not field_refs:
@@ -844,6 +890,7 @@ def stage06_witness_nar_errors(
                 burden_floor=burden_floor,
                 nar_burdens=nar_burdens,
                 terminal_burdens=terminal_burdens,
+                expected_route_types=expected_route_types,
             )
         )
     else:
@@ -856,6 +903,7 @@ def stage06_witness_nar_errors(
                 burden_floor=burden_floor,
                 nar_burdens=nar_burdens,
                 terminal_burdens=terminal_burdens,
+                expected_route_types=expected_route_types,
             )
         )
 
@@ -905,8 +953,78 @@ def visible_governed_output_errors(label: str, output_path: Path, text: str) -> 
         ("Graphify/ActiveGraph proof claim", r"Graphify[^.\n]{0,80}\bproof\b|ActiveGraph[^.\n]{0,80}\bproof\b"),
     ]
     for claim_label, pattern in forbidden_patterns:
-        if re.search(pattern, text, re.IGNORECASE):
+        matches = list(re.finditer(pattern, text, re.IGNORECASE))
+        if claim_label == "Graphify/ActiveGraph proof claim":
+            matches = [
+                match
+                for match in matches
+                if not (
+                    staged_output.OPTIONAL_TOOLING_PROOF_NONCLAIM_RE.search(
+                        staged_output.match_sentence(text, match.start(), match.end())
+                    )
+                    and not staged_output.OPTIONAL_TOOLING_POSITIVE_PROOF_RE.search(
+                        staged_output.match_sentence(text, match.start(), match.end())
+                    )
+                )
+            ]
+        if matches:
             errors.append(f"{label}: stage-07 output {rel(output_path)} contains forbidden {claim_label}")
+    return errors
+
+
+def self_test_visible_optional_tooling_nonclaims() -> list[str]:
+    base_output = """NOETIC FIELD EXECUTION
+
+## Layer A / Diagnostic IR Header
+- Initial burden set: [B1]
+
+## Layer B / Burden 1
+ACT records:
+⟦ACT B1_1[M7.definition-anchor] :: π=definition-pressure :: body_ref=B1_1 :: Δ=ΔB1:definition-anchored :: Land(B1)+⟧
+
+Land(B1): definition anchored.
+MRP(B1): type=no_new_resultant; graph=none; route=STOP
+
+## Restorative Response
+The response is governed and visible.
+
+## Closing Formulation
+The closure is bounded to the visible state.
+
+field_witness
+{
+  "B_LA": ["B1"],
+  "B_MRP": [],
+  "B_total": ["B1"],
+  "normalized_activation_record": {},
+  "terminal_states": {"B1": "landed"}
+}
+"""
+    output_path = ROOT / "tests" / "staged-runtime-handshake" / "self-test-output.md"
+    errors: list[str] = []
+    accepted_nonclaims = {
+        "stage07-optional-tooling-proof-nonclaim-does-not-claim": (
+            "Boundary: T_lang does not imply guaranteed uptake; this reread records only "
+            "the runtime field transition and does not claim interlocutor acceptance, "
+            "package proof, Graphify proof, or ActiveGraph proof."
+        ),
+        "stage07-optional-tooling-proof-nonclaim-without-claiming": (
+            "coverage gap: public rendering must reorient from formal explosion rhetoric "
+            "to the landed burden order B1-B5 without claiming release proof, packaging, "
+            "Graphify proof, or guaranteed interlocutor uptake."
+        ),
+    }
+    for case_id, line in accepted_nonclaims.items():
+        found = visible_governed_output_errors(case_id, output_path, f"{base_output}\n{line}\n")
+        if found:
+            errors.append(f"{case_id}: rejected optional-tooling proof nonclaim: {found}")
+    positive = visible_governed_output_errors(
+        "stage07-optional-tooling-positive-proof-claim",
+        output_path,
+        f"{base_output}\nGraphify proof confirms retained closure.\n",
+    )
+    if not any("Graphify/ActiveGraph proof claim" in error for error in positive):
+        errors.append("stage07-optional-tooling-positive-proof-claim: accepted forbidden proof claim")
     return errors
 
 
@@ -1178,6 +1296,127 @@ def dependency_graph_edge_endpoints(edge: Any) -> tuple[str | None, str | None, 
     return None, None, "edge must be a string or object"
 
 
+PER_BURDEN_REREAD_FIELD = "per_burden_reread"
+PER_BURDEN_PRESSURE_KEYS = {
+    "freeze-landed-move",
+    "dependency-tug",
+    "hidden-framework-recoil",
+    "entailment-pressure",
+    "doubt-churn-guard",
+    "reorientation-reminder",
+}
+PER_BURDEN_FINDINGS = {
+    "stable",
+    "genuine-dependent",
+    "partial-real",
+    "hidden-framework-recoil",
+    "doubt-churn",
+    "reorientation",
+}
+PER_BURDEN_ROUTE_RESULT_TYPES = {
+    "held_burden_activation",
+    "generated_burden_instantiation",
+    "no_new_resultant",
+    "loopbreak",
+    "hold_partial",
+}
+PER_BURDEN_ROUTES = {"STOP", "HOLD", "RECURSE", "LoopBreak(∇×T)"}
+PER_BURDEN_PREEMPTION_BASES = {"none", "graph-bound", "commitment-bound", "framework-bound"}
+PER_BURDEN_BOUNDARY_PREFIX = "T_lang does not imply guaranteed uptake"
+PER_BURDEN_REQUIRED_STRING_FIELDS = (
+    "burden_id",
+    "target",
+    "reread",
+    "landed_delta",
+    "route_gradient",
+    "finding",
+    "route_result_type",
+    "mrp_resultant",
+    "graph_delta",
+    "preemption_basis",
+    "route",
+    "boundary",
+)
+
+
+def per_burden_reread_errors(label: str, stage05: dict[str, Any]) -> list[str]:
+    """Validate optional stage-05 per_burden_reread entries when present.
+
+    Each entry mirrors one visible per-burden [Mid-Reread Pressure] block so
+    the public projection can be checked against producer state instead of
+    letting per-burden reread structure live only in machine sidecars. This is
+    shape/vocabulary validation; producer adoption in the staged runner is the
+    follow-up no-model slice.
+    """
+    if PER_BURDEN_REREAD_FIELD not in stage05:
+        return []
+    entries = stage05.get(PER_BURDEN_REREAD_FIELD)
+    prefix = f"{label}: stage-05 {PER_BURDEN_REREAD_FIELD}"
+    if not isinstance(entries, list) or not entries:
+        return [f"{prefix} must be a non-empty list when present"]
+    terminal_states = stage05.get("terminal_states")
+    terminal_ids = set(terminal_states) if isinstance(terminal_states, dict) else set()
+    errors: list[str] = []
+    seen: set[str] = set()
+    for index, entry in enumerate(entries):
+        entry_label = f"{prefix}[{index}]"
+        if not isinstance(entry, dict):
+            errors.append(f"{entry_label} must be an object")
+            continue
+        for field in PER_BURDEN_REQUIRED_STRING_FIELDS:
+            value = entry.get(field)
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"{entry_label}.{field} must be a non-empty string")
+            else:
+                errors.extend(stage05_forbidden_per_burden_text_errors(f"{entry_label}.{field}", value))
+        burden_id = entry.get("burden_id")
+        if isinstance(burden_id, str) and burden_id:
+            if burden_id in seen:
+                errors.append(f"{entry_label}.burden_id duplicates {burden_id}")
+            seen.add(burden_id)
+            if terminal_ids and burden_id not in terminal_ids:
+                errors.append(f"{entry_label}.burden_id {burden_id} must appear in terminal_states")
+        reread = entry.get("reread")
+        if isinstance(reread, str) and "R(H," not in reread:
+            errors.append(f"{entry_label}.reread must invoke R(H,Δ)")
+        landed_delta = entry.get("landed_delta")
+        if isinstance(landed_delta, str) and "Δ" not in landed_delta and "Delta" not in landed_delta:
+            errors.append(f"{entry_label}.landed_delta must name Δ/Delta")
+        if entry.get("finding") not in PER_BURDEN_FINDINGS:
+            errors.append(f"{entry_label}.finding must be a controlled finding token")
+        if entry.get("route_result_type") not in PER_BURDEN_ROUTE_RESULT_TYPES:
+            errors.append(f"{entry_label}.route_result_type must be a controlled MRP route result type")
+        if entry.get("route") not in PER_BURDEN_ROUTES:
+            errors.append(f"{entry_label}.route must be STOP, HOLD, RECURSE, or LoopBreak(∇×T)")
+        if entry.get("preemption_basis") not in PER_BURDEN_PREEMPTION_BASES:
+            errors.append(
+                f"{entry_label}.preemption_basis must be none, graph-bound, commitment-bound, or framework-bound"
+            )
+        boundary = entry.get("boundary")
+        if isinstance(boundary, str) and boundary and not boundary.startswith(PER_BURDEN_BOUNDARY_PREFIX):
+            errors.append(f"{entry_label}.boundary must begin with the T_lang non-uptake boundary")
+        activations = entry.get("pressure_activations")
+        if not isinstance(activations, dict):
+            errors.append(f"{entry_label}.pressure_activations must be an object carrying the six fixed slots")
+            continue
+        missing = sorted(PER_BURDEN_PRESSURE_KEYS - set(activations))
+        extra = sorted(set(activations) - PER_BURDEN_PRESSURE_KEYS)
+        if missing:
+            errors.append(f"{entry_label}.pressure_activations missing slot(s): {missing}")
+        if extra:
+            errors.append(f"{entry_label}.pressure_activations unknown slot(s): {extra}")
+        for key, value in activations.items():
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"{entry_label}.pressure_activations.{key} must be a non-empty string")
+            else:
+                errors.extend(
+                    stage05_forbidden_per_burden_text_errors(
+                        f"{entry_label}.pressure_activations.{key}", value
+                    )
+                )
+    return errors
+
+
 def stage05_mrp_errors(
     label: str,
     stage02: dict[str, Any] | None,
@@ -1189,6 +1428,7 @@ def stage05_mrp_errors(
     forbidden = sorted(STAGE05_FORBIDDEN_FIELDS & set(stage05))
     if forbidden:
         errors.append(f"{label}: stage-05 must not emit release/final/verifier field(s): {forbidden}")
+    errors.extend(per_burden_reread_errors(label, stage05))
 
     act_burdens = canonical_stage04_act_burdens(stage04)
     known_burdens = (
@@ -1465,6 +1705,32 @@ def stage04_hold_partial_burdens(stage04: dict[str, Any]) -> set[str]:
     return held
 
 
+def stage04_held_target_burdens(stage04: dict[str, Any] | None) -> set[str]:
+    if not isinstance(stage04, dict):
+        return set()
+    held: set[str] = set(stage04_hold_partial_burdens(stage04))
+    for value in as_string_list(stage04.get("held_act_targets")) or []:
+        canonical = canonical_burden_id_from_text(value)
+        if canonical:
+            held.add(canonical)
+    details = stage04.get("held_act_details")
+    if isinstance(details, list):
+        for item in details:
+            if isinstance(item, str):
+                canonical = canonical_burden_id_from_text(item)
+                if canonical:
+                    held.add(canonical)
+                continue
+            if not isinstance(item, dict):
+                continue
+            burden_id = item.get("burden_id") or item.get("target") or item.get("land_target")
+            if isinstance(burden_id, str):
+                canonical = canonical_burden_id_from_text(burden_id)
+                if canonical:
+                    held.add(canonical)
+    return held
+
+
 def stage04_act_errors(
     label: str,
     stage03: dict[str, Any] | None,
@@ -1513,9 +1779,10 @@ def stage04_act_errors(
 
     semantic_act_burdens = canonical_stage04_act_burdens(stage04)
     hold_partial_burdens = stage04_hold_partial_burdens(stage04)
+    held_target_burdens = stage04_held_target_burdens(stage04)
     if hold_partial_burdens and stage04.get("status") == "pass":
         errors.append(f"{label}: stage-04 status must be held/partial/fail when hold_partial route evidence is present")
-    missing_burdens = sorted(set(act_targets) - semantic_act_burdens - hold_partial_burdens)
+    missing_burdens = sorted(set(act_targets) - semantic_act_burdens - held_target_burdens)
     if missing_burdens:
         errors.append(f"{label}: stage-04 act_burdens missing act target(s): {missing_burdens}")
     duplicate_refs = sorted({ref for ref in act_body_refs if act_body_refs.count(ref) > 1})
@@ -1732,13 +1999,32 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
                 allow_descriptive_burdens=failed_model_prefix_order(record) is not None,
             )
         )
-    if stage03 is not None and stage04 is not None and act_targets != route_targets:
-        errors.append(f"{label}: stage-04 act_targets must match stage-03 route_targets")
+    if stage03 is not None and stage04 is not None:
+        held_targets = stage04_held_target_burdens(stage04)
+        extra_act_targets = sorted(act_targets - route_targets)
+        missing_route_targets = sorted(route_targets - act_targets - held_targets)
+        if extra_act_targets:
+            errors.append(f"{label}: stage-04 act_targets not routed by stage-03: {extra_act_targets}")
+        if missing_route_targets:
+            errors.append(
+                f"{label}: stage-04 route_targets must be covered by act_targets or held_act_targets: "
+                f"{missing_route_targets}"
+            )
 
     terminal_states = stage05.get("terminal_states") if stage05 is not None else None
     release_terminal_states = stage07.get("release_terminal_states") if stage07 is not None else None
     if stage05 is not None:
         errors.extend(stage05_mrp_errors(label, stage02, stage03, stage04, stage05))
+        if (
+            record.get("mode") in MODEL_MODES
+            and stage05.get("status") in PASS_STATUS
+            and PER_BURDEN_REREAD_FIELD not in stage05
+            and record.get("legacy_contract") != "pre-per-burden-reread"
+        ):
+            errors.append(
+                f"{label}: stage-05 model-mode records require {PER_BURDEN_REREAD_FIELD}; "
+                "only pre-slice-B retained records may carry legacy_contract 'pre-per-burden-reread'"
+            )
     if stage06 is not None:
         errors.extend(stage06_witness_nar_errors(label, record, stage02, stage04, stage05, stage06))
     if stage07 is not None:
@@ -2059,6 +2345,8 @@ def main() -> int:
     valid_checked = 0
     invalid_checked = 0
     records_checked = 0
+
+    errors.extend(self_test_visible_optional_tooling_nonclaims())
 
     valid, invalid = iter_fixtures(args.root)
     for path in valid:

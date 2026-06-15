@@ -31,10 +31,12 @@ from delta_result_vocabulary import (
     OWNER_OPERATION_VOCABULARY,
     canonical_delta_owner,
     delta_result_vocabulary_errors,
+    family_alias_execution_owner,
     family_alias_as_executable_owner_errors,
     owner_operation_delta_result_errors,
     owner_operation_vocabulary_errors,
     route_owner_vocabulary_errors,
+    route_owner_family_hint_execution_owner,
     source_formal_delta_operation_errors,
     source_pressure_delta_errors,
 )
@@ -101,6 +103,20 @@ CANONICAL_BURDEN_ID_RE = re.compile(r"(?<![A-Za-z0-9_])B([1-9][0-9]*)(?![A-Za-z0
 PUBLIC_ASCII_SUBMOVE_RE = re.compile(r"\bB([1-9][0-9]*)[_\.]([1-9][0-9]*)(\[[^\]\n]+\])?")
 PUBLIC_ASCII_BURDEN_RE = re.compile(r"\bB([1-9][0-9]*)\b")
 PUBLIC_ASCII_EDGE_RE = re.compile(r"\bB([1-9][0-9]*)\s*(?:->|→)\s*B([1-9][0-9]*)\b")
+PUBLIC_ASCII_EDGE_REFERENCE_RE = re.compile(
+    r"\b(?P<article>(?:a|an|the)\s+)?"
+    r"(?P<source>B[1-9][0-9]*)\s*(?:->|→)\s*"
+    r"(?P<target>B[1-9][0-9]*)"
+    r"(?:\s+(?P<kind>graph\s+edge|edge|route))?\b",
+    re.IGNORECASE,
+)
+PUBLIC_SUP_EDGE_REFERENCE_RE = re.compile(
+    r"\b(?P<article>(?:a|an|the)\s+)?"
+    r"(?P<source>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\s*(?:->|→)\s*"
+    r"(?P<target>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)"
+    r"(?:\s+(?P<kind>graph\s+edge|edge|route))?\b",
+    re.IGNORECASE,
+)
 PUBLIC_ASCII_LAND_RE = re.compile(r"\b(Land|HOLD)\(B([1-9][0-9]*)\)", re.IGNORECASE)
 PUBLIC_ASCII_MRP_RE = re.compile(r"\bMRP\(B([1-9][0-9]*)\)")
 PUBLIC_MACHINE_PAYLOAD_LINE_RE = re.compile(
@@ -111,6 +127,7 @@ PUBLIC_MACHINE_PAYLOAD_LINE_RE = re.compile(
 STAGE05_TERMINAL_BURDEN_ID_RE = re.compile(r"^B[1-9][0-9]*$")
 BODY_REF_BURDEN_RE = re.compile(r"^(?P<burden>[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*)?$")
 ASCII_BODY_REF_RE = re.compile(r"^(?P<burden>[1-9][0-9]*)B[1-9][0-9]*$")
+STAGE05_REREAD_PREFIX_RE = re.compile(r"^R\(H,\s*(?:Delta(?:\([^)]*\))?|Δ[^)]*)\)\s*:?\s*")
 CONTROLLED_STAGE05_TERMINAL_STATES = {
     "landed",
     "cleared",
@@ -118,6 +135,56 @@ CONTROLLED_STAGE05_TERMINAL_STATES = {
     "carried-PARTIAL",
     "carried-RECURSE",
     "discharged-as-derivative",
+}
+NEGATIVE_NON_EDGE_REFERENCE_RE = re.compile(
+    r"(?i)\b(?:does\s+not|do\s+not|no|without|not)\b"
+    r"(?:(?!\n).){0,120}\b(?:license|create|creating|generate|generating|new|extra|downstream|edge|route)\b"
+)
+STAGE05_LINEAR_DEPENDENCY_CURL_RE = re.compile(
+    r"(?i)\b(?:depends on|downstream|directed dependency|linear(?:ly)? traversable|"
+    r"remaining live burden|cannot be closed as proof without)\b"
+)
+STAGE05_STRICT_CURL_REASON_RE = re.compile(
+    r"(?i)\b(?:circular|rotation|rotational|rotated|churn|recoil|label-pressure|"
+    r"self-reinforcing|regress|wisw[āa]s)\b"
+)
+M9_RESULT_TOKEN_OPERATION_MAP = {
+    "predicate-separated": "predication-repair",
+    "category-separated": "predication-repair",
+    "referent-separated": "predication-repair",
+    "person-nature-transfer-blocked": "predication-repair",
+    "sense-separated": "sense-split",
+}
+STAGE04_OPERATION_ALIAS_MAP = {
+    ("M8", "trace"): "consequence-trace",
+    ("P7", "boundary"): "scope-boundary",
+}
+STAGE04_PROOF_FAMILY_CLASSIFICATION_CARRIER_RE = re.compile(
+    r"(?i)\b(?:proof[- ]family[- ]classification[- ]pressure|"
+    r"proof[- ]family[- ]carrier[- ]pressure|proof[- ]carrier[- ]tribunal[- ]function|"
+    r"proof[- ]method[- ]control)\b"
+)
+STAGE04_PROOF_FAMILY_LABEL_RE = re.compile(r"(?i)\bproof[- ]family[- ]label\b")
+STAGE04_REGISTER_AXIS_FALLBACKS = {
+    ("proof-method-audit", "proof-overreach-audit", "H"): "τ",
+    ("proof-method-audit", "proof-overreach-audit", "m"): "τ",
+    ("proof-method-audit", "proof-family-and-carrier-audit", "H"): "τ",
+    ("proof-method-audit", "proof-family-and-carrier-audit", "m"): "μ",
+    ("proof-method-audit", "proof-route-status-audit", "H"): "τ",
+    ("pattern-profiling", "loaded-label-carrier-audit", "N"): "μ",
+    ("M3", "orphaned-intuition", "m"): "♥",
+    ("M3", "orphaned-intuition", "τ"): "♥",
+    ("do-second-loop", "accountability-hujjah-compression", "H"): "κ",
+    ("do-second-loop", "coercive-guidance-demand", "H"): "κ",
+    ("do-second-loop", "coercive-guidance-demand", "τ"): "κ",
+    ("do-second-loop", "fitrah-ayat-baseline", "N"): "ξ",
+    ("do-second-loop", "punishment-proportionality-accountability", "H"): "♥",
+    ("do-second-loop", "punishment-proportionality-accountability", "m"): "♥",
+    ("V2", "proof-burden-order", "H"): "ξ",
+    ("V2", "proof-burden-order", "τ"): "ξ",
+    ("V2", "reason-role-repair", "m"): "ξ",
+    ("V2", "reason-role-repair", "σ"): "ξ",
+    ("V2", "reconstituting-reason", "m"): "ξ",
 }
 
 
@@ -133,6 +200,8 @@ STAGE07_RELEASE_VALIDATION_ORDER = (
     "nla_semantic_faithfulness",
     "field_witness_convergence",
     "formal_reread_state_semantics",
+    "mid_reread_pressure",
+    "mrp_record_surface_parity",
     "mrp_generated_burden",
     "graph_completeness_json",
     "manual_smoke_render_contract",
@@ -196,7 +265,10 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "objects. `burden_floor_details` should be a list of detail objects; a "
             "keyed object map is compatibility-normalized only when its keys exactly "
             "match the bare `burden_floor` ids and every value preserves burden "
-            "identity. Do not release a final answer."
+            "identity. Do not attempt filesystem reads or return `status=fail` "
+            "because `skill/SKILL.md` is unavailable as a readable path; use the "
+            "runtime identity, prompt contract, raw input, and previous validated "
+            "stage state supplied by the harness. Do not release a final answer."
         ),
     },
     "stage-03-routing-owner-gate": {
@@ -304,7 +376,12 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
     },
     "stage-05-mrp-reread-terminal-state": {
         "title": "MRP / reread / terminal state",
-        "produces": ["terminal_states", "dependency_graph_edges", "no_new_resultant_proof"],
+        "produces": [
+            "terminal_states",
+            "dependency_graph_edges",
+            "no_new_resultant_proof",
+            "per_burden_reread",
+        ],
         "requires": ["act_rows"],
         "instructions": (
             "Produce Stage 05 JSON only. Do not write final answer prose, field_witness, "
@@ -324,7 +401,37 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "If `terminal_state_details` is present, each row must name `burden_id` "
             "and a controlled `state` matching `terminal_states[burden_id]`; "
             "`terminal_state` may be normalized to `state` only when the two values "
-            "are identical and controlled."
+            "are identical and controlled. "
+            "`per_burden_reread` is REQUIRED: a JSON array carrying exactly one object per "
+            "`terminal_states` burden id, recording the real post-Land R(H,Δ) reread for that "
+            "burden. Required string fields per entry: `burden_id` (machine `B<n>`), `target` "
+            "(public burden read, e.g. `¹B / imported tribunal burden`), `reread` (must start "
+            "`R(H,` and record `held routes rechecked: ...; live remainder: ...; release/next: ...`), "
+            "`landed_delta` (must name Δ/Delta), `route_gradient`, `divergence` "
+            "(`<head> / <reason>` with head neutral|settled|bounded|non-neutral), `curl` "
+            "(`<head> / <reason>` with head null|resolved|held|non-null), `finding` "
+            "(stable|genuine-dependent|partial-real|hidden-framework-recoil|doubt-churn|reorientation), "
+            "`route_result_type` (held_burden_activation|generated_burden_instantiation|"
+            "no_new_resultant|loopbreak|hold_partial), `mrp_resultant`, `graph_delta` (`none` or "
+            "one ASCII edge `Bn -> Bm`), `preemption_basis` (none|graph-bound|commitment-bound|"
+            "framework-bound), `route` (STOP|HOLD|RECURSE|LoopBreak(∇×T)), and `boundary` "
+            "(must begin `T_lang does not imply guaranteed uptake`). `pressure_activations` must "
+            "be an object with exactly the six slots freeze-landed-move, dependency-tug, "
+            "hidden-framework-recoil, entailment-pressure, doubt-churn-guard, and "
+            "reorientation-reminder; every slot value must record the real pressure read for THIS "
+            "burden and begin with the owner/TTP id, `pressure class:`, or `coverage gap:` that "
+            "carried it — placeholder values like none/cleared/n/a are rejected. Consistency is "
+            "enforced: stable requires route STOP and graph_delta none; genuine-dependent requires "
+            "RECURSE and a graph edge; partial-real requires HOLD; any graph edge requires a "
+            "non-none preemption_basis. The required boundary prefix is allowed and required; "
+            "do not write affirmative uptake-guarantee claims such as `T_lang guarantees uptake`, "
+            "`guaranteed T_lang uptake`, or `guarantees interlocutor uptake` in any "
+            "`per_burden_reread` string field. "
+            "Return one syntactically valid JSON object only: every array item must have exactly "
+            "one object-closing brace before a comma, every string quote inside a value must be "
+            "escaped, and no prose or second object may appear outside the root object. "
+            "The harness renders the public [Mid-Reread Pressure] "
+            "blocks from these records; do not write the blocks yourself anywhere."
         ),
     },
     "stage-06-field-witness-nar": {
@@ -371,7 +478,9 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "non-empty string array, or as a list of objects with `register` plus `delta` "
             "as a non-empty string or non-empty string array. Do not put register deltas "
             "only inside `normalized_activation_record`; any NAR register-delta mirror is "
-            "supplemental and must not replace the top-level Stage 06 field. "
+            "supplemental and must not replace the top-level Stage 06 field. Any NAR row "
+            "carrying `mrp_route_result_type` must match the matching Stage 05 "
+            "`per_burden_reread[].route_result_type`. "
             "If Stage 06 cannot honestly mirror ACT/terminal evidence, "
             "return status fail or partial; do not invent witness proof."
         ),
@@ -671,7 +780,6 @@ def canonical_delta_result_for_owner(
     pressure: Any,
     raw_delta_result: Any,
 ) -> str:
-    del operation, pressure
     raw = str(raw_delta_result or "").strip()
     if not raw:
         return raw
@@ -679,6 +787,33 @@ def canonical_delta_result_for_owner(
     vocabulary = DELTA_RESULT_VOCABULARY.get(family)
     if not vocabulary:
         return raw
+    if family == "SOURCE":
+        pressure_token = delta_token_key(pressure)
+        operation_token = str(operation or "").strip()
+        proof_text_recoil = (
+            "proof-text" in pressure_token
+            and ("source-order" in pressure_token or "recoil" in pressure_token)
+        )
+        generic_hidden_recoil = (
+            "hidden-support" in pressure_token
+            or ("hidden" in pressure_token and "support" in pressure_token)
+            or "source-order-recoil" in pressure_token
+            or "future-support" in pressure_token
+        )
+        if (
+            operation_token in {"source-order-repair", "source-order", "sort"}
+            and raw in {"source-order-repaired", "proof-text-sorted"}
+        ):
+            if proof_text_recoil:
+                return "proof-text-hidden-support-blocked"
+            if generic_hidden_recoil:
+                return "hidden-support-blocked"
+    if (
+        family == "V2"
+        and str(operation or "").strip() == "proof-burden-order"
+        and raw == "burden-order-repaired"
+    ):
+        return "proof-burden-order-restored"
     return raw
 
 
@@ -697,14 +832,14 @@ def canonicalize_delta_fields(item: dict[str, Any]) -> tuple[dict[str, Any], dic
     delta_value = str(item.get("delta") or "")
     if not raw_result and ":" in delta_value:
         raw_result = delta_value.split(":", 1)[1]
-    require_delta_result_vocabulary("delta_result", owner, raw_result)
-    pair_errors = source_formal_delta_operation_errors("delta_result", owner, operation, raw_result)
+    canonical = canonical_delta_result_for_owner(owner, operation, pressure, raw_result)
+    require_delta_result_vocabulary("delta_result", owner, canonical)
+    pair_errors = source_formal_delta_operation_errors("delta_result", owner, operation, canonical)
     if pair_errors:
         raise HarnessError("; ".join(pair_errors))
-    pressure_errors = source_pressure_delta_errors("delta_result", owner, pressure, raw_result)
+    pressure_errors = source_pressure_delta_errors("delta_result", owner, pressure, canonical)
     if pressure_errors:
         raise HarnessError("; ".join(pressure_errors))
-    canonical = canonical_delta_result_for_owner(owner, operation, pressure, raw_result)
     if not raw_result or canonical == str(raw_result).strip():
         return item, None
     updated = dict(item)
@@ -746,6 +881,11 @@ def require_stage04_register_axis(
 
     allowed_axes = register_axis_floor(parsed["owner_id"], parsed.get("operation"))
     if allowed_axes is not None and axis not in allowed_axes:
+        fallback_axis = STAGE04_REGISTER_AXIS_FALLBACKS.get(
+            (parsed["owner_id"], parsed.get("operation") or "", axis)
+        )
+        if fallback_axis and fallback_axis in allowed_axes:
+            return fallback_axis, True
         operation_suffix = f".{parsed.get('operation')}" if parsed.get("operation") else ""
         raise HarnessError(
             f"stage-04 act_row_details[{index}].register_axis {axis!r} is not approved for owner "
@@ -755,11 +895,51 @@ def require_stage04_register_axis(
     return axis, isinstance(raw_axis, str) and raw_axis.strip() != axis
 
 
+def canonicalize_stage04_operation_token(
+    owner: Any,
+    operation: Any,
+    pressure: Any = None,
+    delta_result: Any = None,
+) -> str:
+    family = canonical_delta_owner(str(owner or "")) or str(owner or "").strip()
+    token = str(operation or "").strip()
+    pressure_text = str(pressure or "").strip()
+    result_text = str(delta_result or "").strip()
+    if (
+        family == "PROOF_METHOD"
+        and token == "proof-family-classification"
+        and result_text == "proof-family-carrier-typed"
+        and STAGE04_PROOF_FAMILY_CLASSIFICATION_CARRIER_RE.search(pressure_text)
+        and not STAGE04_PROOF_FAMILY_LABEL_RE.search(pressure_text)
+    ):
+        return "proof-family-and-carrier-audit"
+    return STAGE04_OPERATION_ALIAS_MAP.get((family, token), token)
+
+
 def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
     reject_stage04_owner_qualified_body_ref(row)
     match = ACT_ROW_DETAIL_RE.match(row)
     if not match:
         return row, None
+    rewrite: dict[str, str] | None = None
+    canonical_operation = canonicalize_stage04_operation_token(
+        match.group("owner"),
+        match.group("operation"),
+        match.group("pressure"),
+        match.group("delta_result").strip(),
+    )
+    if canonical_operation != match.group("operation"):
+        start, end = match.span("operation")
+        row = row[:start] + canonical_operation + row[end:]
+        rewrite = {
+            "body_ref": match.group("body_ref"),
+            "owner": match.group("owner"),
+            "raw_operation": match.group("operation"),
+            "canonical_operation": canonical_operation,
+        }
+        match = ACT_ROW_DETAIL_RE.match(row)
+        if not match:
+            raise HarnessError("Stage 04 ACT row operation canonicalization produced an unparseable row")
     alias_errors = family_alias_as_executable_owner_errors(
         "Stage 04 ACT row",
         match.group("owner"),
@@ -775,12 +955,18 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
     if operation_errors:
         raise HarnessError(operation_errors[0])
     raw_result = match.group("delta_result").strip()
-    require_delta_result_vocabulary("Stage 04 ACT row", match.group("owner"), raw_result)
+    canonical = canonical_delta_result_for_owner(
+        match.group("owner"),
+        match.group("operation"),
+        match.group("pressure"),
+        raw_result,
+    )
+    require_delta_result_vocabulary("Stage 04 ACT row", match.group("owner"), canonical)
     pair_errors = source_formal_delta_operation_errors(
         "Stage 04 ACT row",
         match.group("owner"),
         match.group("operation"),
-        raw_result,
+        canonical,
     )
     if pair_errors:
         raise HarnessError("; ".join(pair_errors))
@@ -788,7 +974,7 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
         "Stage 04 ACT row",
         match.group("owner"),
         match.group("operation"),
-        raw_result,
+        canonical,
     )
     if operation_delta_errors:
         raise HarnessError("; ".join(operation_delta_errors))
@@ -796,30 +982,24 @@ def canonicalize_stage04_act_row(row: str) -> tuple[str, dict[str, str] | None]:
         "Stage 04 ACT row",
         match.group("owner"),
         match.group("pressure"),
-        raw_result,
+        canonical,
     )
     if pressure_errors:
         raise HarnessError("; ".join(pressure_errors))
-    canonical = canonical_delta_result_for_owner(
-        match.group("owner"),
-        match.group("operation"),
-        match.group("pressure"),
-        raw_result,
-    )
     if canonical == raw_result:
-        return row, None
+        return row, rewrite
     start, end = match.span("delta_result")
-    return (
-        row[:start] + canonical + row[end:],
-        {
+    row = row[:start] + canonical + row[end:]
+    if rewrite is None:
+        rewrite = {
             "body_ref": match.group("body_ref"),
             "owner": match.group("owner"),
             "operation": match.group("operation"),
             "pressure": match.group("pressure").strip(),
-            "raw_delta_result": raw_result,
-            "canonical_delta_result": canonical,
-        },
-    )
+        }
+    rewrite["raw_delta_result"] = raw_result
+    rewrite["canonical_delta_result"] = canonical
+    return row, rewrite
 
 
 def canonicalize_stage04_act_rows(rows: list[str]) -> tuple[list[str], list[dict[str, str]]]:
@@ -833,6 +1013,20 @@ def canonicalize_stage04_act_rows(rows: list[str]) -> tuple[list[str], list[dict
     return ordered_unique(canonical_rows), rewrites
 
 
+def record_stage04_act_row_canonicalizations(
+    normalization: dict[str, Any],
+    rewrites: list[dict[str, str]],
+) -> None:
+    if not rewrites:
+        return
+    operation_rewrites = [rewrite for rewrite in rewrites if "raw_operation" in rewrite]
+    delta_rewrites = [rewrite for rewrite in rewrites if "raw_delta_result" in rewrite]
+    if operation_rewrites:
+        normalization["operation_canonicalizations"] = operation_rewrites
+    if delta_rewrites:
+        normalization["delta_result_canonicalizations"] = delta_rewrites
+
+
 def canonical_burden_id_from_text(value: str, allowed_ids: set[str] | None = None) -> str | None:
     text = value.strip()
     if allowed_ids is None or text in allowed_ids:
@@ -842,6 +1036,34 @@ def canonical_burden_id_from_text(value: str, allowed_ids: set[str] | None = Non
     if allowed_ids is not None:
         matches = [match for match in matches if match in allowed_ids]
     return matches[0] if len(matches) == 1 else None
+
+
+def canonicalize_stage05_reread_invocation(stage: dict[str, Any]) -> None:
+    entries = stage.get("per_burden_reread")
+    if not isinstance(entries, list):
+        return
+    rewrites: list[dict[str, str]] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        raw = entry.get("reread")
+        if not isinstance(raw, str) or not raw.strip():
+            continue
+        canonical = STAGE05_REREAD_PREFIX_RE.sub("R(H,Δ): ", raw.strip(), count=1)
+        if canonical == raw:
+            continue
+        entry["reread"] = canonical
+        rewrites.append(
+            {
+                "burden_id": str(entry.get("burden_id") or ""),
+                "raw_reread": raw,
+                "canonical_reread": canonical,
+            }
+        )
+    if rewrites:
+        normalization = normalization_object(stage)
+        normalization["per_burden_reread_rh_delta_canonicalizations"] = rewrites
+        stage["normalization"] = normalization
 
 
 def normalize_stage02_diagnostic_fields(stage: dict[str, Any]) -> None:
@@ -989,16 +1211,237 @@ def normalize_stage03_route_targets(stage: dict[str, Any]) -> None:
     raise HarnessError("stage-03 route_targets must be a non-empty list of burden-id strings")
 
 
+def canonicalize_stage03_owner_route_alias(
+    route: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, str] | None]:
+    canonical = dict(route)
+    raw_owner = non_empty_string(canonical.get("owner_id") or canonical.get("owner"))
+    if raw_owner is None:
+        return canonical, None
+    operation = non_empty_string(canonical.get("operation") or canonical.get("owner_operation"))
+    family, callable_owner = family_alias_execution_owner(raw_owner, operation)
+    if not family or not callable_owner or " or " in callable_owner:
+        return canonical, None
+    canonical["owner_id"] = callable_owner
+    if "owner" in canonical and "owner_id" not in route:
+        canonical.pop("owner", None)
+    canonical.setdefault("classification_family", family)
+    return canonical, {
+        "burden_id": str(canonical.get("burden_id") or canonical.get("target") or ""),
+        "raw_owner_id": raw_owner,
+        "canonical_owner_id": callable_owner,
+        "classification_family": family,
+    }
+
+
+def canonicalize_stage03_owner_route_family_hint(
+    route: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, str] | None]:
+    canonical = dict(route)
+    raw_owner = non_empty_string(canonical.get("owner_id") or canonical.get("owner"))
+    raw_family = non_empty_string(canonical.get("owner_family") or canonical.get("classification_family"))
+    operation = non_empty_string(canonical.get("operation") or canonical.get("owner_operation"))
+    if raw_owner is None or raw_family is None or operation is None:
+        return canonical, None
+    execution_owner = route_owner_family_hint_execution_owner(canonical)
+    if not execution_owner:
+        return canonical, None
+    family = canonical_delta_owner(raw_family)
+    canonical["owner_id"] = execution_owner
+    if "owner" in canonical and "owner_id" not in route:
+        canonical.pop("owner", None)
+    if family:
+        canonical.setdefault("classification_family", family)
+    return canonical, {
+        "burden_id": str(canonical.get("burden_id") or canonical.get("target") or ""),
+        "raw_owner_id": raw_owner,
+        "owner_family": raw_family,
+        "canonical_owner_id": execution_owner,
+        "operation": operation,
+        "classification_family": family or raw_family,
+    }
+
+
+def canonicalize_stage03_owner_route_operation(
+    route: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, str] | None]:
+    canonical = dict(route)
+    owner = non_empty_string(canonical.get("owner_id") or canonical.get("owner"))
+    operation = non_empty_string(canonical.get("operation") or canonical.get("owner_operation"))
+    if owner is None or operation is None:
+        return canonical, None
+    family = canonical_delta_owner(owner)
+    if family != "M9":
+        return canonical, None
+    canonical_operation = M9_RESULT_TOKEN_OPERATION_MAP.get(operation)
+    if canonical_operation is None:
+        return canonical, None
+    canonical["operation"] = canonical_operation
+    if "owner_operation" in canonical:
+        canonical["owner_operation"] = canonical_operation
+    return canonical, {
+        "burden_id": str(canonical.get("burden_id") or canonical.get("target") or ""),
+        "owner_id": owner,
+        "raw_operation": operation,
+        "canonical_operation": canonical_operation,
+        "classification_family": family,
+    }
+
+
+def controlled_detail_delta_value(owner: str, value: Any) -> bool:
+    if isinstance(value, str):
+        return not delta_result_vocabulary_errors("owner_route_details.delta_result", owner, value)
+    if isinstance(value, list) and value:
+        return all(
+            isinstance(item, str)
+            and item.strip()
+            and not delta_result_vocabulary_errors("owner_route_details.delta_result", owner, item)
+            for item in value
+        )
+    return False
+
+
+def drop_invalid_stage03_delta_values(route: dict[str, Any], owner: str) -> dict[str, Any]:
+    canonical = dict(route)
+    for key in (
+        "delta_result",
+        "delta_result_floor",
+        "delta_result_vocabulary",
+        "allowed_delta_results",
+        "delta_results",
+    ):
+        if key in canonical and not controlled_detail_delta_value(owner, canonical[key]):
+            canonical.pop(key, None)
+    return canonical
+
+
+def detail_hint_tokens(value: str | None) -> list[str]:
+    if value is None:
+        return []
+    return [
+        token.strip()
+        for token in re.split(r"\s*(?:\+|/|,|\band\b)\s*", value)
+        if token.strip()
+    ]
+
+
+def detail_hint_matches(value: str | None, expected: str) -> bool:
+    if value is None:
+        return False
+    if value == expected:
+        return True
+    return expected in detail_hint_tokens(value)
+
+
+def detail_backed_stage03_owner_route_family_hint(
+    route: dict[str, Any],
+    details: list[dict[str, Any]],
+) -> tuple[dict[str, Any], dict[str, str] | None]:
+    canonical = dict(route)
+    raw_owner = non_empty_string(canonical.get("owner_id") or canonical.get("owner"))
+    operation = non_empty_string(canonical.get("operation") or canonical.get("owner_operation"))
+    burden_id = non_empty_string(canonical.get("burden_id") or canonical.get("target"))
+    if raw_owner is None or operation is None or burden_id is None:
+        return canonical, None
+    if canonical_delta_owner(raw_owner):
+        return canonical, None
+    if non_empty_string(canonical.get("owner_family") or canonical.get("classification_family")) is not None:
+        return canonical, None
+    for detail in details:
+        detail_burden = non_empty_string(detail.get("burden_id") or detail.get("target"))
+        detail_owner = non_empty_string(detail.get("owner_id") or detail.get("owner"))
+        detail_operation = non_empty_string(detail.get("operation") or detail.get("owner_operation"))
+        detail_family = non_empty_string(
+            detail.get("owner_family")
+            or detail.get("classification_family")
+            or detail.get("eligible_owner_family")
+        )
+        if detail_burden != burden_id or detail_family is None:
+            continue
+        if detail_operation is None or not detail_hint_matches(detail_operation, operation):
+            continue
+        if detail_owner is not None and not (
+            detail_hint_matches(detail_owner, raw_owner)
+            or detail_hint_matches(detail_owner, operation)
+        ):
+            continue
+        family_hints = detail_hint_tokens(detail_family) or [detail_family]
+        candidate: dict[str, Any] | None = None
+        execution_owner = ""
+        selected_family = ""
+        for family_hint in family_hints:
+            probe = dict(canonical)
+            probe["owner_family"] = family_hint
+            probe_owner = route_owner_family_hint_execution_owner(probe)
+            if probe_owner:
+                candidate = probe
+                execution_owner = probe_owner
+                selected_family = family_hint
+                break
+        if candidate is None or not execution_owner:
+            continue
+        candidate = drop_invalid_stage03_delta_values(candidate, execution_owner)
+        for key in (
+            "delta_result",
+            "delta_result_floor",
+            "delta_result_vocabulary",
+            "allowed_delta_results",
+            "delta_results",
+        ):
+            if (
+                key in detail
+                and key not in candidate
+                and controlled_detail_delta_value(execution_owner, detail[key])
+            ):
+                candidate[key] = detail[key]
+        return candidate, {
+            "burden_id": burden_id,
+            "raw_owner_id": raw_owner,
+            "owner_family": selected_family,
+            "raw_owner_family": detail_family,
+            "canonical_owner_id": execution_owner,
+            "operation": operation,
+            "source": str(detail.get("__source_key") or "owner_route_details"),
+        }
+    return canonical, None
+
+
 def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
     routes = stage.get("owner_routes")
     if isinstance(routes, list) and routes and all(isinstance(item, dict) for item in routes):
         canonical: list[dict[str, Any]] = []
         details: list[dict[str, Any]] = []
+        incoming_details: list[dict[str, Any]] = []
+        for source_key in ("owner_route_details", "route_target_details"):
+            for item in stage.get(source_key) or []:
+                if isinstance(item, dict):
+                    detail = dict(item)
+                    detail["__source_key"] = source_key
+                    incoming_details.append(detail)
+        alias_events: list[dict[str, str]] = []
+        family_hint_events: list[dict[str, str]] = []
+        operation_events: list[dict[str, str]] = []
         for index, route in enumerate(routes):
             burden_id = non_empty_string(route.get("burden_id"))
             owner_id = non_empty_string(route.get("owner_id"))
             if burden_id is not None and owner_id is not None:
-                canonical_row = dict(route)
+                canonical_row, detail_hint_event = detail_backed_stage03_owner_route_family_hint(
+                    route,
+                    incoming_details,
+                )
+                if detail_hint_event is not None:
+                    family_hint_events.append(detail_hint_event)
+                    route = canonical_row
+                canonical_row, family_hint_event = canonicalize_stage03_owner_route_family_hint(route)
+                if family_hint_event is not None:
+                    family_hint_events.append(family_hint_event)
+                route = canonical_row
+                canonical_row, alias_event = canonicalize_stage03_owner_route_alias(route)
+                if alias_event is not None:
+                    alias_events.append(alias_event)
+                canonical_row, operation_event = canonicalize_stage03_owner_route_operation(canonical_row)
+                if operation_event is not None:
+                    operation_events.append(operation_event)
                 route_errors = route_owner_vocabulary_errors(f"stage-03 owner_routes[{index}]", canonical_row)
                 if route_errors:
                     raise HarnessError(route_errors[0])
@@ -1032,6 +1475,18 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
                 eligibility = non_empty_string(route.get("classification") or route.get("policy_id"))
                 if eligibility is not None:
                     canonical_row["eligibility"] = eligibility
+                raw_family = non_empty_string(required_row.get("owner_family") or required_row.get("classification_family"))
+                if raw_family is not None:
+                    canonical_row["owner_family"] = raw_family
+                canonical_row, family_hint_event = canonicalize_stage03_owner_route_family_hint(canonical_row)
+                if family_hint_event is not None:
+                    family_hint_events.append(family_hint_event)
+                canonical_row, alias_event = canonicalize_stage03_owner_route_alias(canonical_row)
+                if alias_event is not None:
+                    alias_events.append(alias_event)
+                canonical_row, operation_event = canonicalize_stage03_owner_route_operation(canonical_row)
+                if operation_event is not None:
+                    operation_events.append(operation_event)
                 route_errors = route_owner_vocabulary_errors(
                     f"stage-03 owner_routes[{index}].required[{required_index}]",
                     canonical_row,
@@ -1043,10 +1498,17 @@ def normalize_stage03_owner_routes(stage: dict[str, Any]) -> None:
         if not canonical:
             raise HarnessError("stage-03 owner_routes must name at least one owner route")
         stage["owner_routes"] = canonical
-        if details:
+        if details or alias_events or family_hint_events or operation_events:
             stage["owner_route_details"] = details
             normalization = normalization_object(stage)
-            normalization["owner_routes_from_required_details"] = True
+            if details:
+                normalization["owner_routes_from_required_details"] = True
+            if alias_events:
+                normalization["owner_route_family_aliases"] = alias_events
+            if family_hint_events:
+                normalization["owner_route_family_hints"] = family_hint_events
+            if operation_events:
+                normalization["owner_route_operation_result_tokens"] = operation_events
             normalization["canonical_owner_routes"] = [
                 {"burden_id": row.get("burden_id"), "owner_id": row.get("owner_id")} for row in canonical
             ]
@@ -1241,6 +1703,17 @@ def normalize_stage04_act_row_details(
         for field in ("owner_id", "operation", "act_row"):
             value = non_empty_string(item.get(field))
             parsed_value = parsed[field]
+            if field == "operation" and value and value != parsed_value:
+                canonical_value = canonicalize_stage04_operation_token(
+                    parsed["owner_id"],
+                    value,
+                    item.get("pressure") or parsed["pressure"],
+                    item.get("delta_result") or parsed["delta_result"],
+                )
+                if canonical_value == parsed_value:
+                    item[field] = parsed_value
+                    missing.append(field)
+                    continue
             if value and field != "act_row" and value != parsed_value:
                 raise HarnessError(f"stage-04 act_row_details[{index}].{field} disagrees with parsed ACT row")
             if not value or (field == "act_row" and value != parsed_value):
@@ -1250,11 +1723,28 @@ def normalize_stage04_act_row_details(
         detail_delta_result = non_empty_string(item.get("delta_result"))
         if not detail_delta_result:
             raise HarnessError(f"stage-04 act_row_details[{index}].delta_result is required")
+        detail_delta_result = canonical_delta_result_for_owner(
+            parsed["owner_id"],
+            parsed["operation"],
+            item.get("pressure") or parsed["pressure"],
+            detail_delta_result,
+        )
+        if item.get("delta_result") != detail_delta_result:
+            item["delta_result"] = detail_delta_result
+            missing.append("delta_result")
         require_delta_result_vocabulary(
             f"stage-04 act_row_details[{index}].delta_result",
             parsed["owner_id"],
             detail_delta_result,
         )
+        pressure_errors = source_pressure_delta_errors(
+            f"stage-04 act_row_details[{index}].delta_result",
+            parsed["owner_id"],
+            item.get("pressure") or parsed["pressure"],
+            detail_delta_result,
+        )
+        if pressure_errors:
+            raise HarnessError("; ".join(pressure_errors))
         operation_delta_errors = owner_operation_delta_result_errors(
             f"stage-04 act_row_details[{index}].delta_result",
             parsed["owner_id"],
@@ -1302,7 +1792,7 @@ def normalize_stage04_act_fields(stage: dict[str, Any]) -> None:
     raw_rows = stage.get("act_rows")
 
     if isinstance(raw_rows, list) and raw_rows and all(isinstance(item, str) and item for item in raw_rows):
-        act_rows, delta_rewrites = canonicalize_stage04_act_rows(ordered_unique(list(raw_rows)))
+        act_rows, row_rewrites = canonicalize_stage04_act_rows(ordered_unique(list(raw_rows)))
         stage["act_rows"] = act_rows
     elif isinstance(raw_rows, list) and raw_rows and all(isinstance(item, dict) for item in raw_rows):
         details = list(raw_rows)
@@ -1315,14 +1805,13 @@ def normalize_stage04_act_fields(stage: dict[str, Any]) -> None:
                 )
             act_rows.append(act_row)
         stage["act_row_details"] = details
-        act_rows, delta_rewrites = canonicalize_stage04_act_rows(ordered_unique(act_rows))
+        act_rows, row_rewrites = canonicalize_stage04_act_rows(ordered_unique(act_rows))
         stage["act_rows"] = act_rows
         normalization["act_rows_from_details"] = True
         normalization["canonical_act_rows"] = list(stage["act_rows"])
     else:
         raise HarnessError("stage-04 act_rows must be a non-empty list of ACT row strings")
-    if delta_rewrites:
-        normalization["delta_result_canonicalizations"] = delta_rewrites
+    record_stage04_act_row_canonicalizations(normalization, row_rewrites)
 
     parsed_rows = parsed_stage04_act_rows(stage)
     row_body_refs = ordered_unique([item["body_ref"] for item in parsed_rows])
@@ -1436,6 +1925,261 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
             raise HarnessError("stage-05 no_new_resultant_proof.basis is required when proved=true")
     elif not isinstance(proof, bool):
         raise HarnessError("stage-05 no_new_resultant_proof must be boolean or object")
+
+    canonicalize_stage05_reread_invocation(stage)
+    normalize_stage05_stage_level_pressure_activations(stage)
+    normalize_stage05_negative_non_edge_public_burden_references(stage)
+    normalize_stage05_linear_dependency_curl(stage)
+    normalize_stage05_held_route_gradient_identity(stage)
+    normalize_stage05_per_burden_extra_fields(stage)
+    per_burden_errors = staged_output.per_burden_reread_entry_errors(
+        stage.get("per_burden_reread"),
+        label="stage-05 per_burden_reread",
+        terminal_state_ids=set(terminal_states),
+    )
+    if per_burden_errors:
+        raise HarnessError(
+            "stage-05 per_burden_reread is required: one honest reread record per terminal "
+            "burden; Stage 07 renders the visible [Mid-Reread Pressure] blocks from these "
+            "records and never fills missing fields. Problems:\n- " + "\n- ".join(per_burden_errors)
+        )
+
+
+def normalize_stage05_stage_level_pressure_activations(stage: dict[str, Any]) -> None:
+    entries = stage.get("per_burden_reread")
+    top_level = stage.get("pressure_activations")
+    if not isinstance(entries, list) or not entries or not isinstance(top_level, dict):
+        return
+    if any(not isinstance(entry, dict) for entry in entries):
+        return
+    if any("pressure_activations" in entry for entry in entries):
+        return
+    if set(top_level) != staged_output.PER_BURDEN_PRESSURE_KEYS:
+        return
+    if not all(isinstance(value, str) and value.strip() for value in top_level.values()):
+        return
+    hydrated: list[str] = []
+    for entry in entries:
+        entry["pressure_activations"] = copy.deepcopy(top_level)
+        burden = str(entry.get("burden_id") or "").strip()
+        hydrated.append(burden or "<unknown>")
+    normalization = normalization_object(stage)
+    normalization["per_burden_pressure_activations_from_stage_level"] = hydrated
+    stage["normalization"] = normalization
+
+
+def stage05_known_burden_ids(stage: dict[str, Any]) -> set[str]:
+    known: set[str] = set()
+    for key in ("terminal_states",):
+        value = stage.get(key)
+        if isinstance(value, dict):
+            known.update(b_id(raw) for raw in value.keys())
+    for key in ("B_LA", "B_total", "nodes"):
+        value = stage.get(key)
+        if not isinstance(value, list):
+            continue
+        for item in value:
+            if isinstance(item, dict):
+                known.add(b_id(item.get("burden_id") or item.get("id") or item.get("target")))
+            else:
+                known.add(b_id(item))
+    generated = stage.get("generated_burdens")
+    if isinstance(generated, list):
+        for item in generated:
+            if isinstance(item, dict):
+                known.add(b_id(item.get("burden_id") or item.get("id") or item.get("target")))
+            else:
+                known.add(b_id(item))
+    entries = stage.get("per_burden_reread")
+    if isinstance(entries, list):
+        for entry in entries:
+            if isinstance(entry, dict):
+                known.add(b_id(entry.get("burden_id")))
+    return {burden for burden in known if burden}
+
+
+def normalize_negative_non_edge_public_text(
+    value: str,
+    *,
+    known_burdens: set[str],
+) -> tuple[str, list[dict[str, str]]]:
+    text = str(value or "")
+    if not NEGATIVE_NON_EDGE_REFERENCE_RE.search(text):
+        return text, []
+    rewrites: list[dict[str, str]] = []
+
+    def replace_edge(match: re.Match[str]) -> str:
+        source = canonical_burden_id(match.group("source"))
+        target = canonical_burden_id(match.group("target"))
+        if not target or target in known_burdens:
+            return match.group(0)
+        rewrites.append(
+            {
+                "raw_edge": match.group(0),
+                "source_burden": source,
+                "unknown_target_burden": target,
+                "canonical_text": "an extra downstream edge",
+            }
+        )
+        return "an extra downstream edge"
+
+    normalized = PUBLIC_ASCII_EDGE_REFERENCE_RE.sub(replace_edge, text)
+    normalized = PUBLIC_SUP_EDGE_REFERENCE_RE.sub(replace_edge, normalized)
+    return normalized, rewrites
+
+
+def normalize_stage05_negative_non_edge_public_burden_references(stage: dict[str, Any]) -> None:
+    known_burdens = stage05_known_burden_ids(stage)
+    if not known_burdens:
+        return
+    rewrites: list[dict[str, str]] = []
+
+    def normalize_activation_map(
+        activations: Any,
+        *,
+        burden_id: str,
+        field_prefix: str,
+    ) -> None:
+        if not isinstance(activations, dict):
+            return
+        for key, raw in list(activations.items()):
+            if not isinstance(raw, str):
+                continue
+            normalized, field_rewrites = normalize_negative_non_edge_public_text(
+                raw,
+                known_burdens=known_burdens,
+            )
+            if not field_rewrites:
+                continue
+            activations[key] = normalized
+            for event in field_rewrites:
+                rewrites.append(
+                    {
+                        "burden_id": burden_id,
+                        "field": f"{field_prefix}.{key}",
+                        **event,
+                    }
+                )
+
+    normalize_activation_map(
+        stage.get("pressure_activations"),
+        burden_id="<stage>",
+        field_prefix="pressure_activations",
+    )
+    entries = stage.get("per_burden_reread")
+    if isinstance(entries, list):
+        for entry in entries:
+            if not isinstance(entry, dict):
+                continue
+            normalize_activation_map(
+                entry.get("pressure_activations"),
+                burden_id=str(entry.get("burden_id") or ""),
+                field_prefix="pressure_activations",
+            )
+    if rewrites:
+        normalization = normalization_object(stage)
+        normalization["negative_non_edge_public_burden_references"] = rewrites
+        stage["normalization"] = normalization
+
+
+def normalize_stage05_linear_dependency_curl(stage: dict[str, Any]) -> None:
+    entries = stage.get("per_burden_reread")
+    if not isinstance(entries, list):
+        return
+    rewrites: list[dict[str, str]] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        route_type = str(entry.get("route_result_type") or "").strip()
+        route = str(entry.get("route") or "").strip().upper()
+        if route_type != "hold_partial" and route != "HOLD":
+            continue
+        curl = str(entry.get("curl") or "").strip()
+        curl_head = per_burden_state_head(curl, staged_output.PER_BURDEN_CURL_PREFIX_RE)
+        if curl_head not in {"held", "non-null"}:
+            continue
+        if not STAGE05_LINEAR_DEPENDENCY_CURL_RE.search(curl):
+            continue
+        if STAGE05_STRICT_CURL_REASON_RE.search(curl):
+            continue
+        canonical = (
+            "∇×κ: null / no loop because downstream verification remains held in "
+            "the ∇·B/HOLD route state rather than curl"
+        )
+        entry["curl"] = canonical
+        rewrites.append(
+            {
+                "burden_id": str(entry.get("burden_id") or ""),
+                "raw_curl": curl,
+                "canonical_curl": canonical,
+            }
+        )
+    if rewrites:
+        normalization = normalization_object(stage)
+        normalization["linear_dependency_curl_to_null"] = rewrites
+        stage["normalization"] = normalization
+
+
+def stage05_route_gradient_has_held_identity(gradient: str, target: str) -> bool:
+    if has_raw_machine_burden(gradient, target) or public_burden_id(target) in gradient:
+        return True
+    if re.search(r"(?i)\b(?:held|initial|already[- ]inventoried|already named)\b", gradient):
+        return True
+    if re.search(r"(?:B[1-9][0-9]*|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\s*(?:->|→)\s*(?:B[1-9][0-9]*|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)", gradient):
+        return True
+    return False
+
+
+def normalize_stage05_held_route_gradient_identity(stage: dict[str, Any]) -> None:
+    entries = stage.get("per_burden_reread")
+    if not isinstance(entries, list):
+        return
+    rewrites: list[dict[str, str]] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        route_type = str(entry.get("route_result_type") or "").strip()
+        if route_type != "held_burden_activation":
+            continue
+        target = stage07_route_target_from_graph(entry.get("graph_delta"))
+        if not target:
+            continue
+        gradient = str(entry.get("route_gradient") or "")
+        if not gradient.strip() or stage05_route_gradient_has_held_identity(gradient, target):
+            continue
+        canonical = gradient.rstrip(". ") + f". already-held {target} from B_LA."
+        entry["route_gradient"] = canonical
+        rewrites.append(
+            {
+                "source_burden": str(entry.get("burden_id") or ""),
+                "target_burden": target,
+                "canonical_route_gradient": canonical,
+            }
+        )
+    if rewrites:
+        normalization = normalization_object(stage)
+        normalization["held_route_gradient_identity"] = rewrites
+        stage["normalization"] = normalization
+
+
+def normalize_stage05_per_burden_extra_fields(stage: dict[str, Any]) -> None:
+    entries = stage.get("per_burden_reread")
+    if not isinstance(entries, list):
+        return
+    stripped: list[str] = []
+    for entry in entries:
+        if not isinstance(entry, dict) or "no_new_resultant_proof" not in entry:
+            continue
+        route_type = str(entry.get("route_result_type") or "").strip()
+        route = str(entry.get("route") or "").strip().upper()
+        if route_type == "no_new_resultant" and route == "STOP":
+            entry.pop("no_new_resultant_proof", None)
+            burden = str(entry.get("burden_id") or "").strip()
+            stripped.append(burden or "<unknown>")
+    if stripped:
+        normalization = normalization_object(stage)
+        normalization["stripped_per_burden_no_new_resultant_proof"] = stripped
+        stage["normalization"] = normalization
 
 
 def normalize_stage06_register_delta_value(
@@ -1696,6 +2440,35 @@ def list_field(stage: dict[str, Any] | None, key: str) -> list[str]:
     return []
 
 
+def stage04_held_target_burdens(stage04: dict[str, Any] | None) -> set[str]:
+    if not isinstance(stage04, dict):
+        return set()
+    held: set[str] = set()
+    for value in list_field(stage04, "held_act_targets"):
+        burden_id = canonical_burden_id(value)
+        if re.fullmatch(r"B[1-9][0-9]*", burden_id):
+            held.add(burden_id)
+    for key in ("held_act_details", "hold_partial", "hold_partial_routes", "held_or_partial_routes"):
+        value = stage04.get(key)
+        if not isinstance(value, list):
+            continue
+        for item in value:
+            if isinstance(item, str):
+                burden_id = canonical_burden_id(item)
+                if re.fullmatch(r"B[1-9][0-9]*", burden_id):
+                    held.add(burden_id)
+                continue
+            if not isinstance(item, dict):
+                continue
+            raw_burden = item.get("burden_id") or item.get("target") or item.get("land_target")
+            if not isinstance(raw_burden, str):
+                continue
+            burden_id = canonical_burden_id(raw_burden)
+            if re.fullmatch(r"B[1-9][0-9]*", burden_id):
+                held.add(burden_id)
+    return held
+
+
 def stage_by_id(stages: list[dict[str, Any]], stage_id: str) -> dict[str, Any] | None:
     for stage in stages:
         if stage.get("id") == stage_id:
@@ -1897,6 +2670,11 @@ def stage04_owner_routes_by_burden(stage04: dict[str, Any] | None) -> dict[str, 
         token = f"{owner}.{operation}" if operation else owner
         routes.setdefault(burden, []).append(token)
     return {burden: ordered_unique(tokens) for burden, tokens in routes.items()}
+
+
+def matched_owner_route_line(tokens: list[str]) -> str:
+    route_tokens = ordered_unique([str(token).strip() for token in tokens if str(token).strip()])
+    return "Matched owner/TTP route: " + ", ".join(f"[{token}]" for token in route_tokens)
 
 
 def stage06_owner_activation_details_by_ref(stage06: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
@@ -2188,6 +2966,16 @@ def stage05_dependency_edges(stage05: dict[str, Any] | None) -> list[dict[str, s
         elif isinstance(item, list) and len(item) == 2:
             source = burden_endpoint_id(item[0])
             target = burden_endpoint_id(item[1])
+        elif isinstance(item, str):
+            match = re.search(
+                r"(?P<source>B[1-9][0-9]*|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)\s*(?:->|→)\s*"
+                r"(?P<target>B[1-9][0-9]*|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)",
+                item,
+            )
+            if not match:
+                continue
+            source = burden_endpoint_id(match.group("source"))
+            target = burden_endpoint_id(match.group("target"))
         else:
             continue
         if source and target:
@@ -2199,6 +2987,14 @@ def stage05_dependency_edges(stage05: dict[str, Any] | None) -> list[dict[str, s
 
 
 STAGE02_BURDEN_REGISTER_KEYS = ("register_types", "registers", "burden_types", "types")
+STAGE04_AXIS_FIELD_WITNESS_REGISTERS = {
+    "♥": "heart",
+    "Ω": "Omega",
+    "ξ": "xi",
+    "σ": "xi",
+    "μ": "mu",
+    "κ": "kappa",
+}
 
 
 def field_witness_registers_in_text(value: object) -> list[str]:
@@ -2240,6 +3036,14 @@ def stage02_detail_register_projection(item: dict[str, Any]) -> list[str]:
     return field_witness_registers_from_values(scalars)
 
 
+def stage02_live_register_fallback_coverage(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
+    coverage: dict[str, list[str]] = {}
+    for burden, raw in zip(burdens, list_field(stage02, "live_registers")):
+        for register in field_witness_registers_in_text(raw):
+            coverage.setdefault(register, []).append(burden)
+    return coverage
+
+
 def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
     coverage: dict[str, list[str]] = {}
     if isinstance(stage02, dict):
@@ -2254,15 +3058,57 @@ def stage02_register_coverage(stage02: dict[str, Any] | None, burdens: list[str]
                     continue
                 for register in registers:
                     coverage.setdefault(register, []).append(burden)
+    fallback_coverage = stage02_live_register_fallback_coverage(stage02, burdens)
+    for register, ids in fallback_coverage.items():
+        if register not in coverage:
+            coverage[register] = ids
+    global_coverage = stage02_global_register_fallback_coverage(stage02, burdens, coverage)
+    for register, ids in global_coverage.items():
+        coverage[register] = ordered_unique([*(coverage.get(register) or []), *ids])
     if coverage:
         return {register: ordered_unique(ids) for register, ids in coverage.items()}
-    return {
-        register: [burden]
-        for register, burden in zip(
-            field_witness_registers_from_values(list_field(stage02, "live_registers")),
-            burdens,
-        )
-    }
+    return {}
+
+
+def stage02_global_register_fallback_coverage(
+    stage02: dict[str, Any] | None,
+    burdens: list[str],
+    existing_coverage: dict[str, list[str]],
+) -> dict[str, list[str]]:
+    if not isinstance(stage02, dict) or not burdens:
+        return {}
+    live_registers = field_witness_registers_from_values(list_field(stage02, "live_registers"))
+    if "Omega" not in live_registers or existing_coverage.get("Omega"):
+        return {}
+    global_parts = [
+        str(stage02.get("selected_n_frame") or ""),
+        " ".join(str(value) for value in list_field(stage02, "live_registers")),
+    ]
+    diagnostic_ir = stage02.get("diagnostic_ir")
+    if isinstance(diagnostic_ir, dict):
+        global_parts.extend(str(value) for value in diagnostic_ir.values() if not isinstance(value, (dict, list)))
+    global_text = " ".join(global_parts).lower()
+    if not re.search(r"\b(?:worldview|metaphysic|ontology|ontological|secularism|transcendent)\b", global_text):
+        return {}
+    details = stage02.get("burden_floor_details") or stage02.get("burden_floor_detail")
+    detail_by_burden: dict[str, str] = {}
+    if isinstance(details, list):
+        for item in details:
+            if not isinstance(item, dict):
+                continue
+            burden = b_id(item.get("burden_id") or item.get("id"))
+            if not burden:
+                continue
+            detail_by_burden[burden] = " ".join(
+                str(value)
+                for value in item.values()
+                if isinstance(value, str)
+            ).lower()
+    for burden in burdens:
+        detail_text = detail_by_burden.get(burden, "")
+        if re.search(r"\b(?:definition|scope|target|meaning|specified|specify)\b", detail_text):
+            return {"Omega": [burden]}
+    return {"Omega": [burdens[0]]}
 
 
 def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[str]) -> dict[str, list[str]]:
@@ -2278,13 +3124,114 @@ def stage02_burden_register_types(stage02: dict[str, Any] | None, burdens: list[
                 if not burden or not values:
                     continue
                 burden_registers[burden] = values
+    for burden, raw in zip(burdens, list_field(stage02, "live_registers")):
+        if burden in burden_registers:
+            continue
+        registers = field_witness_registers_in_text(raw)
+        if registers:
+            burden_registers[burden] = registers
+    for register, ids in stage02_register_coverage(stage02, burdens).items():
+        for burden in ids:
+            if burden not in burden_registers:
+                burden_registers[burden] = []
+            if register not in burden_registers[burden]:
+                burden_registers[burden].append(register)
     if burden_registers:
         return burden_registers
-    return {
-        burden: registers
-        for burden, raw in zip(burdens, list_field(stage02, "live_registers"))
-        if (registers := field_witness_registers_in_text(raw))
-    }
+    return {}
+
+
+def stage04_register_coverage(stage04: dict[str, Any] | None, live_registers: list[str]) -> dict[str, list[str]]:
+    if not isinstance(stage04, dict):
+        return {}
+    live = set(live_registers)
+    coverage: dict[str, list[str]] = {}
+    details = stage04.get("act_row_details")
+    if not isinstance(details, list):
+        return coverage
+    for item in details:
+        if not isinstance(item, dict):
+            continue
+        burden = b_id(item.get("burden_id") or item.get("target"))
+        axis = canonicalize_register_axis(item.get("register_axis") or item.get("axis"))
+        register = STAGE04_AXIS_FIELD_WITNESS_REGISTERS.get(axis or "")
+        if not burden or not register or (live and register not in live):
+            continue
+        coverage.setdefault(register, []).append(burden)
+    return {register: ordered_unique(ids) for register, ids in coverage.items()}
+
+
+def burden_ids_from_delta_carrier(value: Any) -> list[str]:
+    ids: list[str] = []
+    if isinstance(value, list):
+        for item in value:
+            ids.extend(burden_ids_from_delta_carrier(item))
+        return ordered_unique(ids)
+    if isinstance(value, dict):
+        for key in ("burden_id", "id", "target", "source_burden"):
+            burden = b_id(value.get(key))
+            if burden:
+                ids.append(burden)
+        for item in value.values():
+            ids.extend(burden_ids_from_delta_carrier(item))
+        return ordered_unique(ids)
+    text = str(value or "")
+    ids.extend(f"B{match.group(1)}" for match in CANONICAL_BURDEN_ID_RE.finditer(text))
+    ids.extend(f"B{match.group(1).translate(SUP_DIGITS)}" for match in re.finditer(r"([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B", text))
+    return ordered_unique(ids)
+
+
+def stage06_register_delta_coverage(
+    stage06: dict[str, Any] | None,
+    live_registers: list[str],
+    burden_floor: list[str],
+) -> dict[str, list[str]]:
+    if not isinstance(stage06, dict):
+        return {}
+    live = set(live_registers)
+    floor = set(burden_floor)
+    coverage: dict[str, list[str]] = {}
+    delta_maps: list[dict[str, Any]] = []
+    top_level = stage06.get("register_deltas")
+    if isinstance(top_level, dict):
+        delta_maps.append(top_level)
+    nar = stage06.get("normalized_activation_record")
+    if isinstance(nar, dict) and isinstance(nar.get("register_deltas"), dict):
+        delta_maps.append(nar["register_deltas"])
+    for delta_map in delta_maps:
+        for raw_register, delta_value in delta_map.items():
+            registers = field_witness_registers_from_values([raw_register])
+            if not registers:
+                continue
+            burdens = [burden for burden in burden_ids_from_delta_carrier(delta_value) if burden in floor]
+            if not burdens:
+                continue
+            for register in registers:
+                if live and register not in live:
+                    continue
+                coverage[register] = ordered_unique([*(coverage.get(register) or []), *burdens])
+    return coverage
+
+
+def merge_register_coverage(*coverages: dict[str, list[str]]) -> dict[str, list[str]]:
+    merged: dict[str, list[str]] = {}
+    for coverage in coverages:
+        for register, ids in coverage.items():
+            merged[register] = ordered_unique([*(merged.get(register) or []), *ids])
+    return merged
+
+
+def merge_burden_register_types(
+    base: dict[str, list[str]],
+    coverage: dict[str, list[str]],
+) -> dict[str, list[str]]:
+    merged = {burden: list(registers) for burden, registers in base.items()}
+    for register, burdens in coverage.items():
+        for burden in burdens:
+            merged.setdefault(burden, [])
+            if register not in merged[burden]:
+                merged[burden].append(register)
+    return merged
 
 
 def stage02_public_live_registers(stage02: dict[str, Any] | None, burdens: list[str]) -> list[str]:
@@ -2436,93 +3383,287 @@ def stage07_stop_proof(source: str) -> dict[str, Any]:
     }
 
 
+def per_burden_state_head(value: Any, prefix_re: re.Pattern[str]) -> str:
+    body = staged_output.per_burden_diag_body(str(value or ""), prefix_re)
+    return body.partition("/")[0].strip()
+
+
+def has_raw_machine_burden(value: Any, burden_id: str) -> bool:
+    return re.search(rf"(?<![A-Za-z0-9_]){re.escape(burden_id)}(?![A-Za-z0-9_])", str(value or "")) is not None
+
+
+def stage07_formal_delta(value: Any, source: str) -> str:
+    text = str(value or "").strip()
+    if not text or has_raw_machine_burden(text, source):
+        return text
+    if re.fullmatch(r"B[1-9][0-9]*", source):
+        public = staged_output.public_burden_token(source[1:])
+        public_delta = f"Δ{public}"
+        if text.startswith(public_delta):
+            rest = text[len(public_delta):].lstrip()
+            if rest.startswith(":"):
+                rest = rest[1:].lstrip()
+                return f"{public_delta} / Delta({source}): {rest}"
+        return f"{text} / Delta({source})"
+    return text
+
+
+def stage07_formal_divergence_state(entry: dict[str, Any], route_type: str, route: str) -> str:
+    head = per_burden_state_head(entry.get("divergence"), staged_output.PER_BURDEN_DIVERGENCE_PREFIX_RE)
+    if (route_type in {"no_new_resultant", "none", "stable"} or route.upper() == "STOP") and head in {
+        "settled",
+        "bounded",
+        "non-neutral",
+    }:
+        return "neutral"
+    return head
+
+
+def stage07_formal_curl_state(entry: dict[str, Any], route_type: str, route: str) -> str:
+    head = per_burden_state_head(entry.get("curl"), staged_output.PER_BURDEN_CURL_PREFIX_RE)
+    if (route_type in {"no_new_resultant", "none", "stable"} or route.upper() == "STOP") and head in {
+        "resolved",
+        "held",
+        "non-null",
+    }:
+        return "null"
+    return head
+
+
+def stage07_formal_route_gradient(entry: dict[str, Any], route_type: str, target: str) -> str:
+    gradient = str(entry.get("route_gradient") or "")
+    if (
+        route_type == "held_burden_activation"
+        and target
+        and not has_raw_machine_burden(gradient, target)
+        and re.search(r"(?i)\b(?:already[- ]held|held|B_LA|initial)\b", gradient) is None
+    ):
+        return gradient.rstrip() + f" already-held {target} from B_LA."
+    return gradient
+
+
+def stage05_per_burden_entries(stage05: dict[str, Any] | None) -> list[dict[str, Any]]:
+    entries = stage05.get("per_burden_reread") if isinstance(stage05, dict) else None
+    if (
+        not isinstance(entries, list)
+        or not entries
+        or not all(isinstance(entry, dict) for entry in entries)
+    ):
+        raise HarnessError(
+            "stage-05 per_burden_reread records are required to derive visible MRP structure; "
+            "Stage 07 never synthesizes findings, rereads, or pressure slots from edges, "
+            "terminal states, or prose"
+        )
+    return [dict(entry) for entry in entries]
+
+
+def stage05_mrp_route_types_by_burden(stage05: dict[str, Any] | None) -> dict[str, set[str]]:
+    entries = stage05.get("per_burden_reread") if isinstance(stage05, dict) else None
+    if not isinstance(entries, list):
+        return {}
+    result: dict[str, set[str]] = {}
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        burden_id = str(entry.get("burden_id") or "").strip()
+        route_type = str(entry.get("route_result_type") or "").strip()
+        if burden_id and route_type:
+            result.setdefault(burden_id, set()).add(route_type)
+    return result
+
+
+def stage06_nar_objects(stage06: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
+    result: list[tuple[str, dict[str, Any]]] = []
+    for key in ("normalized_activation_record", "normalized_activation_record_details"):
+        value = stage06.get(key)
+        if isinstance(value, dict):
+            result.append((key, value))
+    return result
+
+
+def validate_stage06_nar_route_types_against_stage05(stage05: dict[str, Any], stage06: dict[str, Any]) -> None:
+    expected_by_burden = stage05_mrp_route_types_by_burden(stage05)
+    if not expected_by_burden:
+        return
+    for nar_label, nar in stage06_nar_objects(stage06):
+        rows = nar.get("per_burden")
+        if not isinstance(rows, list):
+            continue
+        for index, row in enumerate(rows):
+            if not isinstance(row, dict):
+                continue
+            burden_id = str(row.get("burden_id") or "").strip()
+            if not burden_id:
+                continue
+            expected = expected_by_burden.get(burden_id)
+            route_type = str(row.get("mrp_route_result_type") or row.get("route_result_type") or "").strip()
+            if route_type and expected and route_type not in expected:
+                expected_text = ", ".join(sorted(expected))
+                raise HarnessError(
+                    f"stage-06 {nar_label}.per_burden[{index}].mrp_route_result_type "
+                    f"must match stage-05 per_burden_reread route_result_type(s) for {burden_id}: "
+                    f"{expected_text}; got {route_type}"
+                )
+
+
+def mrp_resultant_rows_from_entries(entries: list[dict[str, Any]]) -> list[dict[str, str]]:
+    return [
+        {
+            "source": str(entry.get("burden_id") or ""),
+            "type": str(entry.get("route_result_type") or ""),
+            "finding": str(entry.get("finding") or ""),
+            "graph": str(entry.get("graph_delta") or ""),
+            "route": str(entry.get("route") or ""),
+        }
+        for entry in entries
+    ]
+
+
+def self_test_reread_entry(
+    burden_id: str,
+    *,
+    next_burden_id: str | None = None,
+    **overrides: Any,
+) -> dict[str, Any]:
+    entry = staged_output.self_test_per_burden_entry(burden_id, next_burden_id=next_burden_id)
+    entry.update(overrides)
+    return entry
+
+
+def self_test_reread_hold_entry(burden_id: str) -> dict[str, Any]:
+    public = staged_output.public_burden_token(burden_id[1:])
+    return self_test_reread_entry(
+        burden_id,
+        reread=(
+            f"R(H,Δ): held routes rechecked: {public}; live remainder: {public}; release/next: HOLD."
+        ),
+        route_gradient=(
+            f"plain-gradient holds {public} as HOLD/PARTIAL after R(H,Δ); no new graph edge is licensed."
+        ),
+        divergence="∇·B: non-neutral / held burden remains live",
+        curl="∇×κ: held / held burden remains live",
+        finding="partial-real",
+        route_result_type="hold_partial",
+        mrp_resultant=f"partial-real -> no new graph edge; HOLD {public}",
+        graph_delta="none",
+        preemption_basis="none",
+        route="HOLD",
+    )
+
+
+def self_test_reread_generated_entry(parent: str, generated: str) -> dict[str, Any]:
+    parent_public = staged_output.public_burden_token(parent[1:])
+    generated_public = staged_output.public_burden_token(generated[1:])
+    return self_test_reread_entry(
+        parent,
+        reread=(
+            f"R(H,Δ): held routes rechecked: {generated_public}; live remainder: {generated_public}; "
+            f"release/next: RECURSE to {generated_public}."
+        ),
+        route_gradient=(
+            f"newly generated {generated_public} [generated-by: MRP({parent_public})] is absent from "
+            f"B_LA after Δ {parent_public} post-Land field-pressure."
+        ),
+        divergence="∇·B: non-neutral / generated burden remains live",
+        curl="∇×κ: held / generated burden hold",
+        finding="genuine-dependent",
+        route_result_type="generated_burden_instantiation",
+        mrp_resultant=f"genuine-dependent -> graph {parent} -> {generated}; RECURSE",
+        graph_delta=f"{parent} -> {generated}",
+        preemption_basis="graph-bound",
+        route="RECURSE",
+    )
+
+
 def stage07_formal_reread_states(
-    mrp_resultants: list[dict[str, str]],
+    per_burden_reread: list[dict[str, Any]],
     terminal_states: dict[str, str],
     unresolved_burdens: list[str] | None = None,
     owner_routes_by_burden: dict[str, list[str]] | None = None,
 ) -> list[dict[str, Any]]:
+    """Project stage-05 per_burden_reread records into formal_reread_states rows.
+
+    Rows are 1:1 projections of the producer records (current key schema, no new
+    keys); this function adds accounting metadata only and never invents reread
+    content.
+    """
+    if not isinstance(per_burden_reread, list) or not per_burden_reread:
+        raise HarnessError(
+            "stage07_formal_reread_states requires stage-05 per_burden_reread records; "
+            "formal_reread_states rows are 1:1 projections and are never synthesized"
+        )
     states: list[dict[str, Any]] = []
     unresolved = set(unresolved_burdens or [])
     owner_routes = owner_routes_by_burden or {}
-    for row in mrp_resultants:
-        source = row.get("source") or ""
+
+    def held_terminal(state_value: str) -> bool:
+        return re.search(
+            r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b",
+            state_value,
+        ) is not None
+
+    field_held_burdens = sorted(
+        set(unresolved)
+        | {
+            burden_id
+            for burden_id, state_value in terminal_states.items()
+            if held_terminal(str(state_value or ""))
+        }
+    )
+    for entry in per_burden_reread:
+        source = str(entry.get("burden_id") or "")
         if not source:
             continue
-        route_type = row.get("type") or "no_new_resultant"
-        route = row.get("route") or "STOP"
-        graph = row.get("graph") or "none"
+        route_type = str(entry.get("route_result_type") or "")
+        route = str(entry.get("route") or "")
+        graph = str(entry.get("graph_delta") or "")
         terminal_state = terminal_states.get(source, "landed")
-        held_or_partial = source in unresolved or re.search(
-            r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b",
-            terminal_state,
-        ) is not None
-        divergence_state = "non-neutral" if held_or_partial else "neutral"
-        curl_state = "unresolved" if held_or_partial else "null"
+        held_or_partial = source in unresolved or held_terminal(terminal_state)
         target = stage07_route_target_from_graph(graph)
-        public_graph = public_graph_value(graph)
-        public_source = public_burden_id(source)
-        public_target = public_graph_value(target or source)
         state: dict[str, Any] = {
             "source_burden": source,
             "prior_land": f"Land({source}): terminal state {terminal_state}.",
-            "delta": stage07_mrp_landed_delta(source, terminal_state, route_type),
+            "delta": stage07_formal_delta(entry.get("landed_delta"), source),
             "reread": "R(H,Delta)",
-            "divergence_state": divergence_state,
-            "curl_state": curl_state,
+            "divergence_state": stage07_formal_divergence_state(entry, route_type, route),
+            "curl_state": stage07_formal_curl_state(entry, route_type, route),
             "route_result_type": route_type,
-            "mrp_resultant": f"{row.get('finding') or 'stable'} -> graph {graph}; route {route}",
+            "mrp_resultant": str(entry.get("mrp_resultant") or ""),
             "graph_delta": graph,
-            "preemption_basis": (
-                f"bounded MRP row only; {public_source} remains {terminal_state} with HOLD/PARTIAL accounting"
-                if held_or_partial and str(graph).strip().lower() == "none"
-                else
-                "terminal states landed; B_MRP empty; no generated burden remains"
-                if str(graph).strip().lower() == "none"
-                else "graph-bound MRP route recorded"
-            ),
+            "preemption_basis": str(entry.get("preemption_basis") or ""),
             "route": route,
+            "route_gradient": stage07_formal_route_gradient(entry, route_type, target),
         }
         if route_type == "held_burden_activation":
-            state["route_gradient"] = (
-                f"already-held/initial burden gradient points to {route} through {public_graph} after R(H,Δ)."
-                if target
-                else f"held/B_LA route after {source}."
-            )
             if target:
                 state["next_burden"] = target
             state["owner_route"] = owner_routes.get(target) or ["held"]
         elif route_type == "generated_burden_instantiation":
-            state["route_gradient"] = (
-                f"generated-gradient points to {route} through {public_graph} after Delta {public_source}; "
-                f"newly generated {public_target} [generated-by: MRP({public_source})] is absent from 𝔅_LA "
-                "and comes from post-Land field-pressure."
-                if target
-                else f"generated/new MRP route absent from B_LA after Delta {source}."
-            )
             if target:
                 state["next_burden"] = target
             state["owner_route"] = owner_routes.get(target) or ["generated"]
             state["generated_by"] = f"MRP({source})"
-        else:
-            state["route_gradient"] = (
-                f"plain-gradient holds {public_source} as HOLD/PARTIAL after R(H,Δ); no new graph edge is licensed."
-                if held_or_partial
-                else f"plain-gradient points to {route} after {public_source}; no live pressure remains."
-            )
-            if route_type in {"no_new_resultant", "none", "stable"} or str(route).upper() == "STOP":
-                state["no_new_resultant_proof"] = (
-                    {
-                        "escape_routes_checked": [],
-                        "proved": False,
-                        "basis": (
-                            f"{source} remains {terminal_state}; no-new-resultant STOP is not licensed "
-                            "for coverage completion while the burden is unresolved."
-                        ),
-                    }
-                    if held_or_partial
-                    else stage07_stop_proof(source)
-                )
+        elif route_type == "no_new_resultant" or route.upper() == "STOP":
+            if held_or_partial:
+                state["no_new_resultant_proof"] = {
+                    "escape_routes_checked": [],
+                    "proved": False,
+                    "basis": (
+                        f"{source} remains {terminal_state}; no-new-resultant STOP is not licensed "
+                        "for coverage completion while the burden is unresolved."
+                    ),
+                }
+            elif field_held_burdens:
+                state["no_new_resultant_proof"] = {
+                    "escape_routes_checked": [],
+                    "proved": False,
+                    "basis": (
+                        f"MRP({source}) STOP is burden-local only; field-level no-new-resultant is not "
+                        f"licensed while {', '.join(field_held_burdens)} remain(s) held/unresolved."
+                    ),
+                }
+            else:
+                state["no_new_resultant_proof"] = stage07_stop_proof(source)
         states.append(state)
     return states
 
@@ -2554,16 +3695,6 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         for burden in b_total
     }
     edges = stage05_dependency_edges(stage05)
-    reread_state = stage05.get("reread_state")
-    if not isinstance(reread_state, dict):
-        reread_state = {}
-    final_source = burden_endpoint_id(reread_state.get("source_burden") or reread_state.get("source")) or (b_total[-1] if b_total else "")
-    final_type = str(reread_state.get("route_result_type") or "no_new_resultant").strip().rstrip(".;:,")
-    final_route = str(reread_state.get("route") or "STOP").strip().rstrip(".;:,")
-    if final_type in {"none", "stable", ""}:
-        final_type = "no_new_resultant"
-    if not final_route:
-        final_route = "STOP"
     unresolved_burdens = stage05_unresolved_burdens(stage05)
     terminal_states, unresolved_burdens = normalize_stage07_generated_terminal_accounting(
         generated_burdens=generated_burdens,
@@ -2572,65 +3703,8 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         unresolved_burdens=unresolved_burdens,
         executed_act_burdens=executed_act_burdens,
     )
-    def unresolved_terminal(burden: str) -> bool:
-        return burden in unresolved_burdens or re.search(
-            r"(?i)\b(?:hold|held|partial|carried[-_ ]?recurse)\b",
-            terminal_states.get(burden, ""),
-        ) is not None
-
-    held_or_partial_burdens = stage07_held_or_partial_burdens(
-        b_total,
-        terminal_states,
-        unresolved_burdens,
-    )
-    if (
-        held_or_partial_burdens
-        and final_type in {"no_new_resultant", "none", "stable"}
-        and final_route.upper() == "STOP"
-    ):
-        final_source = held_or_partial_burdens[0]
-        final_type = "hold_partial"
-        final_route = "HOLD"
-    if edges and final_type == "no_new_resultant" and final_route.upper() == "STOP":
-        final_type = str(edges[0].get("type") or "generated_burden_instantiation")
-        final_route = "RECURSE"
-        final_source = edges[0]["from"]
-    mrp_resultants = [
-        {
-            "source": edge["from"],
-            "type": edge["type"],
-            "finding": "genuine-dependent",
-            "graph": f"{edge['from']} -> {edge['to']}",
-            "route": "RECURSE",
-        }
-        for edge in edges
-    ]
-    has_matching_final_resultant = any(
-        row["source"] == final_source and row["type"] == final_type for row in mrp_resultants
-    )
-    if final_source and not has_matching_final_resultant:
-        mrp_resultants.append(
-            {
-                "source": final_source,
-                "type": final_type,
-                "finding": "partial-real" if final_type == "hold_partial" else "stable",
-                "graph": "none",
-                "route": final_route,
-            }
-        )
-    if final_type == "hold_partial" and final_route.upper() == "HOLD":
-        for burden in held_or_partial_burdens:
-            if any(row["source"] == burden and row["type"] == "hold_partial" for row in mrp_resultants):
-                continue
-            mrp_resultants.append(
-                {
-                    "source": burden,
-                    "type": "hold_partial",
-                    "finding": "partial-real",
-                    "graph": "none",
-                    "route": "HOLD",
-                }
-            )
+    per_burden_entries = stage05_per_burden_entries(stage05)
+    mrp_resultants = mrp_resultant_rows_from_entries(per_burden_entries)
 
     for edge in edges:
         target = edge["to"]
@@ -2705,103 +3779,38 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
                 )
         return lines
 
-    def mrp_block_lines(row: dict[str, str]) -> list[str]:
-        source = row["source"]
-        graph = row["graph"]
-        route = row["route"]
-        route_type = row["type"]
-        finding = row["finding"]
-        public_graph = public_graph_value(graph)
-        public_source = public_burden_id(source)
-        target = stage07_route_target_from_graph(graph)
-        public_target = public_graph_value(target or source)
-        held_or_partial = route_type == "hold_partial" or unresolved_terminal(source)
-        landed_state = terminal_states.get(source, "landed")
-        if route_type == "generated_burden_instantiation" and graph != "none":
-            route_gradient = (
-                f"generated-gradient points to {route} through {public_graph} after Delta {public_source}; "
-                f"newly generated {public_target} [generated-by: MRP({public_source})] is absent from 𝔅_LA "
-                "and comes from post-Land field-pressure."
-            )
-        elif route_type == "held_burden_activation" and graph != "none":
-            route_gradient = (
-                f"already-held/initial burden gradient points to {route} through {public_graph} after R(H,Δ)."
-            )
-        else:
-            route_gradient = (
-                f"plain-gradient points to {route} through {public_graph} after R(H,Δ)."
-                if graph != "none"
-                else (
-                    f"plain-gradient holds {public_source} as HOLD/PARTIAL after R(H,Δ); no new graph edge is licensed."
-                    if held_or_partial
-                    else f"plain-gradient points to {route} after {public_source}; no live pressure remains."
-                )
-            )
-        reread_line = (
-            f"R(H,Δ): held routes rechecked: {public_graph}; "
-            f"live remainder: {public_graph_value(target or source)}; release/next: {route}."
-            if graph != "none"
-            else (
-                f"R(H,Δ): held routes rechecked: none; live remainder: {public_source}; release/next: HOLD."
-                if held_or_partial
-                else f"R(H,Δ): held routes rechecked: none; live remainder: no remaining burden; "
-                f"release/next: {route} after {public_source}."
-            )
-        )
-        preemption_basis = (
-            f"bounded MRP row only; {public_source} remains {landed_state} with HOLD/PARTIAL accounting"
-            if held_or_partial and graph == "none"
-            else "terminal states landed; B_MRP empty; no generated burden remains"
-            if graph == "none"
-            else "graph-bound MRP route recorded"
-        )
-        landed_delta = stage07_mrp_landed_delta(source, landed_state, route_type)
-        return [
-            "[Mid-Reread Pressure]",
-            f"Target: MRP({public_source}) / Stage 05 terminal MRP source",
-            reread_line,
-            f"Landed delta: {landed_delta}",
-            (
-                "Field diagnostics: del-dot B: non-neutral / unresolved burden remains; "
-                "del-cross kappa: unresolved / generated burden hold."
-                if held_or_partial
-                else "Field diagnostics: del-dot B: neutral / no remaining burden; del-cross kappa: null / no circular dependency."
-            ),
-            f"Route-gradient: {route_gradient}",
-            matched_route_line(target or source),
-            f"Finding: {finding}",
-            f"MRP route result type: {route_type}",
-            f"MRP resultant: {finding} -> graph {public_graph}; route {route}",
-            f"Graph delta: {public_graph}",
-            f"Pre-emption basis: {preemption_basis}",
-            "LoopBreak: not needed",
-            f"Route: {route}",
-            "Boundary: T_lang does not imply guaranteed uptake.",
-        ]
-
     terminal_lines = [
         f"{public_burden_id(burden)}: {terminal_states.get(burden, 'landed')}"
         for burden in b_total
     ]
-    visible_lines: list[str] = []
-    for row in mrp_resultants:
-        visible_lines.extend(mrp_block_lines(row))
-    visible_lines.extend(generated_heading_lines())
-    visible_lines.extend(["Terminal states:", *terminal_lines])
+    preview_lines: list[str] = []
+    for entry in per_burden_entries:
+        preview_lines.extend(staged_output.render_mrp_block(entry).splitlines())
+        preview_lines.append("")
+    ledger_lines = [
+        "MRP terminal reconstruction floor:",
+        "Route-state ledger:",
+        *[
+            f"- MRP({public_burden_id(row['source'])}): type={row['type']}; finding={row['finding']}; "
+            f"graph={public_graph_value(row['graph'])}; route={row['route']}"
+            for row in mrp_resultants
+        ],
+        *generated_heading_lines(),
+        "Terminal states:",
+        *terminal_lines,
+    ]
     lines = [
         "",
-        "Stage 07 public MRP block contract:",
-        "- Print these checker-complete public MRP blocks in the MRP/reread/terminal section before prose expansion:",
-        *[f"  {line}" for line in visible_lines],
-        "- Emit one `[Mid-Reread Pressure]` block for every Stage 05 / field_witness `mrp_resultants[]` source; do not summarize a B1-B6 chain as one MRP block.",
-        "- `Target:` is required and must name the Stage 05 MRP source burden in public notation, for example `MRP(⁴B)`; do not leave the target implicit in prose.",
-        "- `Landed delta:` must use the exact same canonical delta string as `field_witness.formal_reread_states[].delta`.",
-        "- `MRP route result type:` must be one canonical token with no trailing punctuation: `held_burden_activation`, `generated_burden_instantiation`, `no_new_resultant`, `loopbreak`, or `hold_partial`.",
-        "- `MRP resultant:`, `Graph delta:`, `Pre-emption basis:`, and `Route:` are required public fields; field_witness and Closure/Reconstruction Witness mirrors do not replace them.",
-        "- For terminal STOP/no-new-resultant, use `Graph delta: none`, `Route: STOP`, and do not invent a graph edge.",
-        "- For generated or held routes, use the exact Stage 05 graph edge in `Graph delta:` and `MRP resultant:`.",
-        "- Do not print any extra public `[Mid-Reread Pressure]` or `MRP(G)` source outside this scaffold; every visible MRP source must have matching `field_witness.formal_reread_states[]` and `field_witness.mrp_resultants[]` rows, or remain non-MRP held-route prose.",
-        "- Do not rely on a later `MRP(ⁿB): ...` closure-ledger row as the only public MRP evidence; the `[Mid-Reread Pressure]` block itself must be parseable.",
+        "Stage 07 per-burden MRP visibility contract:",
+        "- The harness injects one canonical `[Mid-Reread Pressure]` block immediately after each line-start superscript `Land(ⁿB):` landing gate, rendered verbatim from the Stage 05 `per_burden_reread` records. Do NOT print any `[Mid-Reread Pressure]` heading or block yourself, in any section; a model-authored heading fails assembly.",
+        "- In the Layer B / ACT sections, print exactly one line-start superscript landing gate per terminal burden, for example `Land(¹B): landed.`; machine ⟦ACT⟧ rows and ASCII `Land(B1)` aliases do not count as public landing gates.",
+        "- Every landing gate must match one Stage 05 per_burden_reread record and every record must match one gate; assembly fails on either mismatch or on a duplicate gate.",
+        "- Harness-injected blocks for this case (reference only; never print these yourself):",
+        *[f"  {line}" for line in preview_lines],
+        "- The MRP/reread/terminal section is ledger-only: print the reconstruction floor, route-state ledger, and terminal states below; no `[Mid-Reread Pressure]` heading block:",
+        *[f"  {line}" for line in ledger_lines],
+        "- `field_witness.formal_reread_states[]` and `field_witness.mrp_resultants[]` must mirror the Stage 05 per_burden_reread records 1:1: same burden order, `route_result_type`, graph delta, and route; `formal_reread_states[].delta` preserves the public `landed_delta` notation while also carrying machine `Delta(Bn)` identity.",
+        "- Do not rely on a later `MRP(ⁿB): ...` closure-ledger row as the only public MRP evidence; the harness-injected blocks carry the public per-burden reread proof.",
     ]
     return "\n".join(lines)
 
@@ -3116,8 +4125,14 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         final_type = "hold_partial"
         final_route = "HOLD"
     live_registers = stage02_public_live_registers(stage02, burden_floor)
-    diagnostic_coverage = stage02_register_coverage(stage02, burden_floor)
-    burden_registers = stage02_burden_register_types(stage02, burden_floor)
+    stage02_coverage = stage02_register_coverage(stage02, burden_floor)
+    stage04_coverage = stage04_register_coverage(stage04, live_registers)
+    stage06_coverage = stage06_register_delta_coverage(stage06, live_registers, burden_floor)
+    diagnostic_coverage = merge_register_coverage(stage02_coverage, stage04_coverage, stage06_coverage)
+    burden_registers = merge_burden_register_types(
+        stage02_burden_register_types(stage02, burden_floor),
+        merge_register_coverage(stage04_coverage, stage06_coverage),
+    )
     for edge in edges:
         target = edge["to"]
         if target not in generated_burdens:
@@ -3299,46 +4314,10 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
                         "after_body_ref": str(after.get("body_ref") or "").strip(),
                     }
                 )
-    mrp_resultants = [
-        {
-            "source": edge["from"],
-            "type": edge["type"],
-            "finding": "genuine-dependent",
-            "graph": f"{edge['from']} -> {edge['to']}",
-            "route": "RECURSE",
-        }
-        for edge in edges
-    ]
-    has_matching_final_resultant = any(
-        row["source"] == final_source and row["type"] == final_type for row in mrp_resultants
-    )
-    if final_source and not has_matching_final_resultant and (
-        final_type in {"no_new_resultant", "none", "stable", "hold_partial"} or final_route.upper() in {"STOP", "HOLD"}
-    ):
-        mrp_resultants.append(
-            {
-                "source": final_source,
-                "type": final_type,
-                "finding": "partial-real" if final_type == "hold_partial" else "stable",
-                "graph": "none",
-                "route": final_route,
-            }
-        )
-    if final_type == "hold_partial" and final_route.upper() == "HOLD":
-        for burden in held_or_partial_burdens:
-            if any(row["source"] == burden and row["type"] == "hold_partial" for row in mrp_resultants):
-                continue
-            mrp_resultants.append(
-                {
-                    "source": burden,
-                    "type": "hold_partial",
-                    "finding": "partial-real",
-                    "graph": "none",
-                    "route": "HOLD",
-                }
-            )
+    per_burden_entries = stage05_per_burden_entries(stage05)
+    mrp_resultants = mrp_resultant_rows_from_entries(per_burden_entries)
     formal_reread_states = stage07_formal_reread_states(
-        mrp_resultants,
+        per_burden_entries,
         terminal_states,
         unresolved_burdens=unresolved_burdens,
         owner_routes_by_burden=owner_routes_by_burden,
@@ -3545,7 +4524,7 @@ def contract_scaffold_lines(contract: str, marker: str) -> list[str]:
 
 def stage07_mrp_reread_section_scaffold(previous_stages: list[dict[str, Any]]) -> str:
     contract = stage07_mrp_reread_contract_guidance(previous_stages)
-    lines = contract_scaffold_lines(contract, "Print these checker-complete public MRP blocks")
+    lines = contract_scaffold_lines(contract, "ledger-only: print the reconstruction floor")
     if not lines:
         return ""
     return "\n".join(lines).rstrip() + "\n"
@@ -3586,6 +4565,7 @@ PUBLIC_SUBMOVE_HEADING_RE = re.compile(
     r"(?P<ref>(?:[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B[1-9][0-9]*)(?:[₀₁₂₃₄₅₆₇₈₉]+|[_\.][1-9][0-9]*))"
     r"\[(?P<owner>[A-Za-z][A-Za-z0-9_/\-]*)\]"
 )
+OPERATION_LINE_RE = re.compile(r"(?im)^(?P<prefix>\s*(?:[-*]\s*)?Operation\s*:\s*)(?P<body>.*)$")
 RESULT_STATE_LINE_RE = re.compile(r"(?im)^(?P<prefix>\s*(?:[-*]\s*)?Result(?:/state-change)?\s*:\s*)(?P<body>.*)$")
 CONTRIBUTION_LAND_LINE_RE = re.compile(
     r"(?im)^(?P<prefix>\s*(?:[-*]\s*)?Contribution-to-Land\((?P<land>[^)]*)\)\s*:\s*)(?P<body>.*)$"
@@ -3630,6 +4610,22 @@ SOURCE_SOURCE_ORDER_BODY_BACKED_RE = re.compile(
     r"(?is)\b(?:source lineage|quotation chain|quotation order|inherited[- ]claim order|"
     r"inherited claim|source priority|source precedence|evidential dependency|"
     r"derivation order|source chain|testimony source|report source)\b"
+)
+DO_ATTRIBUTE_BODY_BACKED_RE = re.compile(
+    r"(?is)\b(?:attribute[- ]precision|person/nature|person[- ]nature|attribute|predicate|"
+    r"category confusion|category transfer|cruelty|kindness|generosity|typed|typing)\b"
+)
+DO_ATTRIBUTE_TRANSITION_BACKED_RE = re.compile(
+    r"(?is)\b(?:types?|typed|typing|separates?|separated|blocking?|blocked|bounded|"
+    r"classifies?|classified|category transfer|category confusion|predicate level)\b"
+)
+DO_SECOND_LOOP_BODY_BACKED_RE = re.compile(
+    r"(?is)\b(?:accountability|hujjah|ḥujjah|warning|knowledge|capacity|record|culpability|"
+    r"guidance|coercion|persuasion|punishment|proportionality|mercy|justice|judge)\b"
+)
+DO_SECOND_LOOP_TRANSITION_BACKED_RE = re.compile(
+    r"(?is)\b(?:narrows?|narrowed|bounds?|bounded|calibrates?|calibrated|separates?|"
+    r"separated|blocks?|blocked|sequences?|sequenced|no longer)\b"
 )
 SECTION_ROLE_HEADING_PATTERNS = {
     "restorative_response": re.compile(
@@ -3796,6 +4792,16 @@ def owner_transition_body_backed(detail: dict[str, str], block: str) -> bool:
         return bool(SOURCE_AUTHORITY_ORDER_BODY_BACKED_RE.search(operation_body))
     if family == "SOURCE" and operation == "source-order-repair":
         return bool(SOURCE_SOURCE_ORDER_BODY_BACKED_RE.search(operation_body))
+    if family == "DO_ATTRIBUTE" and operation == "attribute-precision":
+        return bool(
+            DO_ATTRIBUTE_BODY_BACKED_RE.search(operation_body)
+            and DO_ATTRIBUTE_TRANSITION_BACKED_RE.search(operation_body)
+        )
+    if family == "DO_SECOND_LOOP":
+        return bool(
+            DO_SECOND_LOOP_BODY_BACKED_RE.search(operation_body)
+            and DO_SECOND_LOOP_TRANSITION_BACKED_RE.search(operation_body)
+        )
     return False
 
 
@@ -3832,13 +4838,53 @@ def state_change_sentence_for_owner_transition(detail: dict[str, str]) -> str:
         )
     if family == "SOURCE" and operation == "authority-order-repair":
         return (
-            " State change: the authority/rank/tribunal relation is ordered, so the "
-            "rival public authority no longer functions as a higher court over the source."
+            " State change: authority-order-repaired; the authority/rank/tribunal relation "
+            "is ordered, so rival source authority no longer functions as a higher court "
+            "or external tribunal over revelation."
         )
     if family == "SOURCE" and operation == "source-order-repair":
         return (
-            " State change: the source lineage, source priority, and evidential dependency "
-            "are explicitly ordered, so the inherited claim no longer travels as an unworked source chain."
+            " State change: source-order-repaired; the source lineage, source priority, "
+            "and evidential dependency are explicitly ordered, so the inherited claim no "
+            "longer travels as an unworked source chain."
+        )
+    if family == "DO_ATTRIBUTE" and operation == "attribute-precision":
+        return (
+            " State change: the attribute-precision operation types the attribute or predicate relation, "
+            "separates the relevant levels, and blocks the category transfer from carrying the burden."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "accountability-hujjah-compression":
+        return (
+            " State change: the hujjah/accountability compression is narrowed through warning, knowledge, "
+            "capacity, record, and response sequencing, so bare non-belief no longer carries the burden."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "coercive-guidance-demand":
+        return (
+            " State change: guidance, warning, persuasion, and coercion are separated, so the demand for "
+            "compelling disclosure no longer carries the burden."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "fitrah-ayat-baseline":
+        return (
+            " State change: the fitrah/ayat baseline is established as a guidance-order route, so the "
+            "burden is no longer carried by a bare neutrality claim."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "punishment-proportionality-accountability":
+        return (
+            " State change: punishment proportionality is calibrated through accountability, warning, "
+            "knowledge, capacity, record, and the Judge's right, so raw affective magnitude no longer "
+            "carries the burden."
+        )
+    return ""
+
+
+def operation_sentence_for_owner_transition(detail: dict[str, str]) -> str:
+    owner = str(detail.get("owner") or "").strip()
+    operation = str(detail.get("operation") or "").strip()
+    family = canonical_delta_owner(owner) or owner
+    if family == "FPD" and operation == "foreign-premise-detection":
+        return (
+            "foreign-premise-detection: expose the foreign premise and imported criterion "
+            "functioning as proof for this burden."
         )
     return ""
 
@@ -3880,7 +4926,8 @@ def land_license_sentence_for_owner_transition(detail: dict[str, str], public_bu
     if family == "SOURCE" and operation == "authority-order-repair":
         return (
             f"This licenses Land({land_target}) because the authority/rank/tribunal relation is "
-            "ordered, so the rival public authority no longer functions as a higher court over the source."
+            "ordered, so rival source authority no longer functions as a higher court or external "
+            "tribunal over revelation."
         )
     if family == "SOURCE" and operation == "source-order-repair":
         return (
@@ -3888,7 +4935,51 @@ def land_license_sentence_for_owner_transition(detail: dict[str, str], public_bu
             "evidential dependency are explicitly ordered, so the inherited claim no longer travels "
             "as an unworked source chain."
         )
+    if family == "DO_ATTRIBUTE" and operation == "attribute-precision":
+        return (
+            f"This licenses Land({land_target}) because attribute precision types the attribute or "
+            "predicate relation, separates the relevant levels, and blocks the category transfer from "
+            "carrying proof force."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "accountability-hujjah-compression":
+        return (
+            f"This licenses Land({land_target}) because the hujjah/accountability compression is "
+            "narrowed through warning, knowledge, capacity, record, and response sequencing."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "coercive-guidance-demand":
+        return (
+            f"This licenses Land({land_target}) because guidance, warning, persuasion, and coercion "
+            "are separated, so coercive-disclosure pressure is bounded."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "fitrah-ayat-baseline":
+        return (
+            f"This licenses Land({land_target}) because the fitrah/ayat baseline is established as "
+            "guidance-order evidence rather than a bare neutrality claim."
+        )
+    if family == "DO_SECOND_LOOP" and operation == "punishment-proportionality-accountability":
+        return (
+            f"This licenses Land({land_target}) because punishment proportionality is calibrated "
+            "through accountability, warning, knowledge, capacity, record, and the Judge's right."
+        )
     return ""
+
+
+def checker_stable_state_for_owner_transition(detail: dict[str, str], body: str) -> bool:
+    family = canonical_delta_owner(str(detail.get("owner") or "").strip()) or str(detail.get("owner") or "").strip()
+    if family in {"DO_ATTRIBUTE", "DO_SECOND_LOOP", "SOURCE"}:
+        sentence = state_change_sentence_for_owner_transition(detail).strip()
+        return bool(sentence and sentence in body)
+    return bool(CHECKER_STABLE_STATE_RE.search(body))
+
+
+def checker_stable_contribution_for_owner_transition(detail: dict[str, str], body: str) -> bool:
+    family = canonical_delta_owner(str(detail.get("owner") or "").strip()) or str(detail.get("owner") or "").strip()
+    if family in {"DO_ATTRIBUTE", "DO_SECOND_LOOP", "SOURCE"}:
+        land_target = str(detail.get("burden_id") or "").strip()
+        public_land = public_burden_id(land_target) if land_target else ""
+        license_sentence = land_license_sentence_for_owner_transition(detail, public_land)
+        return bool(license_sentence and license_sentence in body)
+    return bool(CHECKER_STABLE_CONTRIBUTION_RE.search(body))
 
 
 def canonicalize_layer_b_owner_transition_facets(
@@ -3926,6 +5017,22 @@ def canonicalize_layer_b_owner_transition_facets(
             and str(detail.get("operation") or "").strip()
             in {"authority-order-repair", "source-order-repair"}
         )
+        or (
+            (canonical_delta_owner(str(detail.get("owner") or "").strip()) or "")
+            == "DO_ATTRIBUTE"
+            and str(detail.get("operation") or "").strip() == "attribute-precision"
+        )
+        or (
+            (canonical_delta_owner(str(detail.get("owner") or "").strip()) or "")
+            == "DO_SECOND_LOOP"
+            and str(detail.get("operation") or "").strip()
+            in {
+                "accountability-hujjah-compression",
+                "coercive-guidance-demand",
+                "fitrah-ayat-baseline",
+                "punishment-proportionality-accountability",
+            }
+        )
     }
     if not details_by_public_ref:
         return text, None
@@ -3941,16 +5048,33 @@ def canonicalize_layer_b_owner_transition_facets(
         sentence = state_change_sentence_for_owner_transition(detail)
         if not sentence:
             continue
+        operation_sentence = operation_sentence_for_owner_transition(detail)
+        operation_line_changed = False
+
+        def replace_operation_line(operation_match: re.Match[str]) -> str:
+            nonlocal operation_line_changed
+            if not operation_sentence:
+                return operation_match.group(0)
+            body = operation_match.group("body").strip()
+            if operation_sentence in body:
+                return operation_match.group(0)
+            operation_line_changed = True
+            return f"{operation_match.group('prefix')}{operation_sentence}"
 
         def replace_result_line(result_match: re.Match[str]) -> str:
             body = result_match.group("body").rstrip()
-            if CHECKER_STABLE_STATE_RE.search(body):
+            if checker_stable_state_for_owner_transition(detail, body):
                 return result_match.group(0)
             return f"{result_match.group('prefix')}{body.rstrip('.')}." + sentence
 
+        normalized_block, _operation_replacement_count = OPERATION_LINE_RE.subn(
+            replace_operation_line,
+            block,
+            count=1,
+        )
         normalized_block, result_replacement_count = RESULT_STATE_LINE_RE.subn(
             replace_result_line,
-            block,
+            normalized_block,
             count=1,
         )
         land_license_changed = False
@@ -3958,7 +5082,7 @@ def canonicalize_layer_b_owner_transition_facets(
         def replace_contribution_line(contribution_match: re.Match[str]) -> str:
             nonlocal land_license_changed
             body = contribution_match.group("body").strip()
-            if CHECKER_STABLE_CONTRIBUTION_RE.search(body):
+            if checker_stable_contribution_for_owner_transition(detail, body):
                 return contribution_match.group(0)
             public_burden = contribution_match.group("land").strip()
             land_license = land_license_sentence_for_owner_transition(detail, public_burden)
@@ -3972,7 +5096,11 @@ def canonicalize_layer_b_owner_transition_facets(
             normalized_block,
             count=1,
         )
-        if (result_replacement_count <= 0 and not land_license_changed) or normalized_block == block:
+        if (
+            not operation_line_changed
+            and result_replacement_count <= 0
+            and not land_license_changed
+        ) or normalized_block == block:
             continue
         chunks.append(text[cursor : match.start()])
         chunks.append(normalized_block)
@@ -4352,12 +5480,63 @@ def compiled_section_budget_guardrail(
     }
 
 
+def canonicalize_visible_act_rows_from_stage04(
+    section_role: str,
+    text: str,
+    previous_stages: list[dict[str, Any]],
+) -> tuple[str, dict[str, Any] | None]:
+    if section_role != "layer_b_act" or "⟦ACT" not in text:
+        return text, None
+    stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    act_details = stage04_act_details_by_ref(stage04)
+    if not act_details:
+        return text, None
+    replacements: list[dict[str, str]] = []
+    lines: list[str] = []
+    for line in text.splitlines(keepends=True):
+        if "⟦ACT" not in line:
+            lines.append(line)
+            continue
+        ref_match = ACT_BODY_REF_RE.search(line)
+        if ref_match is None:
+            lines.append(line)
+            continue
+        body_ref = ref_match.group(1)
+        canonical = act_details.get(body_ref)
+        if canonical is None:
+            lines.append(line)
+            continue
+        canonical_row = str(canonical.get("row") or "")
+        if not canonical_row or line.strip() == canonical_row:
+            lines.append(line)
+            continue
+        newline = "\n" if line.endswith("\n") else ""
+        lines.append(canonical_row + newline)
+        replacements.append({"body_ref": body_ref})
+    if not replacements:
+        return text, None
+    normalized = "".join(lines)
+    return normalized, {
+        "role": section_role,
+        "canonicalized_visible_act_rows_from_stage04": True,
+        "replacement_count": len(replacements),
+        "body_refs": [item["body_ref"] for item in replacements],
+        "original_bytes": len(text.encode("utf-8")),
+        "canonical_bytes": len(normalized.encode("utf-8")),
+    }
+
+
 def canonical_compiled_structural_section(
     section_role: str,
     text: str,
     previous_stages: list[dict[str, Any]],
 ) -> tuple[str, dict[str, Any] | None]:
     text, mixed_concealment_event = canonicalize_mixed_concealment_projection(
+        section_role,
+        text,
+        previous_stages,
+    )
+    text, visible_act_event = canonicalize_visible_act_rows_from_stage04(
         section_role,
         text,
         previous_stages,
@@ -4383,6 +5562,9 @@ def canonical_compiled_structural_section(
                 event["demoted_duplicate_own_section_headings"] = duplicate_heading_event[
                     "demoted_duplicate_own_section_headings"
                 ]
+            if event is not None and visible_act_event is not None and event is not visible_act_event:
+                event["canonicalized_visible_act_rows_from_stage04"] = True
+                event["visible_act_row_replacement_count"] = visible_act_event["replacement_count"]
             return text, event
         scaffold = stage07_restorative_response_section_scaffold(previous_stages)
         body = re.sub(
@@ -4394,7 +5576,13 @@ def canonical_compiled_structural_section(
         if body:
             scaffold = scaffold.rstrip() + "\n\n" + body.rstrip() + "\n"
     else:
-        event = public_alias_event or owner_transition_event or mixed_concealment_event or duplicate_heading_event
+        event = (
+            public_alias_event
+            or owner_transition_event
+            or mixed_concealment_event
+            or duplicate_heading_event
+            or visible_act_event
+        )
         if event is not None and public_alias_event is not None and event is not public_alias_event:
             event["canonicalized_public_burden_aliases"] = True
             event["public_alias_replacement_count"] = public_alias_event["replacement_count"]
@@ -4402,6 +5590,9 @@ def canonical_compiled_structural_section(
             event["demoted_duplicate_own_section_headings"] = duplicate_heading_event[
                 "demoted_duplicate_own_section_headings"
             ]
+        if event is not None and visible_act_event is not None and event is not visible_act_event:
+            event["canonicalized_visible_act_rows_from_stage04"] = True
+            event["visible_act_row_replacement_count"] = visible_act_event["replacement_count"]
         return text, event
     if not scaffold:
         return text, mixed_concealment_event or duplicate_heading_event
@@ -4428,18 +5619,206 @@ def canonical_compiled_structural_section(
     return scaffold, event
 
 
+def stage05_closed_terminal_state(value: Any) -> bool:
+    return str(value or "").strip() in {"landed", "cleared", "discharged-as-derivative"}
+
+
+def stage05_edge_endpoints(edge: Any) -> tuple[str, str, str]:
+    if not isinstance(edge, dict):
+        return "", "", ""
+    source = burden_endpoint_id(edge.get("from") or edge.get("source"))
+    target = burden_endpoint_id(edge.get("to") or edge.get("target"))
+    edge_type = str(edge.get("type") or "").strip()
+    return source, target, edge_type
+
+
+def stage05_entry_graph_target(
+    entry: dict[str, Any],
+    edge_targets_by_source: dict[str, str],
+) -> str:
+    source = b_id(entry.get("burden_id"))
+    if not source:
+        return ""
+    target = b_id(entry.get("next_burden"))
+    if target:
+        return target
+    graph_target = stage07_route_target_from_graph(entry.get("graph_delta"))
+    if graph_target:
+        return graph_target
+    graph_target = stage07_route_target_from_graph(entry.get("mrp_resultant"))
+    if graph_target:
+        return graph_target
+    return edge_targets_by_source.get(source, "")
+
+
+def normalize_stage05_initial_burden_continuations(
+    stage04: dict[str, Any] | None,
+    stage05: dict[str, Any] | None,
+) -> None:
+    """Map intermediate local STOP rows onto the existing held-burden RECURSE shape."""
+    if not isinstance(stage04, dict) or not isinstance(stage05, dict):
+        return
+    terminal_states = stage05.get("terminal_states")
+    entries = stage05.get("per_burden_reread")
+    if (
+        not isinstance(terminal_states, dict)
+        or not isinstance(entries, list)
+        or not all(isinstance(entry, dict) for entry in entries)
+    ):
+        return
+    burden_order = ordered_unique(list_field(stage04, "act_burdens") or list_field(stage04, "act_targets"))
+    burden_order = [burden for burden in burden_order if burden in terminal_states]
+    if len(burden_order) <= 1:
+        return
+    owner_routes = stage04_owner_routes_by_burden(stage04)
+    entry_by_burden = {
+        str(entry.get("burden_id") or ""): entry
+        for entry in entries
+        if isinstance(entry.get("burden_id"), str)
+    }
+    edges = stage05.get("dependency_graph_edges")
+    if not isinstance(edges, list):
+        return
+    edge_keys = {
+        (source, target, edge_type or "held_burden_activation")
+        for source, target, edge_type in (stage05_edge_endpoints(edge) for edge in edges)
+        if source and target
+    }
+    edge_targets_by_source = {
+        source: target
+        for source, target, edge_type in (stage05_edge_endpoints(edge) for edge in edges)
+        if source and target and (edge_type or "held_burden_activation") == "held_burden_activation"
+    }
+    matched_route_hydrations: list[dict[str, str]] = []
+    for entry in entries:
+        source = b_id(entry.get("burden_id"))
+        if not source or str(entry.get("route_result_type") or "") != "held_burden_activation":
+            continue
+        if str(entry.get("matched_route") or "").strip():
+            continue
+        target = stage05_entry_graph_target(entry, edge_targets_by_source)
+        route_tokens = owner_routes.get(target) or []
+        if not target or not route_tokens:
+            continue
+        entry["matched_route"] = matched_owner_route_line(route_tokens)
+        matched_route_hydrations.append(
+            {
+                "source_burden": source,
+                "next_burden": target,
+                "matched_route": entry["matched_route"],
+            }
+        )
+    rewrites: list[dict[str, str]] = []
+    for source, target in zip(burden_order, burden_order[1:]):
+        entry = entry_by_burden.get(source)
+        if entry is None:
+            continue
+        if not stage05_closed_terminal_state(terminal_states.get(source)):
+            continue
+        if (
+            str(entry.get("finding") or "") != "stable"
+            or str(entry.get("route_result_type") or "") != "no_new_resultant"
+            or str(entry.get("route") or "") != "STOP"
+            or str(entry.get("graph_delta") or "") != "none"
+            or str(entry.get("preemption_basis") or "") != "none"
+        ):
+            continue
+        public_source = public_burden_id(source)
+        public_target = public_burden_id(target)
+        rewrites.append(
+            {
+                "source_burden": source,
+                "next_burden": target,
+                "raw_route_result_type": "no_new_resultant",
+                "canonical_route_result_type": "held_burden_activation",
+            }
+        )
+        entry["reread"] = (
+            f"R(H,Δ): held routes rechecked: {public_target}; live remainder: "
+            f"{public_target} remains as the next already-routed initial burden; "
+            f"release/next: RECURSE to {public_target}."
+        )
+        entry["route_gradient"] = (
+            f"already-held {public_target} from the initial burden set remains live "
+            f"after R(H,Δ) from {public_source}."
+        )
+        entry["finding"] = "genuine-dependent"
+        entry["route_result_type"] = "held_burden_activation"
+        entry["mrp_resultant"] = f"genuine-dependent -> graph {source} -> {target}; RECURSE"
+        entry["graph_delta"] = f"{source} -> {target}"
+        entry["preemption_basis"] = "graph-bound"
+        entry["route"] = "RECURSE"
+        route_tokens = owner_routes.get(target) or []
+        if route_tokens:
+            entry["matched_route"] = matched_owner_route_line(route_tokens)
+        activations = entry.get("pressure_activations")
+        if isinstance(activations, dict):
+            activations["dependency-tug"] = (
+                f"pressure class: dependency-scan — {public_target} remains the next "
+                f"already-routed initial burden after {public_source}."
+            )
+            activations["entailment-pressure"] = (
+                f"M8 — route consequence points from {public_source} to {public_target} "
+                "without generating a new burden."
+            )
+        edge_key = (source, target, "held_burden_activation")
+        if edge_key not in edge_keys:
+            edges.append({"from": source, "to": target, "type": "held_burden_activation"})
+            edge_keys.add(edge_key)
+    if not rewrites:
+        if matched_route_hydrations:
+            normalization = normalization_object(stage05)
+            normalization["matched_route_hydrations"] = matched_route_hydrations
+            stage05["normalization"] = normalization
+        return
+    proof = stage05.get("no_new_resultant_proof")
+    if isinstance(proof, dict) and proof.get("proved") is True:
+        proof["basis"] = (
+            "No generated B_MRP burden was produced; intermediate original B_LA "
+            "continuations are recorded separately as held_burden_activation graph "
+            "edges until the final terminal burden."
+        )
+    normalization = normalization_object(stage05)
+    normalization["per_burden_intermediate_stop_continuations"] = rewrites
+    if matched_route_hydrations:
+        normalization["matched_route_hydrations"] = matched_route_hydrations
+    stage05["normalization"] = normalization
+    per_burden_errors = staged_output.per_burden_reread_entry_errors(
+        entries,
+        label="stage-05 per_burden_reread",
+        terminal_state_ids=set(str(key) for key in terminal_states),
+    )
+    if per_burden_errors:
+        raise HarnessError(
+            "stage-05 per_burden continuation normalization produced invalid records:\n- "
+            + "\n- ".join(per_burden_errors)
+        )
+
+
 def validate_incremental_handoffs(stages: list[dict[str, Any]]) -> None:
     stage02 = stage_by_id(stages, "stage-02-layer-a-diagnostic-ir")
     stage03 = stage_by_id(stages, "stage-03-routing-owner-gate")
     stage04 = stage_by_id(stages, "stage-04-burden-execution-act")
     stage05 = stage_by_id(stages, "stage-05-mrp-reread-terminal-state")
     stage06 = stage_by_id(stages, "stage-06-field-witness-nar")
+    if stage04 and stage05:
+        normalize_stage05_initial_burden_continuations(stage04, stage05)
     if stage02 and stage03:
         if set(list_field(stage02, "burden_floor")) != set(list_field(stage03, "route_targets")):
             raise HarnessError("stage-03 route_targets must match stage-02 burden_floor")
     if stage03 and stage04:
-        if set(list_field(stage03, "route_targets")) != set(list_field(stage04, "act_targets")):
-            raise HarnessError("stage-04 act_targets must match stage-03 route_targets")
+        route_targets = set(list_field(stage03, "route_targets"))
+        act_targets = set(list_field(stage04, "act_targets"))
+        held_targets = stage04_held_target_burdens(stage04)
+        extra_act_targets = sorted(act_targets - route_targets)
+        if extra_act_targets:
+            raise HarnessError(f"stage-04 act_targets not routed by stage-03: {extra_act_targets}")
+        missing_route_targets = sorted(route_targets - act_targets - held_targets)
+        if missing_route_targets:
+            raise HarnessError(
+                "stage-04 route_targets must be covered by act_targets or held_act_targets: "
+                f"{missing_route_targets}"
+            )
     if stage04 and stage06:
         if list_field(stage04, "act_body_refs") != list_field(stage06, "field_witness_body_refs"):
             raise HarnessError("stage-06 field_witness_body_refs must match stage-04 act_body_refs")
@@ -4457,6 +5836,7 @@ def validate_incremental_handoffs(stages: list[dict[str, Any]]) -> None:
             missing = sorted(set(terminal_states) - set(list_field(stage06, "nar_burdens")))
             if missing:
                 raise HarnessError(f"stage-06 nar_burdens missing terminal-state burden(s): {missing}")
+        validate_stage06_nar_route_types_against_stage05(stage05, stage06)
     if stage05 and stage05.get("terminal_states") in ({}, None):
         raise HarnessError("stage-05 terminal_states must be non-empty")
     if stage04 and stage05:
@@ -4686,6 +6066,9 @@ def stage_prompt(
 
 You are executing one bounded repo/dev staged current-skill smoke for daee-epistemics.
 Use the generated runtime surface at `skill/SKILL.md` as the governing skill source.
+The harness supplies the runtime hash, stage contract, raw input, and prior validated stage state;
+do not attempt filesystem reads, shell commands, or path access, and do not return `status=fail`
+solely because `skill/SKILL.md` is unavailable as a readable file inside the model context.
 This is stage only: {stage_id} — {spec['title']}.
 
 Hard boundaries:
@@ -4738,6 +6121,26 @@ If this stage cannot be honestly completed, return the same JSON shape with
 """
 
 
+def stage07_single_output_mrp_surface_contract(previous_stages: list[dict[str, Any]]) -> str:
+    stage05 = stage_by_id(previous_stages, "stage-05-mrp-reread-terminal-state")
+    entries = stage05_per_burden_entries(stage05)
+    parts: list[str] = [
+        "Per-burden MRP record-surface contract (parity-validated):",
+        "- After each line-start superscript landing gate `Land(ⁿB):`, print exactly one `[Mid-Reread Pressure]` block rendered VERBATIM from the matching stage-05 `per_burden_reread` record below.",
+        "- Do not invent, merge, or rephrase pressure-activation slots; print all six slot values exactly as recorded.",
+        "- Do not summarize the per-burden rereads into one terminal closure block.",
+        "- Do not change controlled values: `Finding`, `MRP route result type`, `Route`, `Pre-emption basis`, `Graph delta`.",
+        "- If you cannot render a block faithfully from its record, stop and return a held/failed status rather than fabricating block content.",
+        "- A record-surface parity validator compares every visible block field to the stage-05 record; any divergence fails Stage 07 release validation.",
+    ]
+    for entry in entries:
+        public = public_burden_id(str(entry.get("burden_id") or ""))
+        parts.append("")
+        parts.append(f"Block for Land({public}): print exactly:")
+        parts.append(staged_output.render_mrp_block(entry))
+    return "\n".join(parts)
+
+
 def release_prompt(
     *,
     root: Path,
@@ -4750,10 +6153,14 @@ def release_prompt(
 ) -> str:
     previous = json.dumps(compact_state(previous_stages), ensure_ascii=False, indent=2)
     field_witness_contract = stage07_field_witness_contract_guidance(previous_stages)
+    mrp_surface_contract = stage07_single_output_mrp_surface_contract(previous_stages)
     return f"""Runtime SHA256: {skill_hash}
 
 You are executing stage-07-release-output for one bounded staged current-skill smoke.
 Use the generated runtime surface at `skill/SKILL.md` as the governing skill source.
+The harness supplies the runtime hash, release contract, raw input, and prior validated stage state;
+do not attempt filesystem reads, shell commands, or path access, and do not fail solely because
+`skill/SKILL.md` is unavailable as a readable file inside the model context.
 
 Public interface boundary:
 - Preserve `/daee-epistemics` governed output shape.
@@ -4781,7 +6188,9 @@ Required public output surface:
 - Preserve the normal visible noetic-field opening/header.
 - Include the compact Layer A / Diagnostic IR opening header.
 - Include Layer B / ACT rows consistent with the validated Stage 04 state.
-- Include MRP/reread/terminal-state surface consistent with Stage 05.
+- Include MRP/reread/terminal-state surface consistent with Stage 05: one line-start
+  superscript `Land(ⁿB):` landing gate per terminal burden, each followed by its
+  record-rendered `[Mid-Reread Pressure]` block per the contract below.
 - Include parser-stable field_witness/NAR evidence consistent with Stage 06.
 - Include visible Closure/Reconstruction Witness diagnostics for `∇·B` and
   `∇×κ`, and include matching machine values in
@@ -4794,15 +6203,17 @@ Required public output surface:
 - Include Restorative Response.
 - Include Closing Formulation.
 
+{mrp_surface_contract}
+
 Stage07 checker-owned field_witness/NAR clone-state contract:
 {field_witness_contract}
 
 Do not include JSON-only stage scratch as the public answer.
 Do not include commentary about this harness.
 Do not build or claim verifier sidecars, collapse certificates, Grapher output,
-B.5 projection sidecars, retained promotion, package/provenance, guaranteed
-uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or
-ActiveGraph proof.
+B.5 projection sidecars, retained promotion, package operations or provenance
+claims, guaranteed uptake, broad model behavior, broad A/B/C/D closure,
+Graphify proof, or ActiveGraph proof.
 """
 
 
@@ -5053,7 +6464,7 @@ def release_section_prompt(
             "`Held/scoped/reopenable remainder: ...`. "
             "The remainder line must name any generated or unresolved B_MRP pressure that remains held/scoped/reopenable. "
             "Do not include Closing Formulation here. "
-            "Do not claim guaranteed uptake, package/provenance, sidecar proof, retained promotion, "
+            "Do not claim guaranteed uptake, package operations or provenance claims, sidecar proof, retained promotion, "
             "broad model behavior, or broad A/B/C/D closure."
         ),
         "closing_formulation": (
@@ -5063,7 +6474,7 @@ def release_section_prompt(
             "It must include explicit high-mass slots for "
             "Established failure, Restored criterion/orientation, and Scoped boundary or Reopen boundary. "
             "Use these exact subsection labels: `### Established failure`, `### Restored criterion/orientation`, and either `### Scoped boundary` or `### Reopen boundary`. "
-            "Do not claim guaranteed uptake, package/provenance, sidecar proof, retained promotion, "
+            "Do not claim guaranteed uptake, package operations or provenance claims, sidecar proof, retained promotion, "
             "broad model behavior, or broad A/B/C/D closure."
         ),
     }
@@ -5124,9 +6535,9 @@ Public interface boundary:
 - Do not include private planning, self-talk, scratch analysis, "final answer only"
   reminders, checklist prose, or notes about what you need to write.
 - Do not build or claim verifier sidecars, collapse certificates, Grapher output,
-  B.5 projection sidecars, retained promotion, package/provenance, guaranteed
-  uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or
-  ActiveGraph proof.
+  B.5 projection sidecars, retained promotion, package operations or provenance
+  claims, guaranteed uptake, broad model behavior, broad A/B/C/D closure,
+  Graphify proof, or ActiveGraph proof.
 - ACT fence syntax is global across the assembled public output: outside
   `layer_b_act` sections, do not emit any line beginning with `⟦ACT`. Inside
   `layer_b_act`, every visible `⟦ACT ...⟧` row must be copied exactly from the
@@ -5195,7 +6606,9 @@ def release_section_expansion_prompt(
         ),
         "mrp_reread_terminal": (
             "Expand MRP reread, terminal-state, graph-delta, and field-diagnostic detail without "
-            "changing the route result."
+            "changing the route result. This section is ledger-only: never print a "
+            "`[Mid-Reread Pressure]` heading or block; the harness injects the canonical "
+            "per-burden blocks after each `Land(ⁿB):` landing gate from the Stage 05 records."
         ),
         "restorative_response": (
             "Preserve the exact Restorative Response heading and keep the parser-stable lines "
@@ -5231,7 +6644,7 @@ Expansion contract:
 - Do not repeat the whole section.
 - Do not contradict or replace existing text.
 - Do not include JSON or code fences unless the section role itself requires JSON and the added text is valid for that role.
-- Do not claim verifier sidecars, retained promotion, package/provenance, guaranteed uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or ActiveGraph proof.
+- Do not claim verifier sidecars, retained promotion, package operations or provenance claims, guaranteed uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or ActiveGraph proof.
 - Do not mention this harness, expansion loop, byte budget, manifest, or compiler.
 - Do not include private planning, self-talk, scratch analysis, "final answer only"
   reminders, checklist prose, or notes about what you need to write.
@@ -5254,6 +6667,7 @@ def write_compiled_release_manifest(
     raw_input_path: Path,
     section_entries: list[dict[str, str]],
     output_path: Path,
+    per_burden_reread: list[dict[str, Any]],
     target_output_kb: int = 0,
     act_partition: dict[str, Any] | None = None,
     section_budgets: dict[str, Any] | None = None,
@@ -5275,6 +6689,7 @@ def write_compiled_release_manifest(
             for entry in section_entries
         ],
         "output": {"path": rel(output_path, manifest_dir), "target_output_kb": int(target_output_kb or 0)},
+        "per_burden_reread": per_burden_reread,
         "non_claims": {
             "not_release_provenance": True,
             "not_model_behavior_by_itself": True,
@@ -5358,18 +6773,55 @@ def run_compiled_release_self_test(
 ) -> None:
     compiled_dir = run_dir / "compiled-release-self-test"
     source_text = replay_output_path.read_text(encoding="utf-8", errors="replace")
+    stage05_replay = stage_by_id(replay["stages"], "stage-05-mrp-reread-terminal-state")
+    per_burden_entries = stage05_per_burden_entries(stage05_replay)
+    mrp_ledger_section = stage07_mrp_reread_section_scaffold(replay["stages"])
+    if not mrp_ledger_section.strip():
+        raise HarnessError("Compiled-mode self-test could not derive the ledger-only MRP terminal section")
+    section_specs = [
+        (section_id, role, mrp_ledger_section if role == "mrp_reread_terminal" else text)
+        for section_id, role, text in split_text_for_compiled_self_test(source_text)
+    ]
     manifest_path = staged_output.manifest_for_sections(
         compiled_dir,
         case_id="self-test-a9-science-source-stage07-compiled",
         source_input=rel(replay_output_path, root),
-        section_specs=split_text_for_compiled_self_test(source_text),
+        section_specs=section_specs,
+        per_burden_reread=per_burden_entries,
     )
     assembly_record = assemble_compiled_manifest(manifest_path, root=root)
     compiled_output_path = root / assembly_record["output"]["path"]
-    compiled_validation = run_release_validators(root, compiled_output_path)
+    compiled_validation = run_release_validators(root, compiled_output_path, per_burden_entries)
     compiled_diagnostics = build_release_field_diagnostics(compiled_output_path)
     if compiled_diagnostics.get("matches") is not True:
         raise HarnessError("Compiled-mode self-test output did not produce matching release_field_diagnostics")
+    if compiled_validation.get("mrp_record_surface_parity") != "pass":
+        raise HarnessError("Compiled-mode self-test did not execute the MRP record-surface parity validator")
+
+    # R1 false-pass canary at the released-output level: tamper one controlled visible
+    # value so the block stays shape-valid for check_mid_reread_pressure but no longer
+    # mirrors the stage-05 record. Every pre-parity validator must still pass; only the
+    # record-surface parity tooth may catch the divergence.
+    compiled_text = compiled_output_path.read_text(encoding="utf-8", errors="replace")
+    tampered_text = compiled_text.replace("Finding: stable", "Finding: reorientation", 1)
+    if tampered_text == compiled_text:
+        raise HarnessError("Compiled-mode self-test parity canary could not stage the surface drift")
+    tampered_path = compiled_dir / "parity-canary-tampered-output.md"
+    write_text(tampered_path, tampered_text)
+    require_command_success(
+        [sys.executable, str(root / "tools" / "check_mid_reread_pressure.py"), "--outputs", str(tampered_path)],
+        cwd=root,
+    )
+    try:
+        run_release_validators(root, tampered_path, per_burden_entries)
+    except HarnessError as exc:
+        if "record-surface parity" not in str(exc):
+            raise
+    else:
+        raise HarnessError(
+            "Compiled-mode self-test accepted a shape-valid visible MRP block that diverges "
+            "from the stage-05 per_burden_reread record"
+        )
 
     stage07_local_record = base_record(
         "self-test-a9-science-source-stage07-compiled",
@@ -6031,6 +7483,148 @@ def run_self_test(root: Path) -> int:
     ):
         if invariant not in prompt_a:
             raise HarnessError(f"Self-test Stage 01 custody prompt missing invariant {invariant!r}")
+    stage02_prompt = stage_prompt(
+        root=root,
+        stage_id="stage-02-layer-a-diagnostic-ir",
+        case_name="self-test-a9-science-source",
+        raw_input_path=DEFAULT_INPUT,
+        input_text="/daee-epistemics refute secularism",
+        input_digest="0" * 64,
+        skill_hash="1" * 64,
+        previous_stages=[
+            {
+                "id": "stage-01-intake",
+                "status": "pass",
+                "input_digest": "0" * 64,
+            }
+        ],
+    )
+    for invariant in (
+        "do not attempt filesystem reads",
+        "do not return `status=fail`",
+        "`skill/SKILL.md` is unavailable as a readable path",
+        "`skill/SKILL.md` is unavailable as a readable file",
+    ):
+        if invariant not in stage02_prompt:
+            raise HarnessError(f"Self-test Stage 02 prompt missing no-filesystem-read invariant {invariant!r}")
+    detail_backed_stage03 = {
+        "id": "stage-03-routing-owner-gate",
+        "status": "pass",
+        "route_targets": ["B1", "B2", "B3", "B4", "B5", "B6"],
+        "owner_routes": [
+            {"burden_id": "B1", "owner_id": "definition-anchor", "operation": "definition-anchor"},
+            {"burden_id": "B2", "owner_id": "scope-boundary", "operation": "scope-boundary"},
+            {"burden_id": "B3", "owner_id": "authority-order-repair", "operation": "authority-order-repair"},
+            {"burden_id": "B4", "owner_id": "self-grounding-test", "operation": "self-grounding-test"},
+            {"burden_id": "B5", "owner_id": "dependency-trace", "operation": "dependency-trace"},
+            {"burden_id": "B6", "owner_id": "consequence-trace", "operation": "consequence-trace"},
+        ],
+        "owner_route_details": [
+            {
+                "burden_id": "B1",
+                "owner_id": "definition-anchor",
+                "owner_family": "M7",
+                "operation": "definition-anchor",
+                "delta_result_floor": "definition-anchored",
+            },
+            {
+                "burden_id": "B2",
+                "owner_id": "scope-boundary",
+                "owner_family": "P7",
+                "operation": "scope-boundary",
+                "delta_result_floor": "scope-bounded",
+            },
+            {
+                "burden_id": "B3",
+                "owner_id": "authority-order-repair",
+                "owner_family": "SOURCE",
+                "operation": "authority-order-repair",
+                "delta_result_floor": "authority-order-repaired",
+            },
+            {
+                "burden_id": "B4",
+                "owner_id": "self-grounding-test",
+                "owner_family": "M1",
+                "operation": "self-grounding-test",
+                "delta_result_floor": "self-authorizing-standard-invalidated",
+            },
+            {
+                "burden_id": "B5",
+                "owner_id": "dependency-trace",
+                "owner_family": "M8",
+                "operation": "dependency-trace",
+                "delta_result_floor": "dependency-exposed",
+            },
+            {
+                "burden_id": "B6",
+                "owner_id": "consequence-trace",
+                "owner_family": "M8",
+                "operation": "consequence-trace",
+                "delta_result_floor": "consequence-traced",
+            },
+        ],
+    }
+    normalize_stage03_owner_routes(detail_backed_stage03)
+    detail_backed_owners = [
+        row.get("owner_id") for row in detail_backed_stage03.get("owner_routes", [])
+    ]
+    if detail_backed_owners != ["M7", "P7", "authority-order-repair", "M1", "M8", "M8"]:
+        raise HarnessError(
+            "Self-test Stage03 detail-backed operation-token owner rows did not canonicalize "
+            f"to callable owner ids: {detail_backed_owners!r}"
+        )
+    p7_detail_backed_route = detail_backed_stage03["owner_routes"][1]
+    if p7_detail_backed_route.get("delta_result_floor") == "scope-bounded":
+        raise HarnessError("Self-test Stage03 preserved invalid detail-only P7 delta_result_floor")
+    m8_dependency_route = detail_backed_stage03["owner_routes"][4]
+    if m8_dependency_route.get("delta_result_floor") != "dependency-exposed":
+        raise HarnessError("Self-test Stage03 failed to preserve valid M8 dependency delta_result_floor")
+    route_target_detail_backed_stage03 = {
+        "id": "stage-03-routing-owner-gate",
+        "status": "pass",
+        "route_targets": ["B1", "B2"],
+        "owner_routes": [
+            {
+                "burden_id": "B1",
+                "owner_id": "scope-boundary",
+                "operation": "scope-boundary",
+                "delta_result": "scope-bounded",
+            },
+            {
+                "burden_id": "B2",
+                "owner_id": "sense-split",
+                "operation": "sense-split",
+                "delta_result": "sense-split",
+            },
+        ],
+        "route_target_details": [
+            {
+                "burden_id": "B1",
+                "eligible_owner_family": "P7",
+                "owner_id": "scope-boundary",
+                "operation": "scope-boundary",
+                "activation_basis": "The burden asks for a boundary on the protection claim.",
+            },
+            {
+                "burden_id": "B2",
+                "eligible_owner_family": "SOURCE/M9",
+                "owner_id": "source-status-repair + sense-split",
+                "operation": "source-order-repair + sense-split",
+                "activation_basis": "Source lineage routes to source-status-repair while lexical equivocation routes to M9 sense-split.",
+            },
+        ],
+    }
+    normalize_stage03_owner_routes(route_target_detail_backed_stage03)
+    route_target_detail_route = route_target_detail_backed_stage03["owner_routes"][0]
+    if route_target_detail_route.get("owner_id") != "P7":
+        raise HarnessError("Self-test Stage03 route-target-detail family hint did not canonicalize scope-boundary to P7")
+    if route_target_detail_route.get("delta_result") == "scope-bounded":
+        raise HarnessError("Self-test Stage03 route-target-detail rescue preserved invalid operation-token delta_result")
+    route_target_detail_sense_route = route_target_detail_backed_stage03["owner_routes"][1]
+    if route_target_detail_sense_route.get("owner_id") != "M9":
+        raise HarnessError("Self-test Stage03 compound route-target-detail family hint did not canonicalize sense-split to M9")
+    if route_target_detail_sense_route.get("delta_result") == "sense-split":
+        raise HarnessError("Self-test Stage03 compound route-target-detail rescue preserved invalid operation-token delta_result")
     run_dir = root / ".daee" / "validation" / f"staged-current-skill-harness-self-test-{uuid.uuid4().hex}"
     stages_dir = run_dir / "stages"
     stages_dir.mkdir(parents=True, exist_ok=True)
@@ -6409,6 +8003,7 @@ def run_self_test(root: Path) -> int:
             }
         ],
         output_path=manifest_fixture / "output.md",
+        per_burden_reread=[staged_output.self_test_per_burden_entry("B1")],
         transport_resume={
             "schema": TRANSPORT_RESUME_SCHEMA,
             "resumed": True,
@@ -6737,6 +8332,116 @@ def run_self_test(root: Path) -> int:
     id_alias_registers = stage02_burden_register_types(id_alias_stage02, id_alias_stage02["burden_floor"])
     if id_alias_registers.get("B3") != ["kappa"]:
         raise HarnessError("Self-test Stage 02 id alias lost B3 kappa register typing")
+    worldview_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "selected-route-worldview-register-coverage-self-test",
+            "live_registers": ["ontology", "authority"],
+            "burden_floor": ["B1", "B2"],
+            "burden_floor_details": [
+                {
+                    "id": "B1",
+                    "canonical_role": "define_target_claim",
+                    "diagnostic_note": "Secularism must be specified as a worldview or governing public reason claim before refutation can proceed.",
+                },
+                {
+                    "id": "B2",
+                    "canonical_role": "identify_authority_and_warrant",
+                    "diagnostic_note": "The live pressure concerns what source licenses authority when revelation is excluded or privatized.",
+                },
+            ],
+        },
+    )
+    worldview_coverage = stage02_register_coverage(worldview_stage02, worldview_stage02["burden_floor"])
+    if worldview_coverage.get("Omega") != ["B1"]:
+        raise HarnessError("Self-test Stage 02 worldview detail lost Omega diagnostic coverage for B1")
+    if "mu" in worldview_coverage:
+        raise HarnessError("Self-test Stage 02 worldview detail treated the word 'must' as mu coverage")
+    worldview_registers = stage02_public_live_registers(worldview_stage02, worldview_stage02["burden_floor"])
+    if worldview_registers != ["Omega", "xi"]:
+        raise HarnessError("Self-test Stage 02 worldview live registers did not normalize to Omega/xi")
+    partial_register_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "selected-route-partial-register-coverage-self-test",
+            "live_registers": ["definition", "epistemology", "metaphysics"],
+            "burden_floor": ["B1", "B2", "B3"],
+            "burden_floor_details": [
+                {"id": "B1", "label": "definition_and_scope"},
+                {
+                    "id": "B2",
+                    "label": "epistemic_authority",
+                    "diagnostic_role": "Test whether the governing knowledge standard has authority.",
+                },
+                {"id": "B3", "label": "normative_grounding"},
+            ],
+        },
+    )
+    partial_register_coverage = stage02_register_coverage(
+        partial_register_stage02,
+        partial_register_stage02["burden_floor"],
+    )
+    if partial_register_coverage.get("Omega") != ["B3"]:
+        raise HarnessError("Self-test Stage 02 partial detail coverage lost live-register Omega fallback for B3")
+    partial_register_types = stage02_burden_register_types(
+        partial_register_stage02,
+        partial_register_stage02["burden_floor"],
+    )
+    if partial_register_types.get("B3") != ["Omega"]:
+        raise HarnessError("Self-test Stage 02 partial detail coverage lost B3 Omega register typing")
+    secularism_worldview_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "N_fitrah_aql_sarih",
+            "live_registers": [
+                "diagnostic",
+                "theological",
+                "philosophical",
+                "worldview",
+                "public-reason",
+            ],
+            "burden_floor": ["B1", "B2", "B3"],
+            "burden_floor_details": [
+                {
+                    "id": "B1",
+                    "label": "definition_and_scope_floor",
+                    "reason": "The command asks to refute secularism, so the first live burden is to identify the operative meaning before refutation.",
+                },
+                {
+                    "id": "B2",
+                    "label": "authority_and_public_reason_floor",
+                    "reason": "The live dispute concerns whether final authority is confined to immanent human ordering.",
+                },
+                {
+                    "id": "B3",
+                    "label": "coherence_and_grounds_floor",
+                    "reason": "A refutation must test whether secularism can ground normativity without borrowing from the excluded transcendent frame.",
+                },
+            ],
+            "diagnostic_ir": {
+                "surface_topic": "secularism",
+                "selected_route_pressure": "worldview_refutation",
+            },
+        },
+    )
+    secularism_worldview_coverage = stage02_register_coverage(
+        secularism_worldview_stage02,
+        secularism_worldview_stage02["burden_floor"],
+    )
+    if secularism_worldview_coverage.get("Omega") != ["B1"]:
+        raise HarnessError("Self-test Stage 02 secularism worldview fallback lost Omega coverage for B1")
+    secularism_worldview_register_types = stage02_burden_register_types(
+        secularism_worldview_stage02,
+        secularism_worldview_stage02["burden_floor"],
+    )
+    if secularism_worldview_register_types.get("B1") != ["Omega"]:
+        raise HarnessError("Self-test Stage 02 secularism worldview fallback lost B1 Omega register typing")
     registers_alias_stage02 = normalized_stage(
         "stage-02-layer-a-diagnostic-ir",
         {
@@ -6881,6 +8586,29 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize rich Stage 03 owner_routes into owner identities")
     if not isinstance(normalized_owner_routes.get("owner_route_details"), list):
         raise HarnessError("Self-test failed to preserve rich Stage 03 owner-route details")
+    normalized_alias_owner_routes = normalized_stage(
+        "stage-03-routing-owner-gate",
+        {
+            "id": "stage-03-routing-owner-gate",
+            "status": "pass",
+            "route_targets": ["B1"],
+            "owner_routes": [
+                {
+                    "burden_id": "B1",
+                    "owner_id": "PROOF_METHOD",
+                    "operation": "proof-family-and-carrier-audit",
+                }
+            ],
+        },
+    )
+    alias_route = normalized_alias_owner_routes.get("owner_routes", [{}])[0]
+    if alias_route.get("owner_id") != "proof-method-audit":
+        raise HarnessError("Self-test failed to canonicalize PROOF_METHOD Stage 03 owner route")
+    if alias_route.get("classification_family") != "PROOF_METHOD":
+        raise HarnessError("Self-test failed to preserve PROOF_METHOD as route classification metadata")
+    alias_events = (normalized_alias_owner_routes.get("normalization") or {}).get("owner_route_family_aliases")
+    if not isinstance(alias_events, list) or not alias_events:
+        raise HarnessError("Self-test failed to record PROOF_METHOD owner-route alias normalization")
     try:
         normalized_stage(
             "stage-03-routing-owner-gate",
@@ -6920,6 +8648,35 @@ def run_self_test(root: Path) -> int:
         }
     ]:
         raise HarnessError("Self-test failed to accept controlled M9 Stage 03 operation")
+    normalized_m9_result_operation_route = normalized_stage(
+        "stage-03-routing-owner-gate",
+        {
+            "id": "stage-03-routing-owner-gate",
+            "status": "pass",
+            "route_targets": ["B3"],
+            "owner_routes": [
+                {
+                    "burden_id": "B3",
+                    "owner_id": "M9",
+                    "operation": "referent-separated",
+                    "owner_operation": "referent-separated",
+                    "pressure": "proof-text-referent-and-predicate-function",
+                    "delta_result": "referent-separated",
+                }
+            ],
+        },
+    )
+    normalized_m9_result_operation_row = normalized_m9_result_operation_route["owner_routes"][0]
+    if (
+        normalized_m9_result_operation_row.get("operation") != "predication-repair"
+        or normalized_m9_result_operation_row.get("owner_operation") != "predication-repair"
+    ):
+        raise HarnessError("Self-test failed to normalize M9 result token in operation slot")
+    result_operation_events = (
+        normalized_m9_result_operation_route.get("normalization") or {}
+    ).get("owner_route_operation_result_tokens")
+    if not isinstance(result_operation_events, list) or not result_operation_events:
+        raise HarnessError("Self-test failed to record M9 result-token operation normalization")
     try:
         normalized_stage(
             "stage-03-routing-owner-gate",
@@ -6968,6 +8725,53 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted prefixed owner alias as a Stage 03 operation token")
+
+    normalized_p7_family_hint_route = normalized_stage(
+        "stage-03-routing-owner-gate",
+        {
+            "id": "stage-03-routing-owner-gate",
+            "status": "pass",
+            "route_targets": ["B1"],
+            "owner_routes": [
+                {
+                    "burden_id": "B1",
+                    "owner_id": "scope-boundary",
+                    "owner_family": "P7",
+                    "operation": "scope-boundary",
+                    "owner_operation": "scope-boundary",
+                    "route_status": "executable",
+                }
+            ],
+        },
+    )
+    p7_hint_route = normalized_p7_family_hint_route.get("owner_routes", [{}])[0]
+    if p7_hint_route.get("owner_id") != "P7":
+        raise HarnessError("Self-test failed to canonicalize P7 operation token owner_id from owner_family")
+    p7_hint_events = (normalized_p7_family_hint_route.get("normalization") or {}).get("owner_route_family_hints")
+    if not isinstance(p7_hint_events, list) or not p7_hint_events:
+        raise HarnessError("Self-test failed to record P7 owner-family hint normalization")
+    try:
+        normalized_stage(
+            "stage-03-routing-owner-gate",
+            {
+                "id": "stage-03-routing-owner-gate",
+                "status": "pass",
+                "route_targets": ["B1"],
+                "owner_routes": [
+                    {
+                        "burden_id": "B1",
+                        "owner_id": "scope-boundary",
+                        "operation": "scope-boundary",
+                        "route_status": "executable",
+                    }
+                ],
+            },
+        )
+    except HarnessError as exc:
+        if "executable owner route 'scope-boundary' has no controlled owner family" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted operation token as owner_id without owner_family evidence")
 
     normalized_m8_dependency_route = normalized_stage(
         "stage-03-routing-owner-gate",
@@ -7150,6 +8954,12 @@ def run_self_test(root: Path) -> int:
                 "status": "pass",
                 "terminal_states": {"B1": "landed", "B2": "landed", "B3": "landed", "B4": "landed"},
                 "reread_state": {"source_burden": "B4", "route_result_type": "no_new_resultant", "route": "STOP"},
+                "per_burden_reread": [
+                    self_test_reread_entry("B1"),
+                    self_test_reread_entry("B2"),
+                    self_test_reread_entry("B3"),
+                    self_test_reread_entry("B4"),
+                ],
             },
             {
                 "id": "stage-06-field-witness-nar",
@@ -7200,6 +9010,285 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to derive Stage 04 act_body_refs from canonical ACT rows")
     if not isinstance(normalized_stage04.get("act_row_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 04 act_row_details")
+    alias_operation_rows = [
+        "⟦ACT ¹B₁[M8.trace] :: π=time-sequence-pressure :: body_ref=¹B₁ :: Δ=Δ¹B:consequence-traced :: Land(¹B)+⟧",
+        "⟦ACT ¹B₂[P7.boundary] :: π=completion-boundary-pressure :: body_ref=¹B₂ :: Δ=Δ¹B:scope-boundary-named :: Land(¹B)+⟧",
+    ]
+    alias_operation_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁", "¹B₂"],
+            "act_rows": alias_operation_rows,
+            "act_row_details": self_test_act_row_details(
+                alias_operation_rows,
+                {"¹B₁": "κ", "¹B₂": "σ"},
+            ),
+        },
+    )
+    if "[M8.consequence-trace]" not in alias_operation_stage04["act_rows"][0]:
+        raise HarnessError("Self-test failed to canonicalize Stage 04 M8.trace alias")
+    if "[P7.scope-boundary]" not in alias_operation_stage04["act_rows"][1]:
+        raise HarnessError("Self-test failed to canonicalize Stage 04 P7.boundary alias")
+    if alias_operation_stage04["act_row_details"][0].get("operation") != "consequence-trace":
+        raise HarnessError("Self-test failed to canonicalize Stage 04 M8 trace detail")
+    if alias_operation_stage04["act_row_details"][1].get("operation") != "scope-boundary":
+        raise HarnessError("Self-test failed to canonicalize Stage 04 P7 boundary detail")
+    do_second_loop_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1", "B2", "B3", "B4"],
+            "act_burdens": ["B1", "B2", "B3", "B4"],
+            "act_body_refs": ["¹B₁", "²B₁", "³B₁", "⁴B₁"],
+            "act_rows": [
+                (
+                    "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+                    "π=punishment-proportionality-pressure :: body_ref=¹B₁ :: "
+                    "Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+                ),
+                (
+                    "⟦ACT ²B₁[do-second-loop.coercive-guidance-demand] :: "
+                    "π=coercive-guidance-demand :: body_ref=²B₁ :: "
+                    "Δ=Δ²B:coercive-guidance-demand-bounded :: Land(²B)+⟧"
+                ),
+                (
+                    "⟦ACT ³B₁[do-second-loop.fitrah-ayat-baseline] :: "
+                    "π=fitrah-ayat-baseline :: body_ref=³B₁ :: "
+                    "Δ=Δ³B:fitrah-ayat-baseline-established :: Land(³B)+⟧"
+                ),
+                (
+                    "⟦ACT ⁴B₁[do-second-loop.accountability-hujjah-compression] :: "
+                    "π=accountability-hujjah-compression :: body_ref=⁴B₁ :: "
+                    "Δ=Δ⁴B:accountability-hujjah-narrowed :: Land(⁴B)+⟧"
+                ),
+            ],
+            "act_row_details": [
+                {
+                    "act_row": (
+                        "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+                        "π=punishment-proportionality-pressure :: body_ref=¹B₁ :: "
+                        "Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+                    ),
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "do-second-loop",
+                    "operation": "punishment-proportionality-accountability",
+                    "register_axis": "m",
+                    "delta_result": "punishment-proportionality-calibrated",
+                },
+                {
+                    "act_row": (
+                        "⟦ACT ²B₁[do-second-loop.coercive-guidance-demand] :: "
+                        "π=coercive-guidance-demand :: body_ref=²B₁ :: "
+                        "Δ=Δ²B:coercive-guidance-demand-bounded :: Land(²B)+⟧"
+                    ),
+                    "body_ref": "²B₁",
+                    "burden_id": "B2",
+                    "owner_id": "do-second-loop",
+                    "operation": "coercive-guidance-demand",
+                    "register_axis": "τ",
+                    "delta_result": "coercive-guidance-demand-bounded",
+                },
+                {
+                    "act_row": (
+                        "⟦ACT ³B₁[do-second-loop.fitrah-ayat-baseline] :: "
+                        "π=fitrah-ayat-baseline :: body_ref=³B₁ :: "
+                        "Δ=Δ³B:fitrah-ayat-baseline-established :: Land(³B)+⟧"
+                    ),
+                    "body_ref": "³B₁",
+                    "burden_id": "B3",
+                    "owner_id": "do-second-loop",
+                    "operation": "fitrah-ayat-baseline",
+                    "register_axis": "N",
+                    "delta_result": "fitrah-ayat-baseline-established",
+                },
+                {
+                    "act_row": (
+                        "⟦ACT ⁴B₁[do-second-loop.accountability-hujjah-compression] :: "
+                        "π=accountability-hujjah-compression :: body_ref=⁴B₁ :: "
+                        "Δ=Δ⁴B:accountability-hujjah-narrowed :: Land(⁴B)+⟧"
+                    ),
+                    "body_ref": "⁴B₁",
+                    "burden_id": "B4",
+                    "owner_id": "do-second-loop",
+                    "operation": "accountability-hujjah-compression",
+                    "register_axis": "H",
+                    "delta_result": "accountability-hujjah-narrowed",
+                },
+            ],
+        },
+    )
+    if do_second_loop_axis_stage04["act_row_details"][0].get("register_axis") != "♥":
+        raise HarnessError("Self-test failed to canonicalize do-second-loop punishment register_axis fallback")
+    if do_second_loop_axis_stage04["act_row_details"][1].get("register_axis") != "κ":
+        raise HarnessError("Self-test failed to canonicalize do-second-loop guidance register_axis fallback")
+    if do_second_loop_axis_stage04["act_row_details"][2].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to canonicalize do-second-loop fitrah/ayat register_axis fallback")
+    if do_second_loop_axis_stage04["act_row_details"][3].get("register_axis") != "κ":
+        raise HarnessError("Self-test failed to canonicalize do-second-loop hujjah/accountability register_axis fallback")
+    do_second_loop_punishment_h_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [
+                (
+                    "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+                    "π=punishment-accountability-pressure :: body_ref=¹B₁ :: "
+                    "Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+                ),
+            ],
+            "act_row_details": [
+                {
+                    "act_row": (
+                        "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+                        "π=punishment-accountability-pressure :: body_ref=¹B₁ :: "
+                        "Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+                    ),
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "do-second-loop",
+                    "operation": "punishment-proportionality-accountability",
+                    "register_axis": "H",
+                    "delta_result": "punishment-proportionality-calibrated",
+                },
+            ],
+        },
+    )
+    if do_second_loop_punishment_h_axis_stage04["act_row_details"][0].get("register_axis") != "♥":
+        raise HarnessError(
+            "Self-test failed to canonicalize do-second-loop punishment H register_axis fallback"
+        )
+    proof_method_m_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [
+                (
+                    "⟦ACT ¹B₁[proof-method-audit.proof-family-and-carrier-audit] :: "
+                    "π=analogy-carrier-proof-method-status :: body_ref=¹B₁ :: "
+                    "Δ=Δ¹B:proof-family-carrier-typed :: Land(¹B)+⟧"
+                )
+            ],
+            "act_row_details": [
+                {
+                    "act_row": (
+                        "⟦ACT ¹B₁[proof-method-audit.proof-family-and-carrier-audit] :: "
+                        "π=analogy-carrier-proof-method-status :: body_ref=¹B₁ :: "
+                        "Δ=Δ¹B:proof-family-carrier-typed :: Land(¹B)+⟧"
+                    ),
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "proof-method-audit",
+                    "operation": "proof-family-and-carrier-audit",
+                    "register_axis": "m",
+                    "delta_result": "proof-family-carrier-typed",
+                }
+            ],
+        },
+    )
+    if proof_method_m_axis_stage04["act_row_details"][0].get("register_axis") != "μ":
+        raise HarnessError("Self-test failed to canonicalize proof-method carrier m register_axis fallback")
+    do_second_loop_tau_punishment_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [
+                (
+                    "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+                    "π=punishment-proportionality :: body_ref=¹B₁ :: "
+                    "Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+                )
+            ],
+            "act_row_details": [
+                {
+                    "act_row": (
+                        "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+                        "π=punishment-proportionality :: body_ref=¹B₁ :: "
+                        "Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+                    ),
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "do-second-loop",
+                    "operation": "punishment-proportionality-accountability",
+                    "register_axis": "τ",
+                    "delta_result": "punishment-proportionality-calibrated",
+                }
+            ],
+        },
+    )
+    if do_second_loop_tau_punishment_stage04["act_row_details"][0].get("register_axis") != "τ":
+        raise HarnessError("Self-test failed to accept do-second-loop punishment τ register_axis")
+    do_second_loop_h_guidance_row = (
+        "⟦ACT ¹B₁[do-second-loop.coercive-guidance-demand] :: "
+        "π=coercive-guidance-demand :: body_ref=¹B₁ :: "
+        "Δ=Δ¹B:coercive-guidance-demand-bounded :: Land(¹B)+⟧"
+    )
+    do_second_loop_h_guidance_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [do_second_loop_h_guidance_row],
+            "act_row_details": self_test_act_row_details([do_second_loop_h_guidance_row], {"¹B₁": "H"}),
+        },
+    )
+    if do_second_loop_h_guidance_stage04["act_row_details"][0].get("register_axis") != "κ":
+        raise HarnessError("Self-test failed to canonicalize do-second-loop H guidance register_axis fallback")
+    validate_incremental_handoffs(
+        [
+            {
+                "id": "stage-03-routing-owner-gate",
+                "status": "partial",
+                "route_targets": ["B1", "B2"],
+            },
+            {
+                "id": "stage-04-burden-execution-act",
+                "status": "pass",
+                "act_targets": ["B1"],
+                "held_act_targets": ["B2"],
+            },
+        ]
+    )
+    try:
+        validate_incremental_handoffs(
+            [
+                {
+                    "id": "stage-03-routing-owner-gate",
+                    "status": "partial",
+                    "route_targets": ["B1", "B2"],
+                },
+                {
+                    "id": "stage-04-burden-execution-act",
+                    "status": "pass",
+                    "act_targets": ["B1"],
+                },
+            ]
+        )
+    except HarnessError as exc:
+        if "route_targets must be covered by act_targets or held_act_targets" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test accepted Stage 04 route target missing from ACT and held coverage")
     missing_slot_separators_row = (
         "⟦ACT ¹B₁[source-status-repair.source-order] "
         "body_ref=¹B₁ π=scientific-explanations-only-knowledge-source "
@@ -7599,6 +9688,58 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test Stage 04 guidance laundered an M9 delta/result label into operation space")
     if "SOURCE operations: authority-order-repair, sort, source-order, source-order-repair, status" in selected_model_delta_guidance:
         raise HarnessError("Self-test Stage 04 guidance exposed SOURCE status as a callable operation")
+    pattern_loaded_label_n_axis_row = (
+        "⟦ACT ¹B₁[pattern-profiling.loaded-label-carrier-audit] :: "
+        "π=identity-label-and-claim-boundary :: body_ref=¹B₁ :: "
+        "Δ=Δ¹B:carrier-function-typed :: Land(¹B)+⟧"
+    )
+    pattern_loaded_label_n_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [pattern_loaded_label_n_axis_row],
+            "act_row_details": self_test_act_row_details(
+                [pattern_loaded_label_n_axis_row],
+                {"¹B₁": "N"},
+            ),
+        },
+    )
+    if pattern_loaded_label_n_axis_stage04["act_row_details"][0].get("register_axis") != "μ":
+        raise HarnessError("Self-test failed to canonicalize pattern-profiling loaded-label N axis to μ")
+    m3_orphaned_row = (
+        "⟦ACT ¹B₁[M3.orphaned-intuition] :: "
+        "π=moral-recognition-grounding-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:normativity-restored-to-ground :: Land(¹B)+⟧"
+    )
+    m3_orphaned_m_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [m3_orphaned_row],
+            "act_row_details": self_test_act_row_details([m3_orphaned_row], {"¹B₁": "m"}),
+        },
+    )
+    if m3_orphaned_m_stage04["act_row_details"][0].get("register_axis") != "♥":
+        raise HarnessError("Self-test failed to canonicalize M3 orphaned-intuition m fallback to heart axis")
+    m3_orphaned_tau_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [m3_orphaned_row],
+            "act_row_details": self_test_act_row_details([m3_orphaned_row], {"¹B₁": "τ"}),
+        },
+    )
+    if m3_orphaned_tau_stage04["act_row_details"][0].get("register_axis") != "♥":
+        raise HarnessError("Self-test failed to canonicalize M3 orphaned-intuition tau fallback to heart axis")
     do_second_loop_guidance = stage04_delta_vocabulary_guidance(
         [
             {
@@ -7644,6 +9785,109 @@ def run_self_test(root: Path) -> int:
             ),
         },
     )
+    v2_reason_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [v2_pattern_rows[0]],
+            "act_row_details": self_test_act_row_details(
+                [v2_pattern_rows[0]],
+                {
+                    "¹B₁": "m",
+                },
+            ),
+        },
+    )
+    if v2_reason_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to canonicalize V2 reconstituting-reason register_axis fallback")
+    v2_reason_role_row = (
+        "⟦ACT ¹B₁[V2.reason-role-repair] :: π=reason-revelation-rank-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:reason-role-repaired :: Land(¹B)+⟧"
+    )
+    v2_reason_role_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [v2_reason_role_row],
+            "act_row_details": self_test_act_row_details(
+                [v2_reason_role_row],
+                {
+                    "¹B₁": "σ",
+                },
+            ),
+        },
+    )
+    if v2_reason_role_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to canonicalize V2 reason-role-repair register_axis fallback")
+    v2_reason_role_m_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [v2_reason_role_row],
+            "act_row_details": self_test_act_row_details(
+                [v2_reason_role_row],
+                {
+                    "¹B₁": "m",
+                },
+            ),
+        },
+    )
+    if v2_reason_role_m_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to canonicalize V2 reason-role-repair m-axis fallback")
+    v2_proof_burden_order_row = (
+        "⟦ACT ¹B₁[V2.proof-burden-order] :: π=moral-theological-burden-order :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:burden-order-repaired :: Land(¹B)+⟧"
+    )
+    v2_proof_burden_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [v2_proof_burden_order_row],
+            "act_row_details": self_test_act_row_details(
+                [v2_proof_burden_order_row],
+                {
+                    "¹B₁": "τ",
+                },
+            ),
+        },
+    )
+    if v2_proof_burden_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to canonicalize V2 proof-burden-order register_axis fallback")
+    v2_proof_burden_h_axis_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [v2_proof_burden_order_row],
+            "act_row_details": self_test_act_row_details(
+                [v2_proof_burden_order_row],
+                {
+                    "¹B₁": "H",
+                },
+            ),
+        },
+    )
+    if v2_proof_burden_h_axis_stage04["act_row_details"][0].get("register_axis") != "ξ":
+        raise HarnessError("Self-test failed to canonicalize V2 proof-burden-order H-axis fallback")
+    if (
+        v2_proof_burden_axis_stage04["act_row_details"][0].get("delta_result")
+        != "proof-burden-order-restored"
+    ):
+        raise HarnessError("Self-test failed to canonicalize V2 proof-burden-order delta_result fallback")
     selected_model_controlled_rows = [
         "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: π=selected-model-person-nature-transfer :: body_ref=¹B₁ :: Δ=Δ¹B:trinitarian-model-identified :: Land(¹B)+⟧",
         "⟦ACT ¹B₂[M9.predication-repair] :: π=selected-only-true-god-predicate-transfer :: body_ref=¹B₂ :: Δ=Δ¹B:person-nature-transfer-blocked :: Land(¹B)+⟧",
@@ -7838,6 +10082,50 @@ def run_self_test(root: Path) -> int:
     )
     if proof_method_tau_stage04["act_row_details"][0].get("register_axis") != "τ":
         raise HarnessError("Self-test failed to accept proof-method tribunal/burden-function register_axis")
+    proof_overreach_tau_row = (
+        "⟦ACT ¹B₁[proof-method-audit.proof-overreach-audit] :: "
+        "π=formalization-validity :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:proof-overreach-bounded :: Land(¹B)+⟧"
+    )
+    proof_overreach_tau_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_overreach_tau_row],
+            "act_row_details": self_test_act_row_details([proof_overreach_tau_row], {"¹B₁": "τ"}),
+        },
+    )
+    if proof_overreach_tau_stage04["act_row_details"][0].get("register_axis") != "τ":
+        raise HarnessError("Self-test failed to accept proof-overreach tribunal/burden-function register_axis")
+    proof_overreach_h_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_overreach_tau_row],
+            "act_row_details": self_test_act_row_details([proof_overreach_tau_row], {"¹B₁": "H"}),
+        },
+    )
+    if proof_overreach_h_stage04["act_row_details"][0].get("register_axis") != "τ":
+        raise HarnessError("Self-test failed to canonicalize proof-overreach H fallback to tribunal axis")
+    proof_overreach_m_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_overreach_tau_row],
+            "act_row_details": self_test_act_row_details([proof_overreach_tau_row], {"¹B₁": "m"}),
+        },
+    )
+    if proof_overreach_m_stage04["act_row_details"][0].get("register_axis") != "τ":
+        raise HarnessError("Self-test failed to canonicalize proof-overreach m fallback to tribunal axis")
     invalid_proof_method_operation_row = (
         "⟦ACT ¹B₁[proof-method-audit.proof-stack-routed] :: "
         "π=proof-family-carrier-pressure :: "
@@ -7877,6 +10165,19 @@ def run_self_test(root: Path) -> int:
     )
     if proof_route_status_tau_stage04["act_row_details"][0].get("register_axis") != "τ":
         raise HarnessError("Self-test failed to accept proof-route-status tribunal/burden-function register_axis")
+    proof_route_status_h_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_route_status_tau_row],
+            "act_row_details": self_test_act_row_details([proof_route_status_tau_row], {"¹B₁": "H"}),
+        },
+    )
+    if proof_route_status_h_stage04["act_row_details"][0].get("register_axis") != "τ":
+        raise HarnessError("Self-test failed to canonicalize proof-route-status H fallback to tribunal axis")
     invalid_proof_method_tau_row = (
         "⟦ACT ¹B₁[proof-method-audit.proof-family-classification] :: "
         "π=proof-family-label :: "
@@ -7899,6 +10200,76 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test accepted generic proof-method tau register_axis")
+    valid_proof_family_classification_pressure_row = (
+        "⟦ACT ¹B₁[proof-method-audit.proof-family-classification] :: "
+        "π=proof-family-classification-pressure :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:proof-family-carrier-typed :: Land(¹B)+⟧"
+    )
+    normalized_proof_family_classification_pressure_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [valid_proof_family_classification_pressure_row],
+            "act_row_details": self_test_act_row_details(
+                [valid_proof_family_classification_pressure_row],
+                {"¹B₁": "τ"},
+            ),
+        },
+    )
+    valid_proof_family_classification_pressure_detail = stage04_act_details_by_ref(
+        normalized_proof_family_classification_pressure_stage04
+    )["¹B₁"]
+    valid_proof_family_classification_pressure_typed_detail = (
+        normalized_proof_family_classification_pressure_stage04["act_row_details"][0]
+    )
+    if valid_proof_family_classification_pressure_detail.get("operation") != "proof-family-and-carrier-audit":
+        raise HarnessError(
+            "Self-test failed to canonicalize proof-family-classification-pressure "
+            "to proof-family-and-carrier-audit"
+        )
+    if valid_proof_family_classification_pressure_typed_detail.get("register_axis") != "τ":
+        raise HarnessError(
+            "Self-test failed to preserve tribunal/burden-function register_axis for "
+            "proof-family-classification-pressure"
+        )
+    valid_proof_family_method_control_row = (
+        "⟦ACT ¹B₁[proof-method-audit.proof-family-classification] :: "
+        "π=definition-scope-and-proof-method-control :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:proof-family-carrier-typed :: Land(¹B)+⟧"
+    )
+    normalized_proof_family_method_control_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [valid_proof_family_method_control_row],
+            "act_row_details": self_test_act_row_details(
+                [valid_proof_family_method_control_row],
+                {"¹B₁": "H"},
+            ),
+        },
+    )
+    valid_proof_family_method_control_detail = stage04_act_details_by_ref(
+        normalized_proof_family_method_control_stage04
+    )["¹B₁"]
+    valid_proof_family_method_control_typed_detail = (
+        normalized_proof_family_method_control_stage04["act_row_details"][0]
+    )
+    if valid_proof_family_method_control_detail.get("operation") != "proof-family-and-carrier-audit":
+        raise HarnessError(
+            "Self-test failed to canonicalize definition-scope-and-proof-method-control "
+            "to proof-family-and-carrier-audit"
+        )
+    if valid_proof_family_method_control_typed_detail.get("register_axis") != "τ":
+        raise HarnessError(
+            "Self-test failed to canonicalize proof-family method-control H fallback "
+            "to tribunal/burden-function register_axis"
+        )
     valid_do_attribute_delta_row = (
         "⟦ACT ¹B₁[do-attribute-precision.attribute-precision] :: "
         "π=predicate-identity-pressure :: "
@@ -8026,6 +10397,28 @@ def run_self_test(root: Path) -> int:
     ]
     if source_delta_results != ["proof-text-sorted", "hidden-support-blocked"]:
         raise HarnessError("Self-test failed to preserve exact SOURCE delta_result tokens")
+    proof_text_recoil_row = (
+        "⟦ACT ¹B₁[source-status-repair.source-order-repair] :: "
+        "π=proof-text-source-order-recoil :: "
+        "body_ref=¹B₁ :: Δ=Δ¹B:source-order-repaired :: Land(¹B)+⟧"
+    )
+    proof_text_recoil_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_rows": [proof_text_recoil_row],
+            "act_row_details": self_test_act_row_details(
+                [proof_text_recoil_row],
+                {"¹B₁": "σ"},
+            ),
+        },
+    )
+    proof_text_recoil_details = stage04_act_details_by_ref(proof_text_recoil_stage04)
+    if proof_text_recoil_details["¹B₁"]["delta_result"] != "proof-text-hidden-support-blocked":
+        raise HarnessError("Self-test failed to canonicalize SOURCE proof-text recoil delta")
     invalid_source_hidden_support_delta_row = (
         "⟦ACT ¹B₃[authority-order-repair.sort] :: "
         "π=hidden-support-and-source-function-pressure :: "
@@ -8509,6 +10902,7 @@ def run_self_test(root: Path) -> int:
                 "basis": "Stage 04 ACT burden B1 landed; reread produced no generated burden.",
                 "unresolved_burdens": [],
             },
+            "per_burden_reread": [self_test_reread_entry("B1")],
             "terminal_state_details": [
                 {
                     "burden_id": "B1",
@@ -8527,6 +10921,245 @@ def run_self_test(root: Path) -> int:
     terminal_basis = terminal_detail.get("basis")
     if not isinstance(terminal_basis, list) or len(terminal_basis) != 2:
         raise HarnessError("Self-test failed to preserve Stage 05 terminal_state detail list basis")
+    complex_delta_reread_entry = self_test_reread_entry(
+        "B1",
+        reread=(
+            "R(H,ΔB1:source-order-repaired+ΔB1:source-function-bounded) "
+            "held routes rechecked: none; live remainder: no source burden remains; "
+            "release/next: STOP."
+        ),
+    )
+    complex_delta_reread_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after the terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [complex_delta_reread_entry],
+        },
+    )
+    if not str(complex_delta_reread_stage05["per_burden_reread"][0].get("reread") or "").startswith("R(H,Δ):"):
+        raise HarnessError("Self-test failed to canonicalize complex burden-delta R(H,Δ...) reread invocation")
+    two_burden_act_rows = [
+        canonical_act_row,
+        (
+            "⟦ACT ²B₁[M8.consequence-trace] :: "
+            "π=next-burden-pressure :: body_ref=²B₁ :: "
+            "Δ=Δ²B:consequence-traced :: Land(²B)+⟧"
+        ),
+    ]
+    two_burden_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1", "B2"],
+            "act_burdens": ["B1", "B2"],
+            "act_rows": two_burden_act_rows,
+            "act_row_details": self_test_act_row_details(
+                two_burden_act_rows,
+                {"¹B₁": "σ", "²B₁": "κ"},
+            ),
+        },
+    )
+    b2_stop_entry_with_nested_proof = self_test_reread_entry(
+        "B2",
+        reread=(
+            "R(H,Δ²B): held routes rechecked: none; live remainder: "
+            "no remaining burden; release/next: STOP after ²B."
+        ),
+    )
+    b2_stop_entry_with_nested_proof["no_new_resultant_proof"] = {
+        "escape_routes_checked": ["self-test route"],
+        "proved": True,
+    }
+    two_stop_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "landed"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after either terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [
+                self_test_reread_entry("B1"),
+                b2_stop_entry_with_nested_proof,
+            ],
+        },
+    )
+    top_level_pressure_entry = self_test_reread_entry("B1")
+    expected_pressure_activations = copy.deepcopy(top_level_pressure_entry["pressure_activations"])
+    top_level_pressure_entry.pop("pressure_activations")
+    top_level_pressure_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after the terminal read.",
+                "unresolved_burdens": [],
+            },
+            "pressure_activations": expected_pressure_activations,
+            "per_burden_reread": [top_level_pressure_entry],
+        },
+    )
+    hydrated_pressure = top_level_pressure_stage05["per_burden_reread"][0].get("pressure_activations")
+    if hydrated_pressure != expected_pressure_activations:
+        raise HarnessError("Self-test failed to hydrate per-burden pressure slots from Stage 05 top-level object")
+    pressure_normalization = top_level_pressure_stage05.get("normalization", {})
+    if pressure_normalization.get("per_burden_pressure_activations_from_stage_level") != ["B1"]:
+        raise HarnessError("Self-test Stage 05 pressure-slot hydration did not record normalization")
+    non_edge_pressure_entry = self_test_reread_entry("B1")
+    non_edge_pressure_entry["pressure_activations"]["dependency-tug"] = (
+        "dependency-tug: P7.scope-boundary pressure class: dependency-tug -- "
+        "remaining dependency pressure is bounded and does not license a B1 -> B2 edge."
+    )
+    non_edge_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after the terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [non_edge_pressure_entry],
+        },
+    )
+    sanitized_non_edge = non_edge_stage05["per_burden_reread"][0]["pressure_activations"]["dependency-tug"]
+    if "B2" in sanitized_non_edge or "-> B2" in sanitized_non_edge:
+        raise HarnessError("Self-test Stage 05 negative non-edge public burden reference was not sanitized")
+    non_edge_events = (
+        non_edge_stage05.get("normalization") or {}
+    ).get("negative_non_edge_public_burden_references")
+    if not isinstance(non_edge_events, list) or not non_edge_events:
+        raise HarnessError("Self-test Stage 05 negative non-edge sanitation did not record normalization")
+    validate_incremental_handoffs([two_burden_stage04, two_stop_stage05])
+    continuation_entries = {
+        str(entry["burden_id"]): entry
+        for entry in two_stop_stage05["per_burden_reread"]
+    }
+    b1_continuation = continuation_entries["B1"]
+    if b1_continuation.get("route_result_type") != "held_burden_activation":
+        raise HarnessError("Self-test failed to normalize intermediate B1 STOP into held_burden_activation")
+    if b1_continuation.get("route") != "RECURSE" or b1_continuation.get("graph_delta") != "B1 -> B2":
+        raise HarnessError("Self-test failed to normalize intermediate B1 route/graph continuation")
+    if b1_continuation.get("matched_route") != "Matched owner/TTP route: [M8.consequence-trace]":
+        raise HarnessError("Self-test failed to project B2 matched owner route onto intermediate B1 MRP")
+    rendered_continuation = staged_output.render_mrp_block(b1_continuation)
+    if "Matched owner/TTP route: [M8.consequence-trace]" not in rendered_continuation:
+        raise HarnessError("Self-test failed to render matched owner route in normalized MRP block")
+    held_with_reason_target_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "held-with-reason"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after either terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [
+                self_test_reread_entry("B1"),
+                self_test_reread_entry("B2"),
+            ],
+        },
+    )
+    validate_incremental_handoffs([two_burden_stage04, held_with_reason_target_stage05])
+    held_with_reason_entries = {
+        str(entry["burden_id"]): entry
+        for entry in held_with_reason_target_stage05["per_burden_reread"]
+    }
+    if held_with_reason_entries["B1"].get("route_result_type") != "held_burden_activation":
+        raise HarnessError("Self-test failed to normalize intermediate STOP before held-with-reason burden")
+    two_held_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "landed"},
+            "dependency_graph_edges": [
+                {"from": "B1", "to": "B2", "type": "held_burden_activation"}
+            ],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after either terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [
+                self_test_reread_entry("B1", next_burden_id="B2"),
+                self_test_reread_entry("B2"),
+            ],
+        },
+    )
+    validate_incremental_handoffs([two_burden_stage04, two_held_stage05])
+    held_entries = {
+        str(entry["burden_id"]): entry
+        for entry in two_held_stage05["per_burden_reread"]
+    }
+    if held_entries["B1"].get("matched_route") != "Matched owner/TTP route: [M8.consequence-trace]":
+        raise HarnessError("Self-test failed to hydrate matched route for already-held MRP activation")
+    if not ((two_held_stage05.get("normalization") or {}).get("matched_route_hydrations")):
+        raise HarnessError("Self-test failed to record already-held matched route hydration metadata")
+    if not any(
+        stage05_edge_endpoints(edge) == ("B1", "B2", "held_burden_activation")
+        for edge in two_stop_stage05.get("dependency_graph_edges", [])
+    ):
+        raise HarnessError("Self-test failed to record held_burden_activation edge for intermediate STOP")
+    string_edges = stage05_dependency_edges(
+        {"dependency_graph_edges": ["B1 -> B2", "¹B → ²B"]}
+    )
+    if not any(edge == {"from": "B1", "to": "B2", "type": "held_burden_activation"} for edge in string_edges):
+        raise HarnessError("Self-test failed to parse Stage 05 string dependency graph edge")
+    held_gradient_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "landed"},
+            "dependency_graph_edges": ["B1 -> B2"],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after either terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [
+                self_test_reread_entry(
+                    "B1",
+                    next_burden_id="B2",
+                    route_gradient="plain-gradient keeps route pressure after R(H,Δ)",
+                ),
+                self_test_reread_entry("B2"),
+            ],
+        },
+    )
+    held_gradient = str(held_gradient_stage05["per_burden_reread"][0].get("route_gradient") or "")
+    if "already-held B2 from B_LA" not in held_gradient:
+        raise HarnessError("Self-test failed to add held-route machine identity to visible Stage 05 gradient")
+    if not ((held_gradient_stage05.get("normalization") or {}).get("held_route_gradient_identity")):
+        raise HarnessError("Self-test failed to record Stage 05 held route-gradient identity normalization")
+    if "no_new_resultant_proof" in continuation_entries["B2"]:
+        raise HarnessError("Self-test failed to strip wrongly nested per-burden no_new_resultant_proof")
+    if not str(continuation_entries["B2"].get("reread") or "").startswith("R(H,Δ):"):
+        raise HarnessError("Self-test failed to canonicalize burden-specific R(H,Δn) reread invocation")
     try:
         normalized_stage(
             "stage-05-mrp-reread-terminal-state",
@@ -8618,6 +11251,10 @@ def run_self_test(root: Path) -> int:
                     "generated_by": "MRP(B1)",
                     "terminal_state": "carried-RECURSE",
                 }
+            ],
+            "per_burden_reread": [
+                self_test_reread_generated_entry("B1", "B2"),
+                self_test_reread_hold_entry("B2"),
             ],
             "unresolved_burdens": ["B2"],
             "no_new_resultant_proof": {
@@ -8730,6 +11367,7 @@ def run_self_test(root: Path) -> int:
                 "owner_id": "source-status-repair",
                 "operation": "source-order-repair",
                 "delta_result": "source-order-repaired",
+                "mrp_route_result_type": "no_new_resultant",
                 "terminal_state": "landed",
                 "generation_depth": 0,
             }
@@ -8768,6 +11406,17 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test failed to normalize Stage 06 owner_activations into body-ref strings")
     if not isinstance(normalized_stage06.get("owner_activation_details"), list):
         raise HarnessError("Self-test failed to preserve Stage 06 owner_activation_details")
+    mismatched_route_stage06 = copy.deepcopy(normalized_stage06)
+    mismatched_route_stage06["normalized_activation_record"]["per_burden"][0][
+        "mrp_route_result_type"
+    ] = "generated_burden_instantiation"
+    try:
+        validate_incremental_handoffs([replay["stages"][3], normalized_stage05, mismatched_route_stage06])
+    except HarnessError as exc:
+        if "must match stage-05 per_burden_reread route_result_type" not in str(exc):
+            raise
+    else:
+        raise HarnessError("Self-test failed to reject Stage 06 NAR route type mismatch against Stage 05")
     nested_only_nar = dict(structured_nar)
     nested_only_nar["register_deltas"] = {"xi": "source-order-repaired"}
     try:
@@ -9127,27 +11776,31 @@ def run_self_test(root: Path) -> int:
         assigned_body_refs=None,
     )
     for required in (
-        "Stage 07 public MRP block contract:",
+        "Stage 07 per-burden MRP visibility contract:",
         "[Mid-Reread Pressure]",
-        "Target: MRP(¹B) / Stage 05 terminal MRP source",
+        "Target: ¹B / bounded self-test burden",
         "R(H,Δ): held routes rechecked: none; live remainder: no remaining burden; release/next: STOP after ¹B.",
-        "Landed delta: Delta B1: terminal state landed; MRP route result type no_new_resultant.",
+        "Landed delta: Δ¹B / Delta(B1): bounded-self-test-delta recorded.",
         "Route-gradient: plain-gradient points to STOP after ¹B; no live pressure remains.",
         "Finding: stable",
         "MRP route result type: no_new_resultant",
-        "MRP resultant: stable -> graph none; route STOP",
+        "MRP resultant: stable -> no new graph edge; STOP",
         "Graph delta: none",
-        "Pre-emption basis: terminal states landed; B_MRP empty; no generated burden remains",
+        "Pre-emption basis: none",
         "Route: STOP",
-        "`Landed delta:` must use the exact same canonical delta string as `field_witness.formal_reread_states[].delta`.",
-        "`MRP route result type:` must be one canonical token with no trailing punctuation",
-        "field_witness and Closure/Reconstruction Witness mirrors do not replace them",
-        "Do not print any extra public `[Mid-Reread Pressure]` or `MRP(G)` source outside this scaffold",
+        "Boundary: T_lang does not imply guaranteed uptake.",
+        "Do NOT print any `[Mid-Reread Pressure]` heading or block yourself",
+        "print exactly one line-start superscript landing gate per terminal burden",
+        "`formal_reread_states[].delta` preserves the public `landed_delta` notation while also carrying machine `Delta(Bn)` identity",
+        "ledger-only: print the reconstruction floor",
+        "- MRP(¹B): type=no_new_resultant; finding=stable; graph=none; route=STOP",
     ):
         if required not in stage07_mrp_prompt:
-            raise HarnessError(f"Self-test Stage 07 MRP prompt omitted public-block scaffold: {required}")
+            raise HarnessError(f"Self-test Stage 07 MRP prompt omitted per-burden scaffold: {required}")
     if "MRP route result type: no_new_resultant." in stage07_mrp_prompt:
         raise HarnessError("Self-test Stage 07 MRP prompt allowed trailing punctuation on no_new_resultant")
+    if "terminal states landed; B_MRP empty; no generated burden remains" in stage07_mrp_prompt:
+        raise HarnessError("Self-test Stage 07 MRP prompt resurrected the invalid pre-emption literal")
     stage07_act_prompt = release_section_prompt(
         root=root,
         case_name="self-test-a9-science-source",
@@ -9186,6 +11839,16 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
+    drifted_visible_act = canonical_act_row.replace("Land(¹B)+", "Land(additional burden 1)+")
+    canonical_act_text, canonical_act_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        "Layer B - Bounded Governed Response\n" + drifted_visible_act + "\n",
+        [normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+    )
+    if canonical_act_row not in canonical_act_text or "Land(additional burden 1)" in canonical_act_text:
+        raise HarnessError("Self-test Stage 07 ACT canonicalizer did not restore exact Stage 04 row")
+    if not canonical_act_event or canonical_act_event.get("canonicalized_visible_act_rows_from_stage04") is not True:
+        raise HarnessError("Self-test Stage 07 ACT canonicalizer did not record an event")
     proof_pattern_rows = [
         "⟦ACT ¹B₁[proof-method-audit.proof-family-and-carrier-audit] :: "
         "π=logic-tree-carrier-compression :: body_ref=¹B₁ :: "
@@ -9435,6 +12098,8 @@ def run_self_test(root: Path) -> int:
     )
     if not fpd_event or not fpd_event.get("canonicalized_owner_transition_facets"):
         raise HarnessError("Self-test Stage 07 FPD canonicalization did not record an event")
+    if "Operation: foreign-premise-detection: expose the foreign premise and imported criterion" not in canonical_fpd:
+        raise HarnessError("Self-test Stage 07 FPD canonicalization omitted parser-stable operation action")
     if "the foreign premise and imported criterion are exposed" not in canonical_fpd:
         raise HarnessError("Self-test Stage 07 FPD canonicalization omitted parser-stable state change")
     label_only_fpd = thin_fpd_layer.replace(
@@ -9535,9 +12200,9 @@ def run_self_test(root: Path) -> int:
     )
     if not source_split_event or not source_split_event.get("canonicalized_owner_transition_facets"):
         raise HarnessError("Self-test Stage 07 SOURCE split facet canonicalization did not record an event")
-    if "source lineage, source priority, and evidential dependency are explicitly ordered" not in canonical_source_split:
+    if "source-order-repaired; the source lineage, source priority" not in canonical_source_split:
         raise HarnessError("Self-test Stage 07 SOURCE source-order canonicalization omitted source-order state change")
-    if "authority/rank/tribunal relation is ordered" not in canonical_source_split:
+    if "authority-order-repaired; the authority/rank/tribunal relation" not in canonical_source_split:
         raise HarnessError("Self-test Stage 07 SOURCE authority-order canonicalization omitted authority-order state change")
     authority_only_source_order = thin_source_split_layer.split(source_split_rows[1], 1)[0].replace(
         "The source-order repair distinguishes source lineage, quotation chain, inherited-claim order, source priority, derivation order, and evidential dependency before the burden lands.",
@@ -9550,6 +12215,131 @@ def run_self_test(root: Path) -> int:
     )
     if authority_only_event:
         raise HarnessError("Self-test Stage 07 SOURCE source-order canonicalization upgraded authority-only prose")
+    proof_text_source_row = (
+        "⟦ACT ¹B₁[source-status-repair.source-order-repair] :: "
+        "π=proof-text-source-order :: body_ref=¹B₁ :: "
+        "Δ=Δ¹B:proof-text-hidden-support-blocked :: Land(¹B)+⟧"
+    )
+    proof_text_source_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁"],
+            "act_rows": [proof_text_source_row],
+            "act_row_details": self_test_act_row_details(
+                [proof_text_source_row],
+                {"¹B₁": "σ"},
+            ),
+        },
+    )
+    proof_text_source_layer = "\n".join(
+        [
+            "## Burden 1 / ¹B — proof-text source order",
+            proof_text_source_row,
+            "",
+            "### ¹B₁[source-status-repair] - source-order-repair over proof-text-source-order",
+            "Target: proof-text-source-order.",
+            "Operation: source-order-repair audits the proof-text-source-order with owner family source-status-repair.",
+            "Result/state-change: proof-text-hidden-support-blocked.",
+            "Contribution-to-Land(¹B): This contributes because source priority and evidential dependency become explicit.",
+            "TTP Operation Body:",
+            "The source-order repair distinguishes the proof-text source lineage, quotation chain, inherited-claim order, source priority, derivation order, and evidential dependency before the burden lands.",
+            "Land(¹B): proof-text hidden support is blocked by source-order repair.",
+            "",
+        ]
+    )
+    canonical_proof_text_source, proof_text_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        proof_text_source_layer,
+        [normalized_stage02, proof_text_source_stage04, normalized_stage05, normalized_stage06],
+    )
+    if not proof_text_event or not proof_text_event.get("canonicalized_owner_transition_facets"):
+        raise HarnessError("Self-test Stage 07 SOURCE proof-text hidden-support canonicalization did not record an event")
+    if "proof-text-hidden-support-blocked" not in canonical_proof_text_source:
+        raise HarnessError("Self-test Stage 07 SOURCE proof-text delta was not preserved")
+    do_family_rows = [
+        (
+            "⟦ACT ¹B₁[do-second-loop.punishment-proportionality-accountability] :: "
+            "π=eternal-punishment-proportionality-mercy-justice-accountability :: "
+            "body_ref=¹B₁ :: Δ=Δ¹B:punishment-proportionality-calibrated :: Land(¹B)+⟧"
+        ),
+        (
+            "⟦ACT ¹B₂[do-attribute-precision.attribute-precision] :: "
+            "π=cruelty-inhumanity-kindness-generosity-predication-on-judgment :: "
+            "body_ref=¹B₂ :: Δ=Δ¹B:attribute-precision-typed :: Land(¹B)+⟧"
+        ),
+    ]
+    do_family_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1"],
+            "act_burdens": ["B1"],
+            "act_body_refs": ["¹B₁", "¹B₂"],
+            "act_rows": do_family_rows,
+            "act_row_details": self_test_act_row_details(
+                do_family_rows,
+                {"¹B₁": "κ", "¹B₂": "Ω"},
+            ),
+        },
+    )
+    thin_do_family_layer = "\n".join(
+        [
+            "## Burden 1 / ¹B — punishment and attribute pressure",
+            do_family_rows[0],
+            "",
+            "### ¹B₁[do-second-loop] - punishment-proportionality-accountability over eternal-punishment-proportionality-mercy-justice-accountability",
+            "Target: eternal-punishment-proportionality-mercy-justice-accountability.",
+            "Operation: punishment-proportionality-accountability must act on eternal-punishment-proportionality-mercy-justice-accountability with owner family do-second-loop.",
+            "Result/state-change: punishment-proportionality-calibrated.",
+            "Contribution-to-Land(¹B): This contributes because proportionality is evaluated through accountability instead of raw affective magnitude.",
+            "TTP Operation Body:",
+            "The do-second-loop operation calibrates punishment proportionality through accountability, warning, knowledge, capacity, record, culpability, mercy, justice, and the Judge's right before the burden lands.",
+            "",
+            do_family_rows[1],
+            "",
+            "### ¹B₂[do-attribute-precision] - attribute-precision over cruelty-inhumanity-kindness-generosity-predication-on-judgment",
+            "Target: cruelty-inhumanity-kindness-generosity-predication-on-judgment.",
+            "Operation: attribute-precision must act on cruelty-inhumanity-kindness-generosity-predication-on-judgment with owner family do-attribute-precision.",
+            "Result/state-change: attribute-precision-typed.",
+            "Contribution-to-Land(¹B): This contributes because cruelty and kindness predicates are typed before judgment is classified.",
+            "TTP Operation Body:",
+            "The do-attribute-precision operation types the attribute relation, separates the predicate level, and names the category transfer that would otherwise carry the burden.",
+            "Land(¹B): punishment proportionality and attribute precision land locally.",
+            "",
+        ]
+    )
+    canonical_do_family, do_family_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        thin_do_family_layer,
+        [normalized_stage02, do_family_stage04, normalized_stage05, normalized_stage06],
+    )
+    if not do_family_event or not do_family_event.get("canonicalized_owner_transition_facets"):
+        raise HarnessError("Self-test Stage 07 DO-family facet canonicalization did not record an event")
+    for required in (
+        "punishment proportionality is calibrated through accountability, warning, knowledge, capacity, record",
+        "attribute-precision operation types the attribute or predicate relation",
+    ):
+        if required not in canonical_do_family:
+            raise HarnessError(f"Self-test Stage 07 DO-family canonicalization omitted: {required}")
+    label_only_do_family = thin_do_family_layer.replace(
+        "The do-second-loop operation calibrates punishment proportionality through accountability, warning, knowledge, capacity, record, culpability, mercy, justice, and the Judge's right before the burden lands.",
+        "The do-second-loop owner is named, so the route is handled.",
+    ).replace(
+        "The do-attribute-precision operation types the attribute relation, separates the predicate level, and names the category transfer that would otherwise carry the burden.",
+        "The do-attribute-precision owner is named, so the route is handled.",
+    )
+    _, label_only_do_event = canonical_compiled_structural_section(
+        "layer_b_act",
+        label_only_do_family,
+        [normalized_stage02, do_family_stage04, normalized_stage05, normalized_stage06],
+    )
+    if label_only_do_event:
+        raise HarnessError("Self-test Stage 07 DO-family canonicalization upgraded label-only owner prose")
     stage07_m8_prompt = release_section_prompt(
         root=root,
         case_name="self-test-m8-operation",
@@ -9827,6 +12617,39 @@ def run_self_test(root: Path) -> int:
         section_min_bytes=1024,
         assigned_body_refs=None,
     )
+    stage07_full_prompt = release_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=[normalized_stage02, normalized_stage04, normalized_stage05, normalized_stage06],
+    )
+    stage07_expansion_prompt = release_section_expansion_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        section_id="restorative-response",
+        section_role="restorative_response",
+        section_min_bytes=1024,
+        current_bytes=512,
+        expansion_round=1,
+        max_rounds=1,
+        assigned_body_refs=None,
+        existing_text="Restorative Response\n\nHeld/scoped/reopenable remainder: none.\n",
+    )
+    for label, prompt in {
+        "stage07_full": stage07_full_prompt,
+        "stage07_v10": stage07_v10_prompt,
+        "stage07_restorative": stage07_restorative_prompt,
+        "stage07_closing": stage07_closing_prompt,
+        "stage07_expansion": stage07_expansion_prompt,
+    }.items():
+        if "package/provenance" in prompt:
+            raise HarnessError(f"Self-test Stage 07 prompt leaked package/provenance shorthand: {label}")
     for required in (
         "Begin with the exact public role heading `Closing Formulation`",
         "Emit that heading exactly once as the first line; do not repeat `Closing Formulation`",
@@ -9956,6 +12779,7 @@ def run_self_test(root: Path) -> int:
                 "generated_burdens": [],
                 "dependency_graph_edges": [],
                 "no_new_resultant_proof": {"proved": True, "unresolved_burdens": []},
+                "per_burden_reread": [self_test_reread_entry("B1")],
             },
             {
                 "id": "stage-06-field-witness-nar",
@@ -10085,6 +12909,317 @@ def run_self_test(root: Path) -> int:
     )
     if '"kappa": [\n          "B3"\n        ]' not in stage07_id_alias_witness_prompt:
         raise HarnessError("Self-test Stage 07 scaffold lost kappa diagnostic coverage from Stage 02 id alias")
+    aggregate_heart_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "aggregate-affective-register-self-test",
+            "live_registers": ["rhetorical_affective_pressure"],
+            "burden_floor": ["B1", "B2", "B3"],
+            "burden_floor_details": [
+                {"id": "B1", "name": "claim_extraction"},
+                {"id": "B2", "name": "accountability"},
+                {"id": "B3", "name": "punishment_proportionality"},
+            ],
+        },
+    )
+    aggregate_heart_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1", "B2", "B3"],
+            "act_burdens": ["B1", "B2", "B3"],
+            "act_rows": [
+                "⟦ACT ¹B₁[M7.definition-anchor] :: π=claim-extraction :: body_ref=¹B₁ :: Δ=Δ¹B:definition-anchored :: Land(¹B)+⟧",
+                "⟦ACT ²B₁[do-second-loop.coercive-guidance-demand] :: π=guidance-accountability :: body_ref=²B₁ :: Δ=Δ²B:coercive-guidance-demand-bounded :: Land(²B)+⟧",
+                "⟦ACT ³B₁[do-second-loop.punishment-proportionality-accountability] :: π=moral-theodicy-punishment-proportionality :: body_ref=³B₁ :: Δ=Δ³B:punishment-proportionality-calibrated :: Land(³B)+⟧",
+            ],
+            "act_row_details": [
+                {
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "M7",
+                    "operation": "definition-anchor",
+                    "register_axis": "τ",
+                    "delta_result": "definition-anchored",
+                },
+                {
+                    "body_ref": "²B₁",
+                    "burden_id": "B2",
+                    "owner_id": "do-second-loop",
+                    "operation": "coercive-guidance-demand",
+                    "register_axis": "κ",
+                    "delta_result": "coercive-guidance-demand-bounded",
+                },
+                {
+                    "body_ref": "³B₁",
+                    "burden_id": "B3",
+                    "owner_id": "do-second-loop",
+                    "operation": "punishment-proportionality-accountability",
+                    "register_axis": "♥",
+                    "delta_result": "punishment-proportionality-calibrated",
+                },
+            ],
+        },
+    )
+    aggregate_heart_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "landed", "B3": "landed"},
+            "dependency_graph_edges": [
+                {"from": "B1", "to": "B2", "type": "held_burden_activation"},
+                {"from": "B2", "to": "B3", "type": "held_burden_activation"},
+            ],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "all aggregate affective register burdens landed",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": staged_output.self_test_per_burden_chain(["B1", "B2", "B3"]),
+        },
+    )
+    aggregate_heart_stage06 = normalized_stage(
+        "stage-06-field-witness-nar",
+        {
+            "id": "stage-06-field-witness-nar",
+            "status": "pass",
+            "field_witness_body_refs": ["¹B₁", "²B₁", "³B₁"],
+            "nar_burdens": ["B1", "B2", "B3"],
+            "owner_activations": ["¹B₁", "²B₁", "³B₁"],
+            "register_deltas": {
+                "heart": "punishment-proportionality-calibrated",
+                "kappa": "coercive-guidance-demand-bounded",
+            },
+            "normalized_activation_record": {
+                "n_frame": "aggregate-affective-register-self-test",
+                "live_registers": ["rhetorical_affective_pressure"],
+                "burden_floor": ["B1", "B2", "B3"],
+                "per_burden": [
+                    {
+                        "burden_id": "B1",
+                        "owner_id": "M7",
+                        "operation": "definition-anchor",
+                        "delta_result": "definition-anchored",
+                        "mrp_route_result_type": "held_burden_activation",
+                        "terminal_state": "landed",
+                    },
+                    {
+                        "burden_id": "B2",
+                        "owner_id": "do-second-loop",
+                        "operation": "coercive-guidance-demand",
+                        "delta_result": "coercive-guidance-demand-bounded",
+                        "mrp_route_result_type": "held_burden_activation",
+                        "terminal_state": "landed",
+                    },
+                    {
+                        "burden_id": "B3",
+                        "owner_id": "do-second-loop",
+                        "operation": "punishment-proportionality-accountability",
+                        "delta_result": "punishment-proportionality-calibrated",
+                        "mrp_route_result_type": "no_new_resultant",
+                        "terminal_state": "landed",
+                    },
+                ],
+            },
+        },
+    )
+    aggregate_heart_payload = extract_field_witness(
+        extract_embedded_field_witness(
+            stage07_field_witness_section_scaffold(
+                [aggregate_heart_stage02, aggregate_heart_stage04, aggregate_heart_stage05, aggregate_heart_stage06]
+            )
+        )
+    )
+    if aggregate_heart_payload is None:
+        raise HarnessError("Self-test aggregate heart Stage 07 scaffold did not emit field_witness JSON")
+    aggregate_heart_coverage = (
+        aggregate_heart_payload.get("coverage_proof", {})
+        .get("diagnostic_completeness", {})
+        .get("coverage", {})
+    )
+    if "B3" not in aggregate_heart_coverage.get("heart", []):
+        raise HarnessError("Self-test Stage 07 aggregate heart scaffold lost Stage04 heart coverage for B3")
+    aggregate_heart_nodes = {
+        node.get("id"): node.get("register_types")
+        for node in aggregate_heart_payload.get("nodes", [])
+        if isinstance(node, dict)
+    }
+    if aggregate_heart_nodes.get("B3") != ["heart"]:
+        raise HarnessError("Self-test Stage 07 aggregate heart scaffold lost B3 heart register_types")
+    stage06_delta_heart_stage02 = normalized_stage(
+        "stage-02-layer-a-diagnostic-ir",
+        {
+            "id": "stage-02-layer-a-diagnostic-ir",
+            "status": "pass",
+            "selected_n_frame": "N_fitri_aql_sarih",
+            "live_registers": [
+                "definition_scope",
+                "epistemic_authority",
+                "metaphysical_grounding",
+                "moral_normativity",
+                "public_order",
+                "rhetorical_posture",
+            ],
+            "burden_floor": ["B1", "B2", "B3"],
+            "burden_floor_details": [
+                {"id": "B1", "label": "definition_scope"},
+                {"id": "B2", "label": "neutrality_burden"},
+                {"id": "B3", "label": "grounding_burden"},
+            ],
+        },
+    )
+    stage06_delta_heart_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1", "B2", "B3"],
+            "act_burdens": ["B1", "B2", "B3"],
+            "act_rows": [
+                "⟦ACT ¹B₁[M7.definition-anchor] :: π=definition_scope :: body_ref=¹B₁ :: Δ=Δ¹B:definition-anchored :: Land(¹B)+⟧",
+                "⟦ACT ²B₁[M1-P.performative-test] :: π=neutrality_burden :: body_ref=²B₁ :: Δ=Δ²B:performative-contradiction-exposed :: Land(²B)+⟧",
+                "⟦ACT ³B₁[M8.dependency-trace] :: π=grounding_burden :: body_ref=³B₁ :: Δ=Δκ:dependency-exposed :: Land(³B)+⟧",
+            ],
+            "act_row_details": [
+                {
+                    "body_ref": "¹B₁",
+                    "burden_id": "B1",
+                    "owner_id": "M7",
+                    "operation": "definition-anchor",
+                    "register_axis": "σ",
+                    "delta_result": "definition-anchored",
+                },
+                {
+                    "body_ref": "²B₁",
+                    "burden_id": "B2",
+                    "owner_id": "M1-P",
+                    "operation": "performative-test",
+                    "register_axis": "τ",
+                    "delta_result": "performative-contradiction-exposed",
+                },
+                {
+                    "body_ref": "³B₁",
+                    "burden_id": "B3",
+                    "owner_id": "M8",
+                    "operation": "dependency-trace",
+                    "register_axis": "κ",
+                    "delta_result": "dependency-exposed",
+                },
+            ],
+        },
+    )
+    stage06_delta_heart_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "landed", "B3": "landed"},
+            "dependency_graph_edges": [
+                {"from": "B1", "to": "B2", "type": "held_burden_activation"},
+                {"from": "B2", "to": "B3", "type": "held_burden_activation"},
+            ],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "bounded secularism route landed",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": staged_output.self_test_per_burden_chain(["B1", "B2", "B3"]),
+        },
+    )
+    stage06_delta_heart_stage06 = normalized_stage(
+        "stage-06-field-witness-nar",
+        {
+            "id": "stage-06-field-witness-nar",
+            "status": "pass",
+            "field_witness_body_refs": ["¹B₁", "²B₁", "³B₁"],
+            "nar_burdens": ["B1", "B2", "B3"],
+            "owner_activations": ["¹B₁", "²B₁", "³B₁"],
+            "register_deltas": {
+                "definition_scope": "Δ¹B:definition-anchored",
+                "epistemic_authority": "Δκ:dependency-exposed",
+                "metaphysical_grounding": "Δκ:dependency-exposed",
+                "moral_normativity": [
+                    "Δ²B:performative-contradiction-exposed",
+                    "Δκ:dependency-exposed",
+                ],
+                "public_order": [
+                    "Δ²B:performative-contradiction-exposed",
+                    "Δκ:dependency-exposed",
+                ],
+                "rhetorical_posture": "Δ¹B:definition-anchored",
+            },
+            "normalized_activation_record": {
+                "n_frame": "N_fitri_aql_sarih",
+                "live_registers": [
+                    "definition_scope",
+                    "epistemic_authority",
+                    "metaphysical_grounding",
+                    "moral_normativity",
+                    "public_order",
+                    "rhetorical_posture",
+                ],
+                "burden_floor": ["B1", "B2", "B3"],
+                "per_burden": [
+                    {
+                        "burden_id": "B1",
+                        "owner_id": "M7",
+                        "operation": "definition-anchor",
+                        "delta_result": "definition-anchored",
+                        "terminal_state": "landed",
+                        "mrp_route_result_type": "held_burden_activation",
+                    },
+                    {
+                        "burden_id": "B2",
+                        "owner_id": "M1-P",
+                        "operation": "performative-test",
+                        "delta_result": "performative-contradiction-exposed",
+                        "terminal_state": "landed",
+                        "mrp_route_result_type": "held_burden_activation",
+                    },
+                    {
+                        "burden_id": "B3",
+                        "owner_id": "M8",
+                        "operation": "dependency-trace",
+                        "delta_result": "dependency-exposed",
+                        "terminal_state": "landed",
+                        "mrp_route_result_type": "no_new_resultant",
+                    },
+                ],
+            },
+        },
+    )
+    stage06_delta_heart_payload = extract_field_witness(
+        extract_embedded_field_witness(
+            stage07_field_witness_section_scaffold(
+                [
+                    stage06_delta_heart_stage02,
+                    stage06_delta_heart_stage04,
+                    stage06_delta_heart_stage05,
+                    stage06_delta_heart_stage06,
+                ]
+            )
+        )
+    )
+    if stage06_delta_heart_payload is None:
+        raise HarnessError("Self-test Stage 07 Stage06 register-delta scaffold did not emit field_witness JSON")
+    stage06_delta_heart_coverage = (
+        stage06_delta_heart_payload.get("coverage_proof", {})
+        .get("diagnostic_completeness", {})
+        .get("coverage", {})
+    )
+    if "B1" not in stage06_delta_heart_coverage.get("heart", []):
+        raise HarnessError("Self-test Stage 07 scaffold lost Stage06 rhetorical_posture heart coverage for B1")
+    stage06_delta_heart_nodes = {
+        node.get("id"): node.get("register_types")
+        for node in stage06_delta_heart_payload.get("nodes", [])
+        if isinstance(node, dict)
+    }
+    if "heart" not in (stage06_delta_heart_nodes.get("B1") or []):
+        raise HarnessError("Self-test Stage 07 scaffold lost Stage06 rhetorical_posture heart node register type for B1")
     stage07_kappa_witness_prompt = release_section_prompt(
         root=root,
         case_name="self-test-kappa-carrier",
@@ -10159,6 +13294,14 @@ def run_self_test(root: Path) -> int:
         "For every `owner_activations[]` mirror whose `delta` carrier is `Δκ` / `Delta-kappa`",
         "`coverage_proof.diagnostic_completeness.live_registers`",
         "`normalized_activation_record.per_burden[]`",
+        "Per-burden MRP record-surface contract (parity-validated):",
+        "print exactly one `[Mid-Reread Pressure]` block rendered VERBATIM",
+        "Do not invent, merge, or rephrase pressure-activation slots",
+        "Do not summarize the per-burden rereads into one terminal closure block",
+        "stop and return a held/failed status rather than fabricating block content",
+        "any divergence fails Stage 07 release validation",
+        "Block for Land(¹B): print exactly:",
+        "Target: ¹B / bounded self-test burden",
     ):
         if required not in stage07_full_release_prompt:
             raise HarnessError(f"Self-test Stage 07 release prompt omitted witness clone-state scaffold: {required}")
@@ -10185,6 +13328,10 @@ def run_self_test(root: Path) -> int:
                 "route_result_type": "generated_burden_instantiation",
                 "route": "RECURSE",
             },
+            "per_burden_reread": [
+                self_test_reread_generated_entry("B1", "B2"),
+                self_test_reread_hold_entry("B2"),
+            ],
             "no_new_resultant_proof": {
                 "proved": False,
                 "basis": "self-test generated B2 remains unresolved",
@@ -10230,35 +13377,124 @@ def run_self_test(root: Path) -> int:
             raise HarnessError(f"Self-test Stage 07 generated-burden prompt omitted scaffold: {required}")
     if "MRP(B2): type=generated_burden_instantiation" in generated_stage07_witness_prompt:
         raise HarnessError("Self-test Stage 07 generated-burden prompt synthesized an MRP(B2) graph=none row")
-    wide_mrp_resultants = [
-        {"source": "B1", "type": "held_burden_activation", "finding": "genuine-dependent", "graph": "B1 -> B2", "route": "RECURSE"},
-        {"source": "B2", "type": "held_burden_activation", "finding": "genuine-dependent", "graph": "B2 -> B3", "route": "RECURSE"},
-        {"source": "B3", "type": "held_burden_activation", "finding": "genuine-dependent", "graph": "B3 -> B4", "route": "RECURSE"},
-        {"source": "B4", "type": "held_burden_activation", "finding": "genuine-dependent", "graph": "B4 -> B5", "route": "RECURSE"},
-        {"source": "B5", "type": "generated_burden_instantiation", "finding": "genuine-dependent", "graph": "B5 -> B6", "route": "RECURSE"},
-        {"source": "B6", "type": "no_new_resultant", "finding": "stable", "graph": "none", "route": "STOP"},
+    wide_per_burden_entries = [
+        self_test_reread_entry("B1", next_burden_id="B2"),
+        self_test_reread_entry("B2", next_burden_id="B3"),
+        self_test_reread_entry("B3", next_burden_id="B4"),
+        self_test_reread_entry("B4", next_burden_id="B5"),
+        self_test_reread_generated_entry("B5", "B6"),
+        self_test_reread_hold_entry("B6"),
     ]
     wide_states = stage07_formal_reread_states(
-        wide_mrp_resultants,
+        wide_per_burden_entries,
         {"B1": "landed", "B2": "landed", "B3": "landed", "B4": "landed", "B5": "landed", "B6": "carried-RECURSE"},
         unresolved_burdens=["B6"],
     )
     if [row.get("source_burden") for row in wide_states] != ["B1", "B2", "B3", "B4", "B5", "B6"]:
         raise HarnessError("Self-test Stage 07 wide MRP formal reread states did not preserve B1-B6 source registration")
-    if any(row.get("curl_state") != "null" for row in wide_states[:-1]):
+    if any(row.get("curl_state") != "null" for row in wide_states[:4]):
         raise HarnessError("Self-test Stage 07 wide MRP landed formal reread states emitted non-string/null curl_state")
+    for row, entry in zip(wide_states, wide_per_burden_entries):
+        if row.get("delta") != stage07_formal_delta(entry["landed_delta"], str(entry.get("burden_id") or "")):
+            raise HarnessError("Self-test Stage 07 formal reread states did not preserve landed_delta with machine identity")
+        expected_route_gradient = stage07_formal_route_gradient(
+            entry,
+            str(entry.get("route_result_type") or ""),
+            stage07_route_target_from_graph(entry.get("graph_delta")),
+        )
+        if row.get("route_gradient") != expected_route_gradient:
+            raise HarnessError("Self-test Stage 07 formal reread states did not preserve formal route_gradient projection")
+        if row.get("preemption_basis") != entry["preemption_basis"]:
+            raise HarnessError("Self-test Stage 07 formal reread states did not mirror per_burden_reread preemption_basis 1:1")
+        if row.get("mrp_resultant") != entry["mrp_resultant"]:
+            raise HarnessError("Self-test Stage 07 formal reread states did not mirror per_burden_reread mrp_resultant 1:1")
+    held_identity_entry = self_test_reread_entry(
+        "B2",
+        next_burden_id="B3",
+        route_gradient=(
+            "∇ route: predication/scope repair reduces contradiction pressure but routes "
+            "remaining compression pressure to the proof-carrier audit."
+        ),
+    )
+    held_identity_state = stage07_formal_reread_states(
+        [held_identity_entry],
+        {"B2": "landed", "B3": "landed"},
+    )[0]
+    held_identity_gradient = str(held_identity_state.get("route_gradient") or "")
+    if "already-held B3 from B_LA" not in held_identity_gradient:
+        raise HarnessError("Self-test Stage 07 held route_gradient did not add raw B3/B_LA identity")
     b6_state = wide_states[-1]
-    if b6_state.get("divergence_state") != "non-neutral" or b6_state.get("curl_state") != "unresolved":
-        raise HarnessError("Self-test Stage 07 B6 unresolved row did not mirror visible non-neutral/unresolved field diagnostics")
-    if b6_state.get("route_result_type") != "no_new_resultant" or b6_state.get("route") != "STOP":
-        raise HarnessError("Self-test Stage 07 B6 terminal row did not preserve STOP/no_new_resultant accounting")
-    proof = b6_state.get("no_new_resultant_proof")
-    if not isinstance(proof, dict) or proof.get("proved") is not False:
-        raise HarnessError("Self-test Stage 07 B6 unresolved row claimed clean no-new-resultant proof")
+    if b6_state.get("divergence_state") != "non-neutral" or b6_state.get("curl_state") != "held":
+        raise HarnessError("Self-test Stage 07 B6 held row did not mirror the per-burden non-neutral/held field diagnostics")
+    if b6_state.get("route_result_type") != "hold_partial" or b6_state.get("route") != "HOLD":
+        raise HarnessError("Self-test Stage 07 B6 held row did not preserve HOLD/hold_partial accounting")
+    if "no_new_resultant_proof" in b6_state:
+        raise HarnessError("Self-test Stage 07 B6 held row attached a terminal STOP proof to a held burden")
     if "plain-gradient holds ⁶B as HOLD/PARTIAL" not in str(b6_state.get("route_gradient")):
-        raise HarnessError("Self-test Stage 07 B6 unresolved row omitted public-token HOLD/PARTIAL route-gradient")
-    if "⁶B remains carried-RECURSE" not in str(b6_state.get("preemption_basis")):
-        raise HarnessError("Self-test Stage 07 B6 unresolved row omitted generated-burden HOLD/PARTIAL accounting")
+        raise HarnessError("Self-test Stage 07 B6 held row omitted public-token HOLD/PARTIAL route-gradient")
+    stop_display_entry = self_test_reread_entry(
+        "B1",
+        divergence="∇·B: settled / visible public wording remains richer than the machine row",
+        landed_delta="Δ¹B: glyph-only public delta before formal projection",
+    )
+    stop_display_states = stage07_formal_reread_states([stop_display_entry], {"B1": "landed"})
+    stop_display_state = stop_display_states[0]
+    if stop_display_state.get("divergence_state") != "neutral":
+        raise HarnessError("Self-test Stage 07 STOP formal reread state did not normalize settled/bounded divergence to neutral")
+    if "Delta(B1)" not in str(stop_display_state.get("delta")):
+        raise HarnessError("Self-test Stage 07 STOP formal reread state did not add machine Delta(B1) identity")
+    non_neutral_stop_entry = self_test_reread_entry(
+        "B1",
+        divergence="∇·B: non-neutral / visible public wording names the exposed framework before terminal STOP",
+    )
+    non_neutral_stop_state = stage07_formal_reread_states([non_neutral_stop_entry], {"B1": "landed"})[0]
+    if non_neutral_stop_state.get("divergence_state") != "neutral":
+        raise HarnessError("Self-test Stage 07 STOP formal reread state did not normalize non-neutral divergence to neutral")
+    resolved_stop_entry = self_test_reread_entry(
+        "B1",
+        curl="∇×κ: resolved / visible public wording says the loop is resolved",
+    )
+    resolved_stop_state = stage07_formal_reread_states([resolved_stop_entry], {"B1": "landed"})[0]
+    if resolved_stop_state.get("curl_state") != "null":
+        raise HarnessError("Self-test Stage 07 STOP formal reread state did not normalize resolved curl to null")
+    held_display_stop_entry = self_test_reread_entry(
+        "B1",
+        curl="∇×κ: held / visible public wording names a bounded held-route boundary",
+    )
+    held_display_stop_state = stage07_formal_reread_states([held_display_stop_entry], {"B1": "landed"})[0]
+    if held_display_stop_state.get("curl_state") != "null":
+        raise HarnessError("Self-test Stage 07 STOP formal reread state did not normalize held curl to null")
+    linear_hold_stage05 = {
+        "id": "stage-05-mrp-reread-terminal-state",
+        "status": "pass",
+        "terminal_states": {"B3": "held-with-reason"},
+        "dependency_graph_edges": [],
+        "no_new_resultant_proof": {
+            "proved": True,
+            "basis": "No generated burden; source verification remains held with reason.",
+            "unresolved_burdens": [],
+        },
+        "per_burden_reread": [
+            self_test_reread_hold_entry(
+                "B3",
+            )
+            | {
+                "curl": "∇×κ: held / source proof cannot be closed without downstream verification",
+            }
+        ],
+    }
+    normalize_stage05_mrp_fields(linear_hold_stage05)
+    linear_hold_curl = str(linear_hold_stage05["per_burden_reread"][0].get("curl") or "")
+    if not linear_hold_curl.startswith("∇×κ: null"):
+        raise HarnessError("Self-test Stage 05 linear HOLD dependency did not normalize curl to null")
+    unresolved_stop_states = stage07_formal_reread_states(
+        [self_test_reread_entry("B6")],
+        {"B6": "carried-RECURSE"},
+        unresolved_burdens=["B6"],
+    )
+    unresolved_stop_proof = unresolved_stop_states[0].get("no_new_resultant_proof")
+    if not isinstance(unresolved_stop_proof, dict) or unresolved_stop_proof.get("proved") is not False:
+        raise HarnessError("Self-test Stage 07 unresolved STOP projection claimed a clean no-new-resultant proof")
     wide_stage02 = dict(normalized_stage02)
     wide_stage02["burden_floor"] = ["B1", "B2", "B3", "B4", "B5"]
     wide_stage05 = normalized_stage(
@@ -10290,6 +13526,14 @@ def run_self_test(root: Path) -> int:
                     "reason": "self-test generated burden remains live",
                 }
             ],
+            "per_burden_reread": [
+                self_test_reread_entry("B1", next_burden_id="B2"),
+                self_test_reread_entry("B2", next_burden_id="B3"),
+                self_test_reread_entry("B3", next_burden_id="B4"),
+                self_test_reread_entry("B4", next_burden_id="B5"),
+                self_test_reread_generated_entry("B5", "B6"),
+                self_test_reread_hold_entry("B6"),
+            ],
             "no_new_resultant_proof": {
                 "proved": False,
                 "basis": "self-test generated B6 remains unresolved",
@@ -10315,17 +13559,20 @@ def run_self_test(root: Path) -> int:
         assigned_body_refs=None,
     )
     for required in (
-        "Emit one `[Mid-Reread Pressure]` block for every Stage 05 / field_witness `mrp_resultants[]` source",
-        "Target: MRP(¹B) / Stage 05 terminal MRP source",
-        "Target: MRP(²B) / Stage 05 terminal MRP source",
-        "Target: MRP(³B) / Stage 05 terminal MRP source",
-        "Target: MRP(⁴B) / Stage 05 terminal MRP source",
-        "Target: MRP(⁵B) / Stage 05 terminal MRP source",
-        "Target: MRP(⁶B) / Stage 05 terminal MRP source",
+        "The harness injects one canonical `[Mid-Reread Pressure]` block immediately after each line-start superscript `Land(ⁿB):` landing gate",
+        "Do NOT print any `[Mid-Reread Pressure]` heading or block yourself",
+        "Every landing gate must match one Stage 05 per_burden_reread record",
+        "Target: ¹B / bounded self-test burden",
+        "Target: ²B / bounded self-test burden",
+        "Target: ³B / bounded self-test burden",
+        "Target: ⁴B / bounded self-test burden",
+        "Target: ⁵B / bounded self-test burden",
+        "Target: ⁶B / bounded self-test burden",
         "MRP route result type: generated_burden_instantiation",
         "MRP route result type: hold_partial",
         "Route: HOLD",
-        "do not summarize a B1-B6 chain as one MRP block",
+        "- MRP(⁶B): type=hold_partial; finding=partial-real; graph=none; route=HOLD",
+        "ledger-only: print the reconstruction floor",
     ):
         if required not in wide_stage07_mrp_prompt:
             raise HarnessError(f"Self-test Stage 07 wide MRP prompt omitted scaffold: {required}")
@@ -10350,7 +13597,7 @@ def run_self_test(root: Path) -> int:
         '"route_result_type": "hold_partial"',
         '"route": "HOLD"',
         '"curl_state": "null"',
-        '"curl_state": "unresolved"',
+        '"curl_state": "held"',
         '"coverage_complete": false',
         '"id": "B6"',
         '"generated_by": "MRP(B5)"',
@@ -10409,6 +13656,11 @@ def run_self_test(root: Path) -> int:
                 "route_result_type": "no_new_resultant",
                 "route": "STOP",
             },
+            "per_burden_reread": [
+                self_test_reread_entry("B1"),
+                self_test_reread_hold_entry("B2"),
+                self_test_reread_entry("B3"),
+            ],
             "no_new_resultant_proof": {
                 "proved": False,
                 "basis": "baseline B_LA burden remains held; whole-field STOP is not licensed",
@@ -10431,12 +13683,14 @@ def run_self_test(root: Path) -> int:
     if baseline_held_payload is None:
         raise HarnessError("Self-test baseline-held canary did not emit field_witness JSON")
     for required in (
-        "Target: MRP(²B) / Stage 05 terminal MRP source",
-        "MRP route result type: hold_partial",
-        "Route: HOLD",
+        "MRP terminal reconstruction floor:",
+        "- MRP(²B): type=hold_partial; finding=partial-real; graph=none; route=HOLD",
+        "²B: held-with-reason",
     ):
         if required not in baseline_held_mrp_text:
-            raise HarnessError(f"Self-test baseline-held MRP prompt omitted scaffold: {required}")
+            raise HarnessError(f"Self-test baseline-held MRP ledger omitted scaffold: {required}")
+    if "[Mid-Reread Pressure]" in baseline_held_mrp_text:
+        raise HarnessError("Self-test baseline-held MRP ledger must stay ledger-only without heading blocks")
     if "coverage_complete=false; unresolved_burdens=[B2]" not in baseline_held_witness_text:
         raise HarnessError("Self-test baseline-held witness omitted coverage_complete=false for B2")
     if "b_la_hold_open=[B2]" not in baseline_held_witness_text:
@@ -10451,9 +13705,9 @@ def run_self_test(root: Path) -> int:
     if not b2_state:
         raise HarnessError("Self-test baseline-held canary omitted B2 formal reread state")
     if b2_state.get("route_result_type") != "hold_partial" or b2_state.get("route") != "HOLD":
-        raise HarnessError("Self-test baseline-held canary did not convert false STOP to HOLD/PARTIAL")
-    if b2_state.get("divergence_state") != "non-neutral" or b2_state.get("curl_state") != "unresolved":
-        raise HarnessError("Self-test baseline-held canary did not mirror non-neutral/unresolved diagnostics")
+        raise HarnessError("Self-test baseline-held canary did not preserve the held HOLD/PARTIAL record")
+    if b2_state.get("divergence_state") != "non-neutral" or b2_state.get("curl_state") != "held":
+        raise HarnessError("Self-test baseline-held canary did not mirror non-neutral/held diagnostics")
     if "no_new_resultant_proof" in b2_state:
         raise HarnessError("Self-test baseline-held canary attached terminal STOP proof to held burden")
     if any(
@@ -10510,6 +13764,19 @@ def run_self_test(root: Path) -> int:
                 "route_result_type": "no_new_resultant" if executed else "generated_burden_instantiation",
                 "route": "STOP" if executed else "RECURSE",
             },
+            "per_burden_reread": [
+                *(
+                    self_test_reread_entry(burden)
+                    for burden in generated_topology_stage02["burden_floor"]
+                    if burden != parent
+                ),
+                self_test_reread_generated_entry(parent, generated),
+                (
+                    self_test_reread_entry(generated)
+                    if executed
+                    else self_test_reread_hold_entry(generated)
+                ),
+            ],
         }
         if executed:
             payload["no_new_resultant_proof"] = {
@@ -10704,18 +13971,19 @@ def run_self_test(root: Path) -> int:
     if not canonical_mrp_event:
         raise HarnessError("Self-test Stage 07 structural MRP canonicalization did not record an event")
     for required in (
-        "Target: MRP(⁵B) / Stage 05 terminal MRP source",
-        "Route-gradient: generated-gradient points to RECURSE through ⁵B → ⁶B after Delta ⁵B",
+        "MRP terminal reconstruction floor:",
+        "- MRP(⁵B): type=generated_burden_instantiation; finding=genuine-dependent; graph=⁵B → ⁶B; route=RECURSE",
         "## Burden 6 / ⁶B [generated-by: MRP(⁵B)]",
         "HOLD(⁶B): generated MRP burden remains unresolved/unexecuted",
-        "Target: MRP(⁶B) / Stage 05 terminal MRP source",
-        "MRP route result type: hold_partial",
-        "Route: HOLD",
+        "- MRP(⁶B): type=hold_partial; finding=partial-real; graph=none; route=HOLD",
+        "⁶B: carried-RECURSE",
     ):
         if required not in canonical_mrp_text:
             raise HarnessError(f"Self-test Stage 07 structural MRP canonicalization omitted scaffold: {required}")
     if "old model prose only" in canonical_mrp_text:
         raise HarnessError("Self-test Stage 07 structural MRP canonicalization retained drifted model MRP prose")
+    if "[Mid-Reread Pressure]" in canonical_mrp_text:
+        raise HarnessError("Self-test Stage 07 structural MRP canonicalization must replace heading blocks with the ledger-only section")
 
     drifted_field_witness = (
         "Closure/Reconstruction Witness\n"
@@ -10743,7 +14011,7 @@ def run_self_test(root: Path) -> int:
         '"source_burden": "B6"',
         '"route_result_type": "hold_partial"',
         '"divergence_state": "non-neutral"',
-        '"curl_state": "unresolved"',
+        '"curl_state": "held"',
         '"coverage_complete": false',
         '"owner_route": [\n        "source-status-repair.source-order",\n        "P7.scope-boundary"\n      ]',
     ):
@@ -10801,18 +14069,22 @@ def run_self_test(root: Path) -> int:
         assigned_body_refs=None,
     )
     for required in (
-        "Target: MRP(¹B) / Stage 05 terminal MRP source",
-        "R(H,Δ): held routes rechecked: ¹B → ²B; live remainder: ²B; release/next: RECURSE.",
-        "Landed delta: Delta B1: terminal state landed; MRP route result type generated_burden_instantiation.",
-        "Route-gradient: generated-gradient points to RECURSE through ¹B → ²B after Delta ¹B; newly generated ²B [generated-by: MRP(¹B)] is absent from 𝔅_LA and comes from post-Land field-pressure.",
+        "Target: ¹B / bounded self-test burden",
+        "R(H,Δ): held routes rechecked: ²B; live remainder: ²B; release/next: RECURSE to ²B.",
+        "Landed delta: Δ¹B / Delta(B1): bounded-self-test-delta recorded.",
+        "Route-gradient: newly generated ²B [generated-by: MRP(¹B)] is absent from B_LA after Δ ¹B post-Land field-pressure.",
         "Matched owner/TTP route: [source-status-repair.source-order], [P7.scope-boundary]",
         "Finding: genuine-dependent",
         "MRP route result type: generated_burden_instantiation",
-        "MRP resultant: genuine-dependent -> graph ¹B → ²B; route RECURSE",
+        "MRP resultant: genuine-dependent -> graph ¹B → ²B; RECURSE",
         "Graph delta: ¹B → ²B",
-        "Pre-emption basis: graph-bound MRP route recorded",
+        "Pre-emption basis: graph-bound",
         "Route: RECURSE",
-        "For generated or held routes, use the exact Stage 05 graph edge in `Graph delta:`",
+        "MRP route result type: hold_partial",
+        "Route: HOLD",
+        "- MRP(¹B): type=generated_burden_instantiation; finding=genuine-dependent; graph=¹B → ²B; route=RECURSE",
+        "- MRP(²B): type=hold_partial; finding=partial-real; graph=none; route=HOLD",
+        "must mirror the Stage 05 per_burden_reread records 1:1",
     ):
         if required not in generated_stage07_mrp_prompt:
             raise HarnessError(f"Self-test Stage 07 generated MRP prompt omitted scaffold: {required}")
@@ -11242,6 +14514,8 @@ def run_self_test(root: Path) -> int:
         "nla_semantic_faithfulness": "pass",
         "field_witness_convergence": "pass",
         "formal_reread_state_semantics": "pass",
+        "mid_reread_pressure": "pass",
+        "mrp_record_surface_parity": "pass",
         "mrp_generated_burden": "pass",
         "graph_completeness_json": "pass",
         "manual_smoke_render_contract": "pass",
@@ -11339,6 +14613,15 @@ def run_self_test(root: Path) -> int:
                 f"Self-test Stage 07 visible-output probe {name} missed {expected!r}; found: {found}"
             )
 
+    def assert_visible_output_accepts(name: str, text: str) -> None:
+        probe_path = run_dir / f"{name}.valid.md"
+        probe_path.write_text(text, encoding="utf-8")
+        found = visible_governed_output_errors(probe_path)
+        if found:
+            raise HarnessError(
+                f"Self-test Stage 07 visible-output probe {name} unexpectedly failed: {found}"
+            )
+
     assert_visible_output_rejects(
         "stage07-field-witness-heading-only",
         visible_probe_base.rsplit("\nfield_witness\n", 1)[0] + "\nfield_witness\nB_LA: B1\n",
@@ -11363,6 +14646,18 @@ def run_self_test(root: Path) -> int:
         "stage07-activegraph-proof-claim",
         visible_probe_base + "\nActiveGraph proof confirms retained closure.\n",
         "Graphify/ActiveGraph proof claim",
+    )
+    assert_visible_output_accepts(
+        "stage07-optional-tooling-proof-nonclaim",
+        visible_probe_base
+        + "\nField diagnostics: dependency and restoration pressure were landed without claiming "
+        + "package, release, Graphify, ActiveGraph, or broad model proof.\n",
+    )
+    assert_visible_output_accepts(
+        "stage07-held-optional-tooling-proof-nonclaim",
+        visible_probe_base
+        + "\nField diagnostics: held routes rechecked: case-library retrieval, release provenance, "
+        + "Graphify proof, and general model behavior remain held; no optional sidecar proof is inferred.\n",
     )
     assert_visible_output_rejects(
         "stage07-duplicate-restorative-response",
@@ -11548,7 +14843,23 @@ def visible_governed_output_errors(output_path: Path) -> list[str]:
         ("guaranteed T_lang uptake claim", r"T_lang guarantees|guaranteed T_lang uptake|guarantees interlocutor uptake"),
         ("Graphify/ActiveGraph proof claim", r"Graphify[^.\n]{0,80}\bproof\b|ActiveGraph[^.\n]{0,80}\bproof\b"),
     ]
-    errors.extend(label for label, pattern in forbidden if re.search(pattern, text, re.IGNORECASE))
+    for label, pattern in forbidden:
+        matches = list(re.finditer(pattern, text, re.IGNORECASE))
+        if label == "Graphify/ActiveGraph proof claim":
+            matches = [
+                match
+                for match in matches
+                if not (
+                    staged_output.OPTIONAL_TOOLING_PROOF_NONCLAIM_RE.search(
+                        staged_output.match_sentence(text, match.start(), match.end())
+                    )
+                    and not staged_output.OPTIONAL_TOOLING_POSITIVE_PROOF_RE.search(
+                        staged_output.match_sentence(text, match.start(), match.end())
+                    )
+                )
+            ]
+        if matches:
+            errors.append(label)
     return errors
 
 
@@ -11588,7 +14899,11 @@ def build_release_field_diagnostics(output_path: Path) -> dict[str, Any]:
     }
 
 
-def run_release_validators(root: Path, output_path: Path) -> dict[str, str]:
+def run_release_validators(
+    root: Path,
+    output_path: Path,
+    per_burden_reread: list[dict[str, Any]],
+) -> dict[str, str]:
     visible_errors = visible_governed_output_errors(output_path)
     if visible_errors:
         raise HarnessError(
@@ -11607,6 +14922,10 @@ def run_release_validators(root: Path, output_path: Path) -> dict[str, str]:
         (
             "formal_reread_state_semantics",
             [sys.executable, str(root / "tools" / "check_formal_reread_state_semantics.py"), "--outputs", str(output_path)],
+        ),
+        (
+            "mid_reread_pressure",
+            [sys.executable, str(root / "tools" / "check_mid_reread_pressure.py"), "--outputs", str(output_path)],
         ),
         (
             "mrp_generated_burden",
@@ -11639,6 +14958,18 @@ def run_release_validators(root: Path, output_path: Path) -> dict[str, str]:
     for key, command in validators:
         require_command_success(command, cwd=root)
         results[key] = "pass"
+        if key == "mid_reread_pressure":
+            parity_errors = staged_output.visible_block_parity_errors(
+                output_path.read_text(encoding="utf-8", errors="replace"),
+                per_burden_reread,
+            )
+            if parity_errors:
+                raise HarnessError(
+                    "stage-07-release-output: MRP record-surface parity failed; visible "
+                    "[Mid-Reread Pressure] blocks must mirror the stage-05 per_burden_reread "
+                    "records verbatim:\n- " + "\n- ".join(parity_errors)
+                )
+            results["mrp_record_surface_parity"] = "pass"
     missing = STAGE07_RELEASE_VALIDATION_KEYS - set(results)
     if missing:
         raise HarnessError(f"stage-07-release-output: internal validator set missing {sorted(missing)}")
@@ -12132,6 +15463,9 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 raw_input_path=raw_input,
                 section_entries=section_entries,
                 output_path=output_path,
+                per_burden_reread=stage05_per_burden_entries(
+                    stage_by_id(stages, "stage-05-mrp-reread-terminal-state")
+                ),
                 target_output_kb=args.target_output_kb,
                 act_partition=act_partition,
                 section_budgets=section_budgets,
@@ -12180,7 +15514,11 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 )
         if not output_path.exists() or output_path.stat().st_size == 0:
             raise HarnessError("stage-07-release-output: output.md was not produced")
-        release_validation = run_release_validators(root, output_path)
+        release_validation = run_release_validators(
+            root,
+            output_path,
+            stage05_per_burden_entries(stage_by_id(stages, "stage-05-mrp-reread-terminal-state")),
+        )
         release_field_diagnostics = build_release_field_diagnostics(output_path)
         stage05 = stage_by_id(stages, "stage-05-mrp-reread-terminal-state") or {}
         stage07 = {

@@ -139,6 +139,12 @@ def state_burden(state: dict[str, Any], key: str) -> str:
     return ids[0] if ids else burden
 
 
+def has_raw_machine_burden(value: Any, burden: str) -> bool:
+    if not BURDEN_ID_RE.fullmatch(burden):
+        return False
+    return re.search(rf"(?<![A-Za-z0-9_]){re.escape(burden)}(?![A-Za-z0-9_])", str(value or "")) is not None
+
+
 def graph_edges_from_value(value: Any) -> list[tuple[str, str]]:
     normalized = normalize_graph_value(graph_normalized_text(value))
     edges: list[tuple[str, str]] = []
@@ -419,7 +425,7 @@ def state_semantics_errors(path: Path, field_witness: dict[str, Any]) -> list[st
             errors.append(f"{label}: source_burden {source} is outside B_total")
         if f"Land({source})" not in graph_normalized_text(item.get("prior_land")):
             errors.append(f"{label}: prior_land must name Land({source})")
-        if source not in burden_ids(graph_normalized_text(item.get("delta"))):
+        if not has_raw_machine_burden(item.get("delta"), source):
             errors.append(f"{label}: delta must name {source}")
         if not formal_reread_values_agree(item.get("reread"), "R(H,Delta)"):
             errors.append(f"{label}: reread must invoke R(H,Delta)")

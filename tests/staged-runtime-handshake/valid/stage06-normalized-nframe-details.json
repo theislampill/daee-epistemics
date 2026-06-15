@@ -2,6 +2,7 @@
   "schema": "staged-runtime-handshake-v1",
   "case_id": "stage06-normalized-nframe-details",
   "mode": "staged-current-skill-stage-local-smoke",
+  "legacy_contract": "pre-per-burden-reread",
   "user_interface_preserved": true,
   "stage_order": [
     "stage-01-intake",

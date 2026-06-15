@@ -314,7 +314,7 @@ PATTERN_PROFILE_LABEL_CARRIER_RE = re.compile(
     r"label as (?:a )?(?:noetic |worldview |identity )?carrier)\b"
 )
 PATTERN_PROFILE_HIDDEN_RULE_RE = re.compile(
-    r"(?is)\b(?:hidden proof rule|proof rule|transmit(?:s|ted)?|noetic grammar|"
+    r"(?is)\b(?:hidden rules?|hidden proof rules?|hidden authority rules?|proof rules?|transmit(?:s|ted)?|noetic grammar|"
     r"compressed grammar|hidden grammar|unnamed owner|does proof work|source or proof burden)\b"
 )
 
