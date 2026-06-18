@@ -422,9 +422,11 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "reorientation-reminder; every slot value must record the real pressure read for THIS "
             "burden and begin with the owner/TTP id, `pressure class:`, or `coverage gap:` that "
             "carried it — placeholder values like none/cleared/n/a are rejected. Consistency is "
-            "enforced: stable requires route STOP and graph_delta none; genuine-dependent requires "
-            "RECURSE and a graph edge; partial-real requires HOLD; any graph edge requires a "
-            "non-none preemption_basis. The required boundary prefix is allowed and required; "
+            "enforced: `divergence` and `curl` are parser-stable single-line diagnostics; do not "
+            "put semicolons or line breaks inside either value. Stable requires route STOP and "
+            "graph_delta none; genuine-dependent requires RECURSE and a graph edge; "
+            "partial-real requires HOLD; any graph edge requires a non-none preemption_basis. "
+            "The required boundary prefix is allowed and required; "
             "do not write affirmative uptake-guarantee claims such as `T_lang guarantees uptake`, "
             "`guaranteed T_lang uptake`, or `guarantees interlocutor uptake` in any "
             "`per_burden_reread` string field. If a later Stage 04 ACT burden / terminal-state "
@@ -1935,6 +1937,7 @@ def normalize_stage05_mrp_fields(stage: dict[str, Any]) -> None:
     canonicalize_stage05_reread_invocation(stage)
     normalize_stage05_stage_level_pressure_activations(stage)
     normalize_stage05_negative_non_edge_public_burden_references(stage)
+    normalize_stage05_diagnostic_punctuation(stage)
     normalize_stage05_linear_dependency_curl(stage)
     normalize_stage05_held_route_gradient_identity(stage)
     normalize_stage05_per_burden_extra_fields(stage)
@@ -2123,6 +2126,37 @@ def normalize_stage05_linear_dependency_curl(stage: dict[str, Any]) -> None:
     if rewrites:
         normalization = normalization_object(stage)
         normalization["linear_dependency_curl_to_null"] = rewrites
+        stage["normalization"] = normalization
+
+
+def normalize_stage05_diagnostic_punctuation(stage: dict[str, Any]) -> None:
+    entries = stage.get("per_burden_reread")
+    if not isinstance(entries, list):
+        return
+    rewrites: list[dict[str, str]] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        burden = str(entry.get("burden_id") or "").strip()
+        for field_name in ("divergence", "curl"):
+            raw = entry.get(field_name)
+            if not isinstance(raw, str):
+                continue
+            canonical = " ".join(raw.splitlines()).replace(";", ",").strip()
+            if canonical == raw:
+                continue
+            entry[field_name] = canonical
+            rewrites.append(
+                {
+                    "burden_id": burden or "<unknown>",
+                    "field": field_name,
+                    "raw": raw,
+                    "canonical": canonical,
+                }
+            )
+    if rewrites:
+        normalization = normalization_object(stage)
+        normalization["diagnostic_punctuation"] = rewrites
         stage["normalization"] = normalization
 
 
@@ -11055,6 +11089,33 @@ def run_self_test(root: Path) -> int:
     ).get("negative_non_edge_public_burden_references")
     if not isinstance(non_edge_events, list) or not non_edge_events:
         raise HarnessError("Self-test Stage 05 negative non-edge sanitation did not record normalization")
+    diagnostic_punctuation_entry = self_test_reread_entry(
+        "B1",
+        curl="∇×κ: resolved / no loop remains inside B1; residual pressure routes to B2",
+    )
+    diagnostic_punctuation_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after the terminal read.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [diagnostic_punctuation_entry],
+        },
+    )
+    sanitized_curl = diagnostic_punctuation_stage05["per_burden_reread"][0]["curl"]
+    if ";" in sanitized_curl:
+        raise HarnessError("Self-test Stage 05 diagnostic punctuation normalizer left semicolon in curl")
+    punctuation_events = (
+        diagnostic_punctuation_stage05.get("normalization") or {}
+    ).get("diagnostic_punctuation")
+    if not isinstance(punctuation_events, list) or not punctuation_events:
+        raise HarnessError("Self-test Stage 05 diagnostic punctuation normalization was not recorded")
     validate_incremental_handoffs([two_burden_stage04, two_stop_stage05])
     continuation_entries = {
         str(entry["burden_id"]): entry
