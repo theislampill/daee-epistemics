@@ -126,6 +126,11 @@ Land(¹B) -> R(H,Δ) -> ²B₁
 Gloss: `ⁿBᵢ` names the i-th operative submove inside the n-th burden-cycle. A burden may
 contain multiple operative submoves before it lands; a submove is not automatically a new
 burden-cycle. A new burden begins only when `Land(B)` and `R(H,Δ)` license it.
+`Contribution-to-Land(Bn)+` / `Land(Bn)+` inside a submove is contribution accounting, not the
+terminal gate. A public line-start `Land(Bn):` is the terminal burden landing: after it appears,
+the next burden-local work must be licensed by an immediate `[Mid-Reread Pressure]` /
+`R(H,Δ)` traversal for that landed burden. Repeating line-start `Land(Bn):` after submoves while
+deferring a single terminal MRP is invalid owner-slot coverage, not recursive execution.
 `Land(B)` is a state transition, not a formatting reward. For both initial `𝔅_LA` burdens and
 generated `𝔅_MRP` burdens, the submoves must have enough owner/TTP mass to change the live field:
 they identify the exact claim, pressure, route, predicate, source-status, consequence, or

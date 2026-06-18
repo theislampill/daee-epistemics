@@ -31,6 +31,7 @@ from delta_result_vocabulary import (
 from register_axis_contract import register_axis_errors
 from stage05_basis_contract import normalize_terminal_detail_basis
 import check_nla_decode_semantic_faithfulness as nla_decode
+import check_mrp_route_invariants as mrp_route_invariants
 import check_retained_proof_corpus as retained
 import build_staged_governed_output as staged_output
 
@@ -158,15 +159,15 @@ STAGE07_RELEASE_VALIDATION_KEYS = {
     "field_witness_convergence",
     "formal_reread_state_semantics",
     "mid_reread_pressure",
+    "mrp_route_invariants",
     "mrp_record_surface_parity",
     "mrp_generated_burden",
     "graph_completeness_json",
-}
-STAGE07_OPTIONAL_VALIDATION_KEYS = {
     "manual_smoke_render_contract",
     "public_burden_grouping",
     "owner_activation_ordering",
 }
+STAGE07_OPTIONAL_VALIDATION_KEYS: set[str] = set()
 RELEASE_DIVERGENCE_STATES = {"neutral", "non-neutral"}
 RELEASE_CURL_STATES = {"null", "resolved", "non-null"}
 REREAD_DIVERGENCE_STATES = {"neutral", "non-neutral", "settled", "residual", "positive", "held"}
@@ -1158,6 +1159,10 @@ def stage07_release_errors(
     visible_errors: list[str] = []
     if output_path is not None and output_text is not None:
         visible_errors = visible_governed_output_errors(label, output_path, output_text)
+        visible_errors.extend(
+            f"{label}: stage-07 public projection integrity: {error}"
+            for error in mrp_route_invariants.check_text(output_path, output_text)
+        )
 
     release_terminal_states = stage07.get("release_terminal_states")
     if not isinstance(release_terminal_states, dict) or not release_terminal_states:
@@ -1417,6 +1422,33 @@ def per_burden_reread_errors(label: str, stage05: dict[str, Any]) -> list[str]:
     return errors
 
 
+def per_burden_reread_coverage_errors(
+    label: str, stage05: dict[str, Any], required_burdens: set[str]
+) -> list[str]:
+    if stage05.get("status") not in PASS_STATUS or len(required_burdens) <= 1:
+        return []
+    if PER_BURDEN_REREAD_FIELD not in stage05:
+        return []
+    entries = stage05.get(PER_BURDEN_REREAD_FIELD)
+    prefix = f"{label}: stage-05 {PER_BURDEN_REREAD_FIELD}"
+    if not isinstance(entries, list) or not entries:
+        return [
+            f"{prefix} must cover every landed ACT burden before multi-burden no_new_resultant closure"
+        ]
+    seen = {
+        entry.get("burden_id")
+        for entry in entries
+        if isinstance(entry, dict) and isinstance(entry.get("burden_id"), str)
+    }
+    missing = sorted(required_burdens - seen)
+    if missing:
+        return [
+            f"{prefix} missing landed ACT burden(s) {missing}; one terminal MRP/no_new_resultant "
+            "cannot cover multiple prior burden landings"
+        ]
+    return []
+
+
 def stage05_mrp_errors(
     label: str,
     stage02: dict[str, Any] | None,
@@ -1475,6 +1507,8 @@ def stage05_mrp_errors(
         unknown_terminal = sorted(terminal_burdens - known_burdens)
         if unknown_terminal:
             errors.append(f"{label}: stage-05 terminal_states names unknown burden(s): {unknown_terminal}")
+    required_reread_burdens = act_burdens | (terminal_burdens & known_burdens)
+    errors.extend(per_burden_reread_coverage_errors(label, stage05, required_reread_burdens))
 
     edge_pairs: set[tuple[str, str]] = set()
     edges = stage05.get("dependency_graph_edges")
@@ -1788,8 +1822,10 @@ def stage04_act_errors(
     duplicate_refs = sorted({ref for ref in act_body_refs if act_body_refs.count(ref) > 1})
     if duplicate_refs:
         errors.append(f"{label}: stage-04 act_body_refs must not contain duplicates: {duplicate_refs}")
+    errors.extend(staged_output.body_ref_grouping_errors(act_body_refs, f"{label}: stage-04 act_body_refs"))
 
     row_refs: set[str] = set()
+    row_ref_sequence: list[str] = []
     row_owners: set[str] = set()
     for index, row in enumerate(act_rows):
         row_label = f"{label}: stage-04 act_rows[{index}]"
@@ -1815,6 +1851,7 @@ def stage04_act_errors(
             errors.append(f"{row_label} must expose a parseable body_ref token")
         else:
             row_refs.add(ref)
+            row_ref_sequence.append(ref)
             if ref not in act_body_refs:
                 errors.append(f"{row_label} body_ref {ref!r} must appear in stage-04 act_body_refs")
             encoded_burden = body_ref_burden_id(ref)
@@ -1830,6 +1867,9 @@ def stage04_act_errors(
     missing_row_refs = sorted(set(act_body_refs) - row_refs)
     if act_body_refs and missing_row_refs:
         errors.append(f"{label}: stage-04 act_body_refs missing from ACT rows: {missing_row_refs}")
+    errors.extend(
+        staged_output.body_ref_grouping_errors(row_ref_sequence, f"{label}: stage-04 ACT row body_ref order")
+    )
 
     owners_by_burden = owner_routes_by_burden(stage03)
     eligible_owners = {owner for owners in owners_by_burden.values() for owner in owners}

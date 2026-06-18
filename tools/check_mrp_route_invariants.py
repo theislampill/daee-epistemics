@@ -4,6 +4,11 @@
 This checker validates runtime invariants that must hold across case families:
 
 - STOP cannot precede later burden or Layer B work.
+- Visible ACT body_ref groups must be contiguous by burden; owner-slot
+  coverage in round-robin order is not runtime traversal.
+- Public line-start Land(Bn) gates require immediate per-burden MRP traversal
+  before later burden work; a single terminal MRP/no_new_resultant cannot cover
+  multiple prior landings.
 - Closure graph edges must be backed by MRP route/resultant records.
 - Directed acyclic downstream pressure belongs to ∇·T, not ∇×T.
 - Formal source/worldview frames with active restoration routes must not flatten to LOCAL CLAIM.
@@ -23,8 +28,17 @@ from check_mid_reread_pressure import (
     curl_diagnostic_errors,
     first_state,
     high_leverage_false_closure_errors,
+    per_land_mrp_coverage_errors,
     parse_mrps,
     stop_before_continuation_errors,
+)
+from check_public_burden_grouping import (
+    ActRecord,
+    burden_group_order,
+    normalize_body_ref,
+    normalize_burden_id,
+    parse_visible_acts,
+    visible_public_body,
 )
 
 
@@ -42,6 +56,10 @@ GRAPH_STOP_RE = re.compile(
     r"(?i)^\s*(?:[-*]\s*)?(?:Terminal states|MRP resultants|field_witness|del-dot|"
     r"∇·B|∇×κ|𝒞|T_lang|Restorative Response|Closing Formulation)\b"
 )
+MRP_HEADING_LINE_RE = re.compile(
+    r"(?im)^\s*(?:#{1,6}\s*)?(?:[-*]\s*)?(?:\*\*)?\[Mid-Reread Pressure\](?:\*\*)?\s*$"
+)
+LAND_GATE_LINE_RE = re.compile(r"(?m)^Land\((?P<burden>[¹²³⁴⁵⁶⁷⁸⁹]B|B[1-9][0-9]*)\):")
 DOWNSTREAM_LIVE_RE = re.compile(
     r"(?i)\b(?:B\d+\b.*\bremain(?:s)? live|downstream burden(?:s)? remain|"
     r"later burden(?:s)? remain|next burden remains|B\d+\b.*\bfollows)\b"
@@ -265,11 +283,150 @@ def graph_delta_route_errors(path: Path, block: MrpBlock, label: str) -> list[st
     return errors
 
 
+def burden_number(burden_id: str) -> int:
+    match = re.fullmatch(r"B([1-9][0-9]*)", burden_id)
+    return int(match.group(1)) if match else 0
+
+
+def visible_act_order_errors(path: Path, text: str) -> list[str]:
+    public_body = visible_public_body(text)
+    records = parse_visible_acts(public_body)
+    if not records:
+        return []
+
+    errors: list[str] = []
+    groups = [burden for burden in burden_group_order(records) if burden]
+    if len(groups) <= 1:
+        return errors
+
+    unique_groups = list(dict.fromkeys(groups))
+    if len(groups) > len(unique_groups):
+        errors.append(
+            f"{path}: visible ACT body_ref groups are interleaved ({' -> '.join(groups)}); "
+            "coverage-complete owner slots are not runtime MRP traversal"
+        )
+
+    first_group_index: dict[str, int] = {}
+    previous_number = 0
+    for index, burden_id in enumerate(groups):
+        if burden_id in first_group_index:
+            span = " -> ".join(groups[first_group_index[burden_id] : index + 1])
+            errors.append(
+                f"{path}: visible ACT body_ref order is non-contiguous by burden: "
+                f"{burden_id} reappears in {span}"
+            )
+        else:
+            first_group_index[burden_id] = index
+
+        number = burden_number(burden_id)
+        if number and number < previous_number:
+            errors.append(
+                f"{path}: visible ACT burden order moves from a later burden back to {burden_id}; "
+                "Land(Bn) -> R(H,Delta) must license the next burden before later work"
+            )
+        previous_number = max(previous_number, number)
+    return errors
+
+
+def terminal_mrp_cannot_cover_prior_land_errors(path: Path, text: str) -> list[str]:
+    blocks = parse_mrps(text)
+    if len(blocks) != 1:
+        return []
+    block = blocks[0]
+    if block.route != "STOP" or block.route_result_type != "no_new_resultant":
+        return []
+
+    heading = MRP_HEADING_LINE_RE.search(text)
+    if heading is None:
+        return []
+    target = normalize_burden_id(block.target)
+    prior_land_burdens = []
+    for match in LAND_GATE_LINE_RE.finditer(text):
+        if match.start() >= heading.start():
+            break
+        burden = normalize_burden_id(match.group("burden"))
+        if burden and burden != target:
+            prior_land_burdens.append(burden)
+    prior_land_burdens = list(dict.fromkeys(prior_land_burdens))
+    if not prior_land_burdens:
+        return []
+    return [
+        f"{path}: terminal no_new_resultant/STOP at {target or 'final MRP'} cannot cover "
+        f"prior public Land gates {', '.join(prior_land_burdens)}; each landed burden "
+        "requires visible R(H,Delta)/MRP traversal before the next burden-local work"
+    ]
+
+
+def visible_record_start_by_ref(records: list[ActRecord]) -> dict[str, int]:
+    starts: dict[str, int] = {}
+    for record in records:
+        starts.setdefault(record.body_ref, record.start)
+    return starts
+
+
+def false_no_new_resultant_sidecar_errors(path: Path, text: str) -> list[str]:
+    payload = field_witness_object(text)
+    if not isinstance(payload, dict):
+        return []
+    activations = payload.get("owner_activations")
+    if not isinstance(activations, list):
+        return []
+
+    records = parse_visible_acts(visible_public_body(text))
+    starts = visible_record_start_by_ref(records)
+    errors: list[str] = []
+    for item in activations:
+        if not isinstance(item, dict):
+            continue
+        route_type = str(item.get("mrp_route_result_type") or "").strip()
+        if route_type != "no_new_resultant":
+            continue
+        body_ref = normalize_body_ref(item.get("body_ref"))
+        start = starts.get(body_ref)
+        if start is None:
+            continue
+        later = next((record for record in records if record.start > start), None)
+        if later is None:
+            continue
+        errors.append(
+            f"{path}: no_new_resultant claimed for {body_ref} before later visible ACT "
+            f"{later.body_ref}; sidecar/formal closure cannot license STOP ahead of public traversal"
+        )
+        if len(errors) >= 5:
+            errors.append(f"{path}: additional premature no_new_resultant sidecar claims suppressed")
+            break
+    return errors
+
+
+def sidecar_laundering_errors(path: Path, text: str, visible_errors: list[str]) -> list[str]:
+    if not visible_errors:
+        return []
+    if not re.search(
+        r"(?im)^\s*(?:#{1,6}\s*)?(?:field_witness|formal_reread_states|normalized_activation_record)\b",
+        text,
+    ):
+        return []
+    return [
+        f"{path}: field_witness/formal reread closure cannot compensate for missing visible runtime traversal"
+    ]
+
+
+def visible_runtime_traversal_errors(path: Path, text: str) -> list[str]:
+    errors: list[str] = []
+    errors.extend(visible_act_order_errors(path, text))
+    errors.extend(per_land_mrp_coverage_errors(path, text))
+    errors.extend(terminal_mrp_cannot_cover_prior_land_errors(path, text))
+    errors.extend(false_no_new_resultant_sidecar_errors(path, text))
+    errors.extend(sidecar_laundering_errors(path, text, errors))
+    return errors
+
+
 def check_text(path: Path, text: str) -> list[str]:
     errors: list[str] = []
     errors.extend(stop_before_continuation_errors(path, text))
     errors.extend(closure_over_held_route_errors(path, text))
     errors.extend(mixed_field_errors(path, text))
+    errors.extend(visible_runtime_traversal_errors(path, text))
 
     blocks = parse_mrps(text)
     for index, block in enumerate(blocks, start=1):

@@ -68,6 +68,9 @@ operator_pack_eligible: true
   a compact `[Mid-Reread Pressure]` block for every burden-cycle route, because otherwise legacy
   `R(H,Δ)` can masquerade as pressure execution. Ordinary compact answers omit the block only when
   no burden-cycle route, HOLD/PARTIAL, LoopBreak, next burden, or closure is being released.
+  Submove-local `Contribution-to-Land(Bn)+` / `Land(Bn)+` text records contribution only. A
+  public line-start `Land(Bn):` is terminal for that burden and immediately obligates
+  `[Mid-Reread Pressure]` / `R(H,Δ)` before the output resumes later burden work.
   `T_lang: Ψᴺ ⇢ Ψᴵ` remains partial coupling and does
   not imply guaranteed uptake.
 - Negative constraints: no guaranteed uptake claim, no psychological acceptance claim, no proof-by-symbol,

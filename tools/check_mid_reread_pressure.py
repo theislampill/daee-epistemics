@@ -84,7 +84,7 @@ MRP_BLOCK_RE = re.compile(
     + r"|^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+\b|Closure/Reconstruction Witness\b|"
     r"Closure Audit\b|Restorative Response\b|Closing Formulation\b)|\Z)"
 )
-LAND_GATE_RE = re.compile(r"(?m)^Land\((?P<burden>[¹²³⁴⁵⁶⁷⁸⁹]B)\):")
+LAND_GATE_RE = re.compile(r"(?m)^Land\((?P<burden>[¹²³⁴⁵⁶⁷⁸⁹]B|B[1-9][0-9]*)\):")
 STOP_ROUTE_RE = re.compile(r"(?im)^\s*Route\s*:\s*STOP\b")
 POST_STOP_CONTINUATION_RE = re.compile(
     r"(?im)^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+\b|Layer B\b|.*Layer B\s*[-—]\s*Governed Operation Body\b)"
@@ -713,8 +713,8 @@ def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[st
 def per_land_mrp_coverage_errors(path: Path, text: str) -> list[str]:
     """Require one visible MRP block per line-start landing gate.
 
-    Canonical per-burden MRP visibility: every public `Land(ⁿB):` landing gate
-    must be followed by a `[Mid-Reread Pressure]` heading before the next
+    Canonical per-burden MRP visibility: every public `Land(ⁿB):` / `Land(Bn):`
+    landing gate must be followed by a `[Mid-Reread Pressure]` heading before the next
     landing gate (or end of output for the final burden). A single terminal
     block covering multiple landings is the staged-shape projection-thinning
     failure class: per-burden reread state then lives only in

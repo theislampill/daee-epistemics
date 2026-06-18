@@ -35,6 +35,14 @@ original wording as historical facts and are not retroactively rewritten; see
 
 ## v0.4.5.0 Release Package / Provenance Status
 
+Post-publication blocker (2026-06-18): v0.4.5.0 remains a historically
+published artifact, but proof closure/readiness is blocked after discovery of a
+secularism ACT/MRP false-pass where public output used round-robin ACT body
+ordering and terminal MRP sidecar agreement instead of visible per-burden
+`Land(Bn) -> R(H,Delta)` traversal. See
+`docs/audits/v0.4.5.0-act-mrp-false-pass-hardening.md`. Do not treat the
+publication facts below as current release-readiness authorization.
+
 v0.4.5.0 public artifact status: published after structural-integrity hardening
 and Cycle63 four-smoke branch-matrix closure. The package is built from the
 merged source boundary `4a85628a5be8194611ec2b303bc491e6281d75ed`. The

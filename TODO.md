@@ -70,6 +70,31 @@ mixed evidence, proposal, and release claims.
 
 ## Active
 
+### [MUST][checker][fixture][docs][release][blocker] v0.4.5.0 ACT/MRP False-Pass Hardening
+
+- Problem: a secularism output that visibly emits ACT rows in round-robin owner-slot
+  order (`B1_1, B2_1, B3_1, B4_1`, then later `B1_2...`) was able to look
+  sidecar-consistent while missing public `Land(Bn) -> [Mid-Reread Pressure] ->
+  R(H,Delta)` traversal after each burden.
+- Source surfaces: `atomics/skill/references/diagnostics/recursive-state-transitions.md`
+  and `atomics/skill/references/tactics/TTP-MRP-mid-reread-pressure.md`.
+- Checker/fixture surfaces: `tools/check_mrp_route_invariants.py`,
+  `tools/check_mid_reread_pressure.py`,
+  `tools/check_staged_runtime_handshake.py`,
+  `tools/build_staged_runtime_replay_record.py`,
+  `tools/run_staged_current_skill_smoke.py`,
+  `tests/mrp-route-invariants/invalid/secularism-round-robin-act-terminal-mrp-false-pass.md`,
+  `tests/mid-reread-pressure/invalid/ascii-multi-land-single-terminal-mrp.md`,
+  and staged-runtime handshake invalid canaries for non-contiguous body refs and
+  thinned per-burden reread coverage.
+- Release boundary: v0.4.5.0 public artifact facts remain historical, but proof
+  closure/readiness is blocked until this false-pass hardening is reviewed,
+  committed, run through CI, and any future package/release gate is explicitly
+  opened by the maintainer. Do not tag, publish, or claim release readiness from
+  this local patch.
+- Status: active release blocker with local hardening patch and validation evidence
+  in progress; not a green release state.
+
 ### [MUST][checker][source] Current Canon Checker Anchors
 
 - Problem: current-canon metacompliance intentionally verifies that TODO still

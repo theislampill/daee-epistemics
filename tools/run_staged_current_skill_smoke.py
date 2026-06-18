@@ -201,6 +201,7 @@ STAGE07_RELEASE_VALIDATION_ORDER = (
     "field_witness_convergence",
     "formal_reread_state_semantics",
     "mid_reread_pressure",
+    "mrp_route_invariants",
     "mrp_record_surface_parity",
     "mrp_generated_burden",
     "graph_completeness_json",
@@ -14515,6 +14516,7 @@ def run_self_test(root: Path) -> int:
         "field_witness_convergence": "pass",
         "formal_reread_state_semantics": "pass",
         "mid_reread_pressure": "pass",
+        "mrp_route_invariants": "pass",
         "mrp_record_surface_parity": "pass",
         "mrp_generated_burden": "pass",
         "graph_completeness_json": "pass",
@@ -14926,6 +14928,10 @@ def run_release_validators(
         (
             "mid_reread_pressure",
             [sys.executable, str(root / "tools" / "check_mid_reread_pressure.py"), "--outputs", str(output_path)],
+        ),
+        (
+            "mrp_route_invariants",
+            [sys.executable, str(root / "tools" / "check_mrp_route_invariants.py"), "--outputs", str(output_path)],
         ),
         (
             "mrp_generated_burden",

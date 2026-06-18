@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 import check_nla_decode_semantic_faithfulness as nla_decode
+import check_mrp_route_invariants as mrp_route_invariants
 import check_retained_proof_corpus as retained
 import check_staged_runtime_handshake as staged
 
@@ -160,6 +161,10 @@ def parsed_output_evidence(output_path: Path) -> tuple[dict[str, Any], list[Any]
     field_witness, errors = nla_decode.parse_field_witness(output_path, text)
     records, parse_errors = nla_decode.parse_act_records(nla_decode.public_execution_text(text))
     errors.extend(f"{rel(output_path)}: {error}" for error in parse_errors)
+    errors.extend(
+        f"{rel(output_path)}: public projection integrity: {error}"
+        for error in mrp_route_invariants.check_text(output_path, text)
+    )
     if field_witness is None:
         return {}, records, errors
     return field_witness, records, errors
@@ -341,6 +346,7 @@ def build_record(manifest_path: Path, case_id: str) -> tuple[dict[str, Any] | No
     bindings["parsed_evidence"] = {
         "field_witness": True,
         "visible_act_records": len(records),
+        "visible_runtime_traversal": True,
         "normalized_activation_record": True,
         "b5_full_ir_projection_sidecar": staged.B5_RETAINED_SIDECAR_FIELD in paths,
     }
@@ -414,13 +420,14 @@ def build_record(manifest_path: Path, case_id: str) -> tuple[dict[str, Any] | No
             {
                 "id": "stage-07-release-output",
                 "status": "pass",
-                "produces": ["release_output", "release_terminal_states"],
+                "produces": ["release_output", "release_terminal_states", "public_projection_integrity"],
                 "requires": ["field_witness_body_refs", "nar_burdens"],
                 "release_output": {
                     "path": rel(paths["output"]),
                     "sha256": str(case.get("hashes", {}).get("output")).upper(),
                 },
                 "release_terminal_states": terminal_states,
+                "public_projection_integrity": True,
                 "closure_claim": "complete",
                 "output_is_full_governed_answer": True,
             },
@@ -428,7 +435,7 @@ def build_record(manifest_path: Path, case_id: str) -> tuple[dict[str, Any] | No
                 "id": "stage-08-verifier-sidecars",
                 "status": "pass",
                 "produces": ["verifier_sidecars"],
-                "requires": ["release_output"],
+                "requires": ["release_output", "public_projection_integrity"],
                 "verifier_sidecars": {
                     "b5_4_1": {
                         "claimed": staged.B5_RETAINED_SIDECAR_FIELD in paths,
