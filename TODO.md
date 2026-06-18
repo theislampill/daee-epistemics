@@ -68,9 +68,7 @@ mixed evidence, proposal, and release claims.
   this as active v0.4.3.5 release authorization, and do not cite it as current
   proof-corpus or docs-truthfulness evidence.
 
-## Active
-
-### [MUST][checker][fixture][docs][release][blocker] v0.4.5.0 ACT/MRP False-Pass Hardening
+### [DONE][checker][fixture][docs][release] v0.4.5.0 ACT/MRP False-Pass Hardening
 
 - Problem: a secularism output that visibly emits ACT rows in round-robin owner-slot
   order (`B1_1, B2_1, B3_1, B4_1`, then later `B1_2...`) was able to look
@@ -87,13 +85,15 @@ mixed evidence, proposal, and release claims.
   `tests/mid-reread-pressure/invalid/ascii-multi-land-single-terminal-mrp.md`,
   and staged-runtime handshake invalid canaries for non-contiguous body refs and
   thinned per-burden reread coverage.
-- Release boundary: v0.4.5.0 public artifact facts remain historical, but proof
-  closure/readiness is blocked until this false-pass hardening is reviewed,
-  committed, run through CI, and any future package/release gate is explicitly
-  opened by the maintainer. Do not tag, publish, or claim release readiness from
-  this local patch.
-- Status: active release blocker with local hardening patch and validation evidence
-  in progress; not a green release state.
+- Release boundary: v0.4.5.0 was replaced on 2026-06-18 only after the
+  hardening commits were pushed/read back, CI/Pages passed, no-model canaries
+  passed, Smoke C passed 4/4, the package/provenance pair was rebuilt, and
+  GitHub tag/assets/body/downloads were read back.
+- Status: completed for v0.4.5.0 release-repair scope. Keep the fixture/checker
+  class as a regression guard; do not treat this as arbitrary-input correctness
+  or cross-host/paraphrase proof.
+
+## Active
 
 ### [MUST][checker][source] Current Canon Checker Anchors
 

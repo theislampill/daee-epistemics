@@ -35,38 +35,33 @@ original wording as historical facts and are not retroactively rewritten; see
 
 ## v0.4.5.0 Release Package / Provenance Status
 
-Post-publication blocker (2026-06-18): v0.4.5.0 remains a historically
-published artifact, but proof closure/readiness is blocked after discovery of a
-secularism ACT/MRP false-pass where public output used round-robin ACT body
-ordering and terminal MRP sidecar agreement instead of visible per-burden
-`Land(Bn) -> R(H,Delta)` traversal. See
-`docs/audits/v0.4.5.0-act-mrp-false-pass-hardening.md`. Do not treat the
-publication facts below as current release-readiness authorization.
-
-v0.4.5.0 public artifact status: published after structural-integrity hardening
-and Cycle63 four-smoke branch-matrix closure. The package is built from the
-merged source boundary `4a85628a5be8194611ec2b303bc491e6281d75ed`. The
-`.skill.zip` file is a local build intermediate only and was not uploaded.
+v0.4.5.0 public artifact status: replaced on 2026-06-18 after the ACT/MRP
+round-robin false-pass hardening and fresh 4/4 Smoke C matrix. The original
+2026-06-15 publication from source boundary
+`4a85628a5be8194611ec2b303bc491e6281d75ed` is superseded. The current package
+is built from hardening source boundary
+`8c14e28fbcf440275f4d143a9b7cadc6148aa5a9`. The `.skill.zip` file is a local
+build intermediate only and was not uploaded.
 
 | Field | Value |
 | --- | --- |
 | Package filename | `daee-epistemics-v0.4.5.0.skill` |
 | Local zip build | `build/daee-epistemics-v0.4.5.0.skill.zip` |
 | Local package copy | `build/daee-epistemics-v0.4.5.0.skill` |
-| SHA256 | `011E5EAA603747E126A0E403B9F22174043936E827235F423314D312ECE43CE0` |
-| Size | `711590` bytes |
+| SHA256 | `67FF081EF34B9CBE3BF03309F03DFAEF1C8D471640CED715D299A90344DFAB6F` |
+| Size | `711841` bytes |
 | Entries | `21` |
-| Source commit recorded in provenance | `4a85628a5be8194611ec2b303bc491e6281d75ed` |
-| Source state | v0.4.4.x structural-integrity merge, Cycle63 four-smoke matrix PASS, RELEASE_REGRESSION_PASS, DOCUMENT_INVARIANT_READBACK_PASS, and post-merge CI/checker battery PASS before package publication |
+| Source commit recorded in provenance | `8c14e28fbcf440275f4d143a9b7cadc6148aa5a9` |
+| Source state | ACT/MRP false-pass hardening with retained invalid secularism fixture, intermediate continuation normalization, Stage05 diagnostic punctuation normalization, no-model canaries PASS, Smoke C 4/4 matrix PASS, release replacement readback PASS |
 | Branch | `main` |
 | Contract version | `0.4.0.0` |
 | Source/runtime tracking status | `atomics/skill/**` tracked; `skill/**` ignored/generated except force-tracked `skill/SKILL.md` freshness-gate surface |
-| Generated runtime manifest SHA256 | `CFC21BDFCF7725EF451FD1CD6DD87DB59EE066B971CF8BE1DBB146A518C7F6E7` |
-| Compiled module map SHA256 | `D00D8A752B766978D5A949CF5304489AD9E78EF7EF0D14610E7877E256837800` |
-| GitHub Release visibility | Published at `https://github.com/theislampill/daee-epistemics/releases/tag/v0.4.5.0`; annotated tag peels to `4a85628a5be8194611ec2b303bc491e6281d75ed` |
+| Generated runtime manifest SHA256 | `28F55E498E698F2E185EF0EFD64A633571C24ACC05A9DA14B5BFAE97D6C4A02D` |
+| Compiled module map SHA256 | `6B31DF9899A64B837D96D8EF9AD786F066ABE2C5395FB76147BE7C1F58540C56` |
+| GitHub Release visibility | Published at `https://github.com/theislampill/daee-epistemics/releases/tag/v0.4.5.0`; annotated tag peels to `8c14e28fbcf440275f4d143a9b7cadc6148aa5a9` |
 | Provenance file | Release asset: `daee-epistemics-v0.4.5.0.provenance.json` generated from `build/daee-epistemics-v0.4.5.0.provenance.json` |
-| Provenance SHA256 | `FEAA465CC0606F6883C4DCD386102ADEE5A0E29CDBABE189D82F4137497B63EC` |
-| Package-bound proof | Cycle63 4/4 one-shot matrix passed Stage07, MRP parity, Stage08, and direct validators before release authorization; post-merge CI PASS; post-merge no-model release battery PASS; package artifact validation PASS; self-contained package PASS; local and downloaded provenance checks PASS. Cross-host/paraphrase proof, arbitrary-input correctness, and guaranteed `T_lang` uptake are not claimed. |
+| Provenance SHA256 | `E0BE60F71D78184206846918AE9329B5CF28378F297338E74A6B181381324239` |
+| Package-bound proof | The historical false-pass output is rejected by `tools/check_mrp_route_invariants.py`; no-model canaries passed; Smoke C 4/4 one-shot matrix passed Stage07, MRP parity, Stage08, and direct validators before release replacement; package artifact validation PASS; self-contained package PASS; local and downloaded provenance checks PASS. Cross-host/paraphrase proof, arbitrary-input correctness, and guaranteed `T_lang` uptake are not claimed. |
 
 The v0.4.5.0 release assets include the canonical `.skill` payload and package
 provenance JSON only:
@@ -74,18 +69,15 @@ provenance JSON only:
 - `daee-epistemics-v0.4.5.0.skill`
 - `daee-epistemics-v0.4.5.0.provenance.json`
 
-No `.skill.zip` asset was uploaded. The `.skill` payload bytes are unchanged
-from v0.4.4.0; v0.4.5.0 records the structural-integrity source/checker
-hardening, release-regression readbacks, and Cycle63 evidence boundary. Raw
-Cycle63 smoke artifacts remain local custody/proof evidence and are not release
-assets. OSM/CSCG was an aliasing and hidden-state audit lens only, not release
-proof. No cross-host/paraphrase proof, guaranteed `T_lang` uptake, or universal
-semantic grading is claimed.
+No `.skill.zip` asset was uploaded. Raw Smoke C artifacts remain local
+custody/proof evidence and are not release assets. OSM/CSCG was an aliasing and
+hidden-state audit lens only, not release proof. No cross-host/paraphrase proof,
+guaranteed `T_lang` uptake, or universal semantic grading is claimed.
 
 The downloaded package/provenance pair is checked with:
 
 ```powershell
-python tools/check_release_provenance.py --provenance build\download-verify-v0.4.5.0-20260615\daee-epistemics-v0.4.5.0.provenance.json --package build\download-verify-v0.4.5.0-20260615\daee-epistemics-v0.4.5.0.skill --manifest skill\build-manifest.json --compiled-map skill\compiled-module-map.json
+python tools/check_release_provenance.py --provenance .daee\release-readback\v0.4.5.0-repair-20260618-0755\daee-epistemics-v0.4.5.0.provenance.json --package .daee\release-readback\v0.4.5.0-repair-20260618-0755\daee-epistemics-v0.4.5.0.skill --manifest skill\build-manifest.json --compiled-map skill\compiled-module-map.json
 ```
 
 ## v0.4.4.0 Release Package / Provenance Status

@@ -14,8 +14,8 @@ sweep moves them.
 | Path | Status | Note |
 |---|---|---|
 | `docs/release-artifacts.md` | ACTIVE CURRENT TRUTH | Release package/provenance evidence ledger and proof boundaries. |
-| `docs/audits/v0.4.5.0-act-mrp-false-pass-hardening.md` | ACTIVE RELEASE BLOCKER | 2026-06-18 ACT/MRP round-robin false-pass hardening note; v0.4.5.0 proof closure/readiness remains blocked until reviewed, CI-green, and explicitly release-gated. |
-| `docs/audits/v0.4.5.0-release-repair-replacement.md` | ACTIVE RELEASE REPAIR | Public v0.4.5.0 custody snapshot and replacement gate ledger for the already-published release after ACT/MRP false-pass hardening. |
+| `docs/audits/v0.4.5.0-act-mrp-false-pass-hardening.md` | COMPLETED RELEASE HARDENING | 2026-06-18 ACT/MRP round-robin false-pass hardening note; retained invalid fixture and checker/runtime guardrails are release-gated into the replaced v0.4.5.0 public assets. |
+| `docs/audits/v0.4.5.0-release-repair-replacement.md` | COMPLETED RELEASE REPAIR | Public v0.4.5.0 custody snapshot, countermeasure loop, Smoke C proof, package rebuild, and tag/asset/body/download readback ledger. |
 | `docs/package-smoke-readiness.md` | ACTIVE CURRENT TRUTH | Package-smoke runbook, strict witness gate, and deferred expanded-smoke slots. |
 | `docs/v0.4.3.0-release-notes.md` | ACTIVE CURRENT TRUTH | v0.4.3.0 release notes for closure reconstructibility, `field_witness`, visualizer, MRP, proof boundaries, and caveats. |
 | `docs/v0.4.3.0-release-log.md` | ACTIVE CURRENT TRUTH | v0.4.3.0 package artifact facts, proof boundary, and release step log. |
