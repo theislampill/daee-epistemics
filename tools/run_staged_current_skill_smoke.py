@@ -427,7 +427,12 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "non-none preemption_basis. The required boundary prefix is allowed and required; "
             "do not write affirmative uptake-guarantee claims such as `T_lang guarantees uptake`, "
             "`guaranteed T_lang uptake`, or `guarantees interlocutor uptake` in any "
-            "`per_burden_reread` string field. "
+            "`per_burden_reread` string field. If a later Stage 04 ACT burden / terminal-state "
+            "burden remains in the same output, the current row must not claim "
+            "`STOP`/`no_new_resultant`, even when that later burden was already routed or executed. "
+            "Instead set `route_result_type` to `held_burden_activation`, `finding` to "
+            "`genuine-dependent`, `route` to `RECURSE`, `graph_delta` to the concrete ASCII edge "
+            "`Bn -> Bm`, and `preemption_basis` to `graph-bound` for the next already-held burden. "
             "Return one syntactically valid JSON object only: every array item must have exactly "
             "one object-closing brace before a comma, every string quote inside a value must be "
             "escaped, and no prose or second object may appear outside the root object. "
@@ -5717,8 +5722,7 @@ def normalize_stage05_initial_burden_continuations(
         if not stage05_closed_terminal_state(terminal_states.get(source)):
             continue
         if (
-            str(entry.get("finding") or "") != "stable"
-            or str(entry.get("route_result_type") or "") != "no_new_resultant"
+            str(entry.get("route_result_type") or "") != "no_new_resultant"
             or str(entry.get("route") or "") != "STOP"
             or str(entry.get("graph_delta") or "") != "none"
             or str(entry.get("preemption_basis") or "") != "none"
@@ -11125,6 +11129,82 @@ def run_self_test(root: Path) -> int:
         for edge in two_stop_stage05.get("dependency_graph_edges", [])
     ):
         raise HarnessError("Self-test failed to record held_burden_activation edge for intermediate STOP")
+    three_burden_act_rows = [
+        *two_burden_act_rows,
+        (
+            "⟦ACT ³B₁[authority-order-repair.authority-order-repair] :: "
+            "π=authority-order-pressure :: body_ref=³B₁ :: "
+            "Δ=Δ³B:authority-order-repaired :: Land(³B)+⟧"
+        ),
+    ]
+    three_burden_stage04 = normalized_stage(
+        "stage-04-burden-execution-act",
+        {
+            "id": "stage-04-burden-execution-act",
+            "status": "pass",
+            "act_targets": ["B1", "B2", "B3"],
+            "act_burdens": ["B1", "B2", "B3"],
+            "act_rows": three_burden_act_rows,
+            "act_row_details": self_test_act_row_details(
+                three_burden_act_rows,
+                {"¹B₁": "σ", "²B₁": "κ", "³B₁": "σ"},
+            ),
+        },
+    )
+    b2_hidden_stop_entry = self_test_reread_entry(
+        "B2",
+        reread=(
+            "R(H,Δ): held routes rechecked: dependency; live remainder: B3 covers the "
+            "authority-order implication; release/next: STOP with B2 landed."
+        ),
+        route_gradient=(
+            "plain-gradient hands the authority-order implication to already-executed B3."
+        ),
+        divergence="∇·B: non-neutral / hidden-framework recoil remains ordered toward B3",
+        curl="∇×κ: resolved / no dependency loop remains",
+        finding="hidden-framework-recoil",
+        route_result_type="no_new_resultant",
+        mrp_resultant="No new resultant burden because B3 covers the implication.",
+        graph_delta="none",
+        preemption_basis="none",
+        route="STOP",
+    )
+    nonstable_intermediate_stop_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "landed", "B3": "landed"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": True,
+                "basis": "No generated MRP burden emerged after the terminal reads.",
+                "unresolved_burdens": [],
+            },
+            "per_burden_reread": [
+                self_test_reread_entry("B1", next_burden_id="B2"),
+                b2_hidden_stop_entry,
+                self_test_reread_entry("B3"),
+            ],
+        },
+    )
+    validate_incremental_handoffs([three_burden_stage04, nonstable_intermediate_stop_stage05])
+    nonstable_entries = {
+        str(entry["burden_id"]): entry
+        for entry in nonstable_intermediate_stop_stage05["per_burden_reread"]
+    }
+    b2_continuation = nonstable_entries["B2"]
+    if b2_continuation.get("route_result_type") != "held_burden_activation":
+        raise HarnessError("Self-test failed to normalize non-stable intermediate STOP into held_burden_activation")
+    if b2_continuation.get("finding") != "genuine-dependent":
+        raise HarnessError("Self-test failed to normalize non-stable intermediate finding to genuine-dependent")
+    if b2_continuation.get("route") != "RECURSE" or b2_continuation.get("graph_delta") != "B2 -> B3":
+        raise HarnessError("Self-test failed to normalize non-stable intermediate route/graph continuation")
+    if not any(
+        stage05_edge_endpoints(edge) == ("B2", "B3", "held_burden_activation")
+        for edge in nonstable_intermediate_stop_stage05.get("dependency_graph_edges", [])
+    ):
+        raise HarnessError("Self-test failed to record held_burden_activation edge for non-stable intermediate STOP")
     string_edges = stage05_dependency_edges(
         {"dependency_graph_edges": ["B1 -> B2", "¹B → ²B"]}
     )

@@ -34,6 +34,7 @@ from check_mid_reread_pressure import (
 )
 from check_public_burden_grouping import (
     ActRecord,
+    body_ref_burden_id,
     burden_group_order,
     normalize_body_ref,
     normalize_burden_id,
@@ -385,7 +386,15 @@ def false_no_new_resultant_sidecar_errors(path: Path, text: str) -> list[str]:
         start = starts.get(body_ref)
         if start is None:
             continue
-        later = next((record for record in records if record.start > start), None)
+        source_burden = body_ref_burden_id(body_ref)
+        later = next(
+            (
+                record
+                for record in records
+                if record.start > start and (not source_burden or record.burden_id != source_burden)
+            ),
+            None,
+        )
         if later is None:
             continue
         errors.append(
