@@ -455,6 +455,32 @@ def iter_fixtures(root: Path) -> tuple[list[Path], list[Path]]:
     return sorted((root / "valid").glob("*.md")), sorted((root / "invalid").glob("*.md"))
 
 
+def expected_diagnostic_failures(fixture_path: Path, emitted: list[str]) -> list[str]:
+    """Optional expected-diagnostic sidecar (schema expected-diagnostic-v1); see
+    docs/fixture-taxonomy.md. If <fixture-stem>.expected.json exists next to an
+    invalid fixture, require every expected_error_substrings entry (>= 12 chars, not
+    the fixture name/path) to appear in an emitted error, pinning the fixture to fail
+    for the RIGHT reason. Opt-in: a fixture without a sidecar is unaffected."""
+    sidecar = fixture_path.parent / (fixture_path.stem + ".expected.json")
+    if not sidecar.is_file():
+        return []
+    out: list[str] = []
+    data = json.loads(sidecar.read_text(encoding="utf-8"))
+    if data.get("schema") != "expected-diagnostic-v1":
+        return [f"{sidecar}: schema must be 'expected-diagnostic-v1'"]
+    if data.get("fixture") != fixture_path.name:
+        out.append(f"{sidecar}: fixture must be {fixture_path.name!r}")
+    blob = "\n".join(emitted)
+    for sub in data.get("expected_error_substrings", []):
+        if not isinstance(sub, str) or len(sub) < 12:
+            out.append(f"{sidecar}: expected_error_substrings entry must be a string >= 12 chars: {sub!r}")
+        elif sub in {fixture_path.name, str(fixture_path)}:
+            out.append(f"{sidecar}: expected_error_substrings must not equal the fixture path/name")
+        elif sub not in blob:
+            out.append(f"{fixture_path}: expected diagnostic not observed: {sub!r}")
+    return out
+
+
 def run_check(root: Path, outputs: list[Path]) -> tuple[list[str], int, int, int]:
     errors: list[str] = []
     valid, invalid = iter_fixtures(root)
@@ -474,6 +500,7 @@ def run_check(root: Path, outputs: list[Path]) -> tuple[list[str], int, int, int
             errors.append(f"{path}: expected-invalid MRP route invariant fixture unexpectedly passed")
         else:
             invalid_checked += 1
+            errors.extend(expected_diagnostic_failures(path, found))
     for path in outputs:
         found = check_text(path, read_text(path))
         if found:

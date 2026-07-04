@@ -110,8 +110,8 @@ invalid loop, when a sidecar is present, additionally requires every
 Rules: each substring is `>= 12` chars and must not equal the fixture name/path
 (rejects trivial pins). Sidecars are opt-in — a fixture without one is unaffected,
 so existing checker behavior is preserved. Consumed today by
-`check_tlang_response_closure`; extending the other route checkers is a
-follow-up slice.
+`check_tlang_response_closure` and `check_mrp_route_invariants`; extending
+`check_mid_reread_pressure` is a follow-up slice.
 
 ## 6. What this does not establish
 
