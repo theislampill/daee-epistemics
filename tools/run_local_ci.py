@@ -79,6 +79,8 @@ COMMANDS = [
     "python tools/check_trinitarian_mrp_hotfix.py",
     "python tools/check_ttp_operator_contracts.py --strict",
     "python tools/check_negative_example_mimicry.py",
+    "python tools/check_profile_vocabulary_hygiene.py --self-test",
+    "python tools/check_profile_vocabulary_hygiene.py",
     "python tools/check_spec_authoring_pack.py",
     "python tools/check_docs_index_interactions.py",
     "python tools/check_field_operator_architecture.py",
