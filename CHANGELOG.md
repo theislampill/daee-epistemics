@@ -281,6 +281,13 @@ packaged.
 - Release-history terms such as clean default, live door, State Refresh, and full audit do not
   describe current runtime guidance unless explicitly marked historical.
 
+## [v0.4.0.0] - 2026-05-14
+
+Published release. See `docs/release-artifacts.md` ("v0.4.0.0 Published Release Asset" and
+"v0.4.0.0 Package-Bound Smoke Evidence") for the package asset, provenance, and package-bound
+smoke evidence. This heading backfills the release-registry record so the CHANGELOG covers
+every published version listed in `docs/release-artifacts.md` (release-registry binding, Plan 13).
+
 ## [v0.3.2.0] - 2026-05-09
 
 v0.3.2.0 is the Level 3 route-first published release line. It adds

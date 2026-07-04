@@ -40,6 +40,8 @@ COMMANDS = [
     "python tools/check_framework_pipeline.py",
     "python tools/check_recursion_collapse_noetic_frame.py",
     "python tools/check_metacompliance_current_canon.py",
+    "python tools/check_docs_claim_boundaries.py --self-test",
+    "python tools/check_docs_claim_boundaries.py",
     "python tools/check_register_formalism_bridge.py",
     "python tools/check_field_witness_convergence.py",
     "python tools/check_owner_activation_ordering.py --require-plan --outputs tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/*/output.md",
