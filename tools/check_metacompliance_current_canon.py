@@ -82,6 +82,8 @@ GENERATED_BUNDLE_REQUIRED = {
     "references/runtime-output-governance.md": [
         "Safety boundary: diagnosed deformations",
         "never constructs or optimizes one",
+        "Inversion-request refusal",
+        "decompose-only; no carrier construction",
     ],
 }
 
@@ -152,6 +154,8 @@ OWNER_REQUIRED = {
         "Restorative Response identifies restored order",
         "Safety boundary: diagnosed deformations",
         "never constructs or optimizes one",
+        "Inversion-request refusal",
+        "decompose-only; no carrier construction",
     ],
     "atomics/skill/references/diagnostics/routing-precedence.md": [
         "pattern-first",
