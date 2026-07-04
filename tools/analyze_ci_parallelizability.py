@@ -25,6 +25,14 @@ parallelization is NOT SAFE; parallelization is PARTIAL and phase-staged at best
 Usage:
   python tools/analyze_ci_parallelizability.py
   python tools/analyze_ci_parallelizability.py --self-test
+
+Also exposes benchmark_summary(timings): a pure helper that, from measured
+per-command wall times, computes the phase-staged parallelization ceiling (serial
+generate+git prefix, read-only phase divided across N workers). It performs no
+live timing itself -- a live --benchmark runner (which would re-run generators
+and race shared files) is a deferred, manual, non-lane-wired follow-up. The
+ceiling is an upper bound (perfect balance, zero overhead), not a measured run,
+and does not authorize adopting parallelization.
 """
 from __future__ import annotations
 
@@ -69,6 +77,38 @@ def analyze(commands: list[str]) -> dict[str, list[str]]:
     return groups
 
 
+def benchmark_summary(timings: dict[str, float], workers: tuple[int, ...] = (2, 4, 8)) -> dict:
+    """Pure core (unit-tested): phase-staged parallelization ceiling from measured
+    per-command wall times.
+
+    Model: shared-writers and git-gates stay serial (the generate-then-verify
+    prefix); only the read-only phase parallelizes across N workers. So the best
+    achievable wall clock is ``ceiling(N) = shared_writer_s + git_gate_s +
+    read_only_s / N`` and ``speedup(N) = serial_total / ceiling(N)``. This is an
+    upper bound (perfect balance, zero overhead), not a measured parallel run, and
+    is not authorization to adopt parallelization.
+    """
+    phase = {SHARED_WRITER: 0.0, GIT_GATE: 0.0, READ_ONLY: 0.0}
+    for command, seconds in timings.items():
+        phase[classify(command)] += float(seconds)
+    serial_total = sum(phase.values())
+    serial_prefix = phase[SHARED_WRITER] + phase[GIT_GATE]
+    summary: dict = {
+        "serial_total": serial_total,
+        "shared_writer_s": phase[SHARED_WRITER],
+        "git_gate_s": phase[GIT_GATE],
+        "read_only_s": phase[READ_ONLY],
+        "serial_prefix": serial_prefix,
+        "ceiling": {},
+        "speedup": {},
+    }
+    for n in workers:
+        ceiling = serial_prefix + phase[READ_ONLY] / n
+        summary["ceiling"][f"{n}x"] = ceiling
+        summary["speedup"][f"{n}x"] = serial_total / ceiling if ceiling else 1.0
+    return summary
+
+
 def self_test() -> int:
     cases = [
         ("build w/o flag is shared-writer", classify("python tools/build_compiled_runtime.py") == SHARED_WRITER),
@@ -78,6 +118,23 @@ def self_test() -> int:
         ("pwsh smoke is shared-writer", classify("pwsh -NoProfile -File tools/run_current_skill_smoke.ps1") == SHARED_WRITER),
         ("checker is read-only", classify("python tools/check_frontmatter.py") == READ_ONLY),
         ("py_compile is read-only", classify("python -m py_compile tools/*.py") == READ_ONLY),
+    ]
+    bench = benchmark_summary(
+        {
+            "python tools/build_compiled_runtime.py": 4.0,   # shared-writer
+            "git diff --exit-code -- skill/SKILL.md": 1.0,    # git-gate
+            "python tools/check_frontmatter.py": 2.0,         # read-only
+            "python tools/check_coverage.py": 6.0,            # read-only
+        }
+    )
+    cases += [
+        ("benchmark serial_total sums all phases", bench["serial_total"] == 13.0),
+        ("benchmark buckets by classify", (bench["shared_writer_s"], bench["git_gate_s"], bench["read_only_s"]) == (4.0, 1.0, 8.0)),
+        ("benchmark serial_prefix = shared + git", bench["serial_prefix"] == 5.0),
+        ("benchmark ceiling(N) = prefix + read/N", (bench["ceiling"]["2x"], bench["ceiling"]["4x"], bench["ceiling"]["8x"]) == (9.0, 7.0, 6.0)),
+        ("benchmark speedup rises with workers", bench["speedup"]["2x"] < bench["speedup"]["4x"] < bench["speedup"]["8x"]),
+        ("benchmark speedup bounded by total/prefix", bench["speedup"]["8x"] <= bench["serial_total"] / bench["serial_prefix"] + 1e-9),
+        ("benchmark empty timings is safe", benchmark_summary({})["serial_total"] == 0.0),
     ]
     ok = all(p for _, p in cases)
     for name, p in cases:
