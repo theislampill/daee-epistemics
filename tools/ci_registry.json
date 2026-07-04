@@ -192,8 +192,7 @@
       "class": "required"
     },
     "check_release_provenance.py": {
-      "class": "release-only",
-      "owner_adjudication": "pending"
+      "class": "required"
     },
     "check_render_modes.py": {
       "class": "required"
