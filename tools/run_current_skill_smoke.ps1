@@ -276,11 +276,13 @@ $env:PYTHONIOENCODING = "utf-8"
 
 $codexArgs = @(
     "exec",
+    "--ignore-user-config",
+    "--ephemeral",
     "-C", $rootPath,
     "-s", "read-only",
     "-m", $Model,
     "-c", 'approval_policy="never"',
-    "-c", 'shell_environment_policy.inherit="all"',
+    "-c", "shell_environment_policy.inherit=none",
     "--output-last-message", $outputPath,
     "-"
 )

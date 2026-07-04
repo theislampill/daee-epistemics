@@ -60,6 +60,7 @@ FIELD_WITNESS_OPTIONAL_KEYS = {
     "reread_pressure",
     "normalized_activation_record",
     "canonical_ir_projection",
+    "owner_activation_ordering",
 }
 FIELD_WITNESS_ROUTE_KEYS = {"eligible_routes", "selected", "reason"}
 FIELD_WITNESS_BURDEN_EVENT_KEYS = {"owner", "delta_nB", "delta_kappa", "result"}
@@ -90,6 +91,18 @@ FIELD_WITNESS_COVERAGE_KEYS = {
     "coverage_complete",
 }
 FIELD_WITNESS_COVERAGE_OPTIONAL_KEYS = {"diagnostic_completeness"}
+FIELD_WITNESS_OWNER_ACTIVATION_ORDERING_KEYS = {"policy_id", "required_before"}
+FIELD_WITNESS_OWNER_ACTIVATION_ORDERING_OPTIONAL_KEYS = {
+    "parallel_groups",
+    "contingent",
+    "non_load_bearing",
+}
+FIELD_WITNESS_OWNER_ACTIVATION_REQUIRED_BEFORE_KEYS = {
+    "target",
+    "before_owner",
+    "after_owner",
+}
+FIELD_WITNESS_OWNER_ACTIVATION_POLICY_ID = "diagnostic-ir-pressure-owner-floor-v1"
 FIELD_WITNESS_DIAGNOSTIC_COMPLETENESS_KEYS = {"live_registers", "coverage", "complete"}
 FIELD_WITNESS_CANONICAL_IR_PROJECTION_KEYS = {
     "schema",
@@ -1868,6 +1881,9 @@ def field_witness_errors(field_witness: Any) -> list[str]:
     if "canonical_ir_projection" in field_witness:
         errors.extend(canonical_ir_projection_errors(field_witness))
 
+    if "owner_activation_ordering" in field_witness:
+        errors.extend(owner_activation_ordering_errors(field_witness.get("owner_activation_ordering")))
+
     diagnostics = field_witness["field_diagnostics"]
     errors.extend(require_exact_keys(diagnostics, FIELD_WITNESS_DIAGNOSTIC_KEYS, "field_witness.field_diagnostics"))
     if isinstance(diagnostics, dict):
@@ -2217,6 +2233,63 @@ def field_witness_errors(field_witness: Any) -> list[str]:
             if not isinstance(coverage.get("coverage_complete"), bool):
                 errors.append("schema: field_witness.coverage_proof.coverage_complete must be boolean")
 
+    return errors
+
+
+def owner_activation_ordering_errors(value: Any) -> list[str]:
+    label = "field_witness.owner_activation_ordering"
+    errors = require_keys_with_optional(
+        value,
+        FIELD_WITNESS_OWNER_ACTIVATION_ORDERING_KEYS,
+        FIELD_WITNESS_OWNER_ACTIVATION_ORDERING_OPTIONAL_KEYS,
+        label,
+    )
+    if errors:
+        return errors
+    if not isinstance(value, dict):
+        return errors
+
+    if value.get("policy_id") != FIELD_WITNESS_OWNER_ACTIVATION_POLICY_ID:
+        errors.append(
+            f"schema: {label}.policy_id must be {FIELD_WITNESS_OWNER_ACTIVATION_POLICY_ID}"
+        )
+
+    required_before = value.get("required_before")
+    if not isinstance(required_before, list):
+        errors.append(f"schema: {label}.required_before must be an array")
+    else:
+        for index, rule in enumerate(required_before):
+            rule_label = f"{label}.required_before[{index}]"
+            errors.extend(
+                require_exact_keys(
+                    rule,
+                    FIELD_WITNESS_OWNER_ACTIVATION_REQUIRED_BEFORE_KEYS,
+                    rule_label,
+                )
+            )
+            if isinstance(rule, dict):
+                for key in FIELD_WITNESS_OWNER_ACTIVATION_REQUIRED_BEFORE_KEYS:
+                    if not non_empty_string(rule.get(key)):
+                        errors.append(f"schema: {rule_label}.{key} must be non-empty string")
+
+    parallel_groups = value.get("parallel_groups")
+    if parallel_groups is not None:
+        if not isinstance(parallel_groups, list):
+            errors.append(f"schema: {label}.parallel_groups must be an array")
+        else:
+            for group_index, group in enumerate(parallel_groups):
+                group_label = f"{label}.parallel_groups[{group_index}]"
+                if not isinstance(group, list) or not group:
+                    errors.append(f"schema: {group_label} must be a non-empty array")
+                    continue
+                for owner_index, owner in enumerate(group):
+                    if not non_empty_string(owner):
+                        errors.append(f"schema: {group_label}[{owner_index}] must be non-empty string")
+
+    for key in ("contingent", "non_load_bearing"):
+        value_for_key = value.get(key)
+        if value_for_key is not None and not isinstance(value_for_key, bool):
+            errors.append(f"schema: {label}.{key} must be boolean")
     return errors
 
 

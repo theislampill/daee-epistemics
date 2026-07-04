@@ -10,7 +10,7 @@ state: HOLD
 - claim_level: noetic-register
 - pattern_profile: post-engagement refusal
 - reason-category: 2 / register controls access
-- Concealment mode: juḥūd — acknowledgment is refused once attention has landed; name the barrier rather than arguing past it. Boundary: diagnostic noetic covering only; no hidden soul-state or takfīr judgment.
+- Concealment mode: juḥūd — acknowledgment is refused once attention has landed; name the barrier rather than arguing past it. basis: visible discourse pattern; held, not certified. Boundary: diagnostic noetic covering only; no hidden soul-state or takfīr judgment.
 - deformation: repudiative posture after the matter has pressed
 - DO-orient: truth-seek mixed with refusal
 

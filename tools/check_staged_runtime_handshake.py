@@ -1400,6 +1400,26 @@ def per_burden_reread_errors(label: str, stage05: dict[str, Any]) -> list[str]:
         boundary = entry.get("boundary")
         if isinstance(boundary, str) and boundary and not boundary.startswith(PER_BURDEN_BOUNDARY_PREFIX):
             errors.append(f"{entry_label}.boundary must begin with the T_lang non-uptake boundary")
+        divergence = entry.get("divergence")
+        if isinstance(divergence, str) and divergence.strip():
+            errors.extend(
+                staged_output.per_burden_diag_errors(
+                    f"{entry_label}.divergence",
+                    divergence,
+                    staged_output.PER_BURDEN_DIVERGENCE_PREFIX_RE,
+                    staged_output.PER_BURDEN_DIVERGENCE_HEADS,
+                )
+            )
+        curl = entry.get("curl")
+        if isinstance(curl, str) and curl.strip():
+            errors.extend(
+                staged_output.per_burden_diag_errors(
+                    f"{entry_label}.curl",
+                    curl,
+                    staged_output.PER_BURDEN_CURL_PREFIX_RE,
+                    staged_output.PER_BURDEN_CURL_HEADS,
+                )
+            )
         activations = entry.get("pressure_activations")
         if not isinstance(activations, dict):
             errors.append(f"{entry_label}.pressure_activations must be an object carrying the six fixed slots")

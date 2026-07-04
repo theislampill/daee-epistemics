@@ -57,6 +57,7 @@ PRESSURE_KEYS = {
 }
 ALLOWED_DIVERGENCE = {"neutral", "settled", "bounded", "non-neutral"}
 ALLOWED_CURL = {"null", "resolved", "held", "non-null"}
+SUP = "⁰¹²³⁴⁵⁶⁷⁸⁹"
 DELTA_READ_SUFFIX_RE = r"(?:(?:B[1-9][0-9]*)|\(B[1-9][0-9]*\)|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)?"
 DELTA_READ_TOKEN_RE = rf"(?:Delta{DELTA_READ_SUFFIX_RE}|Δ{DELTA_READ_SUFFIX_RE})"
 REREAD_RE = re.compile(rf"R\(H,\s*{DELTA_READ_TOKEN_RE}\)")
@@ -84,7 +85,10 @@ MRP_BLOCK_RE = re.compile(
     + r"|^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+\b|Closure/Reconstruction Witness\b|"
     r"Closure Audit\b|Restorative Response\b|Closing Formulation\b)|\Z)"
 )
-LAND_GATE_RE = re.compile(r"(?m)^Land\((?P<burden>[¹²³⁴⁵⁶⁷⁸⁹]B|B[1-9][0-9]*)\):")
+LAND_GATE_RE = re.compile(
+    rf"(?m)^\s*(?:#{{1,6}}\s*)?(?:[-*]\s*)?(?:\*\*)?"
+    rf"Land\((?P<burden>[{SUP}]+B|B[1-9][0-9]*)\):(?:\*\*)?"
+)
 STOP_ROUTE_RE = re.compile(r"(?im)^\s*Route\s*:\s*STOP\b")
 POST_STOP_CONTINUATION_RE = re.compile(
     r"(?im)^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+\b|Layer B\b|.*Layer B\s*[-—]\s*Governed Operation Body\b)"
@@ -591,64 +595,7 @@ def route_result_type_errors(path: Path, mrp: MrpBlock, label: str) -> list[str]
 
 
 def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[str]:
-    label = f"{path}: MRP block {index}"
-    errors: list[str] = []
-    if not mrp.target or "B" not in mrp.target:
-        errors.append(f"{label}: Target must name a burden")
-    if not mrp.reread or not re.search(r"R\(H,\s*(?:Δ|Delta)\)", mrp.reread):
-        errors.append(f"{label}: Reread must invoke R(H,Δ)")
-    errors.extend(direct_reread_content_errors(mrp, label))
-    if not mrp.landed_delta or not re.search(r"(?:ΔⁿB|Δ|Delta)", mrp.landed_delta):
-        errors.append(f"{label}: Landed delta must name ΔⁿB/Δ")
-    if not mrp.route_gradient:
-        errors.append(f"{label}: Route-gradient must record the plain-∇ directional read")
-    divergence_state = first_state(mrp.divergence)
-    curl_state = first_state(mrp.curl)
-    if not mrp.divergence or divergence_state not in ALLOWED_DIVERGENCE:
-        errors.append(f"{label}: must record active ∇·T state")
-    if not mrp.curl or curl_state not in ALLOWED_CURL:
-        errors.append(f"{label}: must record active ∇×T state")
-    errors.extend(field_diagnostics_content_errors(mrp, label))
-    missing_pressure = sorted(PRESSURE_KEYS - set(mrp.pressure_lines))
-    for key in missing_pressure:
-        errors.append(f"{label}: Pressure activations missing {key}")
-    for key, value in mrp.pressure_lines.items():
-        if not activation_names_owner_or_gap(value):
-            errors.append(f"{label}: pressure activation {key} must name an owner/TTP, pressure class, or coverage gap")
-    if mrp.finding not in FINDINGS:
-        errors.append(f"{label}: Finding invalid: {mrp.finding!r}")
-    if not mrp.route_result_type:
-        errors.append(f"{label}: MRP route result type missing")
-    errors.extend(route_result_type_errors(path, mrp, label))
-    errors.extend(mrp_refutation_content_errors(mrp, label))
-    if not mrp.graph_delta:
-        errors.append(f"{label}: Graph delta missing")
-    if mrp.route not in ROUTES:
-        errors.append(f"{label}: Route invalid: {mrp.route!r}")
-    if mrp.finding == "stable" and (mrp.route != "STOP" or not is_none_delta(mrp.graph_delta)):
-        errors.append(f"{label}: stable finding requires STOP and no graph edge")
-    if mrp.finding == "genuine-dependent" and (mrp.route != "RECURSE" or not has_edge(mrp.graph_delta)):
-        errors.append(f"{label}: genuine-dependent finding requires RECURSE and graph edge")
-    if mrp.finding == "partial-real" and mrp.route != "HOLD":
-        errors.append(f"{label}: partial-real finding requires HOLD")
-    if has_edge(mrp.graph_delta) and mrp.preemption_basis == "none":
-        errors.append(f"{label}: graph-edge pre-emption requires graph/commitment/framework-bound basis")
-    if mrp.route == "STOP" and LIVE_PRESSURE_RE.search(mrp.body):
-        if not re.search(r"(?i)\b(?:held|HOLD|PARTIAL|landed|merged|cleared|bounded)\b", mrp.body):
-            errors.append(f"{label}: STOP cannot leave named live pressure unreleased, unheld, or unpartialed")
-    if mrp.route == "STOP" and has_unreleased_route(mrp.body):
-        errors.append(f"{label}: STOP cannot leave an identified post-Land escape route unreleased; generate, HOLD/PARTIAL, or LoopBreak it")
-    errors.extend(high_leverage_false_closure_errors(path, mrp, label))
-    return errors
-
-
-def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[str]:
-    """Validate any MRP block after the first one.
-
-    This intentionally shadows the legacy helper above, whose regexes were tied to a stale
-    mojibake spelling of Delta. Multi-burden hosted smokes need every block to be checked with
-    the same route/resultant contract as the first block.
-    """
+    """Validate one MRP block with the current route/resultant contract."""
     label = f"{path}: MRP block {index}"
     errors: list[str] = []
     if not mrp.target or "B" not in mrp.target:

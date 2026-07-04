@@ -61,7 +61,7 @@ build intermediate only and was not uploaded.
 | GitHub Release visibility | Published at `https://github.com/theislampill/daee-epistemics/releases/tag/v0.4.5.0`; annotated tag peels to `8c14e28fbcf440275f4d143a9b7cadc6148aa5a9` |
 | Provenance file | Release asset: `daee-epistemics-v0.4.5.0.provenance.json` generated from `build/daee-epistemics-v0.4.5.0.provenance.json` |
 | Provenance SHA256 | `E0BE60F71D78184206846918AE9329B5CF28378F297338E74A6B181381324239` |
-| Package-bound proof | The historical false-pass output is rejected by `tools/check_mrp_route_invariants.py`; no-model canaries passed; Smoke C 4/4 one-shot matrix passed Stage07, MRP parity, Stage08, and direct validators before release replacement; package artifact validation PASS; self-contained package PASS; local and downloaded provenance checks PASS. Cross-host/paraphrase proof, arbitrary-input correctness, and guaranteed `T_lang` uptake are not claimed. |
+| Source-boundary proof + package validation | The historical false-pass output is rejected by `tools/check_mrp_route_invariants.py`; no-model canaries passed; Smoke C 4/4 one-shot matrix ran from the worktree at package source commit `8c14e28` through the staged harness and passed Stage07, MRP parity, Stage08, and direct validators before release replacement; package artifact validation PASS; self-contained package PASS; local and downloaded provenance checks PASS. Cross-host/paraphrase proof, arbitrary-input correctness, single-output model-emitted proof, and guaranteed `T_lang` uptake are not claimed. |
 
 The v0.4.5.0 release assets include the canonical `.skill` payload and package
 provenance JSON only:
@@ -200,7 +200,7 @@ as release assets.
 The v0.4.3.0 release assets include the canonical `.skill` payload and package provenance. The
 `.skill.zip` file is a local build intermediate only and must not be uploaded as a GitHub Release
 asset. The corrected-goal package includes register-derived burden floors, formal reread-state
-semantics, field-witness convergence, NLA decode semantic faithfulness, LoopBreak enforcement,
+semantics, field-witness convergence, bounded NLA structural faithfulness, LoopBreak enforcement,
 legacy alias cleanup, and false-pass canaries. The literal Shannon/integral theorem and full
 `T_lang` response-closure checker are outside v0.4.3.0 release claims.
 

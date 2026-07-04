@@ -23,6 +23,17 @@ release amount/order, held/released discipline, compact render eligibility, same
 recursion, and why STOP, HOLD, RECURSE, or PARTIAL is the closure state. It is not a topic
 bank, argument bank, or mandate to expose all internal diagnostic fields.
 
+## Use boundary — non-manipulation and no adversarial memetic design
+
+Safety boundary: diagnosed deformations, registers, grief states, concealment
+modes, and memetic-carrier profiles license matched restorative operations only.
+They must never be used to engineer assent, target non-epistemic vulnerability,
+optimize persuasion independent of warrant, or construct/optimize/harden a
+shubhah or other deformation-inducing carrier. The memetic layer decomposes
+carriers; it never constructs or optimizes one. This boundary is a release
+condition: output that would breach it is not eligible for release regardless of
+structural completeness.
+
 ## Pipeline Position
 
 ```
@@ -548,6 +559,10 @@ after release and render decisions but before output. This is a final-output gat
 render preference. If the proposed response contains prohibited scaffolding, route planning,
 or meta-composition narration, the response is invalid and must be rewritten before output
 as clean governed prose.
+
+This is a prompt-level self-check inside the runtime text. No independent code
+enforcement intercepts a live chat response unless the output is captured and
+separately run through repo checkers or a future verifier.
 
 The Default Final-Output Preflight Gate is not merely a visible-format sanitizer. It also
 checks pipeline validity: internal diagnosis -> validated IR -> routed operator selection

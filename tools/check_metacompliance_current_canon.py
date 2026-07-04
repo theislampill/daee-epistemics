@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+import re
 
 from compiled_runtime_lib import fail_with_errors, out_dir, repo_root
 
@@ -72,6 +73,18 @@ GENERATED_REQUIRED = [
     "OWNER-BODY-NOT-LOADED",
 ]
 
+GENERATED_BUNDLE_REQUIRED = {
+    # OD-02a (2026-07-04): the non-manipulation / no-adversarial-memetic-design
+    # safety boundary was re-anchored (B1a) from the root control plane into the
+    # output-release rubric, which compiles into this runtime bundle. This pin
+    # preserves the generated/runtime safety requirement at its new home so the
+    # boundary can never be silently dropped from the shipped runtime.
+    "references/runtime-output-governance.md": [
+        "Safety boundary: diagnosed deformations",
+        "never constructs or optimizes one",
+    ],
+}
+
 OWNER_REQUIRED = {
     "atomics/skill/references/diagnostics/recursive-state-transitions.md": [
         "Source-Status & Noetic-Frame Non-Equivalence Discipline",
@@ -126,6 +139,8 @@ OWNER_REQUIRED = {
     ],
     "atomics/skill/references/rubrics/output-release.md": [
         "Source-status & noetic-frame release check",
+        "prompt-level self-check",
+        "live chat response unless the output is captured",
         "Operative warrant:",
         "specific non-premise clause",
         "Held Material Is Actually Held, Then Reassessed",
@@ -135,6 +150,8 @@ OWNER_REQUIRED = {
         "no headline-only answer",
         "TTP/operator trace",
         "Restorative Response identifies restored order",
+        "Safety boundary: diagnosed deformations",
+        "never constructs or optimizes one",
     ],
     "atomics/skill/references/diagnostics/routing-precedence.md": [
         "pattern-first",
@@ -158,6 +175,8 @@ CURRENT_DOC_REQUIRED = {
         "Pattern(deformation/concealment/unsoundness) > denomination/source-label",
         "/daee-epistemics:audit",
         "deprecated as a public render mode",
+        "docs/non-claims.md",
+        "Chat outputs are unchecked unless captured and validated",
     ],
     "AGENTS.md": [
         "compact DSL/IR",
@@ -186,6 +205,15 @@ CURRENT_DOC_REQUIRED = {
         "TTP/operator",
         "`:audit` is deprecated as public output",
         "historical release states, not current guidance",
+    ],
+    "docs/non-claims.md": [
+        "No guaranteed uptake",
+        "No interior-state certification",
+        "No arbitrary-input correctness claim",
+        "No universal semantic grader",
+        "No adversarial memetic design",
+        "No manipulation",
+        "They make violations legible; they do not prove manipulation-proofness or semantic impossibility",
     ],
     "docs/compiled-runtime-tools.md": [
         "default compact DSL/IR visibility",
@@ -241,6 +269,9 @@ STALE_CURRENT_GUIDANCE = [
     "recursive governance remains internal unless",
     "default is prose-only",
 ]
+
+VERSION_HEADING_RE = re.compile(r"^## \[(v\d+\.\d+\.\d+\.\d+)\]", re.MULTILINE)
+RELEASE_ARTIFACT_RE = re.compile(r"^## (v\d+\.\d+\.\d+\.\d+) Release Package", re.MULTILINE)
 
 
 def read(path: Path, errors: list[str]) -> str:
@@ -308,6 +339,12 @@ def check_generated_default_surface(root: Path, errors: list[str]) -> None:
             cursor = idx
 
 
+def check_generated_bundles(root: Path, errors: list[str]) -> None:
+    for rel_path, tokens in GENERATED_BUNDLE_REQUIRED.items():
+        text = read(out_dir(root) / rel_path, errors)
+        require_tokens(f"skill/{rel_path}", text, tokens, errors)
+
+
 def check_owner_anchors(root: Path, errors: list[str]) -> None:
     for rel_path, tokens in OWNER_REQUIRED.items():
         text = read(root / rel_path, errors)
@@ -326,14 +363,45 @@ def check_current_docs(root: Path, errors: list[str]) -> None:
                 errors.append(f"{rel_path} contains stale current guidance: {token!r}")
 
 
+def version_key(version: str) -> tuple[int, int, int, int]:
+    return tuple(int(part) for part in version.removeprefix("v").split("."))  # type: ignore[return-value]
+
+
+def check_changelog_release_currency(root: Path, errors: list[str]) -> None:
+    changelog = read(root / "CHANGELOG.md", errors)
+    release_artifacts = read(root / "docs/release-artifacts.md", errors)
+    if not changelog or not release_artifacts:
+        return
+
+    changelog_versions = set(VERSION_HEADING_RE.findall(changelog))
+    release_versions = set(RELEASE_ARTIFACT_RE.findall(release_artifacts))
+    if not release_versions:
+        errors.append("docs/release-artifacts.md has no release package headings")
+        return
+
+    newest_release = max(release_versions, key=version_key)
+    missing = sorted(release_versions - changelog_versions, key=version_key)
+    if missing:
+        errors.append(
+            "CHANGELOG.md missing release heading(s) present in docs/release-artifacts.md: "
+            + ", ".join(missing)
+        )
+    if newest_release not in changelog_versions:
+        errors.append(
+            f"CHANGELOG.md newest release heading is older than current release artifact: {newest_release}"
+        )
+
+
 def main() -> int:
     root = repo_root()
     errors: list[str] = []
 
     check_root_control_plane(root, errors)
     check_generated_default_surface(root, errors)
+    check_generated_bundles(root, errors)
     check_owner_anchors(root, errors)
     check_current_docs(root, errors)
+    check_changelog_release_currency(root, errors)
 
     if not errors:
         skill_text = read(root / "atomics/skill/SKILL.md", errors)

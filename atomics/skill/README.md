@@ -7,8 +7,8 @@ This package is the canonical scriptless compact DSL-governed runtime for:
 ```
 
 Default use is not prose-only. DSL/IR-governed structure is integral to the
-skill's anti-hallucination, routing, burden-accounting, and restoration
-discipline. The default surface should expose compact diagnostic state, governed
+skill's anti-drift, routing, burden-accounting, and restoration discipline; any
+anti-hallucination benefit is a design hypothesis unless measured. The default surface should expose compact diagnostic state, governed
 Layer B operation, burden-local landing, state/noetic reread, and
 STOP/HOLD/PARTIAL/RECURSE discipline without requiring the user to supply a
 separate meta-prompt.

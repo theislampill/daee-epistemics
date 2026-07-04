@@ -31,6 +31,15 @@ if hasattr(sys.stderr, "reconfigure"):
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = ROOT / "tests" / "tlang-response-closure"
 GENERATED_SOURCE_RE = re.compile(r"(?i)^\s*(?:MRP\(|generated\b)")
+UPTAKE_ASSERTION_RE = re.compile(
+    r"(?i)\b(?:"
+    r"interlocutor\s+(?:will|must|now)\s+(?:accept|concede|see|recognize|submit)|"
+    r"(?:will|must|now)\s+(?:accept|concede|see|recognize|submit)\s+(?:the\s+)?(?:truth|claim|answer)|"
+    r"cannot\s+(?:deny|resist|avoid\s+conceding)|"
+    r"has\s+no\s+choice\s+but\s+(?:to\s+)?(?:accept|concede|submit)|"
+    r"this\s+resolves\s+(?:his|her|their|the)\s+doubt"
+    r")\b"
+)
 
 
 @dataclass
@@ -175,6 +184,10 @@ def check_text(path: Path, text: str) -> CheckResult:
 
     obligations = generated_pressure_obligations(field_witness)
     public_text = public_execution_text(text)
+    if UPTAKE_ASSERTION_RE.search(public_text):
+        errors.append(
+            f"{rel(path)}: public T_lang surface claims guaranteed uptake or compliance-side success"
+        )
     restorative = section_after_heading(public_text, "Restorative Response")
     partials: list[str] = []
     closed = 0

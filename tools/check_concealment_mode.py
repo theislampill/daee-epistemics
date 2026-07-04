@@ -107,6 +107,42 @@ BOUNDARY_RE = re.compile(
     r"no\s+(?:hidden\s+)?soul[- ]state|no\s+takf[īi]r|not\s+a\s+takf[īi]r|"
     r"not\s+(?:a\s+)?(?:hidden\s+)?(?:soul[- ]state|culpability)\s+judg)"
 )
+BASIS_QUALIFIER_RE = re.compile(
+    r"(?i)(?:\bbasis\s*:|\bdiscourse[- ]pattern basis\b|\bevidential[- ]basis\b|\bvisible[- ]discourse basis\b)"
+)
+HELD_NOT_CERTIFIED_RE = re.compile(
+    r"(?i)\b(?:held,\s*not\s+certified|not\s+certified|held\s+status|held\s+read|not\s+a\s+soul[- ]state)\b"
+)
+
+# OD-03 (owner decision, 2026-07-04) + OD-03a extension (2026-07-04): dated, narrow
+# legacy grandfathering. These FOUR legacy retained-corpus outputs predate the
+# concealment basis-qualifier rule and break bound row
+# `d3-mixed-concealment-retained-breadth` (check_retained_row_claims). Per OD-03/OD-03a
+# they are exempt ONLY from the basis-qualifier requirement below; every other
+# concealment invariant (source-owned mode, takfīr/soul-state boundary, loose-gloss ban,
+# interior-certification ban) still applies to them, and the basis-qualifier rule stays
+# fully live on all concealment fixtures, live output, and every non-legacy surface.
+# `trinitarian-j173-repair-v6` is deliberately NOT included (advisory-only, not a bound
+# row). No historical output was mutated. Revisit under Plan 05 requalification. Do NOT
+# extend this tuple without a new dated OWNER-DECISION row.
+LEGACY_BASIS_QUALIFIER_EXEMPT = (
+    "retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/cd9a-mixed-concealment/output.md",
+    "retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/mixed-family-authority/output.md",
+    "retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/academic-prestige-authority/output.md",
+    "retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/therapy-moral-tribunal/output.md",
+)
+
+
+def _is_legacy_basis_exempt(path) -> bool:
+    normalized = str(path).replace("\\", "/")
+    return any(normalized.endswith(suffix) for suffix in LEGACY_BASIS_QUALIFIER_EXEMPT)
+
+
+INTERIOR_CERTIFICATION_RE = re.compile(
+    r"(?i)\b(?:interlocutor|target|person|he|she|they)\s+(?:is|are)\s+"
+    r"(?:insincere|lying|a\s+hypocrite|outside\s+(?:the\s+)?faith|k[aā]fir|mun[aā]fiq)\b|"
+    r"\b(?:confirmed|certified)\s+(?:insincere|hypocrite|k[aā]fir|mun[aā]fiq|outside\s+(?:the\s+)?faith)\b"
+)
 SOURCE_STACK_AMBIGUITY_RE = re.compile(
     r"(?is)\b(?:source[- ]stack|stack\s+of\s+names|names\s+and\s+quotations)\b"
     r".{0,220}\b(?:ambiguous|ambiguously|prestige\s+signal|identity\s+signal|"
@@ -360,6 +396,8 @@ def surrounding_block(text: str, start: int) -> str:
 
 def check_text(path: Path, text: str) -> list[str]:
     errors: list[str] = []
+    if INTERIOR_CERTIFICATION_RE.search(text):
+        errors.append(f"{path}: governed output positively certifies an interior state")
     matches = list(CONCEALMENT_LINE_RE.finditer(text))
     framework_active = bool(FRAMEWORK_SIGNAL_RE.search(text) or ACTIVE_HIDDEN_FRAMEWORK_RE.search(text))
     exception_visible = bool(CLEAR_EXCEPTION_RE.search(text))
@@ -490,6 +528,18 @@ def check_text(path: Path, text: str) -> list[str]:
                 errors.append(
                     f"{path}: non-clear Concealment mode must preserve the diagnostic boundary "
                     "(no hidden soul-state / takfīr judgment)"
+                )
+            if (
+                source_mode
+                and not (
+                    BASIS_QUALIFIER_RE.search(value + "\n" + block)
+                    and HELD_NOT_CERTIFIED_RE.search(value + "\n" + block)
+                )
+                and not _is_legacy_basis_exempt(path)  # OD-03 dated legacy grandfathering
+            ):
+                errors.append(
+                    f"{path}: non-clear source-owned Concealment mode must include a discourse-pattern basis "
+                    "and held/not-certified qualifier"
                 )
             mixed_components = source_components(value)
             if is_mixed(value) and len(mixed_components) < 2:

@@ -995,6 +995,28 @@ CLOSING_RESTORED_SLOT_RE = re.compile(
 CLOSING_BOUNDARY_SLOT_RE = re.compile(
     r"(?im)^\s*(?:(?:#{1,6}\s*)?(?:Scoped boundary|Reopen boundary)\s*$|(?:[-*]\s*)?(?:Scoped boundary|Reopen boundary)\s*:\s*[^\n]*\S)"
 )
+COMPLIANCE_SIDE_SUCCESS_RE = re.compile(
+    r"(?i)\b(?:"
+    r"interlocutor\s+(?:will|must|now)\s+(?:accept|concede|see|recognize|submit)|"
+    r"(?:will|must|now)\s+(?:accept|concede|see|recognize|submit)\s+(?:the\s+)?(?:truth|claim|answer)|"
+    r"cannot\s+(?:deny|resist|avoid\s+conceding)|"
+    r"has\s+no\s+choice\s+but\s+(?:to\s+)?(?:accept|concede|submit)|"
+    r"this\s+resolves\s+(?:his|her|their|the)\s+doubt"
+    r")\b"
+)
+INTERIOR_CERTIFICATION_RE = re.compile(
+    r"(?i)\b(?:interlocutor|target|person|he|she|they)\s+(?:is|are)\s+"
+    r"(?:insincere|lying|a\s+hypocrite|outside\s+(?:the\s+)?faith|k[aā]fir|mun[aā]fiq)\b|"
+    r"\b(?:confirmed|certified)\s+(?:insincere|hypocrite|k[aā]fir|mun[aā]fiq|outside\s+(?:the\s+)?faith)\b"
+)
+FABRICATED_VALIDATION_VERDICT_RE = re.compile(
+    r"^\s*(?:[-*]\s*)?"
+    r"(?:validation|validator(?:\s+verdict)?|quality[- ]gate|checker|release_validation)"
+    r"\s*:\s*(?:PASS|GREEN|OK|SUCCESS)\b|"
+    r"\b(?:all|the)\s+(?:validators|quality[- ]gates|checks)\s+"
+    r"(?:passed|pass|are\s+green)\b",
+    re.IGNORECASE | re.MULTILINE,
+)
 
 
 def public_tail_label_like(body: str) -> bool:
@@ -1160,6 +1182,14 @@ def owner_specific_operation_performed(owner: str, combined: str) -> bool:
 
 def self_test_owner_specific_operation_patterns() -> list[str]:
     errors: list[str] = []
+    if not COMPLIANCE_SIDE_SUCCESS_RE.search("The interlocutor will now accept the truth."):
+        errors.append("self-test compliance-side success detector missed uptake claim")
+    if not INTERIOR_CERTIFICATION_RE.search("The interlocutor is insincere."):
+        errors.append("self-test interior-certification detector missed soul-state claim")
+    if not FABRICATED_VALIDATION_VERDICT_RE.search("validation: PASS"):
+        errors.append("self-test fabricated-validation detector missed validation verdict")
+    if not FABRICATED_VALIDATION_VERDICT_RE.search("All validators passed."):
+        errors.append("self-test fabricated-validation detector missed validator summary")
     doubt_probe = (
         "Operation: method-distinction separates honest unresolved doubt from a method "
         "that predefines acceptable evidence so narrowly that guidance is always rejected. "
@@ -2128,6 +2158,12 @@ NO_GRAPH_MODE_RE = re.compile(r"(?i)\b(?:minimal|short|no-graph)\b.{0,120}\bgrap
 
 def check_text(path: Path, text: str, require_field_witness: bool = True) -> list[str]:
     errors: list[str] = []
+    if COMPLIANCE_SIDE_SUCCESS_RE.search(text):
+        errors.append(f"{path}: governed output claims compliance-side success or guaranteed uptake")
+    if INTERIOR_CERTIFICATION_RE.search(text):
+        errors.append(f"{path}: governed output positively certifies an interior state")
+    if FABRICATED_VALIDATION_VERDICT_RE.search(text):
+        errors.append(f"{path}: governed output contains fabricated validator or quality-gate verdict language")
     local_require_field_witness = (require_field_witness or bool(
         re.search(r"(?i)require[-_ ]field[-_ ]witness|manual/release smoke proof mode|output grapher verification mode", text)
     )) and not NO_GRAPH_MODE_RE.search(text)

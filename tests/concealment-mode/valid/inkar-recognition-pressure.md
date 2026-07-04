@@ -10,7 +10,7 @@ state: HOLD
 - claim_level: noetic-register
 - pattern_profile: denial with disproportionate affect
 - reason-category: 2 / register controls access
-- Concealment mode: inkār — outward denial despite recognition pressure; use maieutic/reminder rather than more proof. Boundary: diagnostic noetic covering only; no hidden soul-state or takfīr judgment.
+- Concealment mode: inkār — outward denial despite recognition pressure; use maieutic/reminder rather than more proof. basis: visible discourse pattern; held, not certified. Boundary: diagnostic noetic covering only; no hidden soul-state or takfīr judgment.
 - deformation: active resistance against a point already registered
 - DO-orient: truth-seek / mixed
 

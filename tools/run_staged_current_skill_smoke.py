@@ -6915,7 +6915,10 @@ def build_codex_command(
         "-c",
         'approval_policy="never"',
         "-c",
-        'shell_environment_policy.inherit="all"',
+        # Keep model-smoke subprocesses off the caller's shell environment.
+        # The prompt can contain adversarial interlocutor text; read-only
+        # filesystem sandboxing is not an environment-secret boundary.
+        "shell_environment_policy.inherit=none",
         "--output-last-message",
         str(output_path),
         "-",
@@ -7444,7 +7447,7 @@ def run_self_test(root: Path) -> int:
     )
     if "--ignore-user-config" not in smoke_command or "--ephemeral" not in smoke_command:
         raise HarnessError("Self-test Codex subprocess command did not isolate mutable user config")
-    if 'approval_policy="never"' not in smoke_command or 'shell_environment_policy.inherit="all"' not in smoke_command:
+    if 'approval_policy="never"' not in smoke_command or "shell_environment_policy.inherit=none" not in smoke_command:
         raise HarnessError("Self-test Codex subprocess command lost approval/environment policy")
     replay = load_json(replay_record)
     named_scope = model_scope("self-test-a9-science-source", replay_record, stop_after_stage=None)

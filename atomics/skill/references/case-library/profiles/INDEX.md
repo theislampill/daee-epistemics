@@ -82,7 +82,7 @@ but they differ materially when the ontological dimension is live:
   than a named deviation.
 - On epistemological burden only (no divine attributes or speech live), the Muʿtazilī/Ashʿarī
   distinction does not change the primary instrument (V2 + naẓar-circularity argument), though
-  the Ashʿarī communal-obligation softening is a distinct pressure point to exploit.
+  the Ashʿarī communal-obligation softening is a distinct live pressure to restore.
 See `diagnostics/kalamic-interlocutor.md` §Downstream Routing Table for the complete
 school × burden consequence mapping.
 

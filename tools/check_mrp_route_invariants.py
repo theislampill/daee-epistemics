@@ -60,7 +60,10 @@ GRAPH_STOP_RE = re.compile(
 MRP_HEADING_LINE_RE = re.compile(
     r"(?im)^\s*(?:#{1,6}\s*)?(?:[-*]\s*)?(?:\*\*)?\[Mid-Reread Pressure\](?:\*\*)?\s*$"
 )
-LAND_GATE_LINE_RE = re.compile(r"(?m)^Land\((?P<burden>[¹²³⁴⁵⁶⁷⁸⁹]B|B[1-9][0-9]*)\):")
+LAND_GATE_LINE_RE = re.compile(
+    rf"(?m)^\s*(?:#{{1,6}}\s*)?(?:[-*]\s*)?(?:\*\*)?"
+    rf"Land\((?P<burden>[{SUP}]+B|B[1-9][0-9]*)\):(?:\*\*)?"
+)
 DOWNSTREAM_LIVE_RE = re.compile(
     r"(?i)\b(?:B\d+\b.*\bremain(?:s)? live|downstream burden(?:s)? remain|"
     r"later burden(?:s)? remain|next burden remains|B\d+\b.*\bfollows)\b"

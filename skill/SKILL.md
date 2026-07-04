@@ -584,6 +584,11 @@ surface too small`.
    includes burden and submove nodes; `edges` includes dependency, `held_burden_activation`,
    and `generated_burden_instantiation` edges. `coverage_proof` includes `initial_burden_set`,
    `terminal_states`, and `dependency_graph` with `nodes`, `edges`, `roots`, and `acyclic`.
+   If the answer has not just been checked by an actual verifier sidecar or documented
+   post-output checker run, include `not_checker_verified: true` inside `non_claims` so live
+   scriptless output cannot be mistaken for validated harness evidence. Do not print
+   fabricated validator, quality-gate, or `validation: PASS` verdict lines in public governed
+   output; only a tool that actually ran may report its own result in a ledger or sidecar.
    Every `field_witness.mrp_resultants[]` item includes `"source": "B1"`, `"type"`,
    `"finding"`, `"graph"`, and `"route"`. Do not use `"target"` as the only source key, and do
    not rely on `"id": "MRP(B1)"` without a separate `"source"`. The `"route"` value copies the

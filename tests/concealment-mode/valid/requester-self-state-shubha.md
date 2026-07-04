@@ -13,7 +13,7 @@ state: HOLD
 - claim_level: epistemic clarification
 - pattern_profile: none
 - reason-category: 1 / clarification pressure
-- Concealment mode: clarification / shubhah pressure — sincere uncertainty is covering clarity, not functioning as refusal. Boundary: Muslim/ḥanīf restoration case; no hidden soul-state or takfīr judgment.
+- Concealment mode: clarification / shubhah pressure — sincere uncertainty is covering clarity, not functioning as refusal. basis: visible discourse pattern; held, not certified. Boundary: Muslim/ḥanīf restoration case; no hidden soul-state or takfīr judgment.
 - clarification pressure: shubhah / shakk-rāyb; route toward V9 and source-order repair
 - deformation: genuine shubhah
 - DO-orient: truth-seek

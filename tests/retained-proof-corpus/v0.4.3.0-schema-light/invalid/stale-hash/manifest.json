@@ -5,7 +5,7 @@
   "cases": [
     {
       "id": "stale-hash",
-      "classification": "SIDECAR_BACKED_PROOF",
+      "classification": "SIDECAR_BACKED_STRUCTURAL",
       "rows": ["B.1", "B.2"],
       "generated_skill_sha": "60A90DCA3AAEFD9BCCD2981A5FF9D8BCB4906D49026EED89F7392CCACED565D3",
       "origin": "invalid canary",

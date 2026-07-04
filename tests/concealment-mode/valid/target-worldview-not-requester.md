@@ -13,7 +13,7 @@ state: RECURSE
 - claim_level: worldview criterion
 - pattern_profile: secular public-reason frame presents itself as neutral
 - reason-category: 2 / imported framework controls the case
-- Concealment mode: mixed — iʿrāḍ + juḥūd pressure; secularism-as-neutrality field conceals its source-order claim. Boundary: diagnostic noetic covering only; no hidden soul-state or takfīr judgment.
+- Concealment mode: mixed — iʿrāḍ + juḥūd pressure; secularism-as-neutrality field conceals its source-order claim. basis: visible discourse pattern; held, not certified. Boundary: diagnostic noetic covering only; no hidden soul-state or takfīr judgment.
 - deformation: imported framework / pseudo-neutral tribunal
 - DO-orient: mixed
 
