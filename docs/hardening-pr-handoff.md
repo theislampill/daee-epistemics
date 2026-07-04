@@ -9,19 +9,33 @@
 
 - Branch: `codex/hardening-all-20260703` (local-only, not on any remote).
 - Base: `main` at `c86b3c6` (MAIN untouched throughout).
-- Commits: 36 on top of the base.
-- Diffstat: ~131 files changed, ≈ +7100 / −2135.
+- Commits: 39 on top of the base.
+- Diffstat: ~132 files changed, ≈ +7200 / −2135.
 - Latest strict CI: `run_local_ci: PASS (89 commands)`.
 - Working tree: clean.
 
+## North-Star alignment (execution-spine map)
+
+`docs/execution-spine.md` is a docs-only **pointer map** indexing how the repo
+already implements the North-Star skill-as-code pipeline (`surface observation →
+hidden noetic state → owner/TTP operation → register-axis transition → controlled
+delta → MRP/NAR/field_witness mirror → public proof scaffold → sidecar
+eligibility`), with the Tier 0 / Tier 1 / Tier 2 split and a skill↔harness
+vocabulary table. The Tier-0 execution spine (`## EXECUTION SPINE`) already ships
+in `skill/SKILL.md`, so no runtime reference was added and the size-guarded root is
+untouched — the map is a review/audit index, not a runtime change.
+
 ## Folder exhausted
 
-Every clean, low-risk, safe-local slice in the packet is **done**. All remaining
-work is terminally classified as owner / spend / external / artifact / A-B gated,
-NOT-SAFE, DEFERRED (no repo surface), or one buildable-but-large refactor flagged
-for its own focused pass (Plan 15 normalizer-transparency). There is no further
-low-risk local slice to land; the branch is a clean, strict-CI-green 36-commit
-series ready to become the single PR once the gated items are owner-adjudicated.
+Every clean, low-risk, safe-local slice in the packet is **done** — including the
+final polish: the execution-spine map (`docs: add execution spine map`) and the
+stale v0.4.3.0 release-body guard (`plan06: guard stale release-body template`).
+All remaining work is terminally classified as owner / spend / external / artifact
+/ A-B gated, NOT-SAFE, DEFERRED (no repo surface), or one buildable-but-large
+refactor flagged for its own focused pass (Plan 15 normalizer-transparency). There
+is no further low-risk local slice to land; the branch is a clean, strict-CI-green
+39-commit series ready to become the single PR once the gated items are
+owner-adjudicated.
 
 ## Owner cleanup (standing directive)
 
@@ -55,7 +69,7 @@ The two `plan07` safety commits remain in history; their effects were reversed b
 | 03 field-witness binding | DONE (map + schema + binding checker + canon-spec); envelope generation ARTIFACT-GATED; `binding_status` + certificate `output_fingerprint` OWNER-GATED |
 | 04 stage07/08 | SUBSTANTIALLY DONE; existence/hash ARTIFACT-GATED, live re-exec SPEND-GATED |
 | 05 retained-corpus requal | SUBSTANTIALLY DONE; Smoke-C promotion OWNER/ARTIFACT-GATED |
-| 06 release provenance | DONE (gate ledger + provenance `--self-test`); de-stale OWNER-GATED (release-body is a hardcoded v0.4.3.0 template — a semantics decision, not behavior-preserving; a self-test would only cement the stale behavior); branch-protection EXTERNAL-GATED; tag/publish/custody OWNER-GATED |
+| 06 release provenance | DONE (gate ledger + provenance `--self-test` + **stale release-body guard**: the v0.4.3.0-specific template now fails-safe for any other version, so it cannot emit misleading future text); full de-stale (redefining what a release body contains) remains OWNER-GATED (semantics decision); branch-protection EXTERNAL-GATED; tag/publish/custody OWNER-GATED |
 | 07 safety boundary | OWNER-DECLINED / REPLACED (dual-use/safety layer removed; neutral parts retained) |
 | 08 CI coverage / perf | DONE (coverage checker + `--report` + parallelization proof); parallelization adoption OWNER-GATED (phase-staging + first-failure-abort decision; proof shows no safe drop-in) |
 | 09 semantic-replay | DONE (README + schema); polarity guard NOT SAFE TO BUILD (overmatch); deeper phases OWNER/SPIKE-GATED |
