@@ -414,6 +414,24 @@ def write_manifest(path: Path, manifest: dict[str, object]) -> None:
     path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
 
+LEGACY_RELEASE_BODY_VERSION = "v0.4.3.0"
+
+
+def stale_release_body_guard_error(version: str, write_body: object, release_body: object) -> list[str]:
+    """The release-body template (write_release_body / check_release_body) is a hardcoded
+    v0.4.3.0-specific, owner-authored asset - not a generic generator. Refuse to generate
+    or check a release body for any other version so the stale template can never emit or
+    require misleading text for a future release. Pure + unit-tested. The active
+    --provenance/--package verification path (verify_provenance_package) does not go through
+    check_release_preflight and is therefore unaffected by this guard."""
+    if (write_body or release_body) and version != LEGACY_RELEASE_BODY_VERSION:
+        return [
+            "release body generation is owner-authored / not generic; "
+            "do not use the stale v0.4.3.0 template"
+        ]
+    return []
+
+
 def write_release_body(path: Path, manifest: dict[str, object]) -> None:
     version = str(manifest["version"])
     artifact_name = str(manifest["artifact_name"])
@@ -579,6 +597,12 @@ def check_release_preflight(
     write_body: Path | None,
 ) -> int:
     errors: list[str] = []
+    guard = stale_release_body_guard_error(version, write_body, release_body)
+    if guard:
+        print("release provenance check: FAIL")
+        for error in guard:
+            print(f"- {error}")
+        return 1
     manifest = build_release_manifest(version, artifact, release_body, provenance_path)
     if manifest_out:
         write_manifest(manifest_out, manifest)
@@ -728,6 +752,13 @@ def self_test() -> int:
          any("missing required field: version" in e for e in run({k: v for k, v in payload.items() if k != "version"}))),
         ("wrong manifest sha -> FAIL",
          any("build-manifest SHA256 mismatch" in e for e in run({**payload, "build_manifest_sha256": "B" * 64}))),
+        ("non-legacy release-body request hits the guard",
+         any("owner-authored / not generic" in e
+             for e in stale_release_body_guard_error("v0.9.9.9-fixture", package, None))),
+        ("legacy v0.4.3.0 release-body remains allowed",
+         stale_release_body_guard_error(LEGACY_RELEASE_BODY_VERSION, package, None) == []),
+        ("no release-body op -> no guard",
+         stale_release_body_guard_error("v0.9.9.9-fixture", None, None) == []),
     ]
     ok = all(p for _, p in checks)
     for name, passed in checks:
