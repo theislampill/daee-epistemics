@@ -29,7 +29,7 @@ a `.md`).
 | --- | --- | --- | --- |
 | `tests/mrp-route-invariants` | 6 / 7 | Valid 6 / Invalid 7 | invalid includes the ~102 KB composite; WT adds the bold-gate mutant |
 | `tests/mid-reread-pressure` | 14 / 26 | Valid 13 / Invalid 26 | valid file count includes one `.field_witness.json` companion (13 `.md` + 1 json) |
-| `tests/tlang-response-closure` | 1 / 2 | Valid 1 / Invalid 2 | thinnest family; WT adds the uptake-assertion invalid |
+| `tests/tlang-response-closure` | 2 / 2 | Valid 2 / Invalid 2 | includes the uptake-free minimal-pair counterpart to `invalid/uptake-assertion.md` (differs only in the uptake claim) |
 | `tests/public-burden-grouping` | 2 / 5 | — | |
 | `tests/manual-smoke-render` | 18 / 39 | — | WT adds compliance-side-success, fabricated-validation-pass |
 | `tests/concealment-mode` | 21 / 25 | — | WT adds 2 invalids |
