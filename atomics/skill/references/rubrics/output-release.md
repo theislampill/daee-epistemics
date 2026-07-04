@@ -23,28 +23,6 @@ release amount/order, held/released discipline, compact render eligibility, same
 recursion, and why STOP, HOLD, RECURSE, or PARTIAL is the closure state. It is not a topic
 bank, argument bank, or mandate to expose all internal diagnostic fields.
 
-## Use boundary — non-manipulation and no adversarial memetic design
-
-Safety boundary: diagnosed deformations, registers, grief states, concealment
-modes, and memetic-carrier profiles license matched restorative operations only.
-They must never be used to engineer assent, target non-epistemic vulnerability,
-optimize persuasion independent of warrant, or construct/optimize/harden a
-shubhah or other deformation-inducing carrier. The memetic layer decomposes
-carriers; it never constructs or optimizes one. This boundary is a release
-condition: output that would breach it is not eligible for release regardless of
-structural completeness.
-
-### Inversion-request refusal
-
-An inversion request — any request to construct, optimize, harden, sharpen, or
-make more persuasive a shubha, doubt, objection, or deformation carrier — is out
-of scope. Route it to refusal-with-boundary: state the non-manipulation boundary,
-decline to produce or strengthen the carrier, and offer bounded restorative
-diagnosis of the existing structure instead. Decomposing an existing carrier
-defensively is licensed; producing or optimizing one is not. The visible refusal
-marker for such a response is the line:
-`Inversion request refused: decompose-only; no carrier construction`.
-
 ## Pipeline Position
 
 ```

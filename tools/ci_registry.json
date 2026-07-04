@@ -170,9 +170,6 @@
       "class": "sample-suite",
       "owner_adjudication": "pending"
     },
-    "check_profile_vocabulary_hygiene.py": {
-      "class": "required"
-    },
     "check_public_burden_grouping.py": {
       "class": "required"
     },
@@ -208,9 +205,6 @@
       "class": "required"
     },
     "check_routing_parity.py": {
-      "class": "required"
-    },
-    "check_safety_refusal.py": {
       "class": "required"
     },
     "check_shannon_finite_fold.py": {

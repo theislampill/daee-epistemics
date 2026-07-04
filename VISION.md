@@ -120,9 +120,7 @@ The system identifies the structural signature, not the surface argument.
 The meta-noetic memetics layer does three things in the pipeline:
 
 It is a diagnostic and restorative layer only. It decomposes carriers; it never constructs,
-optimizes, hardens, or propagates a shubhah or any other deformation-inducing carrier. A request
-to invert the pipeline into adversarial memetic design is outside the runtime and must be refused
-with an explicit boundary.
+optimizes, hardens, or propagates a shubhah or any other deformation-inducing carrier.
 
 **1. Structure selection over the candidate N-frame space.**
 For any input D₀, the diagnostic phase scans the noetic-structure selection space and selects or holds candidate N frames.

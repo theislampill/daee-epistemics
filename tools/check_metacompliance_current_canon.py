@@ -73,20 +73,6 @@ GENERATED_REQUIRED = [
     "OWNER-BODY-NOT-LOADED",
 ]
 
-GENERATED_BUNDLE_REQUIRED = {
-    # OD-02a (2026-07-04): the non-manipulation / no-adversarial-memetic-design
-    # safety boundary was re-anchored (B1a) from the root control plane into the
-    # output-release rubric, which compiles into this runtime bundle. This pin
-    # preserves the generated/runtime safety requirement at its new home so the
-    # boundary can never be silently dropped from the shipped runtime.
-    "references/runtime-output-governance.md": [
-        "Safety boundary: diagnosed deformations",
-        "never constructs or optimizes one",
-        "Inversion-request refusal",
-        "decompose-only; no carrier construction",
-    ],
-}
-
 OWNER_REQUIRED = {
     "atomics/skill/references/diagnostics/recursive-state-transitions.md": [
         "Source-Status & Noetic-Frame Non-Equivalence Discipline",
@@ -152,10 +138,6 @@ OWNER_REQUIRED = {
         "no headline-only answer",
         "TTP/operator trace",
         "Restorative Response identifies restored order",
-        "Safety boundary: diagnosed deformations",
-        "never constructs or optimizes one",
-        "Inversion-request refusal",
-        "decompose-only; no carrier construction",
     ],
     "atomics/skill/references/diagnostics/routing-precedence.md": [
         "pattern-first",
@@ -224,9 +206,7 @@ CURRENT_DOC_REQUIRED = {
         "No interior-state certification",
         "No arbitrary-input correctness claim",
         "No universal semantic grader",
-        "No adversarial memetic design",
-        "No manipulation",
-        "They make violations legible; they do not prove manipulation-proofness or semantic impossibility",
+        "They make violations legible; they do not prove semantic impossibility",
     ],
     "docs/compiled-runtime-tools.md": [
         "default compact DSL/IR visibility",
@@ -352,12 +332,6 @@ def check_generated_default_surface(root: Path, errors: list[str]) -> None:
             cursor = idx
 
 
-def check_generated_bundles(root: Path, errors: list[str]) -> None:
-    for rel_path, tokens in GENERATED_BUNDLE_REQUIRED.items():
-        text = read(out_dir(root) / rel_path, errors)
-        require_tokens(f"skill/{rel_path}", text, tokens, errors)
-
-
 def check_owner_anchors(root: Path, errors: list[str]) -> None:
     for rel_path, tokens in OWNER_REQUIRED.items():
         text = read(root / rel_path, errors)
@@ -411,7 +385,6 @@ def main() -> int:
 
     check_root_control_plane(root, errors)
     check_generated_default_surface(root, errors)
-    check_generated_bundles(root, errors)
     check_owner_anchors(root, errors)
     check_current_docs(root, errors)
     check_changelog_release_currency(root, errors)

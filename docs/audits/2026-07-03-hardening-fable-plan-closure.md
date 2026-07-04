@@ -1,5 +1,20 @@
 # 2026-07-03 Hardening/Fable Plan Closure Ledger
 
+> **OWNER REVERSAL (2026-07-04).** The AM-2 "safety refusal" gate, its fixtures,
+> the profile-vocabulary hygiene gate, the "Use boundary / Safety boundary"
+> non-manipulation directive in `output-release.md`, the corresponding
+> metacompliance pins, and the "No adversarial memetic design" / "No manipulation"
+> non-claims were **removed by owner decision** (commit `cleanup: remove dual-use
+> safety bloat`). This project is a correctness / provenance / claim-boundary /
+> generated-runtime-integrity / retained-corpus-drift / ordinary-security tool;
+> it is **not** a dual-use, adversarial-instruction, refusal, or safety-policy
+> runtime. Rows below that describe the B1a safety-boundary re-anchoring, the
+> AM-2 refusal marker, or "safety boundary wording" are **SUPERSEDED** by this
+> reversal and are retained only as an audit trail of what was done at the time.
+> The μ-register "memetic-carrier" decomposition semantics, path-traversal
+> rejection, claim-boundary, proof-taxonomy, retained-drift, CI-registry,
+> freshness, and release-registry checks were retained.
+
 Scope: evaluated plans under `hardening/` and `fablehardening/` from baseline
 `c86b3c6673147b8802fe222373a165a37d4d24a8`.
 
