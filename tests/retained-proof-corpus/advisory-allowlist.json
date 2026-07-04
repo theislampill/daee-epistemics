@@ -1,0 +1,167 @@
+{
+  "schema": "retained-corpus-advisory-allowlist-v1",
+  "description": "Dated allowlist of known advisory (non-bound) drift of retained corpus outputs vs current visible-output probes. Bound failures are enforced by check_retained_row_claims, not here. See the requalification ledger.",
+  "entries": [
+    {
+      "case_id": "staged-secularism-proofbundle-pilot-v17",
+      "checker": "check_act_surface_syntax",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "exact-secularism",
+      "checker": "check_concealment_mode",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "exact-trinitarian-j173",
+      "checker": "check_concealment_mode",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "exact-tst-lillard",
+      "checker": "check_concealment_mode",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "gate88-secularism",
+      "checker": "check_concealment_mode",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "gate88-trinitarian-j173",
+      "checker": "check_concealment_mode",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "gate88-tst-lillard",
+      "checker": "check_concealment_mode",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "staged-secularism-proofbundle-pilot-v17",
+      "checker": "check_concealment_mode",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "trinitarian-j173-repair-v6",
+      "checker": "check_concealment_mode",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "dad8-testimony-c8",
+      "checker": "check_manual_smoke_render_contract",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "source-order-tlang",
+      "checker": "check_manual_smoke_render_contract",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "gate88-khaybar",
+      "checker": "check_mid_reread_pressure",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "gate88-secularism",
+      "checker": "check_mid_reread_pressure",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "gate88-trinitarian-j173",
+      "checker": "check_mid_reread_pressure",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "gate88-tst-lillard",
+      "checker": "check_mid_reread_pressure",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "staged-secularism-proofbundle-pilot-v17",
+      "checker": "check_mid_reread_pressure",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "gate88-khaybar",
+      "checker": "check_mrp_route_invariants",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "gate88-secularism",
+      "checker": "check_mrp_route_invariants",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "gate88-trinitarian-j173",
+      "checker": "check_mrp_route_invariants",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "gate88-tst-lillard",
+      "checker": "check_mrp_route_invariants",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "source-order-tlang",
+      "checker": "check_mrp_route_invariants",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "staged-secularism-proofbundle-pilot-v17",
+      "checker": "check_mrp_route_invariants",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    },
+    {
+      "case_id": "staged-secularism-proofbundle-pilot-v17",
+      "checker": "check_public_burden_grouping",
+      "status": "known_contract_drift",
+      "note_ref": "docs/audits/retained-corpus-requalification-ledger.md",
+      "as_of": "2026-07-04"
+    }
+  ]
+}

@@ -65,6 +65,8 @@ COMMANDS = [
     "python tools/check_retained_proof_corpus.py",
     "python tools/check_retained_row_claims.py --self-test",
     "python tools/check_retained_row_claims.py",
+    "python tools/check_retained_corpus_advisory.py --self-test",
+    "python tools/check_retained_corpus_advisory.py",
     "python tools/build_retained_proof_sidecars.py --self-test",
     "python tools/promote_retained_proof_case.py --self-test",
     "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/run_current_skill_smoke.ps1 -Root . -ProofSidecarSelfTest",
