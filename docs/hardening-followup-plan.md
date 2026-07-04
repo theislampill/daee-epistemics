@@ -41,8 +41,8 @@ required CI gate.
 
 | Lane | Gate on the remaining item | Smallest safe first slice | Sequencing |
 | --- | --- | --- | --- |
-| 16 terminal-cover A/B | A/B (retained-corpus regression) + owner (root slimming) | `tools/measure_terminal_cover_ab.py` read-only 24-case delta harness + snapshot doc | Before merge |
-| 08 CI parallelization | owner (phase-staging + abort policy) | pure `benchmark_summary()` helper + self-test (doc-count fix already landed) | Before merge |
+| 16 terminal-cover A/B | A/B (retained-corpus regression) + owner (root slimming) | `tools/measure_terminal_cover_ab.py` read-only 24-case delta harness + snapshot doc | Before merge — LANDED `0788b21` |
+| 08 CI parallelization | owner (phase-staging + abort policy) | pure `benchmark_summary()` helper + self-test (doc-count fix already landed) | Before merge — LANDED `1cf82c6` |
 | 15 normalizer-transparency | owner (verdict/schema) + spend (live capture) | additive `route_state_repairs` field in `write_hash_record` + classification table, byte-identity proof | After merge (own PR) |
 | 03 field-witness envelope | artifact (envelope) + owner (`binding_status`, cert rev) | `tools/build_field_witness_envelope.py` generator (writes nothing by default) + decision packet | After merge (own PR) |
 | 06 release de-stale | owner (release-body semantics) + external (branch-protection/tag/publish) | `docs/release-body-contract.md` inventory + token classification, awaiting sign-off | Later release |
@@ -59,10 +59,14 @@ The deeper read surfaced work the earlier "folder exhausted" sweep missed:
    `run_local_ci.py --list` and `analyze_ci_parallelizability.py`). Corrected in
    commit `22e5673` (`plan08: correct stale ci-parallelizability command counts`);
    classification and verdict unchanged.
-2. **Two buildable before-merge slices, recorded but not implemented** (Plan 16
-   terminal-cover A/B harness; Plan 08 benchmark helper). Both are docs/measurement/
-   pure-function only and change no runtime — see their lane sections. They are
-   captured here as recommended pre-PR work, deferred to an explicit go-ahead.
+2. **Two buildable before-merge slices — now landed strict-CI-green.** Plan 16
+   terminal-cover A/B harness (`tools/measure_terminal_cover_ab.py`, `0788b21`) and
+   Plan 08 pure `benchmark_summary()` helper (`1cf82c6`), both docs/measurement/
+   pure-function only, no runtime change. A subsequent read-only exhaustion sweep
+   (8 lanes + a strict adjudicator) then returned **all_safe_local_exhausted =
+   true**: no further safe-local slice remains before the PR; every other lane is
+   terminally gated (owner / external / spend / artifact / A-B / not-safe /
+   deferred), with zero safety-reintroduction risk.
 
 ---
 
@@ -136,7 +140,7 @@ The deeper read surfaced work the earlier "folder exhausted" sweep missed:
   one-command query.
 - **Commit slicing.** (1) add the harness; (2) wire its self-test into CI; (3)
   record the baseline snapshot. Independently green and revert-clean.
-- **Sequencing: before merge.** Pure safe-local observability with a wired
+- **Sequencing: before merge — LANDED (`0788b21`).** Pure safe-local observability with a wired
   `--self-test`; it is the evidence instrument for the one A/B-gated sub-item and
   strengthens the PR's auditability story. The strengthening it measures stays
   after-merge/owner-gated; root slimming stays owner-gated.
@@ -200,7 +204,7 @@ The deeper read surfaced work the earlier "folder exhausted" sweep missed:
 - **Commit slicing.** (already landed) doc-count fix `22e5673`; (next) add the
   benchmark helper + self-test; (optional) add the manual `--benchmark` runner,
   never lane-wired.
-- **Sequencing: before merge.** Safe-local, additive, docs+pure-function; it already
+- **Sequencing: before merge — LANDED (`1cf82c6`).** Safe-local, additive, docs+pure-function; it already
   corrected a self-contradicting artifact in the PR. Adoption stays later/owner.
 
 ## Plan 15 — normalizer-transparency / live capture
@@ -684,7 +688,7 @@ These remain external/owner actions, in order, none performed by this pass:
 1. Open the single PR from `codex/hardening-all-20260703` (EXTERNAL).
 2. Branch-protection / ruleset readback and changes (EXTERNAL, authenticated `gh`).
 3. Tag creation, release publication, large-artifact custody (OWNER + EXTERNAL).
-4. Post-merge follow-ups in the sequence above: before-merge slices (16, 08) if
+4. Post-merge follow-ups in the sequence above: before-merge slices (16, 08, now landed `0788b21`/`1cf82c6`) if
    authorized; then the after-merge own-PR slices (15, 03); then the later-release
    docs/spec slices (06, 17, 11, 09) that unblock their owner decisions.
 

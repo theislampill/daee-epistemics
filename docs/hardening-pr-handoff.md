@@ -9,9 +9,9 @@
 
 - Branch: `codex/hardening-all-20260703` (local-only, not on any remote).
 - Base: `main` at `c86b3c6` (MAIN untouched throughout).
-- Commits: 41 on top of the base (latest two: `22e5673` ci-parallelizability count fix; the follow-up-plan doc).
-- Diffstat: ~132 files changed, ≈ +7200 / −2135.
-- Latest strict CI: `run_local_ci: PASS (89 commands)`.
+- Commits: 44 on top of the base (the two before-merge slices — `0788b21` terminal-cover A/B harness, `1cf82c6` CI benchmark helper — landed strict-CI-green; a read-only exhaustion sweep then confirmed no further safe-local slice remains).
+- Diffstat: ~135 files changed, ≈ +8330 / −2135.
+- Latest strict CI: `run_local_ci: PASS (90 commands)`.
 - Working tree: clean.
 
 ## North-Star alignment (execution-spine map)
@@ -71,7 +71,7 @@ The two `plan07` safety commits remain in history; their effects were reversed b
 | 05 retained-corpus requal | SUBSTANTIALLY DONE; Smoke-C promotion OWNER/ARTIFACT-GATED |
 | 06 release provenance | DONE (gate ledger + provenance `--self-test` + **stale release-body guard**: the v0.4.3.0-specific template now fails-safe for any other version, so it cannot emit misleading future text); full de-stale (redefining what a release body contains) remains OWNER-GATED (semantics decision); branch-protection EXTERNAL-GATED; tag/publish/custody OWNER-GATED |
 | 07 safety boundary | OWNER-DECLINED / REPLACED (dual-use/safety layer removed; neutral parts retained) |
-| 08 CI coverage / perf | DONE (coverage checker + `--report` + parallelization proof); the stale command counts in `docs/audits/ci-parallelizability.md` were corrected to the live 89/83 (`22e5673`); parallelization adoption OWNER-GATED (phase-staging + first-failure-abort decision; proof shows no safe drop-in) |
+| 08 CI coverage / perf | DONE (coverage checker + `--report` + parallelization proof + pure `benchmark_summary()` helper `1cf82c6`); `docs/audits/ci-parallelizability.md` counts corrected then kept live (now 90/84; `22e5673`); parallelization adoption OWNER-GATED (phase-staging + first-failure-abort decision; proof shows no safe drop-in) |
 | 09 semantic-replay | DONE (README + schema); polarity guard NOT SAFE TO BUILD (overmatch); deeper phases OWNER/SPIKE-GATED |
 | 10 worktree custody | DONE (local commits); PR OWNER-GATED |
 | 11 checker consolidation | DONE (land-gate single-sourced); package extraction OWNER-GATED |
@@ -79,7 +79,7 @@ The two `plan07` safety commits remain in history; their effects were reversed b
 | 13 docs claim-boundary | DONE; lexical claim-verb rules OWNER-GATED (overmatch) |
 | 14 executor playbook | DEFERRED (no repo surface — planning-lane only) |
 | 15 smaller-model compliance | DONE (scorecard format + offline runner); normalizer-transparency refactor BUILDABLE but flagged for a focused pass (large multi-site CI-wired harness); live capture SPEND-GATED |
-| 16 architecture-debt slimming | DONE (dead-code + budget tool); terminal-cover strengthening A/B-GATED; contract slimming OWNER-GATED |
+| 16 architecture-debt slimming | DONE (dead-code + budget tool + terminal-cover A/B measurement harness `0788b21`); terminal-cover strengthening A/B-GATED; contract slimming OWNER-GATED |
 | 17 owner/TTP schema | DONE (drift inventory + parity checker); contract resolution / negative-contract authoring OWNER-GATED (safety-sensitive) |
 | 18 worktree green-state | DONE |
 | 19 owner-decision queue | DONE |
@@ -90,6 +90,13 @@ Every remaining gated item now has a detailed, executable follow-up plan —
 smallest safe first slice, validators, rollback, stop conditions, and
 before/after-merge sequencing per lane — in
 [`docs/hardening-followup-plan.md`](hardening-followup-plan.md).
+
+The two before-merge slices in that plan are now **landed** strict-CI-green —
+Plan 16 terminal-cover A/B harness (`0788b21`) and Plan 08 `benchmark_summary()`
+helper (`1cf82c6`). A read-only exhaustion sweep (8 lanes + a strict adjudicator)
+then confirmed **no further safe-local slice remains**: every other lane is
+terminally gated (owner / external / spend / artifact / A-B / not-safe /
+deferred), with zero safety-reintroduction risk.
 
 ## Remaining gates (by class)
 
