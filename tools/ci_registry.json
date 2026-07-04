@@ -63,6 +63,9 @@
     "check_field_operator_architecture.py": {
       "class": "required"
     },
+    "check_field_witness_binding.py": {
+      "class": "required"
+    },
     "check_field_witness_convergence.py": {
       "class": "required"
     },
