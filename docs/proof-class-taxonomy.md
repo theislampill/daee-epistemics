@@ -30,3 +30,27 @@ faithfulness"; do not cite it as universal semantic grading.
 Release notes may say a validator passed only when the validator was actually
 run against the named artifact. Public governed output must not invent
 `validation: PASS`, quality-gate, or validator-verdict lines.
+
+## Claim classes
+
+Beyond the proof MECHANISMS above, every claim in release notes, ledgers, and
+docs carries a claim CLASS. These are not interchangeable; do not upgrade a claim
+to a stronger class without the evidence that class requires.
+
+| Claim class | Definition | Never licenses |
+| --- | --- | --- |
+| kernel-assumption | A thesis premise granted for engineering purposes (noetic structures as typed state, etc.). | It is a stated assumption, not a proven fact. |
+| facet-recoverability | Owner/operation/pressure/delta/Land facets are recoverable from the exact retained text plus `field_witness`. | Semantic equivalence or meaning-correctness of the answer. |
+| retained-replay | A named checker was re-run over a retained artifact and passed. | Fresh model execution, arbitrary-input behavior, or cross-host behavior. |
+| package-proof | A built `.skill` artifact matches its manifest and provenance by hash and shape. | That the packaged runtime behaves correctly, or that the published asset matches. |
+| release-proof | A published release's asset and provenance were verified by readback at the release boundary. | Ongoing consistency; a later force-move or replacement is a separate claim. |
+| public-readback | A downloaded published artifact was re-verified against recorded hashes. | That the tagged source tree produced it, absent a rebuild. |
+| analogy | A metaphor (Shannon channel, vector calculus) used as engineering framing. | Any literal mathematical or information-theoretic result. |
+| target | A future or aspirational capability, explicitly labeled as not-yet-achieved. | Present capability. |
+| non-claim | An explicitly disclaimed property (guaranteed uptake, interior-state certification, universal semantic grading, arbitrary-input correctness). | Anything — a non-claim is a prohibition, never evidence. |
+| owner-decision | A judgment reserved for the maintainer (custody, release, rule-scoping). | Autonomous execution; a default recommendation is not an approval. |
+
+Assignment rule: a release-notes or ledger sentence that uses a proof verb
+(proves / guarantees / ensures / validated / verified) must be assignable to a
+proof mechanism above AND a claim class here that its evidence actually supports.
+When in doubt, use the weaker class.

@@ -168,6 +168,15 @@ OWNER_REQUIRED = {
 }
 
 CURRENT_DOC_REQUIRED = {
+    "docs/proof-class-taxonomy.md": [
+        "Proof Class Taxonomy",
+        "sidecar-backed-structural",
+        "semantic-replay",
+        "kernel-assumption",
+        "public-readback",
+        "owner-decision",
+        "Assignment rule",
+    ],
     "README.md": [
         "compact DSL/IR",
         "State/noetic re-read",
