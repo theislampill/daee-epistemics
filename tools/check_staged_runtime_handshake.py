@@ -2406,10 +2406,7 @@ def record_errors(path: Path, record: Any) -> list[str]:
     errors.extend(sha_errors(path, record))
     errors.extend(path_reference_errors(path, record))
     errors.extend(artifact_binding_errors(path, record, stages))
-    if not errors:
-        errors.extend(semantic_errors(path, record, stages))
-    else:
-        errors.extend(semantic_errors(path, record, stages))
+    errors.extend(semantic_errors(path, record, stages))
     return errors
 
 
