@@ -2117,6 +2117,28 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
             non_claims = b5.get("non_claims")
             if not isinstance(non_claims, dict) or non_claims.get("not_fresh_runtime_default_emission") is not True:
                 errors.append(f"{label}: B.5.4.1 sidecar must preserve not_fresh_runtime_default_emission")
+        # Plan 04: proof_sidecars path integrity. When a stage-08 proof_sidecars set is
+        # claimed, its paths must be a non-empty list of repo-relative strings with no
+        # absolute prefix and no '..' traversal. This closes the escape where a claimed
+        # sidecar set listed an absolute or '../' path unchecked. Existence/hash binding
+        # is deliberately NOT asserted here: the sidecars live in gitignored .daee run
+        # dirs, so existence is run-context-dependent and remains owner-gated.
+        proof_sidecars = verifier_sidecars.get("proof_sidecars")
+        if isinstance(proof_sidecars, dict) and proof_sidecars.get("claimed") is True:
+            sidecar_paths = proof_sidecars.get("paths")
+            if not isinstance(sidecar_paths, list) or not sidecar_paths:
+                errors.append(f"{label}: proof_sidecars claim requires a non-empty 'paths' list")
+            else:
+                for raw in sidecar_paths:
+                    if not isinstance(raw, str) or not raw.strip():
+                        errors.append(f"{label}: proof_sidecars path must be a non-empty string, got {raw!r}")
+                        continue
+                    norm = raw.replace("\\", "/")
+                    is_absolute = norm.startswith("/") or (len(norm) >= 2 and norm[1] == ":")
+                    if is_absolute or ".." in norm.split("/"):
+                        errors.append(
+                            f"{label}: proof_sidecars path must be repo-relative without '..' or an absolute prefix: {raw!r}"
+                        )
     return errors
 
 
