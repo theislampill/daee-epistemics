@@ -1,0 +1,263 @@
+{
+  "schema": "ci-registry-v1",
+  "note": "Generated snapshot of tools/check_*.py wiring vs tools/run_local_ci.py. class 'required' means wired into the required local-CI lane. Non-required classes (advisory/release-only/indirect/manual-slow/sample-suite/deprecated-candidate) are NOT in that lane; their labels are provisional pending owner adjudication (Plan 08 Phase 2 / Plan 19). check_ci_registry_coverage.py enforces coverage and the required<->wired invariant, not the correctness of a non-required label.",
+  "checkers": {
+    "check_act_surface_syntax.py": {
+      "class": "required"
+    },
+    "check_as_child_mode_execution_samples.py": {
+      "class": "sample-suite",
+      "owner_adjudication": "pending"
+    },
+    "check_ci_registry_coverage.py": {
+      "class": "required"
+    },
+    "check_closure_witness_graph.py": {
+      "class": "required"
+    },
+    "check_collapse_certificate_schema.py": {
+      "class": "required"
+    },
+    "check_compiled_module_boundaries.py": {
+      "class": "required"
+    },
+    "check_compiled_runtime_freshness.py": {
+      "class": "required"
+    },
+    "check_compiled_skill_self_contained.py": {
+      "class": "required"
+    },
+    "check_concealment_mode.py": {
+      "class": "required"
+    },
+    "check_consolidation_call_budget.py": {
+      "class": "required"
+    },
+    "check_coverage.py": {
+      "class": "required"
+    },
+    "check_da_ds_hk_child_mode_execution_samples.py": {
+      "class": "sample-suite",
+      "owner_adjudication": "pending"
+    },
+    "check_diagnostic_ir_catalogue_integrity.py": {
+      "class": "required"
+    },
+    "check_docs_claim_boundaries.py": {
+      "class": "required"
+    },
+    "check_docs_index_interactions.py": {
+      "class": "required"
+    },
+    "check_docs_output_grapher_smoke.py": {
+      "class": "indirect",
+      "owner_adjudication": "pending"
+    },
+    "check_dw_child_mode_execution_samples.py": {
+      "class": "sample-suite",
+      "owner_adjudication": "pending"
+    },
+    "check_encoding_hygiene.py": {
+      "class": "required"
+    },
+    "check_field_operator_architecture.py": {
+      "class": "required"
+    },
+    "check_field_witness_convergence.py": {
+      "class": "required"
+    },
+    "check_formal_reread_state_semantics.py": {
+      "class": "required"
+    },
+    "check_framework_pipeline.py": {
+      "class": "required"
+    },
+    "check_frontmatter.py": {
+      "class": "required"
+    },
+    "check_graph_completeness.py": {
+      "class": "required"
+    },
+    "check_hard_compound_mrp_smokes.py": {
+      "class": "manual-slow",
+      "owner_adjudication": "pending"
+    },
+    "check_hard_output_scope_fulfillment.py": {
+      "class": "manual-slow",
+      "owner_adjudication": "pending"
+    },
+    "check_hard_smoke_manifest.py": {
+      "class": "required"
+    },
+    "check_ir_instance_integrity.py": {
+      "class": "required"
+    },
+    "check_ir_reconstruction_fixtures.py": {
+      "class": "sample-suite",
+      "owner_adjudication": "pending"
+    },
+    "check_level3_data_shapes.py": {
+      "class": "required"
+    },
+    "check_live_default_witness_contract.py": {
+      "class": "required"
+    },
+    "check_m9_child_mode_execution_samples.py": {
+      "class": "sample-suite",
+      "owner_adjudication": "pending"
+    },
+    "check_manual_smoke_render_contract.py": {
+      "class": "required"
+    },
+    "check_metacompliance_current_canon.py": {
+      "class": "required"
+    },
+    "check_mid_reread_pressure.py": {
+      "class": "required"
+    },
+    "check_mm_child_mode_execution_samples.py": {
+      "class": "sample-suite",
+      "owner_adjudication": "pending"
+    },
+    "check_mojibake.py": {
+      "class": "required"
+    },
+    "check_mrp_despecialization.py": {
+      "class": "advisory",
+      "owner_adjudication": "pending"
+    },
+    "check_mrp_generated_burden.py": {
+      "class": "required"
+    },
+    "check_mrp_route_invariants.py": {
+      "class": "required"
+    },
+    "check_negative_example_mimicry.py": {
+      "class": "required"
+    },
+    "check_nla_decode_semantic_faithfulness.py": {
+      "class": "required"
+    },
+    "check_noetic_field_banner_samples.py": {
+      "class": "sample-suite",
+      "owner_adjudication": "pending"
+    },
+    "check_operative_contracts.py": {
+      "class": "advisory",
+      "owner_adjudication": "pending"
+    },
+    "check_oq_child_mode_execution_samples.py": {
+      "class": "sample-suite",
+      "owner_adjudication": "pending"
+    },
+    "check_output_grapher.py": {
+      "class": "required"
+    },
+    "check_output_grapher_layout.py": {
+      "class": "required"
+    },
+    "check_owner_activation_ordering.py": {
+      "class": "required"
+    },
+    "check_package_shape.py": {
+      "class": "required"
+    },
+    "check_pipeline2_bridge.py": {
+      "class": "advisory",
+      "owner_adjudication": "pending"
+    },
+    "check_pm_child_mode_execution_samples.py": {
+      "class": "sample-suite",
+      "owner_adjudication": "pending"
+    },
+    "check_profile_vocabulary_hygiene.py": {
+      "class": "required"
+    },
+    "check_public_burden_grouping.py": {
+      "class": "required"
+    },
+    "check_reconstructibility_and_mrp.py": {
+      "class": "required"
+    },
+    "check_recursion_collapse_noetic_frame.py": {
+      "class": "required"
+    },
+    "check_recursive_traversal_governance.py": {
+      "class": "required"
+    },
+    "check_register_formalism_bridge.py": {
+      "class": "required"
+    },
+    "check_release_provenance.py": {
+      "class": "release-only",
+      "owner_adjudication": "pending"
+    },
+    "check_render_modes.py": {
+      "class": "required"
+    },
+    "check_reproducibility.py": {
+      "class": "required"
+    },
+    "check_retained_corpus_advisory.py": {
+      "class": "required"
+    },
+    "check_retained_proof_corpus.py": {
+      "class": "required"
+    },
+    "check_retained_row_claims.py": {
+      "class": "required"
+    },
+    "check_routing_parity.py": {
+      "class": "required"
+    },
+    "check_safety_refusal.py": {
+      "class": "required"
+    },
+    "check_shannon_finite_fold.py": {
+      "class": "required"
+    },
+    "check_skill_ab_smoke_outputs.py": {
+      "class": "sample-suite",
+      "owner_adjudication": "pending"
+    },
+    "check_skill_package_artifact.py": {
+      "class": "indirect",
+      "owner_adjudication": "pending"
+    },
+    "check_smoke_artifacts.py": {
+      "class": "required"
+    },
+    "check_spec_authoring_pack.py": {
+      "class": "required"
+    },
+    "check_staged_governed_output_high_mass.py": {
+      "class": "manual-slow",
+      "owner_adjudication": "pending"
+    },
+    "check_staged_runtime_handshake.py": {
+      "class": "required"
+    },
+    "check_stub_integrity.py": {
+      "class": "required"
+    },
+    "check_tlang_response_closure.py": {
+      "class": "required"
+    },
+    "check_trigger_eval_manifest.py": {
+      "class": "required"
+    },
+    "check_trinitarian_mrp_hotfix.py": {
+      "class": "required"
+    },
+    "check_ttp_availability_canaries.py": {
+      "class": "required"
+    },
+    "check_ttp_operator_contracts.py": {
+      "class": "required"
+    },
+    "check_underfixtured_module_coverage.py": {
+      "class": "advisory",
+      "owner_adjudication": "pending"
+    }
+  }
+}

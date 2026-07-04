@@ -86,6 +86,8 @@ COMMANDS = [
     "python tools/check_safety_refusal.py --self-test",
     "python tools/check_safety_refusal.py",
     "python tools/verify_candidate_output.py --self-test",
+    "python tools/check_ci_registry_coverage.py --self-test",
+    "python tools/check_ci_registry_coverage.py",
     "python tools/check_spec_authoring_pack.py",
     "python tools/check_docs_index_interactions.py",
     "python tools/check_field_operator_architecture.py",
