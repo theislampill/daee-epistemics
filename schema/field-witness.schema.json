@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schema/field-witness.schema.json",
+  "title": "DAEE Field Witness (top-level key contract)",
+  "description": "Published top-level shape of the machine-readable field_witness payload, schema_version field-witness-v1. This pins the TOP-LEVEL key contract only (required + allowed-optional keys); deep per-key validation stays in tools/check_ir_instance_integrity.py, whose FIELD_WITNESS_KEYS / FIELD_WITNESS_OPTIONAL_KEYS sets are asserted equal to this schema's required / optional properties by tools/check_field_witness_binding.py (single source, assert-equality). This is a structural key contract only: it is NOT a semantic-faithfulness, interlocutor-uptake, provenance, or release claim, and it does not certify that a conforming field_witness is correct or freshly generated.",
+  "schema_version": "field-witness-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "burden_events",
+    "closure",
+    "coverage_proof",
+    "field_diagnostics",
+    "loopbreak",
+    "non_claims",
+    "provenance",
+    "reconstruction",
+    "register_deltas",
+    "route_gradient",
+    "transfer_boundary"
+  ],
+  "properties": {
+    "route_gradient": {"type": "object", "description": "eligible_routes / selected / reason"},
+    "burden_events": {"type": "array", "description": "owner / delta_nB / delta_kappa / result per event"},
+    "field_diagnostics": {"description": "divergence / curl diagnostics"},
+    "loopbreak": {"description": "loopbreak licensing record"},
+    "reconstruction": {"description": "held_set / live_remainder / reread_scope"},
+    "closure": {"description": "operator / decision / agent_field_status"},
+    "transfer_boundary": {"description": "operator / from / to / mode"},
+    "register_deltas": {"description": "register / delta entries"},
+    "non_claims": {"description": "explicit non-claims carried with the witness"},
+    "provenance": {"description": "evidence_type / source / captured_by"},
+    "coverage_proof": {"description": "initial_burden_set / terminal_states / dependency_graph / divergence_check"},
+    "reread_pressure": {"description": "optional: mid-reread pressure record"},
+    "normalized_activation_record": {"description": "optional: normalized activation record"},
+    "canonical_ir_projection": {"description": "optional: canonical IR projection"},
+    "owner_activation_ordering": {"description": "optional: owner activation ordering"}
+  }
+}
