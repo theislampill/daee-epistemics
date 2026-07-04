@@ -3,13 +3,13 @@
 > Lane T deliverable. A local-only snapshot of the `codex/hardening-all-20260703`
 > hardening branch for the eventual single PR. **This is a handoff record, not a
 > PR:** no push, PR, tag, release, merge, publication, external action, or spend
-> has occurred. Finalized 2026-07-04.
+> has occurred. Updated 2026-07-04.
 
 ## Branch state
 
 - Branch: `codex/hardening-all-20260703` (local-only, not on any remote).
 - Base: `main` at `c86b3c6` (MAIN untouched throughout).
-- Commits: 39 on top of the base.
+- Commits: 41 on top of the base (latest two: `22e5673` ci-parallelizability count fix; the follow-up-plan doc).
 - Diffstat: ~132 files changed, ≈ +7200 / −2135.
 - Latest strict CI: `run_local_ci: PASS (89 commands)`.
 - Working tree: clean.
@@ -71,7 +71,7 @@ The two `plan07` safety commits remain in history; their effects were reversed b
 | 05 retained-corpus requal | SUBSTANTIALLY DONE; Smoke-C promotion OWNER/ARTIFACT-GATED |
 | 06 release provenance | DONE (gate ledger + provenance `--self-test` + **stale release-body guard**: the v0.4.3.0-specific template now fails-safe for any other version, so it cannot emit misleading future text); full de-stale (redefining what a release body contains) remains OWNER-GATED (semantics decision); branch-protection EXTERNAL-GATED; tag/publish/custody OWNER-GATED |
 | 07 safety boundary | OWNER-DECLINED / REPLACED (dual-use/safety layer removed; neutral parts retained) |
-| 08 CI coverage / perf | DONE (coverage checker + `--report` + parallelization proof); parallelization adoption OWNER-GATED (phase-staging + first-failure-abort decision; proof shows no safe drop-in) |
+| 08 CI coverage / perf | DONE (coverage checker + `--report` + parallelization proof); the stale command counts in `docs/audits/ci-parallelizability.md` were corrected to the live 89/83 (`22e5673`); parallelization adoption OWNER-GATED (phase-staging + first-failure-abort decision; proof shows no safe drop-in) |
 | 09 semantic-replay | DONE (README + schema); polarity guard NOT SAFE TO BUILD (overmatch); deeper phases OWNER/SPIKE-GATED |
 | 10 worktree custody | DONE (local commits); PR OWNER-GATED |
 | 11 checker consolidation | DONE (land-gate single-sourced); package extraction OWNER-GATED |
@@ -83,6 +83,13 @@ The two `plan07` safety commits remain in history; their effects were reversed b
 | 17 owner/TTP schema | DONE (drift inventory + parity checker); contract resolution / negative-contract authoring OWNER-GATED (safety-sensitive) |
 | 18 worktree green-state | DONE |
 | 19 owner-decision queue | DONE |
+
+## Follow-up plan
+
+Every remaining gated item now has a detailed, executable follow-up plan —
+smallest safe first slice, validators, rollback, stop conditions, and
+before/after-merge sequencing per lane — in
+[`docs/hardening-followup-plan.md`](hardening-followup-plan.md).
 
 ## Remaining gates (by class)
 
