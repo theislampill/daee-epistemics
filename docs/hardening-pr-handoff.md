@@ -1,18 +1,18 @@
 # Hardening Branch — PR Handoff Ledger
 
-> Lane M deliverable. A local-only snapshot of the `codex/hardening-all-20260703`
+> Lane M / M2 deliverable. A local-only snapshot of the `codex/hardening-all-20260703`
 > hardening branch for the eventual single PR. **This is a handoff record, not a
 > PR:** no push, PR, tag, release, merge, publication, external action, or spend
 > has occurred, and the branch is not yet exhausted — buildable lanes remain
-> (see "Remaining work"). Prepared 2026-07-04.
+> (see "Remaining work"). Refreshed 2026-07-04.
 
 ## Branch state
 
 - Branch: `codex/hardening-all-20260703` (local-only, not on any remote).
 - Base: `main` at `c86b3c6` (MAIN untouched throughout).
-- Commits: 27 on top of the base.
-- Diffstat: 123 files changed, +6517 / −2083.
-- Latest strict CI: `run_local_ci: PASS (87 commands)`.
+- Commits: 32 on top of the base.
+- Diffstat: ~128 files changed, ≈ +6900 / −2135.
+- Latest strict CI: `run_local_ci: PASS (89 commands)`.
 - Working tree: clean.
 
 ## Owner cleanup (standing directive)
@@ -55,6 +55,11 @@ bloat`). Do not reintroduce that infrastructure.
 | `1b7dce9` | plan12: add fixture integrity checks |
 | `5123d7c` | plan08: improve ci registry reporting |
 | `009125f` | plan12: add fixture sidecar checks |
+| `f74451f` | docs: add hardening pr handoff |
+| `56c8daa` | plan06: add release provenance fixtures |
+| `b6a95ae` | plan12: extend expected-diagnostic sidecars |
+| `91ef69f` | plan08: add ci parallelization proof harness |
+| *(this)* | docs: refresh hardening pr handoff |
 
 Note: the two `plan07` safety commits remain in history but their effects were
 reversed by `455a921` (no history rewrite, per owner instruction).
@@ -63,50 +68,45 @@ reversed by `455a921` (no history rewrite, per owner instruction).
 
 | Prio | Plan | State |
 |---|---|---|
-| P0 | 18 worktree green-state | DONE |
-| P0 | 19 owner-decision queue | DONE |
-| P0 | 10 worktree custody/commits | DONE (local commits; PR owner-gated) |
-| P1 | 05 retained-corpus requalification | SUBSTANTIALLY DONE (Smoke-C promotion owner/artifact-gated) |
-| P1 | 07 safety boundary | OWNER-DECLINED / REPLACED (safety layer removed; neutral parts retained) |
-| P1 | 13 docs claim-boundary | DONE (lexical rules owner-scoped) |
-| P1 | 02 proof-class/taxonomy | DONE |
-| P1 | 04 stage07/08 | SUBSTANTIALLY DONE (existence/hash + re-exec owner/spend-gated) |
-| P1 | 01 live-output verifier | SCAFFOLD DONE (custody subsystem owner-scoped) |
-| P1 | 03 field-witness binding | PARTIAL — map + schema + binding checker done; canon-spec/hash-envelope artifact-gated |
-| P2 | 08 CI coverage/perf | PARTIAL — coverage checker + report mode done; parallelization needs A/B proof |
-| P2 | 06 release provenance | PARTIAL — gate ledger done; de-stale needs provenance fixtures; branch-protection EXTERNAL-gated, tag/publish/custody OWNER-gated |
-| P2 | 12 fixture taxonomy/integrity | PARTIAL — taxonomy + mutation sweep + sidecar (1 checker) done; more sidecars + minimal pairs queued |
-| P2 | 11 checker consolidation | PARTIAL — land-gate single-sourced; package extraction OWNER-GATED |
-| P2 | 16 architecture-debt slimming | PARTIAL — dead-code + budget tool done; terminal-cover strengthening A/B-gated; slimming OWNER-GATED |
-| P2 | 17 owner/TTP schema | PARTIAL — drift inventory + parity checker done; contract resolution OWNER-GATED (safety-sensitive) |
-| P2 | 14 executor playbook | DEFERRED (no repo surface — planning-lane only) |
-| P3 | 15 smaller-model compliance | PARTIAL — scorecard format + offline runner done; normalizer-transparency refactor queued; live capture SPEND-GATED |
-| P3 | 09 semantic-replay | PARTIAL — README/schema done; polarity guard NOT SAFE TO BUILD standalone (overmatch); deeper phases OWNER/SPIKE-gated |
+| P0 | 18 / 19 / 10 | DONE (10 = local commits; PR owner-gated) |
+| P1 | 05 | SUBSTANTIALLY DONE (Smoke-C promotion owner/artifact-gated) |
+| P1 | 07 | OWNER-DECLINED / REPLACED (safety layer removed; neutral parts retained) |
+| P1 | 13 / 02 | DONE |
+| P1 | 04 | SUBSTANTIALLY DONE (existence/hash + re-exec owner/spend-gated) |
+| P1 | 01 | SCAFFOLD DONE (custody subsystem owner-scoped) |
+| P1 | 03 | PARTIAL — map + schema + binding checker done; canon-spec/hash-envelope artifact-gated |
+| P2 | 08 | PARTIAL — coverage checker + report mode + **parallelization proof** done; parallelization NOT adopted (PARTIAL/phase-staging owner-gated) |
+| P2 | 06 | PARTIAL — gate ledger + **provenance `--self-test`** done; de-stale HELD (self-test covers `--provenance/--package` only, not the release-body path); branch-protection EXTERNAL-gated, tag/publish/custody OWNER-gated |
+| P2 | 12 | PARTIAL — taxonomy + mutation sweep + **sidecars on 2 checkers** done; `check_mid_reread_pressure` sidecar + minimal pairs queued |
+| P2 | 11 | PARTIAL — land-gate single-sourced; package extraction OWNER-GATED |
+| P2 | 16 | PARTIAL — dead-code + budget tool done; terminal-cover strengthening OWNER-GATED (semantics-changing, retained-A/B risk); slimming OWNER-GATED |
+| P2 | 17 | PARTIAL — drift inventory + parity checker done; contract resolution OWNER-GATED (safety-sensitive) |
+| P2 | 14 | DEFERRED (no repo surface — planning-lane only) |
+| P3 | 15 | PARTIAL — scorecard format + offline runner done; normalizer-transparency refactor queued; live capture SPEND-GATED |
+| P3 | 09 | PARTIAL — README/schema done; polarity guard NOT SAFE TO BUILD standalone (overmatch); deeper phases OWNER/SPIKE-gated |
 
 ## Remaining work
 
-**Buildable (not gated), queued for a continuation pass:**
-- Plan 06: minimal self-consistent provenance/package fixtures for
-  `check_release_provenance` → then the de-stale refactor (behavior-preservation
-  provable only once fixtures exist; the checker is unwired so CI won't validate it).
-- Plan 08: an A/B serial-vs-parallel proof harness. Note: the ~9 build /
-  generated-file commands write shared artifacts, so safe parallelization is
-  limited to the pure checkers and is likely PARTIAL with findings.
-- Plan 12: extend the expected-diagnostic sidecar to the other two route checkers;
-  minimal pairs where the distinction is mechanical.
-- Plan 16: terminal-cover strengthening — requires retained-corpus A/B proving no
-  new bound-case failures; owner-gated if it changes semantics.
+**Buildable (not gated), queued:**
+- Plan 12: extend the expected-diagnostic sidecar to `check_mid_reread_pressure`
+  (the pattern is proven on two checkers); minimal pairs where mechanical.
 - Plan 03: canon-spec + hash-envelope binding (artifact-gated — needs the envelope).
 
-**Owner / spend / external gates (out of local scope):**
-- Branch protection / ruleset changes; tag / publish / release; large-asset custody.
-- Contract resolution / negative-contract authoring (Plan 17); runtime slimming
-  adoption (Plan 16); package-layout API (Plan 11).
-- Live model/host capture (Plan 15); deeper semantic-replay phases (Plan 09).
-- The single PR itself.
+**Gated (require owner / spend / external / careful A/B):**
+- Plan 06 de-stale: needs a self-test covering the release-body/preflight path
+  before it is provably behavior-preserving; branch-protection / tag / publish /
+  custody are external/owner.
+- Plan 08 parallelization: phase-staging + first-failure-abort change is a CI
+  behavior decision (proof shows no safe drop-in).
+- Plan 16 terminal-cover strengthening: semantics-changing; needs retained-corpus
+  A/B proving no new bound-case failures. Plan 16 slimming: owner adoption.
+- Plan 17 contract resolution / negative-contract authoring (safety-sensitive);
+  Plan 11 package-layout API; Plan 15 live model/host capture; Plan 09 deeper
+  semantic-replay phases; and the single PR itself.
 
 ## Readiness
 
-The folder is **not yet exhausted** — the buildable lanes above remain. This
-branch is a clean, strict-CI-green, reviewable 27-commit series suitable for a
-single PR once those lanes are done or terminally gated. No PR has been opened.
+The folder is **not yet exhausted** — the buildable lanes above remain (notably
+the `check_mid_reread_pressure` sidecar). This branch is a clean,
+strict-CI-green 32-commit series suitable for a single PR once those lanes are
+done or terminally gated. No PR has been opened.
