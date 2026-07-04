@@ -159,6 +159,9 @@
     "check_owner_activation_ordering.py": {
       "class": "required"
     },
+    "check_owner_contract_parity.py": {
+      "class": "required"
+    },
     "check_package_shape.py": {
       "class": "required"
     },
