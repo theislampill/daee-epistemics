@@ -1,0 +1,9 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "uptake-assertion.md",
+  "kind": "invalid-single-signature",
+  "expected_error_substrings": [
+    "public T_lang surface claims guaranteed uptake"
+  ],
+  "provenance": "diagnostic emitted by check_tlang_response_closure.check_text, verified 2026-07-04"
+}

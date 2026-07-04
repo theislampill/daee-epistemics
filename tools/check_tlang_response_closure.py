@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import glob
+import json
 import re
 import sys
 from dataclasses import dataclass
@@ -55,6 +56,33 @@ def rel(path: Path) -> str:
         return path.resolve().relative_to(ROOT).as_posix()
     except ValueError:
         return path.as_posix()
+
+
+def expected_diagnostic_failures(fixture_path: Path, emitted: list[str]) -> list[str]:
+    """Optional expected-diagnostic sidecar (schema expected-diagnostic-v1).
+
+    If <fixture-stem>.expected.json exists next to an invalid fixture, require every
+    `expected_error_substrings` entry (>= 12 chars, not the fixture name/path) to be a
+    substring of at least one emitted error, so the fixture is pinned to fail for the
+    RIGHT reason. Sidecars are opt-in: a fixture without one is unaffected."""
+    sidecar = fixture_path.parent / (fixture_path.stem + ".expected.json")
+    if not sidecar.is_file():
+        return []
+    out: list[str] = []
+    data = json.loads(sidecar.read_text(encoding="utf-8"))
+    if data.get("schema") != "expected-diagnostic-v1":
+        return [f"{rel(sidecar)}: schema must be 'expected-diagnostic-v1'"]
+    if data.get("fixture") != fixture_path.name:
+        out.append(f"{rel(sidecar)}: fixture must be {fixture_path.name!r}")
+    blob = "\n".join(emitted)
+    for sub in data.get("expected_error_substrings", []):
+        if not isinstance(sub, str) or len(sub) < 12:
+            out.append(f"{rel(sidecar)}: expected_error_substrings entry must be a string >= 12 chars: {sub!r}")
+        elif sub in {fixture_path.name, rel(fixture_path)}:
+            out.append(f"{rel(sidecar)}: expected_error_substrings must not equal the fixture path/name")
+        elif sub not in blob:
+            out.append(f"{rel(fixture_path)}: expected diagnostic not observed: {sub!r}")
+    return out
 
 
 def read_text(path: Path) -> str:
@@ -241,8 +269,11 @@ def main() -> int:
     for path in fixture_paths("invalid"):
         total_invalid += 1
         result = check_text(path, read_text(path))
-        if not result.errors and not result.partials:
+        emitted = list(result.errors) + list(result.partials)
+        if not emitted:
             failures.append(f"{rel(path)}: invalid T_lang canary unexpectedly closed")
+        else:
+            failures.extend(expected_diagnostic_failures(path, emitted))
 
     for path in expand_paths(args.outputs):
         result = check_text(path, read_text(path))

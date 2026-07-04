@@ -90,9 +90,32 @@ wired battery today and are closed only when their owning plan lands:
 - **Generic Stage-08 `proof_sidecars` non-verification** — claimed sidecars are
   path-integrity-checked (Plan 04) but existence/hash binding is owner/spend-gated.
 
-## 5. What this does not establish
+## 5. Expected-diagnostic sidecar (`expected-diagnostic-v1`)
+
+An invalid fixture may carry an opt-in `<fixture-stem>.expected.json` sidecar that
+pins the fixture to fail for the RIGHT reason (anti-masking). The owning checker's
+invalid loop, when a sidecar is present, additionally requires every
+`expected_error_substrings` entry to be a substring of at least one emitted error.
+
+```json
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "<name>.md",
+  "kind": "<taxonomy kind>",
+  "expected_error_substrings": ["a distinctive, stable diagnostic phrase"],
+  "provenance": "<origin note>"
+}
+```
+
+Rules: each substring is `>= 12` chars and must not equal the fixture name/path
+(rejects trivial pins). Sidecars are opt-in — a fixture without one is unaffected,
+so existing checker behavior is preserved. Consumed today by
+`check_tlang_response_closure`; extending the other route checkers is a
+follow-up slice.
+
+## 6. What this does not establish
 
 - It does not prove any invalid fixture is the *only* way its signature can
   fail, nor that the single-signature label is exhaustive.
-- Minimal-pair coverage, expected-diagnostic sidecars, and the mutation sweep
-  are Plan 12 Phases 1-3; this census is their precondition.
+- Minimal-pair coverage and the wider sidecar rollout are Plan 12 Phases 1-2;
+  the mutation sweep (Phase 3) is already wired (`gen_fixture_mutations.py`).
