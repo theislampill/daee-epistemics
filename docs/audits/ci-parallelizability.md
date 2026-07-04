@@ -5,7 +5,7 @@
 > read-only; wired `--self-test` in CI). No live parallel run was performed — a
 > live parallel run would race the shared generated files by construction, which
 > is exactly the hazard proven below. **CI execution is unchanged; parallelization
-> is NOT adopted.** Measured 2026-07-04 over 88 commands.
+> is NOT adopted.** Measured 2026-07-04 over 89 commands.
 
 ## Classification
 
@@ -13,7 +13,7 @@
 | --- | ---: | --- |
 | shared-writer | 3 | `build_framework_pipeline`, `build_compiled_runtime`, and the pwsh smoke mutate shared generated artifacts (`atomics/.../framework-pipeline.md`, `skill/SKILL.md`, `.daee/`). Racing two of these corrupts the artifact. |
 | git-gate | 3 | `git diff --exit-code -- skill/SKILL.md`, the framework-pipeline diff, and `git diff --check` READ tree state; they must run AFTER the generators that produce what they inspect. |
-| read-only | 82 | `check_*`/`verify_*`/`gen_*`/`measure_*`/`*-self-test`/`py_compile` — side-effect-free over already-produced artifacts; independent of each other. |
+| read-only | 83 | `check_*`/`verify_*`/`gen_*`/`measure_*`/`*-self-test`/`py_compile` — side-effect-free over already-produced artifacts; independent of each other. |
 
 ## Verdict — PARTIAL / NOT SAFE as a drop-in
 
