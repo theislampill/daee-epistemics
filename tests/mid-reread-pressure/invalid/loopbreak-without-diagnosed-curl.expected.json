@@ -1,0 +1,9 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "loopbreak-without-diagnosed-curl.md",
+  "kind": "invalid-single-signature",
+  "expected_error_substrings": [
+    "requires diagnosed nonzero"
+  ],
+  "provenance": "diagnostic emitted by check_mid_reread_pressure.check_fixture, verified 2026-07-04"
+}
