@@ -92,6 +92,7 @@ COMMANDS = [
     "python tools/check_release_provenance.py --self-test",
     "python tools/analyze_ci_parallelizability.py --self-test",
     "python tools/measure_load_path_budget.py --self-test",
+    "python tools/measure_terminal_cover_ab.py --self-test",
     "python tools/build_model_compliance_scorecard.py --self-test",
     "python tools/check_spec_authoring_pack.py",
     "python tools/check_docs_index_interactions.py",
