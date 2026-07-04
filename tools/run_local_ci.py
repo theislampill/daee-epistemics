@@ -87,6 +87,7 @@ COMMANDS = [
     "python tools/check_owner_contract_parity.py --self-test",
     "python tools/check_owner_contract_parity.py",
     "python tools/measure_load_path_budget.py --self-test",
+    "python tools/build_model_compliance_scorecard.py --self-test",
     "python tools/check_spec_authoring_pack.py",
     "python tools/check_docs_index_interactions.py",
     "python tools/check_field_operator_architecture.py",
