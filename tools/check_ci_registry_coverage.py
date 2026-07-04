@@ -125,6 +125,9 @@ def self_test() -> int:
         ("bad class flagged",
          any("bad class for check_c.py" in e
              for e in evaluate(files, wired, {**good, "check_c.py": {"class": "mystery"}}))),
+        ("class breakdown groups by class",
+         class_breakdown({"a.py": {"class": "required"}, "b.py": {"class": "advisory"},
+                          "c.py": {"class": "required"}}) == {"required": ["a.py", "c.py"], "advisory": ["b.py"]}),
     ]
     ok = all(passed for _, passed in cases)
     for name, passed in cases:
@@ -133,13 +136,35 @@ def self_test() -> int:
     return 0 if ok else 1
 
 
+def class_breakdown(entries: dict[str, dict]) -> dict[str, list[str]]:
+    """Pure helper (unit-tested): group checker names by declared class, each list sorted."""
+    groups: dict[str, list[str]] = {}
+    for name in sorted(entries):
+        groups.setdefault(entries[name].get("class", "?"), []).append(name)
+    return groups
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="CI registry coverage checker (Plan 08 Phase 1)")
     parser.add_argument("--self-test", action="store_true", help="run the deterministic evaluate() self-test")
+    parser.add_argument("--report", action="store_true", help="print the checker class breakdown and exit 0 (no gating)")
     args = parser.parse_args()
 
     if args.self_test:
         return self_test()
+
+    if args.report:
+        if not REGISTRY.is_file():
+            print(f"ci registry coverage: FAIL (missing {REGISTRY})")
+            return 1
+        checker_files, wired, entries = _disk_state()
+        groups = class_breakdown(entries)
+        print(f"ci registry: {len(entries)} checkers registered, {len(wired)} required/wired")
+        for cls in sorted(groups):
+            print(f"  {cls} ({len(groups[cls])}):")
+            for n in groups[cls]:
+                print(f"    - {n}")
+        return 0
 
     if not REGISTRY.is_file():
         print(f"ci registry coverage: FAIL (missing {REGISTRY})")
