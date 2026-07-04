@@ -23,6 +23,7 @@ import sys
 from pathlib import Path
 
 from check_mid_reread_pressure import (
+    LAND_GATE_RE as LAND_GATE_LINE_RE,
     MrpBlock,
     closure_over_held_route_errors,
     curl_diagnostic_errors,
@@ -60,10 +61,9 @@ GRAPH_STOP_RE = re.compile(
 MRP_HEADING_LINE_RE = re.compile(
     r"(?im)^\s*(?:#{1,6}\s*)?(?:[-*]\s*)?(?:\*\*)?\[Mid-Reread Pressure\](?:\*\*)?\s*$"
 )
-LAND_GATE_LINE_RE = re.compile(
-    rf"(?m)^\s*(?:#{{1,6}}\s*)?(?:[-*]\s*)?(?:\*\*)?"
-    rf"Land\((?P<burden>[{SUP}]+B|B[1-9][0-9]*)\):(?:\*\*)?"
-)
+# LAND_GATE_LINE_RE is single-sourced from check_mid_reread_pressure.LAND_GATE_RE
+# (byte-identical pattern + flags) via the import above, so the tolerant land-gate
+# regex has one canonical definition shared by both route checkers.
 DOWNSTREAM_LIVE_RE = re.compile(
     r"(?i)\b(?:B\d+\b.*\bremain(?:s)? live|downstream burden(?:s)? remain|"
     r"later burden(?:s)? remain|next burden remains|B\d+\b.*\bfollows)\b"
