@@ -1033,21 +1033,20 @@ ARG_SUBJECT_TERMS = frozenset(
 # true subject head is BEFORE them, so an argument load-word after one of these is
 # a modifier object, not the subject ("the interlocutor WHO grants the PROOF ...",
 # "the proponent OF the ARGUMENT ...").
-# A post-modifier start (relative clause / prepositional phrase) OR an appositive
-# comma; the subject HEAD noun phrase is BEFORE the first of these ("the proponent
-# OF the argument", "the interlocutor WHO grants the proof", "the predicate, WHICH
-# was scoped broadly,"). Cutting at the first comma keeps the head for a
-# nonrestrictive appositive instead of discarding it.
+# A post-modifier start (relative clause / prepositional phrase); the subject HEAD
+# noun phrase is BEFORE the first of these ("the proponent OF the argument", "the
+# interlocutor WHO grants the proof").
 CONCESSION_SUBJECT_MODIFIER_RE = re.compile(
-    r"(?i),|\b(?:who|whom|whoever|which|whose|of|in|on|for|with|to|about|regarding|"
+    r"(?i)\b(?:who|whom|whoever|which|whose|of|in|on|for|with|to|about|regarding|"
     r"concerning|from|by|behind|against|among|amongst)\b"
 )
-# A leading subordinate clause set off by a comma ("Because ... broadly, the
-# predicate ..."); the main-clause subject follows it, so a person pronoun inside
-# the subordinate clause is not mistaken for the subject.
-CONCESSION_SUBORDINATE_LEAD_RE = re.compile(
-    r"(?i)^(?:because|since|although|though|while|whilst|when|whereas|if|unless|as|"
-    r"after|before|once|assuming|provided|given)\b[^,.;:!?\n]*,\s*"
+# A comma span that is a parenthetical modifier (relative/appositive/participial
+# phrase) or a fronted subordinate clause, NOT the main clause -- used to walk back
+# past interposed modifiers to the real subject.
+CONCESSION_PARENTHETICAL_RE = re.compile(
+    r"(?i)^(?:which|who|whom|whose|that|where|when|as|given|assuming|provided|"
+    r"because|since|although|though|while|whilst|whereas|if|unless|after|before|"
+    r"once)\b|^\w+(?:ed|ing)\b"
 )
 CONCESSION_LEADING_RE = re.compile(
     r"(?i)^(?:but|and|so|yet|for|thus|therefore|hence|then|now|here|also|indeed|"
@@ -1059,25 +1058,39 @@ CONCESSION_ARTICLE_RE = re.compile(r"(?i)^(?:the|a|an)\s+")
 def _concession_subject_np(text: str, start: int) -> str:
     """Approximate the grammatical subject noun-phrase governing a concession match.
 
-    Takes the current sentence up to the match, drops one leading subordinate
-    clause and a leading conjunction/adverb + article, then cuts at the first
-    appositive comma or relative/prepositional modifier so the returned span is the
-    subject HEAD noun phrase -- not a load-word buried in a modifier/appositive and
-    not a pronoun in a leading subordinate clause.
+    Splits the current sentence into comma spans. The subject is the text before
+    "cannot" in its own span -- so a fronted subordinate clause with internal commas
+    (a serial list or stacked clauses) still leaves "... the reader cannot deny" as
+    the final span and resolves to the person subject. When an interposed
+    parenthetical (relative/appositive) separates the subject from "cannot", that
+    final span is empty, so we walk back to the nearest non-parenthetical span. The
+    head is then stripped of a leading conjunction/article and cut at the first
+    relative/prepositional modifier.
     """
-    segment = text[max(0, start - 240) : start]
+    segment = text[max(0, start - 260) : start]
     boundary = None
     for match in re.finditer(r"[.!?\n]", segment):
         boundary = match
     if boundary is not None:
         segment = segment[boundary.end() :]
-    segment = CONCESSION_SUBORDINATE_LEAD_RE.sub("", segment.strip())
-    segment = CONCESSION_LEADING_RE.sub("", segment.strip())
-    segment = CONCESSION_ARTICLE_RE.sub("", segment)
-    modifier = CONCESSION_SUBJECT_MODIFIER_RE.search(segment)
+    spans = segment.split(",")
+    subject_span = spans[-1].strip()
+    if not subject_span:
+        subject_span = ""
+        for span in reversed(spans[:-1]):
+            candidate = span.strip()
+            if not candidate:
+                continue
+            if CONCESSION_PARENTHETICAL_RE.match(candidate):
+                continue
+            subject_span = candidate
+            break
+    subject_span = CONCESSION_LEADING_RE.sub("", subject_span)
+    subject_span = CONCESSION_ARTICLE_RE.sub("", subject_span)
+    modifier = CONCESSION_SUBJECT_MODIFIER_RE.search(subject_span)
     if modifier is not None:
-        segment = segment[: modifier.start()]
-    return segment.lower()
+        subject_span = subject_span[: modifier.start()]
+    return subject_span.lower()
 
 
 def _concession_clause(text: str, start: int, end: int) -> str:
@@ -1328,6 +1341,12 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         # flag; the appositive comma must not drop the person subject).
         "The skeptic, who has seen the proof, cannot deny the evidence.",
         "The interlocutor, given the argument, cannot deny the result unless he recants.",
+        # person subject after a fronted subordinate clause with INTERNAL commas
+        # (serial list / stacked clauses); the argument load-words inside the
+        # fronted clause must not leak into the subject (must flag).
+        "Although the argument, the proof, and the thesis were laid out, the reader cannot deny the result unless he lies.",
+        "Because he studied it, although the argument is dense, the skeptic cannot deny the evidence.",
+        "Because the premise, the objection, and the proof were addressed, the skeptic cannot deny the conclusion unless he recants.",
     ):
         if not compliance_side_success_present(uptake):
             errors.append(
