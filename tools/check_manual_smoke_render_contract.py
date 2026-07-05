@@ -1016,6 +1016,36 @@ CONCESSION_LOGICAL_MARKER_RE = re.compile(
     r"(?i)\b(?:unless|only\s+if|iff|if\s+and\s+only\s+if|built\s+into|entails?|"
     r"follows?\s+from|presupposes?|derives?|implies?)\b|[A-Za-z]\([^)]{1,24}\)"
 )
+# A governing prohibition/negation in the same clause turns an uptake phrase into
+# an ANTI-uptake directive ("Do not promise that the interlocutor will accept ...",
+# "must not claim that the audience will now accept ...") -- the safety-correct
+# stance the guard exists to protect, which must NOT flag. This is a negative guard,
+# not a person allowlist; direct affirmative uptake claims (no governing prohibition)
+# still flag.
+UPTAKE_PROHIBITION_RE = re.compile(
+    r"(?i)\b(?:do|does|did|must|should|shall|will|would|can|could|need|dare|is|are|was|were|has|have)"
+    r"\s+not\b|\b(?:do|does|did|is|are|was|were|ca|wo|sha|could|would|should|must|need|has|have)n['’]t\b|"
+    r"\bnever\b|\bnot\s+to\b|\bno\s+longer\b|\brefuse[sd]?\b|\bavoid(?:s|ed|ing)?\b|"
+    r"\bforbid(?:s|den|ding)?\b|\bprohibit(?:s|ed|ing)?\b|\bdisallow(?:s|ed|ing)?\b|"
+    r"\bnot\s+(?:promise|claim|guarantee|assert|say|state|pretend|suggest|assume|imply|declare|insist)\b"
+)
+# A reporting/definitional frame ("can also mean ...", "reported as", "the sense/
+# reading that ...") or an explicit disowning ("that sense is rejected/disowned",
+# "not asserted") marks a concession phrase as a quoted / critiqued sense the output
+# does NOT itself assert, so it must NOT flag. Bare "means"/"this means" (entailment)
+# is deliberately excluded so a direct claim still flags.
+CONCESSION_REPORTING_FRAME_RE = re.compile(
+    r"(?i)\b(?:can|could|would|may|might)\s+(?:also\s+)?mean\b|"
+    r"\b(?:is|are|was|were|be|been|being)\s+(?:also\s+)?(?:called|known\s+as|defined\s+as|"
+    r"glossed\s+as|reported\s+(?:as|to)|quoted|described\s+as|interpreted\s+as|read\s+as|"
+    r"taken\s+to\s+mean)\b|\b(?:reported|quoted|glossed)\s+(?:as|to)\b|\btaken\s+to\s+mean\b|"
+    r"\bin\s+the\s+sense\b"
+)
+CONCESSION_DISOWN_RE = re.compile(
+    r"(?i)\b(?:rejected|disowned|disavow(?:ed|s)?|repudiat(?:ed|es)?|disallowed|"
+    r"not\s+asserted|not\s+our\s+conclusion|not\s+claimed|we\s+reject|blocks?\s+that|"
+    r"that\s+sense\s+is|forbidden\s+reading|disallowed\s+reading|rules?\s+out)\b"
+)
 # Negative argument-subject guard: the concession phrase is logical-scope (not a
 # person conceding) only when the grammatical SUBJECT of "cannot" is an
 # argument/predicate. This is an enumerable argument-term set; the guard suppresses
@@ -1124,6 +1154,18 @@ def _concession_clause(text: str, start: int, end: int) -> str:
     return text[left:right]
 
 
+def _clause_before(text: str, start: int) -> str:
+    """Return the clause immediately before a position, back to the last boundary."""
+    lo = max(0, start - 160)
+    segment = text[lo:start]
+    boundary = None
+    for match in re.finditer(r"[.!?;:\n]", segment):
+        boundary = match
+    if boundary is not None:
+        segment = segment[boundary.end() :]
+    return segment
+
+
 def compliance_side_success_present(text: str) -> bool:
     """Detect compliance-side-success / guaranteed-uptake claims.
 
@@ -1133,9 +1175,21 @@ def compliance_side_success_present(text: str) -> bool:
     argument/predicate, not a person conceding. The guard is negative (suppress
     only on an argument/predicate subject), never a positive person allowlist.
     """
-    if COMPLIANCE_UPTAKE_RE.search(text):
+    for match in COMPLIANCE_UPTAKE_RE.finditer(text):
+        # A prohibition governing the uptake phrase in the same clause ("Do not
+        # promise that the interlocutor will accept ...") is an anti-uptake
+        # directive, not an uptake claim -> do not flag.
+        clause_before = _clause_before(text, match.start())
+        if UPTAKE_PROHIBITION_RE.search(clause_before):
+            continue
         return True
     for match in COMPLIANCE_CONCESSION_RE.finditer(text):
+        clause = _concession_clause(text, match.start(), match.end())
+        # A reported/definitional or explicitly disowned sense ("it can also mean
+        # ... the person cannot resist"; "... but that sense is rejected") is not
+        # the output's own uptake claim -> do not flag.
+        if CONCESSION_REPORTING_FRAME_RE.search(clause) or CONCESSION_DISOWN_RE.search(clause):
+            continue
         subject_np = _concession_subject_np(text, match.start())
         # The subject HEAD (last token of the head noun phrase; English noun
         # phrases are head-final before post-modifiers, which are already cut)
@@ -1152,9 +1206,7 @@ def compliance_side_success_present(text: str) -> bool:
             continue
         # The bare pronoun "it"/"this"/"that" is ambiguous; treat it as the
         # predicate only inside a logical-conditional construction.
-        if head in {"it", "this", "that"} and CONCESSION_LOGICAL_MARKER_RE.search(
-            _concession_clause(text, match.start(), match.end())
-        ):
+        if head in {"it", "this", "that"} and CONCESSION_LOGICAL_MARKER_RE.search(clause):
             continue
         return True
     return False
@@ -1419,6 +1471,30 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         if compliance_side_success_present(logical_scope):
             errors.append(
                 f"self-test compliance-side detector over-matched logical-scope prose: {logical_scope!r}"
+            )
+    # Direct uptake / compliance-side-success claims must still flag ...
+    for must_flag in (
+        "The interlocutor will accept the answer.",
+        "The audience will now recognize the truth.",
+        "The person cannot resist the conclusion.",
+        "The interlocutor has no choice but to accept.",
+    ):
+        if not compliance_side_success_present(must_flag):
+            errors.append(
+                f"self-test compliance-side detector wrongly cleared a direct uptake/compliance claim: {must_flag!r}"
+            )
+    # ... but an anti-uptake directive (governing prohibition) and a reported /
+    # disowned sense must NOT flag: the guard must not punish the safety-correct
+    # anti-uptake norm or a critiqued reading the output rejects.
+    for must_not_flag in (
+        "Do not promise that the interlocutor will accept the answer.",
+        "The output must not claim that the audience will now accept the truth.",
+        "This can also mean 'the person cannot resist,' but that sense is rejected and disowned here.",
+        "The phrase is reported as a disallowed reading, not asserted as our conclusion: the person cannot resist.",
+    ):
+        if compliance_side_success_present(must_not_flag):
+            errors.append(
+                f"self-test compliance-side detector wrongly flagged an anti-uptake directive or reported/disowned sense: {must_not_flag!r}"
             )
     if not INTERIOR_CERTIFICATION_RE.search("The interlocutor is insincere."):
         errors.append("self-test interior-certification detector missed soul-state claim")
