@@ -9,7 +9,7 @@
 
 - Branch: `codex/hardening-all-20260703` (local-only, not on any remote).
 - Base: `main` at `c86b3c6` (MAIN untouched throughout).
-- Commits: 52 on top of the base (a maximal safe-local completion pass landed seven more slices — plans 16, 08, 17, 06, 09, 15, 03 — each strict-CI-green; Plan 11 was terminally gated after preflight, not attempted).
+- Commits: 53 on top of the base (a maximal safe-local completion pass landed seven slices — plans 16, 08, 17, 06, 09, 15, 03 — then a docs refresh + this stale-count reconcile, each strict-CI-green; Plan 11 was terminally gated after preflight, not attempted).
 - Diffstat: ~139 files changed, ≈ +8850 / −2135 (content, `--ignore-cr-at-eol`; the raw diff is larger because the `plan15` commit incidentally normalized a pre-existing mixed-CRLF file to the repo-mandated LF).
 - Latest strict CI: `run_local_ci: PASS (91 commands)`.
 - Working tree: clean.
@@ -69,18 +69,13 @@ profile-vocabulary hygiene gate, non-manipulation/adversarial-memetic directive,
 and matching pins were removed by owner decision (`455a921 cleanup: remove
 dual-use safety bloat`) and remain removed. Do not reintroduce that infrastructure.
 
-## Commit series (oldest → newest)
+## Commit series
 
-`62acd08` plan18 · `ba10168` plan05 · `f2e6c25` plan05 · `75dea01` plan07 *(reverted)* ·
-`c140e82` plan07 *(reverted)* · `052fd0c` plan13 · `6b29127` plan02 · `0bdeb0c` plan04 ·
-`fa41cc7` plan01 · `284bcac` plan03 · `3043304` plan08 · `ff4943b` plan12 · `dc6e015` plan06 ·
-`455a921` cleanup · `9a39618` plan11 · `9848cc3` plan16 · `06b6d66` plan17 · `951c49d` plan09 ·
-`7665365` plan15 · `74c80e0` plan16 · `70488dd` plan17 · `4fe6040` plan15 · `e7aec63` plan03 ·
-`15fac09` plan03 · `1b7dce9` plan12 · `5123d7c` plan08 · `009125f` plan12 · `f74451f` docs ·
-`56c8daa` plan06 · `b6a95ae` plan12 · `91ef69f` plan08 · `2138f1b` docs · `0f5a93d` plan12 ·
-`8c07cda` plan12 · `38a40de` plan03 · *(this)* docs: finalize hardening pr handoff
-
-The two `plan07` safety commits remain in history; their effects were reversed by
+The full, authoritative series is `git log c86b3c6..HEAD` — 53 commits (oldest →
+newest) on top of the base. The 2026-07-04 completion-pass commits are `2d5216c`
+plan16, `1d35a46` plan08, `3db753a` plan17, `2b323e4` plan06, `fadb4a6` plan09,
+`061ddbe` plan15, `76f4cd1` plan03, followed by the docs refresh + reconcile. The two
+reverted `plan07` safety commits remain in history; their effects were reversed by
 `455a921` (no history rewrite, per owner instruction).
 
 ## Plan ledger — terminal state for every plan

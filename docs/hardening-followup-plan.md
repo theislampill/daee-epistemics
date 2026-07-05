@@ -214,7 +214,7 @@ The deeper read surfaced work the earlier "folder exhausted" sweep missed:
   first-failure-abort; do not reorder `COMMANDS`; do not register the analyze tool in
   `ci_registry.json`; do not treat the benchmark as adoption authorization.
 - **Done.** `benchmark_summary()` pure and self-tested; `run_local_ci --strict-pwsh`
-  still PASS (89); the owner-facing measurement is runnable so decisions (a)/(b) are
+  still PASS (91); the owner-facing measurement is runnable so decisions (a)/(b) are
   executable.
 - **Commit slicing.** (already landed) doc-count fix `22e5673`; (next) add the
   benchmark helper + self-test; (optional) add the manual `--benchmark` runner,
@@ -502,7 +502,7 @@ The deeper read surfaced work the earlier "folder exhausted" sweep missed:
   tables, a reproducible command, an OD-17a/OD-17b decision table with the three
   canonical options per row, and an explicit "not a safety layer" note. If the D3 set
   is currently empty, record that and recommend enforcement be deferred as precautionary.
-- **Validators.** `run_local_ci` stays PASS (89); `check_owner_contract_parity.py`,
+- **Validators.** `run_local_ci` stays PASS (91); `check_owner_contract_parity.py`,
   `check_ttp_operator_contracts.py --strict`, `check_ci_registry_coverage.py` unchanged;
   the doc's numbers reproducible from the recorded command.
 - **Rollback.** Docs-only; `git rm` the doc. Nothing else to unwind.
