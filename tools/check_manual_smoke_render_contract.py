@@ -1033,16 +1033,21 @@ ARG_SUBJECT_TERMS = frozenset(
 # true subject head is BEFORE them, so an argument load-word after one of these is
 # a modifier object, not the subject ("the interlocutor WHO grants the PROOF ...",
 # "the proponent OF the ARGUMENT ...").
+# A post-modifier start (relative clause / prepositional phrase) OR an appositive
+# comma; the subject HEAD noun phrase is BEFORE the first of these ("the proponent
+# OF the argument", "the interlocutor WHO grants the proof", "the predicate, WHICH
+# was scoped broadly,"). Cutting at the first comma keeps the head for a
+# nonrestrictive appositive instead of discarding it.
 CONCESSION_SUBJECT_MODIFIER_RE = re.compile(
-    r"(?i)\b(?:who|whom|whoever|which|whose|of|in|on|for|with|to|about|regarding|"
+    r"(?i),|\b(?:who|whom|whoever|which|whose|of|in|on|for|with|to|about|regarding|"
     r"concerning|from|by|behind|against|among|amongst)\b"
 )
-# Clause boundaries: the main-clause subject follows the last of these before
-# "cannot" (so a person pronoun inside a leading subordinate clause is excluded).
-CONCESSION_CLAUSE_BOUNDARY_RE = re.compile(
-    r"[.!?;:,\n]|\b(?:because|since|although|though|while|whilst|when|whereas|if|"
-    r"unless|as|after|before|once|assuming|given)\b",
-    re.IGNORECASE,
+# A leading subordinate clause set off by a comma ("Because ... broadly, the
+# predicate ..."); the main-clause subject follows it, so a person pronoun inside
+# the subordinate clause is not mistaken for the subject.
+CONCESSION_SUBORDINATE_LEAD_RE = re.compile(
+    r"(?i)^(?:because|since|although|though|while|whilst|when|whereas|if|unless|as|"
+    r"after|before|once|assuming|provided|given)\b[^,.;:!?\n]*,\s*"
 )
 CONCESSION_LEADING_RE = re.compile(
     r"(?i)^(?:but|and|so|yet|for|thus|therefore|hence|then|now|here|also|indeed|"
@@ -1054,18 +1059,19 @@ CONCESSION_ARTICLE_RE = re.compile(r"(?i)^(?:the|a|an)\s+")
 def _concession_subject_np(text: str, start: int) -> str:
     """Approximate the grammatical subject noun-phrase governing a concession match.
 
-    Takes the main clause (after the last clause boundary before the match),
-    strips a leading conjunction/adverb and article, then cuts at the first
-    relative/prepositional modifier so the returned span is the subject HEAD noun
-    phrase -- not a load-word buried in a modifier and not a pronoun in a leading
-    subordinate clause.
+    Takes the current sentence up to the match, drops one leading subordinate
+    clause and a leading conjunction/adverb + article, then cuts at the first
+    appositive comma or relative/prepositional modifier so the returned span is the
+    subject HEAD noun phrase -- not a load-word buried in a modifier/appositive and
+    not a pronoun in a leading subordinate clause.
     """
-    segment = text[max(0, start - 220) : start]
+    segment = text[max(0, start - 240) : start]
     boundary = None
-    for match in CONCESSION_CLAUSE_BOUNDARY_RE.finditer(segment):
+    for match in re.finditer(r"[.!?\n]", segment):
         boundary = match
     if boundary is not None:
         segment = segment[boundary.end() :]
+    segment = CONCESSION_SUBORDINATE_LEAD_RE.sub("", segment.strip())
     segment = CONCESSION_LEADING_RE.sub("", segment.strip())
     segment = CONCESSION_ARTICLE_RE.sub("", segment)
     modifier = CONCESSION_SUBJECT_MODIFIER_RE.search(segment)
@@ -1318,6 +1324,10 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "The naysayer who grants the proof cannot deny the result unless the premise is built into P.",
         "The bystander who accepts the argument cannot deny the conclusion unless the premise entails it.",
         "The doubter who grants the formalization cannot deny the result unless the premise is built into P(x).",
+        # person subject with a nonrestrictive appositive before "cannot" (must
+        # flag; the appositive comma must not drop the person subject).
+        "The skeptic, who has seen the proof, cannot deny the evidence.",
+        "The interlocutor, given the argument, cannot deny the result unless he recants.",
     ):
         if not compliance_side_success_present(uptake):
             errors.append(
@@ -1335,6 +1345,10 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "Because they scoped P too broadly, the predicate cannot deny every case unless the exclusion is built into P.",
         "Since the proponent left P broad, it cannot deny every counterexample unless the exclusion is built into P.",
         "As the reader can check, the formula cannot deny any later martyrdom association unless it is built into P.",
+        # argument/predicate subject with a nonrestrictive appositive before
+        # "cannot" (must NOT flag; the subject head precedes the appositive comma).
+        "The predicate, which we scoped to intentional mission-negating harm, cannot deny the weaker reading unless that exclusion is built into P.",
+        "The argument, as formalized, cannot deny every attempted plot unless those exclusions are separately built into P.",
     ):
         if compliance_side_success_present(logical_scope):
             errors.append(
