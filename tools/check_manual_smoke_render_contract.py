@@ -1191,6 +1191,35 @@ def _concession_local_clause(text: str, start: int, end: int) -> str:
     return text[left:end]
 
 
+CONCESSION_LEFT_QUOTE = "“‘«‹"  # " ' << <
+CONCESSION_RIGHT_QUOTE = "”’»›"  # " ' >> >
+
+
+def _concession_quoted(text: str, start: int, end: int) -> bool:
+    """True when the concession phrase sits inside a quotation (reported / quoted /
+    hypothesized claim, e.g. ``If the claim is "... I cannot resist," then ...``), so
+    the output is DESCRIBING a claim, not asserting guaranteed uptake as its own."""
+    lo = max(0, start - 300)
+    segment = text[lo:start]
+    boundary = None
+    for match in re.finditer(r"[.!?\n]", segment):
+        boundary = match
+    left = lo + boundary.end() if boundary is not None else lo
+    before = text[left:start]
+    hi = min(len(text), end + 300)
+    forward = re.search(r"[.!?\n]", text[end:hi])
+    after = text[end : end + forward.start()] if forward is not None else text[end:hi]
+    typ_open = sum(before.count(q) for q in CONCESSION_LEFT_QUOTE)
+    typ_close_before = sum(before.count(q) for q in CONCESSION_RIGHT_QUOTE)
+    if typ_open > typ_close_before and any(q in after for q in CONCESSION_RIGHT_QUOTE):
+        return True
+    # straight double-quote: an odd count before the concession means it is inside an
+    # open quotation that closes after it.
+    if before.count('"') % 2 == 1 and '"' in after:
+        return True
+    return False
+
+
 def compliance_side_success_present(text: str) -> bool:
     """Detect compliance-side-success / guaranteed-uptake claims.
 
@@ -1217,6 +1246,10 @@ def compliance_side_success_present(text: str) -> bool:
         # cannot suppress a directly-asserted person-subject concession.
         local = _concession_local_clause(text, match.start(), match.end())
         if CONCESSION_REPORTING_FRAME_RE.search(local) or CONCESSION_DISOWN_RE.search(local):
+            continue
+        # A concession inside a quotation is a quoted / hypothesized claim the output
+        # is describing (often to critique), not its own guaranteed-uptake assertion.
+        if _concession_quoted(text, match.start(), match.end()):
             continue
         subject_np = _concession_subject_np(text, match.start())
         # The subject HEAD (last token of the head noun phrase; English noun
@@ -1545,6 +1578,10 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "The output must not claim that the audience will now accept the truth.",
         "This can also mean 'the person cannot resist,' but that sense is rejected and disowned here.",
         "The phrase is reported as a disallowed reading, not asserted as our conclusion: the person cannot resist.",
+        # a concession inside a quotation is a quoted / hypothesized claim being described
+        # or critiqued, not the output's own uptake assertion.
+        "If the claim is “God should reveal Himself in a way I cannot resist,” then it must explain why coercion would prove anything.",
+        "The objector's demand, “the skeptic cannot deny it,” is examined and found wanting.",
     ):
         if compliance_side_success_present(must_not_flag):
             errors.append(
