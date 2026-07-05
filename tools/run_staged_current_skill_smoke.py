@@ -7572,7 +7572,14 @@ def run_self_test(root: Path) -> int:
     real_subprocess_run = subprocess.run
     subprocess.run = _fake_claude_run
     try:
-        claude_exit = invoke_claude(root, "claude-opus-4-8", "self-test prompt", claude_out_path, claude_log_path)
+        claude_exit = invoke_claude(
+            root,
+            "claude-opus-4-8",
+            "self-test prompt",
+            claude_out_path,
+            claude_log_path,
+            claude_executable="claude",
+        )
     finally:
         subprocess.run = real_subprocess_run
     if claude_exit != 0 or claude_out_path.read_text(encoding="utf-8") != "SELF_TEST_CLAUDE_STAGE_RESPONSE\n":
