@@ -995,15 +995,73 @@ CLOSING_RESTORED_SLOT_RE = re.compile(
 CLOSING_BOUNDARY_SLOT_RE = re.compile(
     r"(?im)^\s*(?:(?:#{1,6}\s*)?(?:Scoped boundary|Reopen boundary)\s*$|(?:[-*]\s*)?(?:Scoped boundary|Reopen boundary)\s*:\s*[^\n]*\S)"
 )
-COMPLIANCE_SIDE_SUCCESS_RE = re.compile(
+COMPLIANCE_UPTAKE_RE = re.compile(
     r"(?i)\b(?:"
     r"interlocutor\s+(?:will|must|now)\s+(?:accept|concede|see|recognize|submit)|"
     r"(?:will|must|now)\s+(?:accept|concede|see|recognize|submit)\s+(?:the\s+)?(?:truth|claim|answer)|"
-    r"cannot\s+(?:deny|resist|avoid\s+conceding)|"
     r"has\s+no\s+choice\s+but\s+(?:to\s+)?(?:accept|concede|submit)|"
     r"this\s+resolves\s+(?:his|her|their|the)\s+doubt"
     r")\b"
 )
+# The bare concession phrase ("cannot deny/resist/avoid conceding") is a
+# compliance/uptake claim only when its subject is a person/interlocutor. It
+# also occurs in legitimate logical-scope prose ("the argument/predicate cannot
+# deny X unless Y is built into P"), where the subject is the argument/predicate
+# itself, not a person conceding. Guard NEGATIVELY on an argument/predicate
+# subject (plus a logical-conditional marker for the ambiguous pronoun "it") so
+# genuine person-subject claims still flag. A positive person allowlist would
+# wrongly clear subjects like "the skeptic" / "the audience".
+COMPLIANCE_CONCESSION_RE = re.compile(r"(?i)\bcannot\s+(?:deny|resist|avoid\s+conceding)\b")
+CONCESSION_LOGICAL_SUBJECT_RE = re.compile(
+    r"(?i)\b(?:argument|claim|premise|predicate|proposition|inference|proof|formula|"
+    r"thesis|derivation|antecedent|consequent|tree|formalization)\s*$"
+)
+CONCESSION_PRONOUN_SUBJECT_RE = re.compile(r"(?i)\bit\s*$")
+CONCESSION_LOGICAL_MARKER_RE = re.compile(
+    r"(?i)\b(?:unless|only\s+if|iff|if\s+and\s+only\s+if|built\s+into|entails?|"
+    r"follows?\s+from|presupposes?|derives?|implies?)\b|[A-Za-z]\([^)]{1,24}\)"
+)
+
+
+def _concession_clause(text: str, start: int, end: int) -> str:
+    """Sentence-bounded window around a concession match.
+
+    Logical-scope markers ("unless ... built into P") can trail a long object
+    enumeration, so a fixed short window misses them. Bound the clause by the
+    surrounding sentence terminators (capped) so the whole logical statement is
+    visible to the marker check.
+    """
+    lo = max(0, start - 260)
+    left = lo
+    for boundary in re.finditer(r"[.!?\n]", text[lo:start]):
+        left = lo + boundary.end()
+    hi = min(len(text), end + 300)
+    forward = re.search(r"[.!?\n]", text[end:hi])
+    right = end + forward.end() if forward else hi
+    return text[left:right]
+
+
+def compliance_side_success_present(text: str) -> bool:
+    """Detect compliance-side-success / guaranteed-uptake claims.
+
+    Person-subject concession claims ("the skeptic cannot deny the evidence")
+    flag. Logical-scope statements about what an argument/predicate can exclude
+    ("it cannot deny every plot unless built into P") do not: the subject is the
+    argument/predicate, not a person conceding. The guard is negative (suppress
+    only on an argument/predicate subject), never a positive person allowlist.
+    """
+    if COMPLIANCE_UPTAKE_RE.search(text):
+        return True
+    for match in COMPLIANCE_CONCESSION_RE.finditer(text):
+        before = text[max(0, match.start() - 30) : match.start()]
+        clause = _concession_clause(text, match.start(), match.end())
+        logical_subject = bool(CONCESSION_LOGICAL_SUBJECT_RE.search(before))
+        pronoun_subject = bool(CONCESSION_PRONOUN_SUBJECT_RE.search(before))
+        logical_marker = bool(CONCESSION_LOGICAL_MARKER_RE.search(clause))
+        if logical_subject or (pronoun_subject and logical_marker):
+            continue
+        return True
+    return False
 INTERIOR_CERTIFICATION_RE = re.compile(
     r"(?i)\b(?:interlocutor|target|person|he|she|they)\s+(?:is|are)\s+"
     r"(?:insincere|lying|a\s+hypocrite|outside\s+(?:the\s+)?faith|k[aā]fir|mun[aā]fiq)\b|"
@@ -1182,8 +1240,30 @@ def owner_specific_operation_performed(owner: str, combined: str) -> bool:
 
 def self_test_owner_specific_operation_patterns() -> list[str]:
     errors: list[str] = []
-    if not COMPLIANCE_SIDE_SUCCESS_RE.search("The interlocutor will now accept the truth."):
+    if not compliance_side_success_present("The interlocutor will now accept the truth."):
         errors.append("self-test compliance-side success detector missed uptake claim")
+    # Person-subject concession claims must still flag (negative guard must not
+    # over-suppress); a positive person allowlist would miss these subjects.
+    for uptake in (
+        "the skeptic cannot deny the evidence",
+        "the audience cannot deny this once shown",
+        "the reader cannot resist this conclusion",
+    ):
+        if not compliance_side_success_present(uptake):
+            errors.append(
+                f"self-test compliance-side detector wrongly cleared person-subject uptake claim: {uptake!r}"
+            )
+    # Logical-scope statements about what an argument/predicate can exclude must
+    # NOT be read as compliance/uptake claims (the concession-branch over-match).
+    for logical_scope in (
+        "But it cannot deny every attempted plot, every injury, or every later harm unless those exclusions are separately built into P.",
+        "The formal tree cannot deny the weaker reading unless the stronger premise is built into P(x).",
+        "The argument cannot deny successful mission-negating harm at t1 because it follows from P(t1).",
+    ):
+        if compliance_side_success_present(logical_scope):
+            errors.append(
+                f"self-test compliance-side detector over-matched logical-scope prose: {logical_scope!r}"
+            )
     if not INTERIOR_CERTIFICATION_RE.search("The interlocutor is insincere."):
         errors.append("self-test interior-certification detector missed soul-state claim")
     if not FABRICATED_VALIDATION_VERDICT_RE.search("validation: PASS"):
@@ -1324,6 +1404,47 @@ TTP Operation Body: Before this submove, secularism could speak as though ration
 """
     if not is_operation_shaped_submove(m8_grounding_burden_block):
         errors.append("self-test M8 rejected compact grounding_burden operation-shaped submove")
+    # Compact-target mass routing (checker-defect regression canary): a specific
+    # compound pressure label ("scope-overextension") that fails the target
+    # morpheme heuristic must still be accepted when the operation body carries
+    # the mass, and must NOT be rescued when the body is thin/conclusion-shaped.
+    if target_pressure_identifiable("scope-overextension"):
+        errors.append("self-test precondition changed: scope-overextension now passes the target heuristic directly")
+    scope_overextension_mass_block = """
+### ¹B₁[P7] - scope-boundary over scope-overextension
+
+Target: scope-overextension.
+
+Operation: scope-boundary must act on scope-overextension with owner family P7.
+
+Result/state-change: scope-boundary-named. State change: the protection claim is no longer treated as unqualified total bodily immunity from every human injury; it is classified as a bounded protection claim whose live scope is protection of prophetic conveyance.
+
+Contribution-to-Land(¹B): this licenses Land(¹B) because the burden-local state has changed from an overextended protection predicate to a named scope boundary; once the boundary is named, the contradiction can no longer be generated merely by importing a broader protection rule than the verse supplies.
+
+TTP Operation Body: Before this submove, the tree treated the ongoing mission as automatically implying total immunity from any human plot producing bodily harm, writing `M(t1) -> P(t1)` with `P(t1)` loaded as absolute bodily invulnerability. The scope-boundary operation separates the protected object (completion of the prophetic conveyance) from the overextended object (total physical invulnerability). After the operation, the tree may no longer use the protection premise as a universal bodily-immunity axiom; it may use it only as a bounded conveyance-protection premise. DELTA: Δ¹B:scope-boundary-named names the local change from an inflated all-harm shield into a named bounded scope. LAND-LICENSE: Land is licensed because the alleged contradiction requires scope-overextension, and that overextension has been directly exposed and bounded.
+"""
+    if not is_operation_shaped_submove(scope_overextension_mass_block):
+        errors.append("self-test rejected mass-backed compact target scope-overextension (checker-defect regression)")
+    thin_scope_overextension_block = """
+### ¹B₁[P7] - scope-boundary over scope-overextension
+
+Target: scope-overextension.
+
+Operation: scope-boundary over scope-overextension.
+
+Result/state-change: scope-boundary-named.
+
+Contribution-to-Land(¹B): the scope is overextended, so the first burden is landed.
+
+TTP Operation Body: The scope is overextended and the opponent's argument therefore fails.
+"""
+    if is_operation_shaped_submove(thin_scope_overextension_block):
+        errors.append("self-test rescued a thin conclusion-shaped compact-target submove (laundering guard failed)")
+    if compact_target_operation_body_backed(
+        "P7", "scope-overextension", "scope-boundary over scope-overextension",
+        "scope-boundary-named", "the scope is overextended so the burden is landed", "",
+    ):
+        errors.append("self-test compact-target rescue fired with an empty operation body")
     return errors
 
 
@@ -1378,6 +1499,46 @@ def target_pressure_identifiable(target: str) -> bool:
     if len(load_words) >= 3:
         return True
     return not is_label_like_value(cleaned)
+
+
+def compact_target_operation_body_backed(
+    owner: str,
+    target: str,
+    operation: str,
+    result: str,
+    contribution: str,
+    operation_body: str,
+) -> bool:
+    """Accept a specific compact pressure target when the operation body carries the mass.
+
+    A short compound target label (``scope-overextension``, ``t1-t2-causal-bridge``)
+    is a surface observation that aliases two distinct hidden states: a specific
+    structural pressure whose operation body genuinely acts on it (operation-shaped),
+    and a conclusion-shaped stub (slimming). The morpheme-count heuristic in
+    ``target_pressure_identifiable`` cannot separate them from the label alone and
+    rejects both. This routes the decision through the same operation-body mass gates
+    the submove must already satisfy, so a thin/conclusion-shaped body is never
+    rescued; only a mass-bearing body that actually operates on the named pressure is
+    accepted. It is neither a morpheme-floor relaxation nor a target allowlist.
+    """
+    cleaned = re.sub(r"\s+", " ", target.strip(" .;:-")).strip()
+    if not cleaned or GENERIC_TARGET_RE.fullmatch(cleaned):
+        return False
+    morphemes = [
+        word.lower()
+        for word in re.split(r"[-_/ ]", cleaned)
+        if re.fullmatch(r"[A-Za-z][A-Za-z']{2,}", word)
+    ]
+    if len(morphemes) < 2:
+        return False
+    operation_text = " ".join((operation, operation_body))
+    operation_scope = " ".join((operation_text, result, contribution))
+    return bool(
+        operation_body
+        and owner_specific_operation_performed(owner, operation_scope)
+        and operation_acts_on_pressure(cleaned, operation_text)
+        and operation_body_has_state_delta(operation_body, result, contribution)
+    )
 
 
 def do_attribute_claim_precision_target_backed(
@@ -1874,19 +2035,28 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
     owner = submove_owner(block)
     if owner_family(owner) == "PROOF_METHOD" and proof_method_carrier_transition_visible(block):
         return True
-    if not target_pressure_identifiable(
-        target
-    ) and not do_attribute_claim_precision_target_backed(
-        owner,
-        target,
-        operation,
-        result,
-        contribution,
+    operation_body = submove_operation_body(block)
+    if (
+        not target_pressure_identifiable(target)
+        and not do_attribute_claim_precision_target_backed(
+            owner,
+            target,
+            operation,
+            result,
+            contribution,
+        )
+        and not compact_target_operation_body_backed(
+            owner,
+            target,
+            operation,
+            result,
+            contribution,
+            operation_body,
+        )
     ):
         return False
     if not contribution_explains_land(contribution):
         return False
-    operation_body = submove_operation_body(block)
     operation_text = " ".join((operation, operation_body))
     operation_scope = " ".join((operation_text, result, contribution))
     combined = " ".join((target, operation_text, result, contribution))
@@ -2158,7 +2328,7 @@ NO_GRAPH_MODE_RE = re.compile(r"(?i)\b(?:minimal|short|no-graph)\b.{0,120}\bgrap
 
 def check_text(path: Path, text: str, require_field_witness: bool = True) -> list[str]:
     errors: list[str] = []
-    if COMPLIANCE_SIDE_SUCCESS_RE.search(text):
+    if compliance_side_success_present(text):
         errors.append(f"{path}: governed output claims compliance-side success or guaranteed uptake")
     if INTERIOR_CERTIFICATION_RE.search(text):
         errors.append(f"{path}: governed output positively certifies an interior state")
