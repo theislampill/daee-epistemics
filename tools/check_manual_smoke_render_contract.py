@@ -1040,13 +1040,11 @@ CONCESSION_SUBJECT_MODIFIER_RE = re.compile(
     r"(?i)\b(?:who|whom|whoever|which|whose|of|in|on|for|with|to|about|regarding|"
     r"concerning|from|by|behind|against|among|amongst)\b"
 )
-# A comma span that is a parenthetical modifier (relative/appositive/participial
-# phrase) or a fronted subordinate clause, NOT the main clause -- used to walk back
-# past interposed modifiers to the real subject.
-CONCESSION_PARENTHETICAL_RE = re.compile(
-    r"(?i)^(?:which|who|whom|whose|that|where|when|as|given|assuming|provided|"
-    r"because|since|although|though|while|whilst|whereas|if|unless|after|before|"
-    r"once)\b|^\w+(?:ed|ing)\b"
+# A comma span that opens with a subordinating conjunction (a fronted subordinate
+# clause), so it is not the main-clause subject.
+CONCESSION_SUBORDINATE_LEAD_ONLY_RE = re.compile(
+    r"(?i)^(?:because|since|although|though|while|whilst|when|whenever|whereas|if|"
+    r"unless|as|after|before|once|assuming|provided|given|for)\b"
 )
 CONCESSION_LEADING_RE = re.compile(
     r"(?i)^(?:but|and|so|yet|for|thus|therefore|hence|then|now|here|also|indeed|"
@@ -1058,14 +1056,15 @@ CONCESSION_ARTICLE_RE = re.compile(r"(?i)^(?:the|a|an)\s+")
 def _concession_subject_np(text: str, start: int) -> str:
     """Approximate the grammatical subject noun-phrase governing a concession match.
 
-    Splits the current sentence into comma spans. The subject is the text before
-    "cannot" in its own span -- so a fronted subordinate clause with internal commas
-    (a serial list or stacked clauses) still leaves "... the reader cannot deny" as
-    the final span and resolves to the person subject. When an interposed
-    parenthetical (relative/appositive) separates the subject from "cannot", that
-    final span is empty, so we walk back to the nearest non-parenthetical span. The
-    head is then stripped of a leading conjunction/article and cut at the first
-    relative/prepositional modifier.
+    Splits the current sentence into comma spans. If the span ending at "cannot" has
+    text (the subject sits immediately before "cannot"), that is the subject -- so a
+    fronted subordinate clause with internal commas still leaves "... the reader
+    cannot deny" as the final span and resolves to the person subject. If that final
+    span is EMPTY, an appositive/relative/participial phrase sits between the subject
+    and "cannot"; in that construction the subject is at the FRONT, so we take the
+    first non-empty, non-subordinate span (not a walk-back, which would land on a
+    serial-list item inside the appositive). The head is then stripped of a leading
+    conjunction/article and cut at the first relative/prepositional modifier.
     """
     segment = text[max(0, start - 260) : start]
     boundary = None
@@ -1076,12 +1075,11 @@ def _concession_subject_np(text: str, start: int) -> str:
     spans = segment.split(",")
     subject_span = spans[-1].strip()
     if not subject_span:
-        subject_span = ""
-        for span in reversed(spans[:-1]):
+        for span in spans[:-1]:
             candidate = span.strip()
             if not candidate:
                 continue
-            if CONCESSION_PARENTHETICAL_RE.match(candidate):
+            if CONCESSION_SUBORDINATE_LEAD_ONLY_RE.match(candidate):
                 continue
             subject_span = candidate
             break
@@ -1124,7 +1122,10 @@ def compliance_side_success_present(text: str) -> bool:
         return True
     for match in COMPLIANCE_CONCESSION_RE.finditer(text):
         subject_np = _concession_subject_np(text, match.start())
-        subject_words = set(re.findall(r"[a-z']+", subject_np))
+        # Only the subject HEAD decides logical-scope; a load-word buried later in
+        # a compound-predicate span ("the reader accepts the argument and cannot
+        # deny") must not trigger suppression.
+        subject_words = set(re.findall(r"[a-z']+", subject_np)[:3])
         # Suppress only when the true grammatical subject is an argument/predicate
         # (logical-scope, not a person conceding). Any other subject -- including
         # any person noun, listed or not -- flags. Negative guard, no person list.
@@ -1347,6 +1348,12 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "Although the argument, the proof, and the thesis were laid out, the reader cannot deny the result unless he lies.",
         "Because he studied it, although the argument is dense, the skeptic cannot deny the evidence.",
         "Because the premise, the objection, and the proof were addressed, the skeptic cannot deny the conclusion unless he recants.",
+        # person subject whose appositive/absolute modifier contains a serial list
+        # or is article-initial and ends on an argument term (must flag; the
+        # front subject, not the modifier, governs "cannot").
+        "The skeptic, who saw the proof, the objection, and the thesis, cannot deny the evidence.",
+        "The reader, given the argument, the proof, and the premise, cannot deny the result.",
+        "The skeptic, the objection notwithstanding, cannot deny the evidence.",
     ):
         if not compliance_side_success_present(uptake):
             errors.append(
@@ -1368,6 +1375,11 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         # "cannot" (must NOT flag; the subject head precedes the appositive comma).
         "The predicate, which we scoped to intentional mission-negating harm, cannot deny the weaker reading unless that exclusion is built into P.",
         "The argument, as formalized, cannot deny every attempted plot unless those exclusions are separately built into P.",
+        # argument subject with a prepositional-phrase or irregular-participle
+        # appositive (must NOT flag; the front argument subject governs "cannot").
+        "The proposition, in its strongest form, cannot deny the counterexample unless it is built into P.",
+        "The syllogism, taken in Barbara, cannot deny the case unless the premise entails it.",
+        "The derivation, shown above, cannot deny the reading unless it follows from P(x).",
     ):
         if compliance_side_success_present(logical_scope):
             errors.append(
