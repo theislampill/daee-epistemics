@@ -6932,6 +6932,70 @@ def invoke_codex(root: Path, model: str, prompt: str, output_path: Path, log_pat
     return result.returncode
 
 
+MODEL_RUNNER = "codex"
+
+
+def build_claude_command(
+    root: Path,
+    model: str,
+    *,
+    claude_executable: str | None = None,
+) -> list[str]:
+    """Claude-lane analogue of build_codex_command.
+
+    The daee stage prompt is self-contained (it explicitly forbids filesystem
+    reads, shell commands, and path access), so the Claude runner needs no tools.
+    ``--permission-mode plan`` is the read-only equivalent of codex ``-s read-only``
+    (no mutation), and ``claude -p`` prints the final message to stdout, which
+    invoke_claude captures (claude has no ``--output-last-message`` flag).
+    """
+    claude = claude_executable or shutil.which("claude")
+    if claude is None:
+        raise HarnessError(
+            "claude CLI not found on PATH; Claude model smoke is blocked by harness/credential environment"
+        )
+    return [claude, "-p", "--model", model, "--permission-mode", "plan"]
+
+
+def invoke_claude(
+    root: Path,
+    model: str,
+    prompt: str,
+    output_path: Path,
+    log_path: Path,
+    *,
+    claude_executable: str | None = None,
+) -> int:
+    command = build_claude_command(root, model, claude_executable=claude_executable)
+    # Capture stdout (the final message) separately from stderr so the message is
+    # not contaminated by transport logs; utf-8 so register glyphs (tau, Delta,
+    # act brackets) survive intact.
+    result = subprocess.run(
+        command,
+        cwd=str(root),
+        input=prompt,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    write_text(output_path, result.stdout or "")
+    log_text = result.stdout or ""
+    if result.stderr:
+        log_text = log_text + "\n[stderr]\n" + result.stderr
+    write_text(log_path, log_text)
+    return result.returncode
+
+
+def invoke_model(root: Path, model: str, prompt: str, output_path: Path, log_path: Path) -> int:
+    """Dispatch the model invocation to the selected runner (default codex)."""
+    if MODEL_RUNNER == "claude":
+        return invoke_claude(root, model, prompt, output_path, log_path)
+    return invoke_codex(root, model, prompt, output_path, log_path)
+
+
 def read_text_if_exists(path: Path) -> str:
     if not path.exists() or not path.is_file():
         return ""
@@ -7236,7 +7300,7 @@ def invoke_expansion_with_transport_policy(
         output_path = attempt_path(base_output_path, attempt)
         log_path = attempt_path(base_log_path, attempt)
         write_text(prompt_path, prompt)
-        exit_code = invoke_codex(root, model, prompt, output_path, log_path)
+        exit_code = invoke_model(root, model, prompt, output_path, log_path)
         stage_files.extend([prompt_path, output_path, log_path])
         log_text = read_text_if_exists(log_path)
         transport = classify_transport_failure(exit_code, log_text)
@@ -7490,6 +7554,29 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test Codex subprocess command did not isolate mutable user config")
     if 'approval_policy="never"' not in smoke_command or "shell_environment_policy.inherit=none" not in smoke_command:
         raise HarnessError("Self-test Codex subprocess command lost approval/environment policy")
+    if MODEL_RUNNER != "codex":
+        raise HarnessError("Self-test default MODEL_RUNNER must be codex (Codex lane behavior-preserving)")
+    claude_command = build_claude_command(root, "claude-opus-4-8", claude_executable="claude")
+    if claude_command != ["claude", "-p", "--model", "claude-opus-4-8", "--permission-mode", "plan"]:
+        raise HarnessError(f"Self-test build_claude_command shape drifted: {claude_command}")
+    claude_capture_dir = root / ".daee" / "validation"
+    claude_capture_dir.mkdir(parents=True, exist_ok=True)
+    claude_out_path = claude_capture_dir / "self-test-claude-output.txt"
+    claude_log_path = claude_capture_dir / "self-test-claude-log.txt"
+
+    def _fake_claude_run(command, **kwargs):
+        if "--permission-mode" not in command or "plan" not in command:
+            raise HarnessError("Self-test claude subprocess command lost read-only plan mode")
+        return subprocess.CompletedProcess(command, 0, stdout="SELF_TEST_CLAUDE_STAGE_RESPONSE\n", stderr="")
+
+    real_subprocess_run = subprocess.run
+    subprocess.run = _fake_claude_run
+    try:
+        claude_exit = invoke_claude(root, "claude-opus-4-8", "self-test prompt", claude_out_path, claude_log_path)
+    finally:
+        subprocess.run = real_subprocess_run
+    if claude_exit != 0 or claude_out_path.read_text(encoding="utf-8") != "SELF_TEST_CLAUDE_STAGE_RESPONSE\n":
+        raise HarnessError("Self-test invoke_claude did not capture model stdout into the output path")
     replay = load_json(replay_record)
     named_scope = model_scope("self-test-a9-science-source", replay_record, stop_after_stage=None)
     neutral_scope = model_scope("neutral-formal-route-copy", replay_record, stop_after_stage=None)
@@ -15449,7 +15536,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 response_path = responses_dir / f"{stage_id}.response.txt"
                 log_path = responses_dir / f"{stage_id}.codex-log.txt"
                 write_text(prompt_path, prompt)
-                exit_code = invoke_codex(root, args.model, prompt, response_path, log_path)
+                exit_code = invoke_model(root, args.model, prompt, response_path, log_path)
                 stage_files.extend([prompt_path, response_path, log_path])
                 if exit_code != 0:
                     raise HarnessError(f"{stage_id}: codex exec failed with exit code {exit_code}; see {rel(log_path, root)}")
@@ -15558,7 +15645,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                     )
                 else:
                     write_text(section_prompt_path, section_prompt)
-                    exit_code = invoke_codex(root, args.model, section_prompt, section_output_path, section_log_path)
+                    exit_code = invoke_model(root, args.model, section_prompt, section_output_path, section_log_path)
                     stage_files.extend([section_prompt_path, section_output_path, section_log_path])
                     if exit_code != 0:
                         raise HarnessError(
@@ -15740,7 +15827,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             release_prompt_path = prompts_dir / "stage-07-release-output.prompt.md"
             release_log_path = responses_dir / "stage-07-release-output.codex-log.txt"
             write_text(release_prompt_path, release)
-            exit_code = invoke_codex(root, args.model, release, output_path, release_log_path)
+            exit_code = invoke_model(root, args.model, release, output_path, release_log_path)
             stage_files.extend([release_prompt_path, output_path, release_log_path])
             if exit_code != 0:
                 raise HarnessError(
@@ -15906,6 +15993,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--section-expansion-rounds", type=int, default=0)
     parser.add_argument("--transport-retry-rounds", type=int, default=0)
     parser.add_argument("--resume-run-dir", type=Path, default=None)
+    parser.add_argument("--model-runner", choices=("codex", "claude"), default="codex")
     return parser.parse_args()
 
 
@@ -15921,6 +16009,8 @@ def main() -> int:
         raise HarnessError("--section-expansion-rounds must be a non-negative integer")
     if args.transport_retry_rounds < 0:
         raise HarnessError("--transport-retry-rounds must be a non-negative integer")
+    global MODEL_RUNNER
+    MODEL_RUNNER = args.model_runner
     if args.self_test:
         return run_self_test(root)
     release_output_mode = normalize_release_output_mode(args.release_output_mode)
