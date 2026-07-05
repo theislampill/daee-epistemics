@@ -1021,6 +1021,17 @@ CONCESSION_LOGICAL_MARKER_RE = re.compile(
     r"(?i)\b(?:unless|only\s+if|iff|if\s+and\s+only\s+if|built\s+into|entails?|"
     r"follows?\s+from|presupposes?|derives?|implies?)\b|[A-Za-z]\([^)]{1,24}\)"
 )
+# A person/interlocutor term anywhere in the concession clause means the subject
+# is a person (possibly governing "cannot" across a relative/appositive clause,
+# e.g. "the interlocutor who grants the proof cannot deny ..."), so the claim is
+# an uptake claim and must flag even when an argument load-word sits next to
+# "cannot". This keeps the guard a negative argument-subject guard while barring
+# false negatives on person-subject claims.
+CONCESSION_PERSON_SUBJECT_RE = re.compile(
+    r"(?i)\b(?:interlocutor|skeptic|sceptic|opponent|adversary|objector|critic|"
+    r"disputant|questioner|proponent|respondent|audience|reader|listener|"
+    r"mutakallim|one\s+who|anyone|everybody|everyone|somebody|someone|he|she|they)\b"
+)
 
 
 def _concession_clause(text: str, start: int, end: int) -> str:
@@ -1055,10 +1066,18 @@ def compliance_side_success_present(text: str) -> bool:
     for match in COMPLIANCE_CONCESSION_RE.finditer(text):
         before = text[max(0, match.start() - 30) : match.start()]
         clause = _concession_clause(text, match.start(), match.end())
+        # A person/interlocutor subject in the clause -> uptake claim, always
+        # flag (a load-word merely adjacent to "cannot" must not clear it).
+        if CONCESSION_PERSON_SUBJECT_RE.search(clause):
+            return True
         logical_subject = bool(CONCESSION_LOGICAL_SUBJECT_RE.search(before))
         pronoun_subject = bool(CONCESSION_PRONOUN_SUBJECT_RE.search(before))
         logical_marker = bool(CONCESSION_LOGICAL_MARKER_RE.search(clause))
-        if logical_subject or (pronoun_subject and logical_marker):
+        # Suppress only PURE logical-scope prose: an argument/predicate (or the
+        # ambiguous pronoun "it") subject WITH a logical-conditional marker and
+        # no person subject present. The marker is required on BOTH branches, so
+        # a marker-less person claim with an adjacent load-word still flags.
+        if (logical_subject or pronoun_subject) and logical_marker:
             continue
         return True
     return False
@@ -1244,10 +1263,17 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         errors.append("self-test compliance-side success detector missed uptake claim")
     # Person-subject concession claims must still flag (negative guard must not
     # over-suppress); a positive person allowlist would miss these subjects.
+    # Includes relative/appositive constructions where an argument load-word
+    # sits immediately before "cannot" but the true subject is a person.
     for uptake in (
         "the skeptic cannot deny the evidence",
         "the audience cannot deny this once shown",
         "the reader cannot resist this conclusion",
+        "The proponent of the argument cannot deny the evidence.",
+        "One who accepts the premise cannot deny the conclusion.",
+        "A skeptic who grants the premise cannot deny the consequence.",
+        "The interlocutor who grants the proof cannot deny the result.",
+        "The interlocutor who grants the proof cannot deny the result unless he recants.",
     ):
         if not compliance_side_success_present(uptake):
             errors.append(
