@@ -55,10 +55,11 @@ required CI gate.
 The deeper read surfaced work the earlier "folder exhausted" sweep missed:
 
 1. **One real doc-drift defect — now fixed.** `docs/audits/ci-parallelizability.md`
-   reported 88 commands / 82 read-only; the live battery is 89 / 83 (verified with
-   `run_local_ci.py --list` and `analyze_ci_parallelizability.py`). Corrected in
-   commit `22e5673` (`plan08: correct stale ci-parallelizability command counts`);
-   classification and verdict unchanged.
+   reported 88 commands / 82 read-only; the live battery was 89 / 83 at that commit
+   (verified with `run_local_ci.py --list` and `analyze_ci_parallelizability.py`), and
+   is now 90 / 84 after the Plan 16 terminal-cover harness added one read-only command.
+   Corrected in commit `22e5673` (`plan08: correct stale ci-parallelizability command
+   counts`); classification and verdict unchanged.
 2. **Two buildable before-merge slices — now landed strict-CI-green.** Plan 16
    terminal-cover A/B harness (`tools/measure_terminal_cover_ab.py`, `0788b21`) and
    Plan 08 pure `benchmark_summary()` helper (`1cf82c6`), both docs/measurement/
@@ -170,7 +171,7 @@ The deeper read surfaced work the earlier "folder exhausted" sweep missed:
 - **Source-of-truth.** `tools/run_local_ci.py` (`COMMANDS`, `--list`,
   `--strict-pwsh`, first-failure `break`), `tools/analyze_ci_parallelizability.py`
   (`classify`, `analyze`, `--self-test`; no timing path yet),
-  `docs/audits/ci-parallelizability.md` (now 89/83, corrected).
+  `docs/audits/ci-parallelizability.md` (now 90/84, corrected).
 - **Likely files touched.** `tools/analyze_ci_parallelizability.py` (add a pure
   `benchmark_summary()` helper + self-test; the live-timing `--benchmark` runner is a
   deferred, manual, non-lane-wired second slice); a doc section. No runtime, no

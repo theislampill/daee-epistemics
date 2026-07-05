@@ -82,3 +82,46 @@ it reports; adoption stays OWNER-GATED on the phase decision.
   proof, not model-behavior proof, not proof for other graph conditions.
 - The measurement runs the current checker over already-committed retained outputs;
   it mutates nothing and depends on no external service.
+
+## Owner decisions (2026-07-04)
+
+Two Plan 16 sub-items were adjudicated after a read-only closure-design pass and
+are recorded here durably.
+
+### Terminal-cover strengthening — DECLINED-AND-RECORDED
+
+No strengthened `no_new_resultant_terminal_proof` checker will be adopted.
+Evidence: the measured 24-case A/B delta is **empty** (baseline above: 24/24 PASS,
+23 BOUND / 1 ADVISORY), and the target property — a claimed terminal STOP must be
+backed by an actual terminal-stop proof count — is **already enforced** two ways:
+structurally by `check_graph_completeness.py:1142`
+(`no_new_resultant_terminal_proof.pass and proof_count >= stop_count`) and
+certificate-side by `check_collapse_certificate_schema.py:212`
+(`terminal_stop_proof_count > 0` requires `terminal_stop_proof_complete = true`).
+A new checker over the same 24 outputs would add no coverage the empty delta does
+not already prove, while carrying live-`check_*`-edit risk the plan's own ANDON
+forbids. `tools/measure_terminal_cover_ab.py` (`0788b21`) remains the one-command
+instrument if this is ever revisited (any candidate must show 0 BOUND regressions).
+
+### Root / runtime slimming — HELD OUT (no mechanical behavior-preserving slim exists)
+
+A read-only sweep of the entire runtime load-path found **no** mechanical,
+behavior-preserving byte reduction:
+
+- ROOT `atomics/skill/SKILL.md` = 79,979 / 80,000 chars (21 headroom); every token
+  is pinned by `check_metacompliance_current_canon` (`ROOT_REQUIRED` /
+  `ROOT_FORBIDDEN_REEXPANSION`); its only repeated lines are the paired submove
+  templates, a required worked pattern rather than dead bytes.
+- All 106 `atomics/skill/references/**` files are live (bundled, metadata-copied,
+  or inlined as the manual contract); none is dead.
+- The generator already emits zero trailing whitespace and zero excess blank lines.
+- The ~1.7 KB root/bundle overlap is intentional dual-specification of the MRP
+  block shape, pinned on both sides by metacompliance and owner-anchor tokens; the
+  per-section front-matter mirror is byte-pinned by `check_compiled_runtime_freshness`.
+
+Any real reduction is therefore a **semantic** rewrite of governed source prose
+under the generator-first contract (edit `atomics/skill/**`, rebuild via
+`tools/build_compiled_runtime.py`, keep `git diff --exit-code -- skill/SKILL.md`
+and full `run_local_ci --strict-pwsh` green). Root/runtime slimming is **held out
+of the hardening PR**; not a blocker, deferred to a future dedicated pass only if
+a semantic reduction is ever independently justified.
