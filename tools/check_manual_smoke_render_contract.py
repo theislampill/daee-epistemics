@@ -1022,12 +1022,19 @@ CONCESSION_LOGICAL_MARKER_RE = re.compile(
 # stance the guard exists to protect, which must NOT flag. This is a negative guard,
 # not a person allowlist; direct affirmative uptake claims (no governing prohibition)
 # still flag.
+# A prohibition governs the uptake only when a negation is attached to a
+# COMMITMENT verb (do not PROMISE / must not CLAIM that ...). Requiring the
+# commitment verb keeps a litotes ("It is not SURPRISING that X will accept")
+# or a contrastive affirmation ("not merely HOPE but demonstrate that X will
+# accept") -- both direct uptake claims -- flagging.
 UPTAKE_PROHIBITION_RE = re.compile(
-    r"(?i)\b(?:do|does|did|must|should|shall|will|would|can|could|need|dare|is|are|was|were|has|have)"
-    r"\s+not\b|\b(?:do|does|did|is|are|was|were|ca|wo|sha|could|would|should|must|need|has|have)n['’]t\b|"
-    r"\bnever\b|\bnot\s+to\b|\bno\s+longer\b|\brefuse[sd]?\b|\bavoid(?:s|ed|ing)?\b|"
-    r"\bforbid(?:s|den|ding)?\b|\bprohibit(?:s|ed|ing)?\b|\bdisallow(?:s|ed|ing)?\b|"
-    r"\bnot\s+(?:promise|claim|guarantee|assert|say|state|pretend|suggest|assume|imply|declare|insist)\b"
+    r"(?i)\b(?:not|never|n['’]t|no|refuse[sd]?|avoid(?:s|ed|ing)?|forbid(?:s|den|ding)?|"
+    r"prohibit(?:s|ed|ing)?|disallow(?:s|ed|ing)?)\b"
+    r"[^.!?;:\n]{0,30}?\b(?:promise|promising|claim|claiming|guarantee|guaranteeing|"
+    r"assert|asserting|say|saying|state|stating|pretend|pretending|declare|declaring|"
+    r"insist|insisting|ensure|ensuring|certify|certifying|warrant|warranting|"
+    r"maintain|maintaining|suggest|suggesting|imply|implying|assume|assuming|"
+    r"conclude|concluding|represent|representing)\b"
 )
 # A reporting/definitional frame ("can also mean ...", "reported as", "the sense/
 # reading that ...") or an explicit disowning ("that sense is rejected/disowned",
@@ -1038,13 +1045,12 @@ CONCESSION_REPORTING_FRAME_RE = re.compile(
     r"(?i)\b(?:can|could|would|may|might)\s+(?:also\s+)?mean\b|"
     r"\b(?:is|are|was|were|be|been|being)\s+(?:also\s+)?(?:called|known\s+as|defined\s+as|"
     r"glossed\s+as|reported\s+(?:as|to)|quoted|described\s+as|interpreted\s+as|read\s+as|"
-    r"taken\s+to\s+mean)\b|\b(?:reported|quoted|glossed)\s+(?:as|to)\b|\btaken\s+to\s+mean\b|"
-    r"\bin\s+the\s+sense\b"
+    r"taken\s+to\s+mean)\b|\b(?:reported|quoted|glossed)\s+(?:as|to)\b|\btaken\s+to\s+mean\b"
 )
 CONCESSION_DISOWN_RE = re.compile(
     r"(?i)\b(?:rejected|disowned|disavow(?:ed|s)?|repudiat(?:ed|es)?|disallowed|"
-    r"not\s+asserted|not\s+our\s+conclusion|not\s+claimed|we\s+reject|blocks?\s+that|"
-    r"that\s+sense\s+is|forbidden\s+reading|disallowed\s+reading|rules?\s+out)\b"
+    r"not\s+asserted|not\s+our\s+conclusion|not\s+claimed|we\s+reject|"
+    r"that\s+sense\s+is|forbidden\s+reading|disallowed\s+reading)\b"
 )
 # Negative argument-subject guard: the concession phrase is logical-scope (not a
 # person conceding) only when the grammatical SUBJECT of "cannot" is an
@@ -1166,6 +1172,22 @@ def _clause_before(text: str, start: int) -> str:
     return segment
 
 
+def _concession_local_clause(text: str, start: int, end: int) -> str:
+    """The concession's OWN clause (from the last comma/semicolon/sentence boundary
+    before it, to its end). A colon is intentionally NOT a boundary, so a
+    colon-introduced reported phrase stays attached to its governing report/disown
+    frame ("reported as a disallowed reading, not asserted ...: the person cannot
+    resist"). A reporting/disown token in a SEPARATE clause (comma/semicolon-
+    delimited) is excluded, so it cannot suppress a directly-asserted concession."""
+    lo = max(0, start - 200)
+    segment = text[lo:start]
+    boundary = None
+    for match in re.finditer(r"[,;\n.!?]", segment):
+        boundary = match
+    left = lo + boundary.end() if boundary is not None else lo
+    return text[left:end]
+
+
 def compliance_side_success_present(text: str) -> bool:
     """Detect compliance-side-success / guaranteed-uptake claims.
 
@@ -1186,9 +1208,12 @@ def compliance_side_success_present(text: str) -> bool:
     for match in COMPLIANCE_CONCESSION_RE.finditer(text):
         clause = _concession_clause(text, match.start(), match.end())
         # A reported/definitional or explicitly disowned sense ("it can also mean
-        # ... the person cannot resist"; "... but that sense is rejected") is not
-        # the output's own uptake claim -> do not flag.
-        if CONCESSION_REPORTING_FRAME_RE.search(clause) or CONCESSION_DISOWN_RE.search(clause):
+        # ... the person cannot resist"; "... not asserted ...: the person cannot
+        # resist") is not the output's own uptake claim -> do not flag. Scoped to
+        # the concession's OWN clause so a report/disown token in a separate clause
+        # cannot suppress a directly-asserted person-subject concession.
+        local = _concession_local_clause(text, match.start(), match.end())
+        if CONCESSION_REPORTING_FRAME_RE.search(local) or CONCESSION_DISOWN_RE.search(local):
             continue
         subject_np = _concession_subject_np(text, match.start())
         # The subject HEAD (last token of the head noun phrase; English noun
@@ -1478,6 +1503,15 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "The audience will now recognize the truth.",
         "The person cannot resist the conclusion.",
         "The interlocutor has no choice but to accept.",
+        # direct claims that merely CO-OCCUR with a register-native negation or
+        # reporting/disown token in a separate clause must still flag (the guards
+        # must be governance-scoped, not co-occurrence-scoped).
+        "In the sense that matters, the skeptic cannot deny the evidence.",
+        "The evidence rules out every alternative, so the skeptic cannot deny the conclusion.",
+        "This argument blocks that escape route; the skeptic cannot deny the evidence.",
+        "The claim is described as decisive; the skeptic cannot deny it.",
+        "It is not surprising that the interlocutor will accept the answer.",
+        "We do not merely hope but demonstrate that the audience will now recognize the truth.",
     ):
         if not compliance_side_success_present(must_flag):
             errors.append(
