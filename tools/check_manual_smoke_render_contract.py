@@ -1191,14 +1191,38 @@ def _concession_local_clause(text: str, start: int, end: int) -> str:
     return text[left:end]
 
 
-CONCESSION_LEFT_QUOTE = "“‘«‹"  # " ' << <
-CONCESSION_RIGHT_QUOTE = "”’»›"  # " ' >> >
+# Double quotes only: single quotes/apostrophes (U+2018/U+2019 and ') are ambiguous
+# with possessives and contractions, so they are not counted for quote detection.
+CONCESSION_LEFT_QUOTE = "“«"  # " <<
+CONCESSION_RIGHT_QUOTE = "”»"  # " >>
+# An attribution / hypothesizing frame that introduces a quoted claim as SOMEONE'S
+# claim (or a hypothesized one), so a quoted concession under it is reported, not the
+# output's own assertion. Bare scare/emphasis quotes carry no such frame, so an
+# asserted-uptake concession wrapped in scare quotes is NOT exempted.
+CONCESSION_ATTRIBUTION_RE = re.compile(
+    r"(?i)"
+    r"\b(?:the|an?|its|his|her|their|our|my|your|that|this|each|every|some|any|no|"
+    r"an?other|\w+['’]s)\s+"
+    r"(?:claim|argument|objection|demand|request|assertion|charge|premise|thesis|reading|"
+    r"reply|response|statement|version|position|slogan|line|complaint|challenge|contention|"
+    r"insistence|expectation|wish|hope)\b"
+    r"|\b(?:says?|said|asks?|asked|insists?|insisted|demand(?:s|ed)?|requests?|requested|"
+    r"asserts?|asserted|claims?|claimed|argues?|argued|objects?|objected|complains?|complained|"
+    r"replies|replied|responds?|responded|states?|stated|phrase[sd]?|frame[sd]?|puts?\s+it|"
+    r"would\s+have\s+it|wants?|wanted|expects?|expected|imagines?|imagined|supposes?|supposed)\b"
+    r"|\bif\s+the\s+(?:claim|argument|objection|demand|request|assertion|premise|reading)\b"
+    r"|\b(?:suppose|supposing|imagine|imagining|hypothetically|consider\s+the)\b"
+    r"|\bwere\s+(?:someone|one|he|she|they|the)\b|\bwhen\s+(?:someone|one)\b"
+)
 
 
 def _concession_quoted(text: str, start: int, end: int) -> bool:
-    """True when the concession phrase sits inside a quotation (reported / quoted /
-    hypothesized claim, e.g. ``If the claim is "... I cannot resist," then ...``), so
-    the output is DESCRIBING a claim, not asserting guaranteed uptake as its own."""
+    """True only when the concession is INSIDE a quotation AND that quotation is
+    introduced by an attribution / hypothesizing frame in the sentence -- i.e. the
+    output is describing SOMEONE'S claim (``If the claim is "... I cannot resist," then
+    ...``; ``the objector's demand, "the skeptic cannot deny it," ...``), not asserting
+    guaranteed uptake as its own. A bare scare/emphasis quote around the output's own
+    asserted concession carries no such frame and is therefore NOT exempted."""
     lo = max(0, start - 300)
     segment = text[lo:start]
     boundary = None
@@ -1211,13 +1235,15 @@ def _concession_quoted(text: str, start: int, end: int) -> bool:
     after = text[end : end + forward.start()] if forward is not None else text[end:hi]
     typ_open = sum(before.count(q) for q in CONCESSION_LEFT_QUOTE)
     typ_close_before = sum(before.count(q) for q in CONCESSION_RIGHT_QUOTE)
-    if typ_open > typ_close_before and any(q in after for q in CONCESSION_RIGHT_QUOTE):
-        return True
-    # straight double-quote: an odd count before the concession means it is inside an
-    # open quotation that closes after it.
-    if before.count('"') % 2 == 1 and '"' in after:
-        return True
-    return False
+    quoted = (
+        typ_open > typ_close_before and any(q in after for q in CONCESSION_RIGHT_QUOTE)
+    ) or (before.count('"') % 2 == 1 and '"' in after)
+    if not quoted:
+        return False
+    # The attribution/hypothesis frame must introduce the quotation (i.e. precede the
+    # concession in this sentence), so a noun like "objection" occurring AFTER the
+    # concession cannot exempt a self-asserted scare-quoted claim.
+    return bool(CONCESSION_ATTRIBUTION_RE.search(before))
 
 
 def compliance_side_success_present(text: str) -> bool:
@@ -1565,6 +1591,11 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         # demonstrate") affirms the uptake and must flag.
         "The reply does not merely claim that the interlocutor will accept the answer; it demonstrates it.",
         "The output does not only assert that the interlocutor will accept the answer, it demonstrates it.",
+        # a self-asserted concession wrapped in scare/emphasis quotes (no attribution or
+        # hypothesis frame) is still the output's own uptake claim and must flag.
+        "The proof is now complete, so the skeptic “cannot deny the evidence,” and the objection collapses.",
+        "At that point the honest inquirer “cannot resist the truth,” full stop.",
+        "After this the interlocutor truly \"cannot resist the conclusion\" and accepts it.",
     ):
         if not compliance_side_success_present(must_flag):
             errors.append(
