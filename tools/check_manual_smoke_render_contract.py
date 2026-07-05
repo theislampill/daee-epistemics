@@ -1199,20 +1199,38 @@ CONCESSION_RIGHT_QUOTE = "”»"  # " >>
 # claim (or a hypothesized one), so a quoted concession under it is reported, not the
 # output's own assertion. Bare scare/emphasis quotes carry no such frame, so an
 # asserted-uptake concession wrapped in scare quotes is NOT exempted.
-CONCESSION_ATTRIBUTION_RE = re.compile(
-    r"(?i)"
-    r"\b(?:the|an?|its|his|her|their|our|my|your|that|this|each|every|some|any|no|"
-    r"an?other|\w+['’]s)\s+"
+# Third-party claim-holders: nouns/pronouns that name SOMEONE OTHER than the output's
+# own reasoning voice. A first-party or bare determiner ("my argument", "the argument",
+# "our claim") is the output ASSERTING, not reporting, so it must NOT exempt a quoted
+# concession -- that channel laundered self-asserted uptake in scare quotes.
+_CONCESSION_THIRD_PARTY = (
+    r"(?:objector|skeptic|sceptic|critic|opponent|interlocutor|adversary|disputant|"
+    r"questioner|proponent|challenger|respondent|unbeliever|doubter|denier|dissenter|"
+    r"reader|audience|listener|hearer|person|someone|somebody|another|he|she|they|one)"
+)
+_CONCESSION_CLAIM_NOUN = (
     r"(?:claim|argument|objection|demand|request|assertion|charge|premise|thesis|reading|"
     r"reply|response|statement|version|position|slogan|line|complaint|challenge|contention|"
-    r"insistence|expectation|wish|hope)\b"
-    r"|\b(?:says?|said|asks?|asked|insists?|insisted|demand(?:s|ed)?|requests?|requested|"
-    r"asserts?|asserted|claims?|claimed|argues?|argued|objects?|objected|complains?|complained|"
-    r"replies|replied|responds?|responded|states?|stated|phrase[sd]?|frame[sd]?|puts?\s+it|"
-    r"would\s+have\s+it|wants?|wanted|expects?|expected|imagines?|imagined|supposes?|supposed)\b"
-    r"|\bif\s+the\s+(?:claim|argument|objection|demand|request|assertion|premise|reading)\b"
-    r"|\b(?:suppose|supposing|imagine|imagining|hypothetically|consider\s+the)\b"
+    r"insistence|point|words?)"
+)
+CONCESSION_ATTRIBUTION_RE = re.compile(
+    r"(?i)"
+    # hypothesis / conditional framing of the quoted claim (the TST v4 case:
+    # ``If the claim is "... I cannot resist," then ...``)
+    r"\bif\s+(?:the\s+|an?\s+|your\s+|this\s+|that\s+)?" + _CONCESSION_CLAIM_NOUN
+    + r"\s+(?:is|were|reads?|runs?|goes|states?|says?|amounts?)\b"
+    r"|\b(?:suppose|supposing|imagine|imagining|hypothetically|hypothesi[sz]e[sd]?)\b"
     r"|\bwere\s+(?:someone|one|he|she|they|the)\b|\bwhen\s+(?:someone|one)\b"
+    # third-party possessive attribution ("the objector's demand", "their claim") --
+    # NOT "my/our/the argument", which is the output's own assertion
+    r"|\b" + _CONCESSION_THIRD_PARTY + r"['’]s\s+" + _CONCESSION_CLAIM_NOUN + r"\b"
+    r"|\b(?:his|her|their)\s+" + _CONCESSION_CLAIM_NOUN + r"\b"
+    # third-party saying verb introducing the quote ("the objector says", "someone argues")
+    r"|\b(?:the\s+|an?\s+|this\s+|that\s+|each\s+|every\s+|one\s+)?" + _CONCESSION_THIRD_PARTY
+    + r"\s+(?:says?|said|asks?|asked|insists?|insisted|demands?|demanded|claims?|claimed|"
+    r"argues?|argued|objects?|objected|complains?|complained|replies|replied|responds?|"
+    r"responded|maintains?|maintained|contends?|contended|urges?|urged|puts?\s+it|"
+    r"would\s+have\s+it|wants?|wanted|expects?|expected)\b"
 )
 
 
@@ -1596,6 +1614,12 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "The proof is now complete, so the skeptic “cannot deny the evidence,” and the objection collapses.",
         "At that point the honest inquirer “cannot resist the truth,” full stop.",
         "After this the interlocutor truly \"cannot resist the conclusion\" and accepts it.",
+        # a FIRST-PARTY / self-attribution frame ("my argument", "our claim", "the
+        # argument") wrapping a scare-quoted concession is the output ASSERTING uptake,
+        # not reporting someone else's claim, and must flag. This channel laundered a
+        # self-asserted concession when the quote guard accepted any determiner + claim-noun.
+        "My argument shows the skeptic “cannot deny the evidence,” so the doubt is gone.",
+        "This argument establishes that the skeptic “cannot deny the evidence.”",
     ):
         if not compliance_side_success_present(must_flag):
             errors.append(
@@ -1613,6 +1637,9 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         # or critiqued, not the output's own uptake assertion.
         "If the claim is “God should reveal Himself in a way I cannot resist,” then it must explain why coercion would prove anything.",
         "The objector's demand, “the skeptic cannot deny it,” is examined and found wanting.",
+        # a genuine THIRD-PARTY saying frame ("the skeptic says ...") attributes the
+        # quoted concession to someone else; the output is reporting, not asserting.
+        "The skeptic says “I cannot deny the evidence,” but that report is not our own verdict.",
     ):
         if compliance_side_success_present(must_not_flag):
             errors.append(
