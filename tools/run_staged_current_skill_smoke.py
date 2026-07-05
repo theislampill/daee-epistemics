@@ -7379,6 +7379,44 @@ def base_record(
     return record
 
 
+ROUTE_STATE_REPAIR_KEYS: tuple[str, ...] = (
+    "held_route_gradient_identity",
+    "matched_route_hydrations",
+    "per_burden_intermediate_stop_continuations",
+)
+
+
+def route_state_repairs_summary(stages: list[dict[str, Any]] | None) -> dict[str, Any]:
+    """Record-only audit summary of stage-05 route-state-repair normalizer firings.
+
+    Reads each stage's ``normalization`` dict (read-only) and surfaces which of the
+    ROUTE_STATE_REPAIR_KEYS fired and on which stage. This is provenance / observability
+    metadata only: it never changes the verdict, the schema, or any stage state, and a
+    surfaced route-state repair is a factual disclosure (which normalizer rewrote
+    route/terminal state), not a permission or policy decision. Stage-03 route/owner
+    *ingestion* normalizers (``route_targets_from_details`` / ``canonical_route_targets``
+    / the ``owner_route*`` family) are deliberately excluded -- they are not terminal
+    route-state repairs.
+    """
+    fired: list[dict[str, Any]] = []
+    for stage in stages or []:
+        if not isinstance(stage, dict):
+            continue
+        normalization = stage.get("normalization")
+        if not isinstance(normalization, dict):
+            continue
+        stage_id = stage.get("id")
+        for key in ROUTE_STATE_REPAIR_KEYS:
+            if key in normalization:
+                fired.append({"stage": stage_id, "key": key})
+    return {
+        "schema": "route-state-repairs-v1",
+        "route_state_repair_keys": list(ROUTE_STATE_REPAIR_KEYS),
+        "fired": fired,
+        "total": len(fired),
+    }
+
+
 def write_hash_record(
     path: Path,
     *,
@@ -7395,6 +7433,7 @@ def write_hash_record(
     output_path: Path | None,
     sidecar_paths: list[Path],
     verdict: str,
+    route_state_repairs: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     payload: dict[str, Any] = {
         "schema": "staged-current-skill-smoke-hashes-v1",
@@ -7429,6 +7468,8 @@ def write_hash_record(
         payload["handoff_record"] = {"path": rel(handoff_record, root), "sha256": sha256_file(handoff_record)}
     if output_path is not None and output_path.exists():
         payload["output"] = {"path": rel(output_path, root), "sha256": sha256_file(output_path)}
+    if route_state_repairs is not None:
+        payload["route_state_repairs"] = route_state_repairs
     write_json(path, payload)
     return payload
 
@@ -7779,12 +7820,55 @@ def run_self_test(root: Path) -> int:
         output_path=None,
         sidecar_paths=[],
         verdict="SELF_TEST_NO_MODEL_PASS",
+        route_state_repairs=route_state_repairs_summary(replay["stages"]),
     )
     loaded_hashes = load_json(hash_path)
     if loaded_hashes.get("mode") != "self-test-no-model":
         raise HarnessError("Self-test hash record did not preserve self-test mode")
     if loaded_hashes.get("model") is not None:
         raise HarnessError("Self-test hash record must not claim a model invocation")
+    route_state_repairs = loaded_hashes.get("route_state_repairs")
+    if not isinstance(route_state_repairs, dict):
+        raise HarnessError("Self-test hash record must surface a route_state_repairs summary")
+    if route_state_repairs.get("total") != 0 or route_state_repairs.get("fired") != []:
+        raise HarnessError("Self-test replay carries no normalization; route_state_repairs must be empty")
+    if loaded_hashes.get("verdict") != "SELF_TEST_NO_MODEL_PASS":
+        raise HarnessError("route_state_repairs field must not change the hash-record verdict")
+    if loaded_hashes.get("schema") != "staged-current-skill-smoke-hashes-v1":
+        raise HarnessError("route_state_repairs field must not change the hash-record schema id")
+    control_payload = write_hash_record(
+        run_dir / "staged-smoke-control.json",
+        root=root,
+        case_name="self-test-a9-science-source",
+        mode="self-test-no-model",
+        model=None,
+        skill_path=files["skill"],
+        replay_record=replay_record,
+        raw_input_path=raw_input,
+        run_dir=run_dir,
+        stage_files=stage_files,
+        handoff_record=record_path,
+        output_path=None,
+        sidecar_paths=[],
+        verdict="SELF_TEST_NO_MODEL_PASS",
+    )
+    if {key: value for key, value in loaded_hashes.items() if key != "route_state_repairs"} != control_payload:
+        raise HarnessError("route_state_repairs must be purely additive (all other hash-record keys byte-identical)")
+    synthetic_stages = [
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "normalization": {"matched_route_hydrations": ["x"], "per_burden_intermediate_stop_continuations": ["y"]},
+        },
+        {"id": "stage-05-held-gradient", "normalization": {"held_route_gradient_identity": ["z"]}},
+        {"id": "stage-05-benign", "normalization": {"diagnostic_punctuation": ["ignored"], "canonical_route_targets": ["ignored"]}},
+    ]
+    synthetic_summary = route_state_repairs_summary(synthetic_stages)
+    if synthetic_summary["total"] != 3:
+        raise HarnessError("route_state_repairs_summary must surface all three route-state-repair firings")
+    if {entry["key"] for entry in synthetic_summary["fired"]} != set(ROUTE_STATE_REPAIR_KEYS):
+        raise HarnessError("route_state_repairs_summary must surface exactly the route-state-repair keys")
+    if any(entry["key"] in {"diagnostic_punctuation", "canonical_route_targets"} for entry in synthetic_summary["fired"]):
+        raise HarnessError("route_state_repairs_summary must not surface benign or stage-03 false-friend normalizers")
     transport_log = (
         "websocket attempt failed: 403 Forbidden\n"
         "falling back to HTTP transport\n"
@@ -15397,6 +15481,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                         output_path=None,
                         sidecar_paths=[],
                         verdict=f"STAGED_CURRENT_SKILL_STAGE_LOCAL_PASS: stopped after {stage_id}",
+                        route_state_repairs=route_state_repairs_summary(stages),
                     )
                     print("staged current-skill stage-local smoke: PASS")
                     print(f"run dir: {rel(run_dir, root)}")
@@ -15710,6 +15795,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 output_path=output_path,
                 sidecar_paths=[],
                 verdict="STAGED_CURRENT_SKILL_STAGE_LOCAL_PASS: stopped after stage-07-release-output",
+                route_state_repairs=route_state_repairs_summary(stages),
             )
             print("staged current-skill stage-local smoke: PASS")
             print(f"run dir: {rel(run_dir, root)}")
@@ -15760,6 +15846,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             output_path=output_path,
             sidecar_paths=sidecars,
             verdict="STAGED_CURRENT_SKILL_ONE_CASE_PROOF_SURFACE_PASS",
+            route_state_repairs=route_state_repairs_summary(stages),
         )
         print("staged current-skill smoke: PASS")
         print(f"run dir: {rel(run_dir, root)}")
@@ -15792,6 +15879,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             output_path=run_dir / "output.md",
             sidecar_paths=[],
             verdict=f"STAGED_MODEL_HARNESS_NEGATIVE_EVIDENCE: {exc}",
+            route_state_repairs=route_state_repairs_summary(stages),
         )
         print("staged current-skill smoke: FAIL")
         print(f"run dir: {rel(run_dir, root)}")
