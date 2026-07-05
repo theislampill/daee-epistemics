@@ -3,9 +3,11 @@
 > Companion to `docs/hardening-pr-handoff.md`. That ledger records the terminal
 > state of every plan; this document turns each remaining **terminally-gated**
 > item into an executable follow-up plan the next implementer can pick up. It is
-> a planning artifact only: **nothing here has been implemented** beyond the one
-> defect fix noted below, and no external action (push, PR, tag, release,
-> publication, spend) is authorized by this doc.
+> a planning artifact: the safe-local slices it scoped were subsequently
+> **implemented or terminally gated** in the 2026-07-04 completion pass (see the
+> status note below and `docs/hardening-pr-handoff.md`); the remaining lane recipes
+> stay valid for the owner/external/spend/artifact-gated escalations. No external
+> action (push, PR, tag, release, publication, spend) is authorized by this doc.
 >
 > Method: produced by a read-only, multi-agent audit pass (one reader per lane
 > plus a completeness/owner-directive critic). Every cited path and function was
@@ -16,6 +18,18 @@
 > code wins. The North Star (skill-as-code, typed staged DSL/IR, public
 > projection, sidecar eligibility, auditability) is architectural framing only;
 > the current checkout and ledger override it.
+
+## Completion-pass status (2026-07-04)
+
+The safe-local completion pass implemented or terminally gated every lane here.
+**Landed** — Plan 16 decisions (`2d5216c`), Plan 08 decision (`1d35a46`), Plan 17
+D3 quarantine (`3db753a`), Plan 06 token contract (`2b323e4`), Plan 09 spike plan
+(`fadb4a6`), Plan 15 record-only surfacing (`061ddbe`), Plan 03 envelope generator
+(`76f4cd1`). **Terminally gated** — Plan 11 checker move (OWNER-GATED dedicated PR;
+release/CI-facing blast radius). The per-lane recipes below remain the executable
+reference for the still-gated escalations (Plan 03 Phase 4/5, Plan 06 generify/retire
+code, Plan 08 adoption, Plan 11 move, Plan 15 verdict/schema/multi-site, Plan 16 root
+slim, Plan 17 enforcing check). Final terminal state per plan: `docs/hardening-pr-handoff.md`.
 
 ## Gate classes
 
@@ -57,7 +71,7 @@ The deeper read surfaced work the earlier "folder exhausted" sweep missed:
 1. **One real doc-drift defect — now fixed.** `docs/audits/ci-parallelizability.md`
    reported 88 commands / 82 read-only; the live battery was 89 / 83 at that commit
    (verified with `run_local_ci.py --list` and `analyze_ci_parallelizability.py`), and
-   is now 90 / 84 after the Plan 16 terminal-cover harness added one read-only command.
+   is now 91 / 85 after the Plan 16 and Plan 03 slices added read-only commands.
    Corrected in commit `22e5673` (`plan08: correct stale ci-parallelizability command
    counts`); classification and verdict unchanged.
 2. **Two buildable before-merge slices — now landed strict-CI-green.** Plan 16
@@ -171,7 +185,7 @@ The deeper read surfaced work the earlier "folder exhausted" sweep missed:
 - **Source-of-truth.** `tools/run_local_ci.py` (`COMMANDS`, `--list`,
   `--strict-pwsh`, first-failure `break`), `tools/analyze_ci_parallelizability.py`
   (`classify`, `analyze`, `--self-test`; no timing path yet),
-  `docs/audits/ci-parallelizability.md` (now 90/84, corrected).
+  `docs/audits/ci-parallelizability.md` (now 91/85, corrected).
 - **Likely files touched.** `tools/analyze_ci_parallelizability.py` (add a pure
   `benchmark_summary()` helper + self-test; the live-timing `--benchmark` runner is a
   deferred, manual, non-lane-wired second slice); a doc section. No runtime, no

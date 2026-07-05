@@ -9,9 +9,9 @@
 
 - Branch: `codex/hardening-all-20260703` (local-only, not on any remote).
 - Base: `main` at `c86b3c6` (MAIN untouched throughout).
-- Commits: 44 on top of the base (the two before-merge slices — `0788b21` terminal-cover A/B harness, `1cf82c6` CI benchmark helper — landed strict-CI-green; a read-only exhaustion sweep then confirmed no further safe-local slice remains).
-- Diffstat: ~135 files changed, ≈ +8330 / −2135.
-- Latest strict CI: `run_local_ci: PASS (90 commands)`.
+- Commits: 52 on top of the base (a maximal safe-local completion pass landed seven more slices — plans 16, 08, 17, 06, 09, 15, 03 — each strict-CI-green; Plan 11 was terminally gated after preflight, not attempted).
+- Diffstat: ~139 files changed, ≈ +8850 / −2135 (content, `--ignore-cr-at-eol`; the raw diff is larger because the `plan15` commit incidentally normalized a pre-existing mixed-CRLF file to the repo-mandated LF).
+- Latest strict CI: `run_local_ci: PASS (91 commands)`.
 - Working tree: clean.
 
 ## North-Star alignment (execution-spine map)
@@ -25,17 +25,40 @@ vocabulary table. The Tier-0 execution spine (`## EXECUTION SPINE`) already ship
 in `skill/SKILL.md`, so no runtime reference was added and the size-guarded root is
 untouched — the map is a review/audit index, not a runtime change.
 
-## Folder exhausted
+## Safe-local completion pass (2026-07-04)
 
-Every clean, low-risk, safe-local slice in the packet is **done** — including the
-final polish: the execution-spine map (`docs: add execution spine map`) and the
-stale v0.4.3.0 release-body guard (`plan06: guard stale release-body template`).
-All remaining work is terminally classified as owner / spend / external / artifact
-/ A-B gated, NOT-SAFE, DEFERRED (no repo surface), or one buildable-but-large
-refactor flagged for its own focused pass (Plan 15 normalizer-transparency). There
-is no further low-risk local slice to land; the branch is a clean, strict-CI-green
-39-commit series ready to become the single PR once the gated items are
-owner-adjudicated.
+A maximal safe-local completion pass worked every remaining lane as far as safely
+possible. Seven slices landed, each strict-CI-green (one coherent commit per slice):
+
+- **`plan16`** — recorded two owner decisions: terminal-cover strengthening
+  DECLINED-AND-RECORDED (measured empty 24-case A/B delta; already enforced by
+  `check_graph_completeness.py:1142` + `check_collapse_certificate_schema.py:212`),
+  and root/runtime slimming HELD OUT (a full-load-path sweep found no mechanical
+  behavior-preserving byte reduction; any cut is a semantic generator-first rewrite).
+- **`plan08`** — recorded the parallelization decision (reject/defer; adoption
+  owner-gated) alongside the `benchmark_summary()` Amdahl-ceiling helper.
+- **`plan17`** — recorded the D3 operation-token QUARANTINE (cross-namespace) +
+  advisory-only disposition (pure schema parity, no refusal layer).
+- **`plan06`** — added the release-body token contract (invariant vs version-specific),
+  awaiting owner sign-off for any generify/retire code.
+- **`plan09`** — recorded the meaning-inversion spike plan; the standalone polarity
+  guard is NOT SAFE TO BUILD (measured 47/66 valid-fixture overmatch).
+- **`plan15`** — record-only `route_state_repairs` normalizer surfacing in the smoke
+  harness (behavior-preserving; verdict/schema byte-identity proven by the harness
+  `--self-test`).
+- **`plan03`** — the field-witness envelope generator (`build_field_witness_envelope.py`,
+  writes nothing by default, mutates zero retained bytes, wired `--self-test`).
+
+**Plan 11 (checker package extraction) was terminally gated, not attempted.** A
+read-only preflight found the blast radius far exceeds a clean atomic move: 42 files
+need a `parents[1]→parents[2]` fix, 44 need import bootstrapping, 36 subprocess sites
+in the smoke harness invoke checkers by literal path, plus hard-smoke fixture command
+strings, and — decisively — `.github/workflows/release-skill.yml` + two `ci/level3-*.yml`
+invoke moved checkers (a miss = green-local / red-release). It is OWNER-GATED as a
+dedicated post-merge PR; the migration recipe lives in `docs/hardening-followup-plan.md`.
+
+With this pass, every owner-approved safe-local slice is implemented or terminally
+classified. The branch is a clean, strict-CI-green 52-commit series.
 
 ## Owner cleanup (standing directive)
 
@@ -66,21 +89,21 @@ The two `plan07` safety commits remain in history; their effects were reversed b
 |---|---|
 | 01 live-output verifier | SCAFFOLD DONE; full custody subsystem OWNER-GATED |
 | 02 proof-class / taxonomy | DONE |
-| 03 field-witness binding | DONE (map + schema + binding checker + canon-spec); envelope generation ARTIFACT-GATED; `binding_status` + certificate `output_fingerprint` OWNER-GATED |
+| 03 field-witness binding | DONE (map + schema + binding checker + canon-spec + **envelope generator** `build_field_witness_envelope.py`: writes nothing by default, mutates zero retained bytes, `--self-test` wired); Phase-4 wired recompute checker ARTIFACT-GATED (needs materialized envelopes); retained `binding_status` assignment + Phase-5 certificate `output_fingerprint` rev OWNER-GATED |
 | 04 stage07/08 | SUBSTANTIALLY DONE; existence/hash ARTIFACT-GATED, live re-exec SPEND-GATED |
 | 05 retained-corpus requal | SUBSTANTIALLY DONE; Smoke-C promotion OWNER/ARTIFACT-GATED |
-| 06 release provenance | DONE (gate ledger + provenance `--self-test` + **stale release-body guard**: the v0.4.3.0-specific template now fails-safe for any other version, so it cannot emit misleading future text); full de-stale (redefining what a release body contains) remains OWNER-GATED (semantics decision); branch-protection EXTERNAL-GATED; tag/publish/custody OWNER-GATED |
+| 06 release provenance | DONE (gate ledger + provenance `--self-test` + **stale release-body guard**: the v0.4.3.0-specific template now fails-safe for any other version, so it cannot emit misleading future text); full de-stale (redefining what a release body contains) remains OWNER-GATED (semantics; the token contract is now documented in `docs/release-body-contract.md`, OD-06a/b/c); branch-protection EXTERNAL-GATED; tag/publish/custody OWNER-GATED |
 | 07 safety boundary | OWNER-DECLINED / REPLACED (dual-use/safety layer removed; neutral parts retained) |
-| 08 CI coverage / perf | DONE (coverage checker + `--report` + parallelization proof + pure `benchmark_summary()` helper `1cf82c6`); `docs/audits/ci-parallelizability.md` counts corrected then kept live (now 90/84; `22e5673`); parallelization adoption OWNER-GATED (phase-staging + first-failure-abort decision; proof shows no safe drop-in) |
-| 09 semantic-replay | DONE (README + schema); polarity guard NOT SAFE TO BUILD (overmatch); deeper phases OWNER/SPIKE-GATED |
+| 08 CI coverage / perf | DONE (coverage checker + `--report` + parallelization proof + pure `benchmark_summary()` helper `1cf82c6`); `docs/audits/ci-parallelizability.md` counts corrected then kept live (now 91/85; `22e5673`) with the adoption decision (reject/defer; OD-08a/b/c) recorded there; parallelization adoption OWNER-GATED (phase-staging + first-failure-abort decision; proof shows no safe drop-in) |
+| 09 semantic-replay | DONE (README + schema + **spike plan** `docs/semantic-replay-spike-plan.md`); standalone polarity guard NOT SAFE TO BUILD (measured 47/66 valid-fixture overmatch); model-lane judge SPEND-GATED; meaning-inversion stays a documented known-miss |
 | 10 worktree custody | DONE (local commits); PR OWNER-GATED |
-| 11 checker consolidation | DONE (land-gate single-sourced); package extraction OWNER-GATED |
+| 11 checker consolidation | DONE (land-gate single-sourced); package extraction OWNER-GATED / dedicated post-merge PR (preflight found a release/CI-facing blast radius: 42 `parents[1]` fixes, 44 import bootstraps, 36 harness subprocess sites, hard-smoke fixtures, `release-skill.yml` + `ci/level3-*.yml`; a miss = green-local/red-release; recipe in the follow-up plan) |
 | 12 fixture taxonomy/integrity | DONE (taxonomy + census + mutation sweep + expected-diagnostic sidecars on all 3 route checkers + minimal pair); further sidecars/pairs are optional incremental coverage |
 | 13 docs claim-boundary | DONE; lexical claim-verb rules OWNER-GATED (overmatch) |
 | 14 executor playbook | DEFERRED (no repo surface — planning-lane only) |
-| 15 smaller-model compliance | DONE (scorecard format + offline runner); normalizer-transparency refactor BUILDABLE but flagged for a focused pass (large multi-site CI-wired harness); live capture SPEND-GATED |
-| 16 architecture-debt slimming | DONE (dead-code + budget tool + terminal-cover A/B measurement harness `0788b21`); terminal-cover strengthening A/B-GATED; contract slimming OWNER-GATED |
-| 17 owner/TTP schema | DONE (drift inventory + parity checker); contract resolution / negative-contract authoring OWNER-GATED (safety-sensitive) |
+| 15 smaller-model compliance | DONE (scorecard format + offline runner + **record-only `route_state_repairs` normalizer surfacing** in the smoke harness, verdict/schema byte-identity self-tested); verdict-downgrade (OD-15A), schema-bump (OD-15B), and the multi-site `record_normalization()` centralization (OD-15C) OWNER-GATED/deferred; live capture SPEND-GATED |
+| 16 architecture-debt slimming | DONE (dead-code + budget tool + terminal-cover A/B harness `0788b21`); terminal-cover strengthening **DECLINED-AND-RECORDED** (empty A/B delta, already enforced elsewhere); root/runtime slimming HELD OUT (no mechanical behavior-preserving slim exists; semantic rewrite OWNER-GATED) — both recorded in `docs/terminal-cover-ab-snapshot.md` |
+| 17 owner/TTP schema | DONE (drift inventory + parity checker + **D3 quarantine record** `docs/audits/owner-contract-operation-token-drift-inventory.md`); the single D3 operation-token row is QUARANTINE (cross-namespace) + advisory-only (OD-17a/b); pure operation-token schema parity, no refusal layer |
 | 18 worktree green-state | DONE |
 | 19 owner-decision queue | DONE |
 
@@ -91,28 +114,31 @@ smallest safe first slice, validators, rollback, stop conditions, and
 before/after-merge sequencing per lane — in
 [`docs/hardening-followup-plan.md`](hardening-followup-plan.md).
 
-The two before-merge slices in that plan are now **landed** strict-CI-green —
-Plan 16 terminal-cover A/B harness (`0788b21`) and Plan 08 `benchmark_summary()`
-helper (`1cf82c6`). A read-only exhaustion sweep (8 lanes + a strict adjudicator)
-then confirmed **no further safe-local slice remains**: every other lane is
-terminally gated (owner / external / spend / artifact / A-B / not-safe /
-deferred), with zero safety-reintroduction risk.
+The before-merge slices and the subsequent completion pass (see above) are now all
+landed strict-CI-green. Every owner-approved safe-local slice is implemented or
+terminally classified; what remains is genuinely owner / external / spend / artifact
+/ A-B gated, NOT-SAFE, or the Plan 11 dedicated-PR refactor — with zero
+safety-reintroduction risk.
 
 ## Remaining gates (by class)
 
 - **OWNER-GATED:** 03 `binding_status` + cert `output_fingerprint`; 06 de-stale + custody; 08 parallelization adoption; 11 package layout; 16 slimming; 17 contract resolution; 01 custody subsystem; 05 Smoke-C; 13 lexical rules.
 - **EXTERNAL-GATED:** 06 branch-protection / rulesets; tag / publish / release; the PR itself.
-- **ARTIFACT-GATED:** 03 envelope generation; 04 existence/hash; 05 Smoke-C artifact.
+- **ARTIFACT-GATED:** 03 Phase-4 recompute checker (needs materialized envelopes; the generator now exists); 04 existence/hash; 05 Smoke-C artifact.
 - **A/B-GATED:** 16 terminal-cover strengthening (retained-corpus regression risk).
 - **SPEND-GATED:** 15 live model/host capture; 04 live re-execution; 09 model-lane spike.
 - **NOT SAFE TO BUILD:** 09 standalone polarity guard (overmatch).
 - **DEFERRED (no repo surface):** 14.
-- **BUILDABLE (own focused pass):** 15 normalizer-transparency (large multi-site harness).
+- **BUILDABLE (own focused pass):** 15 multi-site `record_normalization()` centralization (the record-only surfacing slice landed); 11 checker package move (release/CI-facing atomic PR).
 
 ## Confirmations
 
 - Dual-use / safety-policy / refusal infrastructure remains **removed**; none was
   reintroduced — every slice is neutral correctness / provenance / observability.
 - No push, PR, draft PR, tag, release, merge, publication, external action, spend,
-  issue, branch-protection change, dependency upgrade, or history rewrite occurred.
-  MAIN is unchanged at `c86b3c6`; HEAD is on no remote; tree is clean.
+  model smoke, issue, branch-protection change, dependency upgrade, or history
+  rewrite occurred. MAIN is unchanged at `c86b3c6`; HEAD is on no remote; tree is clean.
+- The `plan15` commit incidentally normalized a pre-existing mixed-CRLF file
+  (`tools/run_staged_current_skill_smoke.py`) to the repo-mandated LF
+  (`.gitattributes: * text=auto`); its real content change is +88 lines
+  (`git diff --ignore-cr-at-eol`). No history was rewritten to reshape that commit.

@@ -5,7 +5,7 @@
 > read-only; wired `--self-test` in CI). No live parallel run was performed — a
 > live parallel run would race the shared generated files by construction, which
 > is exactly the hazard proven below. **CI execution is unchanged; parallelization
-> is NOT adopted.** Measured 2026-07-04 over 90 commands.
+> is NOT adopted.** Measured 2026-07-04 over 91 commands.
 
 ## Classification
 
@@ -13,7 +13,7 @@
 | --- | ---: | --- |
 | shared-writer | 3 | `build_framework_pipeline`, `build_compiled_runtime`, and the pwsh smoke mutate shared generated artifacts (`atomics/.../framework-pipeline.md`, `skill/SKILL.md`, `.daee/`). Racing two of these corrupts the artifact. |
 | git-gate | 3 | `git diff --exit-code -- skill/SKILL.md`, the framework-pipeline diff, and `git diff --check` READ tree state; they must run AFTER the generators that produce what they inspect. |
-| read-only | 84 | `check_*`/`verify_*`/`gen_*`/`measure_*`/`*-self-test`/`py_compile` — side-effect-free over already-produced artifacts; independent of each other. |
+| read-only | 85 | `check_*`/`verify_*`/`gen_*`/`measure_*`/`*-self-test`/`py_compile` — side-effect-free over already-produced artifacts; independent of each other. |
 
 ## Verdict — PARTIAL / NOT SAFE as a drop-in
 
@@ -33,7 +33,7 @@
 
 ## What this does not claim
 
-- It does not claim the 84 read-only commands are mutually independent at the
+- It does not claim the 85 read-only commands are mutually independent at the
   data level beyond side-effect freedom (they all read the same artifacts, which
   is safe for concurrent reads).
 - It does not measure wall-clock speedup; the point is safety, not speed. Since
@@ -44,7 +44,7 @@
 
 **Parallelization is REJECTED / DEFERRED for the hardening PR.** The static proof
 above already shows no safe drop-in: the 3 shared-writers and 3 git-gates are
-order-sensitive, and only the 84 read-only commands could parallelize — and only as
+order-sensitive, and only the 85 read-only commands could parallelize — and only as
 a phase gated behind the serial generate-then-verify prefix, which also trades away
 the current first-failure-abort semantics. Adopting it is an owner decision, not a
 safe-local slice, and the wall-clock win is unquantified.
