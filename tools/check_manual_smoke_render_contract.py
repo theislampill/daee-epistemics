@@ -1030,6 +1030,9 @@ CONCESSION_LOGICAL_MARKER_RE = re.compile(
 UPTAKE_PROHIBITION_RE = re.compile(
     r"(?i)\b(?:not|never|n['’]t|no|refuse[sd]?|avoid(?:s|ed|ing)?|forbid(?:s|den|ding)?|"
     r"prohibit(?:s|ed|ing)?|disallow(?:s|ed|ing)?)\b"
+    # A contrastive intensifier ("not merely/only/just claim ... BUT demonstrate")
+    # is an affirmation of the uptake, not a prohibition -> do not treat as a guard.
+    r"(?!\s+(?:merely|only|just|simply|solely|alone))"
     r"[^.!?;:\n]{0,30}?\b(?:promise|promising|claim|claiming|guarantee|guaranteeing|"
     r"assert|asserting|say|saying|state|stating|pretend|pretending|declare|declaring|"
     r"insist|insisting|ensure|ensuring|certify|certifying|warrant|warranting|"
@@ -1512,6 +1515,10 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "The claim is described as decisive; the skeptic cannot deny it.",
         "It is not surprising that the interlocutor will accept the answer.",
         "We do not merely hope but demonstrate that the audience will now recognize the truth.",
+        # contrastive affirmation with a commitment verb ("not merely/only CLAIM ... but
+        # demonstrate") affirms the uptake and must flag.
+        "The reply does not merely claim that the interlocutor will accept the answer; it demonstrates it.",
+        "The output does not only assert that the interlocutor will accept the answer, it demonstrates it.",
     ):
         if not compliance_side_success_present(must_flag):
             errors.append(
