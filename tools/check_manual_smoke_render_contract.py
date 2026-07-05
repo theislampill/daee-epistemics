@@ -1068,7 +1068,11 @@ def _concession_subject_np(text: str, start: int) -> str:
     """
     segment = text[max(0, start - 260) : start]
     boundary = None
-    for match in re.finditer(r"[.!?\n]", segment):
+    # Clause boundaries include sentence terminators AND clause-joining punctuation
+    # (semicolon/colon/em-dash), so an argument-word clause joined to a person
+    # concession clause ("The proof is complete; the reader cannot deny it.") does
+    # not leak its argument term into the subject.
+    for match in re.finditer(r"[.!?;:—\n]|--|\s-\s", segment):
         boundary = match
     if boundary is not None:
         segment = segment[boundary.end() :]
@@ -1122,18 +1126,22 @@ def compliance_side_success_present(text: str) -> bool:
         return True
     for match in COMPLIANCE_CONCESSION_RE.finditer(text):
         subject_np = _concession_subject_np(text, match.start())
-        # Only the subject HEAD decides logical-scope; a load-word buried later in
-        # a compound-predicate span ("the reader accepts the argument and cannot
-        # deny") must not trigger suppression.
-        subject_words = set(re.findall(r"[a-z']+", subject_np)[:3])
-        # Suppress only when the true grammatical subject is an argument/predicate
-        # (logical-scope, not a person conceding). Any other subject -- including
-        # any person noun, listed or not -- flags. Negative guard, no person list.
-        if subject_words & ARG_SUBJECT_TERMS:
+        # The subject HEAD (last token of the head noun phrase; English noun
+        # phrases are head-final before post-modifiers, which are already cut)
+        # decides logical-scope: an attributive load-word ("the reasoning
+        # interlocutor") or a load-word buried in a compound-predicate span must
+        # not trigger suppression. An argument term is never a person, so a person
+        # subject's head is never an argument term (no false negative).
+        subject_tokens = re.findall(r"[a-z']+", subject_np)
+        head = subject_tokens[-1] if subject_tokens else ""
+        # Suppress only when the subject head is an argument/predicate (logical
+        # scope, not a person conceding). Every other head -- including any person
+        # noun, listed or not -- flags. Negative guard, no person list.
+        if head in ARG_SUBJECT_TERMS:
             continue
         # The bare pronoun "it"/"this"/"that" is ambiguous; treat it as the
         # predicate only inside a logical-conditional construction.
-        if subject_words & {"it", "this", "that"} and CONCESSION_LOGICAL_MARKER_RE.search(
+        if head in {"it", "this", "that"} and CONCESSION_LOGICAL_MARKER_RE.search(
             _concession_clause(text, match.start(), match.end())
         ):
             continue
@@ -1354,6 +1362,15 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "The skeptic, who saw the proof, the objection, and the thesis, cannot deny the evidence.",
         "The reader, given the argument, the proof, and the premise, cannot deny the result.",
         "The skeptic, the objection notwithstanding, cannot deny the evidence.",
+        # person concession clause joined by clause-joining punctuation to an
+        # argument-word clause (must flag; the argument term is in a separate
+        # clause, not the subject).
+        "The proof is complete; the reader cannot deny it.",
+        "The proof route becomes circular: the reader cannot deny the conclusion.",
+        "The premise holds — the interlocutor cannot deny the conclusion.",
+        # argument load-word as a bare attributive modifier before a person head
+        # (must flag; the head, not the modifier, is the subject).
+        "The reasoning interlocutor cannot deny the evidence.",
     ):
         if not compliance_side_success_present(uptake):
             errors.append(
