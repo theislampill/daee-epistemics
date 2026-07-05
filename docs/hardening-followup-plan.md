@@ -62,7 +62,7 @@ required CI gate.
 | 06 release de-stale | owner (release-body semantics) + external (branch-protection/tag/publish) | `docs/release-body-contract.md` inventory + token classification, awaiting sign-off | Later release |
 | 17 owner/TTP contract | owner (operation-token canonicity) | `docs/audits/owner-contract-operation-token-drift-inventory.md` (D3 computed inventory) | Later release |
 | 11 checker package extraction | owner (package layout) | `docs/audits/plan11-package-extraction-impact.md` impact analysis | Later release |
-| 09 semantic-replay | not-safe (overmatch) + owner/spike + spend | `docs/plans/plan09-semantic-replay-spike.md` + advisory `spike_*` FP harness | Later release |
+| 09 semantic-replay | not-safe (overmatch) + owner/spike + spend | `docs/semantic-replay-spike-plan.md` + advisory `spike_*` FP harness | Later release |
 
 ## Discovered during this planning pass
 
@@ -163,8 +163,8 @@ The deeper read surfaced work the earlier "folder exhausted" sweep missed:
 ## Plan 08 — CI coverage / parallelization adoption
 
 - **Terminal state.** DONE (coverage checker + `--report` + static parallelizability
-  proof). Adoption is OWNER-GATED: the proof shows no safe drop-in. Live verdict: 89
-  commands -> 3 shared-writer, 3 git-gate, 83 read-only.
+  proof). Adoption is OWNER-GATED: the proof shows no safe drop-in. Live verdict: 91
+  commands -> 3 shared-writer, 3 git-gate, 85 read-only.
 - **Why not in the PR.** Flipping CI to parallel has no safe drop-in: the 3
   shared-writers mutate shared generated files and the 3 git-gates read state those
   generators produce; a parallel read-only phase also discards the current
@@ -190,8 +190,8 @@ The deeper read surfaced work the earlier "folder exhausted" sweep missed:
   `benchmark_summary()` helper + self-test; the live-timing `--benchmark` runner is a
   deferred, manual, non-lane-wired second slice); a doc section. No runtime, no
   `ci_registry.json` (the analyze tool is not a `check_*`).
-- **Read-only preflight.** `run_local_ci.py --list | wc -l` (89),
-  `analyze_ci_parallelizability.py` (3/3/83), confirm no `perf_counter`/`--benchmark`
+- **Read-only preflight.** `run_local_ci.py --list | wc -l` (91),
+  `analyze_ci_parallelizability.py` (3/3/85), confirm no `perf_counter`/`--benchmark`
   exists yet.
 - **Implementation options.** (A) static-only refresh — insufficient alone (win
   stays unquantified). (B) read-only serial benchmark with a pure `benchmark_summary`
@@ -203,7 +203,7 @@ The deeper read surfaced work the earlier "folder exhausted" sweep missed:
   runner is deferred and must never enter `COMMANDS`. (The doc-count refresh that
   originally rode with this slice already landed as `22e5673`.)
 - **Validators.** `analyze_ci_parallelizability.py --self-test` (new cases PASS);
-  verdict still 3/3/83; `py_compile`; full `run_local_ci --strict-pwsh` PASS.
+  verdict still 3/3/85; `py_compile`; full `run_local_ci --strict-pwsh` PASS.
 - **Rollback.** Single-file additive; `git checkout` the `.py`. The helper is pure
   and unreferenced by the lane except its idempotent `--self-test` line.
 - **Stop / ANDON.** Any need to add the live `--benchmark` to `COMMANDS` (races

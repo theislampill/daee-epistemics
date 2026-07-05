@@ -21,7 +21,7 @@
   run first, then the git-gates verify their output, then the read-only phase
   runs over that output. None of these six can run concurrently with each other
   or with the read-only phase.
-- Only the 82 read-only commands could parallelize, and only **as a phase gated
+- Only the 85 read-only commands could parallelize, and only **as a phase gated
   behind the serial generate-then-verify prefix**. Doing so would also trade away
   the current first-failure-abort semantics (a parallel phase runs all commands
   rather than stopping at the first failure), changing operator behavior.

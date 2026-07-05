@@ -58,7 +58,7 @@ invoke moved checkers (a miss = green-local / red-release). It is OWNER-GATED as
 dedicated post-merge PR; the migration recipe lives in `docs/hardening-followup-plan.md`.
 
 With this pass, every owner-approved safe-local slice is implemented or terminally
-classified. The branch is a clean, strict-CI-green 52-commit series.
+classified. The branch is a clean, strict-CI-green 53-commit series.
 
 ## Owner cleanup (standing directive)
 
