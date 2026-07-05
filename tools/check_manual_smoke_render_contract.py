@@ -1023,22 +1023,33 @@ CONCESSION_LOGICAL_MARKER_RE = re.compile(
 # noun, listed or not) -- so it is a negative guard, not a positive person allowlist.
 ARG_SUBJECT_TERMS = frozenset(
     {
+        # singular
         "argument", "argumentation", "claim", "premise", "predicate", "proposition",
         "inference", "proof", "formula", "formalization", "formalisation", "thesis",
         "tree", "derivation", "antecedent", "consequent", "reasoning", "deduction",
         "syllogism", "entailment", "logic", "objection", "formalism",
+        # plural (a plural argument-subject head is still logical-scope, not a person)
+        "arguments", "claims", "premises", "predicates", "propositions", "inferences",
+        "proofs", "formulas", "formulae", "formalizations", "formalisations", "theses",
+        "trees", "derivations", "antecedents", "consequents", "deductions",
+        "syllogisms", "entailments", "objections", "formalisms",
     }
 )
 # Words that start a post-modifier (relative clause / prepositional phrase); the
 # true subject head is BEFORE them, so an argument load-word after one of these is
 # a modifier object, not the subject ("the interlocutor WHO grants the PROOF ...",
 # "the proponent OF the ARGUMENT ...").
-# A post-modifier start (relative clause / prepositional phrase); the subject HEAD
-# noun phrase is BEFORE the first of these ("the proponent OF the argument", "the
-# interlocutor WHO grants the proof").
+# A post-modifier start (relative clause / prepositional phrase / a person-action
+# participle beginning a reduced relative); the subject HEAD noun phrase is BEFORE
+# the first of these ("the proponent OF the argument", "the interlocutor WHO grants
+# the proof", "the reader GRANTING the premise"). Only cut at a match past the head
+# (position > 0), so a gerund-noun subject ("the reasoning cannot deny") is kept.
 CONCESSION_SUBJECT_MODIFIER_RE = re.compile(
     r"(?i)\b(?:who|whom|whoever|which|whose|of|in|on|for|with|to|about|regarding|"
-    r"concerning|from|by|behind|against|among|amongst)\b"
+    r"concerning|from|by|behind|against|among|amongst|"
+    r"granting|accepting|conceding|admitting|acknowledging|rejecting|holding|having|"
+    r"studying|reviewing|weighing|seeing|reading|hearing|facing|knowing|observing|"
+    r"considering|examining|grasping|recognizing|recognising|following)\b"
 )
 # A comma span that opens with a subordinating conjunction (a fronted subordinate
 # clause), so it is not the main-clause subject.
@@ -1090,7 +1101,7 @@ def _concession_subject_np(text: str, start: int) -> str:
     subject_span = CONCESSION_LEADING_RE.sub("", subject_span)
     subject_span = CONCESSION_ARTICLE_RE.sub("", subject_span)
     modifier = CONCESSION_SUBJECT_MODIFIER_RE.search(subject_span)
-    if modifier is not None:
+    if modifier is not None and modifier.start() > 0:
         subject_span = subject_span[: modifier.start()]
     return subject_span.lower()
 
@@ -1371,6 +1382,10 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         # argument load-word as a bare attributive modifier before a person head
         # (must flag; the head, not the modifier, is the subject).
         "The reasoning interlocutor cannot deny the evidence.",
+        # person subject with a comma-less participial reduced relative whose object
+        # is an argument term (must flag; the person head, not the object, governs).
+        "The reader granting the premise cannot deny it.",
+        "Anyone accepting the proof cannot deny the conclusion.",
     ):
         if not compliance_side_success_present(uptake):
             errors.append(
@@ -1397,6 +1412,9 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "The proposition, in its strongest form, cannot deny the counterexample unless it is built into P.",
         "The syllogism, taken in Barbara, cannot deny the case unless the premise entails it.",
         "The derivation, shown above, cannot deny the reading unless it follows from P(x).",
+        # plural argument-subject heads are still logical-scope (must NOT flag).
+        "Formal arguments cannot deny that overlap unless the identity is built into the predicate.",
+        "These premises cannot deny the conclusion unless it follows from the antecedent.",
     ):
         if compliance_side_success_present(logical_scope):
             errors.append(
