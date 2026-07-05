@@ -1404,7 +1404,20 @@ def owner_specific_operation_performed(owner: str, combined: str) -> bool:
     if family == "DOUBT_SKEPTICISM":
         return doubt_skepticism_operation_performed(combined)
     if family:
-        return any(key == family and pattern.search(combined) for key, pattern in OWNER_OPERATION_PATTERNS)
+        # Owner-operation keyword recognition is hyphen/space-invariant: the DSL writes
+        # owner-operation deltas/targets as hyphenated slugs (e.g. "orphaned-intuition"),
+        # while the OWNER_OPERATION_PATTERNS were authored with spaced bigrams (e.g.
+        # "orphaned intuition"). This is pure orthography of the SAME owner concept (the
+        # patterns already use [- ] equivalence in ~141 places); recognizing the canonical
+        # hyphenated slug is a coverage fix, not a mass-gate change. Owner recognition is
+        # one of ~8 conjunctive gates in is_operation_shaped_submove; the anti-label guard
+        # (OWNER_NAME_ONLY_RE above) and the anti-slimming/mass gates are untouched, so a
+        # thin/label-only slug block still fails.
+        normalized = combined.replace("-", " ")
+        return any(
+            key == family and (pattern.search(combined) or pattern.search(normalized))
+            for key, pattern in OWNER_OPERATION_PATTERNS
+        )
     if not owner:
         return False
     return bool(
@@ -1718,6 +1731,29 @@ TTP Operation Body: The scope is overextended and the opponent's argument theref
         "scope-boundary-named", "the scope is overextended so the burden is landed", "",
     ):
         errors.append("self-test compact-target rescue fired with an empty operation body")
+    # Owner-keyword recognition is hyphen/space-invariant: the canonical hyphenated DSL
+    # owner-operation slug must be recognized as its spaced-bigram equivalent.
+    if not owner_specific_operation_performed("M3", "Δ³B:orphaned-intuition-identified state exposed"):
+        errors.append("self-test M3 did not recognize the hyphenated 'orphaned-intuition' owner slug")
+    # ...but the anti-label guard and anti-slimming/mass gates are untouched: a name-only
+    # owner and a thin conclusion-shaped slug block must still fail.
+    if owner_specific_operation_performed("M3", "M3"):
+        errors.append("self-test M3 name-only owner wrongly counted as an operation")
+    thin_hyphen_slug_block = """
+### ³B₁[M3] - orphaned-intuition over moral-purpose
+
+Target: moral-purpose.
+
+Operation: orphaned-intuition.
+
+Result/state-change: orphaned-intuition-identified.
+
+Contribution-to-Land(³B): orphaned-intuition, so the burden is landed.
+
+TTP Operation Body: The intuition is orphaned-intuition and the argument therefore fails.
+"""
+    if is_operation_shaped_submove(thin_hyphen_slug_block):
+        errors.append("self-test accepted a thin hyphenated-slug M3 submove (anti-slimming laundering guard failed)")
     return errors
 
 
