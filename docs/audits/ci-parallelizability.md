@@ -33,9 +33,41 @@
 
 ## What this does not claim
 
-- It does not claim the 82 read-only commands are mutually independent at the
+- It does not claim the 84 read-only commands are mutually independent at the
   data level beyond side-effect freedom (they all read the same artifacts, which
   is safe for concurrent reads).
 - It does not measure wall-clock speedup; the point is safety, not speed. Since
   the serial prefix (generators) dominates, the achievable speedup from
   parallelizing only the read-only phase is bounded and unquantified here.
+
+## Adoption decision (2026-07-04)
+
+**Parallelization is REJECTED / DEFERRED for the hardening PR.** The static proof
+above already shows no safe drop-in: the 3 shared-writers and 3 git-gates are
+order-sensitive, and only the 84 read-only commands could parallelize — and only as
+a phase gated behind the serial generate-then-verify prefix, which also trades away
+the current first-failure-abort semantics. Adopting it is an owner decision, not a
+safe-local slice, and the wall-clock win is unquantified.
+
+What landed instead (measurement, no behavior change): a pure `benchmark_summary()`
+helper in `tools/analyze_ci_parallelizability.py` (commit `1cf82c6`) that, from
+measured per-command wall times, computes the phase-staged Amdahl ceiling —
+`ceiling(N) = shared_writer_s + git_gate_s + read_only_s / N`, `speedup(N) =
+serial_total / ceiling(N)` — an upper bound (perfect balance, zero overhead), not a
+measured run and not authorization to adopt. It is exercised by the existing
+`--self-test`; a live `--benchmark` runner that would time the real battery stays a
+deferred, manual, non-lane-wired tool (it re-runs the shared-writers).
+
+Owner decisions, recorded for a later dedicated pass:
+
+- **OD-08a (adopt phase-staging):** accept a `serial generate -> serial git-gate ->
+  parallel read-only` model, or reject/keep the serial thin runner. **Recommended:
+  reject/defer** — zero correctness gain, real ordering-hazard regression surface (a
+  reordered generate/verify could let a corrupted `skill/SKILL.md` pass), unquantified win.
+- **OD-08b (abort policy, only if OD-08a accepts):** fail-fast (cancel in-flight on
+  first failure; minimal delta from today's stop-at-first) vs run-all-collect (report
+  every failure; larger behavioral departure). Recommended fail-fast if ever adopted.
+- **OD-08c (measurement prerequisite):** authorize the manual live `--benchmark`
+  runner before any adoption, so the win is measured rather than assumed.
+
+Until an owner adopts OD-08a, CI execution stays exactly as-is: serial, first-failure-abort.
