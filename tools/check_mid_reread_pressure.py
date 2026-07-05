@@ -109,7 +109,14 @@ STRICT_CURL_REASON_RE = re.compile(
     r"(?i)\b(?:circular|rotation|rotational|rotated|churn|recoil|label-pressure|"
     r"self-reinforcing|regress|wisw[āa]s)\b"
 )
-CURL_NEGATION_RE = re.compile(r"(?i)\b(?:no loop|no circular|no churn|not a loop|not circular)\b")
+CURL_NEGATION_RE = re.compile(
+    # "no loop" / "no circular" / "not a loop" (the loop does NOT EXIST / no circularity
+    # remains) contradicts a held curl. But "no loop break" / "no loop-break (has landed)
+    # yet" means the loop-BREAK OPERATION has not yet landed -- a VALID reason FOR a held
+    # curl (the loop is still active/unbroken) -- so it must not be read as a no-loop claim.
+    r"(?i)\bno\s+loop\b(?!\s*[-\s]?(?:break|broke|broken))|"
+    r"\bno\s+circular\b|\bno\s+churn\b|\bnot\s+a\s+loop\b|\bnot\s+circular\b"
+)
 
 ACTIVATION_OWNER_RE = re.compile(
     r"\b(?:[A-Za-z0-9]+-[A-Za-z0-9-]+|diagnostic-render-contract|closure witness graph|"
@@ -916,6 +923,47 @@ def expand_output_paths(paths: list[Path]) -> list[Path]:
     return expanded
 
 
+def _self_test_curl_negation() -> list[str]:
+    """No-model canary for the held-curl / no-loop-break distinction (both directions).
+
+    A held curl whose stated reason is that the loop-BREAK operation has not yet landed
+    ("no loop break before X") is a VALID held-curl reason and must not be read as a
+    no-loop contradiction; a held curl claiming the loop does NOT EXIST ("no loop
+    remains" / "not a loop") is a direct contradiction and must still flag.
+    """
+    errors: list[str] = []
+
+    def _mk(curl: str) -> MrpBlock:
+        return MrpBlock(
+            body="", target="", reread="", landed_delta="", route_gradient="",
+            divergence="", curl=curl, finding="", route_result_type="",
+            mrp_resultant="", graph_delta="", preemption_basis="", route="",
+            boundary="", pressure_lines={},
+        )
+
+    def _flags(curl: str) -> bool:
+        return any(
+            "contradicts a no-loop" in error
+            for error in curl_diagnostic_errors(Path("curl-self-test"), _mk(curl), "curl-self-test")
+        )
+
+    for reason in (
+        "held / no loop break before analogy carrier audit",
+        "held / no loop-break has landed yet",
+        "held / the loop is not broken until M9 separates the predicate",
+    ):
+        if _flags(reason):
+            errors.append(f"curl self-test wrongly flagged a valid held/no-loop-break reason: {reason!r}")
+    for reason in (
+        "held / no loop remains",
+        "held / not a loop here",
+        "held / no circular pressure remains",
+    ):
+        if not _flags(reason):
+            errors.append(f"curl self-test failed to preserve a direct no-loop contradiction: {reason!r}")
+    return errors
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path("tests/mid-reread-pressure"))
@@ -931,6 +979,7 @@ def main() -> int:
     root = args.root
     valid, invalid = iter_fixtures(root)
     errors: list[str] = []
+    errors.extend(_self_test_curl_negation())
     valid_checked = 0
     invalid_checked = 0
     valid_blocks: list[tuple[Path, MrpBlock]] = []
