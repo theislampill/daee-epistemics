@@ -6525,10 +6525,16 @@ def release_section_prompt(
             else f"This section's rough share is {section_floor} bytes. "
         )
         target_line = (
-            f"\nOverall compiled output floor: at least {target}KB across {section_count} sections. "
-            f"{section_budget_text}Expand governed content enough to "
-            "help the assembled output meet the floor. The harness will fail the assembly if the "
-            "compiled output is under target.\n"
+            f"\nThis is a harness assembly protocol: repo tooling assembles these sections into the ONE "
+            f"governed `/daee-epistemics` answer the real skill (`skill/SKILL.md`) defines -- split only "
+            f"for evidence-budget accounting and section-local validation, not a different or competing "
+            f"contract. Overall assembled floor: at least {target}KB across {section_count} sections. "
+            f"{section_budget_text}This minimum is an anti-slimming / evidence-mass floor -- the least "
+            "genuine diagnostic mass the governed content for this section must carry -- NOT a padding "
+            "target. Produce the complete, genuine governed content for this section; do not pad, add "
+            "filler, repeat, or inflate to hit a number. If genuine governed content falls under the floor, "
+            "the section is under-developed (develop the real diagnostic work further); never pad. The "
+            "harness fails the assembly if the compiled output is under target.\n"
         )
     partition_line = ""
     if section_role == "layer_b_act":
@@ -6567,12 +6573,18 @@ current-skill smoke. The final public `output.md` will be assembled by repo
 tooling from hash-checked section files; do not try to write the whole answer
 in this one message.
 
-Public interface boundary:
+Public interface boundary (artifact-boundary discipline -- this bounds the PUBLIC
+artifact; it does not ask you to hide or suppress your reasoning):
 - Preserve `/daee-epistemics` governed output shape across the assembled file.
 - Do not expose raw dev harness internals as a new public mode.
-- Do not include commentary about this harness, section manifest, or compiler.
-- Do not include private planning, self-talk, scratch analysis, "final answer only"
-  reminders, checklist prose, or notes about what you need to write.
+- Do not put commentary about this harness, section manifest, or compiler into the
+  public artifact (you may reason about them internally; just keep them out of the
+  governed output text).
+- The section text you return IS the public governed artifact: emit the governed
+  content itself, not meta-commentary about producing it -- no "final answer only"
+  reminders, checklist prose, planning narration, or notes about what you still need
+  to write. Reason internally as much as you need; the returned section must be the
+  governed content, not notes about it.
 - Do not build or claim verifier sidecars, collapse certificates, Grapher output,
   B.5 projection sidecars, retained promotion, package operations or provenance
   claims, guaranteed uptake, broad model behavior, broad A/B/C/D closure,
@@ -6663,8 +6675,15 @@ def release_section_expansion_prompt(
     return f"""Runtime SHA256: {skill_hash}
 
 You are expanding one already-generated stage-07 compiled output section inside
-the same bounded pilot run. This is not a second pilot. The harness will append
-your text to the same section file, hash it, and validate the assembled output.
+the same bounded pilot run. This is a harness assembly protocol: repo tooling
+assembles these sections into the ONE governed `/daee-epistemics` answer the real
+skill (`skill/SKILL.md`) defines, split only for evidence-budget accounting and
+section-local validation -- not a different or competing contract. This is not a
+second pilot. The harness will append your text to the same section file, hash it,
+and validate the assembled output. The section minimum below is an anti-slimming /
+evidence-mass floor (the least genuine diagnostic mass this section must carry),
+NOT a padding target: add real governed diagnostic detail, never filler, repetition,
+or inflation to hit a byte count.
 
 Run metadata: redacted from model-facing route surface; case IDs and paths are
 custody fields only and must not determine routing, owner selection, proof
@@ -6684,9 +6703,13 @@ Expansion contract:
 - Do not contradict or replace existing text.
 - Do not include JSON or code fences unless the section role itself requires JSON and the added text is valid for that role.
 - Do not claim verifier sidecars, retained promotion, package operations or provenance claims, guaranteed uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or ActiveGraph proof.
-- Do not mention this harness, expansion loop, byte budget, manifest, or compiler.
-- Do not include private planning, self-talk, scratch analysis, "final answer only"
-  reminders, checklist prose, or notes about what you need to write.
+- Keep commentary about this harness, expansion loop, byte budget, manifest, or
+  compiler out of the public artifact (reason about them internally if needed; just
+  do not put that commentary in the governed output text).
+- The text you return IS the public governed artifact: emit governed content itself,
+  not meta-commentary about producing it -- no "final answer only" reminders, checklist
+  prose, planning narration, or notes about what you still need to write.
+- Reason internally as much as you need; the returned text must be governed content.
 - {role_notes.get(section_role, "Add role-local governed detail that stays inside the current section boundary.")}
 
 Existing section text:
@@ -6945,8 +6968,13 @@ def build_claude_command(
 
     The daee stage prompt is self-contained (it explicitly forbids filesystem
     reads, shell commands, and path access), so the Claude runner needs no tools.
-    ``--permission-mode plan`` is the read-only equivalent of codex ``-s read-only``
-    (no mutation), and ``claude -p`` prints the final message to stdout, which
+    ``--tools ""`` disables ALL built-in tools -- the true read-only / no-mutation
+    equivalent of codex ``-s read-only`` (the model can produce the governed output
+    but cannot read files, run shells, or edit anything). ``--permission-mode plan``
+    is intentionally NOT used: plan mode instructs the model to PLAN rather than
+    execute, which makes Claude withhold the governed Stage output and instead emit a
+    "you said not to execute yet" clarification (an ANDON reproduced on the Stage-07
+    section requests). ``claude -p`` prints the final message to stdout, which
     invoke_claude captures (claude has no ``--output-last-message`` flag).
     """
     claude = claude_executable or shutil.which("claude")
@@ -6954,7 +6982,7 @@ def build_claude_command(
         raise HarnessError(
             "claude CLI not found on PATH; Claude model smoke is blocked by harness/credential environment"
         )
-    return [claude, "-p", "--model", model, "--permission-mode", "plan"]
+    return [claude, "-p", "--model", model, "--tools", ""]
 
 
 def invoke_claude(
@@ -7557,16 +7585,25 @@ def run_self_test(root: Path) -> int:
     if MODEL_RUNNER != "codex":
         raise HarnessError("Self-test default MODEL_RUNNER must be codex (Codex lane behavior-preserving)")
     claude_command = build_claude_command(root, "claude-opus-4-8", claude_executable="claude")
-    if claude_command != ["claude", "-p", "--model", "claude-opus-4-8", "--permission-mode", "plan"]:
+    if claude_command != ["claude", "-p", "--model", "claude-opus-4-8", "--tools", ""]:
         raise HarnessError(f"Self-test build_claude_command shape drifted: {claude_command}")
+    # Canary: the Claude command must NOT use plan mode (plan mode makes Claude PLAN
+    # instead of producing the governed Stage output); it must disable all tools for
+    # read-only safety while still emitting the final answer on stdout.
+    if "--permission-mode" in claude_command or "plan" in claude_command:
+        raise HarnessError("Self-test: Claude command must not use plan mode (it withholds the governed output)")
+    if "--tools" not in claude_command or claude_command[claude_command.index("--tools") + 1] != "":
+        raise HarnessError("Self-test: Claude command must disable all tools via --tools \"\" (read-only, no execution)")
     claude_capture_dir = root / ".daee" / "validation"
     claude_capture_dir.mkdir(parents=True, exist_ok=True)
     claude_out_path = claude_capture_dir / "self-test-claude-output.txt"
     claude_log_path = claude_capture_dir / "self-test-claude-log.txt"
 
     def _fake_claude_run(command, **kwargs):
-        if "--permission-mode" not in command or "plan" not in command:
-            raise HarnessError("Self-test claude subprocess command lost read-only plan mode")
+        if "--tools" not in command or command[command.index("--tools") + 1] != "":
+            raise HarnessError("Self-test claude subprocess command lost read-only no-tools mode (--tools \"\")")
+        if "--permission-mode" in command or "plan" in command:
+            raise HarnessError("Self-test claude subprocess command must not use plan mode")
         return subprocess.CompletedProcess(command, 0, stdout="SELF_TEST_CLAUDE_STAGE_RESPONSE\n", stderr="")
 
     real_subprocess_run = subprocess.run
@@ -7584,6 +7621,35 @@ def run_self_test(root: Path) -> int:
         subprocess.run = real_subprocess_run
     if claude_exit != 0 or claude_out_path.read_text(encoding="utf-8") != "SELF_TEST_CLAUDE_STAGE_RESPONSE\n":
         raise HarnessError("Self-test invoke_claude did not capture model stdout into the output path")
+    # Scaffold-text canaries: the compiled-output section framing must be truthful --
+    # the byte minimum is an anti-slimming / evidence-mass floor (NOT a padding target)
+    # and the interface boundary is artifact discipline (NOT a request to hide reasoning)
+    # -- while preserving the evidence-budget floor requirement. This forbids reintroducing
+    # padding/hide-reasoning phrasing that made the prompt semantically false to the model.
+    _section_prompt = release_section_prompt(
+        root=root, case_name="scaffold-self-test", raw_input_path=root / "self-test-input",
+        input_text="self-test", input_digest="D", skill_hash="H", previous_stages=[],
+        section_id="opening", section_role="visible_opening", section_number=1, section_count=10,
+        target_output_kb=100, section_min_bytes=5120, assigned_body_refs=None,
+    )
+    _expansion_prompt = release_section_expansion_prompt(
+        root=root, case_name="scaffold-self-test", raw_input_path=root / "self-test-input",
+        input_digest="D", skill_hash="H", section_id="opening", section_role="visible_opening",
+        section_min_bytes=5120, current_bytes=100, expansion_round=1, max_rounds=2,
+        assigned_body_refs=None, existing_text="existing",
+    )
+    for _label, _prompt in (("section", _section_prompt), ("expansion", _expansion_prompt)):
+        _low = _prompt.lower()
+        if "anti-slimming" not in _low or "evidence-mass" not in _low:
+            raise HarnessError(f"Self-test: compiled {_label} prompt lost the anti-slimming/evidence-mass floor framing")
+        if "not a padding target" not in _low:
+            raise HarnessError(f"Self-test: compiled {_label} prompt must state the floor is NOT a padding target")
+        if "reason internally" not in _low:
+            raise HarnessError(f"Self-test: compiled {_label} prompt must keep artifact-boundary (reason-internally, not-hiding) framing")
+        if "expand governed content enough to help the assembled output meet the floor" in _low:
+            raise HarnessError(f"Self-test: compiled {_label} prompt still uses the padding-to-meet-the-floor phrasing")
+    if "at least 100kb across 10 sections" not in _section_prompt.lower():
+        raise HarnessError("Self-test: compiled section prompt lost the evidence-budget floor requirement")
     replay = load_json(replay_record)
     named_scope = model_scope("self-test-a9-science-source", replay_record, stop_after_stage=None)
     neutral_scope = model_scope("neutral-formal-route-copy", replay_record, stop_after_stage=None)
