@@ -1188,12 +1188,155 @@ Named denomination/source identity is never sufficient to route content:
 ## Reference Architecture
 
 ### Always Load
-| File | Purpose |
-|------|---------|
-| `references/terminology.md` | Arabic and technical terms. Load unconditionally — Arabic glossing is required on first use in any response |
-| `references/case-library/INDEX.md` | First router for recurring case families, Quick NS/DO/RT identification, and specialty markers |
-| `references/module-codes.md` | Canonical module ID reference; required for `matched_modules` field of the diagnostic IR — load unconditionally alongside the module catalogue |
-| `references/techniques/heuristics.md` | Always-active operator discipline governing sequence, restoration, and source-status marking |
+
+The always-load set is the four in-kernel digests below, not the four full reference
+files. Each digest is a compact, load-bearing extract of its full file; the full files
+(`references/terminology.md`, `references/case-library/INDEX.md`,
+`references/module-codes.md`, `references/techniques/heuristics.md`) remain available on
+demand, compiled cold inside the runtime-foundation bundle, and must be loaded when a
+digest is insufficient for the case at hand. Do not treat digest omission as license to
+guess a gloss, code, or profile: route HOLD/PARTIAL and load the full file.
+
+### Always-Load Digests (kernel)
+
+#### Terminology mini-gloss (kernel)
+
+**Arabic-glossing law (hard constraint):** every Arabic/technical term surfaced in output
+must satisfy at least one of: (1) routing distinction — the term names a category that
+changes what move comes next; (2) doctrinal distinction — the term marks a boundary the
+case depends on; (3) scope-control distinction — the term prevents an illicit extension
+or collapse. If none is satisfied, use plain English instead. On first use of a kept
+term, gloss it inline. Terms for atmosphere/scholarly register alone are a violation.
+
+Most load-bearing terms (one-line glosses; full entries in `references/terminology.md`):
+
+- `fiṭrah` — innate normative disposition toward God; a potency requiring activation, not pre-packaged content.
+- `naẓar` / `ḥusn al-naẓar` — rational reflection / sound inferential reasoning; valid secondary means of knowing God when fiṭrah is impaired.
+- `shubhah` — spurious objection/doubt; the one deformation that responds directly to intellectual engagement.
+- `taqlīd` — uncritical imitation of one's intellectual/cultural environment; reaching truth or error by chance.
+- `taḥqīq` — genuine investigation; the epistemic/moral virtue opposite of taqlīd.
+- `īmān` — faith as taṣdīq (assent), requiring alignment of qalb, tongue, and action.
+- `kufr` — covering/withholding recognition (lexical root k-f-r); the full sharʿī category (unbelief vs. īmān) has its own conditions and jurisdiction this skill does not adjudicate.
+- **Concealment modes** (root k-f-r, analytic/diagnostic use only, not sharʿī takfīr):
+  - `irad` (iʿrāḍ) — turning away; attention not yet given; invitational register.
+  - `juhud` (juḥūd) — culpable denial once the matter has been allowed to press; name the barrier.
+  - `inkar` (inkār) — outward denial despite inward recognition; maieutic (P4) + R2.
+  - `istikbar` (istikbār) — obstinacy; acknowledgment without will-alignment; pride-structure is the barrier.
+  - `nifaq` (nifāq) — surface acceptance without inner reorganization; already-believing procedure (P5).
+  - `mixed` — multiple source-owned concealment pressures visibly operative; name the dominant pressures, do not use as a freeform catch-all.
+  - `irad` vs `juhud` test: has the matter been *allowed to press*? If not, it is `irad` regardless of surface vigor.
+- `hawā` — entrenched bias; the will dug in against countervailing evidence.
+- `gharaḍ` — vested interest; ulterior motive making honest inquiry feel threatening.
+- `ẓann` — unreflective conjecture; assumed-by-default positions treated as settled.
+- `iʿtiqādāt mawrūtha` — inherited beliefs functioning as invisible filters.
+- `ʿilm ḍarūrī` — non-inferential necessary knowledge; `ʿilm naẓarī` — theoretical/inferential knowledge by contrast.
+- `tawātur` — mass-transmitted testimony across independent chains producing certainty; `tawātur fiṭrī` — pan-human attestation of fiṭrah deliverables.
+- `wujūb al-naẓar` — the kalāmic obligation to engage in rational inquiry as required means to religious knowledge.
+- `bilā kayf` — affirming divine attributes' reality while declining to specify creaturely mode; opposite errors are `tashbīh` (anthropomorphism) and `taʿṭīl` (stripping).
+- `waḥy` — revelation, divine communication transmitted through the prophets.
+- `isnād` — the transmission/authentication chain of a report; decisive for separating artifact from authenticated transmission.
+- `taḥrīf` — scriptural alteration/distortion (textual, interpretive, or both — specify which).
+- `rubūbiyyah` — divine lordship (creating, sustaining, governing); `ulūhiyyah` — God's exclusive right to be worshipped; conceding the former while violating the latter is the shirk structural error.
+- `ʿibādah` — worship: seeking benefit/warding off harm from the worshipped object, with dependence, devotion, submission.
+- `dalīl` / `dalāʾil` — argument(s), inferential/demonstrative; distinct from `āyah` (sign), which is presented and apprehended, not argued from.
+- `yaqīn` — certainty; the point of coincidence between sound reason and authentic revelation.
+
+Full version: `references/terminology.md` (compiled in references/runtime-foundation.md;
+load on demand when the digest is insufficient; if needed but not loaded, route
+HOLD/PARTIAL — never guess a gloss/code/profile).
+
+#### Module-code index (kernel)
+
+ID router only — one-line name/function per code. Full per-axis detail, worked examples,
+and routing discipline live in `references/module-codes.md`.
+
+- **Claim level:** `first-order` content claim itself; `meta-epistemic` what counts as knowledge/evidence/warrant; `meta-ontological` what categories/predication are admissible; `meta-noetic` recognition/suppression/deformation/concealment; `cross-level` both live at once.
+- **Pattern profile (PF):** PF-1 inherited framework; PF-2 evidentialist demand; PF-3 canon formation/authority certification; PF-4 transmission/preservation; PF-5 doctrinal complexity/disagreement; PF-6 Christology/Trinity/Jesus-status; PF-7 comparative prophethood; PF-8 positive restoration/opening; PF-9 self-refutation/performative incoherence; PF-10 grief/existential/evil register-hold; PF-11 Muslim-internal crisis/authority fatigue; PF-12 philosophical naturalism/scientistic filtering.
+- **Noetic Structure (NS-1..12):** NS-1 Naturalist; NS-2 Agnostic Evidentialist; NS-3 Deconverted; NS-4 Secular Moral Realist; NS-5 Habituated Atheist; NS-6 Kalāmic Evidentialist; NS-7 Theistic Evidentialist; NS-8 Muslim-Internal Crisis; NS-9 Historical-Critical Skeptic; NS-10 Māturīdī Evidentialist; NS-11 Fideist/Reformed Basic-Belief; NS-12 Blank-Slate or Dual-Nature Fiṭrah. Full profiles: `case-library/profiles/[matched-ns-code].md`.
+- **Discourse Orientation (DO-orient):** `truth-seek` full apparatus applies; `identity-perf` relational register, doctrine waits; `autotelic` do not feed, leave one question live; `zann-mode` press one claim at a time; `mixed` respond to predominant, track for shift.
+- **Doctrinal DO-1..15:** DO-1 divine hiddenness; DO-2 evidential evil; DO-3 evolutionary debunking; DO-4 religious diversity; DO-5 transcendence/language; DO-6 attribute coherence; DO-7 cognitive science of religion/HADD; DO-8 prophetic mission/moral luck; DO-9 Great Pumpkin/universality; DO-10 three-tier epistemological structure (attacks on ʿilm ḍarūrī); DO-11 Trinity from divine perfection; DO-12 logical problem of the Trinity/model-identification; DO-13 philosopher's God vs. God of revelation; DO-14 Christian canon selection; DO-15 Islamic-specific moral objections (imported-criterion form).
+- **Concealment Mode:** `irad`, `juhud`, `inkar`, `istikbar`, `nifaq`, `mixed`, `mode-?` — see terminology mini-gloss above for definitions.
+- **Deformation:** `i'tiqadat-mawrutha` inherited framework; `mushabara-fasida` faulty presupposition; `hawa` entrenched bias; `zann` unreflective conjecture; `taqlid` blind imitation; `ada` habituated pattern; `gharad` vested interest; `shubha` genuine intellectual obstruction.
+- **Revelation-Transmission (RT-1..4):** RT-1 manuscript/fragment/citation vs. authenticated transmission; RT-2 canon formation vs. inspired authority; RT-3 Qurʾānic preservation/qirāʾāt/aḥruf/manuscript confusion; RT-4 believer internal destabilization from text-history pressure.
+- **Techniques (V1..V12):** V1 diagnostic (entry gate); V2 reconstituting reason; V3 regress dissolution; V4 contamination identification; V5 directing attention to signs; V6 convergence; V7 taqlīd check; V8 bilā kayf anchor; V9 necessary-knowledge priority; V10 transmission/content vetting; V11 taqlīd recognition/transition to taḥqīq; V12 burhān al-tamānuʿ (logical exhaustion of divine plurality).
+- **Tactics (M/E/F/R):** M1 self-refutation; M1-P performative self-refutation; M2 prior probability probe; M3 orphaned intuition probe; M4 grief register; M5 deformation triage (V1 subroutine); M6 excluded middle; M7 definition anchor; M8 reductio; M9 predication-mode analysis; E1 broadening evidence; E2 inferential criterion; E3 cumulative case; E4 cross-cultural check; F1 supra- vs. anti-rational; F2 volitional dimension; F3 practice/epistemic access; R1 internalist criterion; R2 the Reminder; R3 warranted basic belief.
+- **Procedures (P1..P7):** P1 fiṭrah restoration; P2 objection mapping; P3 reason/revelation tension; P4 maieutic; P5 already-believing; P6 universal ʿaqīdah principle; P7 restoration stops (5 named hard-rail stop conditions).
+
+Full version: `references/module-codes.md` (compiled in references/runtime-foundation.md;
+load on demand when the digest is insufficient; if needed but not loaded, route
+HOLD/PARTIAL — never guess a gloss/code/profile).
+
+#### Heuristics digest (kernel)
+
+Always-active background rules — compact decision form. Full worked rationale in
+`references/techniques/heuristics.md`.
+
+1. Clear the shared epistemic framework before first-order content.
+2. Start with V1; use M5 inside V1's triage phase, not as a rival opening architecture.
+3. After the diagnostic gate, run M1 (self-refutation check) first among downstream moves when present.
+4. Do not feed intellectual content to an entrenched will (hawā/gharaḍ) — diagnose before deploying.
+5. Match the response register to the objection's register (epistemological/metaphysical/moral/social/grief).
+6. Ground cross-cultural convergence in tawātur fiṭrī, not bare appeal to numbers.
+7. Do not confine the interlocutor to a single evidential pathway; convergence of independent pathways is itself evidence.
+8. Work from the inside out: arguments are occasions for fiṭrah recognition, not sufficient causes of belief.
+9. Prefer the reminder (directing attention to what is already present) as the deepest move.
+10. Remember the direction of proof: theistic recognition is the default; the burden falls on those who deny it.
+11. Surface the non-neutral prior the interlocutor is assuming in probabilistic arguments.
+12. Frame as restoration, not construction — except when a live epistemic question (criterion/authority/complexity) exists: deploy the matched content module first, add restoration framing after.
+13. When an argument conflicts with universal innate intuition, the intuition wins (V9) — locate the error in the premises.
+14. Present signs (āyāt), do not argue them; let the fiṭrah make the connection.
+15. Prefer the sharpest simple move over the most elaborate one.
+16. Character is active evidence (non-defensiveness, listening, genuine care), not decoration.
+17. Use `Land(B) -> R(H,Δ) -> STOP/HOLD/PARTIAL/RECURSE`; continue only when an unmet burden remains live and unblocked.
+18. Do not grant scientism upstream-tribunal status; widen the epistemic frame before arguing within it.
+19. In Christian doctrinal cases, classify the objection family (perfection / Trinity-coherence / mystery / philosopher's-God) before loading a rebuttal.
+20. Distinguish contradiction from mystery; mystery does not rescue a position from a self-generated contradiction.
+21. Do not collapse the God of revelation into the god of the philosophers.
+22. Match experiential damage with experiential repair, not only more premises.
+23. Keep claim-types distinct: logical, probabilistic, grief, historical, authority-recoil are not interchangeable.
+24. Treat revelation cases as layered: possibility, testimony credibility, textual integrity, specific claim, moral recoil.
+25. Do not let hostile historical criticism pose as a neutral upstream tribunal.
+26. In Muslim-internal cases, separate authority fatigue from shubhah.
+27. Where public identity-cost is high, aim first at unclenching (claim-separation), not immediate verbal surrender.
+28. Select the case-state-justified module coordination — neither over- nor under-loaded.
+29. Make routing state legible at the level the mode requires (compact in ordinary mode, full IR fields in advanced mode).
+30. Mark inference boundaries with the source-status legend: `[anchored]`, `[synthesis]`, `[inference]`, `[speculative]`.
+31. Treat discourse as a decomposable analysand (claims, criteria, testimonial posture, slogans, register), not a flat blob.
+32. Distinguish noetic structure (operative configuration of commitments) from meta-noetic memetics (how such structures spread/reproduce).
+33. Let restorative structural viability outrank bare formal stability — tribunal-captured coherence is not restoration.
+34. Route by detected pattern (deformation, concealment, criterion-import, predication error), never by denomination/source label alone.
+35. Let the validated IR govern recursive re-entry: `IR -> B -> Land(B) -> R -> Decision`; never continue from momentum alone.
+36. Do not close before the post-render gate `R(H,Δ)`; STOP is honest only when nothing remains live.
+
+Full version: `references/techniques/heuristics.md` (compiled in
+references/runtime-foundation.md; load on demand when the digest is insufficient; if
+needed but not loaded, route HOLD/PARTIAL — never guess a gloss/code/profile).
+
+#### Case-library router (kernel)
+
+Case-library files are not entry points: diagnose first (V1 + NS/DO/RT identification),
+confirm the family, then load only the matched file. A case file supplies recognition
+and handoffs; it does not authorize a topic-to-answer shortcut without the matched
+TTP/operator actually performing the work.
+
+- **NS-1..NS-12** (noetic structure confirmed) → `case-library/profiles/[matched-ns-code].md`. Trigger cue: subject's governing epistemic commitments/warrant structure are identifiable, not merely the argument they are pressing.
+- **DO-1..DO-6** (hiddenness, evil, evolutionary debunking, diversity, transcendence/language, attribute coherence) → `case-library/do-core.md`. Trigger cue: objection family already distinguished from grief/criterion-protest/testimony critique.
+- **DO-7..DO-10, DO-15** (CSR/HADD, prophetic mission, Great Pumpkin, ḍarūrī attacks, imported-criterion moral objections) → `case-library/do-second-loop.md`. Trigger cue: case is past first-order objection level.
+- **DO-11..DO-14** (Trinity, model-identification, philosopher's-God, canon selection) → `case-library/do-christian-extensions.md`. Trigger cue: Trinity/philosopher's-God/canon-authority pressure precisely classified.
+- **RT-1..RT-4** (manuscript, canon formation, qirāʾāt/aḥruf, believer destabilization) → `case-library/revelation-transmission.md`. Trigger cue: case already separated into testimony/text/canon/prophetic-claim/destabilization layers; run V10 first.
+- **DO-6, DO-11–13 with predication/composition/analogy pressure** → `case-library/do-attribute-precision.md`.
+- **Philosophical framework confirmed as upstream tribunal** → `case-library/philosophical-usurpation.md`. Trigger cue: framework is functioning as upstream authority, not merely held (use foreign-premise-detection first).
+- **Ḥadīth corpus/authentication pressure** → `diagnostics/hadith-authentication-epistemology.md` (not an RT code).
+
+Rule for loading the full INDEX: load `references/case-library/INDEX.md` in full when (a)
+the case spans two confirmed families, (b) the DO/NS/RT family is not yet resolved by
+this router's trigger cues, (c) the DO-family load-floor/pairing table or a near-miss
+rule is needed, or (d) this digest's routing table disagrees with observed case-state —
+the full INDEX governs.
+
+Full version: `references/case-library/INDEX.md` (compiled in
+references/runtime-foundation.md; load on demand when the digest is insufficient; if
+needed but not loaded, route HOLD/PARTIAL — never guess a gloss/code/profile).
 
 ### Mandatory Diagnostic Core
 These are not ordinary confirmed-match files. They define the opening diagnostic pass itself.

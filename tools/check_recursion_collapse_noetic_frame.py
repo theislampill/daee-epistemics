@@ -106,7 +106,15 @@ def main() -> int:
         if token not in notation_text:
             errors.append(f"notation owner missing invariant: {token!r}")
 
-    if len(skill_text) > 80_000:
+    # Slice B final wave (codex/v0.4.6.0-runtime-footprint): licensed control-plane growth.
+    # The "### Always Load" table's 4 references/*.md rows were replaced with compact
+    # in-kernel digests inside atomics/skill/SKILL.md's "### Always-Load Digests (kernel)"
+    # subsection, trading a small root increase for a large always-load floor reduction
+    # (see tools/load-path-budget.config.json and the matching ROOT_MAX_CHARS comment in
+    # tools/check_metacompliance_current_canon.py, raised 80_000 -> 96_000 for the same
+    # reason). Keep this ceiling in sync with that one; both guard the same measured
+    # quantity (atomics/skill/SKILL.md char length).
+    if len(skill_text) > 96_000:
         errors.append(
             "atomics/skill/SKILL.md appears to have re-expanded beyond control-plane size"
         )

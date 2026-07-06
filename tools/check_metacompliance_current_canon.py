@@ -10,7 +10,19 @@ import re
 from compiled_runtime_lib import fail_with_errors, out_dir, repo_root
 
 
-ROOT_MAX_CHARS = 80_000
+# Slice B final wave (codex/v0.4.6.0-runtime-footprint): the "### Always Load" table's
+# 4 references/*.md rows (terminology.md, case-library/INDEX.md, module-codes.md,
+# techniques/heuristics.md) were replaced with compact in-kernel digests directly inside
+# atomics/skill/SKILL.md's "### Always-Load Digests (kernel)" subsection (~15.5KB), so the
+# always-load floor no longer drags the 103KB runtime-foundation.md bundle hot on every
+# substantive case (see tools/load-path-budget.config.json for the measured floor win:
+# always-load-bundles est_tok 53501 -> 31704, a -21797 est_tok reduction for +4005 est_tok
+# root growth). This is licensed, deliberate control-plane growth trading a large downstream
+# floor reduction for a small root increase, not organic drift -- raised from 80_000 in the
+# same spirit as the prior 50_000 -> 80_000 ratchet. If this constant needs raising again,
+# the change must be justified by an equivalent measured floor win recorded in
+# tools/load-path-budget.config.json, not by ordinary prose growth.
+ROOT_MAX_CHARS = 96_000
 
 ROOT_REQUIRED = [
     "## EXECUTION SPINE",

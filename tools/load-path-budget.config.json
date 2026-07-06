@@ -23,19 +23,20 @@
     "aggregate_tolerance_pct": 1.0,
     "_comment_aggregate_tolerance": "total-hot-surfaces (the aggregate ratchet row) is gated at this strictly tighter tolerance than tolerance_pct. If it used the same tolerance_pct as per-row checks, growth spread evenly across every per-row surface (each individually still within tolerance_pct) would also land inside tolerance_pct in aggregate, defeating the point of an aggregate check.",
     "baseline_date": "2026-07-06",
-    "baseline_ref": "codex/v0.4.6.0-runtime-footprint Slice B wave 1: non-droppable-manual-contract digest+cold-law-manifest reduction",
-    "_comment_slice_b": "skill-md-only, five-bundle-substantive, always-load-bundles, structural-diagnosis-floor, and total-hot-surfaces are lowered in this change to the newly measured post-reduction values. The compiled root skill/SKILL.md dropped from 216112 to 110797 bytes (54028 to 27699 est_tok) by replacing the inlined full non-droppable-manual-contract.md with a compact manual-contract-digest.md; the full contract now ships cold under skill/references/rubrics/ and is bound back to the digest by skill/cold-law-manifest.json (sha256 per clause). This is a deliberate ratchet-baseline reduction, not banked headroom: per-bundle rows are unchanged.",
+    "baseline_ref": "codex/v0.4.6.0-runtime-footprint Slice B final wave: Always-Load table replaced with in-kernel digests (floor reduction)",
+    "_comment_slice_b": "skill-md-only, five-bundle-substantive, always-load-bundles, structural-diagnosis-floor, and total-hot-surfaces are lowered/raised in this change to the newly measured post-reduction values. The compiled root skill/SKILL.md dropped from 216112 to 110797 bytes in the prior wave (non-droppable-manual-contract digest); per-bundle rows are unchanged by that or this wave.",
+    "_comment_slice_b_final_wave": "Final wave: the '### Always Load' table previously listed 4 references/*.md files (terminology.md, case-library/INDEX.md, module-codes.md, techniques/heuristics.md) that all resolved to the 103KB runtime-foundation.md bundle, dragging the whole bundle hot on every substantive case (always-load-bundles floor = 214005 bytes / 53501 est_tok). Those 4 files' load-bearing content is now authored as compact in-kernel digests inside atomics/skill/SKILL.md ('### Always-Load Digests (kernel)', ~15.5KB), and the Always Load table carries 0 references/*.md rows -- the full files remain available on demand, compiled cold in runtime-foundation.md. This is LICENSED growth on skill-md-only (+16010 bytes / +4002 est_tok: 110797->126807 bytes, 27699->31701 est_tok) for a much larger floor win: always-load-bundles drops from 53501 to 31701 est_tok (-21800 est_tok), because it is now == skill-md-only (0 bundles resolve). five-bundle-substantive and total-hot-surfaces necessarily grow by the same root delta (they sum skill-md-only + all 5 bundles, and per-bundle rows are untouched): 1098840->1114850 bytes, 274710->278712 est_tok (+16010 bytes / +4002 est_tok). structural-diagnosis-floor also drops because it is always-load-bundles (now == root) + the Mandatory Diagnostic Core bundle, which is untouched: 336751->249553 bytes, 84187->62388 est_tok. Net: +4002 est_tok root growth buys -21800 est_tok floor reduction. Root stays under the 130000-byte / ~32500-est_tok ceiling (126807 bytes / 31701 est_tok, margin 3193 bytes). Note: this also required raising two independent hard-coded 80,000-char control-plane size ceilings on atomics/skill/SKILL.md (tools/check_metacompliance_current_canon.py ROOT_MAX_CHARS and tools/check_recursion_collapse_noetic_frame.py's inline 80_000 check) to 96,000 -- the atomics source file itself grew from 79,979 to 95,420 chars carrying the digest prose (a larger delta than the compiled/byte view above because the atomics source has no bundle-substitution accounting).",
     "baseline": {
-      "skill-md-only": {"bytes": 110797, "est_tok": 27699},
+      "skill-md-only": {"bytes": 126807, "est_tok": 31701},
       "per-bundle:skill/references/runtime-diagnostic-core.md": {"bytes": 122746, "est_tok": 30686},
       "per-bundle:skill/references/runtime-dispatch-gate.md": {"bytes": 446879, "est_tok": 111719},
       "per-bundle:skill/references/runtime-foundation.md": {"bytes": 103208, "est_tok": 25802},
       "per-bundle:skill/references/runtime-output-governance.md": {"bytes": 266571, "est_tok": 66642},
       "per-bundle:skill/references/runtime-phase2-passes.md": {"bytes": 48639, "est_tok": 12159},
-      "five-bundle-substantive": {"bytes": 1098840, "est_tok": 274710},
-      "total-hot-surfaces": {"bytes": 1098840, "est_tok": 274710},
-      "always-load-bundles": {"bytes": 214005, "est_tok": 53501},
-      "structural-diagnosis-floor": {"bytes": 336751, "est_tok": 84187}
+      "five-bundle-substantive": {"bytes": 1114850, "est_tok": 278712},
+      "total-hot-surfaces": {"bytes": 1114850, "est_tok": 278712},
+      "always-load-bundles": {"bytes": 126807, "est_tok": 31701},
+      "structural-diagnosis-floor": {"bytes": 249553, "est_tok": 62388}
     }
   },
   "aspirational": {

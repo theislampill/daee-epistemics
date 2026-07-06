@@ -438,30 +438,33 @@ def self_test() -> int:
         )
     )
 
-    # Real-repo Always-Load resolution must have zero unresolved entries and
-    # at least one resolved bundle -- an unresolved entry in the live repo is
-    # a self-test FAIL, not a soft warning.
+    # Slice-B floor reduction: the "### Always Load" table now carries 0
+    # `references/...` file rows (its former 4 rows are in-kernel digests
+    # inside SKILL.md instead; see EXPECTED_ALWAYS_LOAD_FILES above), so
+    # always_load_bundles() must resolve exactly 0 bundles and report exactly
+    # 0 unresolved entries -- an empty always-load table is the intended
+    # post-reduction state, not a resolver failure. A nonzero unresolved count
+    # would still mean a genuinely broken lookup and remains a self-test FAIL.
     al_bundles, al_unresolved = always_load_bundles(skill_text)
-    checks.append(("always-load resolves >=1 bundle in the live repo", len(al_bundles) >= 1))
+    checks.append(("always-load resolves exactly 0 bundles in the live repo (Slice B floor reduction)", len(al_bundles) == 0))
     checks.append(("always-load has 0 unresolved entries in the live repo", len(al_unresolved) == 0))
 
-    # Per-file coverage canary (FIX 2): a bundle-granularity check can miss a
-    # single dropped or reformatted table row inside SKILL.md's "### Always
-    # Load" / "### Mandatory Diagnostic Core" tables, because several files
-    # can resolve to the same bundle. Assert the exact file lists, not just
-    # bundle counts. NOTE: this hardcodes the 4 Always Load paths as of this
-    # writing -- if skill/SKILL.md's "### Always Load" table changes, update
-    # this expected list DELIBERATELY (do not loosen it to a count-only check).
-    EXPECTED_ALWAYS_LOAD_FILES = [
-        "references/terminology.md",
-        "references/case-library/INDEX.md",
-        "references/module-codes.md",
-        "references/techniques/heuristics.md",
-    ]
+    # Per-file coverage canary (FIX 2), updated for the Slice-B floor reduction:
+    # the "### Always Load" table used to list 4 `references/...` file rows
+    # that resolved to the runtime-foundation.md bundle, forcing that whole
+    # 103KB bundle hot on every substantive case. Those 4 files' load-bearing
+    # content now lives as compact in-kernel digests inside SKILL.md itself
+    # (see "### Always-Load Digests (kernel)"), and the "### Always Load"
+    # table intentionally carries NO `references/...` rows any more -- the
+    # full files remain available on demand, compiled cold in
+    # runtime-foundation.md. NOTE: if skill/SKILL.md's "### Always Load" table
+    # ever gains file rows again, update this expected list DELIBERATELY (do
+    # not loosen it to a count-only check).
+    EXPECTED_ALWAYS_LOAD_FILES: list[str] = []
     al_files = always_load_files(skill_text)
     checks.append(
         (
-            "always_load_files() returns exactly the 4 expected canonical paths",
+            "always_load_files() returns exactly the 0 expected canonical paths (Slice B floor reduction)",
             al_files == EXPECTED_ALWAYS_LOAD_FILES,
         )
     )
@@ -482,15 +485,19 @@ def self_test() -> int:
         )
     )
 
-    # always-load-bundles must be strictly larger than skill-md-only (it adds
-    # at least the runtime-foundation.md bundle), and structural-diagnosis-floor
-    # must be strictly larger than always-load-bundles (it adds the
-    # runtime-diagnostic-core.md bundle on top).
+    # Slice-B floor reduction: with the "### Always Load" table now resolving
+    # 0 bundles (its former 4 files are in-kernel digests instead), the
+    # always-load-bundles row is just SKILL.md alone -- identical bytes to
+    # skill-md-only, not strictly larger. This IS the floor win: the hot
+    # floor no longer drags the 103KB runtime-foundation.md bundle along on
+    # every substantive case. structural-diagnosis-floor still adds the
+    # Mandatory Diagnostic Core bundle(s) on top and must remain strictly
+    # larger than always-load-bundles (that table is untouched by this slice).
     row_tok = {r[0]: r[4] for r in rows}
     checks.append(
         (
-            "always-load-bundles est_tok > skill-md-only est_tok",
-            row_tok.get("always-load-bundles", -1) > row_tok.get("skill-md-only", -1),
+            "always-load-bundles est_tok == skill-md-only est_tok (Slice B floor reduction: 0 always-load bundles)",
+            row_tok.get("always-load-bundles", -1) == row_tok.get("skill-md-only", -2),
         )
     )
     checks.append(

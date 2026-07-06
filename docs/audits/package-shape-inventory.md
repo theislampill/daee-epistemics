@@ -8,7 +8,7 @@ Shipped-file list is `package_shape.package_file_paths()` - the same function `t
 
 | file | bytes | est_tok | class | evidence anchor |
 | --- | ---: | ---: | --- | --- |
-| `skill/SKILL.md` | 110797 | 27699 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
+| `skill/SKILL.md` | 126807 | 31701 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
 | `skill/build-manifest.json` | 61652 | 15413 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
 | `skill/compiled-module-map.json` | 45939 | 11484 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
 | `skill/references/runtime-dispatch-gate.md` | 446879 | 111719 | prompt-hot | skill/SKILL.md: "Load path for substantive cases" numbered list |
@@ -36,11 +36,11 @@ Shipped-file list is `package_shape.package_file_paths()` - the same function `t
 
 | class | files | bytes | est_tok |
 | --- | ---: | ---: | ---: |
-| host-hot | 3 | 218388 | 54596 |
+| host-hot | 3 | 234398 | 58598 |
 | prompt-hot | 4 | 939404 | 234849 |
 | route-warm | 7 | 166530 | 41630 |
 | cold-law | 8 | 1060263 | 265062 |
 | audit-only | 1 | 1789 | 447 |
-| **grand total** | **23** | **2386374** | **596584** |
+| **grand total** | **23** | **2402384** | **600586** |
 
 `est_tok` is `bytes // 4`, a rough measurement heuristic, not a tokenizer-accurate count.
