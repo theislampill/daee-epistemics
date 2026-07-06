@@ -1,0 +1,45 @@
+{
+  "schema": "load-path-budget-config-v1",
+  "metric": {
+    "declared": "est_tok = bytes // 4",
+    "calibration": {
+      "date": "2026-07-06",
+      "tokenizer": "tiktoken o200k_base",
+      "note": "bytes/4 OVERestimates real o200k_base tokens by ~11% on this corpus (ratio real/est = 0.8932 overall); conservative for gating. Full instructed load = 268,871 real tokens, still exceeding a 200k window.",
+      "surfaces": [
+        {"surface": "skill/SKILL.md", "bytes": 216112, "est_tok": 54028, "real_tok": 52041, "ratio": 0.9632},
+        {"surface": "skill/references/runtime-foundation.md", "bytes": 103208, "est_tok": 25802, "real_tok": 23477, "ratio": 0.9099},
+        {"surface": "skill/references/runtime-diagnostic-core.md", "bytes": 122746, "est_tok": 30686, "real_tok": 27123, "ratio": 0.8839},
+        {"surface": "skill/references/runtime-phase2-passes.md", "bytes": 48639, "est_tok": 12159, "real_tok": 10377, "ratio": 0.8534},
+        {"surface": "skill/references/runtime-dispatch-gate.md", "bytes": 446879, "est_tok": 111719, "real_tok": 95607, "ratio": 0.8558},
+        {"surface": "skill/references/runtime-output-governance.md", "bytes": 266571, "est_tok": 66642, "real_tok": 60246, "ratio": 0.9040}
+      ],
+      "total": {"bytes": 1204155, "est_tok": 301036, "real_tok": 268871, "ratio": 0.8932}
+    }
+  },
+  "ratchet": {
+    "enabled": true,
+    "tolerance_pct": 2.0,
+    "baseline_date": "2026-07-06",
+    "baseline_ref": "codex/v0.4.6.0-runtime-footprint post-resolver-fix",
+    "baseline": {
+      "skill-md-only": {"bytes": 216112, "est_tok": 54028},
+      "per-bundle:skill/references/runtime-diagnostic-core.md": {"bytes": 122746, "est_tok": 30686},
+      "per-bundle:skill/references/runtime-dispatch-gate.md": {"bytes": 446879, "est_tok": 111719},
+      "per-bundle:skill/references/runtime-foundation.md": {"bytes": 103208, "est_tok": 25802},
+      "per-bundle:skill/references/runtime-output-governance.md": {"bytes": 266571, "est_tok": 66642},
+      "per-bundle:skill/references/runtime-phase2-passes.md": {"bytes": 48639, "est_tok": 12159},
+      "five-bundle-substantive": {"bytes": 1204155, "est_tok": 301038},
+      "always-load-bundles": {"bytes": 319320, "est_tok": 79830},
+      "structural-diagnosis-floor": {"bytes": 442066, "est_tok": 110516}
+    }
+  },
+  "aspirational": {
+    "enforced": false,
+    "note": "Slice A2 activates these after kernel/shard slices land. Recorded for visibility only.",
+    "hot_root_target_est_tok": 25000, "hot_root_ceiling_est_tok": 35000,
+    "shard_target_est_tok": 15000, "shard_ceiling_est_tok": 25000,
+    "default_exec_target_est_tok": 60000, "default_exec_ceiling_est_tok": 90000
+  },
+  "_comment_exclusions": "largest-retained-output is intentionally excluded from ratchet.baseline: it measures the size of a retained proof-corpus case output, and it is legal (and expected over time) for retained outputs to grow large as cases accumulate more traversal detail. Gating on it would penalize correct, larger-but-valid outputs, so this row is measured for visibility only and is never enforced by the ratchet."
+}

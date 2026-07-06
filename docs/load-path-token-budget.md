@@ -10,7 +10,8 @@
 > a dated snapshot and is not byte-match-enforced (that would be brittle across
 > routine bundle regeneration).
 >
-> Measured 2026-07-04 in worktree `codex/hardening-all-20260703`.
+> Measured 2026-07-06 in worktree `codex/v0.4.6.0-runtime-footprint` (post
+> always-load resolver fix; supersedes the 2026-07-04 snapshot below).
 
 ## Measured table
 
@@ -23,7 +24,8 @@
 | per-bundle | skill/references/runtime-output-governance.md | 266571 | 3513 | 66642 |
 | per-bundle | skill/references/runtime-phase2-passes.md | 48639 | 804 | 12159 |
 | five-bundle-substantive | SKILL.md + 5 bundles | 1204155 | 16156 | 301038 |
-| always-load-bundles | SKILL.md + 0 always-load bundles (unresolved: references/terminology.md, references/case-library/INDEX.md, references/module-codes.md, references/techniques/heuristics.md) | 216112 | 2852 | 54028 |
+| always-load-bundles | SKILL.md + 1 always-load bundles | 319320 | 4126 | 79830 |
+| structural-diagnosis-floor | SKILL.md + 2 always-load+diagnostic-core bundles | 442066 | 6097 | 110516 |
 | largest-retained-output | tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/gate88-tst-lillard/output.md | 169456 | 1290 | 42364 |
 
 constraint-census (skill/SKILL.md): must=175, never=51
@@ -35,11 +37,24 @@ constraint-census (skill/SKILL.md): must=175, never=51
 - `five-bundle-substantive` (SKILL.md + all five runtime bundles) is ~301k est
   tokens, exceeding a 200k-token window: loading every substantive bundle at once
   does not fit.
-- The four `### Always Load` entries are **reference** files (terminology,
-  case-library index, module codes, heuristics), not diagnostic modules, so they
-  have no `compiled-module-map.json` module entry and their bundle footprint is
-  not resolvable via that map — the tool reports them as unresolved rather than
-  guessing.
+- The four `### Always Load` entries (terminology, case-library index, module
+  codes, heuristics) **do** have `compiled-module-map.json` module entries; all
+  four resolve to the same bundle, `references/runtime-foundation.md`. The
+  earlier snapshot's claim that they had "no module entry" was wrong — the
+  original tool under-reported because of a path-prefix mismatch: the map's
+  `canonical_path` values are repo-root-relative (`skill/references/...`)
+  while the Always Load table lists paths relative to `skill/`
+  (`references/...`), so an exact-match lookup between the two never hit, and
+  a second bug joined the resolved `bundle_path` against the repo root instead
+  of `skill/`, so even a successful lookup would have pointed at a
+  nonexistent file. Both are fixed: the resolver now normalizes the `skill/`
+  prefix before comparing, and joins `bundle_path` against `ROOT / "skill"`.
+  The corrected always-load floor is SKILL.md + `runtime-foundation.md` ~=
+  **79,830 est-tok**.
+- The `### Mandatory Diagnostic Core` table's six files all resolve, via the
+  same map, to `references/runtime-diagnostic-core.md`. Combined with the
+  always-load floor, the structural-diagnosis floor is SKILL.md +
+  `runtime-foundation.md` + `runtime-diagnostic-core.md` ~= **110,516 est-tok**.
 
 ## Boundaries
 
