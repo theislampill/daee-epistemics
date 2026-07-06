@@ -215,6 +215,9 @@
     "check_retained_row_claims.py": {
       "class": "required"
     },
+    "check_route_shard_selection.py": {
+      "class": "required"
+    },
     "check_routing_parity.py": {
       "class": "required"
     },

@@ -1,0 +1,21 @@
+{
+  "bundle_mapping_version": "fixture",
+  "modules": [
+    {
+      "module_id": "mod-alpha",
+      "bundle_path": "references/runtime-shard-alpha.md"
+    },
+    {
+      "module_id": "mod-alpha",
+      "bundle_path": "references/runtime-shard-beta.md"
+    },
+    {
+      "module_id": "mod-routing",
+      "bundle_path": "references/runtime-core-routing.md"
+    },
+    {
+      "module_id": "mod-kernel",
+      "bundle_path": "references/runtime-foundation.md"
+    }
+  ]
+}
