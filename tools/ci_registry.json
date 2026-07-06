@@ -15,6 +15,9 @@
     "check_closure_witness_graph.py": {
       "class": "required"
     },
+    "check_cold_law_digest.py": {
+      "class": "required"
+    },
     "check_collapse_certificate_schema.py": {
       "class": "required"
     },

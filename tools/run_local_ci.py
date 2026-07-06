@@ -97,6 +97,8 @@ COMMANDS = [
     "python tools/build_package_shape_inventory.py --self-test",
     "python tools/build_package_shape_inventory.py --check",
     "python tools/check_prompt_pack_budget.py --self-test",
+    "python tools/check_cold_law_digest.py --self-test",
+    "python tools/check_cold_law_digest.py",
     "python tools/measure_terminal_cover_ab.py --self-test",
     "python tools/build_model_compliance_scorecard.py --self-test",
     "python tools/check_spec_authoring_pack.py",

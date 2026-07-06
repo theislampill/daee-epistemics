@@ -267,6 +267,9 @@ the trigger is absent, blocked, or underdetermined.
 Full diagnostic blocks belong to `/daee-epistemics:dsl` or internal/development audit,
 not default mode. Compact Layer A fields are mandatory in default mode.
 
+This section is carried in full above; its canonical hash-bound text is
+Full clause: cold-law clause.output-surface-invariant (references/rubrics/non-droppable-manual-contract.md; load on demand; if the full clause is needed but not loaded, route HOLD/PARTIAL with reason cold-law-not-loaded — never fake Land)
+
 # Default Mode Execution Details
 
 Default mode suppresses raw visible IR but does not suppress recursive execution. Default mode is
