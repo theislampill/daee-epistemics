@@ -1026,8 +1026,12 @@ COMPLIANCE_UPTAKE_RE = re.compile(
 # ("cannot *deny*", "cannot \"deny\"", "cannot _deny_") -- these are tolerated so formatting the
 # verb cannot smuggle a concession past the match.
 _CONCESSION_EMPH = r"[\"'*_“”‘’«»`~]*"
+# "cannot" / "can not" (two-word) / "can't" are the same modal negation -- match all three so a
+# trivial spelling/whitespace variant cannot smuggle a self-asserted concession past the fail-
+# closed path. The trailing \s+ after the negation (with "not" required to be space-bounded) keeps
+# "can note ..." from matching.
 COMPLIANCE_CONCESSION_RE = re.compile(
-    r"(?i)\bcannot\s+" + _CONCESSION_EMPH + r"\s*"
+    r"(?i)\bcan(?:not|\s+not(?=\s)|['’]t)\s+" + _CONCESSION_EMPH + r"\s*"
     r"(?:deny|resist|avoid\s+" + _CONCESSION_EMPH + r"\s*conceding)"
     # trailing boundary that tolerates emphasis/quote wrappers (underscore is a \w char, so a
     # plain \b would miss "cannot _deny_"): the verb must not be immediately followed by a letter.
@@ -1545,6 +1549,10 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "The skeptic cannot _deny_ the proven result.",
         "The skeptic cannot “deny” the evidence; my proof settles it.",
         "The doubter cannot “avoid conceding” the point I proved.",
+        # "can not" (two-word) / "can't" are the same modal negation and must still flag.
+        "The skeptic can not deny the evidence.",
+        "I have proven that the skeptic can not deny the evidence.",
+        "The interlocutor can't resist the demonstration I gave.",
         # REPORT/DISOWN EXEMPTION REMOVED (adversarial-review round 5): a report/disown frame
         # reaching the concession across an em-dash, subordinator, or linking verb, or governing
         # a different subject, no longer suppresses. These are self-asserted uptake and flag.
