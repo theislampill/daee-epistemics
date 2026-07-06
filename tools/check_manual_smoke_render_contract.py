@@ -1179,11 +1179,18 @@ def _concession_clause(text: str, start: int, end: int) -> str:
 
 
 def _clause_before(text: str, start: int) -> str:
-    """Return the clause immediately before a position, back to the last boundary."""
+    """Return the concession/uptake phrase's OWN clause, back to the last comma / semicolon /
+    colon / sentence terminator OR clause-coordinating conjunction (and/but/yet/so/...). A
+    governing prohibition ("do not promise that X will accept") stays attached only when it
+    directly governs the uptake phrase; a prohibition on a DIFFERENT prior-clause subject
+    joined by "and"/comma ("Do not overpromise, and the interlocutor will accept ...") is
+    excluded so it cannot suppress a separately-asserted uptake claim."""
     lo = max(0, start - 160)
     segment = text[lo:start]
     boundary = None
-    for match in re.finditer(r"[.!?;:\n]", segment):
+    for match in re.finditer(
+        r"[,;:\n.!?]|\b(?:and|but|yet|so|therefore|thus|hence|nor)\b", segment
+    ):
         boundary = match
     if boundary is not None:
         segment = segment[boundary.end() :]
@@ -1191,16 +1198,22 @@ def _clause_before(text: str, start: int) -> str:
 
 
 def _concession_local_clause(text: str, start: int, end: int) -> str:
-    """The concession's OWN clause (from the last comma/semicolon/sentence boundary
-    before it, to its end). A colon is intentionally NOT a boundary, so a
-    colon-introduced reported phrase stays attached to its governing report/disown
-    frame ("reported as a disallowed reading, not asserted ...: the person cannot
-    resist"). A reporting/disown token in a SEPARATE clause (comma/semicolon-
-    delimited) is excluded, so it cannot suppress a directly-asserted concession."""
+    """The concession's OWN clause, bounded by the last comma / semicolon / COLON /
+    sentence terminator OR clause-coordinating conjunction (and/but/yet/so/therefore/
+    thus/hence/nor) before it. A report/disown frame that governs a DIFFERENT prior-clause
+    subject therefore cannot bleed across ':' or 'and' into a separately-asserted concession
+    ("The proof is described as decisive AND the skeptic cannot deny ..."; "The objector's
+    demand is disowned: the reader cannot deny ..."). A frame that DIRECTLY governs the
+    concession with no coordinator between ("can also mean 'the person cannot resist'") stays
+    in the local clause. Tightened toward flagging after a review found the colon/'and' bleed
+    laundered self-asserted concessions -- a genuine colon-introduced reported sense is an
+    accepted conservative over-flag, never a laundering hole."""
     lo = max(0, start - 200)
     segment = text[lo:start]
     boundary = None
-    for match in re.finditer(r"[,;\n.!?]", segment):
+    for match in re.finditer(
+        r"[,;:\n.!?]|\b(?:and|but|yet|so|therefore|thus|hence|nor)\b", segment
+    ):
         boundary = match
     left = lo + boundary.end() if boundary is not None else lo
     return text[left:end]
@@ -1256,19 +1269,21 @@ def compliance_side_success_present(text: str) -> bool:
         # a genuine hypothesis-of-a-claim ("If the claim is “... I cannot resist,” then ...")
         # is a deliberately accepted conservative over-flag, not a laundering hole.
         subject_np = _concession_subject_np(text, match.start())
-        # The subject HEAD (last token of the head noun phrase; English noun
-        # phrases are head-final before post-modifiers, which are already cut)
-        # decides logical-scope: an attributive load-word ("the reasoning
-        # interlocutor") or a load-word buried in a compound-predicate span must
-        # not trigger suppression. An argument term is never a person, so a person
-        # subject's head is never an argument term (no false negative).
-        subject_tokens = re.findall(r"[a-z']+", subject_np)
-        head = subject_tokens[-1] if subject_tokens else ""
-        # Suppress only when the subject head is an argument/predicate (logical
-        # scope, not a person conceding). Every other head -- including any person
-        # noun, listed or not -- flags. Negative guard, no person list.
-        if head in ARG_SUBJECT_TERMS:
+        # The subject HEAD decides logical-scope. A COMPOUND subject is split on its
+        # coordinators (and/or/nor/as well as/along with/plus) so head-final resolution
+        # landing on a TRAILING argument-term does not launder a person conjunct: "the
+        # skeptic and the argument cannot deny" distributes the concession over "the skeptic"
+        # and must flag. Suppress ONLY when EVERY coordinated conjunct head is an argument/
+        # predicate term (pure logical scope). Attributive load-words / post-modifiers are
+        # already cut by _concession_subject_np. Negative guard, no person allowlist.
+        conjuncts = re.split(
+            r"(?i)\s+(?:and|or|nor|as\s+well\s+as|along\s+with|together\s+with|plus)\s+|,",
+            subject_np,
+        )
+        heads = [toks[-1] for toks in (re.findall(r"[a-z']+", c) for c in conjuncts) if toks]
+        if heads and all(h in ARG_SUBJECT_TERMS for h in heads):
             continue
+        head = heads[-1] if heads else ""
         # The bare pronoun "it"/"this"/"that" is ambiguous; treat it as the
         # predicate only inside a logical-conditional construction.
         if head in {"it", "this", "that"} and CONCESSION_LOGICAL_MARKER_RE.search(clause):
@@ -1617,6 +1632,27 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         # per the never-launder invariant; no real smoke output uses this construction.
         "If the claim is “God should reveal Himself in a way I cannot resist,” then the reply must distinguish coercive uptake from warranted evidence.",
         "Suppose the objection were “the person cannot resist,” the output must report and analyze that claim rather than assert it.",
+        # COMPOUND-SUBJECT laundering (adversarial-review round 5, guard C): a person conjunct
+        # coordinated with a trailing argument-term must not be laundered by head-final
+        # resolution. The concession distributes over the person and flags.
+        "The skeptic and the argument cannot deny the evidence.",
+        "Both the skeptic and the argument cannot deny the evidence.",
+        "The reader and the premise cannot avoid conceding the point.",
+        "The skeptic as well as the argument cannot deny the evidence.",
+        "We have proven the reader and the syllogism cannot resist the conclusion.",
+        # REPORTING/DISOWN-FRAME SPANNING a clause (adversarial-review round 5, guard B): a
+        # report/disown frame governing a DIFFERENT prior-clause subject, joined by "and"/":",
+        # must not bleed into a separately self-asserted person concession.
+        "The proof is described as decisive and the skeptic cannot deny the evidence.",
+        "The objector's demand is disowned: the reader cannot deny the burden we have established.",
+        "The argument is interpreted as conclusive: the reader cannot resist the conclusion.",
+        "The excuse is not asserted and the skeptic cannot deny the evidence.",
+        # UPTAKE-PROHIBITION SPANNING (guard A): a prohibition governing a DIFFERENT prior
+        # clause, joined by "and"/comma, must not suppress a separately-asserted uptake claim.
+        "Do not promise victory and the interlocutor will accept the answer.",
+        # a colon-introduced reported sense also flags now (accepted conservative over-flag;
+        # the frame does not directly govern the post-colon clause).
+        "The phrase is reported as a disallowed reading, not asserted as our conclusion: the person cannot resist.",
     ):
         if not compliance_side_success_present(must_flag):
             errors.append(
@@ -1633,8 +1669,9 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
     for must_not_flag in (
         "Do not promise that the interlocutor will accept the answer.",
         "The output must not claim that the audience will now accept the truth.",
+        # a report/disown frame that DIRECTLY governs the concession (no coordinator or colon
+        # between the frame and the quoted/definitional concession) still exempts.
         "This can also mean 'the person cannot resist,' but that sense is rejected and disowned here.",
-        "The phrase is reported as a disallowed reading, not asserted as our conclusion: the person cannot resist.",
     ):
         if compliance_side_success_present(must_not_flag):
             errors.append(
