@@ -111,10 +111,13 @@ STRICT_CURL_REASON_RE = re.compile(
 )
 CURL_NEGATION_RE = re.compile(
     # "no loop" / "no circular" / "not a loop" (the loop does NOT EXIST / no circularity
-    # remains) contradicts a held curl. But "no loop break" / "no loop-break (has landed)
-    # yet" means the loop-BREAK OPERATION has not yet landed -- a VALID reason FOR a held
-    # curl (the loop is still active/unbroken) -- so it must not be read as a no-loop claim.
-    r"(?i)\bno\s+loop\b(?!\s*[-\s]?(?:break|broke|broken))|"
+    # remains) contradicts a held curl. But a loop-RESOLUTION operation that has NOT yet
+    # happened is a VALID reason FOR a held curl (the loop is still active/unresolved), so
+    # "no loop break/broke/broken", "no loop closed/closes/closing/closure", and "no loop
+    # resolved/resolves/resolving" must NOT be read as no-loop claims: they say the loop
+    # has not been broken/closed/resolved, i.e. it persists -- exactly what "held" records.
+    r"(?i)\bno\s+loop\b(?!\s*[-\s]?(?:break|broke|broken|clos(?:e|ed|es|ing|ure)|"
+    r"resolv(?:e|ed|es|ing)))|"
     r"\bno\s+circular\b|\bno\s+churn\b|\bnot\s+a\s+loop\b|\bnot\s+circular\b"
 )
 
@@ -951,13 +954,23 @@ def _self_test_curl_negation() -> list[str]:
         "held / no loop break before analogy carrier audit",
         "held / no loop-break has landed yet",
         "held / the loop is not broken until M9 separates the predicate",
+        # a loop-RESOLUTION verb that has not yet happened ("no loop closed/resolved
+        # until X") is a valid held-curl reason -- the loop persists because it has not
+        # been closed/resolved -- and must not read as a no-loop contradiction.
+        "held / no loop closed until sender and sent are reread",
+        "held / no loop resolved until the predicate is separated",
+        "held / no loop closure yet, the circulation is still live",
     ):
         if _flags(reason):
-            errors.append(f"curl self-test wrongly flagged a valid held/no-loop-break reason: {reason!r}")
+            errors.append(f"curl self-test wrongly flagged a valid held/no-loop-resolution reason: {reason!r}")
     for reason in (
         "held / no loop remains",
         "held / not a loop here",
         "held / no circular pressure remains",
+        # a genuine no-loop assertion ("no loop, the reasoning is linear") is still a
+        # direct contradiction of a held curl and must flag: the resolution-verb
+        # exemption must not swallow a bare no-loop-exists claim.
+        "held / no loop, the reasoning is strictly linear",
     ):
         if not _flags(reason):
             errors.append(f"curl self-test failed to preserve a direct no-loop contradiction: {reason!r}")

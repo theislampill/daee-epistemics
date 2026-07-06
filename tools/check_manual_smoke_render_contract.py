@@ -909,8 +909,19 @@ def submove_field_values(block: str) -> list[str]:
 
 
 def submove_operation_body(block: str) -> str:
-    """Return prose body lines beyond compact Target/Operation/Result fields."""
+    """Return prose body lines beyond the compact Target/Operation/Result fields.
+
+    Compact decode fields (Target:/Operation:/Result:/Contribution-to-Land:) precede the
+    ``TTP Operation Body:`` section and are captured in dedicated facets, so they are
+    stripped here. But the local-proof capsule INSIDE that section uses sub-markers
+    (BEFORE:/OPERATION:/AFTER:/DELTA:/LAND-LICENSE:) whose lines carry substantive prose.
+    ``OPERATION:`` collides case-insensitively with the compact ``Operation:`` field
+    label, so once we are inside the operation-body section we stop stripping field-label
+    lines -- otherwise the capsule OPERATION prose (e.g. the hidden-rule exposure the NLA
+    decode check looks for) would be dropped and the body would read as incomplete.
+    """
     body_lines: list[str] = []
+    in_operation_body = False
     for raw_line in block.splitlines()[1:]:
         line = raw_line.strip()
         if not line:
@@ -919,9 +930,13 @@ def submove_operation_body(block: str) -> str:
             continue
         if re.match(rf"(?im)^\s*(?:#{{1,6}}\s*)?(?:[{SUP}]+B|B\d+)(?:[{SUB}]+|[_\.]\d+)\s*\[", line):
             continue
-        if FIELD_LABEL_RE.match(line):
-            continue
-        if re.match(r"(?im)^\s*(?:TTP\s+)?Operation Body\s*:\s*$", line):
+        if re.match(r"(?im)^\s*(?:TTP\s+)?Operation Body\s*:", line):
+            # The capsule section is now open. A standalone marker line is dropped; an
+            # inline "TTP Operation Body: BEFORE ..." keeps its trailing prose.
+            in_operation_body = True
+            if re.match(r"(?im)^\s*(?:TTP\s+)?Operation Body\s*:\s*$", line):
+                continue
+        if not in_operation_body and FIELD_LABEL_RE.match(line):
             continue
         if re.match(r"(?im)^\s*(?:#|Land\(|\[Mid-Reread Pressure\]|R\(H,)", line):
             continue

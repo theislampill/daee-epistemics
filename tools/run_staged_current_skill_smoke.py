@@ -420,8 +420,14 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "be an object with exactly the six slots freeze-landed-move, dependency-tug, "
             "hidden-framework-recoil, entailment-pressure, doubt-churn-guard, and "
             "reorientation-reminder; every slot value must record the real pressure read for THIS "
-            "burden and begin with the owner/TTP id, `pressure class:`, or `coverage gap:` that "
-            "carried it — placeholder values like none/cleared/n/a are rejected. Consistency is "
+            "burden and begin with a SPECIFIC routed owner/TTP id (for example "
+            "`authority-order-repair`, `source-lineage`, `M7`, or `FPD`) or the literal "
+            "`pressure class:` / `coverage gap:` that carried it. Bare family aliases "
+            "(`SOURCE`, `AUTHORITY`, `OWNER`, `OP`, `MRP`, `DEFINITION`, `RESTORATION`) are loose "
+            "aliases and are REJECTED as owner/TTP ids: resolve each to its specific routed id "
+            "(e.g. `SOURCE` -> `authority-order-repair` or `source-lineage`) or begin the value "
+            "directly with `pressure class:`. Placeholder values like none/cleared/n/a are "
+            "rejected. Consistency is "
             "enforced: `divergence` and `curl` are parser-stable single-line diagnostics; do not "
             "put semicolons or line breaks inside either value. Stable requires route STOP and "
             "graph_delta none; genuine-dependent requires RECURSE and a graph edge; "
@@ -7650,6 +7656,28 @@ def run_self_test(root: Path) -> int:
             raise HarnessError(f"Self-test: compiled {_label} prompt still uses the padding-to-meet-the-floor phrasing")
     if "at least 100kb across 10 sections" not in _section_prompt.lower():
         raise HarnessError("Self-test: compiled section prompt lost the evidence-budget floor requirement")
+    # Scaffold-text canary: the Stage 05 pressure_activations guidance must state the
+    # producer-side contract enforced by build_staged_governed_output.PER_BURDEN_SLOT_START_RE
+    # -- bare family aliases (SOURCE/AUTHORITY/OWNER/OP/MRP/DEFINITION/RESTORATION, per
+    # module-codes.md) are loose aliases and are rejected as owner/TTP ids; the value must
+    # begin with a specific routed id or the literal pressure class:/coverage gap: marker.
+    # This keeps the generation-side prompt aligned with the checker contract so the model
+    # is not silently led into a Stage 05 rejection.
+    _stage05_instructions = STAGE_SPECS["stage-05-mrp-reread-terminal-state"]["instructions"]
+    _stage05_low = _stage05_instructions.lower()
+    for _alias in ("SOURCE", "AUTHORITY", "OWNER", "OP", "MRP", "DEFINITION", "RESTORATION"):
+        if _alias not in _stage05_instructions:
+            raise HarnessError(
+                f"Self-test: Stage 05 pressure guidance must name loose family alias {_alias!r} as rejected"
+            )
+    if "loose alias" not in _stage05_low or "rejected as owner/ttp id" not in _stage05_low:
+        raise HarnessError(
+            "Self-test: Stage 05 pressure guidance must state bare family aliases are loose aliases rejected as owner/TTP ids"
+        )
+    if "specific routed owner/ttp id" not in _stage05_low:
+        raise HarnessError(
+            "Self-test: Stage 05 pressure guidance must direct the model to a specific routed owner/TTP id"
+        )
     replay = load_json(replay_record)
     named_scope = model_scope("self-test-a9-science-source", replay_record, stop_after_stage=None)
     neutral_scope = model_scope("neutral-formal-route-copy", replay_record, stop_after_stage=None)
