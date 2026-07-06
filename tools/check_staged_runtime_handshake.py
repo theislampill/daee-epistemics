@@ -2410,15 +2410,308 @@ def record_errors(path: Path, record: Any) -> list[str]:
     return errors
 
 
+EXPECTED_EXPLAIN_SUFFIX = ".expected-explain.json"
+
+
 def iter_fixtures(root: Path) -> tuple[list[Path], list[Path]]:
-    return sorted((root / "valid").glob("*.json")), sorted((root / "invalid").glob("*.json"))
+    def fixtures_only(paths: Any) -> list[Path]:
+        return sorted(p for p in paths if not p.name.endswith(EXPECTED_EXPLAIN_SUFFIX))
+
+    return (
+        fixtures_only((root / "valid").glob("*.json")),
+        fixtures_only((root / "invalid").glob("*.json")),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Plan 13 Slice F / --explain-stage-failure: first-failed-stage classification
+# ---------------------------------------------------------------------------
+#
+# This maps every error family this checker can emit onto a stable
+# failure_class token and the earliest stage whose contract was violated
+# (not necessarily the stage where the checker happened to notice it -- e.g. a
+# stage-06 record that is missing a stage-04 act_body_ref is an act_body_ref
+# violation, not a field_witness violation, even though it surfaces while
+# validating stage-06 fields).
+#
+# Boundary (read before adding a "model-observed" class here): every failure
+# class this checker can produce is decided by static, deterministic
+# comparison of JSON/text fixtures already on disk -- there is no live model
+# call in this checker's path. The pragmatic/uptake family (does the model's
+# free-text response actually secure interlocutor uptake, do per-burden
+# rereads plausibly reflect genuine reconsideration, etc.) is judged by the
+# *render* checkers (check_tlang_response_closure.py and friends) against
+# live model output, not by this handshake/record-shape checker. So no class
+# below is "model-observed"; requires_model_rerun is always False here. If a
+# future no-model-catchable class is added, keep it False; only add
+# "model-observed" if a genuinely new class requires live model judgment,
+# and call that out explicitly at the call site (this module never emits it).
+FAILURE_CLASS_CUSTODY = "custody"
+FAILURE_CLASS_BURDEN_FLOOR = "burden-floor"
+FAILURE_CLASS_OWNER_ROUTE = "owner-route"
+FAILURE_CLASS_ACT_BODY_REF = "act_body_ref"
+FAILURE_CLASS_MRP = "mrp"
+FAILURE_CLASS_FIELD_WITNESS = "field_witness"
+FAILURE_CLASS_PUBLIC_PROJECTION = "public-projection"
+FAILURE_CLASS_SIDECAR = "sidecar"
+FAILURE_CLASS_HANDOFF = "handoff"
+FAILURE_CLASS_SEQUENCE = "sequence"
+FAILURE_CLASS_NON_CLAIM = "non-claim"
+FAILURE_CLASS_UNCLASSIFIED = "unclassified"
+
+ALL_FAILURE_CLASSES = {
+    FAILURE_CLASS_CUSTODY,
+    FAILURE_CLASS_BURDEN_FLOOR,
+    FAILURE_CLASS_OWNER_ROUTE,
+    FAILURE_CLASS_ACT_BODY_REF,
+    FAILURE_CLASS_MRP,
+    FAILURE_CLASS_FIELD_WITNESS,
+    FAILURE_CLASS_PUBLIC_PROJECTION,
+    FAILURE_CLASS_SIDECAR,
+    FAILURE_CLASS_HANDOFF,
+    FAILURE_CLASS_SEQUENCE,
+    FAILURE_CLASS_NON_CLAIM,
+    FAILURE_CLASS_UNCLASSIFIED,
+}
+
+# Classes that this checker can, in principle, ever emit as requiring a model
+# rerun. Kept empty deliberately -- see boundary comment above.
+MODEL_RERUN_FAILURE_CLASSES: set[str] = set()
+
+STAGE_NUMBER_TOKEN_RE = re.compile(r"stage-(0[1-8])\b")
+STAGES_INDEX_TOKEN_RE = re.compile(r"\bstages\[(\d+)\]")
+HANDOFF_INDEX_TOKEN_RE = re.compile(r"\bhandoffs\[(\d+)\]")
+
+# Stage-id substring -> failure_class, most-specific-first. A message is
+# classified by the *earliest* (lowest stage number) contract it names; when
+# a message names no stage at all it falls through to the record-level rules
+# below (non_claims/model_scope -> non-claim; schema/case_id/JSON shape ->
+# custody; artifact_bindings/proof_sidecars -> sidecar).
+STAGE_ID_FAILURE_CLASS = {
+    "stage-01-intake": FAILURE_CLASS_CUSTODY,
+    "stage-02-layer-a-diagnostic-ir": FAILURE_CLASS_BURDEN_FLOOR,
+    "stage-03-routing-owner-gate": FAILURE_CLASS_OWNER_ROUTE,
+    "stage-04-burden-execution-act": FAILURE_CLASS_ACT_BODY_REF,
+    "stage-05-mrp-reread-terminal-state": FAILURE_CLASS_MRP,
+    "stage-06-field-witness-nar": FAILURE_CLASS_FIELD_WITNESS,
+    "stage-07-release-output": FAILURE_CLASS_PUBLIC_PROJECTION,
+    "stage-08-verifier-sidecars": FAILURE_CLASS_SIDECAR,
+}
+STAGE_NUMBER_FAILURE_CLASS = {
+    "01": FAILURE_CLASS_CUSTODY,
+    "02": FAILURE_CLASS_BURDEN_FLOOR,
+    "03": FAILURE_CLASS_OWNER_ROUTE,
+    "04": FAILURE_CLASS_ACT_BODY_REF,
+    "05": FAILURE_CLASS_MRP,
+    "06": FAILURE_CLASS_FIELD_WITNESS,
+    "07": FAILURE_CLASS_PUBLIC_PROJECTION,
+    "08": FAILURE_CLASS_SIDECAR,
+}
+# Non-claim / model-scope governance fields are record-level (validated
+# against the whole record, not one stage payload) but their contract is
+# owned by intake: a record is not admissible before its non-claims are
+# declared. Substrings are matched case-sensitively against the raw message.
+NON_CLAIM_MESSAGE_MARKERS = (
+    "non_claims",
+    "model_scope",
+)
+# artifact_bindings / retained-manifest / proof_sidecars errors are all
+# stage-08 (verifier sidecars / retained-proof custody) territory even when
+# the message does not literally say "stage-08".
+SIDECAR_MESSAGE_MARKERS = (
+    "artifact_bindings",
+    "retained manifest",
+    "retained_manifest",
+    "proof_sidecars",
+    "B.5.4.1",
+)
+CUSTODY_MESSAGE_MARKERS = (
+    "record root must be a JSON object",
+    "schema must be",
+    "user_interface_preserved",
+    "case_id is required",
+    "JSON parse error",
+)
+
+
+def _stage_token(stage_id: str) -> str:
+    return stage_id.split("-")[1]
+
+
+def classify_failure_message(message: str) -> tuple[str, str]:
+    """Return (failure_class, earliest_stage) for one checker error message.
+
+    earliest_stage is a two-digit stage token ("01".."08") or "" when the
+    violated contract is record-level rather than stage-scoped (custody /
+    non-claim messages before any stage payload is even reachable).
+
+    A message can name more than one stage (e.g. a handoff error names both
+    sides of the pair, or an unrelated downstream check happens to mention an
+    upstream stage id in passing); when that happens we take the lowest stage
+    index, since that is the earliest contract actually violated.
+    """
+    candidate_indexes: list[int] = []
+
+    for stage_id in STAGE_ID_FAILURE_CLASS:
+        if stage_id in message:
+            candidate_indexes.append(STAGE_ORDER.index(stage_id))
+
+    for number in STAGE_NUMBER_TOKEN_RE.findall(message):
+        candidate_indexes.append(int(number) - 1)
+
+    for raw_index in STAGES_INDEX_TOKEN_RE.findall(message):
+        idx = int(raw_index)
+        if 0 <= idx < len(STAGE_ORDER):
+            candidate_indexes.append(idx)
+
+    if candidate_indexes:
+        earliest_index = min(candidate_indexes)
+        stage_id = STAGE_ORDER[earliest_index]
+        stage_token = _stage_token(stage_id)
+        if HANDOFF_INDEX_TOKEN_RE.search(message) and "handoff" in message.lower():
+            return FAILURE_CLASS_HANDOFF, stage_token
+        return STAGE_ID_FAILURE_CLASS[stage_id], stage_token
+
+    if HANDOFF_INDEX_TOKEN_RE.search(message) and "handoff" in message.lower():
+        return FAILURE_CLASS_HANDOFF, ""
+    if "stage_order" in message or "stages must" in message or "stages contain" in message:
+        return FAILURE_CLASS_SEQUENCE, "01"
+    if any(marker in message for marker in SIDECAR_MESSAGE_MARKERS):
+        return FAILURE_CLASS_SIDECAR, "08"
+    if any(marker in message for marker in NON_CLAIM_MESSAGE_MARKERS):
+        return FAILURE_CLASS_NON_CLAIM, "01"
+    if any(marker in message for marker in CUSTODY_MESSAGE_MARKERS):
+        return FAILURE_CLASS_CUSTODY, "01"
+    return FAILURE_CLASS_UNCLASSIFIED, ""
+
+
+def classify_record_errors(errors: list[str]) -> dict[str, Any]:
+    """Classify a full record_errors() list into one explain-stage-failure diagnostic.
+
+    Picks the single earliest-stage violation across all reported errors (not
+    just the first error string), since error discovery order follows the
+    checker's internal pipeline order, not stage order.
+    """
+    if not errors:
+        return {"status": "pass"}
+    best_class = FAILURE_CLASS_UNCLASSIFIED
+    best_stage = ""
+    best_index = len(STAGE_ORDER) + 1
+    for message in errors:
+        failure_class, stage_token = classify_failure_message(message)
+        index = int(stage_token) - 1 if stage_token else len(STAGE_ORDER)
+        if index < best_index:
+            best_index = index
+            best_class = failure_class
+            best_stage = stage_token
+    if not best_stage:
+        best_stage = "01"
+    downstream = [token for token in ("02", "03", "04", "05", "06", "07", "08") if token > best_stage]
+    requires_model_rerun = best_class in MODEL_RERUN_FAILURE_CLASSES
+    if requires_model_rerun:
+        repair_lane = "model-observed"
+    else:
+        repair_lane = "no-model fixture/checker/runtime-contract repair"
+    return {
+        "stage": best_stage,
+        "failure_class": best_class,
+        "earliest_stage": best_stage,
+        "downstream_invalidated": downstream,
+        "requires_model_rerun": requires_model_rerun,
+        "repair_lane": repair_lane,
+    }
+
+
+def explain_stage_failure_self_test(root: Path) -> list[str]:
+    """Verify every invalid fixture classifies to its expected diagnostic.
+
+    Expected diagnostics live in <fixture>.expected-explain.json sidecars next
+    to the fixture (additive; created for fixtures that lacked one). Every
+    valid fixture must classify to {"status": "pass"}. Any fixture that
+    classifies to failure_class "unclassified" fails the self-test outright
+    -- this keeps the message->class mapping total instead of letting new
+    checker error strings silently fall through uncategorized.
+    """
+    errors: list[str] = []
+    valid, invalid = iter_fixtures(root)
+    for path in valid:
+        payload, json_errors = read_json(path)
+        all_errors = json_errors + (record_errors(path, payload) if payload is not None else ["unreadable"])
+        if all_errors:
+            # Not actually a valid fixture per the base checker; the main
+            # fixture-suite pass already reports this, skip double-reporting.
+            continue
+        diagnostic = classify_record_errors(all_errors)
+        if diagnostic != {"status": "pass"}:
+            errors.append(f"{rel(path)}: expected status pass diagnostic, got {diagnostic}")
+    for path in invalid:
+        payload, json_errors = read_json(path)
+        all_errors = json_errors + (record_errors(path, payload) if payload is not None else [])
+        if not all_errors:
+            # Not actually an invalid fixture per the base checker; the main
+            # fixture-suite pass already reports this, skip double-reporting.
+            continue
+        diagnostic = classify_record_errors(all_errors)
+        if diagnostic.get("failure_class") == FAILURE_CLASS_UNCLASSIFIED:
+            errors.append(
+                f"{rel(path)}: classify_record_errors produced unclassified failure_class for errors {all_errors[:3]}"
+            )
+        expected_path = path.parent / f"{path.stem}.expected-explain.json"
+        if expected_path.exists():
+            expected_payload, expected_read_errors = read_json(expected_path)
+            if expected_read_errors:
+                errors.extend(f"{rel(expected_path)}: {error}" for error in expected_read_errors)
+                continue
+            if expected_payload != diagnostic:
+                errors.append(
+                    f"{rel(path)}: explain diagnostic {diagnostic} does not match expected sidecar {expected_payload}"
+                )
+    return errors
+
+
+def run_explain_stage_failure(root: Path, records: list[Path]) -> int:
+    exit_code = 0
+    paths = expand_records(records) if records else []
+    if not paths:
+        # No explicit records given: explain every invalid fixture, printing
+        # one JSON line per fixture. This lets `--explain-stage-failure` be
+        # demonstrated without requiring a caller to pick specific fixture
+        # paths; the full pass/fail self-test lives in the bare (no-flag)
+        # checker run via explain_stage_failure_self_test.
+        _valid, invalid = iter_fixtures(root)
+        paths = invalid
+    for path in paths:
+        if not path.exists():
+            print(json.dumps({"status": "fail", "error": f"record path not found: {path}"}))
+            exit_code = 1
+            continue
+        payload, found = read_json(path)
+        found = list(found)
+        found.extend(record_errors(path, payload) if payload is not None else [])
+        diagnostic = classify_record_errors(found)
+        print(json.dumps(diagnostic, sort_keys=True))
+        if diagnostic.get("status") != "pass":
+            exit_code = 1
+    return exit_code
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=FIXTURE_ROOT)
     parser.add_argument("--records", nargs="*", type=Path, default=[])
+    parser.add_argument(
+        "--explain-stage-failure",
+        action="store_true",
+        help=(
+            "Classify staged-runtime handshake failures into a first-failed-stage "
+            "diagnostic (failure_class/earliest_stage/downstream_invalidated) instead "
+            "of running the full fixture-suite check. Emits one JSON line per record."
+        ),
+    )
     args = parser.parse_args()
+
+    if args.explain_stage_failure:
+        return run_explain_stage_failure(args.root, args.records)
 
     errors: list[str] = []
     valid_checked = 0
@@ -2426,6 +2719,7 @@ def main() -> int:
     records_checked = 0
 
     errors.extend(self_test_visible_optional_tooling_nonclaims())
+    errors.extend(explain_stage_failure_self_test(args.root))
 
     valid, invalid = iter_fixtures(args.root)
     for path in valid:

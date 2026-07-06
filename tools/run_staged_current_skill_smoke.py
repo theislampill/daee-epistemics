@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Any
 
 import build_staged_governed_output as staged_output
+import check_staged_runtime_handshake as staged_handshake_check
 from check_field_witness_convergence import registers_in_text as checker_field_witness_registers_in_text
 from closure_witness_lib import extract_embedded_field_witness, extract_field_witness, parse_closure_witness, status_head
 from delta_result_vocabulary import (
@@ -569,6 +570,48 @@ MODEL_NON_CLAIMS = {
 
 class HarnessError(Exception):
     """User-facing harness failure."""
+
+
+def emit_explain_stage_failure(stage_id: str, reason: str) -> None:
+    """Print one EXPLAIN-STAGE-FAILURE line before a HarnessError is raised.
+
+    This is Plan 13 Slice F first-failed-stage classification applied inline
+    in the live harness path, so a stage failure or handoff-check failure is
+    actionable no-model instead of triggering a blind rerun. It reuses the
+    same failure_class taxonomy tokens as
+    tools/check_staged_runtime_handshake.py --explain-stage-failure (see that
+    module's classify_failure_message for the authoritative mapping and the
+    no-model-vs-model-observed boundary comment). This is a compact local
+    classification against the single failing reason string -- it does not
+    replace the fixture-based classifier, it is additive reporting only, and
+    it never suppresses or alters the HarnessError that follows it.
+    """
+    failure_class, stage_token = staged_handshake_check.classify_failure_message(reason)
+    if not stage_token:
+        # classify_failure_message found no stage token in the reason text
+        # itself; fall back to the stage the harness was actually executing
+        # when it raised, e.g. "stage-04-burden-execution-act" -> "04".
+        fallback_match = re.match(r"stage-(0[1-8])-", stage_id)
+        stage_token = fallback_match.group(1) if fallback_match else "01"
+        if failure_class == staged_handshake_check.FAILURE_CLASS_UNCLASSIFIED:
+            failure_class = staged_handshake_check.STAGE_NUMBER_FAILURE_CLASS.get(
+                stage_token, staged_handshake_check.FAILURE_CLASS_UNCLASSIFIED
+            )
+    downstream = [token for token in ("02", "03", "04", "05", "06", "07", "08") if token > stage_token]
+    requires_model_rerun = failure_class in staged_handshake_check.MODEL_RERUN_FAILURE_CLASSES
+    diagnostic = {
+        "stage": stage_token,
+        "failure_class": failure_class,
+        "earliest_stage": stage_token,
+        "downstream_invalidated": downstream,
+        "requires_model_rerun": requires_model_rerun,
+        "repair_lane": (
+            "model-observed"
+            if requires_model_rerun
+            else "no-model fixture/checker/runtime-contract repair"
+        ),
+    }
+    print(f"EXPLAIN-STAGE-FAILURE: {json.dumps(diagnostic, sort_keys=True)}")
 
 
 def rel(path: Path, root: Path = ROOT) -> str:
@@ -16648,9 +16691,15 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 payload = extract_json_object(response_path.read_text(encoding="utf-8", errors="replace"))
                 stage = normalized_stage(stage_id, payload)
                 if stage.get("status") == "fail":
-                    raise HarnessError(f"{stage_id}: model returned fail: {stage.get('error')}")
+                    stage_fail_reason = f"{stage_id}: model returned fail: {stage.get('error')}"
+                    emit_explain_stage_failure(stage_id, stage_fail_reason)
+                    raise HarnessError(stage_fail_reason)
                 stages.append(stage)
-                validate_incremental_handoffs(stages)
+                try:
+                    validate_incremental_handoffs(stages)
+                except HarnessError as handoff_exc:
+                    emit_explain_stage_failure(stage_id, str(handoff_exc))
+                    raise
                 write_json(records_dir / f"{stage_id}.stage.json", stage)
                 write_state_capsule(
                     case_id=args.case_name,
