@@ -1022,30 +1022,48 @@ COMPLIANCE_UPTAKE_RE = re.compile(
 # occurrence flags (see compliance_side_success_present). The former logical-scope carve-out
 # ("the argument/predicate cannot deny X unless built into P") was removed because its subject
 # parser laundered self-asserted person concessions; such prose now over-flags (accepted), and
-# no real fixture/smoke output emits it.
-COMPLIANCE_CONCESSION_RE = re.compile(r"(?i)\bcannot\s+(?:deny|resist|avoid\s+conceding)\b")
+# no real fixture/smoke output emits it. The verb may be wrapped in emphasis/quote characters
+# ("cannot *deny*", "cannot \"deny\"", "cannot _deny_") -- these are tolerated so formatting the
+# verb cannot smuggle a concession past the match.
+_CONCESSION_EMPH = r"[\"'*_“”‘’«»`~]*"
+COMPLIANCE_CONCESSION_RE = re.compile(
+    r"(?i)\bcannot\s+" + _CONCESSION_EMPH + r"\s*"
+    r"(?:deny|resist|avoid\s+" + _CONCESSION_EMPH + r"\s*conceding)"
+    # trailing boundary that tolerates emphasis/quote wrappers (underscore is a \w char, so a
+    # plain \b would miss "cannot _deny_"): the verb must not be immediately followed by a letter.
+    r"(?![a-zA-Z])"
+)
 # A governing prohibition/negation in the same clause turns an uptake phrase into
 # an ANTI-uptake directive ("Do not promise that the interlocutor will accept ...",
 # "must not claim that the audience will now accept ...") -- the safety-correct
 # stance the guard exists to protect, which must NOT flag. This is a negative guard,
 # not a person allowlist; direct affirmative uptake claims (no governing prohibition)
 # still flag.
-# A prohibition governs the uptake only when a negation is attached to a
-# COMMITMENT verb (do not PROMISE / must not CLAIM that ...). Requiring the
-# commitment verb keeps a litotes ("It is not SURPRISING that X will accept")
-# or a contrastive affirmation ("not merely HOPE but demonstrate that X will
-# accept") -- both direct uptake claims -- flagging.
+# A prohibition exempts an uptake claim ONLY when a VERBAL negation ("do not / must not /
+# never / can't") is attached to a COMMITMENT verb that DIRECTLY governs the uptake phrase:
+# the negated commitment verb must sit immediately before the uptake (via optional "that" +
+# the uptake subject's determiner), with NO intervening main verb or clause. The pattern is
+# anchored with \s*$ so it must end at the uptake phrase (checked against _clause_before).
+# This forbids the laundering channels a review found:
+#   * a stray prohibition modifying a DIFFERENT noun ("the demonstration I never claim to
+#     guarantee MAKES the interlocutor now accept ...") -- "makes" is a separate main verb, so
+#     the negated verb does not directly govern the uptake -> flag;
+#   * a litotes with a commitment-verb NOUN ("It is NO empty promise that X will accept") --
+#     "no" is not a verbal negation ("not/never/n't") -> flag;
+#   * a litotes with a non-commitment word ("It is NOT surprising that X will accept") -> flag;
+#   * a contrastive intensifier ("not merely/only claim ... but demonstrate") -> flag.
+# Only the canonical explicit directive ("do not promise/claim THAT X will accept") suppresses.
 UPTAKE_PROHIBITION_RE = re.compile(
-    r"(?i)\b(?:not|never|n['’]t|no|refuse[sd]?|avoid(?:s|ed|ing)?|forbid(?:s|den|ding)?|"
-    r"prohibit(?:s|ed|ing)?|disallow(?:s|ed|ing)?)\b"
-    # A contrastive intensifier ("not merely/only/just claim ... BUT demonstrate")
-    # is an affirmation of the uptake, not a prohibition -> do not treat as a guard.
-    r"(?!\s+(?:merely|only|just|simply|solely|alone))"
-    r"[^.!?;:\n]{0,30}?\b(?:promise|promising|claim|claiming|guarantee|guaranteeing|"
-    r"assert|asserting|say|saying|state|stating|pretend|pretending|declare|declaring|"
-    r"insist|insisting|ensure|ensuring|certify|certifying|warrant|warranting|"
-    r"maintain|maintaining|suggest|suggesting|imply|implying|assume|assuming|"
-    r"conclude|concluding|represent|representing)\b"
+    r"(?i)(?:\b(?:do|does|did|will|would|shall|should|must|can|could|may|might|need)\s+)?"
+    r"\b(?:not|never|n['’]t)\s+"
+    r"(?!(?:merely|only|just|simply|solely|alone)\b)"
+    r"(?:promise|claim|guarantee|assert|say|state|pretend|declare|insist|ensure|certify|"
+    r"warrant|maintain|vow|pledge|hold)(?:s|es|ed|ing)?\s+"
+    # The uptake MUST be the that-complement of the negated commitment verb: require "that"
+    # (not "to"), then at most a short subject noun-phrase before the uptake phrase (the end
+    # of _clause_before). "never claim TO guarantee makes X accept" has no "that" -> flag;
+    # "must not claim THAT the audience will now accept" keeps "that the audience will" -> ok.
+    r"that\s+(?:[\w'’-]+\s+){0,4}?$"
 )
 # NOTE: the report/disown-frame exemption (CONCESSION_REPORTING_FRAME_RE / CONCESSION_DISOWN_RE)
 # and the logical-scope subject-head exemption (ARG_SUBJECT_TERMS + the subject-parser regexes
@@ -1513,6 +1531,20 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         # UPTAKE-PROHIBITION SPANNING (guard A): a prohibition governing a DIFFERENT prior
         # clause, joined by "and"/comma, must not suppress a separately-asserted uptake claim.
         "Do not promise victory and the interlocutor will accept the answer.",
+        # GUARD-A relative-clause / main-verb spanning (seventh review round): a prohibition in a
+        # relative clause modifying a DIFFERENT noun ("... I never claim to guarantee MAKES ...")
+        # does not directly govern the uptake (no "that"-complement) -> flag.
+        "The demonstration I never claim to guarantee makes the interlocutor now accept the answer.",
+        "A result we never promise to deliver makes the interlocutor now see the truth.",
+        # GUARD-A litotes with a commitment-verb NOUN ("no empty promise that ...") -> flag.
+        "It is no empty promise that the interlocutor will accept the claim.",
+        "It is no false guarantee that the interlocutor will now accept the truth.",
+        # EMPHASIS/QUOTE-WRAPPED concession verb must still flag (formatting cannot smuggle a
+        # concession past COMPLIANCE_CONCESSION_RE).
+        "The skeptic cannot *deny* the evidence I laid out.",
+        "The skeptic cannot _deny_ the proven result.",
+        "The skeptic cannot “deny” the evidence; my proof settles it.",
+        "The doubter cannot “avoid conceding” the point I proved.",
         # REPORT/DISOWN EXEMPTION REMOVED (adversarial-review round 5): a report/disown frame
         # reaching the concession across an em-dash, subordinator, or linking verb, or governing
         # a different subject, no longer suppresses. These are self-asserted uptake and flag.
