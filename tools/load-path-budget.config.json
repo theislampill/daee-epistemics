@@ -5,16 +5,16 @@
     "calibration": {
       "date": "2026-07-06",
       "tokenizer": "tiktoken o200k_base",
-      "note": "bytes/4 OVERestimates real o200k_base tokens by ~11% on this corpus (ratio real/est = 0.8932 overall); conservative for gating. Full instructed load = 268,871 real tokens, still exceeding a 200k window.",
+      "note": "bytes/4 OVERestimates real o200k_base tokens by ~11% on this corpus (ratio real/est = 0.8932 overall pre-Slice-B); conservative for gating. Pre-Slice-B full instructed load = 268,871 real tokens, still exceeding a 200k window. Slice B wave 1 (this baseline) shrank skill/SKILL.md from 216,112 to 110,797 bytes by replacing the inlined full non-droppable-manual-contract.md with a hot manual-contract-digest.md plus a cold-law-manifest.json binding digest clauses back to the full cold contract by sha256; per-bundle rows are unaffected by this slice.",
       "surfaces": [
-        {"surface": "skill/SKILL.md", "bytes": 216112, "est_tok": 54028, "real_tok": 52041, "ratio": 0.9632},
+        {"surface": "skill/SKILL.md", "bytes": 110797, "est_tok": 27699, "real_tok": null, "ratio": null, "_note": "Slice B wave 1: shrunk from 216112 bytes / 54028 est_tok; real_tok not remeasured this slice"},
         {"surface": "skill/references/runtime-foundation.md", "bytes": 103208, "est_tok": 25802, "real_tok": 23477, "ratio": 0.9099},
         {"surface": "skill/references/runtime-diagnostic-core.md", "bytes": 122746, "est_tok": 30686, "real_tok": 27123, "ratio": 0.8839},
         {"surface": "skill/references/runtime-phase2-passes.md", "bytes": 48639, "est_tok": 12159, "real_tok": 10377, "ratio": 0.8534},
         {"surface": "skill/references/runtime-dispatch-gate.md", "bytes": 446879, "est_tok": 111719, "real_tok": 95607, "ratio": 0.8558},
         {"surface": "skill/references/runtime-output-governance.md", "bytes": 266571, "est_tok": 66642, "real_tok": 60246, "ratio": 0.9040}
       ],
-      "total": {"bytes": 1204155, "est_tok": 301036, "real_tok": 268871, "ratio": 0.8932}
+      "total": {"bytes": 1098840, "est_tok": 274707, "real_tok": null, "ratio": null, "_note": "Slice B wave 1: total shrank from 1204155 bytes / 301036 est_tok because skill-md-only shrank; real_tok not remeasured this slice"}
     }
   },
   "ratchet": {
@@ -23,18 +23,19 @@
     "aggregate_tolerance_pct": 1.0,
     "_comment_aggregate_tolerance": "total-hot-surfaces (the aggregate ratchet row) is gated at this strictly tighter tolerance than tolerance_pct. If it used the same tolerance_pct as per-row checks, growth spread evenly across every per-row surface (each individually still within tolerance_pct) would also land inside tolerance_pct in aggregate, defeating the point of an aggregate check.",
     "baseline_date": "2026-07-06",
-    "baseline_ref": "codex/v0.4.6.0-runtime-footprint post-resolver-fix",
+    "baseline_ref": "codex/v0.4.6.0-runtime-footprint Slice B wave 1: non-droppable-manual-contract digest+cold-law-manifest reduction",
+    "_comment_slice_b": "skill-md-only, five-bundle-substantive, always-load-bundles, structural-diagnosis-floor, and total-hot-surfaces are lowered in this change to the newly measured post-reduction values. The compiled root skill/SKILL.md dropped from 216112 to 110797 bytes (54028 to 27699 est_tok) by replacing the inlined full non-droppable-manual-contract.md with a compact manual-contract-digest.md; the full contract now ships cold under skill/references/rubrics/ and is bound back to the digest by skill/cold-law-manifest.json (sha256 per clause). This is a deliberate ratchet-baseline reduction, not banked headroom: per-bundle rows are unchanged.",
     "baseline": {
-      "skill-md-only": {"bytes": 216112, "est_tok": 54028},
+      "skill-md-only": {"bytes": 110797, "est_tok": 27699},
       "per-bundle:skill/references/runtime-diagnostic-core.md": {"bytes": 122746, "est_tok": 30686},
       "per-bundle:skill/references/runtime-dispatch-gate.md": {"bytes": 446879, "est_tok": 111719},
       "per-bundle:skill/references/runtime-foundation.md": {"bytes": 103208, "est_tok": 25802},
       "per-bundle:skill/references/runtime-output-governance.md": {"bytes": 266571, "est_tok": 66642},
       "per-bundle:skill/references/runtime-phase2-passes.md": {"bytes": 48639, "est_tok": 12159},
-      "five-bundle-substantive": {"bytes": 1204155, "est_tok": 301038},
-      "total-hot-surfaces": {"bytes": 1204155, "est_tok": 301038},
-      "always-load-bundles": {"bytes": 319320, "est_tok": 79830},
-      "structural-diagnosis-floor": {"bytes": 442066, "est_tok": 110516}
+      "five-bundle-substantive": {"bytes": 1098840, "est_tok": 274710},
+      "total-hot-surfaces": {"bytes": 1098840, "est_tok": 274710},
+      "always-load-bundles": {"bytes": 214005, "est_tok": 53501},
+      "structural-diagnosis-floor": {"bytes": 336751, "est_tok": 84187}
     }
   },
   "aspirational": {

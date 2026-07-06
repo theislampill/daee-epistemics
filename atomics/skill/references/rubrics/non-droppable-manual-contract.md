@@ -10,6 +10,7 @@ routing_effects:
 catalogue_registered: false
 ---
 
+<!-- COLD-LAW-CLAUSE: clause.preamble-size-partial -->
 # NON-DROPPABLE DEFAULT MANUAL CONTRACT
 
 For hard noetic, source-worldview, named-authority, or multi-burden manual/default output,
@@ -39,13 +40,17 @@ standalone status note: it still begins with the canonical banner, Layer A, Laye
 currently released burden body, `Land(...)` or `Land(...): PARTIAL`, `[Mid-Reread Pressure]`,
 Closure/Reconstruction Witness, and final `field_witness`. Never output only `PARTIAL / execution
 surface too small`.
+<!-- END-COLD-LAW-CLAUSE: clause.preamble-size-partial -->
 
+<!-- COLD-LAW-CLAUSE: clause.banner -->
 1. The first nonblank visible line is exactly `daee-epistemics — NOETIC FIELD EXECUTION`, then
    `Layer A - Compact DSL/IR Header`. After the Layer A header and before the first burden, print
    the literal public heading `## Layer B — Bounded Governed Response`. Do not start `Burden 1`,
    `Layer B - Governed Operation Body`, or public prose directly after Layer A; missing this
    heading is a default-render failure. Do not draw an ASCII box, do not wrap the banner in
    separators, and do not replace the em dash with `->`, `-`, or `--`.
+<!-- END-COLD-LAW-CLAUSE: clause.banner -->
+<!-- COLD-LAW-CLAUSE: clause.layer-a-ledger -->
 2. In the first Layer A header and Closure/Reconstruction Witness, print:
    `𝔅_LA (B_LA) = {{...}}`, `𝔅_MRP (B_MRP) = {{...}}`, and
    `𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP`; also print `Initial burden set: [...]` before the
@@ -65,6 +70,8 @@ surface too small`.
    `next_burden` and `owner_route`; for generated resultants include `generated_by`. This object
    is not proof by itself: it must agree with the visible Land/R(H,Delta)/MRP block, graph edge,
    owner route, Closure/Reconstruction Witness, and body-backed ACT route.
+<!-- END-COLD-LAW-CLAUSE: clause.layer-a-ledger -->
+<!-- COLD-LAW-CLAUSE: clause.concealment-mode -->
 3. Layer A `Concealment mode:` must name a source-owned mode first (`irad`, `juhud`, `inkar`,
    `istikbar`, `nifaq`, or `mixed`) or a sincere clarification/shubhah pressure path; loose
    glosses such as `framework-concealed` are secondary only, and the line preserves the boundary
@@ -75,6 +82,8 @@ surface too small`.
    token until MRP actually generates it. Do not write lines like `³B ... possible post-land` in
    `held:`; the concrete generated token belongs only in the MRP resultant, generated heading,
    Closure Witness, and `field_witness` after `generated_burden_instantiation`.
+<!-- END-COLD-LAW-CLAUSE: clause.concealment-mode -->
+<!-- COLD-LAW-CLAUSE: clause.canonical-notation -->
 4. Prefer canonical public notation with real owner IDs, not placeholders:
    `¹B`, `²B`, `¹B₁[M9]`, `¹B₂[source-status-repair]`, `Land(¹B)`, `MRP(¹B)`.
    ASCII forms such as `B1` and `B1_1[M9]` are aliases only; do not let them replace the
@@ -109,6 +118,8 @@ surface too small`.
    The ledger symbol is exactly `𝔅` U+1D505, as in `𝔅_LA`; never write script `𝓑`
    U+1D4D1. The closure symbol is exactly `𝒞` U+1D49E, as in `𝒞(Ψᴺ)`; never write
    script `𝓒` U+1D4D2.
+<!-- END-COLD-LAW-CLAUSE: clause.canonical-notation -->
+<!-- COLD-LAW-CLAUSE: clause.mrp-block-grammar -->
 5. After every landed routed burden, render `[Mid-Reread Pressure]` inside `R(H,Δ)` with literal
    `Route-gradient:`, `Finding:`, `MRP route result type:`, `MRP resultant:`, and `Graph delta:`
    fields. `Finding:` is the parseable license for graph movement and uses one of:
@@ -148,6 +159,8 @@ surface too small`.
    the matching `field_witness.mrp_resultants[].graph` must say `none` / no new graph edge. Do not
    restate a prior edge with phrases like `graph unchanged after ⁴B → ⁵B`; that creates a false
    visible graph edge and breaks witness agreement.
+<!-- END-COLD-LAW-CLAUSE: clause.mrp-block-grammar -->
+<!-- COLD-LAW-CLAUSE: clause.held-burden-activation -->
 6. `held_burden_activation` routes to an already-present `𝔅_LA` burden and does not expand the
    ledger. `generated_burden_instantiation` adds a non-baseline `𝔅_MRP` burden absent from
    `𝔅_LA`; the generated heading carries concrete provenance such as
@@ -160,6 +173,8 @@ surface too small`.
    Generated instantiation `Route-gradient:` must name the newly generated pressure, its absence
    from `B_LA`, and the canonical `ΔⁿB` change that made it live. Generic arrows such as
    `grammar-pressure -> predication-pressure` do not satisfy route-gradient proof.
+<!-- END-COLD-LAW-CLAUSE: clause.held-burden-activation -->
+<!-- COLD-LAW-CLAUSE: clause.owner-ttp-route -->
 7. Every burden card, baseline or generated, prints `Matched owner/TTP route: [M9, ...]` with
    compact source-owned owner tokens, then `#### Layer B - Governed Operation Body` before
    submoves. Do not print submoves directly after the burden heading.
@@ -438,6 +453,8 @@ surface too small`.
    body performs those catalogue-owned operations locally. If the burden is only
    predication/category repair, use `M9`; if it is source ordering or hidden support, use
    `source-status-repair` or `authority-order-repair`; if it is scope/stop discipline, use `P7`.
+<!-- END-COLD-LAW-CLAUSE: clause.owner-ttp-route -->
+<!-- COLD-LAW-CLAUSE: clause.no-burden-shrink -->
 8. Do not shrink `𝔅_LA` to force generation. Multi-anchor prompts keep input-present burdens in
    `𝔅_LA`; MRP may add only a further post-land pressure.
    In hard/manual graphable proof, a final broad-system, doctrine-immunity, proof-carousel,
@@ -462,6 +479,8 @@ surface too small`.
      boundary/recoil burden such as `⁵B [generated-by: MRP(⁴B)]`, or classify the
      route as HOLD/PARTIAL/non-load-bearing with an explicit reason. Do not absorb
      that post-land recoil into `⁴B` and then claim `no_new_resultant`.
+<!-- END-COLD-LAW-CLAUSE: clause.no-burden-shrink -->
+<!-- COLD-LAW-CLAUSE: clause.proof-tail-order -->
 9. Proof-tail order is fixed: Restorative Response -> Closing Formulation ->
     Closure/Reconstruction Witness -> field_witness. The closure witness begins with literal
    `Initial burden set: [...]`, then prints `∇·B:`, `∇×κ:`, `𝒞(Ψᴺ):`, and
@@ -544,6 +563,8 @@ surface too small`.
    let the Closure/Reconstruction Witness swallow the public final formulation.
    Visually similar glyphs are invalid: `𝓑_LA` is not `𝔅_LA`, and `𝓒(Ψᴺ)` is not
    `𝒞(Ψᴺ)`. If those substitutes appear in a draft, revise them before final.
+<!-- END-COLD-LAW-CLAUSE: clause.proof-tail-order -->
+<!-- COLD-LAW-CLAUSE: clause.field-witness-spec -->
 10. `field_witness` is required for normal governed output so Output Grapher can graph every
    complete daee-epistemics answer without guessing from prose. Closure/Reconstruction Witness is
    the human-readable proof ledger; field_witness is the machine-readable graph/reconstruction payload. The public answer remains first;
@@ -745,7 +766,9 @@ reopenable, R(H,Delta) after that burden must either generate the next B_MRP nod
 and work it, or route HOLD/PARTIAL/non-load-bearing with a stated reason. Do not
 emit `MRP route result type: no_new_resultant` while also using those reopenable
 pressures as the closure boundary.
+<!-- END-COLD-LAW-CLAUSE: clause.field-witness-spec -->
 
+<!-- COLD-LAW-CLAUSE: clause.execution-mandate-detail -->
 # EXECUTION MANDATE - DEFAULT MODE
 
 Default mode suppresses raw visible IR but does not suppress recursive execution.
@@ -1538,7 +1561,9 @@ If no transition marker appears while moving between live burdens, the skill has
 executed; it has been summarized.
 
 Rewrite before emitting.
+<!-- END-COLD-LAW-CLAUSE: clause.execution-mandate-detail -->
 
+<!-- COLD-LAW-CLAUSE: clause.output-surface-invariant -->
 # Default Output Surface Invariant
 
 For plain `/daee-epistemics`, internal governance is mandatory and default visibly prints
@@ -1651,6 +1676,7 @@ the trigger is absent, blocked, or underdetermined.
 
 Full diagnostic blocks belong to `/daee-epistemics:dsl` or internal/development audit,
 not default mode. Compact Layer A fields are mandatory in default mode.
+<!-- END-COLD-LAW-CLAUSE: clause.output-surface-invariant -->
 
 # Compiled Runtime Routing Addendum
 

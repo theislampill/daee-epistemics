@@ -14,6 +14,7 @@ CANONICAL_PACKAGE_ROOT_ENTRIES = {
     "references",
     "compiled-module-map.json",
     "build-manifest.json",
+    "cold-law-manifest.json",
 }
 
 CANONICAL_REQUIRED_ROOT_ENTRIES = {
@@ -22,6 +23,7 @@ CANONICAL_REQUIRED_ROOT_ENTRIES = {
     "references",
     "compiled-module-map.json",
     "build-manifest.json",
+    "cold-law-manifest.json",
 }
 
 DEV_ONLY_ROOT_ENTRIES = {
