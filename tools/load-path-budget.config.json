@@ -20,6 +20,8 @@
   "ratchet": {
     "enabled": true,
     "tolerance_pct": 2.0,
+    "aggregate_tolerance_pct": 1.0,
+    "_comment_aggregate_tolerance": "total-hot-surfaces (the aggregate ratchet row) is gated at this strictly tighter tolerance than tolerance_pct. If it used the same tolerance_pct as per-row checks, growth spread evenly across every per-row surface (each individually still within tolerance_pct) would also land inside tolerance_pct in aggregate, defeating the point of an aggregate check.",
     "baseline_date": "2026-07-06",
     "baseline_ref": "codex/v0.4.6.0-runtime-footprint post-resolver-fix",
     "baseline": {
@@ -30,6 +32,7 @@
       "per-bundle:skill/references/runtime-output-governance.md": {"bytes": 266571, "est_tok": 66642},
       "per-bundle:skill/references/runtime-phase2-passes.md": {"bytes": 48639, "est_tok": 12159},
       "five-bundle-substantive": {"bytes": 1204155, "est_tok": 301038},
+      "total-hot-surfaces": {"bytes": 1204155, "est_tok": 301038},
       "always-load-bundles": {"bytes": 319320, "est_tok": 79830},
       "structural-diagnosis-floor": {"bytes": 442066, "est_tok": 110516}
     }

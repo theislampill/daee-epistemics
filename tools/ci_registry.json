@@ -176,6 +176,9 @@
       "class": "sample-suite",
       "owner_adjudication": "pending"
     },
+    "check_prompt_pack_budget.py": {
+      "class": "required"
+    },
     "check_public_burden_grouping.py": {
       "class": "required"
     },

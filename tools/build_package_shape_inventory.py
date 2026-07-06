@@ -138,7 +138,7 @@ def classify(rel_from_skill: str, load_path_items: list[str]) -> tuple[str, str]
             if basename in ROUTE_WARM_LOAD_PATH_BASENAMES:
                 return "route-warm", "skill/SKILL.md: \"Run the mandatory Phase 2 passes listed above.\" (conditional Phase-2 pass, not every substantive case)"
             return "prompt-hot", "skill/SKILL.md: \"Load path for substantive cases\" numbered list"
-        return "route-warm", "skill/SKILL.md: references/ file outside the substantive-case load path and outside the omnibus/case-library/profiles cold-law prefixes; loaded conditionally by route"
+        return "route-warm", "DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually"
 
     # Anything else shipped under skill/ that isn't covered above.
     return "route-warm", "unclassified-by-anchor shipped file; defaulted to route-warm pending an explicit SKILL.md anchor"
@@ -300,6 +300,86 @@ def self_test() -> int:
     )
 
     checks.append(("at least one cold-law file found", any(r["class"] == "cold-law" for r in rows)))
+
+    # FIX 5 canary: the fallback classify() branch for references/ files
+    # outside all known anchors must use the honest "DEFAULTED route-warm"
+    # wording (never a confident-sounding claim like "loaded conditionally by
+    # route"), while still classifying the file as route-warm.
+    defaulted_rows = [r for r in rows if "DEFAULTED route-warm" in r["evidence"]]
+    checks.append(
+        (
+            "fallback classify() branch uses honest 'DEFAULTED route-warm' anchor wording",
+            all(r["class"] == "route-warm" for r in defaulted_rows),
+        )
+    )
+    checks.append(
+        (
+            "no shipped row uses the old confident-sounding 'loaded conditionally by route' fallback wording",
+            not any("loaded conditionally by route" in r["evidence"] for r in rows),
+        )
+    )
+
+    # FIX 4: cross-tool hot-set consistency. measure_load_path_budget.py
+    # resolves "always-load" and "structural-diagnosis-floor" bundle files
+    # from skill/SKILL.md's Always Load + Mandatory Diagnostic Core tables
+    # via compiled-module-map.json. Those are exactly the bundles this
+    # inventory's own classify() should treat as host-hot/prompt-hot -- if
+    # this inventory ever classified one of them route-warm or cold-law, the
+    # two tools would disagree about what is "hot", which is the whole gap
+    # this check closes. Import is path-safe: measure_load_path_budget.py
+    # lives in this same tools/ directory, so it is imported by inserting
+    # this file's directory onto sys.path (matching how this script itself
+    # is normally invoked as `python tools/build_package_shape_inventory.py`,
+    # i.e. with tools/ importable) rather than assuming a package prefix.
+    tools_dir = str(Path(__file__).resolve().parent)
+    _sys_path_inserted = tools_dir not in sys.path
+    if _sys_path_inserted:
+        sys.path.insert(0, tools_dir)
+    try:
+        import measure_load_path_budget as _mlpb
+
+        _skill_text = _mlpb.SKILL_MD.read_text(encoding="utf-8")
+        _al_bundles, _al_unresolved = _mlpb.always_load_bundles(_skill_text)
+        _sd_bundles, _sd_unresolved = _mlpb.structural_diagnosis_bundles(_skill_text)
+        checks.append(
+            (
+                "cross-tool: always-load + structural-diagnosis-floor bundles resolve with 0 unresolved entries",
+                len(_al_unresolved) == 0 and len(_sd_unresolved) == 0,
+            )
+        )
+
+        _rows_by_file = {r["file"]: r for r in rows}
+        _floor_bundle_paths = sorted(set(_al_bundles) | set(_sd_bundles))
+        _hot_classes = {"host-hot", "prompt-hot"}
+        _floor_bundles_not_hot: list[str] = []
+        _floor_bundles_not_shipped: list[str] = []
+        for _bundle_path in _floor_bundle_paths:
+            _rel_from_skill = _bundle_path.relative_to(root / "skill").as_posix()
+            _shipped_key = f"skill/{_rel_from_skill}"
+            _row = _rows_by_file.get(_shipped_key)
+            if _row is None:
+                # A resolved always-load/diagnostic-core floor bundle that
+                # does not appear in the shipped-file set at all is itself a
+                # FAIL: floor content must ship, full stop.
+                _floor_bundles_not_shipped.append(_shipped_key)
+                continue
+            if _row["class"] not in _hot_classes:
+                _floor_bundles_not_hot.append(f"{_shipped_key} (classified {_row['class']!r})")
+        checks.append(
+            (
+                "cross-tool: every resolved always-load/diagnostic-core floor bundle ships in the package",
+                len(_floor_bundles_not_shipped) == 0,
+            )
+        )
+        checks.append(
+            (
+                "cross-tool: every resolved always-load/diagnostic-core floor bundle is classified host-hot or prompt-hot (never route-warm/cold-law)",
+                len(_floor_bundles_not_hot) == 0,
+            )
+        )
+    finally:
+        if _sys_path_inserted:
+            sys.path.remove(tools_dir)
 
     # Synthetic drift detection: mutate the rendered doc and confirm --check's
     # comparison would catch it (exercised in-process, not via subprocess).

@@ -39,6 +39,7 @@ import argparse
 import copy
 import glob
 import json
+import math
 import re
 import sys
 import tempfile
@@ -55,6 +56,14 @@ DEFAULT_CONFIG = ROOT / "tools" / "load-path-budget.config.json"
 # ratchet. Retained-output size is expected to grow as the proof corpus
 # accumulates larger, still-valid cases; see the config's _comment_exclusions.
 EXEMPT_ROW = "largest-retained-output"
+
+# Row name of the synthetic AGGREGATE ratchet row: skill-md-only bytes + the
+# sum of bytes of all five per-bundle rows. It is baselined and gated like
+# any other row, but at a strictly tighter tolerance than individual rows
+# (see check_ratchet's AGGREGATE_ROW handling) so growth spread thinly across
+# every per-row surface cannot dodge the ratchet just because each row on its
+# own stays under tolerance_pct.
+AGGREGATE_ROW = "total-hot-surfaces"
 
 
 def metrics(paths: list[Path]) -> tuple[int, int, int]:
@@ -219,6 +228,19 @@ def build_rows() -> list[tuple[str, str, int, int, int]]:
     b, l, t = metrics([SKILL_MD, *bnds])
     rows.append(("five-bundle-substantive", f"SKILL.md + {len(bnds)} bundles", b, l, t))
 
+    # total-hot-surfaces: a synthetic AGGREGATE ratchet row = sum of bytes of
+    # skill-md-only + all five per-bundle rows. This is deliberately the same
+    # byte total as five-bundle-substantive (both sum SKILL.md + the five
+    # runtime-*.md bundles), but it exists as its OWN independently baselined
+    # ratchet key so that growth spread thinly across every per-row entry
+    # (each individually under the per-row tolerance) still gets caught in
+    # aggregate. Per-row ratcheting alone allows a small percentage of growth
+    # smuggled into each of the 6 rows to add up to a much larger total
+    # regression that no single row's check would flag; this row closes that
+    # gap. It intentionally excludes largest-retained-output (never part of
+    # the "hot" load-path surface; see EXEMPT_ROW).
+    rows.append((AGGREGATE_ROW, "skill-md-only + 5 per-bundle rows (sum of bytes)", b, l, t))
+
     al_bundles, unresolved = always_load_bundles(skill_text)
     detail = f"SKILL.md + {len(al_bundles)} always-load bundles"
     if unresolved:
@@ -276,12 +298,31 @@ def check_ratchet(rows: list[tuple[str, str, int, int, int]], config: dict) -> t
         measurement surface is itself a regression -- it means the load path
         it described no longer exists or is no longer being measured).
       - A row present in both fails if measured bytes exceed
-        baseline bytes * (1 + tolerance_pct/100).
+        baseline bytes * (1 + <row_tolerance_pct>/100), where <row_tolerance_pct>
+        is ratchet.aggregate_tolerance_pct for the AGGREGATE_ROW key and
+        ratchet.tolerance_pct for every other row. The aggregate row uses a
+        strictly tighter tolerance than the per-row tolerance on purpose: if
+        it used the same tolerance_pct, growth spread evenly across every
+        per-row surface (each individually still within tolerance_pct) would
+        also land the aggregate within tolerance_pct, defeating the point of
+        having an aggregate check at all. A tighter aggregate tolerance means
+        that even growth kept under tolerance_pct on every individual row
+        still trips the aggregate once it is spread across enough rows.
+      - Anti-baseline-banking: a row present in both ALSO fails if the
+        baseline bytes value exceeds measured*(1+<row_tolerance_pct>/100). A
+        baseline raised above current reality "banks" headroom that lets
+        future growth hide inside the gap between baseline and measured,
+        so the baseline is only allowed to sit within tolerance of the
+        live measurement in either direction, never comfortably above it.
 
     Returns (ok, failure_messages).
     """
     ratchet = config.get("ratchet", {})
     tolerance_pct = ratchet.get("tolerance_pct", 0.0)
+    # The aggregate row is deliberately gated tighter than individual rows;
+    # see the FIX 1 rationale above. Defaults to half of tolerance_pct if the
+    # config does not set it explicitly.
+    aggregate_tolerance_pct = ratchet.get("aggregate_tolerance_pct", tolerance_pct / 2.0)
     baseline = dict(ratchet.get("baseline", {}))
 
     live_keys: dict[str, tuple[int, int]] = {}
@@ -303,13 +344,21 @@ def check_ratchet(rows: list[tuple[str, str, int, int, int]], config: dict) -> t
                 f"ratchet.baseline. Add a baseline entry (see tools/load-path-budget.config.json)."
             )
             continue
+        row_tolerance_pct = aggregate_tolerance_pct if key == AGGREGATE_ROW else tolerance_pct
         baseline_bytes = baseline[key].get("bytes")
-        allowed_bytes = baseline_bytes * (1 + tolerance_pct / 100.0)
+        allowed_bytes = baseline_bytes * (1 + row_tolerance_pct / 100.0)
         if measured_bytes > allowed_bytes:
             failures.append(
                 f"ratchet regression: row '{key}' measured bytes={measured_bytes} exceeds "
-                f"baseline bytes={baseline_bytes} + tolerance {tolerance_pct}% "
+                f"baseline bytes={baseline_bytes} + tolerance {row_tolerance_pct}% "
                 f"(allowed<={allowed_bytes:.0f})."
+            )
+        allowed_baseline_bytes = measured_bytes * (1 + row_tolerance_pct / 100.0)
+        if baseline_bytes > allowed_baseline_bytes:
+            failures.append(
+                f"baseline exceeds measured surface (banked headroom); lower baseline to measured "
+                f"(row '{key}': baseline bytes={baseline_bytes} exceeds measured bytes={measured_bytes} "
+                f"+ tolerance {row_tolerance_pct}% (allowed<={allowed_baseline_bytes:.0f}))."
             )
 
     for key in baseline:
@@ -396,6 +445,43 @@ def self_test() -> int:
     checks.append(("always-load resolves >=1 bundle in the live repo", len(al_bundles) >= 1))
     checks.append(("always-load has 0 unresolved entries in the live repo", len(al_unresolved) == 0))
 
+    # Per-file coverage canary (FIX 2): a bundle-granularity check can miss a
+    # single dropped or reformatted table row inside SKILL.md's "### Always
+    # Load" / "### Mandatory Diagnostic Core" tables, because several files
+    # can resolve to the same bundle. Assert the exact file lists, not just
+    # bundle counts. NOTE: this hardcodes the 4 Always Load paths as of this
+    # writing -- if skill/SKILL.md's "### Always Load" table changes, update
+    # this expected list DELIBERATELY (do not loosen it to a count-only check).
+    EXPECTED_ALWAYS_LOAD_FILES = [
+        "references/terminology.md",
+        "references/case-library/INDEX.md",
+        "references/module-codes.md",
+        "references/techniques/heuristics.md",
+    ]
+    al_files = always_load_files(skill_text)
+    checks.append(
+        (
+            "always_load_files() returns exactly the 4 expected canonical paths",
+            al_files == EXPECTED_ALWAYS_LOAD_FILES,
+        )
+    )
+
+    mdc_files = mandatory_diagnostic_core_files(skill_text)
+    checks.append(
+        (
+            "mandatory_diagnostic_core_files() returns exactly 6 entries",
+            len(mdc_files) == 6,
+        )
+    )
+    canon_to_bundle_for_coverage = _load_canon_to_bundle()
+    mdc_resolved, mdc_unresolved = resolve_bundles(mdc_files, canon_to_bundle_for_coverage)
+    checks.append(
+        (
+            "mandatory_diagnostic_core_files() entries all resolve to a bundle",
+            len(mdc_files) == 6 and len(mdc_unresolved) == 0 and len(mdc_resolved) >= 1,
+        )
+    )
+
     # always-load-bundles must be strictly larger than skill-md-only (it adds
     # at least the runtime-foundation.md bundle), and structural-diagnosis-floor
     # must be strictly larger than always-load-bundles (it adds the
@@ -438,6 +524,64 @@ def self_test() -> int:
         )
     )
 
+    # (b2) FIX 1 self-test: aggregate ratchet row closes the "spread growth
+    # thinly across every row" gap. Simulate +1.9% growth on EVERY live row
+    # in-memory (each individually still under the 2% per-row tolerance, so
+    # every per-row check alone would PASS) and confirm the synthetic
+    # "total-hot-surfaces" aggregate -- built the same way build_rows() built
+    # it, from the (now inflated) per-row numbers -- FAILS the ratchet even
+    # though no single row's check fails.
+    inflated_rows = []
+    for cfg_name, detail, b, l, t in rows:
+        if cfg_name in ("five-bundle-substantive", AGGREGATE_ROW, EXEMPT_ROW):
+            # Recomputed below from the inflated skill-md-only + per-bundle
+            # rows, matching how build_rows() derives them; skip here so we
+            # don't inflate them twice.
+            inflated_rows.append((cfg_name, detail, b, l, t))
+            continue
+        # Round UP (not truncate) so each row's growth is AT LEAST +1.9%,
+        # keeping it comfortably under the 2% per-row tolerance while not
+        # losing enough via floor-rounding that the summed aggregate falls
+        # back under its own tolerance (which would defeat the point of
+        # this canary).
+        inflated_b = math.ceil(b * 1.019)
+        inflated_rows.append((cfg_name, detail, inflated_b, l, inflated_b // 4))
+    inflated_skill_and_bundles_bytes = sum(
+        b for cfg_name, _detail, b, _l, _t in inflated_rows if cfg_name in ("skill-md-only", "per-bundle")
+    )
+    inflated_rows = [
+        (cfg_name, detail, inflated_skill_and_bundles_bytes, l, inflated_skill_and_bundles_bytes // 4)
+        if cfg_name in ("five-bundle-substantive", AGGREGATE_ROW)
+        else (cfg_name, detail, b, l, t)
+        for cfg_name, detail, b, l, t in inflated_rows
+    ]
+    per_row_all_pass = True
+    for cfg_name, detail, b, l, t in inflated_rows:
+        key = row_key(cfg_name, detail)
+        if key == EXEMPT_ROW or key == AGGREGATE_ROW:
+            continue
+        baseline_entry = real_config["ratchet"]["baseline"].get(key)
+        if baseline_entry is None:
+            continue
+        allowed = baseline_entry["bytes"] * (1 + real_config["ratchet"]["tolerance_pct"] / 100.0)
+        if b > allowed:
+            per_row_all_pass = False
+    spread_ok, spread_failures = check_ratchet(inflated_rows, real_config)
+    checks.append(
+        (
+            "FIX1: +1.9% growth spread across every row still passes per-row tolerance individually",
+            per_row_all_pass,
+        )
+    )
+    checks.append(
+        (
+            f"FIX1: {AGGREGATE_ROW} aggregate ratchet FAILs the spread-growth case even though every row passes",
+            per_row_all_pass
+            and not spread_ok
+            and any(AGGREGATE_ROW in f and "ratchet regression" in f for f in spread_failures),
+        )
+    )
+
     # (c) Unbaselined-row case: drop a live row's baseline entry entirely.
     unbaselined_config = copy.deepcopy(real_config)
     del unbaselined_config["ratchet"]["baseline"]["skill-md-only"]
@@ -469,6 +613,33 @@ def self_test() -> int:
                 "missing measurement surface" in f and "synthetic-row-that-does-not-exist" in f
                 for f in missing_failures
             ),
+        )
+    )
+
+    # (c, continued, FIX 3) Anti-baseline-banking case: inflate one baseline
+    # entry far above what is currently measured, in-memory, and confirm
+    # --enforce-ratchet's check ALSO fails on "banked headroom" (not just on
+    # regressions) -- a baseline sitting comfortably above reality would let
+    # future growth hide inside that gap undetected.
+    banked_config = copy.deepcopy(real_config)
+    banked_config["ratchet"]["baseline"]["skill-md-only"]["bytes"] = (
+        real_config["ratchet"]["baseline"]["skill-md-only"]["bytes"] * 10
+    )
+    banked_ok, banked_failures = check_ratchet(rows, banked_config)
+    checks.append(
+        (
+            "FIX3: inflated baseline (banked headroom) trips 'baseline exceeds measured surface'",
+            not banked_ok
+            and any(
+                "baseline exceeds measured surface" in f and "skill-md-only" in f
+                for f in banked_failures
+            ),
+        )
+    )
+    checks.append(
+        (
+            "FIX3: the real config on disk does NOT trip 'baseline exceeds measured surface'",
+            not any("baseline exceeds measured surface" in f for f in real_failures),
         )
     )
 

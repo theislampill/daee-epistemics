@@ -6727,6 +6727,183 @@ Return only the additional text to append.
 """
 
 
+# --- Prompt-pack manifest instrumentation (additive observability only) -----
+#
+# These helpers measure an ALREADY-COMPOSED prompt string from the outside.
+# They must never alter stage_prompt()/release_section_prompt() or anything
+# those functions call; they only inspect the finished prompt text plus the
+# raw substrings that were passed into composition.
+
+PROMPT_PACK_MANIFEST_SCHEMA = "daee-prompt-pack-manifest-v1"
+PROMPT_PACK_FULL_RUNTIME_BYTES_CEILING = 150_000
+# Stage-07 section calls legitimately carry a larger prior-stage JSON blob
+# (compact_state of six prior stages plus per-section semantic contracts), so
+# the residual/prior-output boundary below is only enforced for stages other
+# than "07"; Stage-07 call sites are expected to run closer to the ceiling
+# checked separately by tools/check_prompt_pack_budget.py.
+PROMPT_PACK_PRIOR_OUTPUT_RESIDUAL_BYTES_BOUNDARY = 40_000
+PROMPT_PACK_PRIOR_OUTPUT_SUBSTRING_BYTES_FLOOR = 10_000
+
+
+def _prompt_pack_component_is_prior_output_named(name: str) -> bool:
+    lowered = name.lower()
+    return "prior-output" in lowered or "prior_output" in lowered
+
+
+def build_prompt_pack_manifest(
+    prompt: str,
+    known_parts: dict[str, str],
+    case_id: str,
+    stage: str,
+    call_index: int,
+) -> dict[str, Any]:
+    """Measure an already-composed prompt from the outside (observability only).
+
+    ``known_parts`` maps component names to the exact substrings that were fed
+    into composition (raw input text, compact_state JSON, instructions, extra
+    guidance, section role text, prior-stage JSON, etc.). This function never
+    calls into stage_prompt()/release_section_prompt() and never changes their
+    behavior; it only inspects the finished ``prompt`` string.
+    """
+    prompt_bytes = prompt.encode("utf-8")
+    total_bytes = len(prompt_bytes)
+
+    components: list[dict[str, Any]] = []
+    counted_bytes = 0
+    for name, part in known_parts.items():
+        part_text = part or ""
+        if part_text and part_text in prompt:
+            part_bytes = len(part_text.encode("utf-8"))
+        else:
+            part_bytes = 0
+        components.append({"name": name, "bytes": part_bytes, "est_tok": part_bytes // 4})
+        counted_bytes += part_bytes
+
+    component_overlap_detected = counted_bytes > total_bytes
+    residual_bytes = 0 if component_overlap_detected else (total_bytes - counted_bytes)
+    components.append(
+        {
+            "name": "frame_and_residual",
+            "bytes": residual_bytes,
+            "est_tok": residual_bytes // 4,
+        }
+    )
+
+    includes_full_runtime = total_bytes > PROMPT_PACK_FULL_RUNTIME_BYTES_CEILING
+    if not includes_full_runtime:
+        for probe in _prompt_pack_runtime_probes(ROOT):
+            if probe and probe in prompt:
+                includes_full_runtime = True
+                break
+    if not includes_full_runtime:
+        # Whitespace-normalized second pass: exact substring match is
+        # defeated by a single inserted/collapsed/duplicated whitespace
+        # character inside the probe (e.g. reformatting, a stray extra
+        # space, or a line-wrap the model introduces while echoing runtime
+        # text back). Collapse all whitespace runs to single spaces in BOTH
+        # the probe and the prompt and re-check containment, so a probe that
+        # only differs from the embedded text by whitespace shape is still
+        # caught.
+        normalized_prompt = _prompt_pack_normalize_whitespace(prompt)
+        for probe in _prompt_pack_runtime_probes(ROOT):
+            if probe and _prompt_pack_normalize_whitespace(probe) in normalized_prompt:
+                includes_full_runtime = True
+                break
+
+    includes_prior_full_output = any(
+        _prompt_pack_component_is_prior_output_named(component["name"]) and component["bytes"] > 0
+        for component in components
+    )
+    if not includes_prior_full_output and stage != "07" and residual_bytes > PROMPT_PACK_PRIOR_OUTPUT_RESIDUAL_BYTES_BOUNDARY:
+        includes_prior_full_output = True
+    if not includes_prior_full_output:
+        for name, part in known_parts.items():
+            part_text = part or ""
+            if len(part_text.encode("utf-8")) > PROMPT_PACK_PRIOR_OUTPUT_SUBSTRING_BYTES_FLOOR and part_text in prompt:
+                includes_prior_full_output = True
+                break
+
+    manifest: dict[str, Any] = {
+        "schema": PROMPT_PACK_MANIFEST_SCHEMA,
+        "case_id": case_id,
+        "stage": stage,
+        "call_index": call_index,
+        "components": components,
+        "total_bytes": total_bytes,
+        "total_est_tok": total_bytes // 4,
+        "includes_full_runtime": includes_full_runtime,
+        "includes_prior_full_output": includes_prior_full_output,
+    }
+    if component_overlap_detected:
+        manifest["component_overlap_detected"] = True
+    return manifest
+
+
+def _prompt_pack_normalize_whitespace(text: str) -> str:
+    """Collapse every run of whitespace to a single space (FIX 8).
+
+    Used only as a second-pass containment check after the exact-substring
+    probe check misses: it makes probe matching robust to a single inserted,
+    duplicated, or reformatted whitespace character, without doing any other
+    normalization (case, punctuation, and non-whitespace characters are left
+    untouched).
+    """
+    return re.sub(r"\s+", " ", text)
+
+
+def _prompt_pack_runtime_probes(root: Path) -> list[str]:
+    """Deterministic 300-char verbatim probes taken from the middle of the
+    runtime skill surface, used only to detect whether a composed prompt has
+    embedded the full runtime text. No fuzzy matching: a probe either occurs
+    verbatim in the prompt or it does not.
+    """
+    probes: list[str] = []
+    candidates = [root / "skill" / "SKILL.md"]
+    references_dir = root / "skill" / "references"
+    if references_dir.is_dir():
+        candidates.extend(sorted(references_dir.glob("runtime-*.md")))
+    for path in candidates:
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if len(text) < 300:
+            continue
+        # Fixed slice from the middle of the file: deterministic, content-address
+        # independent of unrelated header/footer edits.
+        mid = len(text) // 2
+        start = max(0, mid - 150)
+        probes.append(text[start : start + 300])
+    return probes
+
+
+def emit_prompt_pack_manifest(
+    *,
+    run_dir: Path | None,
+    prompt: str,
+    known_parts: dict[str, str],
+    case_id: str,
+    stage: str,
+    call_index: int,
+) -> None:
+    """Append one prompt-pack manifest JSON line before a model invocation.
+
+    Observability must never abort the run: if there is no run dir yet (a
+    self-test/dry path) this silently skips; any other failure is caught and
+    logged as a warning to stderr without raising.
+    """
+    if run_dir is None:
+        return
+    try:
+        manifest = build_prompt_pack_manifest(prompt, known_parts, case_id, stage, call_index)
+        manifest_path = Path(run_dir) / "prompt-pack-manifest.jsonl"
+        manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        with manifest_path.open("a", encoding="utf-8", newline="\n") as handle:
+            handle.write(json.dumps(manifest, ensure_ascii=False) + "\n")
+    except Exception as exc:  # observability must never break the run
+        print(f"warning: prompt-pack-manifest emission failed: {exc}", file=sys.stderr)
+
+
 def write_compiled_release_manifest(
     *,
     root: Path,
@@ -15225,6 +15402,133 @@ def run_self_test(root: Path) -> int:
     )
     if invalid_result.returncode == 0:
         raise HarnessError("Self-test failed to reject Stage 07 verifier_sidecars")
+
+    # --- build_prompt_pack_manifest unit cases (deterministic, no model calls) ---
+    _ppm_raw_input = "synthetic raw input text for prompt-pack manifest self-test"
+    _ppm_previous = json.dumps({"stage-01": {"status": "pass"}}, ensure_ascii=False, indent=2)
+    _ppm_instructions = "Do the synthetic stage task."
+    _ppm_prompt = (
+        f"Header line.\nRaw input:\n```text\n{_ppm_raw_input}\n```\n"
+        f"Previous:\n```json\n{_ppm_previous}\n```\nTask:\n{_ppm_instructions}\nFooter line.\n"
+    )
+    _ppm_known_parts = {
+        "raw_input_text": _ppm_raw_input,
+        "previous_stages_json": _ppm_previous,
+        "instructions": _ppm_instructions,
+        "extra_guidance": "",
+    }
+    _ppm_manifest_a = build_prompt_pack_manifest(_ppm_prompt, _ppm_known_parts, "self-test-case-a", "stage-01", 1)
+    if _ppm_manifest_a["schema"] != PROMPT_PACK_MANIFEST_SCHEMA:
+        raise HarnessError("Self-test: build_prompt_pack_manifest lost its schema tag")
+    _ppm_components_sum = sum(int(component["bytes"]) for component in _ppm_manifest_a["components"])
+    if _ppm_components_sum != _ppm_manifest_a["total_bytes"]:
+        raise HarnessError(
+            "Self-test: build_prompt_pack_manifest (a) component byte sum did not equal total_bytes"
+        )
+    if _ppm_manifest_a["includes_full_runtime"] or _ppm_manifest_a["includes_prior_full_output"]:
+        raise HarnessError("Self-test: build_prompt_pack_manifest (a) synthetic prompt raised a false flag")
+    if _ppm_manifest_a.get("component_overlap_detected"):
+        raise HarnessError("Self-test: build_prompt_pack_manifest (a) synthetic prompt falsely reported overlap")
+
+    _ppm_skill_text = read_text_if_exists(root / "skill" / "SKILL.md")
+    if len(_ppm_skill_text) < 300:
+        raise HarnessError("Self-test: skill/SKILL.md is too small to derive a 300-char runtime probe")
+    _ppm_mid = len(_ppm_skill_text) // 2
+    _ppm_probe_start = max(0, _ppm_mid - 150)
+    _ppm_runtime_probe = _ppm_skill_text[_ppm_probe_start : _ppm_probe_start + 300]
+    _ppm_prompt_with_runtime = _ppm_prompt + "\nEmbedded runtime probe:\n" + _ppm_runtime_probe + "\n"
+    _ppm_manifest_b = build_prompt_pack_manifest(_ppm_prompt_with_runtime, _ppm_known_parts, "self-test-case-b", "stage-01", 1)
+    if not _ppm_manifest_b["includes_full_runtime"]:
+        raise HarnessError(
+            "Self-test: build_prompt_pack_manifest (b) did not flag includes_full_runtime for an embedded "
+            "verbatim skill/SKILL.md probe"
+        )
+
+    _ppm_fake_prior_output = "X" * 10_001
+    _ppm_prompt_with_prior_output = _ppm_prompt + "\nPrior output:\n" + _ppm_fake_prior_output + "\n"
+    _ppm_known_parts_prior = dict(_ppm_known_parts)
+    _ppm_known_parts_prior["prior-output-stage-06"] = _ppm_fake_prior_output
+    _ppm_manifest_c = build_prompt_pack_manifest(
+        _ppm_prompt_with_prior_output, _ppm_known_parts_prior, "self-test-case-c", "stage-07", 1
+    )
+    if not _ppm_manifest_c["includes_prior_full_output"]:
+        raise HarnessError(
+            "Self-test: build_prompt_pack_manifest (c) did not flag includes_prior_full_output for a "
+            ">10000-byte prior-output component occurring verbatim in the prompt"
+        )
+
+    # FIX 8: whitespace-normalization probe case. Take the same verbatim
+    # runtime probe used in case (b), but insert one extra space mid-probe
+    # before embedding it in the prompt. An exact-substring check alone would
+    # miss this (the probe no longer occurs verbatim), but the
+    # whitespace-normalized second pass must still flag includes_full_runtime.
+    #
+    # The extra space is inserted AT an existing whitespace character nearest
+    # the probe's midpoint (not at an arbitrary offset): collapsing runs of
+    # whitespace to a single space can only make "extra space next to
+    # existing whitespace" disappear -- it cannot repair a space inserted
+    # inside a word (that creates a genuinely new word boundary that never
+    # existed in the source text, which no whitespace-collapse can undo).
+    # This mirrors the realistic defeat case named in the requirement (one
+    # inserted space breaking an exact match) rather than an unfixable one.
+    _ppm_probe_mid_offset = len(_ppm_runtime_probe) // 2
+    _ppm_space_insert_idx = None
+    for _offset in range(len(_ppm_runtime_probe)):
+        for _candidate in (_ppm_probe_mid_offset + _offset, _ppm_probe_mid_offset - _offset):
+            if 0 <= _candidate < len(_ppm_runtime_probe) and _ppm_runtime_probe[_candidate] == " ":
+                _ppm_space_insert_idx = _candidate
+                break
+        if _ppm_space_insert_idx is not None:
+            break
+    if _ppm_space_insert_idx is None:
+        raise HarnessError("Self-test: could not find a whitespace character in the runtime probe to mutate for FIX 8")
+    _ppm_probe_with_extra_space = (
+        _ppm_runtime_probe[:_ppm_space_insert_idx] + " " + _ppm_runtime_probe[_ppm_space_insert_idx:]
+    )
+    if _ppm_probe_with_extra_space == _ppm_runtime_probe:
+        raise HarnessError("Self-test: whitespace-mutated probe fixture failed to actually differ from the original probe")
+    if _ppm_probe_with_extra_space in _ppm_skill_text:
+        raise HarnessError(
+            "Self-test: whitespace-mutated probe fixture must NOT occur verbatim in skill/SKILL.md "
+            "(otherwise this case would pass the plain exact-substring check and not exercise FIX 8)"
+        )
+    _ppm_prompt_with_spaced_probe = (
+        _ppm_prompt + "\nEmbedded runtime probe (one extra space inserted mid-probe):\n" + _ppm_probe_with_extra_space + "\n"
+    )
+    _ppm_manifest_d = build_prompt_pack_manifest(
+        _ppm_prompt_with_spaced_probe, _ppm_known_parts, "self-test-case-d", "stage-01", 1
+    )
+    if not _ppm_manifest_d["includes_full_runtime"]:
+        raise HarnessError(
+            "Self-test: build_prompt_pack_manifest (d) did not flag includes_full_runtime for a runtime "
+            "probe embedded with one extra space inserted mid-probe (whitespace-normalized second pass)"
+        )
+
+    # FIX 9: stage-07 known-gap documentation test. A stage-07 prompt with a
+    # large (>40k byte) UNNAMED residual currently does NOT flag
+    # includes_prior_full_output: the >40k residual heuristic
+    # (PROMPT_PACK_PRIOR_OUTPUT_RESIDUAL_BYTES_BOUNDARY) is explicitly gated
+    # to `stage != "07"` because stage-07 section calls legitimately carry a
+    # large prior-stage JSON blob, so this asserts the CURRENT (accepted)
+    # boundary rather than papering over it: a big unnamed residual on stage
+    # "07" is a KNOWN, ACCEPTED carve-out (a self-reported instrumentation
+    # boundary -- the residual is only flagged when it is a *named* known_part
+    # over the substring floor, not merely large and unnamed). If this ever
+    # starts failing, that means the stage-07 boundary was tightened
+    # elsewhere and this comment/test needs to be revisited deliberately,
+    # not silently.
+    _ppm_stage07_unnamed_residual = "Y" * 40_001
+    _ppm_stage07_prompt = _ppm_prompt + "\nUnnamed large residual:\n" + _ppm_stage07_unnamed_residual + "\n"
+    _ppm_manifest_e = build_prompt_pack_manifest(
+        _ppm_stage07_prompt, _ppm_known_parts, "self-test-case-e", "07", 1
+    )
+    if _ppm_manifest_e["includes_prior_full_output"]:
+        raise HarnessError(
+            "Self-test: build_prompt_pack_manifest (e) unexpectedly flagged includes_prior_full_output "
+            "for a stage-07 prompt with a large UNNAMED residual -- the known-accepted stage-07 carve-out "
+            "changed; update this test deliberately if that boundary was intentionally tightened"
+        )
+
     print("staged current-skill harness self-test: PASS")
     print(f"self-test run dir: {rel(run_dir, root)}")
     print(f"handoff record: {rel(record_path, root)}")
@@ -15617,6 +15921,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
         model_scope_payload=model_scope(args.case_name, replay_record, stop_after_stage=args.stop_after_stage),
     )
 
+    prompt_pack_call_index = 0
     try:
         if resume_context is None:
             stage_ids_to_run = stage_order_for_stop(args.stop_after_stage)
@@ -15632,6 +15937,26 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                     input_digest=input_digest,
                     skill_hash=skill_hash,
                     previous_stages=stages,
+                )
+                prompt_pack_call_index += 1
+                emit_prompt_pack_manifest(
+                    run_dir=run_dir,
+                    prompt=prompt,
+                    known_parts={
+                        "raw_input_text": input_text,
+                        "previous_stages_json": json.dumps(compact_state(stages), ensure_ascii=False, indent=2),
+                        "instructions": STAGE_SPECS[stage_id]["instructions"],
+                        "extra_guidance": (
+                            stage03_owner_operation_guidance()
+                            if stage_id == "stage-03-routing-owner-gate"
+                            else stage04_delta_vocabulary_guidance(stages)
+                            if stage_id == "stage-04-burden-execution-act"
+                            else ""
+                        ),
+                    },
+                    case_id=args.case_name,
+                    stage=stage_id,
+                    call_index=prompt_pack_call_index,
                 )
                 prompt_path = prompts_dir / f"{stage_id}.prompt.md"
                 response_path = responses_dir / f"{stage_id}.response.txt"
@@ -15733,6 +16058,19 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                     section_min_bytes=section_min_bytes,
                     assigned_body_refs=assigned_refs,
                 )
+                prompt_pack_call_index += 1
+                emit_prompt_pack_manifest(
+                    run_dir=run_dir,
+                    prompt=section_prompt,
+                    known_parts={
+                        "raw_input_text": input_text,
+                        "previous_stages_json": json.dumps(compact_state(stages), ensure_ascii=False, indent=2),
+                        "section_role_guidance": section_role,
+                    },
+                    case_id=args.case_name,
+                    stage="07",
+                    call_index=prompt_pack_call_index,
+                )
                 safe_section_id = section_id.replace("_", "-")
                 section_prompt_path = prompts_dir / f"stage-07-release-output-{index:02d}-{safe_section_id}.prompt.md"
                 section_output_path = sections_dir / f"{index:02d}-{safe_section_id}.md"
@@ -15801,6 +16139,19 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                             and failed_expansion.get("round") == expansion_round
                         )
                         first_attempt = 2 if is_resumed_failed_expansion else 1
+                        prompt_pack_call_index += 1
+                        emit_prompt_pack_manifest(
+                            run_dir=run_dir,
+                            prompt=expansion_prompt,
+                            known_parts={
+                                "raw_input_text": input_text,
+                                "section_existing_text": current_text,
+                                "previous_stages_json": json.dumps(compact_state(stages), ensure_ascii=False, indent=2),
+                            },
+                            case_id=args.case_name,
+                            stage="07",
+                            call_index=prompt_pack_call_index,
+                        )
                         expansion_output_path = invoke_expansion_with_transport_policy(
                             root=root,
                             model=args.model,
@@ -15924,6 +16275,18 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 input_digest=input_digest,
                 skill_hash=skill_hash,
                 previous_stages=stages,
+            )
+            prompt_pack_call_index += 1
+            emit_prompt_pack_manifest(
+                run_dir=run_dir,
+                prompt=release,
+                known_parts={
+                    "raw_input_text": input_text,
+                    "previous_stages_json": json.dumps(compact_state(stages), ensure_ascii=False, indent=2),
+                },
+                case_id=args.case_name,
+                stage="07",
+                call_index=prompt_pack_call_index,
             )
             release_prompt_path = prompts_dir / "stage-07-release-output.prompt.md"
             release_log_path = responses_dir / "stage-07-release-output.codex-log.txt"
