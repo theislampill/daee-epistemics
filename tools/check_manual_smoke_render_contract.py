@@ -1018,19 +1018,12 @@ COMPLIANCE_UPTAKE_RE = re.compile(
     r"this\s+resolves\s+(?:his|her|their|the)\s+doubt"
     r")\b"
 )
-# The bare concession phrase ("cannot deny/resist/avoid conceding") is a
-# compliance/uptake claim only when its subject is a person/interlocutor. It
-# also occurs in legitimate logical-scope prose ("the argument/predicate cannot
-# deny X unless Y is built into P"), where the subject is the argument/predicate
-# itself, not a person conceding. Guard NEGATIVELY on an argument/predicate
-# subject (plus a logical-conditional marker for the ambiguous pronoun "it") so
-# genuine person-subject claims still flag. A positive person allowlist would
-# wrongly clear subjects like "the skeptic" / "the audience".
+# The bare concession phrase ("cannot deny/resist/avoid conceding") is FAIL-CLOSED: every
+# occurrence flags (see compliance_side_success_present). The former logical-scope carve-out
+# ("the argument/predicate cannot deny X unless built into P") was removed because its subject
+# parser laundered self-asserted person concessions; such prose now over-flags (accepted), and
+# no real fixture/smoke output emits it.
 COMPLIANCE_CONCESSION_RE = re.compile(r"(?i)\bcannot\s+(?:deny|resist|avoid\s+conceding)\b")
-CONCESSION_LOGICAL_MARKER_RE = re.compile(
-    r"(?i)\b(?:unless|only\s+if|iff|if\s+and\s+only\s+if|built\s+into|entails?|"
-    r"follows?\s+from|presupposes?|derives?|implies?)\b|[A-Za-z]\([^)]{1,24}\)"
-)
 # A governing prohibition/negation in the same clause turns an uptake phrase into
 # an ANTI-uptake directive ("Do not promise that the interlocutor will accept ...",
 # "must not claim that the audience will now accept ...") -- the safety-correct
@@ -1054,128 +1047,12 @@ UPTAKE_PROHIBITION_RE = re.compile(
     r"maintain|maintaining|suggest|suggesting|imply|implying|assume|assuming|"
     r"conclude|concluding|represent|representing)\b"
 )
-# A reporting/definitional frame ("can also mean ...", "reported as", "the sense/
-# reading that ...") or an explicit disowning ("that sense is rejected/disowned",
-# "not asserted") marks a concession phrase as a quoted / critiqued sense the output
-# does NOT itself assert, so it must NOT flag. Bare "means"/"this means" (entailment)
-# is deliberately excluded so a direct claim still flags.
-CONCESSION_REPORTING_FRAME_RE = re.compile(
-    r"(?i)\b(?:can|could|would|may|might)\s+(?:also\s+)?mean\b|"
-    r"\b(?:is|are|was|were|be|been|being)\s+(?:also\s+)?(?:called|known\s+as|defined\s+as|"
-    r"glossed\s+as|reported\s+(?:as|to)|quoted|described\s+as|interpreted\s+as|read\s+as|"
-    r"taken\s+to\s+mean)\b|\b(?:reported|quoted|glossed)\s+(?:as|to)\b|\btaken\s+to\s+mean\b"
-)
-CONCESSION_DISOWN_RE = re.compile(
-    r"(?i)\b(?:rejected|disowned|disavow(?:ed|s)?|repudiat(?:ed|es)?|disallowed|"
-    r"not\s+asserted|not\s+our\s+conclusion|not\s+claimed|we\s+reject|"
-    r"that\s+sense\s+is|forbidden\s+reading|disallowed\s+reading)\b"
-)
-# Negative argument-subject guard: the concession phrase is logical-scope (not a
-# person conceding) only when the grammatical SUBJECT of "cannot" is an
-# argument/predicate. This is an enumerable argument-term set; the guard suppresses
-# ONLY on these and defaults to flagging every other subject (including any person
-# noun, listed or not) -- so it is a negative guard, not a positive person allowlist.
-ARG_SUBJECT_TERMS = frozenset(
-    {
-        # singular
-        "argument", "argumentation", "claim", "premise", "predicate", "proposition",
-        "inference", "proof", "formula", "formalization", "formalisation", "thesis",
-        "tree", "derivation", "antecedent", "consequent", "reasoning", "deduction",
-        "syllogism", "entailment", "logic", "objection", "formalism",
-        # plural (a plural argument-subject head is still logical-scope, not a person)
-        "arguments", "claims", "premises", "predicates", "propositions", "inferences",
-        "proofs", "formulas", "formulae", "formalizations", "formalisations", "theses",
-        "trees", "derivations", "antecedents", "consequents", "deductions",
-        "syllogisms", "entailments", "objections", "formalisms",
-    }
-)
-# Words that start a post-modifier (relative clause / prepositional phrase); the
-# true subject head is BEFORE them, so an argument load-word after one of these is
-# a modifier object, not the subject ("the interlocutor WHO grants the PROOF ...",
-# "the proponent OF the ARGUMENT ...").
-# A post-modifier start (relative clause / prepositional phrase / a person-action
-# participle beginning a reduced relative); the subject HEAD noun phrase is BEFORE
-# the first of these ("the proponent OF the argument", "the interlocutor WHO grants
-# the proof", "the reader GRANTING the premise"). Only cut at a match past the head
-# (position > 0), so a gerund-noun subject ("the reasoning cannot deny") is kept.
-CONCESSION_SUBJECT_MODIFIER_RE = re.compile(
-    r"(?i)\b(?:who|whom|whoever|which|whose|of|in|on|for|with|to|about|regarding|"
-    r"concerning|from|by|behind|against|among|amongst|"
-    r"granting|accepting|conceding|admitting|acknowledging|rejecting|holding|having|"
-    r"studying|reviewing|weighing|seeing|reading|hearing|facing|knowing|observing|"
-    r"considering|examining|grasping|recognizing|recognising|following)\b"
-)
-# A comma span that opens with a subordinating conjunction (a fronted subordinate
-# clause), so it is not the main-clause subject.
-CONCESSION_SUBORDINATE_LEAD_ONLY_RE = re.compile(
-    r"(?i)^(?:because|since|although|though|while|whilst|when|whenever|whereas|if|"
-    r"unless|as|after|before|once|assuming|provided|given|for)\b"
-)
-CONCESSION_LEADING_RE = re.compile(
-    r"(?i)^(?:but|and|so|yet|for|thus|therefore|hence|then|now|here|also|indeed|"
-    r"moreover|however|still|nonetheless|nevertheless)\b\W*"
-)
-CONCESSION_ARTICLE_RE = re.compile(r"(?i)^(?:the|a|an)\s+")
-
-
-def _concession_subject_np(text: str, start: int) -> str:
-    """Approximate the grammatical subject noun-phrase governing a concession match.
-
-    Splits the current sentence into comma spans. If the span ending at "cannot" has
-    text (the subject sits immediately before "cannot"), that is the subject -- so a
-    fronted subordinate clause with internal commas still leaves "... the reader
-    cannot deny" as the final span and resolves to the person subject. If that final
-    span is EMPTY, an appositive/relative/participial phrase sits between the subject
-    and "cannot"; in that construction the subject is at the FRONT, so we take the
-    first non-empty, non-subordinate span (not a walk-back, which would land on a
-    serial-list item inside the appositive). The head is then stripped of a leading
-    conjunction/article and cut at the first relative/prepositional modifier.
-    """
-    segment = text[max(0, start - 260) : start]
-    boundary = None
-    # Clause boundaries include sentence terminators AND clause-joining punctuation
-    # (semicolon/colon/em-dash), so an argument-word clause joined to a person
-    # concession clause ("The proof is complete; the reader cannot deny it.") does
-    # not leak its argument term into the subject.
-    for match in re.finditer(r"[.!?;:—\n]|--|\s-\s", segment):
-        boundary = match
-    if boundary is not None:
-        segment = segment[boundary.end() :]
-    spans = segment.split(",")
-    subject_span = spans[-1].strip()
-    if not subject_span:
-        for span in spans[:-1]:
-            candidate = span.strip()
-            if not candidate:
-                continue
-            if CONCESSION_SUBORDINATE_LEAD_ONLY_RE.match(candidate):
-                continue
-            subject_span = candidate
-            break
-    subject_span = CONCESSION_LEADING_RE.sub("", subject_span)
-    subject_span = CONCESSION_ARTICLE_RE.sub("", subject_span)
-    modifier = CONCESSION_SUBJECT_MODIFIER_RE.search(subject_span)
-    if modifier is not None and modifier.start() > 0:
-        subject_span = subject_span[: modifier.start()]
-    return subject_span.lower()
-
-
-def _concession_clause(text: str, start: int, end: int) -> str:
-    """Sentence-bounded window around a concession match.
-
-    Logical-scope markers ("unless ... built into P") can trail a long object
-    enumeration, so a fixed short window misses them. Bound the clause by the
-    surrounding sentence terminators (capped) so the whole logical statement is
-    visible to the marker check.
-    """
-    lo = max(0, start - 260)
-    left = lo
-    for boundary in re.finditer(r"[.!?\n]", text[lo:start]):
-        left = lo + boundary.end()
-    hi = min(len(text), end + 300)
-    forward = re.search(r"[.!?\n]", text[end:hi])
-    right = end + forward.end() if forward else hi
-    return text[left:right]
+# NOTE: the report/disown-frame exemption (CONCESSION_REPORTING_FRAME_RE / CONCESSION_DISOWN_RE)
+# and the logical-scope subject-head exemption (ARG_SUBJECT_TERMS + the subject-parser regexes
+# CONCESSION_SUBJECT_MODIFIER_RE / CONCESSION_SUBORDINATE_LEAD_ONLY_RE / CONCESSION_LEADING_RE /
+# CONCESSION_ARTICLE_RE + CONCESSION_LOGICAL_MARKER_RE) were REMOVED. Both laundered self-asserted
+# uptake across adversarial-review rounds and regex could not close the class (see
+# compliance_side_success_present). The concession path is fail-closed; do NOT re-add these.
 
 
 def _clause_before(text: str, start: int) -> str:
@@ -1200,28 +1077,6 @@ def _clause_before(text: str, start: int) -> str:
     return segment
 
 
-def _concession_local_clause(text: str, start: int, end: int) -> str:
-    """The concession's OWN clause, bounded by the last comma / semicolon / COLON /
-    sentence terminator OR clause-coordinating conjunction (and/but/yet/so/therefore/
-    thus/hence/nor) before it. A report/disown frame that governs a DIFFERENT prior-clause
-    subject therefore cannot bleed across ':' or 'and' into a separately-asserted concession
-    ("The proof is described as decisive AND the skeptic cannot deny ..."; "The objector's
-    demand is disowned: the reader cannot deny ..."). A frame that DIRECTLY governs the
-    concession with no coordinator between ("can also mean 'the person cannot resist'") stays
-    in the local clause. Tightened toward flagging after a review found the colon/'and' bleed
-    laundered self-asserted concessions -- a genuine colon-introduced reported sense is an
-    accepted conservative over-flag, never a laundering hole."""
-    lo = max(0, start - 200)
-    segment = text[lo:start]
-    boundary = None
-    for match in re.finditer(
-        r"[,;:\n.!?]|\b(?:and|but|yet|so|therefore|thus|hence|nor)\b", segment
-    ):
-        boundary = match
-    left = lo + boundary.end() if boundary is not None else lo
-    return text[left:end]
-
-
 # NOTE: the quoted-concession EXEMPTION (CONCESSION_LEFT/RIGHT_QUOTE, _CONCESSION_CLAIM_NOUN,
 # CONCESSION_ATTRIBUTION_RE, and _concession_quoted) was fully REMOVED. Four adversarial-review
 # rounds each defeated it -- scare-quote, possessive/saying frame, temporal/subjunctive gate,
@@ -1240,11 +1095,17 @@ _REMOVED_CONCESSION_QUOTE_EXEMPTION = True  # marker; see compliance_side_succes
 def compliance_side_success_present(text: str) -> bool:
     """Detect compliance-side-success / guaranteed-uptake claims.
 
-    Person-subject concession claims ("the skeptic cannot deny the evidence")
-    flag. Logical-scope statements about what an argument/predicate can exclude
-    ("it cannot deny every plot unless built into P") do not: the subject is the
-    argument/predicate, not a person conceding. The guard is negative (suppress
-    only on an argument/predicate subject), never a positive person allowlist.
+    Two paths:
+      * UPTAKE ("the interlocutor will accept ...") flags UNLESS a governing anti-uptake
+        prohibition ("do not promise/claim that X will accept ...") sits in the same clause
+        (UPTAKE_PROHIBITION_RE) -- the safety-correct directive the output is allowed to emit.
+      * CONCESSION ("cannot deny/resist/avoid conceding") is FAIL-CLOSED: every match flags.
+        All concession exemptions (quote, report/disown, logical-scope subject-head) were
+        removed after six adversarial-review rounds each laundered self-asserted uptake and
+        regex could not close the class. A rare logical-scope "the argument cannot deny X
+        unless built into P" is an ACCEPTED conservative over-flag; never-launder outranks
+        logical-scope permissiveness (owner decision). No real fixture/smoke output contains a
+        concession, so nothing real is over-flagged.
     """
     for match in COMPLIANCE_UPTAKE_RE.finditer(text):
         # A prohibition governing the uptake phrase in the same clause ("Do not
@@ -1254,59 +1115,29 @@ def compliance_side_success_present(text: str) -> bool:
         if UPTAKE_PROHIBITION_RE.search(clause_before):
             continue
         return True
-    for match in COMPLIANCE_CONCESSION_RE.finditer(text):
-        clause = _concession_clause(text, match.start(), match.end())
-        # The reporting/disown-frame EXEMPTION was REMOVED (fifth adversarial-review round). It
-        # suppressed a concession whenever a report/disown token ("reported as", "can also
-        # mean", "rejected", "disowned") appeared in the concession's local clause, but that
-        # frame could reach the concession across an UNBOUNDED set of connectors -- em-dash,
-        # subordinators (once/when/because), and linking verbs (means/proves/forces/shows) --
-        # laundering self-asserted uptake ("The result reported as decisive means the skeptic
-        # cannot deny it"; "That objection is rejected -- the skeptic cannot deny the evidence").
-        # Regex cannot bound the connectors, and NO real smoke/fixture output relies on the
-        # exemption (0 report/disown-exempted concessions across every valid fixture and smoke
-        # output), so per the never-launder invariant the exemption is dropped: a report/disown-
-        # framed concession is a deliberately accepted conservative over-flag. Genuine anti-
-        # uptake DIRECTIVES on the uptake path (UPTAKE_PROHIBITION_RE) are still exempted.
-        # Quoted concessions are NOT exempted. A prior quote-exemption guard
-        # (_concession_quoted) was removed after FOUR adversarial-review rounds each found a
-        # fresh laundering channel -- scare-quote, possessive/saying frame, temporal/
-        # subjunctive gate ("when one reads my proof ..."), and negated hypothesis ("no need
-        # to imagine the claim is ...; it is fact"). Regex cannot reliably tell an entertained
-        # hypothesis from a self-assertion wrapped in quotes, so per the never-launder
-        # invariant a self-asserted person-uptake concession flags even inside quotes. The
-        # reporting/disown guards above still exempt a genuinely reported or disowned sense;
-        # a genuine hypothesis-of-a-claim ("If the claim is “... I cannot resist,” then ...")
-        # is a deliberately accepted conservative over-flag, not a laundering hole.
-        subject_np = _concession_subject_np(text, match.start())
-        # The subject HEAD decides logical-scope. A COMPOUND subject is split on its
-        # coordinators (and/or/nor/as well as/along with/plus) so head-final resolution
-        # landing on a TRAILING argument-term does not launder a person conjunct: "the
-        # skeptic and the argument cannot deny" distributes the concession over "the skeptic"
-        # and must flag. Suppress ONLY when EVERY coordinated conjunct head is an argument/
-        # predicate term (pure logical scope). Attributive load-words / post-modifiers are
-        # already cut by _concession_subject_np. Negative guard, no person allowlist.
-        conjuncts = re.split(
-            r"(?i)\s+(?:and|or|nor|as\s+well\s+as|along\s+with|together\s+with|plus)\s+|,",
-            subject_np,
-        )
-        heads = [toks[-1] for toks in (re.findall(r"[a-z']+", c) for c in conjuncts) if toks]
-        # Suppress ONLY a genuine logical-scope statement: EVERY subject conjunct head is an
-        # argument/predicate term (or a bare it/this/that) AND the clause carries an EXPLICIT
-        # logical marker (unless / only if / built into / entails / follows from / predicate
-        # notation). Requiring the marker is what makes guard (C) laundering-proof: without a
-        # marker every "cannot deny/resist" concession flags, so a mis-parsed subject
-        # (appositive, nominative absolute, missing comma, compound coordination) can only ever
-        # OVER-flag, never launder a person concession. A bare "the argument cannot deny X" (no
-        # marker) is not a licensed exemption -- no real skill output emits one (0 in every
-        # valid fixture and smoke output), and flagging it is the safe direction. Negative
-        # guard, no person allowlist.
-        if (
-            CONCESSION_LOGICAL_MARKER_RE.search(clause)
-            and heads
-            and all(h in ARG_SUBJECT_TERMS or h in {"it", "this", "that"} for h in heads)
-        ):
-            continue
+    for _match in COMPLIANCE_CONCESSION_RE.finditer(text):
+        # FAIL-CLOSED concession path (owner decision after six adversarial-review rounds):
+        # every "cannot deny/resist/avoid conceding" concession flags. All three concession-
+        # path exemption guards were removed because each was repeatedly laundered and regex
+        # cannot close the class:
+        #   * QUOTE exemption -- scare-quote, possessive/saying frame, temporal/subjunctive
+        #     gate ("when one reads my proof ..."), negated hypothesis ("no need to imagine
+        #     the claim is ...; it is fact").
+        #   * REPORT/DISOWN exemption -- an unbounded set of connectors (em-dash, subordinators
+        #     once/when/because, linking verbs means/proves/forces) carried the frame across a
+        #     clause into a separately-asserted concession.
+        #   * LOGICAL-SCOPE subject-head exemption -- compound coordination, appositives,
+        #     nominative absolutes, missing commas, and prepositional/concessive adjuncts
+        #     ("the skeptic near/despite/without the argument ... cannot deny ... unless P")
+        #     inject an argument-term the parser mis-reads as the subject; a logical marker can
+        #     always be co-supplied, so requiring one did not close the class. Regex cannot
+        #     robustly identify the grammatical subject.
+        # NO valid fixture or smoke output contains a "cannot deny/resist" concession (0 across
+        # every valid fixture and smoke, including formal Khaybar), so this over-flags nothing
+        # real; a rare logical-scope "the argument cannot deny X unless built into P" is an
+        # ACCEPTED conservative over-flag. Never-launder outranks logical-scope permissiveness.
+        # The anti-uptake DIRECTIVE guard on the uptake path above (UPTAKE_PROHIBITION_RE) is a
+        # separate path and remains, protecting explicit "do not promise/claim uptake" prose.
         return True
     return False
 INTERIOR_CERTIFICATION_RE = re.compile(
@@ -1555,8 +1386,14 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
             errors.append(
                 f"self-test compliance-side detector wrongly cleared person-subject uptake claim: {uptake!r}"
             )
-    # Logical-scope statements about what an argument/predicate can exclude must
-    # NOT be read as compliance/uptake claims (the concession-branch over-match).
+    # ACCEPTED CONSERVATIVE OVER-FLAG (owner decision): logical-scope statements about what an
+    # argument/predicate can exclude ("the argument cannot deny X unless built into P") now FLAG.
+    # The guard-C logical-scope exemption was REMOVED after its subject parser laundered self-
+    # asserted person concessions across six adversarial-review rounds (compound coordination,
+    # appositives, nominative absolutes, missing commas, prepositional/concessive adjuncts). No
+    # real fixture/smoke output emits such prose (0 "cannot deny/resist" concessions across every
+    # valid fixture and smoke), so this over-flags nothing real; never-launder outranks logical-
+    # scope permissiveness. These are kept here as regression canaries asserting they now flag.
     for logical_scope in (
         "But it cannot deny every attempted plot, every injury, or every later harm unless those exclusions are separately built into P.",
         "The formal tree cannot deny the weaker reading unless the stronger premise is built into P(x).",
@@ -1576,13 +1413,20 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "The proposition, in its strongest form, cannot deny the counterexample unless it is built into P.",
         "The syllogism, taken in Barbara, cannot deny the case unless the premise entails it.",
         "The derivation, shown above, cannot deny the reading unless it follows from P(x).",
-        # plural argument-subject heads are still logical-scope (must NOT flag).
+        # plural argument-subject heads (formerly logical-scope) now flag too.
         "Formal arguments cannot deny that overlap unless the identity is built into the predicate.",
         "These premises cannot deny the conclusion unless it follows from the antecedent.",
+        # LATEST guard-C laundering cases (sixth review round: prepositional/concessive adjuncts
+        # injected an argument-term the parser mis-read as the subject). With guard C removed
+        # these self-asserted person concessions correctly flag.
+        "The skeptic near the whole argument cannot deny the evidence unless it follows from P.",
+        "The skeptic despite every objection cannot deny the evidence since it follows from P.",
+        "The reader without a single counter-argument cannot resist the finding unless built into P.",
+        "It cannot deny the conclusion unless that is built into the premise set.",
     ):
-        if compliance_side_success_present(logical_scope):
+        if not compliance_side_success_present(logical_scope):
             errors.append(
-                f"self-test compliance-side detector over-matched logical-scope prose: {logical_scope!r}"
+                f"self-test: guard-C removed -> logical-scope/adjunct prose must now flag (accepted over-flag): {logical_scope!r}"
             )
     # Direct uptake / compliance-side-success claims must still flag ...
     for must_flag in (
