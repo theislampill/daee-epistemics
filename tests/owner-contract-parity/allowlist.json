@@ -1,0 +1,5 @@
+{
+  "schema": "owner-contract-parity-allowlist-v1",
+  "note": "Quarantine for KNOWN, owner-adjudicated exceptions to the owner-contract parity invariant (SOURCE_OWNED_ACT_OPERATIONS families must be declared in delta-result-vocabulary owner_families). Empty today: the checker-table families are a clean subset of the vocabulary (drift inventory D1 = none). Add an entry only with owner sign-off; never edit an owner representation just to pass the check.",
+  "entries": []
+}

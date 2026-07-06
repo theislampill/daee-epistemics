@@ -10,9 +10,9 @@ Not a behavior claim. A north star for anyone who needs to re-orient.*
 daee-epistemics is a **diagnostic runtime** for the restoration of noetic soundness. It is not an argument database. It is not a fatwa engine.
 It is not a topic-keyed retrieval system. It is not a debate scorecard.
 
-It is a governed pipeline that takes an arbitrary natural-language input
+It is a governed pipeline designed to take arbitrary natural-language input
 — any claim, any objection, any worldview assertion, any crisis of faith, any philosophical provocation —
-diagnoses the noetic structure of that input, identifies every active deformation, routes each deformation to its licensed restorative operation, executes those operations recursively until all deformations are addressed, and produces a proof-closed output whose graphable structure can be audited by a human or a checker.
+and drive it toward a proof-closed, graphable output or an honest HOLD/PARTIAL. Demonstrated coverage to date is retained smoke-family coverage, not arbitrary-input certification; the strongest current evidence lives in the staged maintainer harness and release artifact records.
 
 The system exists to serve the dāʿī (the caller to Islam, the one who invites toward sound knowledge and sound worship). Every architectural decision is downstream of that purpose.
 
@@ -119,6 +119,9 @@ The system identifies the structural signature, not the surface argument.
 
 The meta-noetic memetics layer does three things in the pipeline:
 
+It is a diagnostic and restorative layer only. It decomposes carriers; it never constructs,
+optimizes, hardens, or propagates a shubhah or any other deformation-inducing carrier.
+
 **1. Structure selection over the candidate N-frame space.**
 For any input D₀, the diagnostic phase scans the noetic-structure selection space and selects or holds candidate N frames.
 It does not assume the selected N is known in advance.
@@ -203,12 +206,14 @@ by exactly one layer. No layer may perform another's function.
 | Layer        | Owner                                      | What it does                                                                                                                                             | What it must never do                                                                    |
 | ------------ | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | **Model**    | Fills descriptive activation slots         | Names burden_id, submove_id, owner_id, operation, pressure_label, body_ref, delta_type, delta_result, land_label                                         | Authors notation symbols; authors verification booleans; authors ACT line directly       |
-| **Checker**  | Verifies against semantic ground truth     | Dereferences body_ref; confirms pressure in body; confirms operation performed; confirms Δ visible; confirms Land licensed; produces CanonicalActivation | Trusts model-authored claims; accepts self-attestation booleans; accepts ledger as proof |
+| **Checker**  | Verifies structural/body dereference       | Dereferences body_ref; checks pressure-word/body evidence, operation vocabulary, Δ visibility, and Land licensing; produces CanonicalActivation | Trusts model-authored claims; accepts self-attestation booleans; accepts ledger as proof |
 | **Renderer** | Derives notation from canonical activation | Produces `⟦ACT ⁿBₘ[owner.operation] :: π=... :: body_ref=... :: Δ=... :: Land(ⁿB)+⟧` deterministically                                                   | Accepts model-authored notation; generates notation from prose                           |
 
-**The body is semantic ground truth.** Everything the checker verifies is verified against the
-body — not against the model's claim about the body, not against a ledger the model wrote about
-the body, not against a boolean the model filled about the body. The body.
+**The body is the structural dereference surface.** Everything the checker verifies is checked
+against the body — not against the model's claim about the body, not against a ledger the model
+wrote about the body, not against a boolean the model filled about the body. The checker proves
+the bounded lexical/structural contract it encodes; adversarial semantic adequacy still requires
+human or future grader review.
 
 **A false or missing checker verification field produces HOLD/PARTIAL or FAIL.** It never
 produces a nearby notation. The model does not get to emit a plausible-looking ACT line when the
@@ -273,7 +278,7 @@ The NLA (Natural Language Autoencoder) property is the full encode-decode cycle:
 ```
 natural language body
   → activation_record (descriptive slots filled by model)
-  → checker verification (semantic ground truth)
+  → checker-owned structural/facet verification
   → CanonicalActivation (checker-derived)
   → canonical ACT line (renderer-derived)
   → graphed node
@@ -324,7 +329,7 @@ These are ordered from weakest to strongest. Do not conflate them.
 | field_witness.mismatchCount: 0                                             | No mirror disagreements in the parsed output | Checker-level verification                        |
 | All validators pass on two or more fresh smokes of different case families | Current-skill behavior across known families | Package-bound behavior; arbitrary-input behavior  |
 | Three same-case reruns with isomorphic activation_record fields            | Per-activation reproducibility               | Graph-level reproducibility                       |
-| Graph-completeness checker pass (not yet built)                            | All deformations diagnosed and addressed     | —                                                 |
+| Graph-completeness checker pass (`tools/check_graph_completeness.py`; release-gated since v0.4.4.0) | All checker-visible graph obligations are represented | Semantic adequacy or arbitrary-input coverage |
 | field_witness.collapse_complete: true on verified graph                    | Total noetic field collapse for that input   | Catalogue completeness; arbitrary-input guarantee |
 
 ---
@@ -350,11 +355,18 @@ The qualifiers are structural, not hedging:
 
 The guarantee is not omniscience. It is proof integrity: if the system claims collapse, the collapse is checker-verified; if it cannot verify, it says so.
 
+Current bounded claim: for the smoked case families recorded in the release artifacts, captured
+outputs passed the named validators under the stated transport and harness constraints. The
+guarantee above additionally presupposes checker-in-the-loop transport; an unchecked scriptless
+host cannot mechanically guarantee honest HOLD/PARTIAL.
+
 ---
 
 ## Current Stabilization State
 
-*(Honest as of the most recent implementaudit run. Do not claim more than this.)*
+This table is a historical stabilization snapshot retained for orientation. Current live owners
+are `.github/workflows/ci.yml` for active CI, `tools/run_local_ci.py` for the local gate sequence,
+and `docs/release-artifacts.md` for published package/provenance evidence.
 
 | Component                                    | Status                                                                                   |
 | -------------------------------------------- | ---------------------------------------------------------------------------------------- |
@@ -367,14 +379,14 @@ The guarantee is not omniscience. It is proof integrity: if the system claims co
 | Output Grapher reconstructibility            | Passing for the current checked artifacts, including F30E doubt-churn                    |
 | Sectioned PNG export                         | Passing for v14                                                                          |
 | Narrow Trinitarian per-activation proof      | DONE for v20; `do-christian-extensions.route` is rejected and source-owned `model-identification` is guarded |
-| Package-bound behavior proof                 | BLOCKED; uncommitted source, no CI, stale package                                        |
+| Package-bound behavior proof                 | See `docs/release-artifacts.md`; current release rows distinguish source-boundary smokes from package/provenance validation |
 | Graph-level collapse checker                 | OPEN TARGET; depends on stable per-activation proof                                      |
 | field_witness graph-completeness certificate | OPEN TARGET                                                                              |
 | Repeated-run reproducibility proof           | PARTIAL / OPEN TARGET; 30A0 3x passed validators and coarse graph, exact activation fingerprints still vary |
 | NLA decode direction                         | OPEN TARGET                                                                              |
 | Shannon / integral trace formalization       | OPEN ARCHITECTURAL FORMALIZATION TARGET                                                  |
 | Boltzmann Brain stress case                  | FUTURE SMOKE only                                                                        |
-| Release readiness                            | BLOCKED                                                                                  |
+| Release readiness                            | See release docs and active TODOs; do not infer a current release gate from this historical snapshot |
 
 ---
 
@@ -423,7 +435,7 @@ If you lose orientation, return to this sequence:
    not just named cases. Any patch that only fixes a named case without generalizing is a
    suppression, not a fix.
 
-3. The body is semantic ground truth. If you are unsure whether an activation is valid, ask:
+3. The dereferenced body is the evidence surface for owner-operation performance. If you are unsure whether an activation is valid, ask:
    "Does the dereferenced body perform the owner operation against the named pressure and produce
    a visible Δ?" If no, the activation is not valid regardless of what the model wrote.
 
@@ -438,6 +450,6 @@ If you lose orientation, return to this sequence:
 ---
 
 *This document is stable reference.
-It does not change with each implementaudit run.
+It does not change with each implementaudit run except to correct stale boundary claims or add stable architectural limits.
 The implementaudit orchestrator document records current evidence and blockers.
 This document records what we are building and why.*

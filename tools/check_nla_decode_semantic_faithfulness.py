@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check bounded NLA decode / semantic faithfulness for ACT records.
+"""Check bounded NLA decode facet recoverability for ACT records.
 
 This is not a universal semantic grader. It treats the checker-derived
 CanonicalActivation as the encoded activation, dereferences body_ref, and

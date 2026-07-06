@@ -4,7 +4,7 @@
 This checker guards the Stage 07 compiled-output failure where ACT sections
 were assembled in round-robin order: later burdens appeared before earlier
 burden groups had landed, and the public body repeated the main Layer B header.
-It validates visible public topology only; semantic proof remains owned by the
+It validates visible public topology only; structural/notation proof remains owned by the
 NLA, field_witness, MRP, graph, manual-render, sidecar, and retained-corpus
 validators.
 """

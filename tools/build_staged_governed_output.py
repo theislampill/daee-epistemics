@@ -2369,6 +2369,30 @@ def run_self_test(root: Path) -> int:
     base_dir = root / ".daee" / "validation" / f"staged-governed-output-assembly-self-test-{uuid.uuid4().hex}"
     base_dir.mkdir(parents=True, exist_ok=True)
 
+    # No-model canary: the pressure_activation admissible-prefix contract must REJECT bare
+    # family aliases (SOURCE/AUTHORITY/OWNER/OP/MRP/DEFINITION/RESTORATION are loose aliases
+    # per references/module-codes.md and do not satisfy owner/TTP fields) while ACCEPTING a
+    # specific routed owner/TTP id or the literal pressure class:/coverage gap: marker. This
+    # pins the contract the Stage 05 producer prompt now advertises to the model, so the two
+    # never drift: the checker stays strict (no bare-alias whitelisting) and the prompt warns.
+    for _reject in (
+        "SOURCE pressure class: x", "AUTHORITY pressure class: x", "OWNER pressure class: x",
+        "OP pressure class: x", "MRP pressure class: x", "DEFINITION pressure class: x",
+        "RESTORATION pressure class: x",
+    ):
+        if PER_BURDEN_SLOT_START_RE.match(_reject):
+            raise AssemblyError(
+                f"self-test: pressure-activation prefix contract wrongly accepted a loose family alias: {_reject!r}"
+            )
+    for _accept in (
+        "authority-order-repair pressure class: x", "source-lineage pressure class: x",
+        "M7 pressure class: x", "FPD pressure class: x", "pressure class: x", "coverage gap: x",
+    ):
+        if not PER_BURDEN_SLOT_START_RE.match(_accept):
+            raise AssemblyError(
+                f"self-test: pressure-activation prefix contract wrongly rejected an admissible prefix: {_accept!r}"
+            )
+
     small_manifest = manifest_for_sections(
         base_dir / "valid-small",
         case_id="valid-small",

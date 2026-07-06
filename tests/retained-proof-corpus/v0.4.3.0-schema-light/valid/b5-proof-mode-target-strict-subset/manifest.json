@@ -28,7 +28,7 @@
   "cases": [
     {
       "id": "schema-light-b5-historical",
-      "classification": "SIDECAR_BACKED_PROOF",
+      "classification": "SIDECAR_BACKED_STRUCTURAL",
       "rows": [
         "B.5"
       ],
@@ -47,7 +47,7 @@
     },
     {
       "id": "proof-mode-retained-subset",
-      "classification": "SIDECAR_BACKED_PROOF",
+      "classification": "SIDECAR_BACKED_STRUCTURAL",
       "rows": [
         "B.5"
       ],

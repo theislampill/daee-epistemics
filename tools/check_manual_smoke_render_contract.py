@@ -909,8 +909,19 @@ def submove_field_values(block: str) -> list[str]:
 
 
 def submove_operation_body(block: str) -> str:
-    """Return prose body lines beyond compact Target/Operation/Result fields."""
+    """Return prose body lines beyond the compact Target/Operation/Result fields.
+
+    Compact decode fields (Target:/Operation:/Result:/Contribution-to-Land:) precede the
+    ``TTP Operation Body:`` section and are captured in dedicated facets, so they are
+    stripped here. But the local-proof capsule INSIDE that section uses sub-markers
+    (BEFORE:/OPERATION:/AFTER:/DELTA:/LAND-LICENSE:) whose lines carry substantive prose.
+    ``OPERATION:`` collides case-insensitively with the compact ``Operation:`` field
+    label, so once we are inside the operation-body section we stop stripping field-label
+    lines -- otherwise the capsule OPERATION prose (e.g. the hidden-rule exposure the NLA
+    decode check looks for) would be dropped and the body would read as incomplete.
+    """
     body_lines: list[str] = []
+    in_operation_body = False
     for raw_line in block.splitlines()[1:]:
         line = raw_line.strip()
         if not line:
@@ -919,9 +930,13 @@ def submove_operation_body(block: str) -> str:
             continue
         if re.match(rf"(?im)^\s*(?:#{{1,6}}\s*)?(?:[{SUP}]+B|B\d+)(?:[{SUB}]+|[_\.]\d+)\s*\[", line):
             continue
-        if FIELD_LABEL_RE.match(line):
-            continue
-        if re.match(r"(?im)^\s*(?:TTP\s+)?Operation Body\s*:\s*$", line):
+        if re.match(r"(?im)^\s*(?:TTP\s+)?Operation Body\s*:", line):
+            # The capsule section is now open. A standalone marker line is dropped; an
+            # inline "TTP Operation Body: BEFORE ..." keeps its trailing prose.
+            in_operation_body = True
+            if re.match(r"(?im)^\s*(?:TTP\s+)?Operation Body\s*:\s*$", line):
+                continue
+        if not in_operation_body and FIELD_LABEL_RE.match(line):
             continue
         if re.match(r"(?im)^\s*(?:#|Land\(|\[Mid-Reread Pressure\]|R\(H,)", line):
             continue
@@ -994,6 +1009,134 @@ CLOSING_RESTORED_SLOT_RE = re.compile(
 )
 CLOSING_BOUNDARY_SLOT_RE = re.compile(
     r"(?im)^\s*(?:(?:#{1,6}\s*)?(?:Scoped boundary|Reopen boundary)\s*$|(?:[-*]\s*)?(?:Scoped boundary|Reopen boundary)\s*:\s*[^\n]*\S)"
+)
+COMPLIANCE_UPTAKE_RE = re.compile(
+    r"(?i)\b(?:"
+    r"interlocutor\s+(?:will|must|now)\s+(?:accept|concede|see|recognize|submit)|"
+    r"(?:will|must|now)\s+(?:accept|concede|see|recognize|submit)\s+(?:the\s+)?(?:truth|claim|answer)|"
+    r"has\s+no\s+choice\s+but\s+(?:to\s+)?(?:accept|concede|submit)|"
+    r"this\s+resolves\s+(?:his|her|their|the)\s+doubt"
+    r")\b"
+)
+# The bare concession phrase ("cannot deny/resist/avoid conceding") is FAIL-CLOSED: every
+# occurrence flags (see compliance_side_success_present). The former logical-scope carve-out
+# ("the argument/predicate cannot deny X unless built into P") was removed because its subject
+# parser laundered self-asserted person concessions; such prose now over-flags (accepted), and
+# no real fixture/smoke output emits it. The verb may be wrapped in emphasis/quote characters
+# ("cannot *deny*", "cannot \"deny\"", "cannot _deny_") -- these are tolerated so formatting the
+# verb cannot smuggle a concession past the match.
+_CONCESSION_EMPH = r"[\"'*_“”‘’«»`~]*"
+# FAIL-CLOSED concession match. "cannot" / "can not" (two-word) / "can't" is the modal negation;
+# the concession verb (deny/resist/avoid conceding) may follow after adverbs, emphasis/quote/bracket
+# wrappers, or other adjuncts. Enumerating those (adverb lists, emphasis-char sets) is an unbounded
+# whack-a-mole -- a single unlisted adverb ("henceforth") or wrapper ("(deny)") launders -- so the
+# gap is a bounded run of ANY characters that do NOT cross a sentence/clause boundary ([.!?;\n]).
+# Over-matching a rare non-concession "cannot ... deny" within one clause is the accepted safe
+# direction on the fail-closed path (0 "cannot deny/resist" concessions exist in any valid fixture
+# or smoke output, so nothing real is over-flagged). "cannot understand the argument" and passive
+# "cannot be denied" still miss because no concession verb (deny != denied) follows in-clause.
+COMPLIANCE_CONCESSION_RE = re.compile(
+    r"(?i)\bcan(?:not|\s+not(?=\s)|['’]t)[^.!?;\n]{0,40}?"
+    r"(?:deny|resist|avoid[^.!?;\n]{0,25}?conceding)"
+    # trailing boundary that tolerates emphasis/quote wrappers (underscore is a \w char, so a
+    # plain \b would miss "cannot _deny_"): the verb must not be immediately followed by a letter.
+    r"(?![a-zA-Z])"
+)
+# NOTE: the anti-uptake-DIRECTIVE exemption (UPTAKE_PROHIBITION_RE / UPTAKE_DOUBLE_NEGATION_RE and
+# the _clause_before scoper) was REMOVED -- the uptake path is now fail-closed like the concession
+# path. It suppressed "the interlocutor will accept" whenever a negated commitment verb ("do not
+# promise/claim that ...") governed it, but three review rounds laundered self-asserted uptake
+# through open-ended channels (clause connectors ergo/nevertheless/... not in the break-list,
+# outer double negation "It is false that we do not claim that X will accept", adjunct/window
+# overflow). Regex cannot bound these and no real fixture/smoke output emits an uptake phrase, so a
+# canonical anti-uptake directive is a deliberately accepted conservative over-flag. Do NOT re-add.
+# NOTE: the report/disown-frame exemption (CONCESSION_REPORTING_FRAME_RE / CONCESSION_DISOWN_RE)
+# and the logical-scope subject-head exemption (ARG_SUBJECT_TERMS + the subject-parser regexes
+# CONCESSION_SUBJECT_MODIFIER_RE / CONCESSION_SUBORDINATE_LEAD_ONLY_RE / CONCESSION_LEADING_RE /
+# CONCESSION_ARTICLE_RE + CONCESSION_LOGICAL_MARKER_RE) were REMOVED. Both laundered self-asserted
+# uptake across adversarial-review rounds and regex could not close the class (see
+# compliance_side_success_present). The concession path is fail-closed; do NOT re-add these.
+
+
+# NOTE: the quoted-concession EXEMPTION (CONCESSION_LEFT/RIGHT_QUOTE, _CONCESSION_CLAIM_NOUN,
+# CONCESSION_ATTRIBUTION_RE, and _concession_quoted) was fully REMOVED. Four adversarial-review
+# rounds each defeated it -- scare-quote, possessive/saying frame, temporal/subjunctive gate,
+# and negated hypothesis -- because regex cannot reliably distinguish an entertained hypothesis
+# from a self-assertion wrapped in quotes. Per the never-launder invariant (never suppress a
+# self-asserted person-uptake concession; a rare genuine reported/hypothesized concession is an
+# accepted conservative over-flag), no quote frame exempts a concession. Do NOT re-add a quote
+# exemption. The report/disown-frame exemption (CONCESSION_REPORTING_FRAME_RE /
+# CONCESSION_DISOWN_RE) was ALSO removed in a later round (it laundered across em-dash /
+# subordinator / linking-verb connectors); those regexes are now unused. The only concession-
+# path exemption left is a genuine logical-scope statement (argument/predicate subject + an
+# explicit CONCESSION_LOGICAL_MARKER_RE marker) in compliance_side_success_present.
+_REMOVED_CONCESSION_QUOTE_EXEMPTION = True  # marker; see compliance_side_success_present
+
+
+def compliance_side_success_present(text: str) -> bool:
+    """Detect compliance-side-success / guaranteed-uptake claims.
+
+    BOTH paths are FAIL-CLOSED (owner decision): every match flags, with no exemption.
+      * UPTAKE ("the interlocutor will accept ...", "has no choice but to accept").
+      * CONCESSION ("cannot deny/resist/avoid conceding", incl. can-not/can't/adverb/emphasis
+        variants).
+    Every exemption guard (quote, report/disown, logical-scope subject-head on the concession
+    path; anti-uptake directive on the uptake path) was removed after adversarial reviews
+    repeatedly laundered self-asserted uptake through open-ended natural-language channels that
+    regex cannot bound. Rare conservative over-flags (a genuine logical-scope "the argument
+    cannot deny X unless built into P"; a canonical anti-uptake directive "do not promise that X
+    will accept") are ACCEPTED -- never-launder outranks permissiveness. No valid fixture or
+    smoke output contains a concession or uptake phrase, so nothing real is over-flagged.
+    """
+    for _match in COMPLIANCE_UPTAKE_RE.finditer(text):
+        # FAIL-CLOSED uptake path (owner decision): every guaranteed-uptake phrase flags. The
+        # anti-uptake DIRECTIVE exemption (UPTAKE_PROHIBITION_RE / UPTAKE_DOUBLE_NEGATION_RE via
+        # _clause_before) was REMOVED after it laundered self-asserted uptake across three review
+        # rounds through open-ended natural-language channels: clause connectors not in the
+        # break-list ("... that outcome ERGO the interlocutor will accept"), outer double negation
+        # ("It is FALSE that we do not claim that X will accept"), and adjunct/window overflow.
+        # Regex cannot bound these, and NO valid fixture or smoke output contains an uptake phrase,
+        # so this over-flags nothing real. A canonical anti-uptake directive ("do not promise that
+        # X will accept") is now an accepted conservative over-flag; a governed output can state the
+        # norm without the forbidden surface form ("do not claim guaranteed uptake / acceptance").
+        return True
+    for _match in COMPLIANCE_CONCESSION_RE.finditer(text):
+        # FAIL-CLOSED concession path (owner decision after six adversarial-review rounds):
+        # every "cannot deny/resist/avoid conceding" concession flags. All three concession-
+        # path exemption guards were removed because each was repeatedly laundered and regex
+        # cannot close the class:
+        #   * QUOTE exemption -- scare-quote, possessive/saying frame, temporal/subjunctive
+        #     gate ("when one reads my proof ..."), negated hypothesis ("no need to imagine
+        #     the claim is ...; it is fact").
+        #   * REPORT/DISOWN exemption -- an unbounded set of connectors (em-dash, subordinators
+        #     once/when/because, linking verbs means/proves/forces) carried the frame across a
+        #     clause into a separately-asserted concession.
+        #   * LOGICAL-SCOPE subject-head exemption -- compound coordination, appositives,
+        #     nominative absolutes, missing commas, and prepositional/concessive adjuncts
+        #     ("the skeptic near/despite/without the argument ... cannot deny ... unless P")
+        #     inject an argument-term the parser mis-reads as the subject; a logical marker can
+        #     always be co-supplied, so requiring one did not close the class. Regex cannot
+        #     robustly identify the grammatical subject.
+        # NO valid fixture or smoke output contains a "cannot deny/resist" concession (0 across
+        # every valid fixture and smoke, including formal Khaybar), so this over-flags nothing
+        # real; a rare logical-scope "the argument cannot deny X unless built into P" is an
+        # ACCEPTED conservative over-flag. Never-launder outranks logical-scope permissiveness.
+        # The uptake path above is likewise fail-closed (its anti-uptake directive exemption was
+        # also removed after it laundered).
+        return True
+    return False
+INTERIOR_CERTIFICATION_RE = re.compile(
+    r"(?i)\b(?:interlocutor|target|person|he|she|they)\s+(?:is|are)\s+"
+    r"(?:insincere|lying|a\s+hypocrite|outside\s+(?:the\s+)?faith|k[aā]fir|mun[aā]fiq)\b|"
+    r"\b(?:confirmed|certified)\s+(?:insincere|hypocrite|k[aā]fir|mun[aā]fiq|outside\s+(?:the\s+)?faith)\b"
+)
+FABRICATED_VALIDATION_VERDICT_RE = re.compile(
+    r"^\s*(?:[-*]\s*)?"
+    r"(?:validation|validator(?:\s+verdict)?|quality[- ]gate|checker|release_validation)"
+    r"\s*:\s*(?:PASS|GREEN|OK|SUCCESS)\b|"
+    r"\b(?:all|the)\s+(?:validators|quality[- ]gates|checks)\s+"
+    r"(?:passed|pass|are\s+green)\b",
+    re.IGNORECASE | re.MULTILINE,
 )
 
 
@@ -1148,7 +1291,20 @@ def owner_specific_operation_performed(owner: str, combined: str) -> bool:
     if family == "DOUBT_SKEPTICISM":
         return doubt_skepticism_operation_performed(combined)
     if family:
-        return any(key == family and pattern.search(combined) for key, pattern in OWNER_OPERATION_PATTERNS)
+        # Owner-operation keyword recognition is hyphen/space-invariant: the DSL writes
+        # owner-operation deltas/targets as hyphenated slugs (e.g. "orphaned-intuition"),
+        # while the OWNER_OPERATION_PATTERNS were authored with spaced bigrams (e.g.
+        # "orphaned intuition"). This is pure orthography of the SAME owner concept (the
+        # patterns already use [- ] equivalence in ~141 places); recognizing the canonical
+        # hyphenated slug is a coverage fix, not a mass-gate change. Owner recognition is
+        # one of ~8 conjunctive gates in is_operation_shaped_submove; the anti-label guard
+        # (OWNER_NAME_ONLY_RE above) and the anti-slimming/mass gates are untouched, so a
+        # thin/label-only slug block still fails.
+        normalized = combined.replace("-", " ")
+        return any(
+            key == family and (pattern.search(combined) or pattern.search(normalized))
+            for key, pattern in OWNER_OPERATION_PATTERNS
+        )
     if not owner:
         return False
     return bool(
@@ -1160,6 +1316,257 @@ def owner_specific_operation_performed(owner: str, combined: str) -> bool:
 
 def self_test_owner_specific_operation_patterns() -> list[str]:
     errors: list[str] = []
+    if not compliance_side_success_present("The interlocutor will now accept the truth."):
+        errors.append("self-test compliance-side success detector missed uptake claim")
+    # Person-subject concession claims must still flag (negative guard must not
+    # over-suppress); a positive person allowlist would miss these subjects.
+    # Includes relative/appositive constructions where an argument load-word
+    # sits immediately before "cannot" but the true subject is a person.
+    for uptake in (
+        "the skeptic cannot deny the evidence",
+        "the audience cannot deny this once shown",
+        "the reader cannot resist this conclusion",
+        "The proponent of the argument cannot deny the evidence.",
+        "One who accepts the premise cannot deny the conclusion.",
+        "A skeptic who grants the premise cannot deny the consequence.",
+        "The interlocutor who grants the proof cannot deny the result.",
+        "The interlocutor who grants the proof cannot deny the result unless he recants.",
+        # person subjects NOT in any hardcoded list, carried across a relative
+        # clause that ends on an argument load-word before "cannot" (must flag;
+        # the guard must not depend on a positive person allowlist).
+        "The naysayer who grants the proof cannot deny the result unless the premise is built into P.",
+        "The bystander who accepts the argument cannot deny the conclusion unless the premise entails it.",
+        "The doubter who grants the formalization cannot deny the result unless the premise is built into P(x).",
+        # person subject with a nonrestrictive appositive before "cannot" (must
+        # flag; the appositive comma must not drop the person subject).
+        "The skeptic, who has seen the proof, cannot deny the evidence.",
+        "The interlocutor, given the argument, cannot deny the result unless he recants.",
+        # person subject after a fronted subordinate clause with INTERNAL commas
+        # (serial list / stacked clauses); the argument load-words inside the
+        # fronted clause must not leak into the subject (must flag).
+        "Although the argument, the proof, and the thesis were laid out, the reader cannot deny the result unless he lies.",
+        "Because he studied it, although the argument is dense, the skeptic cannot deny the evidence.",
+        "Because the premise, the objection, and the proof were addressed, the skeptic cannot deny the conclusion unless he recants.",
+        # person subject whose appositive/absolute modifier contains a serial list
+        # or is article-initial and ends on an argument term (must flag; the
+        # front subject, not the modifier, governs "cannot").
+        "The skeptic, who saw the proof, the objection, and the thesis, cannot deny the evidence.",
+        "The reader, given the argument, the proof, and the premise, cannot deny the result.",
+        "The skeptic, the objection notwithstanding, cannot deny the evidence.",
+        # person concession clause joined by clause-joining punctuation to an
+        # argument-word clause (must flag; the argument term is in a separate
+        # clause, not the subject).
+        "The proof is complete; the reader cannot deny it.",
+        "The proof route becomes circular: the reader cannot deny the conclusion.",
+        "The premise holds — the interlocutor cannot deny the conclusion.",
+        # argument load-word as a bare attributive modifier before a person head
+        # (must flag; the head, not the modifier, is the subject).
+        "The reasoning interlocutor cannot deny the evidence.",
+        # person subject with a comma-less participial reduced relative whose object
+        # is an argument term (must flag; the person head, not the object, governs).
+        "The reader granting the premise cannot deny it.",
+        "Anyone accepting the proof cannot deny the conclusion.",
+    ):
+        if not compliance_side_success_present(uptake):
+            errors.append(
+                f"self-test compliance-side detector wrongly cleared person-subject uptake claim: {uptake!r}"
+            )
+    # ACCEPTED CONSERVATIVE OVER-FLAG (owner decision): logical-scope statements about what an
+    # argument/predicate can exclude ("the argument cannot deny X unless built into P") now FLAG.
+    # The guard-C logical-scope exemption was REMOVED after its subject parser laundered self-
+    # asserted person concessions across six adversarial-review rounds (compound coordination,
+    # appositives, nominative absolutes, missing commas, prepositional/concessive adjuncts). No
+    # real fixture/smoke output emits such prose (0 "cannot deny/resist" concessions across every
+    # valid fixture and smoke), so this over-flags nothing real; never-launder outranks logical-
+    # scope permissiveness. These are kept here as regression canaries asserting they now flag.
+    for logical_scope in (
+        "But it cannot deny every attempted plot, every injury, or every later harm unless those exclusions are separately built into P.",
+        "The formal tree cannot deny the weaker reading unless the stronger premise is built into P(x).",
+        "The argument cannot deny successful mission-negating harm at t1 because it follows from P(t1).",
+        # argument/predicate SUBJECT with an incidental person pronoun in a
+        # leading subordinate clause (must NOT flag; the person term is not the
+        # subject of "cannot").
+        "Because they scoped P too broadly, the predicate cannot deny every case unless the exclusion is built into P.",
+        "Since the proponent left P broad, it cannot deny every counterexample unless the exclusion is built into P.",
+        "As the reader can check, the formula cannot deny any later martyrdom association unless it is built into P.",
+        # argument/predicate subject with a nonrestrictive appositive before
+        # "cannot" (must NOT flag; the subject head precedes the appositive comma).
+        "The predicate, which we scoped to intentional mission-negating harm, cannot deny the weaker reading unless that exclusion is built into P.",
+        "The argument, as formalized, cannot deny every attempted plot unless those exclusions are separately built into P.",
+        # argument subject with a prepositional-phrase or irregular-participle
+        # appositive (must NOT flag; the front argument subject governs "cannot").
+        "The proposition, in its strongest form, cannot deny the counterexample unless it is built into P.",
+        "The syllogism, taken in Barbara, cannot deny the case unless the premise entails it.",
+        "The derivation, shown above, cannot deny the reading unless it follows from P(x).",
+        # plural argument-subject heads (formerly logical-scope) now flag too.
+        "Formal arguments cannot deny that overlap unless the identity is built into the predicate.",
+        "These premises cannot deny the conclusion unless it follows from the antecedent.",
+        # LATEST guard-C laundering cases (sixth review round: prepositional/concessive adjuncts
+        # injected an argument-term the parser mis-read as the subject). With guard C removed
+        # these self-asserted person concessions correctly flag.
+        "The skeptic near the whole argument cannot deny the evidence unless it follows from P.",
+        "The skeptic despite every objection cannot deny the evidence since it follows from P.",
+        "The reader without a single counter-argument cannot resist the finding unless built into P.",
+        "It cannot deny the conclusion unless that is built into the premise set.",
+    ):
+        if not compliance_side_success_present(logical_scope):
+            errors.append(
+                f"self-test: guard-C removed -> logical-scope/adjunct prose must now flag (accepted over-flag): {logical_scope!r}"
+            )
+    # Direct uptake / compliance-side-success claims must still flag ...
+    for must_flag in (
+        "The interlocutor will accept the answer.",
+        "The audience will now recognize the truth.",
+        "The person cannot resist the conclusion.",
+        "The interlocutor has no choice but to accept.",
+        # direct claims that merely CO-OCCUR with a register-native negation or
+        # reporting/disown token in a separate clause must still flag (the guards
+        # must be governance-scoped, not co-occurrence-scoped).
+        "In the sense that matters, the skeptic cannot deny the evidence.",
+        "The evidence rules out every alternative, so the skeptic cannot deny the conclusion.",
+        "This argument blocks that escape route; the skeptic cannot deny the evidence.",
+        "The claim is described as decisive; the skeptic cannot deny it.",
+        "It is not surprising that the interlocutor will accept the answer.",
+        "We do not merely hope but demonstrate that the audience will now recognize the truth.",
+        # contrastive affirmation with a commitment verb ("not merely/only CLAIM ... but
+        # demonstrate") affirms the uptake and must flag.
+        "The reply does not merely claim that the interlocutor will accept the answer; it demonstrates it.",
+        "The output does not only assert that the interlocutor will accept the answer, it demonstrates it.",
+        # a self-asserted concession wrapped in scare/emphasis quotes (no attribution or
+        # hypothesis frame) is still the output's own uptake claim and must flag.
+        "The proof is now complete, so the skeptic “cannot deny the evidence,” and the objection collapses.",
+        "At that point the honest inquirer “cannot resist the truth,” full stop.",
+        "After this the interlocutor truly \"cannot resist the conclusion\" and accepts it.",
+        # a FIRST-PARTY / self-attribution frame ("my argument", "our claim", "the
+        # argument") wrapping a scare-quoted concession is the output ASSERTING uptake,
+        # not reporting someone else's claim, and must flag. This channel laundered a
+        # self-asserted concession when the quote guard accepted any determiner + claim-noun.
+        "My argument shows the skeptic “cannot deny the evidence,” so the doubt is gone.",
+        "This argument establishes that the skeptic “cannot deny the evidence.”",
+        # STRAY-FRAME LAUNDERING (adversarial-review confirmed): a possessive claim-noun or
+        # saying verb in a FRONTED / DISMISSED clause, or a hypothesis word in an earlier
+        # clause, followed by a SEPARATE self-asserting clause that introduces the quoted
+        # concession. The frame does not introduce the quotation, so it must NOT exempt --
+        # the output is asserting guaranteed person-uptake in scare/emphasis quotes.
+        "His argument aside, I have shown the doubter “cannot deny it” here.",
+        "Setting their objection to one side, my proof shows the reader “cannot resist it” here.",
+        "Their argument notwithstanding, we have demonstrated the skeptic “cannot deny it” now.",
+        "Their claim collapses and the skeptic “cannot deny it” now.",
+        "His argument aside I have shown the doubter «cannot deny it» here.",
+        "Having dismantled the objector's argument, we conclude the skeptic “cannot deny the evidence.”",
+        "Imagine the objector protesting; still, our argument proves the skeptic “cannot deny the evidence.”",
+        "We rebutted his objection, so the skeptic “cannot deny the evidence.”",
+        # TRIVIALLY-TRUE TEMPORAL / SUBJUNCTIVE GATE (adversarial-review confirmed): a "when
+        # one/someone ..." or "were the reader to ..." gate that presupposes the output's own
+        # proof and introduces a SELF-asserted quoted concession. These are assertoric, not a
+        # hypothesis entertaining a third party's disputed claim, and must flag. The exemption
+        # now requires "if/suppose/imagine ... <claim-noun> is/were" IMMEDIATELY before the
+        # opening quote, so a temporal/subjunctive gate cannot exempt.
+        "I have proven it: when one reads my proof the skeptic “cannot deny” the evidence.",
+        "When one reviews my completed proof the skeptic “cannot deny” it and no honest reader disputes this.",
+        "Were the reader to finish my proof the skeptic “cannot deny it” — and every reader must finish it.",
+        "We established beyond doubt that when one reads our proof the skeptic “cannot deny” it.",
+        "Suppose the audience reads my proof: the person “cannot resist” the result.",
+        "Imagine the critic reviews my proof and then “cannot deny” the conclusion.",
+        # NEGATED / DISMISSIVE hypothesis frame + self-assertion (adversarial-review round 4):
+        # a negated hypothesis word ("no need to imagine", "need not suppose", "regardless of
+        # whether") followed by an endorsed quoted concession. With the quote exemption removed
+        # these flag unconditionally.
+        "There is no need to imagine our thesis is “the reader cannot resist”; it is established fact.",
+        "We need not suppose the argument is “the skeptic cannot deny the evidence”; it is proven.",
+        "Regardless of whether the claim is “the skeptic cannot deny the evidence,” we have shown it true.",
+        # ACCEPTED CONSERVATIVE OVER-FLAG: the quote exemption was removed after four laundering
+        # rounds, so a genuine hypothesis-of-a-claim now flags too. This is the safe direction
+        # per the never-launder invariant; no real smoke output uses this construction.
+        "If the claim is “God should reveal Himself in a way I cannot resist,” then the reply must distinguish coercive uptake from warranted evidence.",
+        "Suppose the objection were “the person cannot resist,” the output must report and analyze that claim rather than assert it.",
+        # COMPOUND-SUBJECT laundering (adversarial-review round 5, guard C): a person conjunct
+        # coordinated with a trailing argument-term must not be laundered by head-final
+        # resolution. The concession distributes over the person and flags.
+        "The skeptic and the argument cannot deny the evidence.",
+        "Both the skeptic and the argument cannot deny the evidence.",
+        "The reader and the premise cannot avoid conceding the point.",
+        "The skeptic as well as the argument cannot deny the evidence.",
+        "We have proven the reader and the syllogism cannot resist the conclusion.",
+        # REPORTING/DISOWN-FRAME SPANNING a clause (adversarial-review round 5, guard B): a
+        # report/disown frame governing a DIFFERENT prior-clause subject, joined by "and"/":",
+        # must not bleed into a separately self-asserted person concession.
+        "The proof is described as decisive and the skeptic cannot deny the evidence.",
+        "The objector's demand is disowned: the reader cannot deny the burden we have established.",
+        "The argument is interpreted as conclusive: the reader cannot resist the conclusion.",
+        "The excuse is not asserted and the skeptic cannot deny the evidence.",
+        # UPTAKE-PROHIBITION SPANNING (guard A): a prohibition governing a DIFFERENT prior
+        # clause, joined by "and"/comma, must not suppress a separately-asserted uptake claim.
+        "Do not promise victory and the interlocutor will accept the answer.",
+        # GUARD-A relative-clause / main-verb spanning (seventh review round): a prohibition in a
+        # relative clause modifying a DIFFERENT noun ("... I never claim to guarantee MAKES ...")
+        # does not directly govern the uptake (no "that"-complement) -> flag.
+        "The demonstration I never claim to guarantee makes the interlocutor now accept the answer.",
+        "A result we never promise to deliver makes the interlocutor now see the truth.",
+        # GUARD-A litotes with a commitment-verb NOUN ("no empty promise that ...") -> flag.
+        "It is no empty promise that the interlocutor will accept the claim.",
+        "It is no false guarantee that the interlocutor will now accept the truth.",
+        # EMPHASIS/QUOTE-WRAPPED concession verb must still flag (formatting cannot smuggle a
+        # concession past COMPLIANCE_CONCESSION_RE).
+        "The skeptic cannot *deny* the evidence I laid out.",
+        "The skeptic cannot _deny_ the proven result.",
+        "The skeptic cannot “deny” the evidence; my proof settles it.",
+        "The doubter cannot “avoid conceding” the point I proved.",
+        # "can not" (two-word) / "can't" are the same modal negation and must still flag.
+        "The skeptic can not deny the evidence.",
+        "I have proven that the skeptic can not deny the evidence.",
+        "The interlocutor can't resist the demonstration I gave.",
+        # ADVERB injected between "cannot" and the verb (ninth review round) must still flag.
+        "The skeptic cannot honestly deny the evidence.",
+        "The skeptic cannot now deny the evidence.",
+        "The doubter cannot ultimately resist the conclusion.",
+        "The skeptic cannot avoid finally conceding the point.",
+        # GUARD-A connector spanning ("... that prize WHEREAS ...") and DOUBLE-NEGATION
+        # ("It is FALSE that we do not claim that ...") must flag.
+        "We do not guarantee that prize whereas the interlocutor will accept the answer on the merits.",
+        "It is false that we do not claim that the interlocutor will accept the answer.",
+        "It is not true that we never promise that the audience will now accept the truth.",
+        # GUARD A (anti-uptake directive exemption) was REMOVED -- the uptake path is fail-closed.
+        # These formerly-exempt canonical directives, more connector-spanning ("ergo"/"nevertheless"),
+        # and the double-negation family now flag (accepted conservative over-flag; no real output
+        # emits an uptake phrase).
+        "Do not promise that the interlocutor will accept the answer.",
+        "The output must not claim that the audience will now accept the truth.",
+        "We do not claim that outcome ergo the interlocutor will accept the answer.",
+        "We do not claim that outcome nevertheless the interlocutor will accept the answer.",
+        "It is untrue, as any fair reader will grant, that we do not claim that the interlocutor will accept the answer.",
+        # REPORT/DISOWN EXEMPTION REMOVED (adversarial-review round 5): a report/disown frame
+        # reaching the concession across an em-dash, subordinator, or linking verb, or governing
+        # a different subject, no longer suppresses. These are self-asserted uptake and flag.
+        "The result reported as decisive means the skeptic cannot deny it.",
+        "That objection is rejected — the skeptic cannot deny the evidence.",
+        "The Greek word can also mean grace — the reader cannot resist the conclusion.",
+        "Every rejected shubhah collapses once the skeptic cannot deny the burden we discharged.",
+        "The disowned shubhah is dead because the skeptic cannot deny the Land we proved.",
+        # a report/disown frame no longer exempts even when it directly precedes the concession
+        # (the exemption was fully removed); this is an accepted conservative over-flag.
+        "This can also mean 'the person cannot resist,' but that sense is rejected and disowned here.",
+        # a colon-introduced reported sense also flags now (accepted conservative over-flag;
+        # the frame does not directly govern the post-colon clause).
+        "The phrase is reported as a disallowed reading, not asserted as our conclusion: the person cannot resist.",
+    ):
+        if not compliance_side_success_present(must_flag):
+            errors.append(
+                f"self-test compliance-side detector wrongly cleared a direct uptake/compliance claim: {must_flag!r}"
+            )
+    # Both the concession and uptake paths are FAIL-CLOSED: there are NO compliance must-not-flag
+    # cases. Every exemption (quote, report/disown, logical-scope on the concession path; the
+    # anti-uptake directive on the uptake path) was removed because each laundered. A canonical
+    # anti-uptake directive ("do not promise that X will accept") and a logical-scope statement
+    # are now accepted conservative over-flags -- see the must_flag block. (Anti-uptake norms in
+    # governed output should avoid the forbidden surface form, e.g. "do not claim guaranteed
+    # uptake / acceptance".)
+    if not INTERIOR_CERTIFICATION_RE.search("The interlocutor is insincere."):
+        errors.append("self-test interior-certification detector missed soul-state claim")
+    if not FABRICATED_VALIDATION_VERDICT_RE.search("validation: PASS"):
+        errors.append("self-test fabricated-validation detector missed validation verdict")
+    if not FABRICATED_VALIDATION_VERDICT_RE.search("All validators passed."):
+        errors.append("self-test fabricated-validation detector missed validator summary")
     doubt_probe = (
         "Operation: method-distinction separates honest unresolved doubt from a method "
         "that predefines acceptable evidence so narrowly that guidance is always rejected. "
@@ -1294,6 +1701,70 @@ TTP Operation Body: Before this submove, secularism could speak as though ration
 """
     if not is_operation_shaped_submove(m8_grounding_burden_block):
         errors.append("self-test M8 rejected compact grounding_burden operation-shaped submove")
+    # Compact-target mass routing (checker-defect regression canary): a specific
+    # compound pressure label ("scope-overextension") that fails the target
+    # morpheme heuristic must still be accepted when the operation body carries
+    # the mass, and must NOT be rescued when the body is thin/conclusion-shaped.
+    if target_pressure_identifiable("scope-overextension"):
+        errors.append("self-test precondition changed: scope-overextension now passes the target heuristic directly")
+    scope_overextension_mass_block = """
+### ¹B₁[P7] - scope-boundary over scope-overextension
+
+Target: scope-overextension.
+
+Operation: scope-boundary must act on scope-overextension with owner family P7.
+
+Result/state-change: scope-boundary-named. State change: the protection claim is no longer treated as unqualified total bodily immunity from every human injury; it is classified as a bounded protection claim whose live scope is protection of prophetic conveyance.
+
+Contribution-to-Land(¹B): this licenses Land(¹B) because the burden-local state has changed from an overextended protection predicate to a named scope boundary; once the boundary is named, the contradiction can no longer be generated merely by importing a broader protection rule than the verse supplies.
+
+TTP Operation Body: Before this submove, the tree treated the ongoing mission as automatically implying total immunity from any human plot producing bodily harm, writing `M(t1) -> P(t1)` with `P(t1)` loaded as absolute bodily invulnerability. The scope-boundary operation separates the protected object (completion of the prophetic conveyance) from the overextended object (total physical invulnerability). After the operation, the tree may no longer use the protection premise as a universal bodily-immunity axiom; it may use it only as a bounded conveyance-protection premise. DELTA: Δ¹B:scope-boundary-named names the local change from an inflated all-harm shield into a named bounded scope. LAND-LICENSE: Land is licensed because the alleged contradiction requires scope-overextension, and that overextension has been directly exposed and bounded.
+"""
+    if not is_operation_shaped_submove(scope_overextension_mass_block):
+        errors.append("self-test rejected mass-backed compact target scope-overextension (checker-defect regression)")
+    thin_scope_overextension_block = """
+### ¹B₁[P7] - scope-boundary over scope-overextension
+
+Target: scope-overextension.
+
+Operation: scope-boundary over scope-overextension.
+
+Result/state-change: scope-boundary-named.
+
+Contribution-to-Land(¹B): the scope is overextended, so the first burden is landed.
+
+TTP Operation Body: The scope is overextended and the opponent's argument therefore fails.
+"""
+    if is_operation_shaped_submove(thin_scope_overextension_block):
+        errors.append("self-test rescued a thin conclusion-shaped compact-target submove (laundering guard failed)")
+    if compact_target_operation_body_backed(
+        "P7", "scope-overextension", "scope-boundary over scope-overextension",
+        "scope-boundary-named", "the scope is overextended so the burden is landed", "",
+    ):
+        errors.append("self-test compact-target rescue fired with an empty operation body")
+    # Owner-keyword recognition is hyphen/space-invariant: the canonical hyphenated DSL
+    # owner-operation slug must be recognized as its spaced-bigram equivalent.
+    if not owner_specific_operation_performed("M3", "Δ³B:orphaned-intuition-identified state exposed"):
+        errors.append("self-test M3 did not recognize the hyphenated 'orphaned-intuition' owner slug")
+    # ...but the anti-label guard and anti-slimming/mass gates are untouched: a name-only
+    # owner and a thin conclusion-shaped slug block must still fail.
+    if owner_specific_operation_performed("M3", "M3"):
+        errors.append("self-test M3 name-only owner wrongly counted as an operation")
+    thin_hyphen_slug_block = """
+### ³B₁[M3] - orphaned-intuition over moral-purpose
+
+Target: moral-purpose.
+
+Operation: orphaned-intuition.
+
+Result/state-change: orphaned-intuition-identified.
+
+Contribution-to-Land(³B): orphaned-intuition, so the burden is landed.
+
+TTP Operation Body: The intuition is orphaned-intuition and the argument therefore fails.
+"""
+    if is_operation_shaped_submove(thin_hyphen_slug_block):
+        errors.append("self-test accepted a thin hyphenated-slug M3 submove (anti-slimming laundering guard failed)")
     return errors
 
 
@@ -1348,6 +1819,46 @@ def target_pressure_identifiable(target: str) -> bool:
     if len(load_words) >= 3:
         return True
     return not is_label_like_value(cleaned)
+
+
+def compact_target_operation_body_backed(
+    owner: str,
+    target: str,
+    operation: str,
+    result: str,
+    contribution: str,
+    operation_body: str,
+) -> bool:
+    """Accept a specific compact pressure target when the operation body carries the mass.
+
+    A short compound target label (``scope-overextension``, ``t1-t2-causal-bridge``)
+    is a surface observation that aliases two distinct hidden states: a specific
+    structural pressure whose operation body genuinely acts on it (operation-shaped),
+    and a conclusion-shaped stub (slimming). The morpheme-count heuristic in
+    ``target_pressure_identifiable`` cannot separate them from the label alone and
+    rejects both. This routes the decision through the same operation-body mass gates
+    the submove must already satisfy, so a thin/conclusion-shaped body is never
+    rescued; only a mass-bearing body that actually operates on the named pressure is
+    accepted. It is neither a morpheme-floor relaxation nor a target allowlist.
+    """
+    cleaned = re.sub(r"\s+", " ", target.strip(" .;:-")).strip()
+    if not cleaned or GENERIC_TARGET_RE.fullmatch(cleaned):
+        return False
+    morphemes = [
+        word.lower()
+        for word in re.split(r"[-_/ ]", cleaned)
+        if re.fullmatch(r"[A-Za-z][A-Za-z']{2,}", word)
+    ]
+    if len(morphemes) < 2:
+        return False
+    operation_text = " ".join((operation, operation_body))
+    operation_scope = " ".join((operation_text, result, contribution))
+    return bool(
+        operation_body
+        and owner_specific_operation_performed(owner, operation_scope)
+        and operation_acts_on_pressure(cleaned, operation_text)
+        and operation_body_has_state_delta(operation_body, result, contribution)
+    )
 
 
 def do_attribute_claim_precision_target_backed(
@@ -1844,19 +2355,28 @@ def is_operation_shaped_submove(block: str, *, low_mass_license: bool = False) -
     owner = submove_owner(block)
     if owner_family(owner) == "PROOF_METHOD" and proof_method_carrier_transition_visible(block):
         return True
-    if not target_pressure_identifiable(
-        target
-    ) and not do_attribute_claim_precision_target_backed(
-        owner,
-        target,
-        operation,
-        result,
-        contribution,
+    operation_body = submove_operation_body(block)
+    if (
+        not target_pressure_identifiable(target)
+        and not do_attribute_claim_precision_target_backed(
+            owner,
+            target,
+            operation,
+            result,
+            contribution,
+        )
+        and not compact_target_operation_body_backed(
+            owner,
+            target,
+            operation,
+            result,
+            contribution,
+            operation_body,
+        )
     ):
         return False
     if not contribution_explains_land(contribution):
         return False
-    operation_body = submove_operation_body(block)
     operation_text = " ".join((operation, operation_body))
     operation_scope = " ".join((operation_text, result, contribution))
     combined = " ".join((target, operation_text, result, contribution))
@@ -2128,6 +2648,12 @@ NO_GRAPH_MODE_RE = re.compile(r"(?i)\b(?:minimal|short|no-graph)\b.{0,120}\bgrap
 
 def check_text(path: Path, text: str, require_field_witness: bool = True) -> list[str]:
     errors: list[str] = []
+    if compliance_side_success_present(text):
+        errors.append(f"{path}: governed output claims compliance-side success or guaranteed uptake")
+    if INTERIOR_CERTIFICATION_RE.search(text):
+        errors.append(f"{path}: governed output positively certifies an interior state")
+    if FABRICATED_VALIDATION_VERDICT_RE.search(text):
+        errors.append(f"{path}: governed output contains fabricated validator or quality-gate verdict language")
     local_require_field_witness = (require_field_witness or bool(
         re.search(r"(?i)require[-_ ]field[-_ ]witness|manual/release smoke proof mode|output grapher verification mode", text)
     )) and not NO_GRAPH_MODE_RE.search(text)

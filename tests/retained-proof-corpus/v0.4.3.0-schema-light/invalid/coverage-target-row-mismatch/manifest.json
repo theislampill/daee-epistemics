@@ -17,7 +17,7 @@
   "cases": [
     {
       "id": "a9-science-source",
-      "classification": "SIDECAR_BACKED_PROOF",
+      "classification": "SIDECAR_BACKED_STRUCTURAL",
       "rows": [
         "A.9",
         "B.1",

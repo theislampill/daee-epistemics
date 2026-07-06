@@ -16,7 +16,7 @@
   ],
   "cases": [
     {
-      "classification": "SIDECAR_BACKED_PROOF",
+      "classification": "SIDECAR_BACKED_STRUCTURAL",
       "rows": [
         "B.5"
       ],

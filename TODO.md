@@ -111,6 +111,26 @@ mixed evidence, proposal, and release claims.
   anchors as Responsible, and leave public render changes Accountable to the maintainer.
 - Status: active checker anchor only; not a completed-work catalogue.
 
+### [MUST][runtime][checker] Inference-Time Output Verifier / Live Output Interception
+
+- Problem: the default final-output preflight gate is runtime text, not an
+  independent code interceptor. Scriptless live chat remains model-behavioral
+  unless the output is captured and checked after emission.
+- Source surfaces: `atomics/skill/SKILL.md`,
+  `atomics/skill/references/rubrics/output-release.md`,
+  `atomics/skill/references/rubrics/diagnostic-render-contract.md`, and
+  `docs/non-claims.md`.
+- Checker/runtime surfaces: `tools/check_manual_smoke_render_contract.py`,
+  `tools/check_mid_reread_pressure.py`, `tools/check_mrp_route_invariants.py`,
+  `tools/check_public_burden_grouping.py`, `tools/check_concealment_mode.py`,
+  `tools/check_tlang_response_closure.py`, and any future host-side wrapper.
+- Required design: define the trigger point, accepted input text, rejection vs.
+  regeneration behavior, timeout/error handling, and the exact distinction
+  between build/CI validation and inference-time interception.
+- Status: active design/implementation gap. Do not claim live chat enforcement,
+  manipulation-proofness, or automatic HOLD/PARTIAL honesty until this verifier
+  exists and is proven against captured live outputs.
+
 ### [MUST][smoke][runtime] Manual Scriptless Compact DSL Behavioral Rerun
 
 - Problem: the scriptless compact DSL hard moral-protest / worship-worthiness output previously shrank against the
@@ -218,9 +238,11 @@ mixed evidence, proposal, and release claims.
   label-stripped generalization expectations; they are not live execution smokes.
 - Stage-1.5/1.6 evidence boundary: retained local ignored M9 child-mode outputs under
   `.daee/stage1.5-m9-child-live-smokes-20260514/` are semantic local evidence, not
-  package/release smoke proof. They are now machine-checkable by
+  package/release smoke proof. They are machine-checkable locally only by
   `tools/check_m9_child_mode_execution_samples.py`, which validates child-specific target,
   operation, result, Land(B), R(H,Delta), held/released routes, and anti-label-only safeguards.
+  The artifacts remain gitignored local custody; from a clean clone they are unverifiable
+  unless a minimal redacted sample set is promoted into `tests/`.
   `tools/check_smoke_artifacts.py --root` remains intentionally package/provenance oriented and
   does not accept those local artifacts without release-style sidecars.
 - Status: Stage 1 source/fixture patch staged with static verification; Stage-1.6 local checker

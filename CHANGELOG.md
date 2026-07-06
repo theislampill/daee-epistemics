@@ -15,7 +15,101 @@
 - Source-side field-operator architecture hardening: plain `∇` is route-gradient pressure over
   eligible live routes, `LoopBreak(∇×T)` is the explicit owner-grounded loop-breaking submove form,
   `𝒞(Ψᴺ)` is a positive closure-field condition, and `Ψᴺ` / `Ψᴵ` are separated by a
-  language-mediated coupling boundary.
+  language-mediated coupling boundary. Limits and Non-Claims: this is spec-side field-operator
+  hardening in `atomics/skill/references/diagnostics/recursive-state-transitions.md`, not proven
+  live-host behavioral recovery; the active TODO gate "Manual Scriptless Compact DSL Behavioral
+  Rerun" must pass before claiming that behavioral regression fixed.
+
+## [v0.4.5.0] - 2026-06-18
+
+v0.4.5.0 is the ACT/MRP false-pass repair and structural-integrity hardening release on the
+v0.4.x Skill-as-Code line. The original public release was replaced after a retained output
+surfaced a round-robin ACT / terminal-MRP false-pass; the repaired release preserves that artifact
+as an invalid fixture and retargets the release boundary to the corrected source commit.
+
+### Added
+
+- Public-traversal and mid-reread invariants for contiguous burden traversal, per-Land MRP
+  coverage, and terminal landing/STOP discipline.
+- A preserved invalid fixture for the v0.4.5.0 ACT/MRP false-pass class.
+- Release-repair notes, log, and artifact/provenance readback for the replacement release.
+
+### Changed
+
+- Replaced the original v0.4.5.0 GitHub Release assets with the repaired `.skill` payload and
+  provenance record.
+- Documented the superseded release boundary and the current repaired tag/source/artifact state.
+
+### Non-Claims
+
+- Smoke C hashes alone are local-custody evidence unless promoted into replayable retained corpus
+  cases.
+- The release proves structural checker hardening and artifact/provenance integrity, not universal
+  semantic grading or guaranteed live-host behavior.
+
+## [v0.4.4.0] - 2026-06-07
+
+v0.4.4.0 is the four-smoke closure release for the schema-light retained-proof-corpus line.
+It promotes Gate88 retained proof corpus artifacts and publishes the first v0.4.x package/provenance
+pair with post-release docs-boundary cleanup.
+
+### Added
+
+- Gate88 retained corpus cases with raw output, collapse certificate, and B5 full-IR sidecars.
+- Release provenance, package artifact verification, and docs/index release-download metadata.
+- Current-boundary ledger updates for v0.4.4.0 package publication and CI/Pages readback.
+
+### Changed
+
+- Tightened retained-corpus row-claim reconciliation and package/download readback wording.
+- Published the `daee-epistemics-v0.4.4.0.skill` artifact and provenance pair.
+
+### Non-Claims
+
+- Retained structural replay is not universal semantic grading, interlocutor uptake proof, or
+  cross-host model parity proof.
+
+## [v0.4.3.5] - 2026-05-31
+
+v0.4.3.5 is a source-boundary package/provenance checkpoint on the v0.4.3.x line. It preserves
+the v0.4.3.0 corrected-goal closure while adding package/provenance and docs-truthfulness
+readback.
+
+### Added
+
+- Source-boundary release artifact and provenance records for `daee-epistemics-v0.4.3.5.skill`.
+- Download/readback verification instructions and release-artifact ledger rows.
+
+### Changed
+
+- Refreshed release documentation to separate package artifact integrity from broader behavioral
+  claims.
+
+### Non-Claims
+
+- Package/provenance readback does not prove new smoke behavior, cross-host execution, or universal
+  semantic adequacy.
+
+## [v0.4.3.0] - 2026-05-24
+
+v0.4.3.0 is the generated-burden hotfix and corrected-goal closure release on the v0.4.x
+operative contract line. It repairs the public first-visible execution surface and preserves
+route/curl hotfixes from the v0.4.3.0 line.
+
+### Added
+
+- Corrected-goal release notes, release log, package artifact, and provenance record.
+- Manual-smoke regression closure evidence for the generated-burden and route/curl repair line.
+
+### Changed
+
+- Restored the governed first-visible `NOETIC FIELD EXECUTION` banner and route state alignment.
+- Clarified package/release evidence boundaries for the corrected public `v0.4.3.0` tag.
+
+### Non-Claims
+
+- `T_lang` response-closure checking was deferred to v0.4.4.0.
+- The release does not claim cross-host/paraphrase proof or guaranteed interlocutor uptake.
 
 ## [v0.4.2.0] - 2026-05-17 release candidate
 
@@ -186,6 +280,13 @@ packaged.
   internal/development compatibility.
 - Release-history terms such as clean default, live door, State Refresh, and full audit do not
   describe current runtime guidance unless explicitly marked historical.
+
+## [v0.4.0.0] - 2026-05-14
+
+Published release. See `docs/release-artifacts.md` ("v0.4.0.0 Published Release Asset" and
+"v0.4.0.0 Package-Bound Smoke Evidence") for the package asset, provenance, and package-bound
+smoke evidence. This heading backfills the release-registry record so the CHANGELOG covers
+every published version listed in `docs/release-artifacts.md` (release-registry binding, Plan 13).
 
 ## [v0.3.2.0] - 2026-05-09
 

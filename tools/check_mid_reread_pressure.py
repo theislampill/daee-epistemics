@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import glob
+import json
 import re
 import sys
 from dataclasses import dataclass
@@ -57,6 +58,7 @@ PRESSURE_KEYS = {
 }
 ALLOWED_DIVERGENCE = {"neutral", "settled", "bounded", "non-neutral"}
 ALLOWED_CURL = {"null", "resolved", "held", "non-null"}
+SUP = "⁰¹²³⁴⁵⁶⁷⁸⁹"
 DELTA_READ_SUFFIX_RE = r"(?:(?:B[1-9][0-9]*)|\(B[1-9][0-9]*\)|[⁰¹²³⁴⁵⁶⁷⁸⁹]+B)?"
 DELTA_READ_TOKEN_RE = rf"(?:Delta{DELTA_READ_SUFFIX_RE}|Δ{DELTA_READ_SUFFIX_RE})"
 REREAD_RE = re.compile(rf"R\(H,\s*{DELTA_READ_TOKEN_RE}\)")
@@ -84,7 +86,10 @@ MRP_BLOCK_RE = re.compile(
     + r"|^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+\b|Closure/Reconstruction Witness\b|"
     r"Closure Audit\b|Restorative Response\b|Closing Formulation\b)|\Z)"
 )
-LAND_GATE_RE = re.compile(r"(?m)^Land\((?P<burden>[¹²³⁴⁵⁶⁷⁸⁹]B|B[1-9][0-9]*)\):")
+LAND_GATE_RE = re.compile(
+    rf"(?m)^\s*(?:#{{1,6}}\s*)?(?:[-*]\s*)?(?:\*\*)?"
+    rf"Land\((?P<burden>[{SUP}]+B|B[1-9][0-9]*)\):(?:\*\*)?"
+)
 STOP_ROUTE_RE = re.compile(r"(?im)^\s*Route\s*:\s*STOP\b")
 POST_STOP_CONTINUATION_RE = re.compile(
     r"(?im)^\s*(?:#{1,6}\s*)?(?:Burden\s+\d+\b|Layer B\b|.*Layer B\s*[-—]\s*Governed Operation Body\b)"
@@ -104,7 +109,17 @@ STRICT_CURL_REASON_RE = re.compile(
     r"(?i)\b(?:circular|rotation|rotational|rotated|churn|recoil|label-pressure|"
     r"self-reinforcing|regress|wisw[āa]s)\b"
 )
-CURL_NEGATION_RE = re.compile(r"(?i)\b(?:no loop|no circular|no churn|not a loop|not circular)\b")
+CURL_NEGATION_RE = re.compile(
+    # "no loop" / "no circular" / "not a loop" (the loop does NOT EXIST / no circularity
+    # remains) contradicts a held curl. But a loop-RESOLUTION operation that has NOT yet
+    # happened is a VALID reason FOR a held curl (the loop is still active/unresolved), so
+    # "no loop break/broke/broken", "no loop closed/closes/closing/closure", and "no loop
+    # resolved/resolves/resolving" must NOT be read as no-loop claims: they say the loop
+    # has not been broken/closed/resolved, i.e. it persists -- exactly what "held" records.
+    r"(?i)\bno\s+loop\b(?!\s*[-\s]?(?:break|broke|broken|clos(?:e|ed|es|ing|ure)|"
+    r"resolv(?:e|ed|es|ing)))|"
+    r"\bno\s+circular\b|\bno\s+churn\b|\bnot\s+a\s+loop\b|\bnot\s+circular\b"
+)
 
 ACTIVATION_OWNER_RE = re.compile(
     r"\b(?:[A-Za-z0-9]+-[A-Za-z0-9-]+|diagnostic-render-contract|closure witness graph|"
@@ -591,64 +606,7 @@ def route_result_type_errors(path: Path, mrp: MrpBlock, label: str) -> list[str]
 
 
 def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[str]:
-    label = f"{path}: MRP block {index}"
-    errors: list[str] = []
-    if not mrp.target or "B" not in mrp.target:
-        errors.append(f"{label}: Target must name a burden")
-    if not mrp.reread or not re.search(r"R\(H,\s*(?:Δ|Delta)\)", mrp.reread):
-        errors.append(f"{label}: Reread must invoke R(H,Δ)")
-    errors.extend(direct_reread_content_errors(mrp, label))
-    if not mrp.landed_delta or not re.search(r"(?:ΔⁿB|Δ|Delta)", mrp.landed_delta):
-        errors.append(f"{label}: Landed delta must name ΔⁿB/Δ")
-    if not mrp.route_gradient:
-        errors.append(f"{label}: Route-gradient must record the plain-∇ directional read")
-    divergence_state = first_state(mrp.divergence)
-    curl_state = first_state(mrp.curl)
-    if not mrp.divergence or divergence_state not in ALLOWED_DIVERGENCE:
-        errors.append(f"{label}: must record active ∇·T state")
-    if not mrp.curl or curl_state not in ALLOWED_CURL:
-        errors.append(f"{label}: must record active ∇×T state")
-    errors.extend(field_diagnostics_content_errors(mrp, label))
-    missing_pressure = sorted(PRESSURE_KEYS - set(mrp.pressure_lines))
-    for key in missing_pressure:
-        errors.append(f"{label}: Pressure activations missing {key}")
-    for key, value in mrp.pressure_lines.items():
-        if not activation_names_owner_or_gap(value):
-            errors.append(f"{label}: pressure activation {key} must name an owner/TTP, pressure class, or coverage gap")
-    if mrp.finding not in FINDINGS:
-        errors.append(f"{label}: Finding invalid: {mrp.finding!r}")
-    if not mrp.route_result_type:
-        errors.append(f"{label}: MRP route result type missing")
-    errors.extend(route_result_type_errors(path, mrp, label))
-    errors.extend(mrp_refutation_content_errors(mrp, label))
-    if not mrp.graph_delta:
-        errors.append(f"{label}: Graph delta missing")
-    if mrp.route not in ROUTES:
-        errors.append(f"{label}: Route invalid: {mrp.route!r}")
-    if mrp.finding == "stable" and (mrp.route != "STOP" or not is_none_delta(mrp.graph_delta)):
-        errors.append(f"{label}: stable finding requires STOP and no graph edge")
-    if mrp.finding == "genuine-dependent" and (mrp.route != "RECURSE" or not has_edge(mrp.graph_delta)):
-        errors.append(f"{label}: genuine-dependent finding requires RECURSE and graph edge")
-    if mrp.finding == "partial-real" and mrp.route != "HOLD":
-        errors.append(f"{label}: partial-real finding requires HOLD")
-    if has_edge(mrp.graph_delta) and mrp.preemption_basis == "none":
-        errors.append(f"{label}: graph-edge pre-emption requires graph/commitment/framework-bound basis")
-    if mrp.route == "STOP" and LIVE_PRESSURE_RE.search(mrp.body):
-        if not re.search(r"(?i)\b(?:held|HOLD|PARTIAL|landed|merged|cleared|bounded)\b", mrp.body):
-            errors.append(f"{label}: STOP cannot leave named live pressure unreleased, unheld, or unpartialed")
-    if mrp.route == "STOP" and has_unreleased_route(mrp.body):
-        errors.append(f"{label}: STOP cannot leave an identified post-Land escape route unreleased; generate, HOLD/PARTIAL, or LoopBreak it")
-    errors.extend(high_leverage_false_closure_errors(path, mrp, label))
-    return errors
-
-
-def check_mrp_block(path: Path, text: str, mrp: MrpBlock, index: int) -> list[str]:
-    """Validate any MRP block after the first one.
-
-    This intentionally shadows the legacy helper above, whose regexes were tied to a stale
-    mojibake spelling of Delta. Multi-burden hosted smokes need every block to be checked with
-    the same route/resultant contract as the first block.
-    """
+    """Validate one MRP block with the current route/resultant contract."""
     label = f"{path}: MRP block {index}"
     errors: list[str] = []
     if not mrp.target or "B" not in mrp.target:
@@ -736,6 +694,32 @@ def per_land_mrp_coverage_errors(path: Path, text: str) -> list[str]:
                 "block must not cover multiple landings"
             )
     return errors
+
+
+def expected_diagnostic_failures(fixture_path: Path, emitted: list[str]) -> list[str]:
+    """Optional expected-diagnostic sidecar (schema expected-diagnostic-v1); see
+    docs/fixture-taxonomy.md. If <fixture-stem>.expected.json exists next to an
+    invalid fixture, require every expected_error_substrings entry (>= 12 chars, not
+    the fixture name/path) to appear in an emitted error, pinning the fixture to fail
+    for the RIGHT reason. Opt-in: a fixture without a sidecar is unaffected."""
+    sidecar = fixture_path.parent / (fixture_path.stem + ".expected.json")
+    if not sidecar.is_file():
+        return []
+    out: list[str] = []
+    data = json.loads(sidecar.read_text(encoding="utf-8"))
+    if data.get("schema") != "expected-diagnostic-v1":
+        return [f"{sidecar}: schema must be 'expected-diagnostic-v1'"]
+    if data.get("fixture") != fixture_path.name:
+        out.append(f"{sidecar}: fixture must be {fixture_path.name!r}")
+    blob = "\n".join(emitted)
+    for sub in data.get("expected_error_substrings", []):
+        if not isinstance(sub, str) or len(sub) < 12:
+            out.append(f"{sidecar}: expected_error_substrings entry must be a string >= 12 chars: {sub!r}")
+        elif sub in {fixture_path.name, str(fixture_path)}:
+            out.append(f"{sidecar}: expected_error_substrings must not equal the fixture path/name")
+        elif sub not in blob:
+            out.append(f"{fixture_path}: expected diagnostic not observed: {sub!r}")
+    return out
 
 
 def check_fixture(path: Path) -> list[str]:
@@ -942,6 +926,57 @@ def expand_output_paths(paths: list[Path]) -> list[Path]:
     return expanded
 
 
+def _self_test_curl_negation() -> list[str]:
+    """No-model canary for the held-curl / no-loop-break distinction (both directions).
+
+    A held curl whose stated reason is that the loop-BREAK operation has not yet landed
+    ("no loop break before X") is a VALID held-curl reason and must not be read as a
+    no-loop contradiction; a held curl claiming the loop does NOT EXIST ("no loop
+    remains" / "not a loop") is a direct contradiction and must still flag.
+    """
+    errors: list[str] = []
+
+    def _mk(curl: str) -> MrpBlock:
+        return MrpBlock(
+            body="", target="", reread="", landed_delta="", route_gradient="",
+            divergence="", curl=curl, finding="", route_result_type="",
+            mrp_resultant="", graph_delta="", preemption_basis="", route="",
+            boundary="", pressure_lines={},
+        )
+
+    def _flags(curl: str) -> bool:
+        return any(
+            "contradicts a no-loop" in error
+            for error in curl_diagnostic_errors(Path("curl-self-test"), _mk(curl), "curl-self-test")
+        )
+
+    for reason in (
+        "held / no loop break before analogy carrier audit",
+        "held / no loop-break has landed yet",
+        "held / the loop is not broken until M9 separates the predicate",
+        # a loop-RESOLUTION verb that has not yet happened ("no loop closed/resolved
+        # until X") is a valid held-curl reason -- the loop persists because it has not
+        # been closed/resolved -- and must not read as a no-loop contradiction.
+        "held / no loop closed until sender and sent are reread",
+        "held / no loop resolved until the predicate is separated",
+        "held / no loop closure yet, the circulation is still live",
+    ):
+        if _flags(reason):
+            errors.append(f"curl self-test wrongly flagged a valid held/no-loop-resolution reason: {reason!r}")
+    for reason in (
+        "held / no loop remains",
+        "held / not a loop here",
+        "held / no circular pressure remains",
+        # a genuine no-loop assertion ("no loop, the reasoning is linear") is still a
+        # direct contradiction of a held curl and must flag: the resolution-verb
+        # exemption must not swallow a bare no-loop-exists claim.
+        "held / no loop, the reasoning is strictly linear",
+    ):
+        if not _flags(reason):
+            errors.append(f"curl self-test failed to preserve a direct no-loop contradiction: {reason!r}")
+    return errors
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path("tests/mid-reread-pressure"))
@@ -957,6 +992,7 @@ def main() -> int:
     root = args.root
     valid, invalid = iter_fixtures(root)
     errors: list[str] = []
+    errors.extend(_self_test_curl_negation())
     valid_checked = 0
     invalid_checked = 0
     valid_blocks: list[tuple[Path, MrpBlock]] = []
@@ -975,6 +1011,7 @@ def main() -> int:
             errors.append(f"{path}: expected-invalid fixture unexpectedly passed")
         else:
             invalid_checked += 1
+            errors.extend(expected_diagnostic_failures(path, found))
     output_checked = 0
     output_paths = expand_output_paths(args.outputs)
     for path in output_paths:

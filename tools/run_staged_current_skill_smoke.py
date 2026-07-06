@@ -420,8 +420,14 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "be an object with exactly the six slots freeze-landed-move, dependency-tug, "
             "hidden-framework-recoil, entailment-pressure, doubt-churn-guard, and "
             "reorientation-reminder; every slot value must record the real pressure read for THIS "
-            "burden and begin with the owner/TTP id, `pressure class:`, or `coverage gap:` that "
-            "carried it — placeholder values like none/cleared/n/a are rejected. Consistency is "
+            "burden and begin with a SPECIFIC routed owner/TTP id (for example "
+            "`authority-order-repair`, `source-lineage`, `M7`, or `FPD`) or the literal "
+            "`pressure class:` / `coverage gap:` that carried it. Bare family aliases "
+            "(`SOURCE`, `AUTHORITY`, `OWNER`, `OP`, `MRP`, `DEFINITION`, `RESTORATION`) are loose "
+            "aliases and are REJECTED as owner/TTP ids: resolve each to its specific routed id "
+            "(e.g. `SOURCE` -> `authority-order-repair` or `source-lineage`) or begin the value "
+            "directly with `pressure class:`. Placeholder values like none/cleared/n/a are "
+            "rejected. Consistency is "
             "enforced: `divergence` and `curl` are parser-stable single-line diagnostics; do not "
             "put semicolons or line breaks inside either value. Stable requires route STOP and "
             "graph_delta none; genuine-dependent requires RECURSE and a graph edge; "
@@ -6525,10 +6531,16 @@ def release_section_prompt(
             else f"This section's rough share is {section_floor} bytes. "
         )
         target_line = (
-            f"\nOverall compiled output floor: at least {target}KB across {section_count} sections. "
-            f"{section_budget_text}Expand governed content enough to "
-            "help the assembled output meet the floor. The harness will fail the assembly if the "
-            "compiled output is under target.\n"
+            f"\nThis is a harness assembly protocol: repo tooling assembles these sections into the ONE "
+            f"governed `/daee-epistemics` answer the real skill (`skill/SKILL.md`) defines -- split only "
+            f"for evidence-budget accounting and section-local validation, not a different or competing "
+            f"contract. Overall assembled floor: at least {target}KB across {section_count} sections. "
+            f"{section_budget_text}This minimum is an anti-slimming / evidence-mass floor -- the least "
+            "genuine diagnostic mass the governed content for this section must carry -- NOT a padding "
+            "target. Produce the complete, genuine governed content for this section; do not pad, add "
+            "filler, repeat, or inflate to hit a number. If genuine governed content falls under the floor, "
+            "the section is under-developed (develop the real diagnostic work further); never pad. The "
+            "harness fails the assembly if the compiled output is under target.\n"
         )
     partition_line = ""
     if section_role == "layer_b_act":
@@ -6567,12 +6579,18 @@ current-skill smoke. The final public `output.md` will be assembled by repo
 tooling from hash-checked section files; do not try to write the whole answer
 in this one message.
 
-Public interface boundary:
+Public interface boundary (artifact-boundary discipline -- this bounds the PUBLIC
+artifact; it does not ask you to hide or suppress your reasoning):
 - Preserve `/daee-epistemics` governed output shape across the assembled file.
 - Do not expose raw dev harness internals as a new public mode.
-- Do not include commentary about this harness, section manifest, or compiler.
-- Do not include private planning, self-talk, scratch analysis, "final answer only"
-  reminders, checklist prose, or notes about what you need to write.
+- Do not put commentary about this harness, section manifest, or compiler into the
+  public artifact (you may reason about them internally; just keep them out of the
+  governed output text).
+- The section text you return IS the public governed artifact: emit the governed
+  content itself, not meta-commentary about producing it -- no "final answer only"
+  reminders, checklist prose, planning narration, or notes about what you still need
+  to write. Reason internally as much as you need; the returned section must be the
+  governed content, not notes about it.
 - Do not build or claim verifier sidecars, collapse certificates, Grapher output,
   B.5 projection sidecars, retained promotion, package operations or provenance
   claims, guaranteed uptake, broad model behavior, broad A/B/C/D closure,
@@ -6663,8 +6681,15 @@ def release_section_expansion_prompt(
     return f"""Runtime SHA256: {skill_hash}
 
 You are expanding one already-generated stage-07 compiled output section inside
-the same bounded pilot run. This is not a second pilot. The harness will append
-your text to the same section file, hash it, and validate the assembled output.
+the same bounded pilot run. This is a harness assembly protocol: repo tooling
+assembles these sections into the ONE governed `/daee-epistemics` answer the real
+skill (`skill/SKILL.md`) defines, split only for evidence-budget accounting and
+section-local validation -- not a different or competing contract. This is not a
+second pilot. The harness will append your text to the same section file, hash it,
+and validate the assembled output. The section minimum below is an anti-slimming /
+evidence-mass floor (the least genuine diagnostic mass this section must carry),
+NOT a padding target: add real governed diagnostic detail, never filler, repetition,
+or inflation to hit a byte count.
 
 Run metadata: redacted from model-facing route surface; case IDs and paths are
 custody fields only and must not determine routing, owner selection, proof
@@ -6684,9 +6709,13 @@ Expansion contract:
 - Do not contradict or replace existing text.
 - Do not include JSON or code fences unless the section role itself requires JSON and the added text is valid for that role.
 - Do not claim verifier sidecars, retained promotion, package operations or provenance claims, guaranteed uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or ActiveGraph proof.
-- Do not mention this harness, expansion loop, byte budget, manifest, or compiler.
-- Do not include private planning, self-talk, scratch analysis, "final answer only"
-  reminders, checklist prose, or notes about what you need to write.
+- Keep commentary about this harness, expansion loop, byte budget, manifest, or
+  compiler out of the public artifact (reason about them internally if needed; just
+  do not put that commentary in the governed output text).
+- The text you return IS the public governed artifact: emit governed content itself,
+  not meta-commentary about producing it -- no "final answer only" reminders, checklist
+  prose, planning narration, or notes about what you still need to write.
+- Reason internally as much as you need; the returned text must be governed content.
 - {role_notes.get(section_role, "Add role-local governed detail that stays inside the current section boundary.")}
 
 Existing section text:
@@ -6915,7 +6944,10 @@ def build_codex_command(
         "-c",
         'approval_policy="never"',
         "-c",
-        'shell_environment_policy.inherit="all"',
+        # Keep model-smoke subprocesses off the caller's shell environment.
+        # The prompt can contain adversarial interlocutor text; read-only
+        # filesystem sandboxing is not an environment-secret boundary.
+        "shell_environment_policy.inherit=none",
         "--output-last-message",
         str(output_path),
         "-",
@@ -6927,6 +6959,75 @@ def invoke_codex(root: Path, model: str, prompt: str, output_path: Path, log_pat
     result = run_checked(command, cwd=root, input_text=prompt)
     write_text(log_path, result.stdout)
     return result.returncode
+
+
+MODEL_RUNNER = "codex"
+
+
+def build_claude_command(
+    root: Path,
+    model: str,
+    *,
+    claude_executable: str | None = None,
+) -> list[str]:
+    """Claude-lane analogue of build_codex_command.
+
+    The daee stage prompt is self-contained (it explicitly forbids filesystem
+    reads, shell commands, and path access), so the Claude runner needs no tools.
+    ``--tools ""`` disables ALL built-in tools -- the true read-only / no-mutation
+    equivalent of codex ``-s read-only`` (the model can produce the governed output
+    but cannot read files, run shells, or edit anything). ``--permission-mode plan``
+    is intentionally NOT used: plan mode instructs the model to PLAN rather than
+    execute, which makes Claude withhold the governed Stage output and instead emit a
+    "you said not to execute yet" clarification (an ANDON reproduced on the Stage-07
+    section requests). ``claude -p`` prints the final message to stdout, which
+    invoke_claude captures (claude has no ``--output-last-message`` flag).
+    """
+    claude = claude_executable or shutil.which("claude")
+    if claude is None:
+        raise HarnessError(
+            "claude CLI not found on PATH; Claude model smoke is blocked by harness/credential environment"
+        )
+    return [claude, "-p", "--model", model, "--tools", ""]
+
+
+def invoke_claude(
+    root: Path,
+    model: str,
+    prompt: str,
+    output_path: Path,
+    log_path: Path,
+    *,
+    claude_executable: str | None = None,
+) -> int:
+    command = build_claude_command(root, model, claude_executable=claude_executable)
+    # Capture stdout (the final message) separately from stderr so the message is
+    # not contaminated by transport logs; utf-8 so register glyphs (tau, Delta,
+    # act brackets) survive intact.
+    result = subprocess.run(
+        command,
+        cwd=str(root),
+        input=prompt,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    write_text(output_path, result.stdout or "")
+    log_text = result.stdout or ""
+    if result.stderr:
+        log_text = log_text + "\n[stderr]\n" + result.stderr
+    write_text(log_path, log_text)
+    return result.returncode
+
+
+def invoke_model(root: Path, model: str, prompt: str, output_path: Path, log_path: Path) -> int:
+    """Dispatch the model invocation to the selected runner (default codex)."""
+    if MODEL_RUNNER == "claude":
+        return invoke_claude(root, model, prompt, output_path, log_path)
+    return invoke_codex(root, model, prompt, output_path, log_path)
 
 
 def read_text_if_exists(path: Path) -> str:
@@ -7233,7 +7334,7 @@ def invoke_expansion_with_transport_policy(
         output_path = attempt_path(base_output_path, attempt)
         log_path = attempt_path(base_log_path, attempt)
         write_text(prompt_path, prompt)
-        exit_code = invoke_codex(root, model, prompt, output_path, log_path)
+        exit_code = invoke_model(root, model, prompt, output_path, log_path)
         stage_files.extend([prompt_path, output_path, log_path])
         log_text = read_text_if_exists(log_path)
         transport = classify_transport_failure(exit_code, log_text)
@@ -7376,6 +7477,44 @@ def base_record(
     return record
 
 
+ROUTE_STATE_REPAIR_KEYS: tuple[str, ...] = (
+    "held_route_gradient_identity",
+    "matched_route_hydrations",
+    "per_burden_intermediate_stop_continuations",
+)
+
+
+def route_state_repairs_summary(stages: list[dict[str, Any]] | None) -> dict[str, Any]:
+    """Record-only audit summary of stage-05 route-state-repair normalizer firings.
+
+    Reads each stage's ``normalization`` dict (read-only) and surfaces which of the
+    ROUTE_STATE_REPAIR_KEYS fired and on which stage. This is provenance / observability
+    metadata only: it never changes the verdict, the schema, or any stage state, and a
+    surfaced route-state repair is a factual disclosure (which normalizer rewrote
+    route/terminal state), not a permission or policy decision. Stage-03 route/owner
+    *ingestion* normalizers (``route_targets_from_details`` / ``canonical_route_targets``
+    / the ``owner_route*`` family) are deliberately excluded -- they are not terminal
+    route-state repairs.
+    """
+    fired: list[dict[str, Any]] = []
+    for stage in stages or []:
+        if not isinstance(stage, dict):
+            continue
+        normalization = stage.get("normalization")
+        if not isinstance(normalization, dict):
+            continue
+        stage_id = stage.get("id")
+        for key in ROUTE_STATE_REPAIR_KEYS:
+            if key in normalization:
+                fired.append({"stage": stage_id, "key": key})
+    return {
+        "schema": "route-state-repairs-v1",
+        "route_state_repair_keys": list(ROUTE_STATE_REPAIR_KEYS),
+        "fired": fired,
+        "total": len(fired),
+    }
+
+
 def write_hash_record(
     path: Path,
     *,
@@ -7392,6 +7531,7 @@ def write_hash_record(
     output_path: Path | None,
     sidecar_paths: list[Path],
     verdict: str,
+    route_state_repairs: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     payload: dict[str, Any] = {
         "schema": "staged-current-skill-smoke-hashes-v1",
@@ -7426,6 +7566,8 @@ def write_hash_record(
         payload["handoff_record"] = {"path": rel(handoff_record, root), "sha256": sha256_file(handoff_record)}
     if output_path is not None and output_path.exists():
         payload["output"] = {"path": rel(output_path, root), "sha256": sha256_file(output_path)}
+    if route_state_repairs is not None:
+        payload["route_state_repairs"] = route_state_repairs
     write_json(path, payload)
     return payload
 
@@ -7444,8 +7586,98 @@ def run_self_test(root: Path) -> int:
     )
     if "--ignore-user-config" not in smoke_command or "--ephemeral" not in smoke_command:
         raise HarnessError("Self-test Codex subprocess command did not isolate mutable user config")
-    if 'approval_policy="never"' not in smoke_command or 'shell_environment_policy.inherit="all"' not in smoke_command:
+    if 'approval_policy="never"' not in smoke_command or "shell_environment_policy.inherit=none" not in smoke_command:
         raise HarnessError("Self-test Codex subprocess command lost approval/environment policy")
+    if MODEL_RUNNER != "codex":
+        raise HarnessError("Self-test default MODEL_RUNNER must be codex (Codex lane behavior-preserving)")
+    claude_command = build_claude_command(root, "claude-opus-4-8", claude_executable="claude")
+    if claude_command != ["claude", "-p", "--model", "claude-opus-4-8", "--tools", ""]:
+        raise HarnessError(f"Self-test build_claude_command shape drifted: {claude_command}")
+    # Canary: the Claude command must NOT use plan mode (plan mode makes Claude PLAN
+    # instead of producing the governed Stage output); it must disable all tools for
+    # read-only safety while still emitting the final answer on stdout.
+    if "--permission-mode" in claude_command or "plan" in claude_command:
+        raise HarnessError("Self-test: Claude command must not use plan mode (it withholds the governed output)")
+    if "--tools" not in claude_command or claude_command[claude_command.index("--tools") + 1] != "":
+        raise HarnessError("Self-test: Claude command must disable all tools via --tools \"\" (read-only, no execution)")
+    claude_capture_dir = root / ".daee" / "validation"
+    claude_capture_dir.mkdir(parents=True, exist_ok=True)
+    claude_out_path = claude_capture_dir / "self-test-claude-output.txt"
+    claude_log_path = claude_capture_dir / "self-test-claude-log.txt"
+
+    def _fake_claude_run(command, **kwargs):
+        if "--tools" not in command or command[command.index("--tools") + 1] != "":
+            raise HarnessError("Self-test claude subprocess command lost read-only no-tools mode (--tools \"\")")
+        if "--permission-mode" in command or "plan" in command:
+            raise HarnessError("Self-test claude subprocess command must not use plan mode")
+        return subprocess.CompletedProcess(command, 0, stdout="SELF_TEST_CLAUDE_STAGE_RESPONSE\n", stderr="")
+
+    real_subprocess_run = subprocess.run
+    subprocess.run = _fake_claude_run
+    try:
+        claude_exit = invoke_claude(
+            root,
+            "claude-opus-4-8",
+            "self-test prompt",
+            claude_out_path,
+            claude_log_path,
+            claude_executable="claude",
+        )
+    finally:
+        subprocess.run = real_subprocess_run
+    if claude_exit != 0 or claude_out_path.read_text(encoding="utf-8") != "SELF_TEST_CLAUDE_STAGE_RESPONSE\n":
+        raise HarnessError("Self-test invoke_claude did not capture model stdout into the output path")
+    # Scaffold-text canaries: the compiled-output section framing must be truthful --
+    # the byte minimum is an anti-slimming / evidence-mass floor (NOT a padding target)
+    # and the interface boundary is artifact discipline (NOT a request to hide reasoning)
+    # -- while preserving the evidence-budget floor requirement. This forbids reintroducing
+    # padding/hide-reasoning phrasing that made the prompt semantically false to the model.
+    _section_prompt = release_section_prompt(
+        root=root, case_name="scaffold-self-test", raw_input_path=root / "self-test-input",
+        input_text="self-test", input_digest="D", skill_hash="H", previous_stages=[],
+        section_id="opening", section_role="visible_opening", section_number=1, section_count=10,
+        target_output_kb=100, section_min_bytes=5120, assigned_body_refs=None,
+    )
+    _expansion_prompt = release_section_expansion_prompt(
+        root=root, case_name="scaffold-self-test", raw_input_path=root / "self-test-input",
+        input_digest="D", skill_hash="H", section_id="opening", section_role="visible_opening",
+        section_min_bytes=5120, current_bytes=100, expansion_round=1, max_rounds=2,
+        assigned_body_refs=None, existing_text="existing",
+    )
+    for _label, _prompt in (("section", _section_prompt), ("expansion", _expansion_prompt)):
+        _low = _prompt.lower()
+        if "anti-slimming" not in _low or "evidence-mass" not in _low:
+            raise HarnessError(f"Self-test: compiled {_label} prompt lost the anti-slimming/evidence-mass floor framing")
+        if "not a padding target" not in _low:
+            raise HarnessError(f"Self-test: compiled {_label} prompt must state the floor is NOT a padding target")
+        if "reason internally" not in _low:
+            raise HarnessError(f"Self-test: compiled {_label} prompt must keep artifact-boundary (reason-internally, not-hiding) framing")
+        if "expand governed content enough to help the assembled output meet the floor" in _low:
+            raise HarnessError(f"Self-test: compiled {_label} prompt still uses the padding-to-meet-the-floor phrasing")
+    if "at least 100kb across 10 sections" not in _section_prompt.lower():
+        raise HarnessError("Self-test: compiled section prompt lost the evidence-budget floor requirement")
+    # Scaffold-text canary: the Stage 05 pressure_activations guidance must state the
+    # producer-side contract enforced by build_staged_governed_output.PER_BURDEN_SLOT_START_RE
+    # -- bare family aliases (SOURCE/AUTHORITY/OWNER/OP/MRP/DEFINITION/RESTORATION, per
+    # module-codes.md) are loose aliases and are rejected as owner/TTP ids; the value must
+    # begin with a specific routed id or the literal pressure class:/coverage gap: marker.
+    # This keeps the generation-side prompt aligned with the checker contract so the model
+    # is not silently led into a Stage 05 rejection.
+    _stage05_instructions = STAGE_SPECS["stage-05-mrp-reread-terminal-state"]["instructions"]
+    _stage05_low = _stage05_instructions.lower()
+    for _alias in ("SOURCE", "AUTHORITY", "OWNER", "OP", "MRP", "DEFINITION", "RESTORATION"):
+        if _alias not in _stage05_instructions:
+            raise HarnessError(
+                f"Self-test: Stage 05 pressure guidance must name loose family alias {_alias!r} as rejected"
+            )
+    if "loose alias" not in _stage05_low or "rejected as owner/ttp id" not in _stage05_low:
+        raise HarnessError(
+            "Self-test: Stage 05 pressure guidance must state bare family aliases are loose aliases rejected as owner/TTP ids"
+        )
+    if "specific routed owner/ttp id" not in _stage05_low:
+        raise HarnessError(
+            "Self-test: Stage 05 pressure guidance must direct the model to a specific routed owner/TTP id"
+        )
     replay = load_json(replay_record)
     named_scope = model_scope("self-test-a9-science-source", replay_record, stop_after_stage=None)
     neutral_scope = model_scope("neutral-formal-route-copy", replay_record, stop_after_stage=None)
@@ -7776,12 +8008,55 @@ def run_self_test(root: Path) -> int:
         output_path=None,
         sidecar_paths=[],
         verdict="SELF_TEST_NO_MODEL_PASS",
+        route_state_repairs=route_state_repairs_summary(replay["stages"]),
     )
     loaded_hashes = load_json(hash_path)
     if loaded_hashes.get("mode") != "self-test-no-model":
         raise HarnessError("Self-test hash record did not preserve self-test mode")
     if loaded_hashes.get("model") is not None:
         raise HarnessError("Self-test hash record must not claim a model invocation")
+    route_state_repairs = loaded_hashes.get("route_state_repairs")
+    if not isinstance(route_state_repairs, dict):
+        raise HarnessError("Self-test hash record must surface a route_state_repairs summary")
+    if route_state_repairs.get("total") != 0 or route_state_repairs.get("fired") != []:
+        raise HarnessError("Self-test replay carries no normalization; route_state_repairs must be empty")
+    if loaded_hashes.get("verdict") != "SELF_TEST_NO_MODEL_PASS":
+        raise HarnessError("route_state_repairs field must not change the hash-record verdict")
+    if loaded_hashes.get("schema") != "staged-current-skill-smoke-hashes-v1":
+        raise HarnessError("route_state_repairs field must not change the hash-record schema id")
+    control_payload = write_hash_record(
+        run_dir / "staged-smoke-control.json",
+        root=root,
+        case_name="self-test-a9-science-source",
+        mode="self-test-no-model",
+        model=None,
+        skill_path=files["skill"],
+        replay_record=replay_record,
+        raw_input_path=raw_input,
+        run_dir=run_dir,
+        stage_files=stage_files,
+        handoff_record=record_path,
+        output_path=None,
+        sidecar_paths=[],
+        verdict="SELF_TEST_NO_MODEL_PASS",
+    )
+    if {key: value for key, value in loaded_hashes.items() if key != "route_state_repairs"} != control_payload:
+        raise HarnessError("route_state_repairs must be purely additive (all other hash-record keys byte-identical)")
+    synthetic_stages = [
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "normalization": {"matched_route_hydrations": ["x"], "per_burden_intermediate_stop_continuations": ["y"]},
+        },
+        {"id": "stage-05-held-gradient", "normalization": {"held_route_gradient_identity": ["z"]}},
+        {"id": "stage-05-benign", "normalization": {"diagnostic_punctuation": ["ignored"], "canonical_route_targets": ["ignored"]}},
+    ]
+    synthetic_summary = route_state_repairs_summary(synthetic_stages)
+    if synthetic_summary["total"] != 3:
+        raise HarnessError("route_state_repairs_summary must surface all three route-state-repair firings")
+    if {entry["key"] for entry in synthetic_summary["fired"]} != set(ROUTE_STATE_REPAIR_KEYS):
+        raise HarnessError("route_state_repairs_summary must surface exactly the route-state-repair keys")
+    if any(entry["key"] in {"diagnostic_punctuation", "canonical_route_targets"} for entry in synthetic_summary["fired"]):
+        raise HarnessError("route_state_repairs_summary must not surface benign or stage-03 false-friend normalizers")
     transport_log = (
         "websocket attempt failed: 403 Forbidden\n"
         "falling back to HTTP transport\n"
@@ -15362,7 +15637,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 response_path = responses_dir / f"{stage_id}.response.txt"
                 log_path = responses_dir / f"{stage_id}.codex-log.txt"
                 write_text(prompt_path, prompt)
-                exit_code = invoke_codex(root, args.model, prompt, response_path, log_path)
+                exit_code = invoke_model(root, args.model, prompt, response_path, log_path)
                 stage_files.extend([prompt_path, response_path, log_path])
                 if exit_code != 0:
                     raise HarnessError(f"{stage_id}: codex exec failed with exit code {exit_code}; see {rel(log_path, root)}")
@@ -15394,6 +15669,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                         output_path=None,
                         sidecar_paths=[],
                         verdict=f"STAGED_CURRENT_SKILL_STAGE_LOCAL_PASS: stopped after {stage_id}",
+                        route_state_repairs=route_state_repairs_summary(stages),
                     )
                     print("staged current-skill stage-local smoke: PASS")
                     print(f"run dir: {rel(run_dir, root)}")
@@ -15470,7 +15746,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                     )
                 else:
                     write_text(section_prompt_path, section_prompt)
-                    exit_code = invoke_codex(root, args.model, section_prompt, section_output_path, section_log_path)
+                    exit_code = invoke_model(root, args.model, section_prompt, section_output_path, section_log_path)
                     stage_files.extend([section_prompt_path, section_output_path, section_log_path])
                     if exit_code != 0:
                         raise HarnessError(
@@ -15652,7 +15928,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             release_prompt_path = prompts_dir / "stage-07-release-output.prompt.md"
             release_log_path = responses_dir / "stage-07-release-output.codex-log.txt"
             write_text(release_prompt_path, release)
-            exit_code = invoke_codex(root, args.model, release, output_path, release_log_path)
+            exit_code = invoke_model(root, args.model, release, output_path, release_log_path)
             stage_files.extend([release_prompt_path, output_path, release_log_path])
             if exit_code != 0:
                 raise HarnessError(
@@ -15707,6 +15983,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 output_path=output_path,
                 sidecar_paths=[],
                 verdict="STAGED_CURRENT_SKILL_STAGE_LOCAL_PASS: stopped after stage-07-release-output",
+                route_state_repairs=route_state_repairs_summary(stages),
             )
             print("staged current-skill stage-local smoke: PASS")
             print(f"run dir: {rel(run_dir, root)}")
@@ -15757,6 +16034,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             output_path=output_path,
             sidecar_paths=sidecars,
             verdict="STAGED_CURRENT_SKILL_ONE_CASE_PROOF_SURFACE_PASS",
+            route_state_repairs=route_state_repairs_summary(stages),
         )
         print("staged current-skill smoke: PASS")
         print(f"run dir: {rel(run_dir, root)}")
@@ -15789,6 +16067,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             output_path=run_dir / "output.md",
             sidecar_paths=[],
             verdict=f"STAGED_MODEL_HARNESS_NEGATIVE_EVIDENCE: {exc}",
+            route_state_repairs=route_state_repairs_summary(stages),
         )
         print("staged current-skill smoke: FAIL")
         print(f"run dir: {rel(run_dir, root)}")
@@ -15815,6 +16094,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--section-expansion-rounds", type=int, default=0)
     parser.add_argument("--transport-retry-rounds", type=int, default=0)
     parser.add_argument("--resume-run-dir", type=Path, default=None)
+    parser.add_argument("--model-runner", choices=("codex", "claude"), default="codex")
     return parser.parse_args()
 
 
@@ -15830,6 +16110,8 @@ def main() -> int:
         raise HarnessError("--section-expansion-rounds must be a non-negative integer")
     if args.transport_retry_rounds < 0:
         raise HarnessError("--transport-retry-rounds must be a non-negative integer")
+    global MODEL_RUNNER
+    MODEL_RUNNER = args.model_runner
     if args.self_test:
         return run_self_test(root)
     release_output_mode = normalize_release_output_mode(args.release_output_mode)

@@ -465,32 +465,12 @@ outcome, classify it as docs-only or ornamental risk.
 After editing source files under `atomics/skill/`, run:
 
 ```bash
-python tools/build_framework_pipeline.py
-python tools/build_compiled_runtime.py
-python tools/build_docs_index.py --check
-python tools/check_framework_pipeline.py
-python tools/check_compiled_runtime_freshness.py
-python tools/check_package_shape.py
-python tools/check_compiled_module_boundaries.py
-python tools/check_stub_integrity.py
-python tools/check_consolidation_call_budget.py
-python tools/check_routing_parity.py
-python tools/check_routing_parity.py --strict
-python tools/check_recursive_traversal_governance.py
-python tools/check_render_modes.py
-python tools/check_frontmatter.py
-python tools/check_coverage.py
-python tools/check_recursion_collapse_noetic_frame.py
-python tools/check_metacompliance_current_canon.py
-python tools/check_register_formalism_bridge.py
-python tools/check_ttp_operator_contracts.py --strict
-python tools/check_docs_index_interactions.py
-python tools/check_field_operator_architecture.py
-python tools/check_smoke_artifacts.py
-python tools/check_ir_instance_integrity.py
-python tools/check_diagnostic_ir_catalogue_integrity.py
-python tools/check_encoding_hygiene.py
+python -m pip install -r requirements-dev.txt
+python tools/run_local_ci.py
 ```
+
+`tools/run_local_ci.py` is the one local reproduction surface for the `runtime-checks`
+workflow, including `git diff --exit-code -- skill/SKILL.md`.
 
 Before packaging or pushing, run the full applicable checker suite and confirm the generated
 runtime is fresh. Smoke artifacts are local evidence unless a task explicitly authorizes a
@@ -735,8 +715,9 @@ identity.
 
 v0.3.2.0 restored v0.3.1.0-style top-level behavioral coercion for scriptless compact DSL
 governance. Default `/daee-epistemics` is the canonical compact DSL-governed surface, not
-prose-only mode. DSL/IR is integral to the skill's anti-hallucination, routing,
-burden-accounting, and restoration discipline. `/daee-epistemics:dsl` is expanded
+prose-only mode. DSL/IR is integral to the skill's anti-drift, routing,
+burden-accounting, and restoration discipline; anti-hallucination benefit is a
+design hypothesis unless measured. `/daee-epistemics:dsl` is expanded
 diagnostic/IR visibility; it is not the first place DSL appears. The optional script-capable
 route/check harness can help Codex/dev/CI, but it is not the public identity of the skill and
 is not required for ordinary portability. If a model cannot produce the compact DSL-governed
@@ -946,7 +927,9 @@ runtime rules still live in atomics. schema-light register bridge semantics are
 current where atomics, generated runtime text, and `tests/register-formalism-bridge-fixtures/` make
 `heart`/`xi`/`Omega`/`mu`/`kappa` govern existing IR, owner/TTP selection, hold/release,
 collapse radius, burden landing, state re-read, PARTIAL, anti-symbol-theater, or restoration.
-Bridge live-smoke proof must point to retained audit evidence, not the index page. Do not call
+Bridge live-smoke proof must point to retained audit evidence, not the index page. Verify bridge
+semantics with `python tools/check_register_formalism_bridge.py` against the fixtures and generated
+runtime (this checker is included in the `tools/run_local_ci.py` battery). Do not call
 a later release/package readiness until the release-line, contract markers, package artifact,
 release docs, and current-release smoke requirements are migrated together. Do not make those
 registers mandatory runtime fields without a deliberate schema/checker/fixture/smoke migration,

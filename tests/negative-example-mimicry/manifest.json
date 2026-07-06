@@ -1,0 +1,131 @@
+{
+  "schema": "negative-example-mimicry-v1",
+  "fixtures": [
+    {
+      "owner_id": "proof-method-audit",
+      "source_path": "atomics/skill/references/diagnostics/proof-method-audit.md",
+      "negative_example": "argument-bank answer without proof-family typing",
+      "operation": "proof-family-and-carrier-audit",
+      "delta_result": "proof-family-carrier-typed",
+      "fixture_path": "tests/negative-example-mimicry/invalid/proof-method-audit-argument-bank-answer-without-proof-family-typing.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "proof-method-audit",
+      "source_path": "atomics/skill/references/diagnostics/proof-method-audit.md",
+      "negative_example": "route label used as operation token",
+      "operation": "proof-family-and-carrier-audit",
+      "delta_result": "proof-family-carrier-typed",
+      "fixture_path": "tests/negative-example-mimicry/invalid/proof-method-audit-route-label-used-as-operation-token.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "proof-method-audit",
+      "source_path": "atomics/skill/references/diagnostics/proof-method-audit.md",
+      "negative_example": "proof grammar treated as neutral tribunal",
+      "operation": "proof-family-and-carrier-audit",
+      "delta_result": "proof-family-carrier-typed",
+      "fixture_path": "tests/negative-example-mimicry/invalid/proof-method-audit-proof-grammar-treated-as-neutral-tribunal.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "proof-method-audit",
+      "source_path": "atomics/skill/references/diagnostics/proof-method-audit.md",
+      "negative_example": "Land(B) claimed without premise/inference/conclusion-scope change",
+      "operation": "proof-family-and-carrier-audit",
+      "delta_result": "proof-family-carrier-typed",
+      "fixture_path": "tests/negative-example-mimicry/invalid/proof-method-audit-land-b-claimed-without-premise-inference-conclusion-scope-change.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "proof-method-audit",
+      "source_path": "atomics/skill/references/diagnostics/proof-method-audit.md",
+      "negative_example": "source-status or revelation jurisdiction silently displaced by proof method",
+      "operation": "proof-family-and-carrier-audit",
+      "delta_result": "proof-family-carrier-typed",
+      "fixture_path": "tests/negative-example-mimicry/invalid/proof-method-audit-source-status-or-revelation-jurisdiction-silently-displaced-by-proof-method.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "M8-reductio",
+      "source_path": "atomics/skill/references/tactics/M8-reductio.md",
+      "negative_example": "owner name plus consequence keywords without a target premise",
+      "operation": "consequence-trace",
+      "delta_result": "consequence-traced",
+      "fixture_path": "tests/negative-example-mimicry/invalid/m8-reductio-owner-name-plus-consequence-keywords-without-a-target-premise.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "M8-reductio",
+      "source_path": "atomics/skill/references/tactics/M8-reductio.md",
+      "negative_example": "generic worldview critique with no selected burden edge",
+      "operation": "consequence-trace",
+      "delta_result": "consequence-traced",
+      "fixture_path": "tests/negative-example-mimicry/invalid/m8-reductio-generic-worldview-critique-with-no-selected-burden-edge.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "M8-reductio",
+      "source_path": "atomics/skill/references/tactics/M8-reductio.md",
+      "negative_example": "route label treated as M8 execution",
+      "operation": "consequence-trace",
+      "delta_result": "consequence-traced",
+      "fixture_path": "tests/negative-example-mimicry/invalid/m8-reductio-route-label-treated-as-m8-execution.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "M9-predication-mode",
+      "source_path": "atomics/skill/references/tactics/M9-predication-mode.md",
+      "negative_example": "person/nature words without a selected predicate transfer",
+      "operation": "predication-repair",
+      "delta_result": "predicate-separated",
+      "fixture_path": "tests/negative-example-mimicry/invalid/m9-predication-mode-person-nature-words-without-a-selected-predicate-transfer.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "M9-predication-mode",
+      "source_path": "atomics/skill/references/tactics/M9-predication-mode.md",
+      "negative_example": "operation alias not declared by the owner contract",
+      "operation": "predication-repair",
+      "delta_result": "predicate-separated",
+      "fixture_path": "tests/negative-example-mimicry/invalid/m9-predication-mode-operation-alias-not-declared-by-the-owner-contract.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "M9-predication-mode",
+      "source_path": "atomics/skill/references/tactics/M9-predication-mode.md",
+      "negative_example": "semantic labels used without field_witness/body_ref parity",
+      "operation": "predication-repair",
+      "delta_result": "predicate-separated",
+      "fixture_path": "tests/negative-example-mimicry/invalid/m9-predication-mode-semantic-labels-used-without-field-witness-body-ref-parity.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "TTP-MRP-mid-reread-pressure",
+      "source_path": "atomics/skill/references/tactics/TTP-MRP-mid-reread-pressure.md",
+      "negative_example": "string-only generated_burden_instantiation marker without B_MRP parity",
+      "operation": "mid-reread-pressure",
+      "delta_result": "held_burden_activation",
+      "fixture_path": "tests/negative-example-mimicry/invalid/ttp-mrp-mid-reread-pressure-string-only-generated-burden-instantiation-marker-without-b-mrp-parity.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "TTP-MRP-mid-reread-pressure",
+      "source_path": "atomics/skill/references/tactics/TTP-MRP-mid-reread-pressure.md",
+      "negative_example": "route label used as owner ACT execution",
+      "operation": "mid-reread-pressure",
+      "delta_result": "held_burden_activation",
+      "fixture_path": "tests/negative-example-mimicry/invalid/ttp-mrp-mid-reread-pressure-route-label-used-as-owner-act-execution.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    },
+    {
+      "owner_id": "TTP-MRP-mid-reread-pressure",
+      "source_path": "atomics/skill/references/tactics/TTP-MRP-mid-reread-pressure.md",
+      "negative_example": "case-name or topic string used as MRP proof",
+      "operation": "mid-reread-pressure",
+      "delta_result": "held_burden_activation",
+      "fixture_path": "tests/negative-example-mimicry/invalid/ttp-mrp-mid-reread-pressure-case-name-or-topic-string-used-as-mrp-proof.md",
+      "expected_error_substrings": ["operation label is not recoverable", "delta/result label is not recoverable"]
+    }
+  ]
+}

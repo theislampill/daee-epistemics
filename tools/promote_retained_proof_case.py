@@ -275,6 +275,24 @@ def validate_source_artifacts(input_path: Path, output_path: Path, cert_path: Pa
         raise SystemExit("output is missing field_witness")
     if "MRP(" not in output_text:
         raise SystemExit("output is missing MRP trace")
+    validate_route_artifact(output_path)
+
+
+def validate_route_artifact(output_path: Path) -> None:
+    route_checks = [
+        "check_mrp_route_invariants.py",
+        "check_public_burden_grouping.py",
+        "check_mid_reread_pressure.py",
+    ]
+    for checker in route_checks:
+        run_checked(
+            [
+                sys.executable,
+                str(ROOT / "tools" / checker),
+                "--outputs",
+                str(output_path),
+            ]
+        )
 
 
 def build_entry(
@@ -289,7 +307,7 @@ def build_entry(
 ) -> dict[str, Any]:
     entry = {
         "id": case_id,
-        "classification": "SIDECAR_BACKED_PROOF",
+        "classification": "SIDECAR_BACKED_STRUCTURAL",
         "rows": rows,
         "generated_skill_sha": generated_skill_sha,
         "origin": origin.replace("\\", "/"),
@@ -591,6 +609,25 @@ def self_test() -> int:
         else:
             print("retained proof case promotion self-test: FAIL")
             print("- stale-output canary was not rejected")
+            return 1
+
+        false_pass_output = (
+            ROOT
+            / "tests"
+            / "mrp-route-invariants"
+            / "invalid"
+            / "secularism-round-robin-act-terminal-mrp-false-pass.md"
+        )
+        try:
+            validate_route_artifact(false_pass_output)
+        except SystemExit as exc:
+            if "MRP route invariant check: FAIL" not in str(exc):
+                print("retained proof case promotion self-test: FAIL")
+                print(f"- false-pass promotion canary failed with unexpected error: {exc}")
+                return 1
+        else:
+            print("retained proof case promotion self-test: FAIL")
+            print("- false-pass route canary was not rejected")
             return 1
 
     print("retained proof case promotion self-test: PASS")

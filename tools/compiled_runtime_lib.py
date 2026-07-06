@@ -370,6 +370,7 @@ BUNDLE_SOURCES: dict[str, list[str]] = {
 
 EXTRA_INPUTS = [
     "skill/SKILL.md",
+    "skill/references/rubrics/non-droppable-manual-contract.md",
     "skill/references/diagnostics/framework-pipeline.yaml",
     "skill/references/diagnostics/module-catalogue.json",
     "skill/references/diagnostics/delta-result-vocabulary.json",

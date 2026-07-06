@@ -10,7 +10,7 @@ state: RECURSE
 - claim_level: source-status / proof-method pressure
 - pattern_profile: AS-8 source as evidence vs source as identity signal; source prestige is being confused with proof
 - reason-category: 2 / source-status gate controls proof release
-- Concealment mode: mixed - dominant iʿrāḍ + juḥūd pressure on the diagnostic target; source-stack ambiguity is routed through source-status discipline. Boundary: diagnostic noetic covering only; no hidden soul-state or takfīr judgment.
+- Concealment mode: mixed - dominant iʿrāḍ + juḥūd pressure on the diagnostic target; source-stack ambiguity is routed through source-status discipline. basis: visible discourse pattern; held, not certified. Boundary: diagnostic noetic covering only; no hidden soul-state or takfīr judgment.
 - source-use function: AS-8 classification = evidence, contrast, genealogy, identity signal, prestige signal, held material, or bounded comparison.
 - DO-orient: classify source-use function before content or proof release; Source-use is reclassified before content release.
 - restoration target: block argument-bank and source-parade release until source function and weight are typed.

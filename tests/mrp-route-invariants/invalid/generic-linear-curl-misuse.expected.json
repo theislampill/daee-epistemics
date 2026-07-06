@@ -1,0 +1,9 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "generic-linear-curl-misuse.md",
+  "kind": "invalid-single-signature",
+  "expected_error_substrings": [
+    "linear downstream dependency belongs to"
+  ],
+  "provenance": "diagnostic emitted by check_mrp_route_invariants.check_text, verified 2026-07-04"
+}

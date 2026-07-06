@@ -94,7 +94,7 @@ how a case moves from deformation toward restored order.
 In that sense, the framework is not just organising content; it is formalising a meta-epistemology and an operative map of noetic, epistemic, ontological, and meta-level states and transitions. That makes the system more disciplined at runtime, more portable across models, more compressible across context windows, and potentially usable not only as reference material but as a training grammar for diagnosis, analysis, and restoration. Governance determinacy is practitioner-compliance-based: enforcement depends on the practitioner following the governance files, not on a mechanical runtime validator. The `diagnostic-ir.schema.json` is a constraint specification; its compliance is checked conceptually against the schema's rules, not validated automatically at inference time.
 
 This makes it desirable for both frontier and quantised LLMs, though for different reasons. 
-For frontier models, it functions as external discipline: it reduces drift, forces explicit case-typing and routing, and makes outputs more auditable and reproducible rather than leaving the model to generate persuasive but structurally ungoverned prose. 
+For frontier models, it is designed as external discipline: it is intended to reduce drift and require explicit case-typing/routing. Auditability holds when outputs are captured and checked; rerun reproducibility is partial and remains an evidence question rather than a blanket property.
 For quantised or smaller models, it functions as external cognitive compression: instead of having to internally reconstruct the whole domain at full resolution, the model can operate through a compact case language, typed state, and bounded restoration grammar.
 
 In both cases, the point is the same: to shift the burden from vague latent improvisation toward a portable, inspectable, and reusable structure for diagnosis, analysis, and restoration.
@@ -276,7 +276,8 @@ Canonical invocation forms:
   work. State/noetic re-read comes before the single Restorative Response and final Closing Formulation.
   It does not print raw Diagnostic IR, full Case State, `matched_modules`, route ledger,
   or load ledger. It is not prose-only mode; DSL/IR is integral to the skill's
-  anti-hallucination, routing, burden-accounting, and restoration discipline.
+  anti-drift, routing, burden-accounting, and restoration discipline. Any
+  anti-hallucination benefit is a design hypothesis unless measured.
 - v0.4.3.0 restores the governed first-visible `NOETIC FIELD EXECUTION` banner and adds
   Mid-Reread Pressure (MRP) as a reread-time activation harness. MRP is not a mega-TTP and not
   a decorative heading: after `Land(Bn)`, it pressures `R(H,Delta)` through existing
@@ -289,8 +290,9 @@ Canonical invocation forms:
 - `/daee-epistemics:dsl` is expanded diagnostic/IR visibility: compact Diagnostic IR or Case State, live noetic burden sequence, held material, state re-read, and STOP / HOLD / RECURSE / PARTIAL when visible structure is requested. It is not the first place DSL governance appears.
 - `/daee-epistemics < input.md > output.md` is canonical file-retained execution. It reads the case from `input.md`, writes the full canonical compact DSL-governed answer to `output.md`, and keeps the chat response to status only. This is not the optional script-capable route/check harness; it is the canonical runtime using a safer output transport for hosts whose final-chat channel compresses hard cases.
 
-Default output must visibly instantiate compact compiler state enough to prevent clean essay
-cosplay. The exact field list and failure modes are owned by
+Default output is contracted to visibly instantiate compact compiler state enough to prevent clean
+essay cosplay. In scriptless hosts this is model-behavioral and is verified only when outputs are
+captured and run through the checkers. The exact field list and failure modes are owned by
 [`diagnostic-render-contract.md`](atomics/skill/references/rubrics/diagnostic-render-contract.md)
 and the root control plane in [`atomics/skill/SKILL.md`](atomics/skill/SKILL.md).
 Recursive render details are governed by the runtime references, not by the
@@ -308,10 +310,10 @@ compound cases keep full per-burden traversal — including one visible
 `[Mid-Reread Pressure]` block per landed burden — in `output.md` instead of a
 thinned chat answer. The maintainer staged harness
 (`tools/run_staged_current_skill_smoke.py`) is repo/dev machinery over the same
-contract; there is no separate `staged-compact` public output contract, and
-per-burden MRP visibility applies identically across chat, file-retained, and
-staged transports (`tools/check_mid_reread_pressure.py` enforces the per-Land
-coverage rule).
+contract; there is no separate `staged-compact` public output contract. The
+same per-Land MRP coverage rule is contracted across chat, file-retained, and
+staged transports; `tools/check_mid_reread_pressure.py` enforces it over
+captured outputs. Chat outputs are unchecked unless captured and validated.
 
 Use file-retained execution when the host can read/write files or when hard cases would be
 compressed in final chat:
@@ -358,7 +360,7 @@ The editable source and deployable runtime are intentionally separate:
 | Path | Role |
 |------|------|
 | [`atomics/skill/`](atomics/skill/) | Canonical atomized skill source. Edit this tree. |
-| `skill/` | Generated local/CI compiled Claude package root. Ignored by git; do not hand-edit or stage this tree. |
+| `skill/` | Generated local/CI compiled Claude package root. Ignored by git except force-tracked `skill/SKILL.md`; do not hand-edit generated runtime files. |
 | [`tools/`](tools/) | Compiler and checker scripts. |
 | [`tests/routing-fixtures/`](tests/routing-fixtures/) | Static routing parity fixtures. |
 | [`docs/`](docs/) | Architecture notes, audits, and verification reports. |
@@ -367,28 +369,12 @@ The editable source and deployable runtime are intentionally separate:
 Normal source workflow:
 
 ```bash
-python tools/build_framework_pipeline.py
-python tools/build_compiled_runtime.py
-python tools/check_compiled_runtime_freshness.py
-python tools/check_level3_data_shapes.py --include-generated
-python tools/check_package_shape.py
-python tools/check_compiled_module_boundaries.py
-python tools/check_stub_integrity.py
-python tools/check_consolidation_call_budget.py
-python tools/check_routing_parity.py
-python tools/check_routing_parity.py --strict
-python tools/check_recursive_traversal_governance.py
-python tools/check_render_modes.py
-python tools/check_frontmatter.py
-python tools/check_coverage.py
-python tools/check_framework_pipeline.py
-python tools/check_recursion_collapse_noetic_frame.py
-python tools/check_metacompliance_current_canon.py
-python tools/check_smoke_artifacts.py
-python tools/check_ir_instance_integrity.py
-python tools/check_diagnostic_ir_catalogue_integrity.py
-python tools/check_encoding_hygiene.py
+python -m pip install -r requirements-dev.txt
+python tools/run_local_ci.py
 ```
+
+`tools/run_local_ci.py` is the one local reproduction surface for the
+`runtime-checks` workflow, including `git diff --exit-code -- skill/SKILL.md`.
 
 The compiled runtime may still name atomized paths such as `references/tactics/M9-predication-mode.md`.
 Inside generated `skill/`, those are canonical module/source identities, not a claim
@@ -410,7 +396,7 @@ hand-edit or stage generated runtime files as source.
 | [`atomics/skill/data/`](atomics/skill/data/) | Repo-only optional route/check harness data: trigger matrix, precedence, module catalogue, and ontology licenses. |
 | [`atomics/skill/scripts/`](atomics/skill/scripts/) | Repo-only optional harness source scripts for diagnosis, deterministic routing-given-features, validation, reconstruction, orchestration, and execution checking. |
 | [`atomics/skill/tests/`](atomics/skill/tests/) | Repo-only optional harness fixtures and expected route plans. |
-| `skill/` | Ignored generated runtime root. The canonical user-facing package archives only scriptless runtime material produced here by local/CI build. |
+| `skill/` | Ignored generated runtime root except force-tracked `skill/SKILL.md`, the CI freshness-gate surface. The canonical user-facing package archives only scriptless runtime material produced here by local/CI build. |
 | `skill/data/`, `skill/scripts/`, and `skill/tests/` | Generated optional harness view for repo/dev validation when present; excluded from the canonical user-facing package. |
 | `skill/references/` | Generated runtime and omnibus bundles. Availability is not activation. |
 | `skill/compiled-module-map.json` | Runtime resolver from original module ID/source path to generated bundle section. |
@@ -532,16 +518,22 @@ EDIT --> BUILDPIPE --> FRESH --> ROUTING --> GOV --> L3FIX --> SMOKE --> PACKAGE
 
 The canonical user-facing upload name is `daee-epistemics.skill`. For the v0.4.x release line,
 the package artifact is built from atomics through generated local/CI `skill/` and recorded in
-[`docs/release-artifacts.md`](docs/release-artifacts.md). GitHub Releases are the binary
-distribution surface; older v0.3.1.0 assets and smokes are historical evidence, not
-current-package evidence for v0.4.0.0.
+[`docs/release-artifacts.md`](docs/release-artifacts.md), which is the current package filename
+and SHA source of truth. GitHub Releases are the binary distribution surface; older v0.3.x and
+v0.4.0.0 examples are historical evidence, not current-package evidence.
 `package.ps1` emits a local `.skill.zip` archive because it is a zip payload with the skill root
 at archive root. Publish/upload the same checked payload as `.skill`; do not publish both `.skill.zip`
 and `.skill`, and do not re-zip it.
 
-Binary skill archives and generated `skill/` runtime output are not committed to this repository.
+Binary skill archives and generated `skill/` runtime output are not committed to this repository,
+except for the force-tracked generated `skill/SKILL.md` freshness-gate surface.
 Build locally or in CI from `atomics/skill/**` into generated `skill/`, then package that runtime,
 or use the verified public GitHub Release asset.
+
+Runtime and release non-claims are centralized in
+[`docs/non-claims.md`](docs/non-claims.md). Keep uptake, interior-state,
+arbitrary-input, semantic-grader, cross-host, formalism, and manipulation
+boundaries aligned with that file when editing docs or release notes.
 
 The canonical archive root must contain `SKILL.md`, `references/`,
 `compiled-module-map.json`, `build-manifest.json`, and `README.md` directly. It must not
@@ -556,12 +548,13 @@ For path fidelity, build the archive with the manifest-backed package script. It
 generated `skill/` tree, rejects unexpected packageable files, and writes slash-safe archive entry
 names for skill hosts that inspect the bundle structure directly.
 
-On Windows, `package.ps1` calls the Python packager in `tools/package_skill.py`. For a v0.4.0.0
-local package rebake, the command is:
+On Windows, `package.ps1` calls the Python packager in `tools/package_skill.py`. Use the current
+version recorded in `docs/release-artifacts.md` when naming a local rebake:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 build\daee-epistemics-v0.4.0.0.skill.zip
-Copy-Item build\daee-epistemics-v0.4.0.0.skill.zip build\daee-epistemics-v0.4.0.0.skill
+$VERSION = "v0.4.5.0"
+powershell -NoProfile -ExecutionPolicy Bypass -File .\package.ps1 "build\daee-epistemics-$VERSION.skill.zip"
+Copy-Item "build\daee-epistemics-$VERSION.skill.zip" "build\daee-epistemics-$VERSION.skill"
 ```
 
 From any folder, open a Bash-compatible terminal and paste the following if you want a clone-and-package flow. The command clones the repo into a temporary subfolder, builds `daee-epistemics.skill` from the generated `skill/` contents, and removes the temporary clone so the folder you opened ends with only `daee-epistemics.skill`.

@@ -549,6 +549,10 @@ render preference. If the proposed response contains prohibited scaffolding, rou
 or meta-composition narration, the response is invalid and must be rewritten before output
 as clean governed prose.
 
+This is a prompt-level self-check inside the runtime text. No independent code
+enforcement intercepts a live chat response unless the output is captured and
+separately run through repo checkers or a future verifier.
+
 The Default Final-Output Preflight Gate is not merely a visible-format sanitizer. It also
 checks pipeline validity: internal diagnosis -> validated IR -> routed operator selection
 -> output-release rubric -> diagnostic-render-contract -> state re-read -> post-render

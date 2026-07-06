@@ -414,6 +414,24 @@ def write_manifest(path: Path, manifest: dict[str, object]) -> None:
     path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
 
+LEGACY_RELEASE_BODY_VERSION = "v0.4.3.0"
+
+
+def stale_release_body_guard_error(version: str, write_body: object, release_body: object) -> list[str]:
+    """The release-body template (write_release_body / check_release_body) is a hardcoded
+    v0.4.3.0-specific, owner-authored asset - not a generic generator. Refuse to generate
+    or check a release body for any other version so the stale template can never emit or
+    require misleading text for a future release. Pure + unit-tested. The active
+    --provenance/--package verification path (verify_provenance_package) does not go through
+    check_release_preflight and is therefore unaffected by this guard."""
+    if (write_body or release_body) and version != LEGACY_RELEASE_BODY_VERSION:
+        return [
+            "release body generation is owner-authored / not generic; "
+            "do not use the stale v0.4.3.0 template"
+        ]
+    return []
+
+
 def write_release_body(path: Path, manifest: dict[str, object]) -> None:
     version = str(manifest["version"])
     artifact_name = str(manifest["artifact_name"])
@@ -579,6 +597,12 @@ def check_release_preflight(
     write_body: Path | None,
 ) -> int:
     errors: list[str] = []
+    guard = stale_release_body_guard_error(version, write_body, release_body)
+    if guard:
+        print("release provenance check: FAIL")
+        for error in guard:
+            print(f"- {error}")
+        return 1
     manifest = build_release_manifest(version, artifact, release_body, provenance_path)
     if manifest_out:
         write_manifest(manifest_out, manifest)
@@ -638,6 +662,111 @@ def check_release_preflight(
     return 0
 
 
+def verify_provenance_package(
+    provenance: Path,
+    package_path: Path,
+    manifest: Path,
+    compiled_map: Path,
+    release_artifacts: Path | None = None,
+    smoke_root: Path | None = None,
+    info: dict[str, object] | None = None,
+) -> list[str]:
+    """Core --provenance/--package verification, extracted so it is callable by
+    both main() and --self-test. Returns the error list (empty == PASS) and, when
+    `info` is provided, populates the display values main() prints on PASS."""
+    errors: list[str] = []
+    payload = read_json(provenance, errors)
+    if payload:
+        check_required_fields(payload, errors)
+
+    package_sha = sha256(package_path, errors, "package")
+    package_size = package_path.stat().st_size if package_path.exists() else None
+    entry_count = zip_entry_count(package_path, errors)
+    manifest_sha = sha256(manifest, errors, "build manifest")
+    compiled_map_sha = sha256(compiled_map, errors, "compiled module map")
+
+    if payload:
+        compare_hash("package SHA256", package_sha,
+                     provenance_field(payload, "package_sha256", errors, required=False), errors)
+        compare_int("package size", package_size,
+                    provenance_field(payload, "package_size", errors, required=False), errors)
+        compare_int("entry count", entry_count,
+                    provenance_field(payload, "entry_count", errors, required=False), errors)
+        compare_hash("build-manifest SHA256", manifest_sha,
+                     provenance_field(payload, "build_manifest_sha256", errors, required=False), errors)
+        compare_hash("compiled-module-map SHA256", compiled_map_sha,
+                     provenance_field(payload, "compiled_module_map_sha256", errors, required=False), errors)
+
+    if release_artifacts and package_sha and payload:
+        check_release_artifacts_doc(release_artifacts, package_path, package_sha, payload, errors)
+    if smoke_root and package_sha:
+        check_smoke_root(smoke_root, package_sha, errors)
+
+    if info is not None:
+        info.update({
+            "package_sha": package_sha, "package_size": package_size, "entry_count": entry_count,
+            "manifest_sha": manifest_sha, "compiled_map_sha": compiled_map_sha,
+        })
+    return errors
+
+
+def self_test() -> int:
+    """Build an ephemeral self-consistent provenance/package fixture set in a tempdir
+    and prove the --provenance/--package path accepts it and rejects tampering. No
+    committed binaries; no dependency on the generated skill/ files."""
+    import tempfile
+    import zipfile
+
+    work = Path(tempfile.mkdtemp(prefix="daee_relprov_"))
+    manifest = work / "build-manifest.json"
+    manifest.write_text('{"fixture": "build-manifest"}\n', encoding="utf-8")
+    compiled_map = work / "compiled-module-map.json"
+    compiled_map.write_text('{"fixture": "compiled-module-map"}\n', encoding="utf-8")
+    package = work / "minimal.skill"
+    with zipfile.ZipFile(package, "w") as zf:
+        zf.writestr(zipfile.ZipInfo("SKILL.md", date_time=(2020, 1, 1, 0, 0, 0)), "fixture skill\n")
+
+    payload = {
+        "version": "v0.0.0-fixture",
+        "contract_version": "0.0.0.0",
+        "source_commit": "0" * 40,
+        "raw_atomics_packaged": False,
+        "forbidden_roots_absent": True,
+        "package_sha256": hashlib.sha256(package.read_bytes()).hexdigest().upper(),
+        "package_size": package.stat().st_size,
+        "entry_count": zip_entry_count(package, []),
+        "build_manifest_sha256": hashlib.sha256(manifest.read_bytes()).hexdigest().upper(),
+        "compiled_module_map_sha256": hashlib.sha256(compiled_map.read_bytes()).hexdigest().upper(),
+    }
+    prov = work / "minimal.provenance.json"
+
+    def run(p: dict[str, object]) -> list[str]:
+        prov.write_text(json.dumps(p, indent=2), encoding="utf-8")
+        return verify_provenance_package(prov, package, manifest, compiled_map)
+
+    checks = [
+        ("self-consistent fixtures verify clean", run(payload) == []),
+        ("tampered package sha -> FAIL",
+         any("package SHA256 mismatch" in e for e in run({**payload, "package_sha256": "A" * 64}))),
+        ("missing required field -> FAIL",
+         any("missing required field: version" in e for e in run({k: v for k, v in payload.items() if k != "version"}))),
+        ("wrong manifest sha -> FAIL",
+         any("build-manifest SHA256 mismatch" in e for e in run({**payload, "build_manifest_sha256": "B" * 64}))),
+        ("non-legacy release-body request hits the guard",
+         any("owner-authored / not generic" in e
+             for e in stale_release_body_guard_error("v0.9.9.9-fixture", package, None))),
+        ("legacy v0.4.3.0 release-body remains allowed",
+         stale_release_body_guard_error(LEGACY_RELEASE_BODY_VERSION, package, None) == []),
+        ("no release-body op -> no guard",
+         stale_release_body_guard_error("v0.9.9.9-fixture", None, None) == []),
+    ]
+    ok = all(p for _, p in checks)
+    for name, passed in checks:
+        print(f"  self-test {'PASS' if passed else 'FAIL'}: {name}")
+    print(f"release-provenance self-test: {'PASS' if ok else 'FAIL'}")
+    return 0 if ok else 1
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--provenance", type=Path)
@@ -651,7 +780,11 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--release-body", type=Path)
     parser.add_argument("--write-manifest", nargs="?", const="__default__")
     parser.add_argument("--write-release-body", type=Path)
+    parser.add_argument("--self-test", action="store_true", help="verify the --provenance/--package path over ephemeral self-consistent fixtures")
     args = parser.parse_args(argv)
+
+    if args.self_test:
+        return self_test()
 
     if args.version or args.artifact:
         if not args.version or not args.artifact:
@@ -672,53 +805,11 @@ def main(argv: list[str]) -> int:
     if args.provenance is None or args.package_path is None:
         parser.error("either --version/--artifact or --provenance/--package is required")
 
-    errors: list[str] = []
-    payload = read_json(args.provenance, errors)
-    if payload:
-        check_required_fields(payload, errors)
-
-    package_sha = sha256(args.package_path, errors, "package")
-    package_size = args.package_path.stat().st_size if args.package_path.exists() else None
-    entry_count = zip_entry_count(args.package_path, errors)
-    manifest_sha = sha256(args.manifest, errors, "build manifest")
-    compiled_map_sha = sha256(args.compiled_map, errors, "compiled module map")
-
-    if payload:
-        compare_hash(
-            "package SHA256",
-            package_sha,
-            provenance_field(payload, "package_sha256", errors, required=False),
-            errors,
-        )
-        compare_int(
-            "package size",
-            package_size,
-            provenance_field(payload, "package_size", errors, required=False),
-            errors,
-        )
-        compare_int(
-            "entry count",
-            entry_count,
-            provenance_field(payload, "entry_count", errors, required=False),
-            errors,
-        )
-        compare_hash(
-            "build-manifest SHA256",
-            manifest_sha,
-            provenance_field(payload, "build_manifest_sha256", errors, required=False),
-            errors,
-        )
-        compare_hash(
-            "compiled-module-map SHA256",
-            compiled_map_sha,
-            provenance_field(payload, "compiled_module_map_sha256", errors, required=False),
-            errors,
-        )
-
-    if args.release_artifacts and package_sha and payload:
-        check_release_artifacts_doc(args.release_artifacts, args.package_path, package_sha, payload, errors)
-    if args.smoke_root and package_sha:
-        check_smoke_root(args.smoke_root, package_sha, errors)
+    info: dict[str, object] = {}
+    errors = verify_provenance_package(
+        args.provenance, args.package_path, args.manifest, args.compiled_map,
+        args.release_artifacts, args.smoke_root, info,
+    )
 
     if errors:
         print("release provenance check: FAIL")
@@ -728,11 +819,11 @@ def main(argv: list[str]) -> int:
 
     print("release provenance check: PASS")
     print(f"- package: {args.package_path}")
-    print(f"- package SHA256: {package_sha}")
-    print(f"- package size: {package_size}")
-    print(f"- package entries: {entry_count}")
-    print(f"- build-manifest SHA256: {manifest_sha}")
-    print(f"- compiled-module-map SHA256: {compiled_map_sha}")
+    print(f"- package SHA256: {info.get('package_sha')}")
+    print(f"- package size: {info.get('package_size')}")
+    print(f"- package entries: {info.get('entry_count')}")
+    print(f"- build-manifest SHA256: {info.get('manifest_sha')}")
+    print(f"- compiled-module-map SHA256: {info.get('compiled_map_sha')}")
     return 0
 
 
