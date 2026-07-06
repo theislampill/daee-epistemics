@@ -427,31 +427,20 @@ StageRecordOperator = Callable[[dict[str, Any]], "dict[str, Any] | None"]
 # Known, CONFIRMED gaps in tools/check_staged_runtime_handshake.py discovered
 # by this sweep: the checker validates that stages[].produces/requires are
 # string lists, but never cross-checks that a stage's declared `produces`
-# field actually exists as a key on that stage object. Stages 02-06 each have
-# a dedicated stageNN_*_errors() function that happens to re-derive this
-# requirement from field-specific validation (e.g. stage-05 requires
-# terminal_states directly), so deleting their required field is still
-# caught. Stage-01 ("stage-01-intake") has no such dedicated validator: its
-# only checks are the generic stage-shape checks in sequence_errors(), so
-# deleting stage-01's input_digest is NOT caught. Confirmed by direct
-# reproduction against both tests/staged-runtime-handshake/valid/
-# retained-a9-science-source.json and stage05-generated-provenance.json
-# (2026-07-06): the mutated record passes check_staged_runtime_handshake.py
-# with exit 0 in both cases.
+# field actually exists as a key on that stage object. Stages 01-06 each have
+# a dedicated stageNN_*_errors() function that re-derives this requirement
+# from field-specific validation (e.g. stage-05 requires terminal_states
+# directly; stage-01 requires input_digest directly via
+# stage01_intake_errors()), so deleting their required field is caught.
 #
-# This tool must not misrepresent that as "rejected". The operator stays in
-# the sweep (it is a real, useful probe -- and per the mission, DO NOT fake
-# verification) but is pinned here as a documented known-checker-gap: its
-# manifest verdict is allowed to be "survivor" without failing self-test,
-# and the sweep prints it as a FINDING rather than silently passing.
-KNOWN_CHECKER_GAPS: dict[str, str] = {
-    "delete-required-field-stage-01-intake": (
-        "check_staged_runtime_handshake.py has no stage-01-intake field-presence "
-        "validator (unlike stages 02-06); deleting input_digest is not rejected. "
-        "Out of scope to fix here: this tool may only touch itself and NEW "
-        "fixtures, not the checker."
-    ),
-}
+# Formerly stage-01-intake had no such dedicated validator (its only checks
+# were the generic stage-shape checks in sequence_errors()), so deleting
+# stage-01's input_digest was NOT caught. That gap was closed by adding
+# stage01_intake_errors() to tools/check_staged_runtime_handshake.py; the
+# delete-required-field-stage-01-intake operator below is now fully rejected
+# like every other stage. This dict is kept (empty) as the documented home
+# for any future confirmed gap of this shape.
+KNOWN_CHECKER_GAPS: dict[str, str] = {}
 
 
 def _build_stage_record_operators() -> dict[str, dict[str, Any]]:

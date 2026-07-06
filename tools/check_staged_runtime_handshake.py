@@ -1954,9 +1954,48 @@ def stage04_act_errors(
     return errors
 
 
+STAGE01_REQUIRED_FIELDS = (
+    # input_digest: the only field every stage-01 payload across all harness
+    # paths (retained-artifact-replay, no-model-fixture, staged-current-
+    # skill-stage-local-smoke) actually emits. It is the custody anchor
+    # stage-02 depends on (stage-02.requires == ["input_digest"]); deleting it
+    # breaks the input-boundary chain silently, which is the gap this
+    # validator closes.
+    "input_digest",
+)
+
+
+def stage01_intake_errors(label: str, stage01: dict[str, Any]) -> list[str]:
+    """Field-presence validator for stage-01-intake.
+
+    Mirrors the stageNN_*_errors() pattern used for stages 02-06: each of
+    those stages re-derives its own required-field presence from
+    field-specific validation (e.g. stage-05 requires terminal_states
+    directly). Stage-01 had no such check -- only the generic stage-shape
+    checks in sequence_errors() -- so deleting stage-01's input_digest was not
+    rejected. See tools/gen_fixture_mutations.py KNOWN_CHECKER_GAPS history.
+
+    Only input_digest is required here. retained_input and
+    source_boundary_preserved are real fields the retained-artifact-replay
+    harness path emits, but they are legitimately absent from
+    staged-current-skill-stage-local-smoke stage-01 payloads (confirmed
+    against all 25 valid fixtures), so requiring them would break otherwise-
+    valid model-mode fixtures. case_id (case identity) is already enforced at
+    the record level in record_errors(), not per-stage, so it is not
+    duplicated here.
+    """
+    errors: list[str] = []
+    for field in STAGE01_REQUIRED_FIELDS:
+        value = stage01.get(field)
+        if not isinstance(value, str) or not value:
+            errors.append(f"{label}: stage-01 {field} is required and must be a non-empty string")
+    return errors
+
+
 def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[str, Any]]) -> list[str]:
     label = rel(path)
     errors: list[str] = []
+    stage01 = stages.get("stage-01-intake")
     stage02 = stages.get("stage-02-layer-a-diagnostic-ir")
     stage03 = stages.get("stage-03-routing-owner-gate")
     stage04 = stages.get("stage-04-burden-execution-act")
@@ -1964,6 +2003,9 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
     stage06 = stages.get("stage-06-field-witness-nar")
     stage07 = stages.get("stage-07-release-output")
     stage08 = stages.get("stage-08-verifier-sidecars")
+
+    if stage01 is not None:
+        errors.extend(stage01_intake_errors(label, stage01))
 
     raw_burden_floor = stage02.get("burden_floor") if stage02 is not None else None
     burden_floor_values = as_string_list(raw_burden_floor)
