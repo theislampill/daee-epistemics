@@ -32,8 +32,17 @@ from compiled_runtime_lib import fail_with_errors, out_dir, repo_root
 
 RUNTIME_FILES = [
     "SKILL.md",
-    "references/runtime-output-governance.md",
-    "references/runtime-dispatch-gate.md",
+    "references/runtime-core-ir.md",
+    "references/runtime-core-pipeline.md",
+    "references/runtime-core-recursion.md",
+    "references/runtime-core-routing.md",
+    "references/runtime-shard-ir-support.md",
+    "references/runtime-shard-diagnostic.md",
+    "references/runtime-shard-audit.md",
+    "references/runtime-shard-thesis.md",
+    "references/runtime-shard-restoration.md",
+    "references/runtime-shard-output-release.md",
+    "references/runtime-shard-render-contract.md",
 ]
 
 CURRENT_GOVERNANCE_DOCS = [
@@ -2718,12 +2727,39 @@ def read_runtime(root: Path, errors: list) -> str:
     return "\n".join(parts)
 
 
+DISPATCH_GATE_SHARD_FILES = [
+    "references/runtime-core-ir.md",
+    "references/runtime-core-pipeline.md",
+    "references/runtime-core-recursion.md",
+    "references/runtime-core-routing.md",
+    "references/runtime-shard-ir-support.md",
+    "references/runtime-shard-diagnostic.md",
+    "references/runtime-shard-audit.md",
+    "references/runtime-shard-thesis.md",
+    "references/runtime-shard-restoration.md",
+    "references/runtime-shard-output-release.md",
+    "references/runtime-shard-render-contract.md",
+]
+
+
 def read_dispatch_gate(root: Path, errors: list) -> str:
-    path = out_dir(root) / "references/runtime-dispatch-gate.md"
-    if not path.is_file():
-        errors.append("dispatch-gate bundle missing for render-mode policy check")
-        return ""
-    return path.read_text(encoding="utf-8")
+    # Post-shard-split (Slice C): the retired runtime-dispatch-gate.md bundle's
+    # DISPATCH_GATE_REQUIRED policy tokens are spread across diagnostic-ir.md,
+    # framework-pipeline.md, recursive-state-transitions.md, routing-precedence.md,
+    # ir-reconstruction-pass.md, case-state-schema.md, pattern-profiling.md,
+    # anti-patterns.md, P7-restoration-stops.md, output-release.md, and
+    # diagnostic-render-contract.md (verified by grepping each source module for
+    # every DISPATCH_GATE_REQUIRED token at split time) -- i.e. all 11 new route
+    # shards. Read and concatenate the full shard set so no token's owner goes
+    # missing.
+    parts = []
+    for rel_path in DISPATCH_GATE_SHARD_FILES:
+        path = out_dir(root) / rel_path
+        if not path.is_file():
+            errors.append(f"dispatch-gate shard missing for render-mode policy check: {rel_path}")
+            continue
+        parts.append(path.read_text(encoding="utf-8"))
+    return "\n".join(parts)
 
 
 def check_invocation_surface_sources(root: Path, errors: list[str]) -> None:

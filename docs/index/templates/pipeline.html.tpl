@@ -99,8 +99,7 @@ This is repo-native runtime notation, not generic linear algebra and not Shannon
       <div class="bundle"><b>runtime-foundation</b>terminology, case index, module codes, heuristics</div>
       <div class="bundle"><b>runtime-diagnostic-core</b>V1, noetic read, deformations, concealment, DO, M5</div>
       <div class="bundle"><b>runtime-phase2-passes</b>reason category, foreign premise, prophetic neutralization, backbone predicates</div>
-      <div class="bundle"><b>runtime-dispatch-gate</b>Diagnostic IR, reconstruction, case-state, patterns, anti-patterns, pipeline, recursion, routing, kernel</div>
-      <div class="bundle"><b>runtime-output-governance</b>output-release + diagnostic-render contract</div>
+      <div class="bundle"><b>runtime-core-* / runtime-shard-*</b>11 route shards (split from the former runtime-dispatch-gate/runtime-output-governance bundles): core-ir, core-pipeline, core-recursion, core-routing, shard-ir-support, shard-diagnostic, shard-audit, shard-thesis, shard-restoration, shard-output-release, shard-render-contract - loaded on dispatch-index selection, not eagerly</div>
       <div class="bundle"><b>omnibus bundles</b>profiles, DO families, RT/transmission, tactics, techniques, procedures, specialty diagnostics</div>
       <div class="bundle"><b>canonical package roots</b>SKILL.md, README.md, references/, compiled-module-map.json, build-manifest.json</div>
       <div class="bundle"><b>repo/dev harness excluded</b>data/, scripts/, tests/, route plans, fixtures, and execution verdicts stay outside the canonical package</div>
@@ -328,7 +327,7 @@ This is repo-native runtime notation, not generic linear algebra and not Shannon
     <li>output-release.md: release amount/order; held means traversal-delayed; same-response recursion when eligible.</li>
     <li>diagnostic-render-contract.md: Layer A / Layer B / state re-read / Restorative Response / Closing Formulation.</li>
     <li>noetic-reading-checklist.md + sound-reason-epistemology.md: noetic structure and proper-function warrant account.</li>
-    <li>Compiled runtime: atomized owner files are bundled into runtime-foundation, runtime-diagnostic-core, runtime-phase2-passes, runtime-dispatch-gate, runtime-output-governance, and omnibus bundles; package selection excludes data/, scripts/, and tests/.</li>
+    <li>Compiled runtime: atomized owner files are bundled into runtime-foundation, runtime-diagnostic-core, runtime-phase2-passes, 11 runtime-core-*/runtime-shard-* route shards, and omnibus bundles; package selection excludes data/, scripts/, and tests/.</li>
   </ul>
 </details>
 

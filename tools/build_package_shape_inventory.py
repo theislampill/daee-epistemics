@@ -312,24 +312,66 @@ def self_test() -> int:
     skill_md_row = next((r for r in rows if r["file"] == "skill/SKILL.md"), None)
     checks.append(("SKILL.md classified host-hot", skill_md_row is not None and skill_md_row["class"] == "host-hot"))
 
-    dispatch_gate_row = next((r for r in rows if r["file"] == "skill/references/runtime-dispatch-gate.md"), None)
+    # Post-Slice-C: the "Load path for substantive cases" numbered list now names
+    # exactly one file, runtime-core-routing.md (the retired runtime-dispatch-gate.md
+    # bundle was split into 11 route shards; see tools/compiled_runtime_lib.py
+    # BUNDLE_SOURCES and the Compiled Runtime Routing Addendum). That one listed
+    # file must classify prompt-hot (unconditional load-path list membership), and
+    # the other on-demand shards -- not named in the numbered list, loaded only on
+    # dispatch-index selection -- must classify route-warm (the DEFAULTED branch in
+    # classify() for references/*.md files absent from load_path_items).
+    core_routing_row = next((r for r in rows if r["file"] == "skill/references/runtime-core-routing.md"), None)
     checks.append(
         (
-            "runtime-dispatch-gate.md classified prompt-hot",
-            dispatch_gate_row is not None and dispatch_gate_row["class"] == "prompt-hot",
+            "runtime-core-routing.md classified prompt-hot",
+            core_routing_row is not None and core_routing_row["class"] == "prompt-hot",
         )
     )
 
-    # FIX 3 canary (package-shape misclassification audit finding): this file
-    # is item 3 of SKILL.md's unconditional "Load path for substantive cases"
-    # numbered list, so unconditional list membership must classify it
-    # prompt-hot -- the old ROUTE_WARM_LOAD_PATH_BASENAMES override forced it
-    # route-warm on a conditional-prose reading that this fix removed.
+    ON_DEMAND_SHARD_FILES = [
+        "skill/references/runtime-core-ir.md",
+        "skill/references/runtime-core-pipeline.md",
+        "skill/references/runtime-core-recursion.md",
+        "skill/references/runtime-shard-ir-support.md",
+        "skill/references/runtime-shard-diagnostic.md",
+        "skill/references/runtime-shard-audit.md",
+        "skill/references/runtime-shard-thesis.md",
+        "skill/references/runtime-shard-restoration.md",
+        "skill/references/runtime-shard-output-release.md",
+        "skill/references/runtime-shard-render-contract.md",
+    ]
+    on_demand_rows = {r["file"]: r for r in rows if r["file"] in ON_DEMAND_SHARD_FILES}
+    checks.append(
+        (
+            "all 10 on-demand route shards are present in the shipped package",
+            len(on_demand_rows) == len(ON_DEMAND_SHARD_FILES),
+        )
+    )
+    checks.append(
+        (
+            "on-demand route shards classify route-warm (loaded on dispatch-index selection, not eagerly)",
+            all(r["class"] == "route-warm" for r in on_demand_rows.values()),
+        )
+    )
+
+    # Superseded by the Slice C dispatch-index rewrite: runtime-phase2-passes.md
+    # was item 3 of the old five-bundle "Load path for substantive cases"
+    # numbered list (see the FIX 3 history this canary used to guard), so
+    # unconditional list membership classified it prompt-hot. Slice C replaced
+    # that five-line list with exactly ONE line (runtime-core-routing.md) plus a
+    # Dispatch Index of on-demand route shards (tools/build_package_shape_inventory.py
+    # parse_load_path() anchor + the addendum text in
+    # atomics/skill/references/rubrics/{non-droppable-manual-contract.md,
+    # manual-contract-digest.md}). runtime-phase2-passes.md is no longer named in
+    # that list at all, so it now correctly falls through to the DEFAULTED
+    # route-warm branch in classify() -- this is the intended, deliberate result
+    # of the dispatch-index rewrite, not a regression. The canary now asserts the
+    # new (route-warm) classification instead of the pre-Slice-C prompt-hot one.
     phase2_row = next((r for r in rows if r["file"] == "skill/references/runtime-phase2-passes.md"), None)
     checks.append(
         (
-            "runtime-phase2-passes.md classified prompt-hot (unconditional load-path list membership beats conditional prose)",
-            phase2_row is not None and phase2_row["class"] == "prompt-hot",
+            "runtime-phase2-passes.md classified route-warm post-Slice-C (no longer named in the one-line load path; superseded FIX 3 canary)",
+            phase2_row is not None and phase2_row["class"] == "route-warm",
         )
     )
 
@@ -399,7 +441,22 @@ def self_test() -> int:
         _rows_by_file = {r["file"]: r for r in rows}
         _floor_bundle_paths = sorted(set(_al_bundles) | set(_sd_bundles))
         _hot_classes = {"host-hot", "prompt-hot"}
-        _floor_bundles_not_hot: list[str] = []
+        # Post-Slice-C: the "Load path for substantive cases" numbered list was
+        # rewritten to exactly ONE line (runtime-core-routing.md) plus a Dispatch
+        # Index of on-demand route shards. runtime-diagnostic-core.md (the
+        # structural-diagnosis-floor's Mandatory Diagnostic Core bundle) is no
+        # longer named in that list, so it is no longer classified prompt-hot by
+        # the package-shape anchor -- it now falls to route-warm like the other
+        # on-demand shards. This is the deliberate, documented result of the
+        # dispatch-index rewrite (see tools/build_package_shape_inventory.py
+        # parse_load_path() and the addendum text in non-droppable-manual-contract.md
+        # / manual-contract-digest.md), not a regression: the floor bundle must
+        # still SHIP and still be REACHABLE (never cold-law-gated behind the
+        # omnibus V1/Phase-2/Diagnostic-IR authorization prose), just no longer
+        # unconditionally eager. The never-cold-law invariant is what this canary
+        # now guards instead of the old always-hot one.
+        _never_cold_law_classes = {"host-hot", "prompt-hot", "route-warm"}
+        _floor_bundles_cold_law: list[str] = []
         _floor_bundles_not_shipped: list[str] = []
         for _bundle_path in _floor_bundle_paths:
             _rel_from_skill = _bundle_path.relative_to(root / "skill").as_posix()
@@ -411,8 +468,8 @@ def self_test() -> int:
                 # FAIL: floor content must ship, full stop.
                 _floor_bundles_not_shipped.append(_shipped_key)
                 continue
-            if _row["class"] not in _hot_classes:
-                _floor_bundles_not_hot.append(f"{_shipped_key} (classified {_row['class']!r})")
+            if _row["class"] not in _never_cold_law_classes:
+                _floor_bundles_cold_law.append(f"{_shipped_key} (classified {_row['class']!r})")
         checks.append(
             (
                 "cross-tool: every resolved always-load/diagnostic-core floor bundle ships in the package",
@@ -421,8 +478,8 @@ def self_test() -> int:
         )
         checks.append(
             (
-                "cross-tool: every resolved always-load/diagnostic-core floor bundle is classified host-hot or prompt-hot (never route-warm/cold-law)",
-                len(_floor_bundles_not_hot) == 0,
+                "cross-tool: every resolved always-load/diagnostic-core floor bundle is host-hot, prompt-hot, or route-warm (never cold-law-gated, post-Slice-C dispatch-index rewrite)",
+                len(_floor_bundles_cold_law) == 0,
             )
         )
     finally:

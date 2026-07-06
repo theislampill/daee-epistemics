@@ -139,12 +139,17 @@ def main() -> int:
         if token in current_governance:
             errors.append(f"positive rival-frame support phrase in current governance: {token!r}")
 
+    # Post-shard-split (Slice C): RUNTIME_REQUIRED tokens are carried by
+    # recursive-state-transitions.md (-> runtime-core-recursion.md, the primary owner),
+    # plus one token ("multi-burden does not mean multi-recursion by default") that
+    # lives in framework-pipeline.md (-> runtime-core-pipeline.md). SKILL.md is kept
+    # because some tokens are also satisfied by its compiled digests.
     runtime_text = "\n".join(
         read(out_dir(root) / rel, errors)
         for rel in [
             "SKILL.md",
-            "references/runtime-dispatch-gate.md",
-            "references/runtime-output-governance.md",
+            "references/runtime-core-recursion.md",
+            "references/runtime-core-pipeline.md",
         ]
     )
     for token in RUNTIME_REQUIRED:

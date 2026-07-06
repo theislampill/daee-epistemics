@@ -138,7 +138,9 @@ mixed evidence, proposal, and release claims.
 - Source surfaces: `atomics/skill/SKILL.md`,
   `atomics/skill/references/rubrics/diagnostic-render-contract.md`,
   `atomics/skill/references/rubrics/output-release.md`,
-  `atomics/skill/references/runtime-output-governance.md`,
+  `skill/references/runtime-shard-output-release.md`,
+  `skill/references/runtime-shard-render-contract.md` (compiled shards; split from
+  the former `runtime-output-governance.md` bundle),
   `atomics/skill/references/diagnostics/recursive-state-transitions.md`, and
   `atomics/skill/references/diagnostics/mixed-case-handling.md`, plus the
   owner/TTP surfaces that govern imported-criterion, self-refutation,

@@ -39,15 +39,23 @@
     ],
     "expected_bundles": [
       "references/runtime-diagnostic-core.md",
-      "references/runtime-dispatch-gate.md",
-      "references/runtime-output-governance.md",
+      "references/runtime-core-ir.md",
+      "references/runtime-core-recursion.md",
+      "references/runtime-core-routing.md",
+      "references/runtime-shard-audit.md",
+      "references/runtime-shard-output-release.md",
+      "references/runtime-shard-render-contract.md",
       "references/omnibus/OMNIBUS-specialty-diagnostics.md",
       "references/omnibus/OMNIBUS-do-families.md"
     ],
     "owner_clusters": [
       "diagnostic-core",
-      "dispatch-gate",
-      "output-governance",
+      "core-ir",
+      "core-recursion",
+      "core-routing",
+      "shard-audit",
+      "shard-output-release",
+      "shard-render-contract",
       "specialty-diagnostics"
     ],
     "max_calls": 20

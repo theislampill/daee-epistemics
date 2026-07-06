@@ -1,6 +1,6 @@
 {
   "id": "secular-moral-protest-hiddenness-imported-criterion",
-  "prompt": "The Satanic Temple's seven tenets \u2014 compassion, reason, bodily autonomy \u2014 are more coherent and humane than a God who hides himself, condemns people to eternal hell, and demands worship as a condition of salvation. Why would I worship something with that track record? The evidence suggests either God doesn't exist or isn't worth worshipping.",
+  "prompt": "The Satanic Temple's seven tenets — compassion, reason, bodily autonomy — are more coherent and humane than a God who hides himself, condemns people to eternal hell, and demands worship as a condition of salvation. Why would I worship something with that track record? The evidence suggests either God doesn't exist or isn't worth worshipping.",
   "case_class": "complex",
   "notes": "Regression fixture for the general pattern: secular moral protest plus hiddenness plus imported criterion. The named organization in the prompt is sample text only, not a routing primitive. The fixture verifies source-defined invariants: FPD before doctrine, Level A / Level B distinction, original module IDs, no default raw IR/Case State route cosplay, and same-response RECURSE only when the post-render gate leaves a same-input downstream doctrinal assumption live and eligible. Optional downstream modules are not fixture-mandated irrespective of case-state; they are not skippable when refreshed IR makes the door live and eligible.",
   "expected": {
@@ -209,8 +209,7 @@
       "references/runtime-foundation.md",
       "references/runtime-diagnostic-core.md",
       "references/runtime-phase2-passes.md",
-      "references/runtime-dispatch-gate.md",
-      "references/runtime-output-governance.md",
+      "references/runtime-core-ir.md",
       "references/omnibus/OMNIBUS-do-families.md",
       "references/omnibus/OMNIBUS-profiles.md",
       "references/omnibus/OMNIBUS-tactics.md",

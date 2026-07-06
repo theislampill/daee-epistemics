@@ -951,8 +951,11 @@ SKILL.md
 -> runtime-foundation
 -> runtime-diagnostic-core
 -> runtime-phase2-passes
--> runtime-dispatch-gate
--> runtime-output-governance
+-> runtime-core-routing (unconditional; Dispatch Index selects the other route shards below)
+-> runtime-core-ir / runtime-core-pipeline / runtime-core-recursion / runtime-shard-ir-support /
+   runtime-shard-diagnostic / runtime-shard-audit / runtime-shard-thesis /
+   runtime-shard-restoration / runtime-shard-output-release / runtime-shard-render-contract
+   (loaded on dispatch-index selection, not eagerly)
 -> selective omnibus sections
 -> post-render gate
 -> STOP / HOLD / RECURSE / PARTIAL

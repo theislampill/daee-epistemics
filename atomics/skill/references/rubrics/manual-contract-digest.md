@@ -423,11 +423,42 @@ Bundle co-location means availability, not activation.
 
 Load path for substantive cases:
 
-1. `references/runtime-foundation.md`
-2. `references/runtime-diagnostic-core.md`
-3. `references/runtime-phase2-passes.md`
-4. `references/runtime-dispatch-gate.md`
-5. `references/runtime-output-governance.md`
+1. `references/runtime-core-routing.md`
+
+Dispatch Index (route shards - load on selection, not eagerly):
+
+| trigger signal | shard | load when |
+| --- | --- | --- |
+| raw Diagnostic IR formalism needed: dsl/audit mode, IR emission, IR reconstruction disputes | `references/runtime-core-ir.md` | dsl/audit mode is active, an IR is being emitted, or an IR reconstruction dispute is live |
+| operative decision circuit consulted when routing order is contested | `references/runtime-core-pipeline.md` | routing order itself is contested and the decision circuit must be consulted |
+| STOP/HOLD/PARTIAL/RECURSE semantics detail beyond the kernel digest | `references/runtime-core-recursion.md` | a STOP/HOLD/PARTIAL/RECURSE semantics question exceeds what the kernel digest already carries |
+| IR faithfulness/reconstruction pass, case-state strength/compression | `references/runtime-shard-ir-support.md` | an IR faithfulness or reconstruction pass runs, or case-state strength/compression is at issue |
+| claim-level/pattern codes, inference markers, competing-read arbitration | `references/runtime-shard-diagnostic.md` | claim-level or pattern-profile codes are being assigned, inference markers are read, or competing reads must be arbitrated |
+| forced-fit/drift anti-pattern pressure | `references/runtime-shard-audit.md` | forced-fit or drift anti-pattern pressure is live |
+| kernel-thesis commitments, necessity/contingency, metaphysical grammar Ω | `references/runtime-shard-thesis.md` | kernel-thesis commitments, necessity/contingency reasoning, or metaphysical-grammar `Ω` detail is needed |
+| P-family restoration stops | `references/runtime-shard-restoration.md` | a P-family restoration stop is triggered |
+| Stage-07 size/mass release governance | `references/runtime-shard-output-release.md` | Stage-07 size/mass release governance is being evaluated |
+| render-audit detail, full manual-contract cold companion | `references/runtime-shard-render-contract.md` | render-audit detail is needed, or the full manual-contract cold companion must be consulted |
+
+Selection law:
+
+- Load one shard when the trigger is unambiguous.
+- Body evidence disambiguates when more than one shard could plausibly apply.
+- If still ambiguous, load ALL candidate shards (cap 3) or route HOLD/PARTIAL with reason
+  `route-ambiguous`.
+- Live pressure with 0 candidate shards means route HOLD/PARTIAL with reason
+  `owner-not-available`.
+- Never fake Land.
+- Record `shards_loaded` in the state capsule when available.
+
+Known aliases (OSM discipline - same surface never means same hidden state):
+
+- Surface "source" aliases source-order vs authority-order vs hidden-support (three hidden
+  states - resolve with body evidence or by loading multiple shards).
+- "definition-discipline" is a route label, not a callable operation unless mapped.
+- `τ` proof-method-audit applies only when the tribunal/burden role is body-backed.
+
+Bundle co-location is availability, not activation.
 
 Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner.
 
