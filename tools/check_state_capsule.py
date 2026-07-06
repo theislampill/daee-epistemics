@@ -58,6 +58,42 @@ LIVE_REGISTER_TOKENS = {
     "κ",  # kappa
 }
 
+# FIX 4: alias-normalize live_registers/register_state keys onto a single
+# canonical spelling per register (mirrors tools/register_axis_contract.py's
+# REGISTER_AXIS_ALIASES, without importing it, to avoid coupling this
+# schema-adjacent checker to the Stage 04 owner/register-axis contract
+# module). Both the plain-name and Unicode glyph alias forms are legitimate
+# live-register spellings; this map just collapses them so "tau" and "τ"
+# are recognized as the SAME register when checking register_state coverage.
+REGISTER_TOKEN_CANONICAL = {
+    "N": "N",
+    "m": "m",
+    "tau": "tau",
+    "τ": "tau",
+    "sigma": "sigma",
+    "σ": "sigma",
+    "heart": "heart",
+    "♥": "heart",
+    "xi": "xi",
+    "ξ": "xi",
+    "Omega": "Omega",
+    "Ω": "Omega",
+    "mu": "mu",
+    "μ": "mu",
+    "kappa": "kappa",
+    "κ": "kappa",
+    "H": "H",
+}
+
+# FIX 4: registers exempt from requiring their own register_state entry.
+# N is carried by n_frame (the selected/held-candidates n-frame slot IS its
+# state); m and H are carried by dedicated capsule fields elsewhere in the
+# pipeline (mode/held-set semantics) rather than by a per-register
+# register_state annotation. Every OTHER live register must have a
+# register_state entry or the capsule is claiming register liveness it
+# never actually recorded state for.
+REGISTER_STATE_EXEMPT_CANONICAL = {"N", "m", "H"}
+
 ROUTE_RESULT_TYPES = {
     "held_burden_activation",
     "generated_burden_instantiation",
@@ -83,9 +119,47 @@ SUPERSCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹"
 BODY_REF_RE = re.compile(rf"^[{SUPERSCRIPT_DIGITS}]*B[0-9]+(?:_[0-9]+)?$")
 
 WARN_BYTES = 16_000
-FAIL_BYTES = 40_000
+# Hard smuggling line. The law's own capsule-relevant surface targets roughly
+# ~4k estimated tokens (~16KB); 24KB gives headroom above WARN_BYTES while
+# still refusing capsules that have clearly absorbed law/runtime prose rather
+# than staying a small structured hand-off (was 40_000; adversarial audit
+# found that ceiling loose enough to launder a meaningful prose-smuggling
+# payload without ever tripping FAIL).
+FAIL_BYTES = 24_000
 
+NEXT_REQUIRED_ACTION_MAX_LEN = 400
+NOTES_MAX_LEN = 1200
+
+# FIX 2: closed-state whole-token vocabulary. A state is closed iff it matches
+# ^(land|rejected|merged)\b optionally followed by (...) and NOTHING ELSE
+# except an optional trailing '+'. This deliberately rejects qualifier
+# suffixes (': PARTIAL', ': HOLD', '(pending') and compound words
+# (landless, unmerged, Landmark, rejected-pending) that a bare substring
+# check ("marker in lowered") would misclassify as closed.
 CLOSED_TERMINAL_MARKERS = ("land", "rejected", "merged")
+CLOSED_STATE_RE = re.compile(r"^(?:land|rejected|merged)\b(?:\([^)]*\))?\+?$", re.IGNORECASE)
+
+# tools/run_staged_current_skill_smoke.py's Stage 05 CONTROLLED_STAGE05_TERMINAL_STATES
+# vocabulary is a SEPARATE, exact-token controlled vocabulary from the
+# Land(...)/rejected/merged artifact-prose family above (the harness never
+# emits "Land(B1)" into a capsule's terminal_states -- it stores the raw
+# Stage 05 head word, e.g. "landed"). Of that vocabulary, "landed",
+# "cleared", and "discharged-as-derivative" are closed; "held-with-reason",
+# "carried-PARTIAL", and "carried-RECURSE" are explicitly open/non-closed
+# and must NOT be added here. This is an exact-token allowlist (not a
+# prefix/regex match) so it cannot be widened by a near-miss the way a
+# substring check could.
+CLOSED_STAGE05_TERMINAL_STATES = {"landed", "cleared", "discharged-as-derivative"}
+
+# FIX 1: ACT-row grammar family (mirrors tools/run_staged_current_skill_smoke.py
+# fixture-observed ACT rows and tools/check_act_surface_syntax.py's compact
+# ⟦ACT ...⟧ form). A line only counts as a real ACT row -- for replay parity
+# purposes -- if it is anchored to one of these two surface grammars, not
+# merely because a token happens to appear somewhere on the line (which is
+# defeated by code fences, quotations, or negated mentions).
+ACT_ROW_LOOSE_RE = re.compile(r"^\s*(?:[-*]\s*)?ACT\s+\S.*::")
+ACT_ROW_COMPACT_RE = re.compile(r"⟦ACT\b[^⟧\n]*⟧")
+FENCE_RE = re.compile(r"```.*?```", re.DOTALL)
 
 
 def rel(path: Path) -> str:
@@ -209,8 +283,14 @@ def structural_errors(label: str, payload: Any, schema: dict[str, Any]) -> list[
     if "coverage_complete" in payload and not isinstance(payload["coverage_complete"], bool):
         errors.append(f"{label}: coverage_complete must be a boolean")
 
-    if "next_required_action" in payload and not isinstance(payload["next_required_action"], str):
+    nra = payload.get("next_required_action")
+    if "next_required_action" in payload and not isinstance(nra, str):
         errors.append(f"{label}: next_required_action must be a string")
+    elif isinstance(nra, str) and len(nra) > NEXT_REQUIRED_ACTION_MAX_LEN:
+        errors.append(
+            f"{label}: next_required_action is {len(nra)} chars, exceeds max {NEXT_REQUIRED_ACTION_MAX_LEN} "
+            "(prose-smuggling bound)"
+        )
 
     oap = payload.get("output_artifact_path")
     if "output_artifact_path" in payload and not (oap is None or isinstance(oap, str)):
@@ -224,8 +304,11 @@ def structural_errors(label: str, payload: Any, schema: dict[str, Any]) -> list[
     if "output_offset_bytes" in payload and not (isinstance(oob, int) and not isinstance(oob, bool) and oob >= 0):
         errors.append(f"{label}: output_offset_bytes must be an integer >= 0")
 
-    if "notes" in payload and not isinstance(payload["notes"], str):
+    notes = payload.get("notes")
+    if "notes" in payload and not isinstance(notes, str):
         errors.append(f"{label}: notes must be a string")
+    elif isinstance(notes, str) and len(notes) > NOTES_MAX_LEN:
+        errors.append(f"{label}: notes is {len(notes)} chars, exceeds max {NOTES_MAX_LEN} (prose-smuggling bound)")
 
     return errors
 
@@ -441,7 +524,36 @@ def semantic_errors(label: str, payload: dict[str, Any]) -> list[str]:
     errors.extend(coverage_complete_errors(label, payload))
     errors.extend(partial_hold_errors(label, payload))
     errors.extend(output_artifact_errors(label, payload))
+    errors.extend(register_state_fidelity_errors(label, payload))
 
+    return errors
+
+
+def register_state_fidelity_errors(label: str, payload: dict[str, Any]) -> list[str]:
+    """Pure core (FIX 4): every live_registers entry (alias-normalized) except
+    N/m/H must have a key in register_state, else the capsule is claiming a
+    register is live without ever recording what its state is. N is carried
+    by n_frame; m/H are carried by dedicated capsule fields; those three are
+    exempt from needing their own register_state entry."""
+    live_registers = payload.get("live_registers")
+    register_state = payload.get("register_state")
+    if not isinstance(live_registers, list) or not isinstance(register_state, dict):
+        return []
+    register_state_canonical_keys = {
+        REGISTER_TOKEN_CANONICAL.get(str(key), str(key)) for key in register_state
+    }
+    errors: list[str] = []
+    for raw in live_registers:
+        if not isinstance(raw, str):
+            continue
+        canonical = REGISTER_TOKEN_CANONICAL.get(raw, raw)
+        if canonical in REGISTER_STATE_EXEMPT_CANONICAL:
+            continue
+        if canonical not in register_state_canonical_keys:
+            errors.append(
+                f"{label}: live register {raw!r} has no register_state entry "
+                "(live register without register_state entry)"
+            )
     return errors
 
 
@@ -553,10 +665,20 @@ def coverage_complete_errors(label: str, payload: dict[str, Any]) -> list[str]:
 
 
 def is_closed_state(state: Any) -> bool:
+    """A state is closed iff it matches the controlled grammar
+    ^(land|rejected|merged)\\b optionally followed by (...) and NOTHING ELSE
+    except an optional trailing '+' (the artifact-prose Land(...)/rejected/
+    merged family), OR it is an exact match against
+    CLOSED_STAGE05_TERMINAL_STATES (the harness's separate Stage 05
+    controlled terminal-state vocabulary, e.g. "landed"). A bare substring
+    test ("marker in lowered") is defeated by qualifier suffixes
+    (': PARTIAL', ': HOLD', '(pending') and compound words (landless,
+    unmerged, Landmark, rejected-pending) -- all of which must NOT count as
+    closed."""
     if not isinstance(state, str):
         return False
-    lowered = state.lower()
-    return any(marker in lowered for marker in CLOSED_TERMINAL_MARKERS)
+    stripped = state.strip()
+    return bool(CLOSED_STATE_RE.match(stripped)) or stripped in CLOSED_STAGE05_TERMINAL_STATES
 
 
 def partial_hold_errors(label: str, payload: dict[str, Any]) -> list[str]:
@@ -647,14 +769,103 @@ def discover_capsule_sequence(directory: Path) -> list[Path]:
     return [path for _, path in entries]
 
 
-def replay_errors(directory: Path, schema: dict[str, Any]) -> list[str]:
-    artifact_path = directory / "artifact.md"
+def strip_fenced_code_blocks(text: str) -> str:
+    """FIX 1: strip fenced code blocks (``` ... ```) before any ACT/Land
+    substring or line-anchored parity check, so a token that appears ONLY
+    inside a code fence (or a quotation reproduced verbatim in a fence)
+    cannot be used to satisfy replay parity. Fences are replaced with
+    newline-preserving blanks so line numbers / offsets used elsewhere in
+    error messages are not disturbed by this pass."""
+    def _blank(match: "re.Match[str]") -> str:
+        return "\n" * match.group(0).count("\n")
+
+    return FENCE_RE.sub(_blank, text)
+
+
+def act_row_lines(text: str) -> list[str]:
+    """FIX 1: return only the lines of `text` that satisfy the real ACT-row
+    grammar family (either the loose `ACT ... ::` row form or the compact
+    `⟦ACT ...⟧` form), mirroring tools/run_staged_current_skill_smoke.py
+    fixture-observed ACT rows and tools/check_act_surface_syntax.py's
+    ACT_HEADING/compact-form parsing. A bare token mention elsewhere on a
+    line (inside a code fence, a quotation, or a negated aside) does not
+    qualify."""
+    rows: list[str] = []
+    for line in text.splitlines():
+        if "ACT" not in line:
+            continue
+        if ACT_ROW_LOOSE_RE.match(line) or ACT_ROW_COMPACT_RE.search(line):
+            rows.append(line)
+    return rows
+
+
+def body_ref_has_act_row_parity(body_ref: str, act_lines: list[str]) -> bool:
+    """FIX 1: body_ref must appear within a line matching the real ACT-row
+    grammar, not merely anywhere in the artifact text (which is defeated by
+    the token appearing only in a code fence, a quotation, or a negation)."""
+    return any(body_ref in line for line in act_lines)
+
+
+def land_token_has_row_parity(land_token: str, text_lines: list[str]) -> bool:
+    """FIX 2 replay half: the Land(<burden>) token must appear on some line,
+    and that line must not immediately suffix it with a qualifier such as
+    ': PARTIAL' or ': HOLD' that would make the claim of closure false. This
+    mirrors is_closed_state's grammar: after the Land(...) token, the line
+    (once trimmed of a trailing '+') must not continue with a colon-qualifier
+    before end of line/sentence."""
+    suffix_re = re.compile(re.escape(land_token) + r"\)?\s*\+?\s*:\s*(PARTIAL|HOLD)\b", re.IGNORECASE)
+    found = False
+    for line in text_lines:
+        if land_token not in line:
+            continue
+        found = True
+        if suffix_re.search(line):
+            return False
+    return found
+
+
+INITIAL_BURDEN_SET_RE = re.compile(r"Initial burden set:\s*\[([^\]]*)\]")
+LEDGER_B_LA_RE = re.compile(r"(?:𝔅_LA|B_LA)\s*\(?[Bb]?_?LA\)?\s*=\s*\{([^}]*)\}")
+SUP_TO_ASCII = str.maketrans(SUPERSCRIPT_DIGITS, "0123456789")
+
+
+def parse_artifact_initial_burden_set(text: str) -> list[str] | None:
+    """FIX 3: parse the artifact for an 'Initial burden set: [...]' line
+    (and/or the ledger line with B_LA = {...}), normalizing both ASCII (B1)
+    and Unicode superscript burden tokens the way the harness does. Returns
+    None when the artifact carries no such line (fixtures without it stay
+    valid / unaffected), else the ordered-unique list of burden ids found."""
+    match = INITIAL_BURDEN_SET_RE.search(text)
+    if match is None:
+        match = LEDGER_B_LA_RE.search(text)
+    if match is None:
+        return None
+    raw = match.group(1)
+    tokens = re.findall(rf"[{SUPERSCRIPT_DIGITS}]*B[0-9]+(?:_[0-9]+)?", raw)
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for token in tokens:
+        ascii_token = token.translate(SUP_TO_ASCII)
+        if ascii_token not in seen:
+            seen.add(ascii_token)
+            normalized.append(ascii_token)
+    return normalized
+
+
+def replay_errors(directory: Path, schema: dict[str, Any], artifact_path: Path | None = None) -> list[str]:
+    """`artifact_path` defaults to `directory / "artifact.md"` (the fixture
+    convention) for backward compatibility; callers with a real run's
+    output.md living elsewhere (e.g. FIX 6's Stage-07 completion gate in
+    tools/run_staged_current_skill_smoke.py) pass it explicitly instead of
+    needing to copy/rename the artifact into the capsules directory."""
+    if artifact_path is None:
+        artifact_path = directory / "artifact.md"
     capsule_paths = discover_capsule_sequence(directory)
 
     if not capsule_paths:
         return [f"{rel(directory)}: no capsule-NNN.json files found"]
     if not artifact_path.is_file():
-        return [f"{rel(directory)}: missing artifact.md"]
+        return [f"{rel(directory)}: missing {rel(artifact_path)}"]
 
     artifact_bytes = artifact_path.read_bytes()
     artifact_text = artifact_bytes.decode("utf-8", errors="replace")
@@ -687,6 +898,30 @@ def replay_sequence_errors(
 
     case_id = capsules[0].get("case_id")
     fingerprint = capsules[0].get("input_fingerprint")
+
+    # FIX 1: strip fenced code blocks before any ACT/Land substring or
+    # line-anchored parity check, so a token appearing only inside a code
+    # fence, a quotation, or a negated aside cannot satisfy replay parity.
+    fence_stripped_text = strip_fenced_code_blocks(artifact_text)
+    artifact_act_lines = act_row_lines(fence_stripped_text)
+    fence_stripped_lines = fence_stripped_text.splitlines()
+
+    # FIX 3: first-capsule B_LA ground truth. When the artifact states an
+    # explicit initial burden set (either the prose 'Initial burden set:
+    # [...]' line or the 𝔅_LA/B_LA = {...} ledger line), capsule-001's B_LA
+    # must be a superset of it. Skip silently when the artifact carries no
+    # such line at all (fixtures without it stay valid/unaffected).
+    initial_burden_set = parse_artifact_initial_burden_set(fence_stripped_text)
+    if initial_burden_set is not None:
+        first_b_la = capsules[0].get("B_LA")
+        first_b_la_set = set(first_b_la) if isinstance(first_b_la, list) else set()
+        missing_initial = [b for b in initial_burden_set if b not in first_b_la_set]
+        if missing_initial:
+            return [
+                f"{label}: capsule index 1: B_LA incomplete at first capsule vs artifact initial burden set "
+                f"(missing {missing_initial}, artifact declares {initial_burden_set!r}, "
+                f"capsule B_LA is {first_b_la!r})"
+            ]
 
     prev_offset = -1
     prev_stage_index = -1
@@ -747,10 +982,11 @@ def replay_sequence_errors(
 
         for entry in acts:
             body_ref = entry.get("body_ref") if isinstance(entry, dict) else None
-            if isinstance(body_ref, str) and body_ref not in artifact_text:
+            if isinstance(body_ref, str) and not body_ref_has_act_row_parity(body_ref, artifact_act_lines):
                 return [
                     f"{label}: capsule index {index}: completed_acts body_ref {body_ref!r} "
-                    "does not appear in artifact.md (capsule-artifact parity violation)"
+                    "does not appear within a real ACT-row line in artifact.md (capsule-artifact parity "
+                    "violation; fenced-code/quoted/negated mentions do not count)"
                 ]
 
         terminal_states = capsule.get("terminal_states") or {}
@@ -758,10 +994,16 @@ def replay_sequence_errors(
             for burden, state in terminal_states.items():
                 if isinstance(state, str) and "land" in state.lower():
                     land_token = f"Land({burden})"
-                    if land_token not in artifact_text:
+                    if land_token not in fence_stripped_text:
                         return [
                             f"{label}: capsule index {index}: terminal_states burden {burden!r} "
                             f"marked Land but {land_token!r} does not appear in artifact.md"
+                        ]
+                    if is_closed_state(state) and not land_token_has_row_parity(land_token, fence_stripped_lines):
+                        return [
+                            f"{label}: capsule index {index}: terminal_states burden {burden!r} claims closed "
+                            f"state {state!r} but the artifact line carrying {land_token!r} is suffixed with a "
+                            "PARTIAL/HOLD qualifier (false coverage vs artifact replay)"
                         ]
 
     final = capsules[-1]
@@ -822,7 +1064,7 @@ def _base_capsule(**overrides: Any) -> dict[str, Any]:
         "stage": "04",
         "n_frame": {"selected": "authority-order", "held_candidates": []},
         "live_registers": ["N", "m", "tau", "sigma"],
-        "register_state": {},
+        "register_state": {"tau": "live per stage-02 diagnostic", "sigma": "live per stage-02 diagnostic"},
         "B_LA": ["B1", "B2"],
         "B_MRP": [],
         "B_total": ["B1", "B2"],
@@ -1023,7 +1265,11 @@ def embedded_self_test_cases() -> list[tuple[str, bool]]:
     cases.append(("capsule over hard cap fails", bool(failures2)))
 
     # replay sequence invariants (pure core, synthetic)
-    artifact_text = "ACT B1_1 ... Land(B1)\nACT B2_1 ... Land(B2)\n"
+    # NOTE: these lines must satisfy the real ACT-row grammar (FIX 1) --
+    # "ACT <ref> ... :: ... " with a `::` field separator -- not just contain
+    # the ACT/body_ref tokens anywhere, since replay parity is now anchored
+    # to actual ACT rows.
+    artifact_text = "ACT B1_1 :: op :: Land(B1)+\nACT B2_1 :: op :: Land(B2)+\n"
     artifact_bytes = artifact_text.encode("utf-8")
     cap1 = _base_capsule(
         stage="04",
@@ -1091,6 +1337,168 @@ def embedded_self_test_cases() -> list[tuple[str, bool]]:
         ),
     ))
 
+    # FIX 1: ACT parity anchoring -- a body_ref present ONLY inside a fenced
+    # code block (or a bare mention outside the real ACT-row grammar) must
+    # NOT satisfy replay parity.
+    fenced_only_artifact = (
+        "# Case\n\n"
+        "Discussion of the format:\n"
+        "```\nACT B1_1 :: example only, not a real row :: Land(B1)+\n```\n"
+        "No real ACT row appears outside the fence.\n"
+    )
+    fenced_only_bytes = fenced_only_artifact.encode("utf-8")
+    cap_fenced = _base_capsule(
+        completed_acts=[
+            {
+                "body_ref": "B1_1",
+                "owner_id": "M3",
+                "operation": "op",
+                "register_axis": "xi",
+                "delta_result": "d",
+                "land": "Land(B1)",
+            }
+        ],
+        output_offset_bytes=len(fenced_only_bytes),
+        output_artifact_path="artifact.md",
+        output_sha256=hashlib.sha256(fenced_only_bytes).hexdigest(),
+    )
+    cases.append((
+        "replay sequence: body_ref only inside code fence fails",
+        any(
+            "does not appear within a real ACT-row line" in e
+            for e in replay_sequence_errors("t", [cap_fenced], fenced_only_artifact, fenced_only_bytes)
+        ),
+    ))
+
+    real_act_artifact = "# Case\n\nACT B1_1 :: M3.activation :: Land(B1)+\nLand(B1): closed.\n"
+    real_act_bytes = real_act_artifact.encode("utf-8")
+    cap_real_act = _base_capsule(
+        completed_acts=[
+            {
+                "body_ref": "B1_1",
+                "owner_id": "M3",
+                "operation": "op",
+                "register_axis": "xi",
+                "delta_result": "d",
+                "land": "Land(B1)",
+            }
+        ],
+        terminal_states={"B1": "Land(B1)"},
+        output_offset_bytes=len(real_act_bytes),
+        output_artifact_path="artifact.md",
+        output_sha256=hashlib.sha256(real_act_bytes).hexdigest(),
+    )
+    cases.append((
+        "replay sequence: body_ref inside real ACT row passes",
+        replay_sequence_errors("t", [cap_real_act], real_act_artifact, real_act_bytes) == [],
+    ))
+
+    # FIX 2: closed-state whole-token vocabulary.
+    cases.append(("is_closed_state accepts bare Land(...)", is_closed_state("Land(B1)")))
+    cases.append(("is_closed_state accepts bare Land(...)+", is_closed_state("Land(B1)+")))
+    cases.append(("is_closed_state accepts rejected", is_closed_state("rejected")))
+    cases.append(("is_closed_state accepts merged", is_closed_state("merged(B2)")))
+    cases.append(("is_closed_state rejects PARTIAL suffix", not is_closed_state("Land(B2): PARTIAL")))
+    cases.append(("is_closed_state rejects HOLD suffix", not is_closed_state("Land(B2): HOLD")))
+    cases.append(("is_closed_state rejects compound landless", not is_closed_state("landless")))
+    cases.append(("is_closed_state rejects compound Landmark", not is_closed_state("Landmark")))
+    cases.append(("is_closed_state rejects compound unmerged", not is_closed_state("unmerged")))
+    cases.append(("is_closed_state rejects rejected-pending", not is_closed_state("rejected-pending")))
+    cases.append(("is_closed_state accepts Stage05 landed", is_closed_state("landed")))
+    cases.append(("is_closed_state accepts Stage05 cleared", is_closed_state("cleared")))
+    cases.append((
+        "is_closed_state accepts Stage05 discharged-as-derivative",
+        is_closed_state("discharged-as-derivative"),
+    ))
+    cases.append(("is_closed_state rejects Stage05 held-with-reason", not is_closed_state("held-with-reason")))
+    cases.append(("is_closed_state rejects Stage05 carried-PARTIAL", not is_closed_state("carried-PARTIAL")))
+    cases.append(("is_closed_state rejects Stage05 carried-RECURSE", not is_closed_state("carried-RECURSE")))
+
+    # FIX 3: first-capsule B_LA ground truth vs artifact initial burden set.
+    cases.append((
+        "parse_artifact_initial_burden_set finds bracketed prose form",
+        parse_artifact_initial_burden_set("Initial burden set: [B1, B2, B3]") == ["B1", "B2", "B3"],
+    ))
+    cases.append((
+        "parse_artifact_initial_burden_set returns None when absent",
+        parse_artifact_initial_burden_set("no such line here") is None,
+    ))
+    bla_incomplete_artifact = "Initial burden set: [B1, B2, B3]\nACT B1_1 :: Land(B1)+\n"
+    bla_incomplete_bytes = bla_incomplete_artifact.encode("utf-8")
+    cap_bla_incomplete = _base_capsule(
+        B_LA=["B1"],
+        B_total=["B1"],
+        output_offset_bytes=len(bla_incomplete_bytes),
+        output_artifact_path="artifact.md",
+        output_sha256=hashlib.sha256(bla_incomplete_bytes).hexdigest(),
+    )
+    cases.append((
+        "replay sequence: B_LA incomplete at first capsule vs artifact fails",
+        any(
+            "B_LA incomplete at first capsule" in e
+            for e in replay_sequence_errors(
+                "t", [cap_bla_incomplete], bla_incomplete_artifact, bla_incomplete_bytes
+            )
+        ),
+    ))
+
+    # FIX 4: register_state fidelity.
+    cases.append((
+        "register_state fidelity: complete registers pass",
+        register_state_fidelity_errors(
+            "t", _base_capsule(live_registers=["N", "m", "tau"], register_state={"tau": "x"})
+        )
+        == [],
+    ))
+    cases.append((
+        "register_state fidelity: N/m/H exempt without entries",
+        register_state_fidelity_errors(
+            "t", _base_capsule(live_registers=["N", "m", "H"], register_state={})
+        )
+        == [],
+    ))
+    cases.append((
+        "register_state fidelity: missing live register entry fails",
+        any(
+            "live register without register_state entry" in e
+            for e in register_state_fidelity_errors(
+                "t", _base_capsule(live_registers=["N", "m", "xi"], register_state={})
+            )
+        ),
+    ))
+    cases.append((
+        "register_state fidelity: alias glyph key satisfies canonical name",
+        register_state_fidelity_errors(
+            "t", _base_capsule(live_registers=["tau"], register_state={"τ": "x"})
+        )
+        == [],
+    ))
+
+    # FIX 7: prose-smuggling bounds.
+    long_action = "x" * 401
+    cases.append((
+        "next_required_action over 400 chars fails",
+        any(
+            "exceeds max 400" in e
+            for e in structural_errors("t", _base_capsule(next_required_action=long_action), schema)
+        ),
+    ))
+    cases.append((
+        "next_required_action at 400 chars passes",
+        not any(
+            "exceeds max 400" in e
+            for e in structural_errors("t", _base_capsule(next_required_action="x" * 400), schema)
+        ),
+    ))
+    long_notes = "x" * 1201
+    cases.append((
+        "notes over 1200 chars fails",
+        any(
+            "exceeds max 1200" in e
+            for e in structural_errors("t", _base_capsule(notes=long_notes), schema)
+        ),
+    ))
+
     return cases
 
 
@@ -1137,13 +1545,19 @@ def fixture_self_test(root: Path) -> tuple[list[str], int, int]:
     # invalid/*: each single-capsule fixture must fail for its own named reason.
     invalid_specs = {
         "offset-nonmonotonic": "not monotonic",
-        "act-not-in-artifact": "does not appear in artifact.md",
+        "act-not-in-artifact": "does not appear within a real ACT-row line in artifact.md",
         "false-coverage-complete": "false coverage",
         "generated-burden-without-mrp-provenance": "no MRP provenance",
         "partial-without-next-action": "next_required_action",
         "bla-shrinks": "B_LA shrank",
         "body-ref-polluted": "polluted",
         "artifact-hash-mismatch": "output_sha256",
+        "act-only-in-code-fence": "does not appear within a real ACT-row line in artifact.md",
+        "false-coverage-partial-suffix": "false coverage",
+        "closed-state-near-miss": "false coverage",
+        "bla-incomplete-at-first-capsule": "B_LA incomplete at first capsule",
+        "capsule-missing-live-register": "live register without register_state entry",
+        "next-required-action-prose-smuggling": "exceeds max 400",
     }
     for name, expected_substring in invalid_specs.items():
         directory = invalid_root / name

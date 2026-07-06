@@ -228,7 +228,8 @@
     },
     "next_required_action": {
       "type": "string",
-      "description": "Required non-empty when coverage_complete is false and the capsule is in a PARTIAL/hold_partial state; may be empty string only for fully covered/terminal capsules."
+      "maxLength": 400,
+      "description": "Required non-empty when coverage_complete is false and the capsule is in a PARTIAL/hold_partial state; may be empty string only for fully covered/terminal capsules. Capped at 400 chars to prevent prose-smuggling of law/runtime content into a field meant to be a short imperative."
     },
     "output_artifact_path": {
       "type": ["string", "null"],
@@ -253,7 +254,9 @@
       "items": {"type": "string", "minLength": 1}
     },
     "notes": {
-      "type": "string"
+      "type": "string",
+      "maxLength": 1200,
+      "description": "Free-text annotation; capped at 1200 chars to prevent prose-smuggling of law/runtime content past the capsule's small-hand-off size discipline."
     }
   }
 }

@@ -1,8 +1,8 @@
 {
   "schema": "daee-state-capsule-v1",
-  "case_id": "case-mca-001",
+  "case_id": "case-inv-missingreg",
   "input_fingerprint": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-  "stage": "01",
+  "stage": "04",
   "n_frame": {
     "selected": "authority-order",
     "held_candidates": []
@@ -14,13 +14,16 @@
     "sigma"
   ],
   "register_state": {
-    "tau": "live per stage-02 diagnostic",
-    "sigma": "live per stage-02 diagnostic"
+    "tau": "live per stage-02 diagnostic"
   },
-  "B_LA": [],
+  "B_LA": [
+    "B1"
+  ],
   "B_MRP": [],
-  "B_total": [],
-  "current_burden": null,
+  "B_total": [
+    "B1"
+  ],
+  "current_burden": "B1",
   "held_set_H": [],
   "completed_acts": [],
   "last_terminal": {
@@ -41,16 +44,15 @@
   "terminal_states": {},
   "next_burden": null,
   "current_owner_route": {
-    "burden": null,
-    "owner_id": null,
+    "burden": "B1",
+    "owner_id": "M3",
     "shards": []
   },
   "coverage_complete": false,
-  "next_required_action": "run layer-A burden identification",
-  "output_artifact_path": "artifact.md",
-  "output_sha256": "4a215d797e3218e697f7f5df19d35f4a183325cdacfd1bef565c2c7fac9eff18",
-  "output_offset_bytes": 82,
+  "next_required_action": "activate B1",
+  "output_artifact_path": null,
+  "output_sha256": null,
+  "output_offset_bytes": 0,
   "cold_law_refs_used": [],
-  "shards_loaded": [],
-  "notes": "capsule 1: intake complete, pre layer-A"
+  "shards_loaded": []
 }

@@ -13,7 +13,10 @@
     "tau",
     "sigma"
   ],
-  "register_state": {},
+  "register_state": {
+    "tau": "live per stage-02 diagnostic",
+    "sigma": "live per stage-02 diagnostic"
+  },
   "B_LA": [
     "B1"
   ],

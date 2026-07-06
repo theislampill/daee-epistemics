@@ -1,8 +1,8 @@
 {
   "schema": "daee-state-capsule-v1",
-  "case_id": "case-mca-001",
+  "case_id": "case-inv-blafirst",
   "input_fingerprint": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-  "stage": "01",
+  "stage": "04",
   "n_frame": {
     "selected": "authority-order",
     "held_candidates": []
@@ -17,12 +17,25 @@
     "tau": "live per stage-02 diagnostic",
     "sigma": "live per stage-02 diagnostic"
   },
-  "B_LA": [],
+  "B_LA": [
+    "B1"
+  ],
   "B_MRP": [],
-  "B_total": [],
+  "B_total": [
+    "B1"
+  ],
   "current_burden": null,
   "held_set_H": [],
-  "completed_acts": [],
+  "completed_acts": [
+    {
+      "body_ref": "B1_1",
+      "owner_id": "M3",
+      "operation": "activation",
+      "register_axis": "xi",
+      "delta_result": "uptake-recorded",
+      "land": "Land(B1)"
+    }
+  ],
   "last_terminal": {
     "burden": null,
     "state": null
@@ -38,19 +51,20 @@
     "curl_state": "null-state"
   },
   "transport": "file-retained",
-  "terminal_states": {},
+  "terminal_states": {
+    "B1": "Land(B1)"
+  },
   "next_burden": null,
   "current_owner_route": {
-    "burden": null,
-    "owner_id": null,
+    "burden": "B1",
+    "owner_id": "M3",
     "shards": []
   },
   "coverage_complete": false,
-  "next_required_action": "run layer-A burden identification",
+  "next_required_action": "activate B2",
   "output_artifact_path": "artifact.md",
-  "output_sha256": "4a215d797e3218e697f7f5df19d35f4a183325cdacfd1bef565c2c7fac9eff18",
-  "output_offset_bytes": 82,
+  "output_sha256": "3f36149932d54cb3020b8db726da5da425705abd8124be7fcbdc285e9dfd551d",
+  "output_offset_bytes": 167,
   "cold_law_refs_used": [],
-  "shards_loaded": [],
-  "notes": "capsule 1: intake complete, pre layer-A"
+  "shards_loaded": []
 }

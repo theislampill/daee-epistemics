@@ -9,9 +9,11 @@ self-test proves only harness wiring; it does not prove model behavior.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import copy
 import datetime as dt
 import hashlib
+import io
 import json
 import os
 import re
@@ -731,17 +733,45 @@ def compact_state(stages: list[dict[str, Any]]) -> dict[str, Any]:
 
 STAGE_ID_TO_CAPSULE_CODE = {stage_id: f"{index + 1:02d}" for index, stage_id in enumerate(STAGE_ORDER)}
 
+# FIX 8: the two shards the law mandates be loaded at Stage 07 completion.
+# Recording them in shards_loaded at stage-07 capsules is the honest floor;
+# earlier stages have no shard bookkeeping yet (Slice F/H item) and keep [].
+STAGE07_MANDATORY_SHARDS = (
+    "references/runtime-shard-output-release.md",
+    "references/runtime-shard-render-contract.md",
+)
+
 CAPSULE_CLOSED_TERMINAL_MARKERS = ("land", "rejected", "merged")
+
+# FIX 2 mirror: keep in lockstep with tools/check_state_capsule.py's
+# CLOSED_STATE_RE. A state is closed iff it matches
+# ^(land|rejected|merged)\b optionally followed by (...) and NOTHING ELSE
+# except an optional trailing '+'. A bare substring test would misclassify
+# qualifier suffixes (': PARTIAL', ': HOLD') and compound words (landless,
+# unmerged, Landmark) as closed; this harness must never claim
+# coverage_complete=true off of a state the checker would then reject as
+# false coverage.
+CAPSULE_CLOSED_STATE_RE = re.compile(r"^(?:land|rejected|merged)\b(?:\([^)]*\))?\+?$", re.IGNORECASE)
+
+# This harness's own Stage 05 CONTROLLED_STAGE05_TERMINAL_STATES vocabulary
+# (see that constant above) is a SEPARATE, exact-token controlled
+# vocabulary from the artifact-prose Land(...)/rejected/merged family: this
+# harness stores the raw Stage 05 head word (e.g. "landed") into a
+# capsule's terminal_states, never a "Land(B1)"-shaped string. Mirrors
+# tools/check_state_capsule.py's CLOSED_STAGE05_TERMINAL_STATES exactly;
+# "held-with-reason"/"carried-PARTIAL"/"carried-RECURSE" are deliberately
+# excluded as open/non-closed.
+CAPSULE_CLOSED_STAGE05_TERMINAL_STATES = {"landed", "cleared", "discharged-as-derivative"}
 
 
 def _capsule_is_closed_terminal_state(state: Any) -> bool:
-    """Mirror tools/check_state_capsule.py's is_closed_state substring rule so
-    coverage_complete here never claims closure the checker would reject as
-    false coverage."""
+    """Mirror tools/check_state_capsule.py's is_closed_state controlled
+    grammar (FIX 2) so coverage_complete here never claims closure the
+    checker would reject as false coverage."""
     if not isinstance(state, str):
         return False
-    lowered = state.lower()
-    return any(marker in lowered for marker in CAPSULE_CLOSED_TERMINAL_MARKERS)
+    stripped = state.strip()
+    return bool(CAPSULE_CLOSED_STATE_RE.match(stripped)) or stripped in CAPSULE_CLOSED_STAGE05_TERMINAL_STATES
 
 
 def _capsule_state_head(value: Any) -> str:
@@ -893,13 +923,37 @@ def build_state_capsule(
         if isinstance(raw_registers, list):
             live_registers = ordered_unique([str(item) for item in raw_registers if isinstance(item, str) and item])
 
-    register_state: dict[str, Any] = {}
-
     burden_floor: list[str] = []
     if isinstance(stage02, dict):
         raw_floor = stage02.get("burden_floor")
         if isinstance(raw_floor, list):
             burden_floor = ordered_unique([str(item) for item in raw_floor if isinstance(item, str) and item])
+
+    # FIX 4: populate register_state faithfully from Stage 02's per-burden
+    # register annotations (burden_floor_details / live_registers prose),
+    # keyed by the SAME canonical register spelling this capsule's own
+    # live_registers list carries. N/m/H are exempt (N is carried by
+    # n_frame; m/H by dedicated capsule fields), so this only needs to cover
+    # the remaining live registers. stage02_register_coverage() gives a
+    # register -> [burden_id, ...] mapping already derived from Stage 02's
+    # burden_floor_details register projection; where no richer per-burden
+    # annotation exists for a live register, this still records an honest
+    # minimal annotation (never an empty {} placeholder for a claimed-live
+    # register).
+    register_state: dict[str, Any] = {}
+    if isinstance(stage02, dict) and live_registers:
+        register_coverage = stage02_register_coverage(stage02, burden_floor)
+        for raw_register in live_registers:
+            if raw_register in ("N", "m", "H"):
+                continue
+            covering_burdens = register_coverage.get(raw_register) or []
+            if covering_burdens:
+                register_state[raw_register] = {
+                    "status": "live per stage-02 diagnostic",
+                    "burdens": list(covering_burdens),
+                }
+            else:
+                register_state[raw_register] = "live per stage-02 diagnostic"
     b_la = list(burden_floor)
     b_mrp = stage05_generated_burdens(stage05) if isinstance(stage05, dict) else []
     b_total = ordered_unique([*b_la, *b_mrp])
@@ -1015,7 +1069,16 @@ def build_state_capsule(
         "output_sha256": output_sha256,
         "output_offset_bytes": output_offset_bytes,
         "cold_law_refs_used": [],
-        "shards_loaded": [],
+        # FIX 8: shards_loaded honesty floor. Stage 07 mandatorily loads these
+        # two runtime shards per the law; recording them here is the honest
+        # floor for a capsule emitted at/after stage-07 completion. Earlier
+        # stages keep [] with this comment as the reason: no shard
+        # bookkeeping exists yet for stages 01-06 (Slice F/H item), so an
+        # empty list there is an honest "not tracked yet", not a false
+        # negative claim.
+        "shards_loaded": (
+            list(STAGE07_MANDATORY_SHARDS) if stage_id == "stage-07-release-output" else []
+        ),
     }
     return capsule
 
@@ -1085,12 +1148,18 @@ def write_state_capsule(
     capsule_index: int,
     root: Path = ROOT,
 ) -> Path | None:
-    """Write <run_dir>/state-capsules/capsule-<NNN>.json and validate it
-    in-process. Capsule observability must never abort a run: any failure
-    (build, write, or validation) is caught and reported as a stderr warning
-    only. Returns the written path on success, else None.
+    """Build -> validate in-process -> write <run_dir>/state-capsules/ at
+    EITHER capsule-<NNN>.json (valid) or capsule-<NNN>.invalid.json (invalid),
+    never the canonical name for an invalid capsule (FIX 5). Capsule
+    observability must never abort a run: any failure (build, write, or
+    validation) is caught and reported as a stderr warning only. Returns the
+    written canonical path on success, else None (including when the
+    capsule was invalid and only the .invalid.json sidecar was written).
     """
-    capsule_path = run_dir / "state-capsules" / f"capsule-{capsule_index:03d}.json"
+    capsules_dir = run_dir / "state-capsules"
+    capsule_path = capsules_dir / f"capsule-{capsule_index:03d}.json"
+    invalid_path = capsules_dir / f"capsule-{capsule_index:03d}.invalid.json"
+
     try:
         capsule = build_state_capsule(
             case_id=case_id,
@@ -1102,21 +1171,40 @@ def write_state_capsule(
             run_dir=run_dir,
             root=root,
         )
-        write_json(capsule_path, capsule)
     except Exception as exc:  # noqa: BLE001 - observability must never abort a run
         print(f"WARNING: state-capsule emission failed for {rel(capsule_path, root)}: {exc}", file=sys.stderr)
         return None
 
+    errors: list[str] | None = None
     try:
         checker = check_state_capsule_module()
         schema = checker.load_schema()
-        errors = checker.validate_capsule_file(capsule_path, schema)
-        if errors:
-            print(f"WARNING: state-capsule {rel(capsule_path, root)} failed schema/semantic validation:", file=sys.stderr)
-            for error in errors:
-                print(f"  - {error}", file=sys.stderr)
+        errors = checker.validate_capsule_payload(rel(capsule_path, root), capsule, schema)
+        if not errors:
+            raw_bytes = (json.dumps(capsule, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+            _warnings, size_failures = checker.capsule_size_errors(rel(capsule_path, root), raw_bytes)
+            errors = size_failures
     except Exception as exc:  # noqa: BLE001 - observability must never abort a run
         print(f"WARNING: state-capsule validation could not run for {rel(capsule_path, root)}: {exc}", file=sys.stderr)
+
+    try:
+        if errors:
+            # Never persist an invalid capsule at the canonical name: write
+            # the .invalid.json sidecar instead, loudly, and leave no
+            # capsule-<NNN>.json behind for this index.
+            write_json(invalid_path, capsule)
+            print(
+                f"WARNING: state-capsule {rel(capsule_path, root)} is INVALID; wrote "
+                f"{rel(invalid_path, root)} instead of the canonical name. Errors:",
+                file=sys.stderr,
+            )
+            for error in errors:
+                print(f"  - {error}", file=sys.stderr)
+            return None
+        write_json(capsule_path, capsule)
+    except Exception as exc:  # noqa: BLE001 - observability must never abort a run
+        print(f"WARNING: state-capsule write failed for {rel(capsule_path, root)}: {exc}", file=sys.stderr)
+        return None
 
     return capsule_path
 
@@ -15976,11 +16064,17 @@ def run_self_test(root: Path) -> int:
 
     # check_state_capsule.replay_errors() expects the retained artifact at
     # <capsules-dir>/artifact.md (hardcoded name, sibling to capsule-NNN.json),
-    # independent of the capsule's own output_artifact_path value.
+    # independent of the capsule's own output_artifact_path value. FIX 1
+    # anchors body_ref/Land parity to real ACT-row lines, so this synthetic
+    # artifact must carry actual `ACT ... ::` rows for B1_1/B1_2, not just
+    # bare token mentions in prose.
     capsule_output_path = capsule_run_dir / "state-capsules" / "artifact.md"
     write_text(
         capsule_output_path,
-        "Land(¹B) Land(B1) science-only source-order warrant. B1_1 B1_2 self-test governed output body.\n",
+        "science-only source-order warrant, self-test governed output body.\n\n"
+        "ACT B1_1 :: M3.activation :: register_axis=sigma :: Delta=science-source-bounded :: Land(B1)+\n"
+        "ACT B1_2 :: M3.activation :: register_axis=xi :: Delta=self-authorizing-standard-invalidated :: Land(B1)+\n"
+        "Land(B1): closed on sound-reason ground.\n",
     )
     capsule_stages.append(normalized_stage("stage-07-release-output", capsule_stage_by_id["stage-07-release-output"]))
     capsule_stage07_written = write_state_capsule(
@@ -16048,6 +16142,70 @@ def run_self_test(root: Path) -> int:
         )
 
     print(f"state-capsule self-test: PASS ({len(capsule_payloads)} capsule(s), {rel(capsule_run_dir, root)})")
+
+    # -----------------------------------------------------------------
+    # FIX 5 negative case: an invalid capsule must NEVER be persisted at the
+    # canonical capsule-<NNN>.json name. Force build_state_capsule() to
+    # return a synthetic invalid dict (via monkeypatch) and drive it through
+    # write_state_capsule(), then assert the canonical name does not exist
+    # while the .invalid.json sidecar does, with the loud stderr warning
+    # listing the concrete errors.
+    # -----------------------------------------------------------------
+    negative_run_dir = run_dir / "state-capsule-negative-self-test"
+    negative_run_dir.mkdir(parents=True, exist_ok=True)
+    negative_index = 1
+    negative_capsule_path = negative_run_dir / "state-capsules" / f"capsule-{negative_index:03d}.json"
+    negative_invalid_path = negative_run_dir / "state-capsules" / f"capsule-{negative_index:03d}.invalid.json"
+    for stale in (negative_capsule_path, negative_invalid_path):
+        if stale.exists():
+            stale.unlink()
+
+    def _synthetic_invalid_capsule(**_kwargs: Any) -> dict[str, Any]:
+        # Deliberately missing required fields (e.g. "schema", "B_LA", ...)
+        # so structural_errors() rejects it -- this exercises the write path
+        # end to end, not just the validator in isolation.
+        return {"case_id": "self-test-negative-persist", "stage": "01"}
+
+    _real_build_state_capsule = globals()["build_state_capsule"]
+    globals()["build_state_capsule"] = _synthetic_invalid_capsule
+    try:
+        negative_stderr = io.StringIO()
+        with contextlib.redirect_stderr(negative_stderr):
+            negative_written = write_state_capsule(
+                case_id="self-test-negative-persist",
+                input_digest=capsule_input_digest,
+                stage_id="stage-01-intake",
+                stages=[],
+                raw_input_path=raw_input,
+                output_path=None,
+                run_dir=negative_run_dir,
+                capsule_index=negative_index,
+                root=root,
+            )
+    finally:
+        globals()["build_state_capsule"] = _real_build_state_capsule
+
+    if negative_written is not None:
+        raise HarnessError(
+            "Self-test FIX 5 negative case: write_state_capsule() must return None for an invalid capsule, "
+            f"got {negative_written!r}"
+        )
+    if negative_capsule_path.exists():
+        raise HarnessError(
+            f"Self-test FIX 5 negative case: invalid capsule was persisted at the canonical name "
+            f"{rel(negative_capsule_path, root)}; it must never be written there"
+        )
+    if not negative_invalid_path.exists():
+        raise HarnessError(
+            f"Self-test FIX 5 negative case: expected {rel(negative_invalid_path, root)} sidecar was not written"
+        )
+    negative_stderr_text = negative_stderr.getvalue()
+    if "INVALID" not in negative_stderr_text or rel(negative_invalid_path, root) not in negative_stderr_text:
+        raise HarnessError(
+            "Self-test FIX 5 negative case: expected a loud stderr warning naming the .invalid.json path; got: "
+            + negative_stderr_text
+        )
+    print(f"state-capsule FIX 5 negative-persist self-test: PASS ({rel(negative_invalid_path, root)})")
 
     print("staged current-skill harness self-test: PASS")
     print(f"self-test run dir: {rel(run_dir, root)}")
@@ -16870,6 +17028,30 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             root=root,
         )
         capsule_index += 1
+
+        # FIX 6: full-sequence replay gate. Unlike per-capsule emission
+        # (observability only, never aborts a run), a failure of the FULL
+        # ordered capsule sequence against the real output.md at Stage-07
+        # completion is a run-integrity failure: hard fail here, not a
+        # warning.
+        capsules_dir = run_dir / "state-capsules"
+        try:
+            capsule_checker = check_state_capsule_module()
+            capsule_schema = capsule_checker.load_schema()
+            capsule_replay_errors = capsule_checker.replay_errors(
+                capsules_dir, capsule_schema, artifact_path=output_path
+            )
+        except Exception as exc:  # noqa: BLE001 - surfaced as a hard HarnessError below
+            raise HarnessError(
+                f"stage-07-release-output: state-capsule full-sequence replay gate could not run "
+                f"over {rel(capsules_dir, root)}: {exc}"
+            ) from exc
+        if capsule_replay_errors:
+            raise HarnessError(
+                "stage-07-release-output: state-capsule full-sequence replay gate failed run-integrity "
+                f"invariants over {rel(capsules_dir, root)}: " + "; ".join(capsule_replay_errors)
+            )
+
         if args.stop_after_stage == "stage-07-release-output":
             record["stages"] = stages
             handoff_record = records_dir / "staged-handoff-stage-local-record.json"
