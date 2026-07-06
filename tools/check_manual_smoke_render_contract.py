@@ -1189,7 +1189,10 @@ def _clause_before(text: str, start: int) -> str:
     segment = text[lo:start]
     boundary = None
     for match in re.finditer(
-        r"[,;:\n.!?]|\b(?:and|but|yet|so|therefore|thus|hence|nor)\b", segment
+        r"[,;:\n.!?—–]|\s-\s|"
+        r"\b(?:and|but|yet|so|therefore|thus|hence|nor|once|when|whenever|because|since|"
+        r"after|before|while|whilst|although|though)\b",
+        segment,
     ):
         boundary = match
     if boundary is not None:
@@ -1226,8 +1229,11 @@ def _concession_local_clause(text: str, start: int, end: int) -> str:
 # from a self-assertion wrapped in quotes. Per the never-launder invariant (never suppress a
 # self-asserted person-uptake concession; a rare genuine reported/hypothesized concession is an
 # accepted conservative over-flag), no quote frame exempts a concession. Do NOT re-add a quote
-# exemption. Genuinely reported/disowned senses are still handled by CONCESSION_REPORTING_FRAME_RE
-# / CONCESSION_DISOWN_RE inside compliance_side_success_present.
+# exemption. The report/disown-frame exemption (CONCESSION_REPORTING_FRAME_RE /
+# CONCESSION_DISOWN_RE) was ALSO removed in a later round (it laundered across em-dash /
+# subordinator / linking-verb connectors); those regexes are now unused. The only concession-
+# path exemption left is a genuine logical-scope statement (argument/predicate subject + an
+# explicit CONCESSION_LOGICAL_MARKER_RE marker) in compliance_side_success_present.
 _REMOVED_CONCESSION_QUOTE_EXEMPTION = True  # marker; see compliance_side_success_present
 
 
@@ -1250,14 +1256,18 @@ def compliance_side_success_present(text: str) -> bool:
         return True
     for match in COMPLIANCE_CONCESSION_RE.finditer(text):
         clause = _concession_clause(text, match.start(), match.end())
-        # A reported/definitional or explicitly disowned sense ("it can also mean
-        # ... the person cannot resist"; "... not asserted ...: the person cannot
-        # resist") is not the output's own uptake claim -> do not flag. Scoped to
-        # the concession's OWN clause so a report/disown token in a separate clause
-        # cannot suppress a directly-asserted person-subject concession.
-        local = _concession_local_clause(text, match.start(), match.end())
-        if CONCESSION_REPORTING_FRAME_RE.search(local) or CONCESSION_DISOWN_RE.search(local):
-            continue
+        # The reporting/disown-frame EXEMPTION was REMOVED (fifth adversarial-review round). It
+        # suppressed a concession whenever a report/disown token ("reported as", "can also
+        # mean", "rejected", "disowned") appeared in the concession's local clause, but that
+        # frame could reach the concession across an UNBOUNDED set of connectors -- em-dash,
+        # subordinators (once/when/because), and linking verbs (means/proves/forces/shows) --
+        # laundering self-asserted uptake ("The result reported as decisive means the skeptic
+        # cannot deny it"; "That objection is rejected -- the skeptic cannot deny the evidence").
+        # Regex cannot bound the connectors, and NO real smoke/fixture output relies on the
+        # exemption (0 report/disown-exempted concessions across every valid fixture and smoke
+        # output), so per the never-launder invariant the exemption is dropped: a report/disown-
+        # framed concession is a deliberately accepted conservative over-flag. Genuine anti-
+        # uptake DIRECTIVES on the uptake path (UPTAKE_PROHIBITION_RE) are still exempted.
         # Quoted concessions are NOT exempted. A prior quote-exemption guard
         # (_concession_quoted) was removed after FOUR adversarial-review rounds each found a
         # fresh laundering channel -- scare-quote, possessive/saying frame, temporal/
@@ -1281,12 +1291,21 @@ def compliance_side_success_present(text: str) -> bool:
             subject_np,
         )
         heads = [toks[-1] for toks in (re.findall(r"[a-z']+", c) for c in conjuncts) if toks]
-        if heads and all(h in ARG_SUBJECT_TERMS for h in heads):
-            continue
-        head = heads[-1] if heads else ""
-        # The bare pronoun "it"/"this"/"that" is ambiguous; treat it as the
-        # predicate only inside a logical-conditional construction.
-        if head in {"it", "this", "that"} and CONCESSION_LOGICAL_MARKER_RE.search(clause):
+        # Suppress ONLY a genuine logical-scope statement: EVERY subject conjunct head is an
+        # argument/predicate term (or a bare it/this/that) AND the clause carries an EXPLICIT
+        # logical marker (unless / only if / built into / entails / follows from / predicate
+        # notation). Requiring the marker is what makes guard (C) laundering-proof: without a
+        # marker every "cannot deny/resist" concession flags, so a mis-parsed subject
+        # (appositive, nominative absolute, missing comma, compound coordination) can only ever
+        # OVER-flag, never launder a person concession. A bare "the argument cannot deny X" (no
+        # marker) is not a licensed exemption -- no real skill output emits one (0 in every
+        # valid fixture and smoke output), and flagging it is the safe direction. Negative
+        # guard, no person allowlist.
+        if (
+            CONCESSION_LOGICAL_MARKER_RE.search(clause)
+            and heads
+            and all(h in ARG_SUBJECT_TERMS or h in {"it", "this", "that"} for h in heads)
+        ):
             continue
         return True
     return False
@@ -1650,6 +1669,17 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         # UPTAKE-PROHIBITION SPANNING (guard A): a prohibition governing a DIFFERENT prior
         # clause, joined by "and"/comma, must not suppress a separately-asserted uptake claim.
         "Do not promise victory and the interlocutor will accept the answer.",
+        # REPORT/DISOWN EXEMPTION REMOVED (adversarial-review round 5): a report/disown frame
+        # reaching the concession across an em-dash, subordinator, or linking verb, or governing
+        # a different subject, no longer suppresses. These are self-asserted uptake and flag.
+        "The result reported as decisive means the skeptic cannot deny it.",
+        "That objection is rejected — the skeptic cannot deny the evidence.",
+        "The Greek word can also mean grace — the reader cannot resist the conclusion.",
+        "Every rejected shubhah collapses once the skeptic cannot deny the burden we discharged.",
+        "The disowned shubhah is dead because the skeptic cannot deny the Land we proved.",
+        # a report/disown frame no longer exempts even when it directly precedes the concession
+        # (the exemption was fully removed); this is an accepted conservative over-flag.
+        "This can also mean 'the person cannot resist,' but that sense is rejected and disowned here.",
         # a colon-introduced reported sense also flags now (accepted conservative over-flag;
         # the frame does not directly govern the post-colon clause).
         "The phrase is reported as a disallowed reading, not asserted as our conclusion: the person cannot resist.",
@@ -1658,24 +1688,19 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
             errors.append(
                 f"self-test compliance-side detector wrongly cleared a direct uptake/compliance claim: {must_flag!r}"
             )
-    # ... but an anti-uptake directive (governing prohibition) and a reported /
-    # disowned sense must NOT flag: the guard must not punish the safety-correct
-    # anti-uptake norm or a critiqued reading the output rejects.
-    # Only an anti-uptake DIRECTIVE (governing prohibition) and a REPORTED / DISOWNED sense
-    # must NOT flag -- these are handled by UPTAKE_PROHIBITION_RE / CONCESSION_REPORTING_FRAME_RE
-    # / CONCESSION_DISOWN_RE, NOT by any quote exemption (the quote exemption was removed). A
-    # quoted concession, including a hypothesis-of-a-claim ("If the claim is “... I cannot
-    # resist,” ..."), now flags -- see the accepted-over-flag entries in the must_flag block.
+    # Only an anti-uptake DIRECTIVE on the UPTAKE path (governing prohibition) must NOT flag --
+    # it is handled by UPTAKE_PROHIBITION_RE and protects the safety-correct anti-uptake norm.
+    # The report/disown-frame exemption and the quote exemption were BOTH removed (they
+    # laundered), so a reported/disowned/quoted concession now flags (accepted over-flag). Only
+    # a genuine logical-scope statement (argument/predicate subject + explicit logical marker)
+    # is exempted on the concession path -- see the logical_scope block above.
     for must_not_flag in (
         "Do not promise that the interlocutor will accept the answer.",
         "The output must not claim that the audience will now accept the truth.",
-        # a report/disown frame that DIRECTLY governs the concession (no coordinator or colon
-        # between the frame and the quoted/definitional concession) still exempts.
-        "This can also mean 'the person cannot resist,' but that sense is rejected and disowned here.",
     ):
         if compliance_side_success_present(must_not_flag):
             errors.append(
-                f"self-test compliance-side detector wrongly flagged an anti-uptake directive or reported/disowned sense: {must_not_flag!r}"
+                f"self-test compliance-side detector wrongly flagged an anti-uptake directive: {must_not_flag!r}"
             )
     if not INTERIOR_CERTIFICATION_RE.search("The interlocutor is insincere."):
         errors.append("self-test interior-certification detector missed soul-state claim")
