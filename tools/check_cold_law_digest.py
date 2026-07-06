@@ -22,13 +22,15 @@ Modes:
                                                        right bad input, plus a
                                                        live-repo PASS
 
-The six checks (each reports a clear first-failure message):
+The eight checks (each reports a clear first-failure message):
   1. MANIFEST PRESENT + SCHEMA
   2. HASH PARITY                    (cold-law-clause-hash-drift)
   3. CHECKER MAPPING                (cold-law-clause-missing-checker)
   4. DIGEST REFERENCE PARITY        (cold-law-pointer-without-digest)
   5. COLD COPY VERBATIM
   6. ADVISORY BUDGET
+  7. CLAUSE-ID ALLOWLIST            (cold-law-clause-id-drift)
+  8. REVERSE ANCHOR PARITY          (cold-law-anchor-without-manifest)
 """
 
 from __future__ import annotations
@@ -58,6 +60,32 @@ REQUIRED_CLAUSE_KEYS = ("span_lines", "sha256", "checkers", "load_when", "adviso
 # addition here requires explicit owner sign-off in the same change.
 EXPECTED_ADVISORY_CLAUSES = ["clause.preamble-size-partial"]
 
+# Deliberate-update pattern (mirrors EXPECTED_ADVISORY_CLAUSES above): the
+# frozen set of clause ids the live manifest is allowed to bind. A coordinated
+# removal (delete the manifest entry + both COLD-LAW-CLAUSE anchor pairs + the
+# digest pointer) previously passed all checks with zero errors, because
+# nothing ever asserted what the *complete* clause-id set should be -- only
+# that whatever clauses existed were internally consistent. Any addition or
+# removal requires explicit owner-visible justification and a deliberate
+# update of this constant in the same change.
+EXPECTED_CLAUSE_IDS = frozenset(
+    [
+        "clause.preamble-size-partial",
+        "clause.banner",
+        "clause.layer-a-ledger",
+        "clause.concealment-mode",
+        "clause.canonical-notation",
+        "clause.mrp-block-grammar",
+        "clause.held-burden-activation",
+        "clause.owner-ttp-route",
+        "clause.no-burden-shrink",
+        "clause.proof-tail-order",
+        "clause.field-witness-spec",
+        "clause.execution-mandate-detail",
+        "clause.output-surface-invariant",
+    ]
+)
+
 CLAUSE_START_RE = re.compile(r"^<!-- COLD-LAW-CLAUSE: (clause\.[a-z0-9-]+) -->\s*$")
 CLAUSE_END_RE = re.compile(r"^<!-- END-COLD-LAW-CLAUSE: (clause\.[a-z0-9-]+) -->\s*$")
 POINTER_RE = re.compile(r"cold-law (clause\.[a-z0-9-]+)")
@@ -82,6 +110,14 @@ class Layout:
     # invalid/unexpected-advisory fixture exercises check 6 directly by
     # passing its own expected list.
     expected_advisory: list[str] | None = None
+    # CLAUSE-ID ALLOWLIST (check 7) is the same kind of live-repo-specific,
+    # hardcoded-list invariant as expected_advisory above (see
+    # EXPECTED_CLAUSE_IDS): it does not generalize to synthetic fixtures using
+    # unrelated clause ids. None disables the check for a given layout so
+    # fixtures can exercise checks 1-6 and 8 without being judged against the
+    # real repo's clause-id list. The dedicated invalid/clause-removed fixture
+    # exercises check 7 directly by passing its own expected set.
+    expected_clause_ids: frozenset[str] | None = None
 
 
 def live_layout() -> Layout:
@@ -94,14 +130,20 @@ def live_layout() -> Layout:
         tools_dir=ROOT / TOOLS_DIR_NAME,
         ci_commands_text=(ROOT / CI_RUNNER_REL).read_text(encoding="utf-8"),
         expected_advisory=EXPECTED_ADVISORY_CLAUSES,
+        expected_clause_ids=EXPECTED_CLAUSE_IDS,
     )
 
 
-def fixture_layout(fixture_dir: Path, expected_advisory: list[str] | None = None) -> Layout:
+def fixture_layout(
+    fixture_dir: Path,
+    expected_advisory: list[str] | None = None,
+    expected_clause_ids: frozenset[str] | None = None,
+) -> Layout:
     ci_commands_path = fixture_dir / "ci_commands.txt"
     return Layout(
         label=fixture_dir.name,
         expected_advisory=expected_advisory,
+        expected_clause_ids=expected_clause_ids,
         manifest_path=fixture_dir / "manifest.json",
         cold_copy_path=fixture_dir / "cold_copy.md",
         atomics_source_path=fixture_dir / "cold.md",
@@ -307,6 +349,56 @@ def check_advisory_budget(clauses: dict[str, dict], expected_advisory_list: list
     return []
 
 
+def check_clause_id_allowlist(clauses: dict[str, dict], expected_clause_ids: frozenset[str]) -> list[str]:
+    """Check 7: CLAUSE-ID ALLOWLIST (cold-law-clause-id-drift).
+
+    Closes the coordinated-removal blind spot: deleting a manifest entry plus
+    both COLD-LAW-CLAUSE anchor pairs plus the digest pointer previously
+    passed checks 1-6 with zero errors, because nothing ever asserted what the
+    *complete* clause-id set should be. The live manifest's clause-id set must
+    equal EXPECTED_CLAUSE_IDS exactly; missing or extra ids both fail.
+    """
+    actual = frozenset(clauses.keys())
+    if actual == expected_clause_ids:
+        return []
+    missing = sorted(expected_clause_ids - actual)
+    extra = sorted(actual - expected_clause_ids)
+    return [
+        f"manifest clause-id set drifted from EXPECTED_CLAUSE_IDS: missing={missing} extra={extra} "
+        "-- clause removals or additions require a deliberate update of EXPECTED_CLAUSE_IDS with "
+        "owner-visible justification (cold-law-clause-id-drift)"
+    ]
+
+
+def check_reverse_anchor_parity(
+    clauses: dict[str, dict],
+    cold_copy_spans: dict[str, tuple[int, int, str]],
+    atomics_spans: dict[str, tuple[int, int, str]],
+) -> list[str]:
+    """Check 8: REVERSE ANCHOR PARITY (cold-law-anchor-without-manifest).
+
+    Closes the other half of the coordinated-removal blind spot: an anchor
+    pair that still exists in the atomics source and/or the shipped cold copy
+    but whose manifest entry was silently deleted (or never added) is a fail,
+    even if every clause the manifest *does* know about is internally
+    consistent.
+    """
+    errors: list[str] = []
+    anchored_ids = set(cold_copy_spans) | set(atomics_spans)
+    for clause_id in sorted(anchored_ids):
+        if clause_id not in clauses:
+            found_in = [
+                label
+                for label, spans in (("shipped cold copy", cold_copy_spans), ("atomics source", atomics_spans))
+                if clause_id in spans
+            ]
+            errors.append(
+                f"{clause_id}: COLD-LAW-CLAUSE anchor found in {', '.join(found_in)} but has no manifest "
+                "entry -- anchored-but-unmanifested clause (cold-law-anchor-without-manifest)"
+            )
+    return errors
+
+
 # ---------------------------------------------------------------------------
 # Layout-driven orchestration (shared by live mode and fixture-backed
 # self-test file cases).
@@ -358,6 +450,13 @@ def run_layout(layout: Layout) -> list[str]:
     if errors:
         return errors
 
+    errors.extend(
+        f"[{layout.label}] {e}"
+        for e in check_reverse_anchor_parity(clauses, cold_copy_spans, atomics_spans)
+    )
+    if errors:
+        return errors
+
     existing_tools = existing_tool_filenames(layout.tools_dir)
     ci_wired = ci_wired_filenames(layout.ci_commands_text)
     errors.extend(f"[{layout.label}] {e}" for e in check_checker_mapping(clauses, existing_tools, ci_wired))
@@ -380,6 +479,13 @@ def run_layout(layout: Layout) -> list[str]:
 
     if layout.expected_advisory is not None:
         errors.extend(f"[{layout.label}] {e}" for e in check_advisory_budget(clauses, layout.expected_advisory))
+    if errors:
+        return errors
+
+    if layout.expected_clause_ids is not None:
+        errors.extend(
+            f"[{layout.label}] {e}" for e in check_clause_id_allowlist(clauses, layout.expected_clause_ids)
+        )
     return errors
 
 
@@ -535,30 +641,82 @@ def self_test() -> int:
         ),
     ))
 
+    expected_ids_ab = frozenset({"clause.a", "clause.b"})
+    cases.append((
+        "clause-id allowlist: exact match -> no errors",
+        check_clause_id_allowlist({"clause.a": {}, "clause.b": {}}, expected_ids_ab) == [],
+    ))
+    cases.append((
+        "clause-id allowlist: coordinated removal (missing id) -> flagged",
+        any(
+            "cold-law-clause-id-drift" in e and "missing=['clause.b']" in e
+            for e in check_clause_id_allowlist({"clause.a": {}}, expected_ids_ab)
+        ),
+    ))
+    cases.append((
+        "clause-id allowlist: undeclared extra id -> flagged",
+        any(
+            "cold-law-clause-id-drift" in e and "extra=['clause.c']" in e
+            for e in check_clause_id_allowlist({"clause.a": {}, "clause.b": {}, "clause.c": {}}, expected_ids_ab)
+        ),
+    ))
+
+    cases.append((
+        "reverse anchor parity: every anchor manifested -> no errors",
+        check_reverse_anchor_parity({"clause.a": {}}, spans, spans) == [],
+    ))
+    cases.append((
+        "reverse anchor parity: anchor present, manifest silent -> flagged",
+        any(
+            "cold-law-anchor-without-manifest" in e
+            for e in check_reverse_anchor_parity({}, spans, spans)
+        ),
+    ))
+    cases.append((
+        "reverse anchor parity: anchor in only one source, manifest silent -> flagged",
+        any(
+            "cold-law-anchor-without-manifest" in e
+            for e in check_reverse_anchor_parity({}, spans, {})
+        ),
+    ))
+
     # --- Fixture-backed file cases (tests/cold-law-fixtures/) ---
 
-    # Per-fixture ADVISORY BUDGET expectation. This check is a hardcoded-list
-    # invariant scoped to real clause ids (see Layout.expected_advisory), so
-    # each synthetic fixture supplies its own small "expected list" rather
-    # than the live repo's. `invalid/unexpected-advisory` passes an empty
-    # expected list precisely so its advisory clause is the unexpected one.
-    fixture_cases: list[tuple[str, bool, list[str] | None]] = [
-        ("valid", True, ["clause.beta-partial"]),
-        ("invalid/hash-drift", False, None),
-        ("invalid/empty-checkers-not-advisory", False, None),
-        ("invalid/checker-file-missing", False, None),
-        ("invalid/checker-unwired", False, None),
-        ("invalid/digest-missing-pointer", False, None),
-        ("invalid/dangling-pointer", False, None),
-        ("invalid/unexpected-advisory", False, []),
-        ("invalid/cold-copy-mismatch", False, None),
+    # Per-fixture ADVISORY BUDGET / CLAUSE-ID ALLOWLIST expectations. Both
+    # checks are hardcoded-list invariants scoped to real clause ids (see
+    # Layout.expected_advisory / Layout.expected_clause_ids), so each
+    # synthetic fixture supplies its own small "expected" values rather than
+    # the live repo's. `invalid/unexpected-advisory` passes an empty expected
+    # advisory list precisely so its advisory clause is the unexpected one.
+    # `invalid/clause-removed` passes an expected_clause_ids set that still
+    # includes the removed clause, precisely so its coordinated removal is the
+    # detected drift.
+    fixture_cases: list[tuple[str, bool, list[str] | None, frozenset[str] | None]] = [
+        ("valid", True, ["clause.beta-partial"], frozenset({"clause.alpha", "clause.beta-partial"})),
+        ("invalid/hash-drift", False, None, None),
+        ("invalid/empty-checkers-not-advisory", False, None, None),
+        ("invalid/checker-file-missing", False, None, None),
+        ("invalid/checker-unwired", False, None, None),
+        ("invalid/digest-missing-pointer", False, None, None),
+        ("invalid/dangling-pointer", False, None, None),
+        ("invalid/unexpected-advisory", False, [], None),
+        ("invalid/cold-copy-mismatch", False, None, None),
+        (
+            "invalid/clause-removed",
+            False,
+            None,
+            frozenset({"clause.alpha", "clause.beta-partial"}),
+        ),
+        ("invalid/anchor-without-manifest", False, None, None),
     ]
-    for rel, expect_pass, expected_advisory in fixture_cases:
+    for rel, expect_pass, expected_advisory, expected_clause_ids in fixture_cases:
         fixture_dir = FIXTURES_DIR / rel
         if not fixture_dir.is_dir():
             cases.append((f"fixture {rel}: directory exists", False))
             continue
-        layout = fixture_layout(fixture_dir, expected_advisory=expected_advisory)
+        layout = fixture_layout(
+            fixture_dir, expected_advisory=expected_advisory, expected_clause_ids=expected_clause_ids
+        )
         errors = run_layout(layout)
         passed = (errors == []) is expect_pass
         label = "PASS as expected" if expect_pass else "FAIL as expected"

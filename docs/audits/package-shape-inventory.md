@@ -8,20 +8,20 @@ Shipped-file list is `package_shape.package_file_paths()` - the same function `t
 
 | file | bytes | est_tok | class | evidence anchor |
 | --- | ---: | ---: | --- | --- |
-| `skill/SKILL.md` | 126807 | 31701 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
+| `skill/SKILL.md` | 127954 | 31988 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
 | `skill/build-manifest.json` | 61652 | 15413 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
 | `skill/compiled-module-map.json` | 45939 | 11484 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
+| `skill/cold-law-manifest.json` | 5257 | 1314 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
 | `skill/references/runtime-dispatch-gate.md` | 446879 | 111719 | prompt-hot | skill/SKILL.md: "Load path for substantive cases" numbered list |
 | `skill/references/runtime-output-governance.md` | 266571 | 66642 | prompt-hot | skill/SKILL.md: "Load path for substantive cases" numbered list |
 | `skill/references/runtime-diagnostic-core.md` | 122746 | 30686 | prompt-hot | skill/SKILL.md: "Load path for substantive cases" numbered list |
 | `skill/references/runtime-foundation.md` | 103208 | 25802 | prompt-hot | skill/SKILL.md: "Load path for substantive cases" numbered list |
+| `skill/references/runtime-phase2-passes.md` | 48639 | 12159 | prompt-hot | skill/SKILL.md: "Load path for substantive cases" numbered list |
 | `skill/references/diagnostics/diagnostic-ir.schema.json` | 60634 | 15158 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
-| `skill/references/runtime-phase2-passes.md` | 48639 | 12159 | route-warm | skill/SKILL.md: "Run the mandatory Phase 2 passes listed above." (conditional Phase-2 pass, not every substantive case) |
 | `skill/references/diagnostics/operative-contracts.md` | 23651 | 5912 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
 | `skill/references/diagnostics/module-catalogue.json` | 11608 | 2902 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
 | `skill/references/diagnostics/delta-result-vocabulary.json` | 8396 | 2099 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
 | `skill/references/diagnostics/operative-contract.schema.json` | 8345 | 2086 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
-| `skill/cold-law-manifest.json` | 5257 | 1314 | route-warm | unclassified-by-anchor shipped file; defaulted to route-warm pending an explicit SKILL.md anchor |
 | `skill/references/omnibus/OMNIBUS-tactics.md` | 280053 | 70013 | cold-law | skill/SKILL.md: "Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner." |
 | `skill/references/omnibus/OMNIBUS-do-families.md` | 224309 | 56077 | cold-law | skill/SKILL.md: "Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner." |
 | `skill/references/rubrics/non-droppable-manual-contract.md` | 136951 | 34237 | cold-law | skill/SKILL.md: "Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner." |
@@ -36,11 +36,11 @@ Shipped-file list is `package_shape.package_file_paths()` - the same function `t
 
 | class | files | bytes | est_tok |
 | --- | ---: | ---: | ---: |
-| host-hot | 3 | 234398 | 58598 |
-| prompt-hot | 4 | 939404 | 234849 |
-| route-warm | 7 | 166530 | 41630 |
+| host-hot | 4 | 240802 | 60199 |
+| prompt-hot | 5 | 988043 | 247008 |
+| route-warm | 5 | 112634 | 28157 |
 | cold-law | 8 | 1060263 | 265062 |
 | audit-only | 1 | 1789 | 447 |
-| **grand total** | **23** | **2402384** | **600586** |
+| **grand total** | **23** | **2403531** | **600873** |
 
 `est_tok` is `bytes // 4`, a rough measurement heuristic, not a tokenizer-accurate count.

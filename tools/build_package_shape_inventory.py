@@ -19,17 +19,25 @@ archive can never disagree about what ships.
 
 Classification (each shipped file gets exactly one class):
   - host-hot     : skill/SKILL.md (the compiled root the host injects) plus
-                    package metadata JSON (compiled-module-map.json,
-                    build-manifest.json).
-  - prompt-hot   : files named in SKILL.md's "Load path for substantive cases"
-                    list, EXCLUDING the one entry documented as loaded only on
-                    a conditional pass (see route-warm). Parsed from the
-                    anchor text at runtime; see ANCHOR_TEXT below.
-  - route-warm   : the "Load path for substantive cases" entry that SKILL.md's
-                    own prose (search anchor: "Phase 2 pass", "mandatory Phase
-                    2 passes") describes as a conditional pass rather than an
-                    unconditional substantive-case load, plus any other file
-                    this script identifies as conditionally routed.
+                    package metadata JSON the host/tooling reads directly off
+                    disk (compiled-module-map.json, build-manifest.json,
+                    cold-law-manifest.json -- the cold-law binding table
+                    tools/check_cold_law_digest.py reads directly, not a
+                    route-gated content file the model chooses to load).
+  - prompt-hot   : every file named in SKILL.md's "Load path for substantive
+                    cases" numbered list. Unconditional membership in that
+                    list is decisive: a file is prompt-hot if it is named
+                    there, even if separate SKILL.md prose also describes a
+                    narrower conditional re-run rule for it (unconditional
+                    list membership beats conditional prose -- see
+                    ROUTE_WARM_LOAD_PATH_BASENAMES for the mechanism, kept
+                    empty by default so a genuinely conditional entry can be
+                    added later with justification). Parsed from the anchor
+                    text at runtime; see ANCHOR_TEXT below.
+  - route-warm   : any load-path entry explicitly justified as conditional via
+                    ROUTE_WARM_LOAD_PATH_BASENAMES (currently none), plus any
+                    other file this script identifies as conditionally routed
+                    or defaults to route-warm pending an explicit anchor.
   - cold-law     : references/omnibus/*.md (compiled bundle sections read
                     only after Phase 2 / the Diagnostic IR authorize the
                     original module owner - anchor: "Use `references/omnibus/*.md`
@@ -63,14 +71,22 @@ OUTPUT_REL = "docs/audits/package-shape-inventory.md"
 LOAD_PATH_HEADING = "Load path for substantive cases:"
 LOAD_PATH_ITEM_RE = re.compile(r"^\d+\.\s+`references/([A-Za-z0-9._-]+\.md)`\s*$")
 
-# Anchor: skill/SKILL.md prose naming the mandatory Phase 2 pass file
-# conditionally rather than unconditionally for every substantive case
-# (search anchors: "mandatory Phase 2 passes", "Phase-2 pass",
-# "Run the mandatory Phase 2 passes listed above."). Hardcoded here (rather
-# than pattern-derived) because the conditional-vs-unconditional distinction
-# is a semantic judgment call the SKILL.md prose makes in surrounding text,
-# not a syntactic marker inside the numbered load-path list itself.
-ROUTE_WARM_LOAD_PATH_BASENAMES = {"runtime-phase2-passes.md"}
+# Previously this held {"runtime-phase2-passes.md"}, forcing that file
+# route-warm on the theory that skill/SKILL.md's surrounding prose (search
+# anchors: "mandatory Phase 2 passes", "Phase-2 pass", "Run the mandatory
+# Phase 2 passes listed above.") describes it as a conditional pass. But
+# runtime-phase2-passes.md is *also* item 3 of the unconditional "Load path
+# for substantive cases" numbered list (see LOAD_PATH_HEADING /
+# parse_load_path below) -- every substantive case walks that list, so the
+# file is unconditionally loaded for the substantive-case population even
+# though a *narrower* case (Phase 2 already run) may skip re-running its
+# pass. Unconditional numbered-list membership is the stronger, more general
+# claim and beats the conditional prose reading, so this override is removed
+# and the file now falls through to the ordinary prompt-hot branch below like
+# every other load-path entry. Kept as an empty set (rather than deleting the
+# override site) so a future genuinely-conditional load-path entry has a
+# documented place to be added, with the same justification standard applied.
+ROUTE_WARM_LOAD_PATH_BASENAMES: set[str] = set()
 
 # Anchor: skill/SKILL.md, "Use `references/omnibus/*.md` only after V1,
 # Phase 2, and the Diagnostic IR authorize the original source module owner."
@@ -84,7 +100,12 @@ COLD_LAW_BASENAMES = {"non-droppable-manual-contract.md"}
 # Anchor: tools/package_skill.py build_archive() writes skill/**/* into the
 # archive using skill/ as the zip root, plus skill/README.md at the top
 # level of the skill/ tree per skill/README.md "Canonical package roots".
-HOST_HOT_BASENAMES = {"SKILL.md", "compiled-module-map.json", "build-manifest.json"}
+# cold-law-manifest.json is host-hot package metadata JSON of the same class
+# as compiled-module-map.json / build-manifest.json: it is the binding table
+# tools/check_cold_law_digest.py reads directly off disk (schema
+# daee-cold-law-manifest-v1) to prove clause-digest/cold-source binding is not
+# theater, not a route-gated content file the model chooses to load.
+HOST_HOT_BASENAMES = {"SKILL.md", "compiled-module-map.json", "build-manifest.json", "cold-law-manifest.json"}
 
 # Files shipped in the package that are never a model-load target under any
 # route; they exist for humans/hosts reading the package, not for the model
@@ -296,6 +317,33 @@ def self_test() -> int:
         (
             "runtime-dispatch-gate.md classified prompt-hot",
             dispatch_gate_row is not None and dispatch_gate_row["class"] == "prompt-hot",
+        )
+    )
+
+    # FIX 3 canary (package-shape misclassification audit finding): this file
+    # is item 3 of SKILL.md's unconditional "Load path for substantive cases"
+    # numbered list, so unconditional list membership must classify it
+    # prompt-hot -- the old ROUTE_WARM_LOAD_PATH_BASENAMES override forced it
+    # route-warm on a conditional-prose reading that this fix removed.
+    phase2_row = next((r for r in rows if r["file"] == "skill/references/runtime-phase2-passes.md"), None)
+    checks.append(
+        (
+            "runtime-phase2-passes.md classified prompt-hot (unconditional load-path list membership beats conditional prose)",
+            phase2_row is not None and phase2_row["class"] == "prompt-hot",
+        )
+    )
+
+    # FIX 3 canary: cold-law-manifest.json is host-hot package metadata (the
+    # binding table tools/check_cold_law_digest.py reads directly), same
+    # class as compiled-module-map.json / build-manifest.json -- not a
+    # DEFAULTED route-warm guess.
+    cold_law_manifest_row = next((r for r in rows if r["file"] == "skill/cold-law-manifest.json"), None)
+    checks.append(
+        (
+            "cold-law-manifest.json classified host-hot with a real evidence anchor",
+            cold_law_manifest_row is not None
+            and cold_law_manifest_row["class"] == "host-hot"
+            and "DEFAULTED" not in cold_law_manifest_row["evidence"],
         )
     )
 

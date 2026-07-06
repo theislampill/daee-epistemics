@@ -538,6 +538,16 @@ def self_test() -> int:
     # "total-hot-surfaces" aggregate -- built the same way build_rows() built
     # it, from the (now inflated) per-row numbers -- FAILS the ratchet even
     # though no single row's check fails.
+    # Drift-independence: anchor this synthetic scenario to a baseline equal to
+    # the CURRENT measured rows (not the real on-disk baseline). Otherwise any
+    # legitimate in-tolerance drift between real baseline and live measurement
+    # stacks onto the synthetic +1.9% and pushes individual rows over their
+    # per-row tolerance, making the canary fail for the wrong reason.
+    spread_config = copy.deepcopy(real_config)
+    for cfg_name, detail, b, l, t in rows:
+        key = row_key(cfg_name, detail)
+        if key in spread_config["ratchet"]["baseline"]:
+            spread_config["ratchet"]["baseline"][key] = {"bytes": b, "est_tok": t}
     inflated_rows = []
     for cfg_name, detail, b, l, t in rows:
         if cfg_name in ("five-bundle-substantive", AGGREGATE_ROW, EXEMPT_ROW):
@@ -567,13 +577,13 @@ def self_test() -> int:
         key = row_key(cfg_name, detail)
         if key == EXEMPT_ROW or key == AGGREGATE_ROW:
             continue
-        baseline_entry = real_config["ratchet"]["baseline"].get(key)
+        baseline_entry = spread_config["ratchet"]["baseline"].get(key)
         if baseline_entry is None:
             continue
-        allowed = baseline_entry["bytes"] * (1 + real_config["ratchet"]["tolerance_pct"] / 100.0)
+        allowed = baseline_entry["bytes"] * (1 + spread_config["ratchet"]["tolerance_pct"] / 100.0)
         if b > allowed:
             per_row_all_pass = False
-    spread_ok, spread_failures = check_ratchet(inflated_rows, real_config)
+    spread_ok, spread_failures = check_ratchet(inflated_rows, spread_config)
     checks.append(
         (
             "FIX1: +1.9% growth spread across every row still passes per-row tolerance individually",

@@ -97,6 +97,15 @@ Full clause: cold-law clause.preamble-size-partial (references/rubrics/non-dropp
    Target/Operation/Result-state-change/Contribution-to-Land. If a valid ACT line or operation
    body cannot be produced from a real owner body, route HOLD/PARTIAL instead of claiming
    `Land(...)`. Owner activation plan uses `policy_id: "diagnostic-ir-pressure-owner-floor-v1"`.
+   Derive the baseline burden floor from live registers in `IR(N,m,tau,sigma,heart,xi,Omega,mu,kappa)`,
+   not from named case-label templates: `burden_floor = {B_r : r in live_registers(IR(...))}`.
+   `Omega` live requires an ontological/predication burden, `xi` live requires a warrant/authority
+   burden, `mu` live requires a memetic-carrier decomposition burden, `kappa` live requires a
+   dependency/collapse burden, and `heart` live requires an affective/posture burden. Coverage is
+   required per live register, not one burden per register; the selected N-frame supplies each
+   burden's label/content while register liveness supplies the floor structure. Do not place
+   doctrine-immunity, proof-carousel, or bounded-reply recoil in `B_LA` unless the quoted input
+   asserts that recoil as its own claim.
    Full clause: cold-law clause.owner-ttp-route (references/rubrics/non-droppable-manual-contract.md; load on demand; if the full clause is needed but not loaded, route HOLD/PARTIAL with reason cold-law-not-loaded — never fake Land)
 
 8. Do not shrink `𝔅_LA` to force generation. Multi-anchor prompts keep input-present burdens in
@@ -148,7 +157,10 @@ every named route before closure: `Held-route classification: <route> = non-load
 
 Default mode suppresses raw visible IR but does not suppress recursive execution. Default mode is
 scriptless compact DSL-governed execution. Do not call or simulate repo/dev route-check harnesses
-during canonical execution.
+during canonical execution. Depth Andons exist and are qualitative: burden/submove-count floors
+(e.g. three owner-bearing submoves per released major burden, fifteen total in a 5+ burden
+traversal, the 30k-char file-retained floor) are under-compression warning signs, not word-count
+targets - when depth is in doubt load cold clause.execution-mandate-detail.
 
 HARD-COMPOUND LAYER B EXECUTION BODY: hard-compound full traversal requires a visible Layer B
 operation body for every released burden. Do not collapse a major burden into one generic
