@@ -1026,99 +1026,36 @@ COMPLIANCE_UPTAKE_RE = re.compile(
 # ("cannot *deny*", "cannot \"deny\"", "cannot _deny_") -- these are tolerated so formatting the
 # verb cannot smuggle a concession past the match.
 _CONCESSION_EMPH = r"[\"'*_“”‘’«»`~]*"
-# Adverbs (manner/degree/temporal) may sit between "cannot" and the concession verb ("cannot
-# honestly / now / really / finally deny", "cannot avoid FINALLY conceding") without changing the
-# compelled-concession meaning, so tolerate up to a few -ly words or common non-ly adverbs. This
-# keeps an injected adverb from smuggling a self-asserted concession past the fail-closed path.
-_CONCESSION_ADV = (
-    r"(?:(?:[a-z][a-z'’-]*ly|now|then|there|still|yet|ever|just|really|truly|simply|fully|"
-    r"quite|very|so|indeed|also|again|too|already|honestly|surely|certainly|clearly|plainly|"
-    r"reasonably|rationally|sincerely|genuinely|possibly|ultimately|finally|no\s+longer|"
-    r"any\s+longer|at\s+all|in\s+the\s+end|after\s+all|of\s+course)\s+){0,4}"
-)
-# "cannot" / "can not" (two-word) / "can't" are the same modal negation -- match all three so a
-# trivial spelling/whitespace variant cannot smuggle a self-asserted concession past the fail-
-# closed path. The trailing \s+ after the negation (with "not" required to be space-bounded) keeps
-# "can note ..." from matching.
+# FAIL-CLOSED concession match. "cannot" / "can not" (two-word) / "can't" is the modal negation;
+# the concession verb (deny/resist/avoid conceding) may follow after adverbs, emphasis/quote/bracket
+# wrappers, or other adjuncts. Enumerating those (adverb lists, emphasis-char sets) is an unbounded
+# whack-a-mole -- a single unlisted adverb ("henceforth") or wrapper ("(deny)") launders -- so the
+# gap is a bounded run of ANY characters that do NOT cross a sentence/clause boundary ([.!?;\n]).
+# Over-matching a rare non-concession "cannot ... deny" within one clause is the accepted safe
+# direction on the fail-closed path (0 "cannot deny/resist" concessions exist in any valid fixture
+# or smoke output, so nothing real is over-flagged). "cannot understand the argument" and passive
+# "cannot be denied" still miss because no concession verb (deny != denied) follows in-clause.
 COMPLIANCE_CONCESSION_RE = re.compile(
-    r"(?i)\bcan(?:not|\s+not(?=\s)|['’]t)\s+" + _CONCESSION_ADV + _CONCESSION_EMPH + r"\s*"
-    r"(?:deny|resist|avoid\s+" + _CONCESSION_ADV + _CONCESSION_EMPH + r"\s*conceding)"
+    r"(?i)\bcan(?:not|\s+not(?=\s)|['’]t)[^.!?;\n]{0,40}?"
+    r"(?:deny|resist|avoid[^.!?;\n]{0,25}?conceding)"
     # trailing boundary that tolerates emphasis/quote wrappers (underscore is a \w char, so a
     # plain \b would miss "cannot _deny_"): the verb must not be immediately followed by a letter.
     r"(?![a-zA-Z])"
 )
-# A governing prohibition/negation in the same clause turns an uptake phrase into
-# an ANTI-uptake directive ("Do not promise that the interlocutor will accept ...",
-# "must not claim that the audience will now accept ...") -- the safety-correct
-# stance the guard exists to protect, which must NOT flag. This is a negative guard,
-# not a person allowlist; direct affirmative uptake claims (no governing prohibition)
-# still flag.
-# A prohibition exempts an uptake claim ONLY when a VERBAL negation ("do not / must not /
-# never / can't") is attached to a COMMITMENT verb that DIRECTLY governs the uptake phrase:
-# the negated commitment verb must sit immediately before the uptake (via optional "that" +
-# the uptake subject's determiner), with NO intervening main verb or clause. The pattern is
-# anchored with \s*$ so it must end at the uptake phrase (checked against _clause_before).
-# This forbids the laundering channels a review found:
-#   * a stray prohibition modifying a DIFFERENT noun ("the demonstration I never claim to
-#     guarantee MAKES the interlocutor now accept ...") -- "makes" is a separate main verb, so
-#     the negated verb does not directly govern the uptake -> flag;
-#   * a litotes with a commitment-verb NOUN ("It is NO empty promise that X will accept") --
-#     "no" is not a verbal negation ("not/never/n't") -> flag;
-#   * a litotes with a non-commitment word ("It is NOT surprising that X will accept") -> flag;
-#   * a contrastive intensifier ("not merely/only claim ... but demonstrate") -> flag.
-# Only the canonical explicit directive ("do not promise/claim THAT X will accept") suppresses.
-UPTAKE_PROHIBITION_RE = re.compile(
-    r"(?i)(?:\b(?:do|does|did|will|would|shall|should|must|can|could|may|might|need)\s+)?"
-    r"\b(?:not|never|n['’]t)\s+"
-    r"(?!(?:merely|only|just|simply|solely|alone)\b)"
-    r"(?:promise|claim|guarantee|assert|say|state|pretend|declare|insist|ensure|certify|"
-    r"warrant|maintain|vow|pledge|hold)(?:s|es|ed|ing)?\s+"
-    # The uptake MUST be the that-complement of the negated commitment verb: require "that"
-    # (not "to"), then at most a short subject noun-phrase before the uptake phrase (the end
-    # of _clause_before). "never claim TO guarantee makes X accept" has no "that" -> flag;
-    # "must not claim THAT the audience will now accept" keeps "that the audience will" -> ok.
-    # The gap must not cross a clause connector ("... that prize WHEREAS the interlocutor will
-    # accept ..."), so the gap words exclude coordinators/subordinators.
-    r"that\s+(?:(?!(?:whereas|while|whilst|though|although|but|and|yet|so|because|since|when|"
-    r"once|after|before|however|meanwhile|moreover|nor|therefore|thus|hence)\b)[\w'’-]+\s+){0,4}?$"
-)
-# A prohibition under an OUTER falsity/negation ("It is FALSE that we do not claim that X will
-# accept ...", "It is NOT TRUE that we never promise that ...") is a double negation that AFFIRMS
-# the uptake, so the anti-uptake directive exemption must NOT fire -- the sentence flags.
-UPTAKE_DOUBLE_NEGATION_RE = re.compile(
-    r"(?i)\b(?:false|untrue|not\s+true|no\s+truth|a\s+lie|lies|wrong|incorrect|mistaken|"
-    r"nonsense|absurd|hardly\s+true|far\s+from\s+true|a\s+fabrication|a\s+myth|a\s+fiction)\b"
-    r"[^.!?;:\n]{0,40}?\bthat\b"
-)
+# NOTE: the anti-uptake-DIRECTIVE exemption (UPTAKE_PROHIBITION_RE / UPTAKE_DOUBLE_NEGATION_RE and
+# the _clause_before scoper) was REMOVED -- the uptake path is now fail-closed like the concession
+# path. It suppressed "the interlocutor will accept" whenever a negated commitment verb ("do not
+# promise/claim that ...") governed it, but three review rounds laundered self-asserted uptake
+# through open-ended channels (clause connectors ergo/nevertheless/... not in the break-list,
+# outer double negation "It is false that we do not claim that X will accept", adjunct/window
+# overflow). Regex cannot bound these and no real fixture/smoke output emits an uptake phrase, so a
+# canonical anti-uptake directive is a deliberately accepted conservative over-flag. Do NOT re-add.
 # NOTE: the report/disown-frame exemption (CONCESSION_REPORTING_FRAME_RE / CONCESSION_DISOWN_RE)
 # and the logical-scope subject-head exemption (ARG_SUBJECT_TERMS + the subject-parser regexes
 # CONCESSION_SUBJECT_MODIFIER_RE / CONCESSION_SUBORDINATE_LEAD_ONLY_RE / CONCESSION_LEADING_RE /
 # CONCESSION_ARTICLE_RE + CONCESSION_LOGICAL_MARKER_RE) were REMOVED. Both laundered self-asserted
 # uptake across adversarial-review rounds and regex could not close the class (see
 # compliance_side_success_present). The concession path is fail-closed; do NOT re-add these.
-
-
-def _clause_before(text: str, start: int) -> str:
-    """Return the concession/uptake phrase's OWN clause, back to the last comma / semicolon /
-    colon / sentence terminator OR clause-coordinating conjunction (and/but/yet/so/...). A
-    governing prohibition ("do not promise that X will accept") stays attached only when it
-    directly governs the uptake phrase; a prohibition on a DIFFERENT prior-clause subject
-    joined by "and"/comma ("Do not overpromise, and the interlocutor will accept ...") is
-    excluded so it cannot suppress a separately-asserted uptake claim."""
-    lo = max(0, start - 160)
-    segment = text[lo:start]
-    boundary = None
-    for match in re.finditer(
-        r"[,;:\n.!?—–]|\s-\s|"
-        r"\b(?:and|but|yet|so|therefore|thus|hence|nor|once|when|whenever|because|since|"
-        r"after|before|while|whilst|although|though|whereas|whereupon|whence|albeit|"
-        r"notwithstanding|however|meanwhile|moreover)\b",
-        segment,
-    ):
-        boundary = match
-    if boundary is not None:
-        segment = segment[boundary.end() :]
-    return segment
 
 
 # NOTE: the quoted-concession EXEMPTION (CONCESSION_LEFT/RIGHT_QUOTE, _CONCESSION_CLAIM_NOUN,
@@ -1139,26 +1076,29 @@ _REMOVED_CONCESSION_QUOTE_EXEMPTION = True  # marker; see compliance_side_succes
 def compliance_side_success_present(text: str) -> bool:
     """Detect compliance-side-success / guaranteed-uptake claims.
 
-    Two paths:
-      * UPTAKE ("the interlocutor will accept ...") flags UNLESS a governing anti-uptake
-        prohibition ("do not promise/claim that X will accept ...") sits in the same clause
-        (UPTAKE_PROHIBITION_RE) -- the safety-correct directive the output is allowed to emit.
-      * CONCESSION ("cannot deny/resist/avoid conceding") is FAIL-CLOSED: every match flags.
-        All concession exemptions (quote, report/disown, logical-scope subject-head) were
-        removed after six adversarial-review rounds each laundered self-asserted uptake and
-        regex could not close the class. A rare logical-scope "the argument cannot deny X
-        unless built into P" is an ACCEPTED conservative over-flag; never-launder outranks
-        logical-scope permissiveness (owner decision). No real fixture/smoke output contains a
-        concession, so nothing real is over-flagged.
+    BOTH paths are FAIL-CLOSED (owner decision): every match flags, with no exemption.
+      * UPTAKE ("the interlocutor will accept ...", "has no choice but to accept").
+      * CONCESSION ("cannot deny/resist/avoid conceding", incl. can-not/can't/adverb/emphasis
+        variants).
+    Every exemption guard (quote, report/disown, logical-scope subject-head on the concession
+    path; anti-uptake directive on the uptake path) was removed after adversarial reviews
+    repeatedly laundered self-asserted uptake through open-ended natural-language channels that
+    regex cannot bound. Rare conservative over-flags (a genuine logical-scope "the argument
+    cannot deny X unless built into P"; a canonical anti-uptake directive "do not promise that X
+    will accept") are ACCEPTED -- never-launder outranks permissiveness. No valid fixture or
+    smoke output contains a concession or uptake phrase, so nothing real is over-flagged.
     """
-    for match in COMPLIANCE_UPTAKE_RE.finditer(text):
-        # A prohibition governing the uptake phrase in the same clause ("Do not
-        # promise that the interlocutor will accept ...") is an anti-uptake
-        # directive, not an uptake claim -> do not flag.
-        clause_before = _clause_before(text, match.start())
-        outer = text[max(0, match.start() - 160) : match.start()]
-        if UPTAKE_PROHIBITION_RE.search(clause_before) and not UPTAKE_DOUBLE_NEGATION_RE.search(outer):
-            continue
+    for _match in COMPLIANCE_UPTAKE_RE.finditer(text):
+        # FAIL-CLOSED uptake path (owner decision): every guaranteed-uptake phrase flags. The
+        # anti-uptake DIRECTIVE exemption (UPTAKE_PROHIBITION_RE / UPTAKE_DOUBLE_NEGATION_RE via
+        # _clause_before) was REMOVED after it laundered self-asserted uptake across three review
+        # rounds through open-ended natural-language channels: clause connectors not in the
+        # break-list ("... that outcome ERGO the interlocutor will accept"), outer double negation
+        # ("It is FALSE that we do not claim that X will accept"), and adjunct/window overflow.
+        # Regex cannot bound these, and NO valid fixture or smoke output contains an uptake phrase,
+        # so this over-flags nothing real. A canonical anti-uptake directive ("do not promise that
+        # X will accept") is now an accepted conservative over-flag; a governed output can state the
+        # norm without the forbidden surface form ("do not claim guaranteed uptake / acceptance").
         return True
     for _match in COMPLIANCE_CONCESSION_RE.finditer(text):
         # FAIL-CLOSED concession path (owner decision after six adversarial-review rounds):
@@ -1181,8 +1121,8 @@ def compliance_side_success_present(text: str) -> bool:
         # every valid fixture and smoke, including formal Khaybar), so this over-flags nothing
         # real; a rare logical-scope "the argument cannot deny X unless built into P" is an
         # ACCEPTED conservative over-flag. Never-launder outranks logical-scope permissiveness.
-        # The anti-uptake DIRECTIVE guard on the uptake path above (UPTAKE_PROHIBITION_RE) is a
-        # separate path and remains, protecting explicit "do not promise/claim uptake" prose.
+        # The uptake path above is likewise fail-closed (its anti-uptake directive exemption was
+        # also removed after it laundered).
         return True
     return False
 INTERIOR_CERTIFICATION_RE = re.compile(
@@ -1586,6 +1526,15 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "We do not guarantee that prize whereas the interlocutor will accept the answer on the merits.",
         "It is false that we do not claim that the interlocutor will accept the answer.",
         "It is not true that we never promise that the audience will now accept the truth.",
+        # GUARD A (anti-uptake directive exemption) was REMOVED -- the uptake path is fail-closed.
+        # These formerly-exempt canonical directives, more connector-spanning ("ergo"/"nevertheless"),
+        # and the double-negation family now flag (accepted conservative over-flag; no real output
+        # emits an uptake phrase).
+        "Do not promise that the interlocutor will accept the answer.",
+        "The output must not claim that the audience will now accept the truth.",
+        "We do not claim that outcome ergo the interlocutor will accept the answer.",
+        "We do not claim that outcome nevertheless the interlocutor will accept the answer.",
+        "It is untrue, as any fair reader will grant, that we do not claim that the interlocutor will accept the answer.",
         # REPORT/DISOWN EXEMPTION REMOVED (adversarial-review round 5): a report/disown frame
         # reaching the concession across an em-dash, subordinator, or linking verb, or governing
         # a different subject, no longer suppresses. These are self-asserted uptake and flag.
@@ -1605,20 +1554,13 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
             errors.append(
                 f"self-test compliance-side detector wrongly cleared a direct uptake/compliance claim: {must_flag!r}"
             )
-    # Only an anti-uptake DIRECTIVE on the UPTAKE path (governing prohibition) must NOT flag --
-    # it is handled by UPTAKE_PROHIBITION_RE and protects the safety-correct anti-uptake norm.
-    # The report/disown-frame exemption and the quote exemption were BOTH removed (they
-    # laundered), so a reported/disowned/quoted concession now flags (accepted over-flag). Only
-    # a genuine logical-scope statement (argument/predicate subject + explicit logical marker)
-    # is exempted on the concession path -- see the logical_scope block above.
-    for must_not_flag in (
-        "Do not promise that the interlocutor will accept the answer.",
-        "The output must not claim that the audience will now accept the truth.",
-    ):
-        if compliance_side_success_present(must_not_flag):
-            errors.append(
-                f"self-test compliance-side detector wrongly flagged an anti-uptake directive: {must_not_flag!r}"
-            )
+    # Both the concession and uptake paths are FAIL-CLOSED: there are NO compliance must-not-flag
+    # cases. Every exemption (quote, report/disown, logical-scope on the concession path; the
+    # anti-uptake directive on the uptake path) was removed because each laundered. A canonical
+    # anti-uptake directive ("do not promise that X will accept") and a logical-scope statement
+    # are now accepted conservative over-flags -- see the must_flag block. (Anti-uptake norms in
+    # governed output should avoid the forbidden surface form, e.g. "do not claim guaranteed
+    # uptake / acceptance".)
     if not INTERIOR_CERTIFICATION_RE.search("The interlocutor is insincere."):
         errors.append("self-test interior-certification detector missed soul-state claim")
     if not FABRICATED_VALIDATION_VERDICT_RE.search("validation: PASS"):
