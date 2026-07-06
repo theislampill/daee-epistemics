@@ -1214,39 +1214,34 @@ CONCESSION_RIGHT_QUOTE = "”»"  # " >>
 # claim (or a hypothesized one), so a quoted concession under it is reported, not the
 # output's own assertion. Bare scare/emphasis quotes carry no such frame, so an
 # asserted-uptake concession wrapped in scare quotes is NOT exempted.
-# Third-party claim-holders: nouns/pronouns that name SOMEONE OTHER than the output's
-# own reasoning voice. A first-party or bare determiner ("my argument", "the argument",
-# "our claim") is the output ASSERTING, not reporting, so it must NOT exempt a quoted
-# concession -- that channel laundered self-asserted uptake in scare quotes.
-_CONCESSION_THIRD_PARTY = (
-    r"(?:objector|skeptic|sceptic|critic|opponent|interlocutor|adversary|disputant|"
-    r"questioner|proponent|challenger|respondent|unbeliever|doubter|denier|dissenter|"
-    r"reader|audience|listener|hearer|person|someone|somebody|another|he|she|they|one)"
-)
 _CONCESSION_CLAIM_NOUN = (
     r"(?:claim|argument|objection|demand|request|assertion|charge|premise|thesis|reading|"
     r"reply|response|statement|version|position|slogan|line|complaint|challenge|contention|"
     r"insistence|point|words?)"
 )
+# The ONLY frame that exempts a quoted concession is a HYPOTHESIS / conditional that
+# entertains the claim rather than asserting it (the TST case: ``If the claim is "... I
+# cannot resist," then ...``). Third-party POSSESSIVE ("the objector's demand", "their
+# claim") and SAYING-VERB ("the objector says") frames were deliberately REMOVED: an
+# adversarial review confirmed they laundered self-asserted uptake whenever a stray
+# possessive or saying verb sat in a fronted / dismissed clause ("His argument aside, I
+# have shown the doubter “cannot deny it”"; "Their claim collapses and the skeptic
+# “cannot deny it”"). No real smoke output relies on the possessive/saying exemptions --
+# only the hypothesis case is used -- and per the never-launder invariant, over-flagging a
+# rare genuine reported concession is preferred to laundering a self-asserted one. The
+# hypothesis frame is additionally required (in _concession_quoted) to sit in the LOCAL
+# clause that introduces the opening quote, so a hypothesis word in an earlier clause
+# ("Imagine the objector protesting; still, our argument proves the skeptic “...”") does
+# not exempt a separately-asserted concession.
 CONCESSION_ATTRIBUTION_RE = re.compile(
     r"(?i)"
-    # hypothesis / conditional framing of the quoted claim (the TST v4 case:
-    # ``If the claim is "... I cannot resist," then ...``)
     r"\bif\s+(?:the\s+|an?\s+|your\s+|this\s+|that\s+)?" + _CONCESSION_CLAIM_NOUN
     + r"\s+(?:is|were|reads?|runs?|goes|states?|says?|amounts?)\b"
     r"|\b(?:suppose|supposing|imagine|imagining|hypothetically|hypothesi[sz]e[sd]?)\b"
     r"|\bwere\s+(?:someone|one|he|she|they|the)\b|\bwhen\s+(?:someone|one)\b"
-    # third-party possessive attribution ("the objector's demand", "their claim") --
-    # NOT "my/our/the argument", which is the output's own assertion
-    r"|\b" + _CONCESSION_THIRD_PARTY + r"['’]s\s+" + _CONCESSION_CLAIM_NOUN + r"\b"
-    r"|\b(?:his|her|their)\s+" + _CONCESSION_CLAIM_NOUN + r"\b"
-    # third-party saying verb introducing the quote ("the objector says", "someone argues")
-    r"|\b(?:the\s+|an?\s+|this\s+|that\s+|each\s+|every\s+|one\s+)?" + _CONCESSION_THIRD_PARTY
-    + r"\s+(?:says?|said|asks?|asked|insists?|insisted|demands?|demanded|claims?|claimed|"
-    r"argues?|argued|objects?|objected|complains?|complained|replies|replied|responds?|"
-    r"responded|maintains?|maintained|contends?|contended|urges?|urged|puts?\s+it|"
-    r"would\s+have\s+it|wants?|wanted|expects?|expected)\b"
 )
+# Clause boundaries used to scope the hypothesis frame to the quote-introducing clause.
+_CONCESSION_CLAUSE_BOUNDARY_RE = re.compile(r"[,;:.!?—–\n]")
 
 
 def _concession_quoted(text: str, start: int, end: int) -> bool:
@@ -1273,10 +1268,26 @@ def _concession_quoted(text: str, start: int, end: int) -> bool:
     ) or (before.count('"') % 2 == 1 and '"' in after)
     if not quoted:
         return False
-    # The attribution/hypothesis frame must introduce the quotation (i.e. precede the
-    # concession in this sentence), so a noun like "objection" occurring AFTER the
-    # concession cannot exempt a self-asserted scare-quoted claim.
-    return bool(CONCESSION_ATTRIBUTION_RE.search(before))
+    # The hypothesis frame must INTRODUCE the quotation, not merely appear somewhere earlier
+    # in the sentence. Locate the opening quote of this quotation within `before`, then scope
+    # the frame search to the LOCAL clause immediately before that opening quote (bounded by
+    # the last clause boundary). A hypothesis word stranded in a fronted / dismissed clause,
+    # or a self-asserting main clause between it and the quote, therefore cannot exempt a
+    # self-asserted concession.
+    opening = -1
+    for q in CONCESSION_LEFT_QUOTE:
+        opening = max(opening, before.rfind(q))
+    if opening < 0:
+        opening = before.rfind('"')
+    if opening < 0:
+        opening = len(before)
+    intro_seg = before[:opening]
+    boundary_before_quote = None
+    for match in _CONCESSION_CLAUSE_BOUNDARY_RE.finditer(intro_seg):
+        boundary_before_quote = match
+    intro_start = boundary_before_quote.end() if boundary_before_quote is not None else 0
+    intro = before[intro_start:opening]
+    return bool(CONCESSION_ATTRIBUTION_RE.search(intro))
 
 
 def compliance_side_success_present(text: str) -> bool:
@@ -1635,6 +1646,19 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         # self-asserted concession when the quote guard accepted any determiner + claim-noun.
         "My argument shows the skeptic “cannot deny the evidence,” so the doubt is gone.",
         "This argument establishes that the skeptic “cannot deny the evidence.”",
+        # STRAY-FRAME LAUNDERING (adversarial-review confirmed): a possessive claim-noun or
+        # saying verb in a FRONTED / DISMISSED clause, or a hypothesis word in an earlier
+        # clause, followed by a SEPARATE self-asserting clause that introduces the quoted
+        # concession. The frame does not introduce the quotation, so it must NOT exempt --
+        # the output is asserting guaranteed person-uptake in scare/emphasis quotes.
+        "His argument aside, I have shown the doubter “cannot deny it” here.",
+        "Setting their objection to one side, my proof shows the reader “cannot resist it” here.",
+        "Their argument notwithstanding, we have demonstrated the skeptic “cannot deny it” now.",
+        "Their claim collapses and the skeptic “cannot deny it” now.",
+        "His argument aside I have shown the doubter «cannot deny it» here.",
+        "Having dismantled the objector's argument, we conclude the skeptic “cannot deny the evidence.”",
+        "Imagine the objector protesting; still, our argument proves the skeptic “cannot deny the evidence.”",
+        "We rebutted his objection, so the skeptic “cannot deny the evidence.”",
     ):
         if not compliance_side_success_present(must_flag):
             errors.append(
@@ -1648,13 +1672,15 @@ def self_test_owner_specific_operation_patterns() -> list[str]:
         "The output must not claim that the audience will now accept the truth.",
         "This can also mean 'the person cannot resist,' but that sense is rejected and disowned here.",
         "The phrase is reported as a disallowed reading, not asserted as our conclusion: the person cannot resist.",
-        # a concession inside a quotation is a quoted / hypothesized claim being described
-        # or critiqued, not the output's own uptake assertion.
+        # a concession inside a quotation is exempted ONLY under a HYPOTHESIS frame that
+        # locally introduces the quote (entertaining, not asserting): the one construction
+        # real smoke output actually uses. Possessive- and saying-verb-introduced reports
+        # are NOT exempted (their exemptions were removed as stray-frame laundering channels);
+        # per the never-launder invariant those are conservatively flagged instead -- see the
+        # must_flag block. This must_not_flag set therefore only guards the hypothesis case
+        # and the disown/anti-uptake senses handled by their own local-clause guards.
         "If the claim is “God should reveal Himself in a way I cannot resist,” then it must explain why coercion would prove anything.",
-        "The objector's demand, “the skeptic cannot deny it,” is examined and found wanting.",
-        # a genuine THIRD-PARTY saying frame ("the skeptic says ...") attributes the
-        # quoted concession to someone else; the output is reporting, not asserting.
-        "The skeptic says “I cannot deny the evidence,” but that report is not our own verdict.",
+        "Suppose the claim were “the skeptic cannot deny the proof,” then it must still be shown.",
     ):
         if compliance_side_success_present(must_not_flag):
             errors.append(
