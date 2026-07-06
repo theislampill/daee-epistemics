@@ -1,0 +1,273 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "workbench-stage07-maximal-release-validation-and-field-diagnostics",
+  "mode": "retained-artifact-replay",
+  "user_interface_preserved": true,
+  "stage_order": [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir",
+    "stage-03-routing-owner-gate",
+    "stage-04-burden-execution-act",
+    "stage-05-mrp-reread-terminal-state",
+    "stage-06-field-witness-nar",
+    "stage-07-release-output",
+    "stage-08-verifier-sidecars"
+  ],
+  "stages": [
+    {
+      "id": "stage-01-intake",
+      "status": "pass",
+      "produces": [
+        "input_digest",
+        "retained_input"
+      ],
+      "requires": [],
+      "input_digest": "E98591DB1FB40621524E792FAA9E22FEEBBE9D705FE354457583E62464CA7D82",
+      "retained_input": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/input.txt",
+      "source_boundary_preserved": true
+    },
+    {
+      "id": "stage-02-layer-a-diagnostic-ir",
+      "status": "pass",
+      "produces": [
+        "burden_floor",
+        "selected_n_frame",
+        "live_registers"
+      ],
+      "requires": [
+        "input_digest"
+      ],
+      "burden_floor": [
+        "B1"
+      ],
+      "selected_n_frame": "science-only-source-order-warrant",
+      "live_registers": [
+        "xi",
+        "kappa"
+      ]
+    },
+    {
+      "id": "stage-03-routing-owner-gate",
+      "status": "pass",
+      "produces": [
+        "route_targets",
+        "owner_routes"
+      ],
+      "requires": [
+        "burden_floor"
+      ],
+      "route_targets": [
+        "B1"
+      ],
+      "owner_routes": [
+        {
+          "burden_id": "B1",
+          "owner_id": "source-status-repair",
+          "eligibility": "retained-field-witness-owner-activation"
+        },
+        {
+          "burden_id": "B1",
+          "owner_id": "M1",
+          "eligibility": "retained-field-witness-owner-activation"
+        }
+      ]
+    },
+    {
+      "id": "stage-04-burden-execution-act",
+      "status": "pass",
+      "produces": [
+        "act_targets",
+        "act_body_refs",
+        "act_rows"
+      ],
+      "requires": [
+        "route_targets",
+        "owner_routes"
+      ],
+      "act_targets": [
+        "B1"
+      ],
+      "act_burdens": [
+        "B1"
+      ],
+      "act_body_refs": [
+        "¹B₁",
+        "¹B₂"
+      ],
+      "act_rows": [
+        "⟦ACT ¹B₁[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=¹B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧",
+        "⟦ACT ¹B₂[M1.self-grounding-test] :: π=only-science-counts-standard :: body_ref=¹B₂ :: Δ=Δ¹B:self-authorizing-standard-invalidated :: Land(¹B)+⟧"
+      ]
+    },
+    {
+      "id": "stage-05-mrp-reread-terminal-state",
+      "status": "pass",
+      "produces": [
+        "terminal_states",
+        "dependency_graph_edges",
+        "no_new_resultant_proof"
+      ],
+      "requires": [
+        "act_rows"
+      ],
+      "terminal_states": {
+        "B1": "landed"
+      },
+      "dependency_graph_edges": [],
+      "no_new_resultant_proof": true
+    },
+    {
+      "id": "stage-06-field-witness-nar",
+      "status": "pass",
+      "produces": [
+        "field_witness_body_refs",
+        "nar_burdens",
+        "normalized_activation_record"
+      ],
+      "requires": [
+        "terminal_states",
+        "act_body_refs"
+      ],
+      "field_witness_body_refs": [
+        "¹B₁",
+        "¹B₂"
+      ],
+      "nar_burdens": [
+        "B1"
+      ],
+      "owner_activations": [
+        "¹B₁",
+        "¹B₂"
+      ],
+      "normalized_activation_record": true,
+      "register_deltas": {}
+    },
+    {
+      "id": "stage-07-release-output",
+      "status": "pass",
+      "produces": [
+        "release_output",
+        "release_terminal_states"
+      ],
+      "requires": [
+        "field_witness_body_refs",
+        "nar_burdens"
+      ],
+      "release_output": {
+        "path": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/output.md",
+        "sha256": "4017E4AFDE38E747BE6BC6A42818DFD2E46138C1D2DB2310F233ABAC84412DD6"
+      },
+      "release_terminal_states": {
+        "B1": "landed"
+      },
+      "closure_claim": "complete",
+      "output_is_full_governed_answer": true,
+      "release_validation": {
+        "visible_opening_header": "pass",
+        "nla_semantic_faithfulness": "pass",
+        "field_witness_convergence": "pass",
+        "formal_reread_state_semantics": "pass",
+        "mid_reread_pressure": "pass",
+        "mrp_route_invariants": "pass",
+        "mrp_record_surface_parity": "pass",
+        "mrp_generated_burden": "pass",
+        "graph_completeness_json": "pass",
+        "manual_smoke_render_contract": "pass",
+        "public_burden_grouping": "pass",
+        "owner_activation_ordering": "pass"
+      },
+      "release_field_diagnostics": {
+        "visible": {
+          "divergence_check": "neutral",
+          "curl_check": "null"
+        },
+        "field_witness_coverage": {
+          "divergence_check": "neutral",
+          "curl_check": "null"
+        },
+        "matches": true
+      }
+    },
+    {
+      "id": "stage-08-verifier-sidecars",
+      "status": "pass",
+      "produces": [
+        "verifier_sidecars"
+      ],
+      "requires": [
+        "release_output"
+      ],
+      "verifier_sidecars": {}
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "stage-01-intake",
+      "to": "stage-02-layer-a-diagnostic-ir",
+      "checks": [
+        "input_boundary_preserved"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-02-layer-a-diagnostic-ir",
+      "to": "stage-03-routing-owner-gate",
+      "checks": [
+        "burden_floor_to_route_targets",
+        "n_frame_present",
+        "live_registers_present"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-03-routing-owner-gate",
+      "to": "stage-04-burden-execution-act",
+      "checks": [
+        "owner_eligibility_backed",
+        "route_targets_to_act_targets"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-04-burden-execution-act",
+      "to": "stage-05-mrp-reread-terminal-state",
+      "checks": [
+        "act_rows_present",
+        "act_body_refs_present"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-05-mrp-reread-terminal-state",
+      "to": "stage-06-field-witness-nar",
+      "checks": [
+        "terminal_states_to_field_witness",
+        "dependency_graph_explicit"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-06-field-witness-nar",
+      "to": "stage-07-release-output",
+      "checks": [
+        "field_witness_nar_convergence"
+      ],
+      "status": "pass"
+    },
+    {
+      "from": "stage-07-release-output",
+      "to": "stage-08-verifier-sidecars",
+      "checks": [
+        "release_to_verifier_sidecars"
+      ],
+      "status": "pass"
+    }
+  ],
+  "non_claims": {
+    "not_model_smoke": true,
+    "not_runtime_default_emission_proof": true,
+    "not_arbitrary_nl_ir_parser": true,
+    "not_package_provenance": true,
+    "not_guaranteed_t_lang_uptake": true
+  }
+}

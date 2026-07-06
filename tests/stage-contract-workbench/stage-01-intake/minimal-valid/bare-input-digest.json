@@ -1,0 +1,20 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "workbench-stage01-minimal-bare-input-digest",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_scope": {"stop_after_stage": "stage-01-intake", "stage_count": 1, "not_release_output": true, "not_verifier_sidecars": true},
+  "model_scope": {"type": "focused-current-skill-stage-smoke", "case_count": 1, "case_family": "workbench-stage01-minimal", "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"},
+  "stage_order": ["stage-01-intake"],
+  "stages": [
+    {
+      "id": "stage-01-intake",
+      "status": "pass",
+      "produces": ["input_digest"],
+      "requires": [],
+      "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "handoffs": [],
+  "non_claims": {"not_model_smoke": false, "not_broad_model_behavior": true, "not_broad_model_matrix": true, "not_runtime_default_emission_proof": true, "not_arbitrary_nl_ir_parser": true, "not_package_provenance": true, "not_guaranteed_t_lang_uptake": true, "not_graphify_or_activegraph_proof": true}
+}

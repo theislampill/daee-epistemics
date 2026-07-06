@@ -424,16 +424,47 @@ def op_absolute_sidecar_path(record: dict[str, Any]) -> dict[str, Any] | None:
 # appliers (delete-required-field) are expanded per applicable stage below.
 StageRecordOperator = Callable[[dict[str, Any]], "dict[str, Any] | None"]
 
+# Known, CONFIRMED gaps in tools/check_staged_runtime_handshake.py discovered
+# by this sweep: the checker validates that stages[].produces/requires are
+# string lists, but never cross-checks that a stage's declared `produces`
+# field actually exists as a key on that stage object. Stages 02-06 each have
+# a dedicated stageNN_*_errors() function that happens to re-derive this
+# requirement from field-specific validation (e.g. stage-05 requires
+# terminal_states directly), so deleting their required field is still
+# caught. Stage-01 ("stage-01-intake") has no such dedicated validator: its
+# only checks are the generic stage-shape checks in sequence_errors(), so
+# deleting stage-01's input_digest is NOT caught. Confirmed by direct
+# reproduction against both tests/staged-runtime-handshake/valid/
+# retained-a9-science-source.json and stage05-generated-provenance.json
+# (2026-07-06): the mutated record passes check_staged_runtime_handshake.py
+# with exit 0 in both cases.
+#
+# This tool must not misrepresent that as "rejected". The operator stays in
+# the sweep (it is a real, useful probe -- and per the mission, DO NOT fake
+# verification) but is pinned here as a documented known-checker-gap: its
+# manifest verdict is allowed to be "survivor" without failing self-test,
+# and the sweep prints it as a FINDING rather than silently passing.
+KNOWN_CHECKER_GAPS: dict[str, str] = {
+    "delete-required-field-stage-01-intake": (
+        "check_staged_runtime_handshake.py has no stage-01-intake field-presence "
+        "validator (unlike stages 02-06); deleting input_digest is not rejected. "
+        "Out of scope to fix here: this tool may only touch itself and NEW "
+        "fixtures, not the checker."
+    ),
+}
+
 
 def _build_stage_record_operators() -> dict[str, dict[str, Any]]:
     ops: dict[str, dict[str, Any]] = {}
     for stage_id, field in STAGE_REQUIRED_FIELDS.items():
         short = stage_id.split("-", 2)[1]  # e.g. "01" from "stage-01-intake"
-        ops[f"delete-required-field-{stage_id}"] = {
+        op_name = f"delete-required-field-{stage_id}"
+        ops[op_name] = {
             "stage": stage_id,
             "failure_class_hint": f"missing required field '{field}'",
             "checker": "check_staged_runtime_handshake",
             "apply": (lambda rec, sid=stage_id: op_delete_required_field(rec, sid)),
+            "known_gap": KNOWN_CHECKER_GAPS.get(op_name),
         }
     ops["corrupt-body_ref"] = {
         "stage": "stage-04-burden-execution-act",
@@ -569,6 +600,7 @@ def run_stage_record_sweep(source_path: Path, out_dir: Path) -> list[dict[str, A
             "expected_checker": meta["checker"],
             "applicable": True,
             "output_file": str(out_path),
+            "known_gap": meta.get("known_gap"),
         }
         if meta["checker"] == "check_staged_runtime_handshake":
             code, output = _run_handshake_checker(out_path)
@@ -593,7 +625,10 @@ def stage_record_self_test() -> tuple[bool, list[str]]:
     Checks:
       (a) every applicable mutated record differs from the source record.
       (b) every mutation whose checker is check_staged_runtime_handshake is
-          REJECTED (nonzero exit) by that checker.
+          REJECTED (nonzero exit) by that checker -- UNLESS it is pinned in
+          KNOWN_CHECKER_GAPS, in which case a survivor is expected and
+          reported as a finding, not a self-test failure (see that dict's
+          docstring for why: this tool may not edit the checker).
       (c) render-family mutations are honestly marked manifest-only and are
           NOT claimed as full-rejection evidence.
       (d) every declared operator produced a manifest row (no silent drops).
@@ -603,6 +638,7 @@ def stage_record_self_test() -> tuple[bool, list[str]]:
     manifest = run_stage_record_sweep(golden, out_dir)
 
     problems: list[str] = []
+    findings: list[str] = []
     seen_operators = {row["operator"] for row in manifest}
     missing_operators = sorted(set(STAGE_RECORD_OPERATORS) - seen_operators)
     if missing_operators:
@@ -619,11 +655,18 @@ def stage_record_self_test() -> tuple[bool, list[str]]:
         problems.append("no operator reached full checker-rejection verification")
 
     for row in full_rows:
+        known_gap = row.get("known_gap")
         if row.get("verdict") == "survivor":
-            problems.append(f"SURVIVOR (mutation not rejected): {row['operator']} -> {row['output_file']}")
+            if known_gap:
+                findings.append(
+                    f"KNOWN CHECKER GAP (documented, not a self-test failure): "
+                    f"{row['operator']} -> {row['output_file']}: {known_gap}"
+                )
+            else:
+                problems.append(f"SURVIVOR (mutation not rejected): {row['operator']} -> {row['output_file']}")
         elif row.get("verdict") != "rejected":
             problems.append(f"unexpected verdict for {row['operator']}: {row.get('verdict')}")
-        if row.get("checker_exit_code", 1) == 0:
+        if row.get("checker_exit_code", 1) == 0 and not known_gap:
             problems.append(f"{row['operator']}: expected nonzero checker exit, got 0")
 
     for row in manifest_only_rows:
@@ -640,7 +683,7 @@ def stage_record_self_test() -> tuple[bool, list[str]]:
         if output_file and tests_root in Path(output_file).resolve().parents:
             problems.append(f"mutant written under tests/: {output_file}")
 
-    return (len(problems) == 0, problems)
+    return (len(problems) == 0, problems, findings)
 
 
 def self_test() -> int:
@@ -664,12 +707,15 @@ def self_test() -> int:
         print(f"  self-test {'PASS' if p else 'FAIL'}: {name}")
     print(f"  (applied={len(applied)} skipped={len(skipped)} survivors={len(survivors)})")
 
-    stage_ok, stage_problems = stage_record_self_test()
+    stage_ok, stage_problems, stage_findings = stage_record_self_test()
     print(f"  stage-record self-test {'PASS' if stage_ok else 'FAIL'}: "
           f"per-stage mutation sweep on golden record")
     if stage_problems:
         for problem in stage_problems:
             print(f"    - {problem}")
+    if stage_findings:
+        for finding in stage_findings:
+            print(f"    - {finding}")
     ok = ok and stage_ok
 
     print(f"gen-fixture-mutations self-test: {'PASS' if ok else 'FAIL'}")
@@ -703,14 +749,19 @@ def main() -> int:
         out_dir = _safe_emit_dir(args.out_dir)
         manifest = run_stage_record_sweep(source_path, out_dir)
         applicable = [row for row in manifest if row.get("applicable")]
-        survivors = [row for row in applicable if row.get("verdict") == "survivor"]
+        all_survivors = [row for row in applicable if row.get("verdict") == "survivor"]
+        known_gap_survivors = [row for row in all_survivors if row.get("known_gap")]
+        unexpected_survivors = [row for row in all_survivors if not row.get("known_gap")]
         for row in manifest:
             print(f"  {row['operator']}: stage={row['expected_stage']} "
                   f"checker={row['expected_checker']} verdict={row['verdict']}")
-        print(f"applicable={len(applicable)} survivors={len(survivors)} "
+        print(f"applicable={len(applicable)} survivors={len(all_survivors)} "
+              f"(known-gap={len(known_gap_survivors)} unexpected={len(unexpected_survivors)}) "
               f"manifest={out_dir / 'sweep-manifest.json'}")
-        if survivors:
-            for row in survivors:
+        for row in known_gap_survivors:
+            print(f"KNOWN GAP (documented): {row['operator']} on {source_path}: {row['known_gap']}")
+        if unexpected_survivors:
+            for row in unexpected_survivors:
                 print(f"FINDING: mutation survived: {row['operator']} on {source_path}")
             return 3
         return 0

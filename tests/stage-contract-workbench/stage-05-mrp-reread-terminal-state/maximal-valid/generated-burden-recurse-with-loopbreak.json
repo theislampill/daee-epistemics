@@ -1,0 +1,104 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "workbench-stage05-maximal-generated-burden-recurse-with-loopbreak",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_scope": {"stop_after_stage": "stage-05-mrp-reread-terminal-state", "stage_count": 5, "not_release_output": true, "not_verifier_sidecars": true},
+  "model_scope": {"type": "focused-current-skill-stage-smoke", "case_count": 1, "case_family": "workbench-stage05-maximal", "retained_replay_target": "tests/staged-runtime-handshake/valid/stage05-generated-provenance.json"},
+  "stage_order": ["stage-01-intake", "stage-02-layer-a-diagnostic-ir", "stage-03-routing-owner-gate", "stage-04-burden-execution-act", "stage-05-mrp-reread-terminal-state"],
+  "stages": [
+    {"id": "stage-01-intake", "status": "pass", "produces": ["input_digest"], "requires": [], "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"id": "stage-02-layer-a-diagnostic-ir", "status": "pass", "produces": ["burden_floor", "selected_n_frame", "live_registers"], "requires": ["input_digest"], "burden_floor": ["B1"], "selected_n_frame": "source-order-repair", "live_registers": ["xi", "kappa"]},
+    {"id": "stage-03-routing-owner-gate", "status": "pass", "produces": ["route_targets", "owner_routes"], "requires": ["burden_floor"], "route_targets": ["B1"], "owner_routes": [{"burden_id": "B1", "owner_id": "source-status-repair", "eligibility": "catalogue-backed"}]},
+    {"id": "stage-04-burden-execution-act", "status": "pass", "produces": ["act_targets", "act_body_refs", "act_rows"], "requires": ["route_targets", "owner_routes"], "act_targets": ["B1"], "act_burdens": ["B1"], "act_body_refs": ["B1_1"], "act_rows": ["⟦ACT B1_1[source-status-repair.source-order] :: π=source-order :: body_ref=B1_1 :: Δ=ΔB1:source-function-bounded :: Land(B1)+⟧"]},
+    {
+      "id": "stage-05-mrp-reread-terminal-state",
+      "status": "held",
+      "produces": ["terminal_states", "generated_burdens", "dependency_graph_edges", "no_new_resultant_proof"],
+      "requires": ["act_rows"],
+      "terminal_states": {
+        "B1": "landed",
+        "B2": "carried-RECURSE"
+      },
+      "generated_burdens": [
+        {"id": "B2", "generated_by": "MRP(B1)"}
+      ],
+      "dependency_graph_edges": [
+        {"from": "B1", "to": "B2", "type": "generated_burden_instantiation"}
+      ],
+      "no_new_resultant_proof": {
+        "proved": false,
+        "unresolved_burdens": ["B2"]
+      },
+      "reread_state": {
+        "divergence_state": "held",
+        "curl_state": "held",
+        "route_result_type": "generated_burden_instantiation",
+        "route": "RECURSE"
+      },
+      "per_burden_reread": [
+        {
+          "burden_id": "B1",
+          "target": "B1 / source-order pressure",
+          "reread": "R(H,Δ): held routes rechecked: none; live remainder: generated burden B2; release/next: RECURSE into B2.",
+          "landed_delta": "Delta(B1) and Delta xi: source-function-bounded recorded, but MRP recoil generated B2.",
+          "pressure_activations": {
+            "freeze-landed-move": "source-status-repair — Land(B1) frozen before reread.",
+            "dependency-tug": "pressure class: dependency-scan — kappa dependency now live via generated B2.",
+            "hidden-framework-recoil": "MRP(B1) — hidden framework support reopens as generated burden B2.",
+            "entailment-pressure": "pressure class: cleared — no entailment pressure remains against the bounded source order.",
+            "doubt-churn-guard": "pressure class: cleared — no churn or proof-carousel loop is live.",
+            "reorientation-reminder": "P1 — reorientation reminder cleared toward the generated-burden chain."
+          },
+          "divergence": "∇·B: non-neutral / generated burden B2 carries forward load",
+          "curl": "∇×κ: non-null / dependency loop opens via B2",
+          "route_gradient": "gradient recoils toward B2; RECURSE required before STOP.",
+          "finding": "genuine-dependent",
+          "route_result_type": "generated_burden_instantiation",
+          "mrp_resultant": "recoil -> new graph edge B1->B2; RECURSE",
+          "graph_delta": "B1->B2 generated_burden_instantiation",
+          "preemption_basis": "graph-bound",
+          "loopbreak": "not needed",
+          "route": "RECURSE",
+          "boundary": "T_lang does not imply guaranteed uptake"
+        },
+        {
+          "burden_id": "B2",
+          "target": "B2 / MRP(B1) generated recoil burden",
+          "reread": "R(H,Δ): held routes rechecked: B1; live remainder: none load-bearing after LoopBreak; release/next: closure",
+          "landed_delta": "Delta(B2) and Delta kappa: recoil chain terminated via LoopBreak, no further generation.",
+          "pressure_activations": {
+            "freeze-landed-move": "source-status-repair — B2 carried-RECURSE frozen pending LoopBreak.",
+            "dependency-tug": "M1 — no downstream burden required after LoopBreak.",
+            "hidden-framework-recoil": "pressure class: cleared — LoopBreak halts further hidden-framework recoil.",
+            "entailment-pressure": "pressure class: cleared — no entailment pressure remains after LoopBreak.",
+            "doubt-churn-guard": "doubt-vs-skepticism — LoopBreak(∇×T) prevents further proof-carousel churn.",
+            "reorientation-reminder": "P1 — return attention to fiṭrah and sound reason without forcing uptake"
+          },
+          "divergence": "∇·B: neutral / B2 closed by LoopBreak",
+          "curl": "∇×κ: null / LoopBreak(∇×T) collapses the circular dependency",
+          "route_gradient": "no newly generated burden after LoopBreak; recoil chain terminates at B2.",
+          "finding": "stable",
+          "route_result_type": "loopbreak",
+          "mrp_resultant": "LoopBreak(∇×T) -> recoil chain terminated; STOP",
+          "graph_delta": "none",
+          "preemption_basis": "commitment-bound",
+          "loopbreak": "applied",
+          "route": "LoopBreak(∇×T)",
+          "boundary": "T_lang does not imply guaranteed uptake"
+        }
+      ],
+      "terminal_state_details": [
+        {"burden_id": "B1", "state": "landed", "basis": "ACT row Land(B1)+ landed the routed burden."},
+        {"burden_id": "B2", "state": "carried-RECURSE", "basis": "MRP(B1) generated B2 and no ACT owner executed it yet; LoopBreak halts further recoil."}
+      ]
+    }
+  ],
+  "handoffs": [
+    {"from": "stage-01-intake", "to": "stage-02-layer-a-diagnostic-ir", "checks": ["input_boundary_preserved"], "status": "pass"},
+    {"from": "stage-02-layer-a-diagnostic-ir", "to": "stage-03-routing-owner-gate", "checks": ["burden_floor_to_route_targets", "n_frame_present", "live_registers_present"], "status": "pass"},
+    {"from": "stage-03-routing-owner-gate", "to": "stage-04-burden-execution-act", "checks": ["owner_eligibility_backed", "route_targets_to_act_targets"], "status": "pass"},
+    {"from": "stage-04-burden-execution-act", "to": "stage-05-mrp-reread-terminal-state", "checks": ["act_rows_present", "act_body_refs_present"], "status": "pass"}
+  ],
+  "non_claims": {"not_model_smoke": false, "not_broad_model_behavior": true, "not_broad_model_matrix": true, "not_runtime_default_emission_proof": true, "not_arbitrary_nl_ir_parser": true, "not_package_provenance": true, "not_guaranteed_t_lang_uptake": true, "not_graphify_or_activegraph_proof": true}
+}

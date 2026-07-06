@@ -1,0 +1,40 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "workbench-stage02-maximal-multi-burden-floor-details",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_scope": {"stop_after_stage": "stage-02-layer-a-diagnostic-ir", "stage_count": 2, "not_release_output": true, "not_verifier_sidecars": true},
+  "model_scope": {"type": "focused-current-skill-stage-smoke", "case_count": 1, "case_family": "workbench-stage02-maximal", "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"},
+  "stage_order": ["stage-01-intake", "stage-02-layer-a-diagnostic-ir"],
+  "stages": [
+    {"id": "stage-01-intake", "status": "pass", "produces": ["input_digest", "retained_input"], "requires": [], "input_digest": "E98591DB1FB40621524E792FAA9E22FEEBBE9D705FE354457583E62464CA7D82", "retained_input": "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases/a9-science-source/input.txt", "source_boundary_preserved": true},
+    {
+      "id": "stage-02-layer-a-diagnostic-ir",
+      "status": "pass",
+      "produces": ["burden_floor", "selected_n_frame", "live_registers"],
+      "requires": ["input_digest"],
+      "burden_floor": ["B1", "B2"],
+      "burden_floor_details": [
+        {
+          "burden_id": "B1",
+          "label": "source-authority pressure",
+          "register_types": ["xi", "sigma"],
+          "basis": "source-status and authority-order pressure remain detail evidence, not the join key"
+        },
+        {
+          "burden_id": "B2",
+          "label": "dependency-collapse pressure",
+          "register_types": ["kappa", "mu"],
+          "basis": "dependency and semantic-load pressure stay attached by canonical burden id"
+        }
+      ],
+      "selected_n_frame": "workbench-maximal-frame",
+      "live_registers": ["xi", "sigma", "kappa", "mu"],
+      "unresolved_state": "none"
+    }
+  ],
+  "handoffs": [
+    {"from": "stage-01-intake", "to": "stage-02-layer-a-diagnostic-ir", "checks": ["input_boundary_preserved"], "status": "pass"}
+  ],
+  "non_claims": {"not_model_smoke": false, "not_broad_model_behavior": true, "not_broad_model_matrix": true, "not_runtime_default_emission_proof": true, "not_arbitrary_nl_ir_parser": true, "not_package_provenance": true, "not_guaranteed_t_lang_uptake": true, "not_graphify_or_activegraph_proof": true}
+}

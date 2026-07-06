@@ -1,0 +1,8 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "route-target-details-unknown-burden.json",
+  "stage": "stage-03-routing-owner-gate",
+  "failure_class_hint": "stage-03 route_target_details[0].burden_id must appear in route_targets",
+  "checker": "check_staged_runtime_handshake",
+  "provenance": "minimal-pair variant of tests/staged-runtime-handshake/invalid/route-target-details-unknown-burden.json, scoped to this workbench's minimal stage-02/03 shape."
+}

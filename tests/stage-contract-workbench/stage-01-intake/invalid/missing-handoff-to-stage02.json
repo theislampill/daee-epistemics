@@ -1,0 +1,15 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "workbench-stage01-invalid-missing-handoff-to-stage02",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_scope": {"stop_after_stage": "stage-02-layer-a-diagnostic-ir", "stage_count": 2, "not_release_output": true, "not_verifier_sidecars": true},
+  "model_scope": {"type": "focused-current-skill-stage-smoke", "case_count": 1, "case_family": "workbench-stage01-invalid-handoff", "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"},
+  "stage_order": ["stage-01-intake", "stage-02-layer-a-diagnostic-ir"],
+  "stages": [
+    {"id": "stage-01-intake", "status": "pass", "produces": ["input_digest"], "requires": [], "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"id": "stage-02-layer-a-diagnostic-ir", "status": "pass", "produces": ["burden_floor", "selected_n_frame", "live_registers"], "requires": ["input_digest"], "burden_floor": ["B1"], "selected_n_frame": "workbench-invalid-frame", "live_registers": ["xi"]}
+  ],
+  "handoffs": [],
+  "non_claims": {"not_model_smoke": false, "not_broad_model_behavior": true, "not_broad_model_matrix": true, "not_runtime_default_emission_proof": true, "not_arbitrary_nl_ir_parser": true, "not_package_provenance": true, "not_guaranteed_t_lang_uptake": true, "not_graphify_or_activegraph_proof": true}
+}

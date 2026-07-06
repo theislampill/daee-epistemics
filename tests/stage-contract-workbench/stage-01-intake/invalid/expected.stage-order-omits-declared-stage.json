@@ -1,0 +1,8 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "stage-order-omits-declared-stage.json",
+  "stage": "stage-01-intake",
+  "failure_class_hint": "stage_order must contain the required stages exactly once and in order",
+  "checker": "check_staged_runtime_handshake",
+  "provenance": "hand-authored: stages declares stage-01-intake but stage_order is empty, violating sequence_errors()."
+}
