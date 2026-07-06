@@ -10,7 +10,15 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 from compiled_runtime_lib import fail_with_errors, repo_root
-from package_shape import package_file_paths, validate_archive_names, validate_skill_tree
+from package_shape import (
+    DEFAULT_PACKAGE_PROFILE,
+    PACKAGE_PROFILES,
+    extra_root_file_paths,
+    package_file_paths,
+    profile_archive_name,
+    validate_archive_names,
+    validate_skill_tree,
+)
 
 
 SKILL_DESCRIPTION_LIMIT = 1024
@@ -41,7 +49,10 @@ def skill_description_length(path: Path) -> int:
     raise ValueError("skill/SKILL.md missing description metadata")
 
 
-def build_archive(root: Path, output: Path) -> tuple[int, str]:
+def build_archive(root: Path, output: Path, profile: str = DEFAULT_PACKAGE_PROFILE) -> tuple[int, str]:
+    if profile not in PACKAGE_PROFILES:
+        raise RuntimeError(f"unknown package profile: {profile!r}")
+
     errors = validate_skill_tree(root)
     paths, path_errors = package_file_paths(root)
     errors.extend(path_errors)
@@ -55,6 +66,10 @@ def build_archive(root: Path, output: Path) -> tuple[int, str]:
             f"skill/SKILL.md description is {description_len} characters; "
             f"maximum is {SKILL_DESCRIPTION_LIMIT}"
         )
+
+    extra_paths, extra_errors = extra_root_file_paths(root, profile)
+    errors.extend(extra_errors)
+
     if errors:
         raise RuntimeError("\n".join(errors))
 
@@ -70,10 +85,16 @@ def build_archive(root: Path, output: Path) -> tuple[int, str]:
             info.compress_type = ZIP_DEFLATED
             info.external_attr = (0o644 & 0xFFFF) << 16
             zf.writestr(info, path.read_bytes())
+        for path in extra_paths:
+            rel = path.relative_to(root).as_posix()
+            info = ZipInfo(rel)
+            info.compress_type = ZIP_DEFLATED
+            info.external_attr = (0o644 & 0xFFFF) << 16
+            zf.writestr(info, path.read_bytes())
 
     with ZipFile(output) as zf:
         names = zf.namelist()
-    archive_errors = validate_archive_names(names)
+    archive_errors = validate_archive_names(names, profile=profile)
     if archive_errors:
         output.unlink(missing_ok=True)
         raise RuntimeError("\n".join(archive_errors))
@@ -83,24 +104,79 @@ def build_archive(root: Path, output: Path) -> tuple[int, str]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("output", help="Output .skill.zip path")
+    parser.add_argument(
+        "output",
+        nargs="?",
+        default=None,
+        help=(
+            "Output .skill.zip path. Optional when --version is given; in that "
+            "case the canonical profile-suffixed name "
+            "(daee-epistemics-<version>-<profile>.skill.zip) is used, written "
+            "under --output-dir (default: build/)."
+        ),
+    )
+    parser.add_argument(
+        "--profile",
+        choices=PACKAGE_PROFILES,
+        default=DEFAULT_PACKAGE_PROFILE,
+        help=(
+            "Package profile to build. execution-mini (default) is the "
+            "canonical compiled-runtime-only package. audit-full additionally "
+            "packages schema/, tools/, tests/, and docs/ for build/test audit "
+            "and is explicitly non-default."
+        ),
+    )
+    parser.add_argument(
+        "--version",
+        default=None,
+        help="Release-line version (e.g. v0.4.6.0) used to derive the canonical output name when 'output' is omitted.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        default="build",
+        help="Directory for the derived canonical output name when 'output' is omitted (default: build).",
+    )
+    parser.add_argument(
+        "--legacy-name",
+        action="store_true",
+        help=(
+            "Accept/emit the pre-profile archive name (daee-epistemics-<version>.skill.zip, "
+            "no profile suffix) when deriving the output path from --version. Only affects "
+            "the derived-name path; an explicit 'output' argument is always used as-is."
+        ),
+    )
     args = parser.parse_args(argv)
 
-    output = Path(args.output)
+    root = repo_root()
+
+    if args.output is None:
+        if not args.version:
+            return fail_with_errors(
+                "package skill",
+                ["either an explicit output path or --version must be supplied"],
+            )
+        if args.legacy_name:
+            name = f"daee-epistemics-{args.version}.skill.zip"
+        else:
+            name = profile_archive_name(args.version, args.profile)
+        output = Path(args.output_dir) / name
+    else:
+        output = Path(args.output)
+
     if output.suffix.lower() != ".zip" or not output.name.lower().endswith(".skill.zip"):
         return fail_with_errors(
             "package skill",
             ["output name must end with .skill.zip"],
         )
-    root = repo_root()
     if not output.is_absolute():
         output = root / output
     try:
-        entries, digest = build_archive(root, output)
+        entries, digest = build_archive(root, output, profile=args.profile)
     except RuntimeError as exc:
         return fail_with_errors("package skill", str(exc).splitlines())
 
     print(f"Archive: {output}")
+    print(f"Profile: {args.profile}")
     print(f"Entries: {entries}")
     print("Root check: PASS")
     print("Separator check: PASS")

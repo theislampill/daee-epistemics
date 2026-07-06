@@ -94,6 +94,7 @@ COMMANDS = [
     "python tools/analyze_ci_parallelizability.py --self-test",
     "python tools/measure_load_path_budget.py --self-test",
     "python tools/measure_load_path_budget.py --enforce-ratchet",
+    "python tools/measure_load_path_budget.py --enforce",
     "python tools/build_package_shape_inventory.py --self-test",
     "python tools/build_package_shape_inventory.py --check",
     "python tools/check_prompt_pack_budget.py --self-test",

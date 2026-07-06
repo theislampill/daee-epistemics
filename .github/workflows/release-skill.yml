@@ -49,14 +49,40 @@ jobs:
           python tools/run_local_ci.py --strict-pwsh
           python tools/check_frontmatter.py --contract-version "$CONTRACT_VERSION"
 
-      - name: Build package artifact
+      - name: Enforce load-path budget (aspirational gate)
+        shell: bash
+        run: |
+          python tools/measure_load_path_budget.py --self-test
+          python tools/measure_load_path_budget.py --enforce-ratchet
+          python tools/measure_load_path_budget.py --enforce
+
+      - name: Build package artifacts (execution-mini + audit-full)
         shell: bash
         run: |
           mkdir -p build
-          python tools/package_skill.py "build/daee-epistemics-${VERSION}.skill.zip"
+          python tools/package_skill.py --profile execution-mini \
+            "build/daee-epistemics-${VERSION}.skill.zip"
           cp "build/daee-epistemics-${VERSION}.skill.zip" "build/daee-epistemics-${VERSION}.skill"
+          python tools/package_skill.py --profile audit-full \
+            "build/daee-epistemics-${VERSION}-audit-full.skill.zip"
+          cp "build/daee-epistemics-${VERSION}-audit-full.skill.zip" "build/daee-epistemics-${VERSION}-audit-full.skill"
 
-      - name: Verify package self-containment
+      - name: Verify package shape (repo-tree, profile-independent)
+        run: python tools/check_package_shape.py
+
+      - name: Verify package artifact shape per profile
+        shell: bash
+        run: |
+          python tools/check_skill_package_artifact.py \
+            "build/daee-epistemics-${VERSION}.skill" \
+            --profile execution-mini \
+            --expect-version "$VERSION"
+          python tools/check_skill_package_artifact.py \
+            "build/daee-epistemics-${VERSION}-audit-full.skill" \
+            --profile audit-full \
+            --expect-version "$VERSION"
+
+      - name: Verify package self-containment (default execution-mini artifact)
         shell: bash
         run: |
           python tools/check_compiled_skill_self_contained.py \

@@ -65,6 +65,26 @@ EXEMPT_ROW = "largest-retained-output"
 # own stays under tolerance_pct.
 AGGREGATE_ROW = "total-hot-surfaces"
 
+# Fixed allowance added to the default-exec worst-case arithmetic (Slice A2)
+# to account for the multi-call state capsule (daee-state-capsule-v1) that
+# rides alongside the root + shard load on every recursive call. This is a
+# constant, not a measured surface -- see tools/load-path-budget.config.json
+# aspirational._owner_note_exec_ceiling for the worst-case arithmetic that
+# uses it.
+CAPSULE_ALLOWANCE_EST_TOK = 4000
+
+# The exact eager numbered load-path list the compiled root is allowed to
+# carry (mirrors tools/check_route_shard_selection.py's EXPECTED_EAGER_LIST
+# semantics). Duplicated here deliberately (rather than imported) so this
+# tool's 300k-pattern check is self-contained and does not depend on that
+# checker's internals; a deliberate change to the eager list requires
+# updating both this constant and that checker's EXPECTED_EAGER_LIST in the
+# same change.
+EXPECTED_EAGER_LIST = ["references/runtime-core-routing.md"]
+ADDENDUM_START_MARK = "Load path for substantive cases:"
+DISPATCH_INDEX_HEADER = "Dispatch Index (route shards - load on selection, not eagerly):"
+NUMBERED_LIST_ITEM_RE = re.compile(r"^\d+\.\s+`([^`]+)`\s*$")
+
 
 def metrics(paths: list[Path]) -> tuple[int, int, int]:
     """Return (total_bytes, total_lines, est_tokens) for the given files."""
@@ -372,7 +392,176 @@ def check_ratchet(rows: list[tuple[str, str, int, int, int]], config: dict) -> t
     return len(failures) == 0, failures
 
 
-def build_report(rows: list[tuple[str, str, int, int, int]], config: dict, ratchet_result: tuple[bool, list[str]] | None) -> dict:
+def parse_eager_list(skill_text: str) -> tuple[list[str], list[str]]:
+    """Parse the numbered "Load path for substantive cases:" list from the
+    compiled root text. Returns (entries, errors).
+
+    Mirrors tools/check_route_shard_selection.py's parse_numbered_load_list
+    semantics (numbered-list entries between the ADDENDUM_START_MARK header
+    and the Dispatch Index header), duplicated here as a small self-contained
+    parse rather than importing that checker (see module-level comment next
+    to EXPECTED_EAGER_LIST).
+    """
+    start = skill_text.find(ADDENDUM_START_MARK)
+    if start == -1:
+        return [], [f"compiled root has no {ADDENDUM_START_MARK!r} section"]
+    dispatch_pos = skill_text.find(DISPATCH_INDEX_HEADER, start)
+    if dispatch_pos == -1:
+        return [], [f"addendum has no {DISPATCH_INDEX_HEADER!r} header"]
+    list_block = skill_text[start:dispatch_pos]
+    entries: list[str] = []
+    for line in list_block.splitlines():
+        match = NUMBERED_LIST_ITEM_RE.match(line.strip())
+        if match:
+            entries.append(match.group(1))
+    return entries, []
+
+
+def check_eager_list_pattern(eager_list: list[str], expected: list[str] | None = None) -> list[str]:
+    """300k-pattern check: fail if the eager numbered load-path list names
+    more than the expected always-eager set. This is the canary for the
+    pre-split ~300k eager-load regression (see
+    tools/check_route_shard_selection.py's check_numbered_list_budget,
+    which this mirrors at the semantic level)."""
+    expected = EXPECTED_EAGER_LIST if expected is None else expected
+    if eager_list != expected:
+        return [
+            f"300k-pattern regression: eager load-path list is {eager_list} but expected exactly "
+            f"{expected} -- re-adding eager bundles to the numbered load-path list is the pre-split "
+            "300k eager-load regression this gate exists to catch."
+        ]
+    return []
+
+
+def classify_shard(basename: str, shard_classes: dict) -> str | None:
+    """Return the shard_classes key ('default_hot', 'stage_warm',
+    'on_demand_cold') that `basename` belongs to, or None if unclassified."""
+    for cls in ("default_hot", "stage_warm", "on_demand_cold"):
+        if basename in shard_classes.get(cls, []):
+            return cls
+    return None
+
+
+def check_aspirational(rows: list[tuple[str, str, int, int, int]], config: dict, skill_text: str) -> tuple[bool, list[str], list[str]]:
+    """Enforce the aspirational hot-context thresholds (Slice A2).
+
+    Returns (ok, failures, warnings). `ok` is False only on FAIL conditions
+    (nonzero exit); warnings are advisory (printed to stderr, never affect
+    exit code).
+
+    Checks:
+      1. hot-root: root est-tok vs hot_root_ceiling/target.
+      2. per-shard: default_hot shards vs default_hot_shard ceiling/target;
+         stage_warm/on_demand_cold shards reported, never failed; a shard
+         file on disk in no class list is an "unclassified shard" FAIL.
+      3. default-exec worst case: root + CAPSULE_ALLOWANCE_EST_TOK + sum of
+         the 3 largest default_hot shards, vs default_exec ceiling/target.
+      4. 300k-pattern check on the eager numbered load-path list.
+    """
+    aspirational = config.get("aspirational", {})
+    if not aspirational.get("enforced", False):
+        return True, [], []
+
+    failures: list[str] = []
+    warnings: list[str] = []
+
+    row_tok: dict[str, int] = {}
+    per_bundle_tok: dict[str, int] = {}
+    for cfg_name, detail, b, l, t in rows:
+        if cfg_name == "skill-md-only":
+            row_tok["skill-md-only"] = t
+        if cfg_name == "per-bundle":
+            per_bundle_tok[Path(detail).name] = t
+
+    # --- Check 1: hot-root ---
+    hot_root_target = aspirational.get("hot_root_target_est_tok")
+    hot_root_ceiling = aspirational.get("hot_root_ceiling_est_tok")
+    root_tok = row_tok.get("skill-md-only")
+    if root_tok is None:
+        failures.append("aspirational hot-root check: no 'skill-md-only' row in measurement")
+    else:
+        if hot_root_ceiling is not None and root_tok > hot_root_ceiling:
+            failures.append(
+                f"aspirational FAIL: hot-root est_tok={root_tok} exceeds hot_root_ceiling_est_tok={hot_root_ceiling}"
+            )
+        elif hot_root_target is not None and root_tok > hot_root_target:
+            warnings.append(
+                f"aspirational WARN: hot-root est_tok={root_tok} exceeds hot_root_target_est_tok={hot_root_target}"
+            )
+
+    # --- Check 2: per-shard classification + thresholds ---
+    shard_classes = aspirational.get("shard_classes", {})
+    shard_target = aspirational.get("default_hot_shard_target_est_tok")
+    shard_ceiling = aspirational.get("default_hot_shard_ceiling_est_tok")
+    shard_report: list[str] = []
+    for basename in sorted(per_bundle_tok):
+        tok = per_bundle_tok[basename]
+        cls = classify_shard(basename, shard_classes)
+        if cls is None:
+            failures.append(
+                f"aspirational FAIL: unclassified shard '{basename}' (est_tok={tok}) does not appear in "
+                "any of aspirational.shard_classes.default_hot/stage_warm/on_demand_cold -- new shards "
+                "require deliberate classification"
+            )
+            continue
+        shard_report.append(f"aspirational REPORT: shard {basename} [{cls}] est_tok={tok}")
+        if cls != "default_hot":
+            continue
+        if shard_ceiling is not None and tok > shard_ceiling:
+            failures.append(
+                f"aspirational FAIL: default_hot shard '{basename}' est_tok={tok} exceeds "
+                f"default_hot_shard_ceiling_est_tok={shard_ceiling}"
+            )
+        elif shard_target is not None and tok > shard_target:
+            warnings.append(
+                f"aspirational WARN: default_hot shard '{basename}' est_tok={tok} exceeds "
+                f"default_hot_shard_target_est_tok={shard_target}"
+            )
+
+    # --- Check 3: default-exec worst case ---
+    default_hot_names = shard_classes.get("default_hot", [])
+    default_hot_toks = sorted(
+        (per_bundle_tok[n] for n in default_hot_names if n in per_bundle_tok), reverse=True
+    )
+    top3 = default_hot_toks[:3]
+    exec_target = aspirational.get("default_exec_target_est_tok")
+    exec_ceiling = aspirational.get("default_exec_ceiling_est_tok")
+    if root_tok is not None:
+        worst_case = root_tok + CAPSULE_ALLOWANCE_EST_TOK + sum(top3)
+        arithmetic = (
+            f"aspirational ARITHMETIC: default-exec worst case: root({root_tok}) + "
+            f"capsule({CAPSULE_ALLOWANCE_EST_TOK}) + top-3 default_hot shards"
+            f"({'+'.join(str(x) for x in top3)}={sum(top3)}) = {worst_case} est_tok"
+        )
+        warnings.append(arithmetic)
+        if exec_ceiling is not None and worst_case > exec_ceiling:
+            failures.append(
+                f"aspirational FAIL: {arithmetic} exceeds default_exec_ceiling_est_tok={exec_ceiling}"
+            )
+        elif exec_target is not None and worst_case > exec_target:
+            warnings.append(
+                f"aspirational WARN: default-exec worst case {worst_case} exceeds "
+                f"default_exec_target_est_tok={exec_target}"
+            )
+
+    # --- Check 4: 300k-pattern check ---
+    eager_list, eager_parse_errors = parse_eager_list(skill_text)
+    if eager_parse_errors:
+        failures.extend(f"aspirational FAIL: {e}" for e in eager_parse_errors)
+    else:
+        failures.extend(f"aspirational FAIL: {e}" for e in check_eager_list_pattern(eager_list))
+
+    warnings = shard_report + warnings
+
+    return len(failures) == 0, failures, warnings
+
+
+def build_report(
+    rows: list[tuple[str, str, int, int, int]],
+    config: dict,
+    ratchet_result: tuple[bool, list[str]] | None,
+    aspirational_result: tuple[bool, list[str], list[str]] | None = None,
+) -> dict:
     report_rows = [
         {"config": cfg_name, "detail": detail, "bytes": b, "lines": l, "est_tok": t}
         for cfg_name, detail, b, l, t in rows
@@ -387,6 +576,11 @@ def build_report(rows: list[tuple[str, str, int, int, int]], config: dict, ratch
         report["ratchet"] = {"checked": True, "ok": ok, "failures": failures}
     else:
         report["ratchet"] = {"checked": False, "failures": []}
+    if aspirational_result is not None:
+        ok, failures, warnings = aspirational_result
+        report["aspirational"] = {"checked": True, "ok": ok, "failures": failures, "warnings": warnings}
+    else:
+        report["aspirational"] = {"checked": False, "failures": [], "warnings": []}
     return report
 
 
@@ -673,9 +867,142 @@ def self_test() -> int:
         )
     )
 
+    # --- Aspirational enforcement (Slice A2) self-test cases ---
+
+    # (f) enforcement PASSes on the real repo + real config on disk.
+    aspirational_real_ok, aspirational_real_failures, aspirational_real_warnings = check_aspirational(
+        rows, real_config, skill_text
+    )
+    checks.append(
+        (
+            "aspirational enforcement PASSes on the real repo + real config",
+            aspirational_real_ok and not aspirational_real_failures,
+        )
+    )
+
+    # (g) synthetic root-over-ceiling FAILs.
+    root_over_ceiling_config = copy.deepcopy(real_config)
+    root_over_ceiling_config["aspirational"]["hot_root_ceiling_est_tok"] = 1
+    root_over_ok, root_over_failures, _ = check_aspirational(rows, root_over_ceiling_config, skill_text)
+    checks.append(
+        (
+            "synthetic root-over-ceiling FAILs aspirational enforcement",
+            not root_over_ok and any("hot-root" in f and "FAIL" in f for f in root_over_failures),
+        )
+    )
+
+    # (h) synthetic default_hot shard over ceiling FAILs.
+    shard_over_ceiling_config = copy.deepcopy(real_config)
+    shard_over_ceiling_config["aspirational"]["default_hot_shard_ceiling_est_tok"] = 1
+    shard_over_ok, shard_over_failures, _ = check_aspirational(rows, shard_over_ceiling_config, skill_text)
+    checks.append(
+        (
+            "synthetic default_hot shard over ceiling FAILs aspirational enforcement",
+            not shard_over_ok
+            and any("default_hot shard" in f and "FAIL" in f for f in shard_over_failures),
+        )
+    )
+
+    # (i) stage_warm shard over ceiling does NOT fail (stage_warm/on_demand_cold
+    # are reported but never gated by the default_hot ceiling, regardless of size).
+    stage_warm_names = real_config["aspirational"]["shard_classes"].get("stage_warm", [])
+    stage_warm_present = any(Path(detail).name in stage_warm_names for cfg, detail, *_ in rows if cfg == "per-bundle")
+    checks.append(("stage_warm shards are present in the live measurement (precondition)", stage_warm_present))
+    checks.append(
+        (
+            "stage_warm shard over the default_hot ceiling does NOT fail (real repo already exceeds it and PASSes)",
+            not any("stage_warm" in f for f in aspirational_real_failures),
+        )
+    )
+
+    # (j) unclassified shard FAILs.
+    unclassified_config = copy.deepcopy(real_config)
+    unclassified_config["aspirational"]["shard_classes"]["default_hot"] = [
+        n for n in unclassified_config["aspirational"]["shard_classes"]["default_hot"]
+        if n != "runtime-core-routing.md"
+    ]
+    unclassified_ok, unclassified_failures, _ = check_aspirational(rows, unclassified_config, skill_text)
+    checks.append(
+        (
+            "shard removed from all class lists trips 'unclassified shard'",
+            not unclassified_ok
+            and any(
+                "unclassified shard" in f and "runtime-core-routing.md" in f
+                for f in unclassified_failures
+            ),
+        )
+    )
+
+    # (k) synthetic 5-bundle eager list fails the 300k-pattern check.
+    five_bundle_eager_list = [
+        "references/runtime-foundation.md",
+        "references/runtime-diagnostic-core.md",
+        "references/runtime-phase2-passes.md",
+        "references/runtime-dispatch-gate.md",
+        "references/runtime-output-governance.md",
+    ]
+    checks.append(
+        (
+            "synthetic 5-bundle eager list fails the 300k-pattern check",
+            bool(check_eager_list_pattern(five_bundle_eager_list)),
+        )
+    )
+    checks.append(
+        (
+            "well-formed single-entry eager list passes the 300k-pattern check",
+            check_eager_list_pattern(EXPECTED_EAGER_LIST) == [],
+        )
+    )
+
+    # (l) worst-case arithmetic correctness on synthetic values: root=10000,
+    # 3 synthetic default_hot shards of 5000/4000/3000 (a 4th smaller one must
+    # be excluded from the top-3 sum), expected worst_case =
+    # 10000 + CAPSULE_ALLOWANCE_EST_TOK + (5000+4000+3000).
+    synthetic_rows: list[tuple[str, str, int, int, int]] = [
+        ("skill-md-only", "skill/SKILL.md", 40000, 100, 10000),
+        ("per-bundle", "skill/references/runtime-synth-a.md", 20000, 10, 5000),
+        ("per-bundle", "skill/references/runtime-synth-b.md", 16000, 10, 4000),
+        ("per-bundle", "skill/references/runtime-synth-c.md", 12000, 10, 3000),
+        ("per-bundle", "skill/references/runtime-synth-d.md", 4000, 10, 1000),
+    ]
+    synthetic_config = copy.deepcopy(real_config)
+    synthetic_config["aspirational"]["shard_classes"] = {
+        "default_hot": [
+            "runtime-synth-a.md",
+            "runtime-synth-b.md",
+            "runtime-synth-c.md",
+            "runtime-synth-d.md",
+        ],
+        "stage_warm": [],
+        "on_demand_cold": [],
+    }
+    synthetic_config["aspirational"]["default_hot_shard_ceiling_est_tok"] = 1_000_000
+    synthetic_config["aspirational"]["default_hot_shard_target_est_tok"] = 1_000_000
+    synthetic_config["aspirational"]["hot_root_ceiling_est_tok"] = 1_000_000
+    synthetic_config["aspirational"]["hot_root_target_est_tok"] = 1_000_000
+    synthetic_config["aspirational"]["default_exec_ceiling_est_tok"] = 1_000_000
+    synthetic_config["aspirational"]["default_exec_target_est_tok"] = 1_000_000
+    synthetic_skill_text = (
+        "Load path for substantive cases:\n\n"
+        "1. `references/runtime-core-routing.md`\n\n"
+        "Dispatch Index (route shards - load on selection, not eagerly):\n"
+    )
+    expected_worst_case = 10000 + CAPSULE_ALLOWANCE_EST_TOK + (5000 + 4000 + 3000)
+    synth_ok, synth_failures, synth_warnings = check_aspirational(
+        synthetic_rows, synthetic_config, synthetic_skill_text
+    )
+    checks.append(
+        (
+            f"worst-case arithmetic correct on synthetic values (expected {expected_worst_case})",
+            synth_ok and any(f"= {expected_worst_case} est_tok" in w for w in synth_warnings),
+        )
+    )
+
     # (e) report-json structure sanity: write a report to a temp file and
     # validate its top-level keys and row shape.
-    report = build_report(rows, real_config, (real_ok, real_failures))
+    report = build_report(
+        rows, real_config, (real_ok, real_failures), (aspirational_real_ok, aspirational_real_failures, aspirational_real_warnings)
+    )
     with tempfile.TemporaryDirectory() as tmpdir:
         report_path = Path(tmpdir) / "report.json"
         report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
@@ -691,6 +1018,10 @@ def self_test() -> int:
         and "ratchet" in reloaded
         and "checked" in reloaded["ratchet"]
         and "failures" in reloaded["ratchet"]
+        and "aspirational" in reloaded
+        and "checked" in reloaded["aspirational"]
+        and "failures" in reloaded["aspirational"]
+        and "warnings" in reloaded["aspirational"]
         and "metric" in reloaded
     )
     checks.append(("report-json structure sanity (round-tripped through a temp file)", report_keys_ok))
@@ -717,10 +1048,23 @@ def main() -> int:
         help="fail (nonzero exit) if any measured row regresses beyond config ratchet.tolerance_pct",
     )
     parser.add_argument(
+        "--enforce",
+        "--enforce-aspirational",
+        dest="enforce_aspirational",
+        action="store_true",
+        help=(
+            "fail (nonzero exit) if the aspirational hot-context thresholds "
+            "(config's `aspirational` block) are violated: hot-root ceiling, "
+            "default_hot per-shard ceiling, default-exec worst-case ceiling, "
+            "unclassified shards, and the 300k eager-load-list pattern. "
+            "Independent of --enforce-ratchet; usable together or alone."
+        ),
+    )
+    parser.add_argument(
         "--report-json",
         type=Path,
         default=None,
-        help="write a machine-readable report ({schema, rows, ratchet, metric}) to this path",
+        help="write a machine-readable report ({schema, rows, ratchet, aspirational, metric}) to this path",
     )
     args = parser.parse_args()
     if args.self_test:
@@ -729,8 +1073,9 @@ def main() -> int:
     rows = build_rows()
     exit_code = 0
     ratchet_result: tuple[bool, list[str]] | None = None
+    aspirational_result: tuple[bool, list[str], list[str]] | None = None
 
-    if args.enforce_ratchet or args.report_json:
+    if args.enforce_ratchet or args.enforce_aspirational or args.report_json:
         config = load_config(args.config)
     else:
         config = {}
@@ -741,8 +1086,15 @@ def main() -> int:
         if not ok:
             exit_code = 1
 
+    if args.enforce_aspirational:
+        skill_text = SKILL_MD.read_text(encoding="utf-8")
+        aspirational_result = check_aspirational(rows, config, skill_text)
+        ok, failures, warnings = aspirational_result
+        if not ok:
+            exit_code = 1
+
     if args.report_json:
-        report = build_report(rows, config, ratchet_result)
+        report = build_report(rows, config, ratchet_result, aspirational_result)
         args.report_json.write_text(json.dumps(report, indent=2), encoding="utf-8")
         print(f"Report written to {args.report_json}")
 
@@ -757,6 +1109,18 @@ def main() -> int:
             print("ratchet: PASS (all baselined rows within tolerance)")
         else:
             print("ratchet: FAIL")
+            for f in failures:
+                print(f"  - {f}")
+
+    if args.enforce_aspirational:
+        print()
+        ok, failures, warnings = aspirational_result
+        for w in warnings:
+            print(w, file=sys.stderr)
+        if ok:
+            print("aspirational: PASS (see stderr for warnings/arithmetic, if any)")
+        else:
+            print("aspirational: FAIL")
             for f in failures:
                 print(f"  - {f}")
 

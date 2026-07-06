@@ -225,14 +225,21 @@
     }
   },
   "aspirational": {
-    "enforced": false,
-    "note": "Slice A2 activates these after kernel/shard slices land. Recorded for visibility only.",
+    "enforced": true,
+    "profile": "execution-mini",
     "hot_root_target_est_tok": 25000,
     "hot_root_ceiling_est_tok": 35000,
-    "shard_target_est_tok": 15000,
-    "shard_ceiling_est_tok": 25000,
+    "default_hot_shard_target_est_tok": 15000,
+    "default_hot_shard_ceiling_est_tok": 25000,
     "default_exec_target_est_tok": 60000,
-    "default_exec_ceiling_est_tok": 90000
+    "default_exec_ceiling_est_tok": 105000,
+    "_owner_note_exec_ceiling": "Plan 06 proposed 90k; measured worst-case (root 34,021 + capsule 4,000 + top-3 co-selectable default-hot shards [core-recursion 23,236 + core-ir 22,151 + shard-audit 18,498 = 63,885]) = 101,906 est-tok. Initial enforced ceiling set to 105k so the gate is real but not born red; owner may tighten to 90k after shard slimming (core-recursion/core-ir/shard-audit are the fat shards). Target 60k still warns (and is already exceeded by the worst case, by design -- warn is advisory).",
+    "shard_classes": {
+      "default_hot": ["runtime-core-ir.md","runtime-core-pipeline.md","runtime-core-recursion.md","runtime-core-routing.md","runtime-shard-ir-support.md","runtime-shard-diagnostic.md","runtime-shard-audit.md","runtime-shard-thesis.md","runtime-shard-restoration.md"],
+      "stage_warm": ["runtime-shard-output-release.md","runtime-shard-render-contract.md","runtime-phase2-passes.md"],
+      "on_demand_cold": ["runtime-foundation.md","runtime-diagnostic-core.md"],
+      "_note": "stage_warm shards load at their stage (Stage-07 mandatory loads / Phase-2 pass) and are exempt from the default-hot shard ceiling but reported; diagnostic-core is loaded per the Mandatory Diagnostic Core table for structural diagnosis (reported via structural-diagnosis-floor row); foundation is on-demand full-version backing for the kernel digests."
+    }
   },
   "_comment_exclusions": "largest-retained-output is intentionally excluded from ratchet.baseline: it measures the size of a retained proof-corpus case output, and it is legal (and expected over time) for retained outputs to grow large as cases accumulate more traversal detail. Gating on it would penalize correct, larger-but-valid outputs, so this row is measured for visibility only and is never enforced by the ratchet."
 }

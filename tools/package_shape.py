@@ -66,6 +66,90 @@ FORBIDDEN_ARCHIVE_PREFIXES = (
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
+# --- Package profiles (Slice E) -------------------------------------------
+#
+# execution-mini (DEFAULT): the existing canonical package exactly as
+# package_file_paths() defines it today -- SKILL.md, README.md, references/**
+# (incl. shards + omnibus + rubrics cold contract + diagnostics metadata),
+# compiled-module-map.json, build-manifest.json, cold-law-manifest.json.
+# The omnibus bundles ship in execution-mini on purpose: the retained cases'
+# owners (M8/M9/P1 tactic families) live in references/omnibus/*.md, and a
+# package without them cannot execute tactic-family owners. Availability is
+# not activation -- hot context is governed by the dispatch-index text and
+# budget gates (see tools/measure_load_path_budget.py), not by package
+# membership, so shipping the omnibus bundles in the default profile does not
+# make them hot.
+#
+# audit-full (NON-DEFAULT): execution-mini plus the repo-root schema/, tools/,
+# tests/, and docs/ directories (excluding any .daee run artifacts and Python
+# bytecode caches), for owners who want to audit build tooling and test
+# fixtures alongside the compiled runtime.
+EXECUTION_MINI_PROFILE = "execution-mini"
+AUDIT_FULL_PROFILE = "audit-full"
+DEFAULT_PACKAGE_PROFILE = EXECUTION_MINI_PROFILE
+PACKAGE_PROFILES = (EXECUTION_MINI_PROFILE, AUDIT_FULL_PROFILE)
+
+# Repo-root directories audit-full adds on top of the execution-mini (skill/)
+# canonical package tree. These are repo-root relative, not skill/-relative.
+AUDIT_FULL_EXTRA_REPO_ROOTS = ("schema", "tools", "tests", "docs")
+
+PROFILE_ROOTS: dict[str, tuple[str, ...]] = {
+    EXECUTION_MINI_PROFILE: (),
+    AUDIT_FULL_PROFILE: AUDIT_FULL_EXTRA_REPO_ROOTS,
+}
+
+# Archive filename suffixes per profile: daee-epistemics-<ver>-<suffix>.skill.zip
+PROFILE_ARCHIVE_SUFFIXES: dict[str, str] = {
+    EXECUTION_MINI_PROFILE: "execution-mini",
+    AUDIT_FULL_PROFILE: "audit-full",
+}
+
+# Directories/files under a profile's extra repo-root roots that must never be
+# packaged even in audit-full: gitignored run artifacts and bytecode caches.
+AUDIT_FULL_EXCLUDED_DIR_NAMES = {".daee", "__pycache__"}
+AUDIT_FULL_EXCLUDED_SUFFIXES = {".pyc", ".pyo"}
+
+
+def profile_archive_name(version: str, profile: str) -> str:
+    suffix = PROFILE_ARCHIVE_SUFFIXES.get(profile)
+    if suffix is None:
+        raise ValueError(f"unknown package profile: {profile!r}")
+    return f"daee-epistemics-{version}-{suffix}.skill.zip"
+
+
+def is_audit_full_excluded(path: Path) -> bool:
+    if any(part in AUDIT_FULL_EXCLUDED_DIR_NAMES for part in path.parts):
+        return True
+    if path.suffix in AUDIT_FULL_EXCLUDED_SUFFIXES:
+        return True
+    return False
+
+
+def extra_root_file_paths(root: Path, profile: str) -> tuple[list[Path], list[str]]:
+    """Return the additional repo-root files a profile adds on top of the
+    execution-mini skill/ tree, plus any errors. execution-mini returns an
+    empty list. audit-full walks schema/, tools/, tests/, docs/ under repo
+    root, excluding .daee run artifacts and Python bytecode caches.
+    """
+    errors: list[str] = []
+    extra_roots = PROFILE_ROOTS.get(profile)
+    if extra_roots is None:
+        return [], [f"unknown package profile: {profile!r}"]
+    paths: list[Path] = []
+    for root_name in extra_roots:
+        base = root / root_name
+        if not base.is_dir():
+            errors.append(f"profile {profile} extra root is absent: {root_name}/")
+            continue
+        for path in sorted(base.rglob("*")):
+            if not path.is_file():
+                continue
+            if is_audit_full_excluded(path.relative_to(root)):
+                continue
+            paths.append(path)
+    return paths, errors
+
+
 def skill_root(root: Path) -> Path:
     return root / "skill"
 
@@ -295,26 +379,62 @@ def validate_skill_tree(root: Path) -> list[str]:
     return errors
 
 
-def validate_archive_names(names: list[str]) -> list[str]:
+def validate_archive_names(names: list[str], profile: str = DEFAULT_PACKAGE_PROFILE) -> list[str]:
+    """Validate archive member names for the given package profile.
+
+    execution-mini (default): unchanged canonical-only behavior -- required
+    roots are exactly CANONICAL_REQUIRED_ROOT_ENTRIES, and dev/harness roots
+    (schema/tools/tests/docs and DEV_ONLY_ROOT_ENTRIES) are forbidden.
+
+    audit-full: the canonical roots remain required, and the profile's extra
+    repo-root directories (schema/tools/tests/docs) are additionally allowed
+    (tools/ and tests/ are required for this profile), while
+    DEV_ONLY_ROOT_ENTRIES (data/scripts/tests under skill/) and the .daee
+    run-artifact/bytecode-cache exclusions still apply.
+    """
     errors: list[str] = []
+    if profile not in PACKAGE_PROFILES:
+        return [f"unknown package profile: {profile!r}"]
     roots = {name.split("/", 1)[0] for name in names if name and not name.endswith("/")}
-    missing_roots = sorted(CANONICAL_REQUIRED_ROOT_ENTRIES - roots)
-    unexpected_roots = sorted(roots - CANONICAL_PACKAGE_ROOT_ENTRIES)
+
+    allowed_roots = set(CANONICAL_PACKAGE_ROOT_ENTRIES)
+    required_roots = set(CANONICAL_REQUIRED_ROOT_ENTRIES)
+    if profile == AUDIT_FULL_PROFILE:
+        allowed_roots |= set(AUDIT_FULL_EXTRA_REPO_ROOTS)
+        required_roots |= {"tools", "tests"}
+
+    missing_roots = sorted(required_roots - roots)
+    unexpected_roots = sorted(roots - allowed_roots)
     if missing_roots:
         errors.append("archive missing required root entry(s): " + ", ".join(missing_roots))
     if unexpected_roots:
         errors.append("archive has unexpected root entry(s): " + ", ".join(unexpected_roots))
-    forbidden_dev_roots = sorted(roots.intersection(DEV_ONLY_ROOT_ENTRIES))
-    if forbidden_dev_roots:
-        errors.append("canonical archive must not include dev/harness root entry(s): " + ", ".join(forbidden_dev_roots))
+
+    if profile == EXECUTION_MINI_PROFILE:
+        forbidden_dev_roots = sorted(roots.intersection(DEV_ONLY_ROOT_ENTRIES | set(AUDIT_FULL_EXTRA_REPO_ROOTS)))
+        if forbidden_dev_roots:
+            errors.append("execution-mini archive must not include dev/harness root entry(s): " + ", ".join(forbidden_dev_roots))
+    else:
+        # DEV_ONLY_ROOT_ENTRIES (data/scripts/tests) names skill/-internal dev
+        # roots that must never surface as top-level archive entries; but for
+        # audit-full, a top-level "tests" (or any other name that happens to
+        # collide with a profile-allowed extra repo root) is the legitimate
+        # repo-root tests/ tree, not a leaked skill/tests dev root, so those
+        # names are excluded from this forbidden check for this profile.
+        forbidden_dev_roots = sorted(roots.intersection(DEV_ONLY_ROOT_ENTRIES) - set(AUDIT_FULL_EXTRA_REPO_ROOTS))
+        if forbidden_dev_roots:
+            errors.append("archive must not include dev/harness root entry(s): " + ", ".join(forbidden_dev_roots))
+
     bad = [
         name for name in names
-        if name.startswith(FORBIDDEN_ARCHIVE_PREFIXES)
+        if (profile == EXECUTION_MINI_PROFILE and name.startswith(FORBIDDEN_ARCHIVE_PREFIXES))
         or name.startswith("./")
         or "\\" in name
         or "/__pycache__/" in name
         or name.startswith("__pycache__/")
         or name.endswith((".pyc", ".pyo"))
+        or "/.daee/" in name
+        or name.startswith(".daee/")
         or Path(name).name in FORBIDDEN_ARTIFACT_NAMES
     ]
     if bad:
