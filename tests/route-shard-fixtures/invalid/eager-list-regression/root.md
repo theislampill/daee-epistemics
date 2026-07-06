@@ -17,6 +17,8 @@ Dispatch Index (route shards - load on selection, not eagerly):
 | trigger one | `references/runtime-shard-alpha.md` | when alpha fires |
 | trigger two | `references/runtime-shard-beta.md` | when beta fires |
 
+Stage-07 mandatory loads (not selection-gated): every substantive output that reaches the release stage loads `references/runtime-shard-release.md` and `references/runtime-shard-render.md` before shaping the public response. Release waits for them; not selection-gated.
+
 Selection law:
 
 - Load one shard when the trigger is unambiguous.
@@ -32,6 +34,8 @@ Known aliases (OSM discipline - same surface never means same hidden state):
 - Surface "source" aliases source-order vs authority-order vs hidden-support.
 - "definition-discipline" is a route label, not a callable operation unless mapped.
 - proof-method-audit applies only when the tribunal/burden role is body-backed.
+- "restoration" aliases the P-family restoration-stop procedures vs the mandatory Restorative Response output tail.
+- "audit" aliases dsl/audit render mode vs forced-fit/drift anti-pattern audit vs render-shape audit.
 
 Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner.
 

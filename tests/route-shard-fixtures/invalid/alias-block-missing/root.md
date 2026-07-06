@@ -13,6 +13,8 @@ Dispatch Index (route shards - load on selection, not eagerly):
 | trigger one | `references/runtime-shard-alpha.md` | when alpha fires |
 | trigger two | `references/runtime-shard-beta.md` | when beta fires |
 
+Stage-07 mandatory loads (not selection-gated): every substantive output that reaches the release stage loads `references/runtime-shard-release.md` and `references/runtime-shard-render.md` before shaping the public response. Release waits for them; not selection-gated.
+
 Selection law:
 
 - Load one shard when the trigger is unambiguous.

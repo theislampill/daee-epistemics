@@ -13,16 +13,22 @@ This checker proves that dispatch contract is not theater:
 
   1. INDEX PARSES               the Dispatch Index table exists and parses
   2. SHARDS EXIST + MAPPED      every indexed shard exists and is mapped;
-                                 every eligible shard on disk is indexed
+                                 every eligible shard on disk is indexed or
+                                 reachable via the Stage-07 mandatory block
   3. UNIQUE MODULE HOMES        no module is compiled into two shards
   4. SELECTION LAW PRESENT      the HOLD/PARTIAL/cap/ledger vocabulary is
                                  literally present
-  5. ALIAS TABLE PRESENT        the known-aliases block is literally present
+  5. ALIAS TABLE PRESENT        the known-aliases block is literally present,
+                                 including the "restoration" and "audit"
+                                 alias entries
   6. LOCKSTEP                   the addendum is byte-identical (modulo line
                                  endings) across all four surfaces that carry
                                  it
   7. NUMBERED LIST BUDGET       the eager load-path list has not regrown into
                                  the pre-split five-bundle eager load
+  8. STAGE-07 BLOCK PRESENT     the Stage-07 mandatory-loads block exists,
+                                 names both fixed post-gate shards, and is not
+                                 selection-gated (not a Dispatch Index route)
 
 Modes:
   python tools/check_route_shard_selection.py              validate the live repo
@@ -59,6 +65,7 @@ ADDENDUM_END_ANCHOR = (
 DISPATCH_INDEX_HEADER = "Dispatch Index (route shards - load on selection, not eagerly):"
 SELECTION_LAW_HEADER = "Selection law:"
 ALIAS_TABLE_HEADER = "Known aliases"
+STAGE07_BLOCK_HEADER = "Stage-07 mandatory loads"
 
 # Deliberate-update pattern (mirrors tools/check_cold_law_digest.py's
 # EXPECTED_ADVISORY_CLAUSES / EXPECTED_CLAUSE_IDS convention): the frozen set
@@ -103,10 +110,21 @@ ALIAS_TABLE_REQUIRED_STRINGS = (
     "authority-order",
     "hidden-support",
     "definition-discipline",
+    '"restoration"',
+    '"audit"',
 )
 # The tau body-backed rule is checked with a regex rather than a literal
 # substring because the source symbol is the Greek letter itself.
 TAU_BODY_BACKED_RE = re.compile(r"proof-method-audit applies only when the tribunal/burden role is body-backed")
+
+STAGE07_REQUIRED_STRINGS = (
+    "not selection-gated",
+    "Release waits",
+)
+# The Stage-07 mandatory-loads block names its two fixed post-gate shards by
+# backtick-quoted references/runtime-*.md path, same convention as the
+# Dispatch Index table rows.
+STAGE07_SHARD_RE = re.compile(r"`(references/runtime-[a-z0-9-]+\.md)`")
 
 
 @dataclass(frozen=True)
@@ -127,11 +145,21 @@ class Layout:
     numbered_list_exempt: frozenset[str] = field(default_factory=lambda: NUMBERED_LIST_EXEMPT_SHARDS)
     always_load_kernel_exempt: frozenset[str] = field(default_factory=lambda: ALWAYS_LOAD_KERNEL_EXEMPT_SHARDS)
     expected_eager_list: list[str] = field(default_factory=lambda: list(EXPECTED_EAGER_LIST))
-    # Row-count floor for INDEX PARSES (check 1). 10 on the live repo (11
-    # total shard files minus the 1 always-loaded numbered-list entry); tiny
-    # synthetic fixtures supply their own floor so they do not have to
-    # reproduce the live repo's full shard count.
-    min_index_rows: int = 10
+    # Row-count floor for INDEX PARSES (check 1). 8 on the live repo (11
+    # total shard files minus the 1 always-loaded numbered-list entry minus
+    # the 2 Stage-07 mandatory-loads shards, which are fixed post-gate loads
+    # and no longer Dispatch Index table rows); tiny synthetic fixtures
+    # supply their own floor so they do not have to reproduce the live
+    # repo's full shard count.
+    min_index_rows: int = 8
+    # The two fixed post-gate shard paths the Stage-07 mandatory-loads block
+    # must name (check 8). Fixtures use small synthetic shard names so they
+    # do not have to reproduce the live repo's real output-release /
+    # render-contract shard files.
+    stage07_expected_shards: tuple[str, str] = (
+        "references/runtime-shard-output-release.md",
+        "references/runtime-shard-render-contract.md",
+    )
 
 
 def live_layout() -> Layout:
@@ -146,7 +174,14 @@ def live_layout() -> Layout:
     )
 
 
-def fixture_layout(fixture_dir: Path, min_index_rows: int = 2) -> Layout:
+def fixture_layout(
+    fixture_dir: Path,
+    min_index_rows: int = 2,
+    stage07_expected_shards: tuple[str, str] = (
+        "references/runtime-shard-release.md",
+        "references/runtime-shard-render.md",
+    ),
+) -> Layout:
     return Layout(
         label=fixture_dir.name,
         skill_root_path=fixture_dir / "root.md",
@@ -156,6 +191,7 @@ def fixture_layout(fixture_dir: Path, min_index_rows: int = 2) -> Layout:
         module_map_path=fixture_dir / "compiled-module-map.json",
         skill_references_dir=fixture_dir / "skill_references",
         min_index_rows=min_index_rows,
+        stage07_expected_shards=stage07_expected_shards,
     )
 
 
@@ -236,15 +272,62 @@ def parse_dispatch_index(addendum_text: str) -> tuple[list[str], list[str]]:
     return shard_rows, errors
 
 
+def parse_stage07_block(addendum_text: str) -> tuple[list[str], list[str]]:
+    """Locate the Stage-07 mandatory-loads block and return the shard paths it
+    names (in order of appearance). Returns (shard_paths, errors).
+
+    The block sits between the Dispatch Index table and the ``Selection
+    law:`` header (see EDIT 1 / EDIT 6 of the runtime-footprint contract): it
+    is a fixed post-gate stage, not a route candidate, so its shards must not
+    be counted as Dispatch Index rows, but they must still count as
+    "index-reachable" for the dead-shard check.
+    """
+    block_pos = addendum_text.find(STAGE07_BLOCK_HEADER)
+    if block_pos == -1:
+        return [], [f"addendum has no {STAGE07_BLOCK_HEADER!r} block"]
+    selection_law_pos = addendum_text.find(SELECTION_LAW_HEADER, block_pos)
+    end = selection_law_pos if selection_law_pos != -1 else len(addendum_text)
+    block_text = addendum_text[block_pos:end]
+    shards = STAGE07_SHARD_RE.findall(block_text)
+    return shards, []
+
+
+def check_stage07_block_present(addendum_text: str, expected_shards: tuple[str, str]) -> list[str]:
+    """Check 8: STAGE-07 BLOCK PRESENT.
+
+    The literal "Stage-07 mandatory loads" block must exist, must name both
+    fixed post-gate shard files, and must literally carry "not
+    selection-gated" and "Release waits" so the block cannot be quietly
+    reworded back into a conditional ("is being evaluated" / "is needed")
+    Dispatch Index row.
+    """
+    errors: list[str] = []
+    block_pos = addendum_text.find(STAGE07_BLOCK_HEADER)
+    if block_pos == -1:
+        return [f"addendum has no {STAGE07_BLOCK_HEADER!r} block"]
+    selection_law_pos = addendum_text.find(SELECTION_LAW_HEADER, block_pos)
+    end = selection_law_pos if selection_law_pos != -1 else len(addendum_text)
+    block_text = addendum_text[block_pos:end]
+    for required in STAGE07_REQUIRED_STRINGS:
+        if required not in block_text:
+            errors.append(f"Stage-07 mandatory-loads block is missing required string {required!r}")
+    shards = STAGE07_SHARD_RE.findall(block_text)
+    for expected in expected_shards:
+        if expected not in shards:
+            errors.append(f"Stage-07 mandatory-loads block does not name required shard {expected!r}")
+    return errors
+
+
 def check_index_parses(addendum_text: str, min_index_rows: int) -> tuple[list[str], list[str]]:
     """Check 1: INDEX PARSES. Returns (shard_rows, errors).
 
     ``min_index_rows`` is a row-count floor supplied by the Layout (see
-    Layout.min_index_rows below): on the live repo this is 10 (11 total shard
-    files minus the 1 always-loaded numbered-list entry -- see
-    tools/load-path-budget.config.json's "_comment_slice_c" note), but that
-    is a live-repo-specific invariant, not a property of the parser itself,
-    so fixtures supply their own small floor.
+    Layout.min_index_rows below): on the live repo this is 8 (11 total shard
+    files minus the 1 always-loaded numbered-list entry minus the 2 Stage-07
+    mandatory-loads shards -- see tools/load-path-budget.config.json's
+    "_comment_slice_c" note), but that is a live-repo-specific invariant, not
+    a property of the parser itself, so fixtures supply their own small
+    floor.
     """
     errors: list[str] = []
     if DISPATCH_INDEX_HEADER not in addendum_text:
@@ -270,9 +353,19 @@ def check_shards_exist_and_mapped(
     module_map: dict,
     numbered_list_exempt: frozenset[str],
     always_load_kernel_exempt: frozenset[str],
+    stage07_shards: list[str] | None = None,
 ) -> list[str]:
-    """Check 2: SHARDS EXIST + MAPPED."""
+    """Check 2: SHARDS EXIST + MAPPED.
+
+    ``stage07_shards`` are the shard paths named by the Stage-07
+    mandatory-loads block (see parse_stage07_block): they are fixed
+    post-gate loads, not Dispatch Index route candidates, but they are still
+    "reachable" for the dead-shard-on-disk check below -- unioned with the
+    Dispatch Index rows -- since skipping them is a render-contract
+    violation, not evidence the file is unreachable dead weight.
+    """
     errors: list[str] = []
+    stage07_shards = stage07_shards or []
     bundle_paths_in_map: set[str] = set()
     modules = module_map.get("modules")
     if isinstance(modules, dict):
@@ -285,12 +378,12 @@ def check_shards_exist_and_mapped(
                 bundle_paths_in_map.add(entry["bundle_path"])
 
     indexed_basenames: set[str] = set()
-    for shard in sorted(set(shard_rows)):
+    for shard in sorted(set(shard_rows) | set(stage07_shards)):
         basename = Path(shard).name
         indexed_basenames.add(basename)
         shard_file = skill_references_dir / basename
         if not shard_file.is_file():
-            errors.append(f"Dispatch Index names {shard!r} but no such file exists under skill/references/")
+            errors.append(f"Dispatch Index/Stage-07 block names {shard!r} but no such file exists under skill/references/")
             continue
         map_key = f"references/{basename}"
         if map_key not in bundle_paths_in_map:
@@ -314,7 +407,7 @@ def check_shards_exist_and_mapped(
             errors.append(
                 f"skill/references/{basename} is an emitted runtime bundle that the Dispatch Index cannot "
                 "select -- dead weight (not reachable via the numbered load-path list, the always-load "
-                "kernel exemption list, or any Dispatch Index row)"
+                "kernel exemption list, the Stage-07 mandatory-loads block, or any Dispatch Index row)"
             )
     return errors
 
@@ -463,6 +556,18 @@ def run_layout(layout: Layout) -> list[str]:
     if errors:
         return errors
 
+    errors.extend(
+        f"[{layout.label}] {e}"
+        for e in check_stage07_block_present(root_addendum, layout.stage07_expected_shards)
+    )
+    if errors:
+        return errors
+
+    stage07_shards, stage07_parse_errors = parse_stage07_block(root_addendum)
+    errors.extend(f"[{layout.label}] {e}" for e in stage07_parse_errors)
+    if errors:
+        return errors
+
     if not layout.module_map_path.is_file():
         return [f"[{layout.label}] compiled module map not found: {layout.module_map_path}"]
     try:
@@ -481,6 +586,7 @@ def run_layout(layout: Layout) -> list[str]:
             module_map,
             layout.numbered_list_exempt,
             layout.always_load_kernel_exempt,
+            stage07_shards,
         )
     )
     if errors:
@@ -551,6 +657,7 @@ FIXTURE_CASES: list[tuple[str, bool]] = [
     ("invalid/alias-block-missing", False),
     ("invalid/lockstep-drift", False),
     ("invalid/eager-list-regression", False),
+    ("invalid/stage07-block-missing", False),
 ]
 
 FIXTURE_FAIL_REASON: dict[str, str] = {
@@ -561,6 +668,7 @@ FIXTURE_FAIL_REASON: dict[str, str] = {
     "invalid/alias-block-missing": "addendum has no 'Known aliases' block",
     "invalid/lockstep-drift": "drifted from skill/SKILL.md",
     "invalid/eager-list-regression": "300k regression canary",
+    "invalid/stage07-block-missing": "addendum has no 'Stage-07 mandatory loads' block",
 }
 
 
@@ -577,6 +685,10 @@ def self_test() -> int:
         "| --- | --- | --- |\n"
         "| t1 | `references/runtime-shard-audit.md` | w1 |\n"
         "| t2 | `references/runtime-shard-thesis.md` | w2 |\n\n"
+        "Stage-07 mandatory loads (not selection-gated): every substantive output that reaches the "
+        "release stage loads `references/runtime-shard-output-release.md` and "
+        "`references/runtime-shard-render-contract.md` before shaping the public response. Release "
+        "waits for them.\n\n"
         "Selection law:\n\n"
         "- If still ambiguous, load ALL candidate shards (cap 3) or route HOLD/PARTIAL with reason "
         "`route-ambiguous`.\n"
@@ -587,7 +699,11 @@ def self_test() -> int:
         "Known aliases (OSM discipline):\n\n"
         "- Surface \"source\" aliases source-order vs authority-order vs hidden-support.\n"
         "- \"definition-discipline\" is a route label, not a callable operation unless mapped.\n"
-        "- proof-method-audit applies only when the tribunal/burden role is body-backed.\n\n"
+        "- proof-method-audit applies only when the tribunal/burden role is body-backed.\n"
+        "- \"restoration\" aliases the P-family restoration-stop procedures vs the mandatory "
+        "Restorative Response output tail.\n"
+        "- \"audit\" aliases dsl/audit render mode vs forced-fit/drift anti-pattern audit vs "
+        "render-shape audit.\n\n"
         "Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the "
         "original source module owner.\nnext line\n"
     )
@@ -630,6 +746,74 @@ def self_test() -> int:
             "does not contain the exact header" in e
             for e in check_index_parses(missing_header_seg, min_index_rows=2)[1]
         ),
+    ))
+
+    stage07_expected = (
+        "references/runtime-shard-output-release.md",
+        "references/runtime-shard-render-contract.md",
+    )
+    cases.append((
+        "stage07 block: well-formed block -> no errors",
+        check_stage07_block_present(seg, stage07_expected) == [],
+    ))
+    stage07_shards, stage07_parse_errors = parse_stage07_block(seg)
+    cases.append((
+        "stage07 block: parses both shard paths",
+        set(stage07_shards) == set(stage07_expected),
+    ))
+    cases.append(("stage07 block: no parse errors", stage07_parse_errors == []))
+    missing_stage07_seg = seg.replace(
+        "Stage-07 mandatory loads (not selection-gated): every substantive output that reaches the "
+        "release stage loads `references/runtime-shard-output-release.md` and "
+        "`references/runtime-shard-render-contract.md` before shaping the public response. Release "
+        "waits for them.\n\n",
+        "",
+    )
+    cases.append((
+        "stage07 block: missing block entirely flagged",
+        any(
+            "Stage-07 mandatory loads" in e
+            for e in check_stage07_block_present(missing_stage07_seg, stage07_expected)
+        ),
+    ))
+    reworded_stage07_seg = seg.replace("not selection-gated", "is being evaluated").replace(
+        "Release waits for them.", "Release is needed for them."
+    )
+    cases.append((
+        "stage07 block: conditional reword loses 'not selection-gated' and 'Release waits'",
+        any("not selection-gated" in e for e in check_stage07_block_present(reworded_stage07_seg, stage07_expected))
+        and any("Release waits" in e for e in check_stage07_block_present(reworded_stage07_seg, stage07_expected)),
+    ))
+    missing_one_shard_seg = seg.replace("`references/runtime-shard-render-contract.md` ", "")
+    cases.append((
+        "stage07 block: missing one required shard flagged",
+        any(
+            "render-contract.md" in e
+            for e in check_stage07_block_present(missing_one_shard_seg, stage07_expected)
+        ),
+    ))
+
+    cases.append((
+        "shards exist+mapped: stage07 shards unioned into reachability set",
+        check_shards_exist_and_mapped(
+            ["references/runtime-shard-alpha.md", "references/runtime-shard-beta.md"],
+            ["references/runtime-core-routing.md"],
+            FIXTURES_DIR / "valid" / "skill_references",
+            {
+                "modules": {
+                    "mod-a": {"bundle_path": "references/runtime-shard-alpha.md"},
+                    "mod-b": {"bundle_path": "references/runtime-shard-beta.md"},
+                    "mod-release": {"bundle_path": "references/runtime-shard-release.md"},
+                    "mod-render": {"bundle_path": "references/runtime-shard-render.md"},
+                    "mod-routing": {"bundle_path": "references/runtime-core-routing.md"},
+                    "mod-kernel": {"bundle_path": "references/runtime-foundation.md"},
+                }
+            },
+            NUMBERED_LIST_EXEMPT_SHARDS,
+            ALWAYS_LOAD_KERNEL_EXEMPT_SHARDS,
+            ["references/runtime-shard-release.md", "references/runtime-shard-render.md"],
+        )
+        == [],
     ))
 
     module_map_ok = {
@@ -676,6 +860,24 @@ def self_test() -> int:
     cases.append((
         "alias table: missing header entirely flagged",
         check_alias_table_present("no aliases here") != [],
+    ))
+    stripped_restoration_seg = seg.replace(
+        "- \"restoration\" aliases the P-family restoration-stop procedures vs the mandatory "
+        "Restorative Response output tail.\n",
+        "",
+    )
+    cases.append((
+        "alias table: missing 'restoration' alias entry flagged",
+        any('"restoration"' in e for e in check_alias_table_present(stripped_restoration_seg)),
+    ))
+    stripped_audit_alias_seg = seg.replace(
+        "- \"audit\" aliases dsl/audit render mode vs forced-fit/drift anti-pattern audit vs "
+        "render-shape audit.\n",
+        "",
+    )
+    cases.append((
+        "alias table: missing 'audit' alias entry flagged",
+        any('"audit"' in e for e in check_alias_table_present(stripped_audit_alias_seg)),
     ))
 
     cases.append((

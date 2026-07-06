@@ -8,7 +8,7 @@ Shipped-file list is `package_shape.package_file_paths()` - the same function `t
 
 | file | bytes | est_tok | class | evidence anchor |
 | --- | ---: | ---: | --- | --- |
-| `skill/SKILL.md` | 130720 | 32680 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
+| `skill/SKILL.md` | 132367 | 33091 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
 | `skill/build-manifest.json` | 63045 | 15761 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
 | `skill/compiled-module-map.json` | 45955 | 11488 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
 | `skill/cold-law-manifest.json` | 5257 | 1314 | host-hot | tools/package_skill.py build_archive (compiled root + package metadata JSON) |
@@ -33,7 +33,7 @@ Shipped-file list is `package_shape.package_file_paths()` - the same function `t
 | `skill/references/diagnostics/operative-contract.schema.json` | 8345 | 2086 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
 | `skill/references/omnibus/OMNIBUS-tactics.md` | 280053 | 70013 | cold-law | skill/SKILL.md: "Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner." |
 | `skill/references/omnibus/OMNIBUS-do-families.md` | 224309 | 56077 | cold-law | skill/SKILL.md: "Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner." |
-| `skill/references/rubrics/non-droppable-manual-contract.md` | 139771 | 34942 | cold-law | skill/SKILL.md: "Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner." |
+| `skill/references/rubrics/non-droppable-manual-contract.md` | 141418 | 35354 | cold-law | skill/SKILL.md: "Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner." |
 | `skill/references/omnibus/OMNIBUS-specialty-diagnostics.md` | 115259 | 28814 | cold-law | skill/SKILL.md: "Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner." |
 | `skill/references/omnibus/OMNIBUS-profiles.md` | 94520 | 23630 | cold-law | skill/SKILL.md: "Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner." |
 | `skill/references/omnibus/OMNIBUS-techniques.md` | 83467 | 20866 | cold-law | skill/SKILL.md: "Use `references/omnibus/*.md` only after V1, Phase 2, and the Diagnostic IR authorize the original source module owner." |
@@ -45,11 +45,11 @@ Shipped-file list is `package_shape.package_file_paths()` - the same function `t
 
 | class | files | bytes | est_tok |
 | --- | ---: | ---: | ---: |
-| host-hot | 4 | 244977 | 61243 |
+| host-hot | 4 | 246624 | 61654 |
 | prompt-hot | 1 | 21487 | 5371 |
 | route-warm | 18 | 1080282 | 270063 |
-| cold-law | 8 | 1063083 | 265767 |
+| cold-law | 8 | 1064730 | 266179 |
 | audit-only | 1 | 1789 | 447 |
-| **grand total** | **32** | **2411618** | **602891** |
+| **grand total** | **32** | **2414912** | **603714** |
 
 `est_tok` is `bytes // 4`, a rough measurement heuristic, not a tokenizer-accurate count.

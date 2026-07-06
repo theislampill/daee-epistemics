@@ -20,6 +20,14 @@
     "mod-kernel": {
       "bundle_path": "references/runtime-foundation.md",
       "module_id": "mod-kernel"
+    },
+    "mod-release": {
+      "bundle_path": "references/runtime-shard-release.md",
+      "module_id": "mod-release"
+    },
+    "mod-render": {
+      "bundle_path": "references/runtime-shard-render.md",
+      "module_id": "mod-render"
     }
   }
 }

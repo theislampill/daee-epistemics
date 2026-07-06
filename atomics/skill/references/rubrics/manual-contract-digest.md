@@ -429,16 +429,26 @@ Dispatch Index (route shards - load on selection, not eagerly):
 
 | trigger signal | shard | load when |
 | --- | --- | --- |
-| raw Diagnostic IR formalism needed: dsl/audit mode, IR emission, IR reconstruction disputes | `references/runtime-core-ir.md` | dsl/audit mode is active, an IR is being emitted, or an IR reconstruction dispute is live |
+| forming or emitting raw Diagnostic IR, dsl/audit mode active, or IR acceptance-state fields contested | `references/runtime-core-ir.md` | raw Diagnostic IR is being formed or emitted, dsl/audit mode is active, or IR acceptance-state fields are contested |
 | operative decision circuit consulted when routing order is contested | `references/runtime-core-pipeline.md` | routing order itself is contested and the decision circuit must be consulted |
 | STOP/HOLD/PARTIAL/RECURSE semantics detail beyond the kernel digest | `references/runtime-core-recursion.md` | a STOP/HOLD/PARTIAL/RECURSE semantics question exceeds what the kernel digest already carries |
-| IR faithfulness/reconstruction pass, case-state strength/compression | `references/runtime-shard-ir-support.md` | an IR faithfulness or reconstruction pass runs, or case-state strength/compression is at issue |
+| an already-formed IR is checked against source text for faithfulness (reconstruction pass/audit after the fact), or case-state strength/compression is at issue | `references/runtime-shard-ir-support.md` | a reconstruction pass or after-the-fact faithfulness audit runs against an already-formed IR, or case-state strength/compression is at issue |
 | claim-level/pattern codes, inference markers, competing-read arbitration | `references/runtime-shard-diagnostic.md` | claim-level or pattern-profile codes are being assigned, inference markers are read, or competing reads must be arbitrated |
 | forced-fit/drift anti-pattern pressure | `references/runtime-shard-audit.md` | forced-fit or drift anti-pattern pressure is live |
-| kernel-thesis commitments, necessity/contingency, metaphysical grammar Ω | `references/runtime-shard-thesis.md` | kernel-thesis commitments, necessity/contingency reasoning, or metaphysical-grammar `Ω` detail is needed |
+| kernel-thesis architectural-integrity commitments, necessity/contingency reasoning, or a claimed metaphysical-grammar violation - NOT merely Omega-register liveness | `references/runtime-shard-thesis.md` | kernel-thesis architectural-integrity commitments, necessity/contingency reasoning, or a claimed metaphysical-grammar violation is live; bare Omega-register liveness ordinarily routes predication work through the omnibus tactics owner map instead |
 | P-family restoration stops | `references/runtime-shard-restoration.md` | a P-family restoration stop is triggered |
-| Stage-07 size/mass release governance | `references/runtime-shard-output-release.md` | Stage-07 size/mass release governance is being evaluated |
-| render-audit detail, full manual-contract cold companion | `references/runtime-shard-render-contract.md` | render-audit detail is needed, or the full manual-contract cold companion must be consulted |
+
+Stage-07 mandatory loads (not selection-gated): every substantive output that reaches the release
+stage loads `references/runtime-shard-output-release.md` and
+`references/runtime-shard-render-contract.md` before shaping the public response. Release waits
+for them (and P7 restoration stops where triggered); they are a fixed post-gate stage, not route
+candidates, and the ambiguity/selection law above does not apply to them. Skipping them and
+rendering from the kernel digest alone is a render-contract violation, not a licensed compact path.
+
+This index governs only the former dispatch-gate/output-governance shards; tactic/technique/procedure/case-library
+owners (M-, P-, V-, E-, F-, DO-, NS- families) are selected via the Tactics/Techniques/Procedures Owner Map and
+the case-library router in the kernel digests, gated by V1/Phase-2/Diagnostic-IR owner authorization - never via
+this table. An owner absent from this table is NOT owner-not-available if it resolves through that map.
 
 Selection law:
 
@@ -457,6 +467,13 @@ Known aliases (OSM discipline - same surface never means same hidden state):
   states - resolve with body evidence or by loading multiple shards).
 - "definition-discipline" is a route label, not a callable operation unless mapped.
 - `τ` proof-method-audit applies only when the tribunal/burden role is body-backed.
+- "restoration" aliases the P-family restoration-stop procedures (runtime-shard-restoration.md) vs
+  the mandatory Restorative Response output tail (an always-required render obligation governed by
+  the Stage-07 mandatory loads, never satisfied by loading shard-restoration).
+- "audit" aliases dsl/audit render mode (runtime-core-ir.md) vs forced-fit/drift anti-pattern audit
+  (runtime-shard-audit.md) vs render-shape audit (runtime-shard-render-contract.md, Stage-07) -
+  resolve by what is being audited (raw IR form / response behavior pattern / final visible
+  structure), never by the bare word.
 
 Bundle co-location is availability, not activation.
 
