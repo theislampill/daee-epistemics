@@ -262,6 +262,53 @@ while moving between live burdens, the skill has not been executed; it has been 
 Rewrite before emitting.
 Full clause: cold-law clause.execution-mandate-detail (references/rubrics/non-droppable-manual-contract.md; load on demand; if the full clause is needed but not loaded, route HOLD/PARTIAL with reason cold-law-not-loaded — never fake Land)
 
+# MULTI-CALL STATE CAPSULE LAW (daee-state-capsule-v1)
+
+Recursive-call contract: on agentic hosts with file tools, a hard/manual case may run as an
+ordered sequence of calls. Each execution call receives the kernel, the current typed state
+capsule, the selected route shard(s) for the next burden, and a local excerpt only (the current
+burden body plus any directly-referenced prior submove) -- never the whole prior output artifact
+and never the full runtime bundles. Each call emits an appended output segment plus an updated
+capsule carrying a new output hash and byte-offset. Loading the full prior artifact or a full
+runtime bundle to satisfy one burden is a footprint violation, not diligence.
+
+Append-only artifact: no call rewrites, deletes, or renumbers an earlier segment. A correction to
+landed material is authored as a new burden or submove that supersedes the earlier one in the
+visible record; the earlier segment stays byte-identical. The public projection tail (Restorative
+Response, Closing Formulation, Closure/Reconstruction Witness, field_witness) is written once, by
+the final projection call, from the capsule plus the accumulated segments.
+
+Capsule honesty: B_total is always the order-preserving union of B_LA and B_MRP; B_LA never
+shrinks across the call sequence (anti-slimming); a burden enters B_MRP only carrying MRP
+provenance (a generated_by/last_mrp_resultant record under generated_burden_instantiation) and is
+never predeclared in Layer A as a baseline burden. coverage_complete is true only when the held
+set is empty and every B_total burden carries a closed terminal state. Every call records which
+route shards it loaded and which cold-law clause references it actually used that pass.
+
+PARTIAL/HOLD resume: a call routing PARTIAL or HOLD names the specific unresolved burden and the
+reason, sets coverage_complete false, and sets the next required action to the concrete resume
+step (which burden, which shard). The next call resumes from the kernel plus the capsule plus the
+shard selected for that named next burden -- it does not replay the traversal from the start.
+
+Plain single-call hosts (no file tools, no persisted capsule store): the lawful default path is
+the ordinary single-call governed render in full, with no capsule mechanics. Under genuine size
+pressure on such a host, the lawful outcome is a bounded governed PARTIAL carrying the full
+public skeleton required by the size-PARTIAL preamble law above (banner, Layer A, Layer B
+released burdens, Land/PARTIAL line, Mid-Reread Pressure block, Closure/Reconstruction Witness,
+field_witness) -- this section adds nothing beyond that preamble law and does not relax it. Such a
+PARTIAL also emits a resume capsule inline, as a fenced json code block labeled
+daee-state-capsule-v1, in the output tail, with coverage_complete false: a lawful resumable state
+a follow-up call (or a human copying the block forward) can resume from. A prose-only waiver, an
+OUTPUT-LIMIT stub, or a bare "practical response boundary" note with no capsule and no public
+skeleton never substitutes for the preamble law or this inline-capsule requirement, on any host.
+
+A capsule is structure only, never prose or output text: ledger and pointer fields, not restated
+Layer B bodies or narrative summary. The full typed shape and its anti-slimming/provenance/
+coverage invariants are pinned in the repository's typed state-capsule schema for schema version
+daee-state-capsule-v1, and replay of a capsule sequence against its artifact is validated by the
+repository's state-capsule checker tool. A capsule instance targets under roughly four thousand
+estimated tokens; growing past that by carrying prose or output text is itself a violation.
+
 # Default Output Surface Invariant
 
 For plain `/daee-epistemics`, internal governance is mandatory and default visibly prints

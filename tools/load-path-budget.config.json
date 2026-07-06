@@ -144,10 +144,11 @@
     "_comment_slice_b": "skill-md-only, five-bundle-substantive, always-load-bundles, structural-diagnosis-floor, and total-hot-surfaces are lowered/raised in this change to the newly measured post-reduction values. The compiled root skill/SKILL.md dropped from 216112 to 110797 bytes in the prior wave (non-droppable-manual-contract digest); per-bundle rows are unchanged by that or this wave.",
     "_comment_slice_b_final_wave": "Final wave: the '### Always Load' table previously listed 4 references/*.md files (terminology.md, case-library/INDEX.md, module-codes.md, techniques/heuristics.md) that all resolved to the 103KB runtime-foundation.md bundle, dragging the whole bundle hot on every substantive case (always-load-bundles floor = 214005 bytes / 53501 est_tok). Those 4 files' load-bearing content is now authored as compact in-kernel digests inside atomics/skill/SKILL.md ('### Always-Load Digests (kernel)', ~15.5KB), and the Always Load table carries 0 references/*.md rows -- the full files remain available on demand, compiled cold in runtime-foundation.md. This is LICENSED growth on skill-md-only (+16010 bytes / +4002 est_tok: 110797->126807 bytes, 27699->31701 est_tok) for a much larger floor win: always-load-bundles drops from 53501 to 31701 est_tok (-21800 est_tok), because it is now == skill-md-only (0 bundles resolve). five-bundle-substantive and total-hot-surfaces necessarily grow by the same root delta (they sum skill-md-only + all 5 bundles, and per-bundle rows are untouched): 1098840->1114850 bytes, 274710->278712 est_tok (+16010 bytes / +4002 est_tok). structural-diagnosis-floor also drops because it is always-load-bundles (now == root) + the Mandatory Diagnostic Core bundle, which is untouched: 336751->249553 bytes, 84187->62388 est_tok. Net: +4002 est_tok root growth buys -21800 est_tok floor reduction. Root stays under the 130000-byte / ~32500-est_tok ceiling (126807 bytes / 31701 est_tok, margin 3193 bytes). Note: this also required raising two independent hard-coded 80,000-char control-plane size ceilings on atomics/skill/SKILL.md (tools/check_metacompliance_current_canon.py ROOT_MAX_CHARS and tools/check_recursion_collapse_noetic_frame.py's inline 80_000 check) to 96,000 -- the atomics source file itself grew from 79,979 to 95,420 chars carrying the digest prose (a larger delta than the compiled/byte view above because the atomics source has no bundle-substitution accounting).",
     "_comment_slice_c": "Slice C splits runtime-dispatch-gate.md (13 source modules) and runtime-output-governance.md (2 source modules) into 11 route shards, RELOCATING modules only (anti-slimming law: nothing removed). The two retired per-bundle baseline keys (runtime-dispatch-gate.md, runtime-output-governance.md) are replaced by 11 new per-bundle baseline keys, one per shard. skill-md-only grows from 127954 to 130720 bytes (+2766 bytes / +692 est_tok): the retired 5-line 'Load path for substantive cases' numbered list is replaced by a 1-line load path (runtime-core-routing.md only) plus a Dispatch Index table describing all 11 shards' trigger signals/load-when conditions and the selection law -- this is licensed growth (the routing addendum text itself, not module content). five-bundle-substantive and total-hot-surfaces are recomputed as skill-md-only + the sum of ALL per-bundle rows (now 14 bundles: runtime-foundation.md, runtime-diagnostic-core.md, runtime-phase2-passes.md, and the 11 new shards -- the 'five-bundle' row name is retained per the tool's glob-derived row naming; it now sums 14 files, which is EXPECTED per the migration instructions, not a bug): 1119855 bytes / 279963 est_tok (down slightly from 1115997+... pre-split total net of shard-header overhead, since the two retired bundles' combined 713450 bytes are replaced by the 11 shards' combined byte total plus per-file compiled-section header overhead). always-load-bundles is unchanged in mechanism (still 0 always-load bundles resolve; equals skill-md-only, now 130720/32680). structural-diagnosis-floor is skill-md-only + runtime-diagnostic-core.md (untouched by the split): 253466 bytes / 63366 est_tok.",
+    "_comment_slice_d": "Slice D wave 1 (Plan 03) adds the MULTI-CALL STATE CAPSULE LAW (daee-state-capsule-v1) section to atomics/skill/references/rubrics/manual-contract-digest.md, in the EXECUTION MANDATE region (after the MRP/PARTIAL blocks, before Default Output Surface Invariant): the recursive-call contract, append-only artifact law, capsule honesty (B_LA/B_MRP/B_total, anti-slimming, MRP provenance, coverage_complete), PARTIAL/HOLD resume, the plain-single-call-host inline-capsule PARTIAL law, and the schema/checker/size pointer. This is licensed growth: it is new executable law governing the schema/state-capsule.schema.json typed capsule contract and tools/check_state_capsule.py replay checker landed alongside it, not restated module content. skill-md-only (compiled root, == always-load-bundles since 0 always-load bundles resolve) grows from 130720 to 136086 bytes (+5366 bytes / +1341 est_tok: 32680->34021 est_tok). structural-diagnosis-floor grows by the same root delta (skill-md-only + the untouched runtime-diagnostic-core.md bundle): 253466->258832 bytes, 63366->64708 est_tok. five-bundle-substantive and total-hot-surfaces are unaffected beyond the same root delta (per-bundle rows untouched): 1119855->1125221 bytes, 279963->281305 est_tok. Per-bundle rows are unchanged; only the compiled root grew.",
     "baseline": {
       "skill-md-only": {
-        "bytes": 130720,
-        "est_tok": 32680
+        "bytes": 136086,
+        "est_tok": 34021
       },
       "per-bundle:skill/references/runtime-diagnostic-core.md": {
         "bytes": 122746,
@@ -206,20 +207,20 @@
         "est_tok": 37329
       },
       "five-bundle-substantive": {
-        "bytes": 1119855,
-        "est_tok": 279963
+        "bytes": 1125221,
+        "est_tok": 281305
       },
       "total-hot-surfaces": {
-        "bytes": 1119855,
-        "est_tok": 279963
+        "bytes": 1125221,
+        "est_tok": 281305
       },
       "always-load-bundles": {
-        "bytes": 130720,
-        "est_tok": 32680
+        "bytes": 136086,
+        "est_tok": 34021
       },
       "structural-diagnosis-floor": {
-        "bytes": 253466,
-        "est_tok": 63366
+        "bytes": 258832,
+        "est_tok": 64708
       }
     }
   },

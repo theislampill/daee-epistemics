@@ -719,6 +719,408 @@ def compact_state(stages: list[dict[str, Any]]) -> dict[str, Any]:
     return result
 
 
+# ---------------------------------------------------------------------------
+# Slice D wave 1 (Plan 03): additive daee-state-capsule-v1 emission.
+#
+# This is a PARALLEL validated artifact alongside the existing prompt/response
+# flow, not a prompt-payload change: compact_state() above and stage_prompt()
+# remain byte-identical inputs to the model. build_state_capsule() is a pure
+# function over the same `stages` accumulator compact_state() reads; it never
+# mutates `stages` and never feeds into prompt composition.
+# ---------------------------------------------------------------------------
+
+STAGE_ID_TO_CAPSULE_CODE = {stage_id: f"{index + 1:02d}" for index, stage_id in enumerate(STAGE_ORDER)}
+
+CAPSULE_CLOSED_TERMINAL_MARKERS = ("land", "rejected", "merged")
+
+
+def _capsule_is_closed_terminal_state(state: Any) -> bool:
+    """Mirror tools/check_state_capsule.py's is_closed_state substring rule so
+    coverage_complete here never claims closure the checker would reject as
+    false coverage."""
+    if not isinstance(state, str):
+        return False
+    lowered = state.lower()
+    return any(marker in lowered for marker in CAPSULE_CLOSED_TERMINAL_MARKERS)
+
+
+def _capsule_state_head(value: Any) -> str:
+    """Extract the head token of a `<head> / <reason>` diagnostic string, per
+    the Stage 05 per_burden_reread divergence/curl slot grammar."""
+    text = str(value or "")
+    return text.partition("/")[0].strip()
+
+
+_CAPSULE_DIVERGENCE_HEAD_MAP = {
+    "neutral": "neutral",
+    "settled": "settled",
+    "bounded": "bounded",
+    "non-neutral": "non-neutral",
+}
+_CAPSULE_CURL_HEAD_MAP = {
+    "null": "null-state",
+    "null-state": "null-state",
+    "resolved": "resolved",
+    "held": "held",
+    "non-null": "non-null",
+}
+
+
+def _capsule_divergence_state(value: Any) -> str:
+    head = _capsule_state_head(value)
+    return _CAPSULE_DIVERGENCE_HEAD_MAP.get(head, "neutral")
+
+
+def _capsule_curl_state(value: Any) -> str:
+    head = _capsule_state_head(value)
+    return _CAPSULE_CURL_HEAD_MAP.get(head, "null-state")
+
+
+_CAPSULE_PUBLIC_SUBMOVE_BODY_REF_RE = re.compile(r"^([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B([₀₁₂₃₄₅₆₇₈₉]+)$")
+_CAPSULE_PUBLIC_BURDEN_BODY_REF_RE = re.compile(r"^([⁰¹²³⁴⁵⁶⁷⁸⁹]+)B$")
+
+
+def _capsule_bare_join_key_body_ref(value: str) -> str:
+    """Convert the harness's public Unicode body_ref notation (e.g. `¹B₂`) to
+    the checker-legal bare ASCII join key (e.g. `B1_2`) required by
+    schema/state-capsule.schema.json's BODY_REF_RE. Already-bare ASCII forms
+    (`B1`, `B1_2`) pass through unchanged; unrecognized forms pass through
+    as-is so validation surfaces the mismatch rather than silently coercing it."""
+    text = str(value or "").strip()
+    match = _CAPSULE_PUBLIC_SUBMOVE_BODY_REF_RE.match(text)
+    if match:
+        burden = match.group(1).translate(SUP_DIGITS)
+        submove = match.group(2).translate(str.maketrans("₀₁₂₃₄₅₆₇₈₉", "0123456789"))
+        return f"B{burden}_{submove}"
+    match = _CAPSULE_PUBLIC_BURDEN_BODY_REF_RE.match(text)
+    if match:
+        return f"B{match.group(1).translate(SUP_DIGITS)}"
+    return text
+
+
+def _capsule_act_land_by_body_ref(stage04: dict[str, Any] | None) -> dict[str, str]:
+    """Re-derive the raw Land(...) token per body_ref from Stage 04 act_rows;
+    normalize_stage04_act_row_details() strips `land` out of act_row_details,
+    so this is read back from the canonical ACT rows themselves."""
+    land_by_ref: dict[str, str] = {}
+    if not isinstance(stage04, dict):
+        return land_by_ref
+    for row in stage04.get("act_rows") or []:
+        if not isinstance(row, str):
+            continue
+        parsed = parsed_stage04_act_detail(row)
+        if parsed:
+            land_by_ref[parsed["body_ref"]] = parsed["land"]
+    return land_by_ref
+
+
+def _capsule_completed_acts(stages: list[dict[str, Any]]) -> list[dict[str, str]]:
+    stage04 = stage_by_id(stages, "stage-04-burden-execution-act")
+    if not isinstance(stage04, dict):
+        return []
+    land_by_ref = _capsule_act_land_by_body_ref(stage04)
+    completed: list[dict[str, str]] = []
+    for detail in stage04.get("act_row_details") or []:
+        if not isinstance(detail, dict):
+            continue
+        public_body_ref = str(detail.get("body_ref") or "")
+        land = land_by_ref.get(public_body_ref) or ""
+        if not (public_body_ref and detail.get("owner_id") and detail.get("operation") and detail.get("register_axis") and detail.get("delta_result") and land):
+            # Incomplete detail row; skip rather than emit a schema-illegal
+            # empty-string completed_acts entry.
+            continue
+        # The capsule schema's body_ref pattern (BODY_REF_RE) requires the bare
+        # ASCII join-key form (B1_1); the harness's own public notation (¹B₁)
+        # is a legitimate ACT/body_ref surface but is not schema-legal here.
+        bare_body_ref = _capsule_bare_join_key_body_ref(public_body_ref)
+        completed.append(
+            {
+                "body_ref": bare_body_ref,
+                "owner_id": str(detail.get("owner_id")),
+                "operation": str(detail.get("operation")),
+                "register_axis": str(detail.get("register_axis")),
+                "delta_result": str(detail.get("delta_result")),
+                "land": str(land),
+            }
+        )
+    return completed
+
+
+def _capsule_last_per_burden_reread(stages: list[dict[str, Any]]) -> dict[str, Any] | None:
+    stage05 = stage_by_id(stages, "stage-05-mrp-reread-terminal-state")
+    if not isinstance(stage05, dict):
+        return None
+    entries = stage05.get("per_burden_reread")
+    if not isinstance(entries, list) or not entries:
+        return None
+    last = entries[-1]
+    return last if isinstance(last, dict) else None
+
+
+def build_state_capsule(
+    *,
+    case_id: str,
+    input_digest: str,
+    stage_id: str,
+    stages: list[dict[str, Any]],
+    raw_input_path: Path,
+    output_path: Path | None,
+    run_dir: Path,
+    root: Path = ROOT,
+) -> dict[str, Any]:
+    """Pure function: derive a daee-state-capsule-v1 dict from the validated
+    stage payloads accumulated so far (the same `stages` list compact_state()
+    reads). Never mutates `stages`, `raw_input_path`, or any prompt-facing
+    state; this is an observability artifact only.
+    """
+    del raw_input_path, run_dir  # retained in the signature for call-site symmetry / future shard wiring; not yet consumed
+
+    stage02 = stage_by_id(stages, "stage-02-layer-a-diagnostic-ir")
+    stage03 = stage_by_id(stages, "stage-03-routing-owner-gate")
+    stage05 = stage_by_id(stages, "stage-05-mrp-reread-terminal-state")
+
+    selected_n_frame = ""
+    if isinstance(stage02, dict):
+        selected_n_frame = str(stage02.get("selected_n_frame") or "")
+    n_frame = {
+        "selected": selected_n_frame or "unselected",
+        "held_candidates": [],
+    }
+
+    live_registers: list[str] = []
+    if isinstance(stage02, dict):
+        raw_registers = stage02.get("live_registers")
+        if isinstance(raw_registers, list):
+            live_registers = ordered_unique([str(item) for item in raw_registers if isinstance(item, str) and item])
+
+    register_state: dict[str, Any] = {}
+
+    burden_floor: list[str] = []
+    if isinstance(stage02, dict):
+        raw_floor = stage02.get("burden_floor")
+        if isinstance(raw_floor, list):
+            burden_floor = ordered_unique([str(item) for item in raw_floor if isinstance(item, str) and item])
+    b_la = list(burden_floor)
+    b_mrp = stage05_generated_burdens(stage05) if isinstance(stage05, dict) else []
+    b_total = ordered_unique([*b_la, *b_mrp])
+
+    terminal_states: dict[str, str] = {}
+    if isinstance(stage05, dict):
+        raw_terminal = stage05.get("terminal_states")
+        if isinstance(raw_terminal, dict):
+            terminal_states = {str(key): str(value) for key, value in raw_terminal.items() if isinstance(key, str) and isinstance(value, str)}
+
+    held_burdens = stage05_unresolved_burdens(stage05) if isinstance(stage05, dict) else []
+    held_set_h = [{"burden": burden, "reason": "unresolved per Stage 05 no_new_resultant_proof/unresolved_burdens"} for burden in held_burdens]
+
+    completed_acts = _capsule_completed_acts(stages)
+
+    last_reread = _capsule_last_per_burden_reread(stages)
+    last_terminal_burden: str | None = None
+    last_terminal_state: str | None = None
+    last_delta: str | None = None
+    route_result_type = "none"
+    field_diagnostics = {"divergence_state": "neutral", "curl_state": "null-state"}
+    next_burden: str | None = None
+    current_burden: str | None = None
+    last_mrp_resultant: dict[str, Any] = {"source": None, "route_result_type": "none"}
+    if last_reread is not None:
+        reread_burden = str(last_reread.get("burden_id") or "") or None
+        last_terminal_burden = reread_burden
+        if reread_burden and reread_burden in terminal_states:
+            last_terminal_state = terminal_states.get(reread_burden)
+        last_delta = non_empty_string(last_reread.get("landed_delta"))
+        route_result_type = str(last_reread.get("route_result_type") or "none") or "none"
+        if route_result_type not in check_state_capsule_route_result_types():
+            route_result_type = "none"
+        field_diagnostics = {
+            "divergence_state": _capsule_divergence_state(last_reread.get("divergence")),
+            "curl_state": _capsule_curl_state(last_reread.get("curl")),
+        }
+        current_burden = reread_burden
+        graph_delta = non_empty_string(last_reread.get("graph_delta"))
+        edge_match = PUBLIC_ASCII_EDGE_RE.search(graph_delta or "") if graph_delta else None
+        if edge_match:
+            next_burden = f"B{edge_match.group(2)}"
+        last_mrp_resultant = {
+            "source": reread_burden,
+            "route_result_type": route_result_type,
+        }
+        if route_result_type == "generated_burden_instantiation" and next_burden:
+            last_mrp_resultant["generated_by"] = reread_burden
+            last_mrp_resultant["next_burden"] = next_burden
+
+    last_terminal = {"burden": last_terminal_burden, "state": last_terminal_state}
+
+    owner_id: str | None = None
+    if current_burden and isinstance(stage03, dict):
+        for route in stage03.get("owner_routes") or []:
+            if isinstance(route, dict) and str(route.get("burden_id") or "") == current_burden:
+                owner_id = non_empty_string(route.get("owner_id"))
+                break
+    current_owner_route = {"burden": current_burden, "owner_id": owner_id, "shards": []}
+
+    coverage_complete = bool(b_total) and not held_set_h and all(
+        _capsule_is_closed_terminal_state(terminal_states.get(burden)) for burden in b_total
+    )
+
+    stage07 = stage_by_id(stages, "stage-07-release-output")
+    if isinstance(stage07, dict) and stage07.get("closure_claim") == "complete":
+        coverage_complete = coverage_complete or bool(
+            stage07.get("output_is_full_governed_answer") and not held_set_h
+        )
+
+    if coverage_complete:
+        next_required_action = ""
+    else:
+        stage_index = STAGE_INDEX_LOOKUP.get(stage_id, -1)
+        remaining = [sid for sid in STAGE_ORDER if STAGE_INDEX_LOOKUP.get(sid, -1) > stage_index]
+        next_required_action = f"execute {remaining[0]}" if remaining else "resolve held burdens before closure"
+
+    output_artifact_path: str | None = None
+    output_sha256: str | None = None
+    output_offset_bytes = 0
+    if output_path is not None and output_path.exists():
+        output_bytes = output_path.read_bytes()
+        output_artifact_path = rel(output_path, root)
+        output_sha256 = hashlib.sha256(output_bytes).hexdigest()
+        output_offset_bytes = len(output_bytes)
+
+    capsule: dict[str, Any] = {
+        "schema": check_state_capsule_schema_const(),
+        "case_id": case_id,
+        "input_fingerprint": f"sha256:{input_digest.lower()}",
+        "stage": STAGE_ID_TO_CAPSULE_CODE.get(stage_id, "01"),
+        "n_frame": n_frame,
+        "live_registers": live_registers,
+        "register_state": register_state,
+        "B_LA": b_la,
+        "B_MRP": b_mrp,
+        "B_total": b_total,
+        "current_burden": current_burden,
+        "held_set_H": held_set_h,
+        "completed_acts": completed_acts,
+        "last_terminal": last_terminal,
+        "last_delta": last_delta,
+        "last_mrp_resultant": last_mrp_resultant,
+        "route_result_type": route_result_type,
+        "field_diagnostics": field_diagnostics,
+        "transport": "file-retained",
+        "terminal_states": dict(terminal_states),
+        "next_burden": next_burden,
+        "current_owner_route": current_owner_route,
+        "coverage_complete": coverage_complete,
+        "next_required_action": next_required_action,
+        "output_artifact_path": output_artifact_path,
+        "output_sha256": output_sha256,
+        "output_offset_bytes": output_offset_bytes,
+        "cold_law_refs_used": [],
+        "shards_loaded": [],
+    }
+    return capsule
+
+
+def check_state_capsule_module():
+    """Path-safe import of tools/check_state_capsule.py. Capsule validation is
+    observability only: a failure to import must never abort a harness run,
+    so callers wrap this in try/except."""
+    tools_dir = str(Path(__file__).resolve().parent)
+    if tools_dir not in sys.path:
+        sys.path.insert(0, tools_dir)
+    import check_state_capsule  # local import: optional/best-effort dependency
+
+    return check_state_capsule
+
+
+def check_state_capsule_schema_const() -> str:
+    try:
+        return check_state_capsule_module().SCHEMA_CONST
+    except Exception:
+        return "daee-state-capsule-v1"
+
+
+def check_state_capsule_route_result_types() -> set[str]:
+    try:
+        return set(check_state_capsule_module().ROUTE_RESULT_TYPES)
+    except Exception:
+        return {
+            "held_burden_activation",
+            "generated_burden_instantiation",
+            "no_new_resultant",
+            "loopbreak",
+            "hold_partial",
+            "none",
+        }
+
+
+STAGE_INDEX_LOOKUP = {stage_id: index for index, stage_id in enumerate(STAGE_ORDER)}
+
+CAPSULE_FILE_RE = re.compile(r"^capsule-(\d+)\.json$")
+
+
+def next_state_capsule_index(run_dir: Path) -> int:
+    """Return the next 1-based capsule index for run_dir, so a --resume-run-dir
+    continuation keeps capsule numbering monotonically increasing across the
+    whole run rather than restarting at 1."""
+    capsules_dir = run_dir / "state-capsules"
+    if not capsules_dir.is_dir():
+        return 1
+    highest = 0
+    for path in capsules_dir.glob("capsule-*.json"):
+        match = CAPSULE_FILE_RE.match(path.name)
+        if match:
+            highest = max(highest, int(match.group(1)))
+    return highest + 1
+
+
+def write_state_capsule(
+    *,
+    case_id: str,
+    input_digest: str,
+    stage_id: str,
+    stages: list[dict[str, Any]],
+    raw_input_path: Path,
+    output_path: Path | None,
+    run_dir: Path,
+    capsule_index: int,
+    root: Path = ROOT,
+) -> Path | None:
+    """Write <run_dir>/state-capsules/capsule-<NNN>.json and validate it
+    in-process. Capsule observability must never abort a run: any failure
+    (build, write, or validation) is caught and reported as a stderr warning
+    only. Returns the written path on success, else None.
+    """
+    capsule_path = run_dir / "state-capsules" / f"capsule-{capsule_index:03d}.json"
+    try:
+        capsule = build_state_capsule(
+            case_id=case_id,
+            input_digest=input_digest,
+            stage_id=stage_id,
+            stages=stages,
+            raw_input_path=raw_input_path,
+            output_path=output_path,
+            run_dir=run_dir,
+            root=root,
+        )
+        write_json(capsule_path, capsule)
+    except Exception as exc:  # noqa: BLE001 - observability must never abort a run
+        print(f"WARNING: state-capsule emission failed for {rel(capsule_path, root)}: {exc}", file=sys.stderr)
+        return None
+
+    try:
+        checker = check_state_capsule_module()
+        schema = checker.load_schema()
+        errors = checker.validate_capsule_file(capsule_path, schema)
+        if errors:
+            print(f"WARNING: state-capsule {rel(capsule_path, root)} failed schema/semantic validation:", file=sys.stderr)
+            for error in errors:
+                print(f"  - {error}", file=sys.stderr)
+    except Exception as exc:  # noqa: BLE001 - observability must never abort a run
+        print(f"WARNING: state-capsule validation could not run for {rel(capsule_path, root)}: {exc}", file=sys.stderr)
+
+    return capsule_path
+
+
 def extract_json_object(text: str) -> dict[str, Any]:
     stripped = text.strip()
     fence = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", stripped, re.DOTALL)
@@ -15529,6 +15931,124 @@ def run_self_test(root: Path) -> int:
             "changed; update this test deliberately if that boundary was intentionally tightened"
         )
 
+    # -----------------------------------------------------------------
+    # Slice D wave 1 (Plan 03): daee-state-capsule-v1 emission self-test.
+    # run_model_smoke() (the real model-driving path) is not exercised by
+    # --self-test, so this drives build_state_capsule()/write_state_capsule()
+    # directly over the same replay-record stage payloads used above, routed
+    # through normalized_stage() the way a real model response would be, and
+    # asserts the capsule sequence this harness would emit at each of the
+    # stage-01..06 append points plus stage-07 completion.
+    # -----------------------------------------------------------------
+    capsule_case_id = "self-test-a9-science-source"
+    capsule_input_digest = replay["stages"][0]["input_digest"]
+    capsule_stage_by_id = {stage["id"]: stage for stage in replay["stages"]}
+    capsule_run_dir = run_dir / "state-capsule-self-test"
+    capsule_run_dir.mkdir(parents=True, exist_ok=True)
+
+    capsule_stage04_raw = dict(capsule_stage_by_id["stage-04-burden-execution-act"])
+    capsule_stage04_raw["act_row_details"] = [
+        {"body_ref": "¹B₁", "register_axis": "σ", "delta_result": "science-source-bounded"},
+        {"body_ref": "¹B₂", "register_axis": "ξ", "delta_result": "self-authorizing-standard-invalidated"},
+    ]
+
+    capsule_stages: list[dict[str, Any]] = []
+    capsule_index = 1
+    capsule_written_paths: list[Path] = []
+    for capsule_stage_id in STAGE_ORDER[:6]:
+        raw_stage = capsule_stage04_raw if capsule_stage_id == "stage-04-burden-execution-act" else capsule_stage_by_id[capsule_stage_id]
+        capsule_stages.append(normalized_stage(capsule_stage_id, raw_stage))
+        written = write_state_capsule(
+            case_id=capsule_case_id,
+            input_digest=capsule_input_digest,
+            stage_id=capsule_stage_id,
+            stages=capsule_stages,
+            raw_input_path=raw_input,
+            output_path=None,
+            run_dir=capsule_run_dir,
+            capsule_index=capsule_index,
+            root=root,
+        )
+        if written is None:
+            raise HarnessError(f"Self-test state-capsule emission failed for {capsule_stage_id}")
+        capsule_written_paths.append(written)
+        capsule_index += 1
+
+    # check_state_capsule.replay_errors() expects the retained artifact at
+    # <capsules-dir>/artifact.md (hardcoded name, sibling to capsule-NNN.json),
+    # independent of the capsule's own output_artifact_path value.
+    capsule_output_path = capsule_run_dir / "state-capsules" / "artifact.md"
+    write_text(
+        capsule_output_path,
+        "Land(¹B) Land(B1) science-only source-order warrant. B1_1 B1_2 self-test governed output body.\n",
+    )
+    capsule_stages.append(normalized_stage("stage-07-release-output", capsule_stage_by_id["stage-07-release-output"]))
+    capsule_stage07_written = write_state_capsule(
+        case_id=capsule_case_id,
+        input_digest=capsule_input_digest,
+        stage_id="stage-07-release-output",
+        stages=capsule_stages,
+        raw_input_path=raw_input,
+        output_path=capsule_output_path,
+        run_dir=capsule_run_dir,
+        capsule_index=capsule_index,
+        root=root,
+    )
+    if capsule_stage07_written is None:
+        raise HarnessError("Self-test state-capsule emission failed for stage-07-release-output")
+    capsule_written_paths.append(capsule_stage07_written)
+
+    if len(capsule_written_paths) < 2:
+        raise HarnessError(
+            f"Self-test expected >=2 state capsules, wrote {len(capsule_written_paths)}"
+        )
+
+    capsule_checker = check_state_capsule_module()
+    capsule_schema = capsule_checker.load_schema()
+    capsule_payloads: list[dict[str, Any]] = []
+    for capsule_path in capsule_written_paths:
+        capsule_payload = load_json(capsule_path)
+        capsule_errors = capsule_checker.validate_capsule_file(capsule_path, capsule_schema)
+        if capsule_errors:
+            raise HarnessError(
+                f"Self-test state capsule {rel(capsule_path, root)} failed schema/semantic validation: "
+                + "; ".join(capsule_errors)
+            )
+        capsule_payloads.append(capsule_payload)
+
+    capsule_case_ids = {payload.get("case_id") for payload in capsule_payloads}
+    if capsule_case_ids != {capsule_case_id}:
+        raise HarnessError(f"Self-test state capsules did not preserve constant case_id: {capsule_case_ids}")
+    capsule_fingerprints = {payload.get("input_fingerprint") for payload in capsule_payloads}
+    if len(capsule_fingerprints) != 1:
+        raise HarnessError(f"Self-test state capsules did not preserve constant input_fingerprint: {capsule_fingerprints}")
+
+    capsule_offsets = [payload.get("output_offset_bytes") for payload in capsule_payloads]
+    if any(not isinstance(offset, int) for offset in capsule_offsets):
+        raise HarnessError("Self-test state capsules must carry integer output_offset_bytes throughout")
+    if any(later < earlier for earlier, later in zip(capsule_offsets, capsule_offsets[1:])):
+        raise HarnessError(f"Self-test state capsule output_offset_bytes was not monotonic non-decreasing: {capsule_offsets}")
+    if capsule_offsets[-1] <= 0:
+        raise HarnessError("Self-test final state capsule must carry a positive output_offset_bytes once output.md exists")
+
+    capsule_expected_final_stage = STAGE_ID_TO_CAPSULE_CODE["stage-07-release-output"]
+    if capsule_payloads[-1].get("stage") != capsule_expected_final_stage:
+        raise HarnessError(
+            f"Self-test final state capsule stage code was {capsule_payloads[-1].get('stage')!r}, "
+            f"expected {capsule_expected_final_stage!r}"
+        )
+    if capsule_payloads[-1].get("coverage_complete") is not True:
+        raise HarnessError("Self-test final state capsule (stage-07 completion) must report coverage_complete=true")
+
+    capsule_replay_errors = capsule_checker.replay_errors(capsule_run_dir / "state-capsules", capsule_schema)
+    if capsule_replay_errors:
+        raise HarnessError(
+            "Self-test state-capsule replay sequence failed cross-capsule invariants: "
+            + "; ".join(capsule_replay_errors)
+        )
+
+    print(f"state-capsule self-test: PASS ({len(capsule_payloads)} capsule(s), {rel(capsule_run_dir, root)})")
+
     print("staged current-skill harness self-test: PASS")
     print(f"self-test run dir: {rel(run_dir, root)}")
     print(f"handoff record: {rel(record_path, root)}")
@@ -15902,6 +16422,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
     skill_hash = sha256_file(files["skill"])
     stages: list[dict[str, Any]] = list(resume_context["stages"]) if resume_context else []
     stage_files: list[Path] = list(resume_context["artifact_paths"]) if resume_context else []
+    capsule_index = next_state_capsule_index(run_dir)
     transport_attempts: list[dict[str, Any]] = list(resume_context["prior_attempts"]) if resume_context else []
     transport_attempts_record_path = records_dir / "stage-07-transport-attempts.json"
     if transport_attempts:
@@ -15973,6 +16494,18 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 stages.append(stage)
                 validate_incremental_handoffs(stages)
                 write_json(records_dir / f"{stage_id}.stage.json", stage)
+                write_state_capsule(
+                    case_id=args.case_name,
+                    input_digest=input_digest,
+                    stage_id=stage_id,
+                    stages=stages,
+                    raw_input_path=raw_input,
+                    output_path=None,
+                    run_dir=run_dir,
+                    capsule_index=capsule_index,
+                    root=root,
+                )
+                capsule_index += 1
                 if args.stop_after_stage == stage_id:
                     record["stages"] = stages
                     handoff_record = records_dir / "staged-handoff-stage-local-record.json"
@@ -16325,6 +16858,18 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             stage07["assembly_hashes"] = dict(assembly_record["hash_record"])
             stage07["target_output_kb"] = int(args.target_output_kb or 0)
         stages.append(stage07)
+        write_state_capsule(
+            case_id=args.case_name,
+            input_digest=input_digest,
+            stage_id="stage-07-release-output",
+            stages=stages,
+            raw_input_path=raw_input,
+            output_path=output_path,
+            run_dir=run_dir,
+            capsule_index=capsule_index,
+            root=root,
+        )
+        capsule_index += 1
         if args.stop_after_stage == "stage-07-release-output":
             record["stages"] = stages
             handoff_record = records_dir / "staged-handoff-stage-local-record.json"
