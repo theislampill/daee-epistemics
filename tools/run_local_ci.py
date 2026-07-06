@@ -101,6 +101,7 @@ COMMANDS = [
     "python tools/check_cold_law_digest.py",
     "python tools/check_route_shard_selection.py --self-test",
     "python tools/check_route_shard_selection.py",
+    "python tools/check_state_capsule.py --self-test",
     "python tools/measure_terminal_cover_ab.py --self-test",
     "python tools/build_model_compliance_scorecard.py --self-test",
     "python tools/check_spec_authoring_pack.py",

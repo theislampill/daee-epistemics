@@ -245,6 +245,9 @@
     "check_staged_runtime_handshake.py": {
       "class": "required"
     },
+    "check_state_capsule.py": {
+      "class": "required"
+    },
     "check_stub_integrity.py": {
       "class": "required"
     },

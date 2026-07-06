@@ -1,0 +1,60 @@
+{
+  "schema": "daee-state-capsule-v1",
+  "case_id": "case-inv-cov",
+  "input_fingerprint": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "stage": "04",
+  "n_frame": {
+    "selected": "authority-order",
+    "held_candidates": []
+  },
+  "live_registers": [
+    "N",
+    "m",
+    "tau",
+    "sigma"
+  ],
+  "register_state": {},
+  "B_LA": [
+    "B1",
+    "B2"
+  ],
+  "B_MRP": [],
+  "B_total": [
+    "B1",
+    "B2"
+  ],
+  "current_burden": null,
+  "held_set_H": [],
+  "completed_acts": [],
+  "last_terminal": {
+    "burden": null,
+    "state": null
+  },
+  "last_delta": null,
+  "last_mrp_resultant": {
+    "source": null,
+    "route_result_type": "none"
+  },
+  "route_result_type": "none",
+  "field_diagnostics": {
+    "divergence_state": "neutral",
+    "curl_state": "null-state"
+  },
+  "transport": "file-retained",
+  "terminal_states": {
+    "B1": "Land(B1)"
+  },
+  "next_burden": null,
+  "current_owner_route": {
+    "burden": "B1",
+    "owner_id": "M3",
+    "shards": []
+  },
+  "coverage_complete": true,
+  "next_required_action": "",
+  "output_artifact_path": null,
+  "output_sha256": null,
+  "output_offset_bytes": 0,
+  "cold_law_refs_used": [],
+  "shards_loaded": []
+}

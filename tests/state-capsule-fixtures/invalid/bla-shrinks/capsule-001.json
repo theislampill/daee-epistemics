@@ -1,0 +1,58 @@
+{
+  "schema": "daee-state-capsule-v1",
+  "case_id": "case-inv-shrink",
+  "input_fingerprint": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "stage": "02",
+  "n_frame": {
+    "selected": "authority-order",
+    "held_candidates": []
+  },
+  "live_registers": [
+    "N",
+    "m",
+    "tau",
+    "sigma"
+  ],
+  "register_state": {},
+  "B_LA": [
+    "B1",
+    "B2"
+  ],
+  "B_MRP": [],
+  "B_total": [
+    "B1",
+    "B2"
+  ],
+  "current_burden": "B1",
+  "held_set_H": [],
+  "completed_acts": [],
+  "last_terminal": {
+    "burden": null,
+    "state": null
+  },
+  "last_delta": null,
+  "last_mrp_resultant": {
+    "source": null,
+    "route_result_type": "none"
+  },
+  "route_result_type": "none",
+  "field_diagnostics": {
+    "divergence_state": "neutral",
+    "curl_state": "null-state"
+  },
+  "transport": "file-retained",
+  "terminal_states": {},
+  "next_burden": "B2",
+  "current_owner_route": {
+    "burden": "B1",
+    "owner_id": "M3",
+    "shards": []
+  },
+  "coverage_complete": false,
+  "next_required_action": "activate B1",
+  "output_artifact_path": "artifact.md",
+  "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output_offset_bytes": 0,
+  "cold_law_refs_used": [],
+  "shards_loaded": []
+}

@@ -1,0 +1,61 @@
+{
+  "schema": "daee-state-capsule-v1",
+  "case_id": "case-mca-001",
+  "input_fingerprint": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "stage": "02",
+  "n_frame": {
+    "selected": "authority-order",
+    "held_candidates": []
+  },
+  "live_registers": [
+    "N",
+    "m",
+    "tau",
+    "sigma"
+  ],
+  "register_state": {},
+  "B_LA": [
+    "B1",
+    "B2"
+  ],
+  "B_MRP": [],
+  "B_total": [
+    "B1",
+    "B2"
+  ],
+  "current_burden": "B1",
+  "held_set_H": [],
+  "completed_acts": [],
+  "last_terminal": {
+    "burden": null,
+    "state": null
+  },
+  "last_delta": null,
+  "last_mrp_resultant": {
+    "source": null,
+    "route_result_type": "none"
+  },
+  "route_result_type": "none",
+  "field_diagnostics": {
+    "divergence_state": "neutral",
+    "curl_state": "null-state"
+  },
+  "transport": "file-retained",
+  "terminal_states": {},
+  "next_burden": "B2",
+  "current_owner_route": {
+    "burden": "B1",
+    "owner_id": "M3",
+    "shards": [
+      "shard-m3-activation"
+    ]
+  },
+  "coverage_complete": false,
+  "next_required_action": "activate B1",
+  "output_artifact_path": "artifact.md",
+  "output_sha256": "63b2a72c1d1a0c3fa4708679626e4f605f95c3386c850829e5e9cb8a6a5dcad8",
+  "output_offset_bytes": 136,
+  "cold_law_refs_used": [],
+  "shards_loaded": [],
+  "notes": "capsule 2: layer-A burden set identified"
+}
