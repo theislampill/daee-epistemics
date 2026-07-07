@@ -7567,8 +7567,19 @@ PROMPT_PACK_PRIOR_OUTPUT_SUBSTRING_BYTES_FLOOR = 10_000
 
 
 def _prompt_pack_component_is_prior_output_named(name: str) -> bool:
+    """True when a known_parts component name marks it as prior-OUTPUT-shaped --
+    a previously rendered output artifact (a prior stage's full output, or a
+    section's own existing body text fed into an expansion prompt) -- as opposed
+    to state/instruction-shaped components (previous_stages_json, state_capsule,
+    raw_input_text, instructions, section_role_guidance) that are exempt from the
+    size-based includes_prior_full_output rule below."""
     lowered = name.lower()
-    return "prior-output" in lowered or "prior_output" in lowered
+    return (
+        "prior-output" in lowered
+        or "prior_output" in lowered
+        or "existing_text" in lowered
+        or "existing-text" in lowered
+    )
 
 
 def build_prompt_pack_manifest(
@@ -7631,6 +7642,21 @@ def build_prompt_pack_manifest(
                 includes_full_runtime = True
                 break
 
+    # includes_prior_full_output detects OUTPUT replay -- a prior stage's rendered
+    # OUTPUT ARTIFACT text being fed back into a later prompt verbatim (the thing the
+    # no-full-replay law targets) -- NOT the compact state / instruction machinery that
+    # legitimately carries the run forward. Compact state (previous_stages_json,
+    # state_capsule, raw_input_text, instructions, section_role_guidance) is the
+    # SANCTIONED, DESIGNED mechanism for that and is expected to exceed 10KB in real
+    # multi-burden runs; it remains counted in component bytes/totals and is governed
+    # by the total-bytes ceiling (tools/check_prompt_pack_budget.py), not by this flag.
+    # So the >10,000-byte contiguous-substring rule below applies ONLY to components
+    # whose name marks them as prior-OUTPUT-shaped (the same named predicate used
+    # above); state/instruction-shaped components are exempt from the size-based rule
+    # even when they occur verbatim and exceed the floor. This is a calibration of our
+    # own A1 observability instrumentation to its specified intent (Plan 07:
+    # includes_prior_full_output = prior stage full OUTPUT replayed), not a checker
+    # weakening -- check_prompt_pack_budget.py's ceiling enforcement is untouched.
     includes_prior_full_output = any(
         _prompt_pack_component_is_prior_output_named(component["name"]) and component["bytes"] > 0
         for component in components
@@ -7639,6 +7665,8 @@ def build_prompt_pack_manifest(
         includes_prior_full_output = True
     if not includes_prior_full_output:
         for name, part in known_parts.items():
+            if not _prompt_pack_component_is_prior_output_named(name):
+                continue
             part_text = part or ""
             if len(part_text.encode("utf-8")) > PROMPT_PACK_PRIOR_OUTPUT_SUBSTRING_BYTES_FLOOR and part_text in prompt:
                 includes_prior_full_output = True
@@ -8060,6 +8088,11 @@ def expansion_subprocess_id(section_id: str, expansion_round: int) -> str:
     return f"stage-07-release-output-{safe_section_id}-expansion-{expansion_round}"
 
 
+def initial_section_subprocess_id(section_id: str) -> str:
+    safe_section_id = section_id.replace("_", "-")
+    return f"stage-07-release-output-{safe_section_id}-initial"
+
+
 def attempt_path(path: Path, attempt: int) -> Path:
     if attempt <= 1:
         return path
@@ -8306,7 +8339,7 @@ def existing_expansion_records_for_resume(
     return records
 
 
-def invoke_expansion_with_transport_policy(
+def invoke_call_with_transport_policy(
     *,
     root: Path,
     model: str,
@@ -8317,15 +8350,25 @@ def invoke_expansion_with_transport_policy(
     section_id: str,
     section_role: str,
     expansion_round: int,
+    subprocess_id: str,
+    call_label: str,
     first_attempt: int,
     retry_rounds: int,
     attempts: list[dict[str, Any]],
     attempts_record_path: Path,
     stage_files: list[Path],
 ) -> Path:
+    """Shared transport-retry machinery for any Stage 07 section-shaped model call.
+
+    ``call_label`` is used only in HarnessError text to name which call is retrying
+    (e.g. ``"expansion 1"`` for a section-expansion round, or ``"initial section
+    call"`` for the first per-section response); it does not change retry behavior.
+    Both the initial per-section call and each section-expansion round route through
+    this one function so a tool-echo/below-floor/empty response is retried and
+    classified identically regardless of which call produced it.
+    """
     if retry_rounds < 0:
         raise HarnessError("--transport-retry-rounds must be a non-negative integer")
-    subprocess_id = expansion_subprocess_id(section_id, expansion_round)
     last_attempt = first_attempt + retry_rounds
     for attempt in range(first_attempt, last_attempt + 1):
         prompt_path = attempt_path(base_prompt_path, attempt)
@@ -8371,7 +8414,7 @@ def invoke_expansion_with_transport_policy(
                 if attempt < last_attempt:
                     continue
                 raise HarnessError(
-                    f"stage-07-release-output {section_id} expansion {expansion_round}: "
+                    f"stage-07-release-output {section_id} {call_label}: "
                     f"transport retry budget exhausted after {attempt - first_attempt + 1} attempt(s) "
                     f"-- last attempt returned exit code 0 with a retryable non-answer shape "
                     f"(missing={not output_exists}, empty={content_shape['content_empty']}, "
@@ -8419,16 +8462,56 @@ def invoke_expansion_with_transport_policy(
         write_transport_attempts_record(attempts_record_path, root=root, attempts=attempts)
         if transport.get("retryable") is not True:
             raise HarnessError(
-                f"stage-07-release-output {section_id} expansion {expansion_round}: "
+                f"stage-07-release-output {section_id} {call_label}: "
                 f"codex exec failed with exit code {exit_code}; see {rel(log_path, root)}"
             )
         if attempt == last_attempt:
             raise HarnessError(
-                f"stage-07-release-output {section_id} expansion {expansion_round}: "
+                f"stage-07-release-output {section_id} {call_label}: "
                 f"transport retry budget exhausted after {attempt - first_attempt + 1} attempt(s); "
                 f"see {rel(log_path, root)}"
             )
     raise HarnessError("transport retry loop exited unexpectedly")
+
+
+def invoke_expansion_with_transport_policy(
+    *,
+    root: Path,
+    model: str,
+    prompt: str,
+    base_prompt_path: Path,
+    base_output_path: Path,
+    base_log_path: Path,
+    section_id: str,
+    section_role: str,
+    expansion_round: int,
+    first_attempt: int,
+    retry_rounds: int,
+    attempts: list[dict[str, Any]],
+    attempts_record_path: Path,
+    stage_files: list[Path],
+) -> Path:
+    """Section-expansion call: thin wrapper over invoke_call_with_transport_policy
+    that preserves the original expansion-only call signature and naming
+    (subprocess_id/call_label derived from section_id + expansion_round)."""
+    return invoke_call_with_transport_policy(
+        root=root,
+        model=model,
+        prompt=prompt,
+        base_prompt_path=base_prompt_path,
+        base_output_path=base_output_path,
+        base_log_path=base_log_path,
+        section_id=section_id,
+        section_role=section_role,
+        expansion_round=expansion_round,
+        subprocess_id=expansion_subprocess_id(section_id, expansion_round),
+        call_label=f"expansion {expansion_round}",
+        first_attempt=first_attempt,
+        retry_rounds=retry_rounds,
+        attempts=attempts,
+        attempts_record_path=attempts_record_path,
+        stage_files=stage_files,
+    )
 
 
 def stage_order_for_stop(stop_after_stage: str | None) -> list[str]:
@@ -9516,6 +9599,114 @@ def run_self_test(root: Path) -> int:
         invoke_codex = real_invoke_codex
     if len(content_shape_exhaust_attempts) != 2:
         raise HarnessError("Self-test content-shape exhaustion did not record exactly two attempts")
+
+    # FIX B (adversarial review of cycle-03 manifests): classify_response_content_shape()
+    # was wired only into invoke_expansion_with_transport_policy; the FIRST section call
+    # bypassed it and could accept a tool-echo/below-floor first response as the expansion
+    # base. Both the initial call site and invoke_expansion_with_transport_policy() now
+    # route through the same invoke_call_with_transport_policy() helper, so drive that
+    # shared helper directly here with the initial-section-call parameters
+    # (expansion_round=0, subprocess_id=initial_section_subprocess_id(...)) to prove the
+    # initial call gets the identical retry/classification treatment.
+    initial_call_fixture = run_dir / "transport-content-shape-initial-call-retry"
+    initial_call_fixture.mkdir(parents=True, exist_ok=True)
+    initial_call_attempts: list[dict[str, Any]] = []
+    initial_call_stage_files: list[Path] = []
+    initial_call_responses = iter([tool_echo_sample, valid_expansion_sample])
+
+    def fake_initial_tool_echo_then_valid(
+        _root: Path,
+        _model: str,
+        _prompt: str,
+        output_path: Path,
+        log_path: Path,
+    ) -> int:
+        write_text(output_path, next(initial_call_responses))
+        write_text(log_path, "ok\n")
+        return 0
+
+    try:
+        invoke_codex = fake_initial_tool_echo_then_valid
+        recovered_initial_path = invoke_call_with_transport_policy(
+            root=root,
+            model="fake-model",
+            prompt="initial section prompt\n",
+            base_prompt_path=initial_call_fixture / "call.prompt.md",
+            base_output_path=initial_call_fixture / "call.md",
+            base_log_path=initial_call_fixture / "call.codex-log.txt",
+            section_id="restorative-response",
+            section_role="restorative_response",
+            expansion_round=0,
+            subprocess_id=initial_section_subprocess_id("restorative-response"),
+            call_label="initial section call",
+            first_attempt=1,
+            retry_rounds=1,
+            attempts=initial_call_attempts,
+            attempts_record_path=initial_call_fixture / "stage-07-transport-attempts.json",
+            stage_files=initial_call_stage_files,
+        )
+    finally:
+        invoke_codex = real_invoke_codex
+    if read_text_if_exists(recovered_initial_path) != valid_expansion_sample:
+        raise HarnessError(
+            "Self-test initial-section-call content-shape retry did not recover the valid second attempt"
+        )
+    if len(initial_call_attempts) != 2:
+        raise HarnessError("Self-test initial-section-call content-shape retry did not record exactly two attempts")
+    if (
+        initial_call_attempts[0]["status"] != "failed_transport"
+        or initial_call_attempts[0]["transport"].get("tool_invocation_echo") is not True
+    ):
+        raise HarnessError(
+            "Self-test initial-section-call content-shape retry did not mark the tool-echo first "
+            "response failed_transport -- the initial call must be classified by "
+            "classify_response_content_shape() exactly like an expansion call"
+        )
+    if initial_call_attempts[1]["status"] != "pass":
+        raise HarnessError("Self-test initial-section-call content-shape retry did not mark the recovered attempt pass")
+
+    initial_call_exhaust_fixture = run_dir / "transport-content-shape-initial-call-exhaust"
+    initial_call_exhaust_fixture.mkdir(parents=True, exist_ok=True)
+    initial_call_exhaust_attempts: list[dict[str, Any]] = []
+    initial_call_exhaust_stage_files: list[Path] = []
+
+    try:
+        invoke_codex = fake_always_empty
+        try:
+            invoke_call_with_transport_policy(
+                root=root,
+                model="fake-model",
+                prompt="initial section prompt\n",
+                base_prompt_path=initial_call_exhaust_fixture / "call.prompt.md",
+                base_output_path=initial_call_exhaust_fixture / "call.md",
+                base_log_path=initial_call_exhaust_fixture / "call.codex-log.txt",
+                section_id="restorative-response",
+                section_role="restorative_response",
+                expansion_round=0,
+                subprocess_id=initial_section_subprocess_id("restorative-response"),
+                call_label="initial section call",
+                first_attempt=1,
+                retry_rounds=1,
+                attempts=initial_call_exhaust_attempts,
+                attempts_record_path=initial_call_exhaust_fixture / "stage-07-transport-attempts.json",
+                stage_files=initial_call_exhaust_stage_files,
+            )
+        except HarnessError as exc:
+            if "retryable non-answer shape" not in str(exc):
+                raise
+        else:
+            raise HarnessError(
+                "Self-test initial-section-call content-shape retry did not exhaust on repeated empty exit-0 stdout"
+            )
+    finally:
+        invoke_codex = real_invoke_codex
+    if len(initial_call_exhaust_attempts) != 2:
+        raise HarnessError("Self-test initial-section-call content-shape exhaustion did not record exactly two attempts")
+    if any(attempt["status"] == "pass" for attempt in initial_call_exhaust_attempts):
+        raise HarnessError(
+            "Self-test initial-section-call content-shape exhaustion must not silently record a pass status "
+            "-- exhaustion must be classified/reported, not swallowed"
+        )
 
     normalized_stage02 = normalized_stage(
         "stage-02-layer-a-diagnostic-ir",
@@ -16450,6 +16641,14 @@ def run_self_test(root: Path) -> int:
             "verbatim skill/SKILL.md probe"
         )
 
+    # FIX A (adversarial review of live cycle-03 manifests): the >10,000-byte
+    # contiguous-substring rule must fire ONLY for components whose name marks them
+    # as prior-OUTPUT-shaped (the honest intent -- this flag detects OUTPUT replay).
+    # Case (c) below uses a NAMED prior-output part ("prior-output-stage-06") so it
+    # exercises the real, intended replay-detection path. Case (c2) is the negative
+    # control: a same-sized, verbatim-occurring part named like the SANCTIONED
+    # compact-state mechanism (previous_stages_json) must NOT be flagged merely for
+    # being large -- that was the over-fire this fix calibrates away.
     _ppm_fake_prior_output = "X" * 10_001
     _ppm_prompt_with_prior_output = _ppm_prompt + "\nPrior output:\n" + _ppm_fake_prior_output + "\n"
     _ppm_known_parts_prior = dict(_ppm_known_parts)
@@ -16460,7 +16659,30 @@ def run_self_test(root: Path) -> int:
     if not _ppm_manifest_c["includes_prior_full_output"]:
         raise HarnessError(
             "Self-test: build_prompt_pack_manifest (c) did not flag includes_prior_full_output for a "
-            ">10000-byte prior-output component occurring verbatim in the prompt"
+            ">10000-byte prior-output-NAMED component occurring verbatim in the prompt"
+        )
+
+    _ppm_large_compact_state = json.dumps(
+        {f"stage-{i:02d}": {"status": "pass", "note": "Y" * 400} for i in range(1, 40)},
+        ensure_ascii=False,
+        indent=2,
+    )
+    if len(_ppm_large_compact_state.encode("utf-8")) <= PROMPT_PACK_PRIOR_OUTPUT_SUBSTRING_BYTES_FLOOR:
+        raise HarnessError("Self-test: synthetic previous_stages_json fixture must exceed the 10000-byte floor")
+    _ppm_prompt_with_compact_state = (
+        _ppm_prompt + "\nPrevious stages (compact state):\n" + _ppm_large_compact_state + "\n"
+    )
+    _ppm_known_parts_compact = dict(_ppm_known_parts)
+    _ppm_known_parts_compact["previous_stages_json"] = _ppm_large_compact_state
+    _ppm_manifest_c2 = build_prompt_pack_manifest(
+        _ppm_prompt_with_compact_state, _ppm_known_parts_compact, "self-test-case-c2", "stage-07", 1
+    )
+    if _ppm_manifest_c2["includes_prior_full_output"]:
+        raise HarnessError(
+            "Self-test: build_prompt_pack_manifest (c2) flagged includes_prior_full_output for a "
+            ">10000-byte previous_stages_json (compact state) component -- compact state is the "
+            "SANCTIONED mechanism and must be exempt from the size-based prior-output rule; only "
+            "prior-output-NAMED components trigger the size-based flag"
         )
 
     # FIX 8: whitespace-normalization probe case. Take the same verbatim
@@ -17250,8 +17472,12 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 else []
             )
             expansion_record_paths = {str(Path(record["path"]).resolve()) for record in expansion_records}
-            if args.section_expansion_rounds:
-                stage_files.append(transport_attempts_record_path)
+            # FIX B: the initial per-section call now also routes through
+            # invoke_call_with_transport_policy() (previously only expansion rounds did), so the
+            # transport-attempts record is written on every run, not only when expansion rounds
+            # are configured. Track it unconditionally rather than gating on
+            # args.section_expansion_rounds.
+            stage_files.append(transport_attempts_record_path)
             for index, (section_id, section_role) in enumerate(section_plan, start=1):
                 section_min_bytes = int(min_section_bytes.get(section_id, 0) or 0)
                 assigned_refs = assigned_refs_by_section.get(section_id)
@@ -17296,14 +17522,32 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                         label="resumed section output",
                     )
                 else:
-                    write_text(section_prompt_path, section_prompt)
-                    exit_code = invoke_model(root, args.model, section_prompt, section_output_path, section_log_path)
-                    stage_files.extend([section_prompt_path, section_output_path, section_log_path])
-                    if exit_code != 0:
-                        raise HarnessError(
-                            f"stage-07-release-output {section_id}: codex exec failed with exit code {exit_code}; "
-                            f"see {rel(section_log_path, root)}"
-                        )
+                    # FIX B (adversarial review of cycle-03 manifests): the initial per-section
+                    # call used to invoke_model() directly and only checked exit_code != 0 and
+                    # size == 0, bypassing classify_response_content_shape() entirely. That let a
+                    # zero-exit tool-echo or below-floor first response be retained as the
+                    # expansion base without ever being retried. Route the initial call through
+                    # the same invoke_call_with_transport_policy() machinery the expansion path
+                    # uses, so a content-retryable first response gets retried and a genuine
+                    # exhaustion is classified/reported, not silently swallowed.
+                    section_output_path = invoke_call_with_transport_policy(
+                        root=root,
+                        model=args.model,
+                        prompt=section_prompt,
+                        base_prompt_path=section_prompt_path,
+                        base_output_path=section_output_path,
+                        base_log_path=section_log_path,
+                        section_id=section_id,
+                        section_role=section_role,
+                        expansion_round=0,
+                        subprocess_id=initial_section_subprocess_id(section_id),
+                        call_label="initial section call",
+                        first_attempt=1,
+                        retry_rounds=args.transport_retry_rounds,
+                        attempts=transport_attempts,
+                        attempts_record_path=transport_attempts_record_path,
+                        stage_files=stage_files,
+                    )
                     if not section_output_path.exists() or section_output_path.stat().st_size == 0:
                         raise HarnessError(f"stage-07-release-output {section_id}: section output was not produced")
                 for expansion_round in range(1, args.section_expansion_rounds + 1):
