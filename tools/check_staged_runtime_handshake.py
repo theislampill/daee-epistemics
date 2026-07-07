@@ -34,6 +34,7 @@ import check_nla_decode_semantic_faithfulness as nla_decode
 import check_mrp_route_invariants as mrp_route_invariants
 import check_retained_proof_corpus as retained
 import build_staged_governed_output as staged_output
+import check_state_capsule  # canonical live_registers vocabulary (single source of truth)
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -256,6 +257,28 @@ def bare_burden_id_errors(label: str, field: str, values: list[str]) -> list[str
                 f"{label}: {field}[{index}] must be a bare canonical burden id such as B1"
             )
     return errors
+
+
+def stage02_live_registers_vocabulary_errors(label: str, values: list[str]) -> list[str]:
+    """Reject stage-02 live_registers entries outside the canonical register
+    tuple vocabulary (alias-normalized). Case-topic labels (e.g.
+    "christology_person_nature") are not register tokens; a live lane that
+    emits topic labels here currently passes this handshake check (it only
+    checks "array of strings") and is caught much later, only at the
+    daee-state-capsule-v1 schema / Stage-07 hard replay gate. Enforcing the
+    vocabulary here, at Stage 02, is case-independent vocabulary law -- it
+    is not tuned to any one smoke prompt or case.
+
+    Reuses tools/check_state_capsule.py's LIVE_REGISTER_TOKENS as the single
+    source of truth for the canonical register tuple + Unicode glyph
+    aliases, instead of hand-copying the token set a fourth time.
+    """
+    unknown = [value for value in values if value not in check_state_capsule.LIVE_REGISTER_TOKENS]
+    if not unknown:
+        return []
+    return [
+        f"{label}: stage-02 live_registers has unrecognized register token(s): {unknown}"
+    ]
 
 
 def ordered_unique(items: list[str]) -> list[str]:
@@ -2026,6 +2049,10 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
             errors.append(f"{label}: stage-02 burden_floor must be a non-empty string list")
         else:
             errors.extend(bare_burden_id_errors(label, "stage-02 burden_floor", burden_floor_values))
+        raw_live_registers = stage02.get("live_registers")
+        live_register_values = as_string_list(raw_live_registers)
+        if live_register_values:
+            errors.extend(stage02_live_registers_vocabulary_errors(label, live_register_values))
         floor_details = stage02.get("burden_floor_details")
         if floor_details is not None:
             if not isinstance(floor_details, list):
