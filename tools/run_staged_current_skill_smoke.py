@@ -43,7 +43,12 @@ from delta_result_vocabulary import (
     source_formal_delta_operation_errors,
     source_pressure_delta_errors,
 )
-from register_axis_contract import canonicalize_register_axis, register_axis_floor
+from register_axis_contract import (
+    OWNER_OPERATION_REGISTER_AXIS_FLOORS,
+    OWNER_REGISTER_AXIS_FLOORS,
+    canonicalize_register_axis,
+    register_axis_floor,
+)
 from stage05_basis_contract import normalize_terminal_detail_basis
 
 
@@ -257,6 +262,25 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
         "requires": ["input_digest"],
         "instructions": (
             "Identify the selected/held N-frame, the burden floor, and live registers. "
+            "A bare `/daee-epistemics <directive>` invocation, or any bare topic/target "
+            "directive with no further articulated argument (e.g. `refute secularism`, "
+            "`answer this: the Trinity`), is a VALID and CANONICAL Stage 02 input, not a "
+            "malformed or incomplete one. This is standing DAEE law, not case-specific "
+            "tuning: the absence of a fully articulated argument is itself diagnostic "
+            "material. When the input is a bare directive, diagnose the PRESUPPOSED noetic "
+            "frame of the directive's named target -- the worldview, claim-space, or "
+            "position the directive points at -- exactly as you would diagnose an explicit "
+            "argument's frame. Select `selected_n_frame` for that presupposed target frame, "
+            "and build `burden_floor` from the burdens a fair, sourced treatment of that "
+            "target would need to discharge (definition/scope, the target's own strongest "
+            "self-understanding, live tensions or objections it must answer, etc.). Do NOT "
+            "return `status: fail` merely because the raw input lacks a stated claim, "
+            "premise, contested proposition, or fully disambiguated sense of the named "
+            "target; that lack of articulated structure does not make the input undiagnosable "
+            "-- it is exactly what frame-selection-from-presupposition exists to handle. "
+            "Reserve `status: fail` for inputs that name no diagnosable target at all "
+            "(e.g. empty input, pure noise), not for bare directives that name a real "
+            "worldview, claim, or target. "
             "The canonical `selected_n_frame` field must be a string token. "
             "The canonical `burden_floor` field must be a JSON array of bare "
             "canonical burden-id strings only, such as [\"B1\", \"B2\"]. Do not put "
@@ -322,6 +346,23 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "`act_targets`, `act_burdens`, `act_body_refs`, and `act_rows` must be JSON "
             "arrays of strings. `act_targets` and `act_burdens` must use canonical "
             "burden-id strings only, such as [\"B1\"], not descriptive burden labels. "
+            "Every Stage 03 `route_targets` burden id MUST be covered by exactly one of two "
+            "canonical Stage 04 fields: `act_targets` (burdens ACTed this stage) or "
+            "`held_act_targets` (burdens routed but deliberately NOT ACTed this stage, e.g. "
+            "because Stage 03 marked the owner route HOLD/PARTIAL or preemptive). "
+            "`held_act_targets` is the ONLY canonical key the harness reads for withheld "
+            "burdens; non-canonical keys such as `held`, `deferred`, `skipped`, or "
+            "`not_acted` are NOT read by the checker and will leave the route_target "
+            "uncovered, which fails the handoff. `held_act_targets` must be a JSON array of "
+            "bare canonical burden-id strings, such as [\"B3\"]. If richer per-burden "
+            "reasoning is useful, add it in `held_act_details` as a JSON array of objects "
+            "each carrying `burden_id` and a `reason` string; every `held_act_details[].burden_id` "
+            "must also appear in `held_act_targets`. Do not substitute `held_act_details` for "
+            "`held_act_targets`, and do not invent a differently-named top-level field for "
+            "withheld burdens. Stage 04 `status` may remain `pass` when the withholding was "
+            "already backed by a Stage 03 HOLD/PARTIAL owner route; only mark Stage 04 "
+            "held/partial when Stage 04 itself is newly declining to ACT a route Stage 03 "
+            "marked executable. "
             "Every ACT row must be an exact canonical row beginning "
             "with `⟦ACT`, containing `body_ref=`, `Δ=`, and `Land(`, and closing with "
             "`⟧`. The token immediately after `⟦ACT` is the public owner-qualified "
@@ -424,13 +465,21 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "no_new_resultant|loopbreak|hold_partial), `mrp_resultant`, `graph_delta` (`none` or "
             "one ASCII edge `Bn -> Bm`), `preemption_basis` (none|graph-bound|commitment-bound|"
             "framework-bound), `route` (STOP|HOLD|RECURSE|LoopBreak(∇×T)), and `boundary` "
-            "(must begin `T_lang does not imply guaranteed uptake`). `pressure_activations` must "
-            "be an object with exactly the six slots freeze-landed-move, dependency-tug, "
-            "hidden-framework-recoil, entailment-pressure, doubt-churn-guard, and "
-            "reorientation-reminder; every slot value must record the real pressure read for THIS "
-            "burden and begin with a SPECIFIC routed owner/TTP id (for example "
-            "`authority-order-repair`, `source-lineage`, `M7`, or `FPD`) or the literal "
-            "`pressure class:` / `coverage gap:` that carried it. Bare family aliases "
+            "(must begin `T_lang does not imply guaranteed uptake`). "
+            "EVERY `per_burden_reread[]` entry MUST ALSO carry a `pressure_activations` key: this "
+            "is not optional and is not satisfied by folding pressure language into `reread` or "
+            "`route_gradient` prose. `pressure_activations` must be a JSON object carrying EXACTLY "
+            "these six fixed slots, spelled exactly as shown, and no others: "
+            "`freeze-landed-move`, `dependency-tug`, `hidden-framework-recoil`, "
+            "`entailment-pressure`, `doubt-churn-guard`, `reorientation-reminder`. Do not omit any "
+            "slot and do not add extra slots. Every slot value must be a non-empty string "
+            "recording the real pressure read for THIS burden (never null, never omitted for "
+            "brevity); if a slot is honestly not load-bearing for this burden, still fill it with "
+            "an explicit non-load-bearing reason such as `pressure class: no dependency tug remains "
+            "for this burden` rather than leaving the key out. Every slot value must begin with a "
+            "SPECIFIC routed owner/TTP id (for example `authority-order-repair`, `source-lineage`, "
+            "`M7`, or `FPD`) or the literal `pressure class:` / `coverage gap:` that carried it. "
+            "Bare family aliases "
             "(`SOURCE`, `AUTHORITY`, `OWNER`, `OP`, `MRP`, `DEFINITION`, `RESTORATION`) are loose "
             "aliases and are REJECTED as owner/TTP ids: resolve each to its specific routed id "
             "(e.g. `SOURCE` -> `authority-order-repair` or `source-lineage`) or begin the value "
@@ -440,6 +489,12 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "put semicolons or line breaks inside either value. Stable requires route STOP and "
             "graph_delta none; genuine-dependent requires RECURSE and a graph edge; "
             "partial-real requires HOLD; any graph edge requires a non-none preemption_basis. "
+            "Any entry whose `finding` is `genuine-dependent` MUST carry an explicit closure-graph "
+            "edge naming the dependent burden and its closure target: set `graph_delta` to the "
+            "concrete ASCII edge `Bn -> Bm` (this burden -> the burden that closes/depends on it), "
+            "`route` to `RECURSE`, and `preemption_basis` to a non-none value (normally "
+            "`graph-bound`). A `genuine-dependent` finding with `graph_delta: none` or a missing "
+            "edge is invalid and will be rejected downstream by the mid-reread pressure checker. "
             "The required boundary prefix is allowed and required; "
             "do not write affirmative uptake-guarantee claims such as `T_lang guarantees uptake`, "
             "`guaranteed T_lang uptake`, or `guarantees interlocutor uptake` in any "
@@ -449,6 +504,15 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "Instead set `route_result_type` to `held_burden_activation`, `finding` to "
             "`genuine-dependent`, `route` to `RECURSE`, `graph_delta` to the concrete ASCII edge "
             "`Bn -> Bm`, and `preemption_basis` to `graph-bound` for the next already-held burden. "
+            "`no_new_resultant_proof.proved` may be `true` ONLY when `unresolved_burdens` (both the "
+            "stage-level list and any `no_new_resultant_proof.unresolved_burdens` list) is empty AND "
+            "every burden's terminal state is a closed state (landed, cleared, or "
+            "discharged-as-derivative). If ANY burden remains unresolved, held, or carried "
+            "(held-with-reason, carried-PARTIAL, carried-RECURSE), `proved` MUST be `false` and "
+            "that burden id MUST appear in `unresolved_burdens`. Setting `proved: true` while "
+            "`unresolved_burdens` is non-empty, or while any burden is still held/carried, is a "
+            "direct contradiction and is rejected; a genuinely open case must report `proved: "
+            "false` with the honest `unresolved_burdens` list, not a premature `proved: true`. "
             "Return one syntactically valid JSON object only: every array item must have exactly "
             "one object-closing brace before a comma, every string quote inside a value must be "
             "escaped, and no prose or second object may appear outside the root object. "
@@ -503,6 +567,23 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "supplemental and must not replace the top-level Stage 06 field. Any NAR row "
             "carrying `mrp_route_result_type` must match the matching Stage 05 "
             "`per_burden_reread[].route_result_type`. "
+            "EVERY Stage 02 `live_registers` token MUST appear as a key in `register_deltas` "
+            "(or in a `register_deltas[]` list row's `register` field) -- never silently "
+            "dropped. This is a coverage floor the downstream field_witness convergence "
+            "checker enforces per register, not a stylistic nicety. For each live register, "
+            "the `register_deltas` value must do ONE of two things: (1) name at least one "
+            "burden id from `burden_floor` in the delta text or list (e.g. "
+            "`\"kappa\": \"B2 dependency chain closed with no live remainder\"`), which is how "
+            "the harness credits that register with burden-floor coverage -- a value with no "
+            "burden id embedded in it earns NO coverage even if it is otherwise a real "
+            "sentence; or (2) when the register genuinely carries no burden-floor weight in "
+            "this case, say so explicitly using one of the phrases `non-load-bearing`, `not "
+            "load-bearing`, `outside scope`, `held-with-reason`, or `carried-PARTIAL` "
+            "directly alongside that register's name, e.g. "
+            "`\"kappa\": \"non-load-bearing: no dependency/collapse burden remains open\"`. "
+            "A `register_deltas` entry that only narrates state in prose with no burden id "
+            "and no explicit non-load-bearing/HOLD/PARTIAL phrase is NOT sufficient coverage "
+            "even though it is a non-empty string. "
             "If Stage 06 cannot honestly mirror ACT/terminal evidence, "
             "return status fail or partial; do not invent witness proof."
         ),
@@ -5015,6 +5096,8 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- `𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP` is required in the visible ledger; JSON `B_total` must equal JSON `B_LA` plus `B_MRP` in order.",
         "- `coverage_proof.dependency_graph` is required with `nodes`, `edges`, `roots`, and boolean `acyclic`.",
         "- `coverage_proof.diagnostic_completeness.live_registers` and `normalized_activation_record.live_registers` must include every Layer A live register, including `kappa` when Layer A makes it load-bearing. If a Layer A register is non-load-bearing or held, state that explicitly instead of omitting it from the mirrors.",
+        "- `coverage_proof.diagnostic_completeness.coverage` must carry a key for EVERY Layer A live register among Omega/xi/mu/kappa/heart, mapping it to at least one burden id from `B_LA`; a live register silently missing from the coverage mapping fails the field-witness convergence checker (`diagnostic_completeness omits live register ... coverage`). Each mapped burden's `nodes[]` payload must carry that register in `register_types` (or keyword-matching terminal/basis evidence), otherwise the mapping fails as `without matching burden type`.",
+        "- Every live register must additionally have burden-floor coverage visible in the witness itself: either at least one `B_LA` node typed with that register, or an explicit `non-load-bearing` / `not load-bearing` / `outside scope` / `held-with-reason` / `carried-PARTIAL` statement naming that register in the visible output. A live register with neither is rejected (`live register ... lacks ... burden-floor coverage or explicit non-load-bearing/HOLD/PARTIAL proof`); never silently omit a Stage 02 live register from the register/coverage mirror.",
         "- If the dependency edge list is empty and `B_total` has multiple nodes, the visible graph line must declare every node as a parallel root, for example `¹B (root) || ²B (root)`, and JSON `parallel_groups` must mirror the full node group.",
         "- If the dependency edge list is non-empty, the visible graph must declare every root node plus every actual edge, for example `¹B (root); ²B (root); ⁴B → ⁵B`; never convert an edgeful graph into `¹B (root) → ⁵B` unless Stage 05 actually records that edge.",
         "- A generated `B_MRP` burden must appear in `generated_burdens[]`, `nodes[]`, `B_total`, `terminal_states`, `coverage_proof.dependency_graph.nodes`, and `normalized_activation_record.per_burden[]` with `generation_depth`, `track`, and `generated_by` provenance.",
@@ -6498,6 +6581,71 @@ def stage03_owner_operation_guidance() -> str:
     return "\n".join(lines)
 
 
+def stage04_owner_operation_pairs(stage03: dict[str, Any]) -> list[tuple[str, str]]:
+    pairs: list[tuple[str, str]] = []
+    for route in stage03.get("owner_routes") or []:
+        if not isinstance(route, dict):
+            continue
+        owner = non_empty_string(route.get("owner_id") or route.get("owner"))
+        operation = non_empty_string(route.get("operation") or route.get("owner_operation"))
+        if owner and operation:
+            pairs.append((owner, operation))
+    return ordered_unique_pairs(pairs)
+
+
+def ordered_unique_pairs(pairs: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    seen: set[tuple[str, str]] = set()
+    result: list[tuple[str, str]] = []
+    for pair in pairs:
+        if pair not in seen:
+            seen.add(pair)
+            result.append(pair)
+    return result
+
+
+def stage04_register_axis_guidance(stage03: dict[str, Any]) -> str:
+    """Surface the per-owner(.operation) approved register-axis floor.
+
+    This is generated mechanically from register_axis_contract.py --
+    OWNER_REGISTER_AXIS_FLOORS and OWNER_OPERATION_REGISTER_AXIS_FLOORS -- the
+    same single source of truth check_staged_runtime_handshake.py reads via
+    register_axis_errors(). Do not hand-copy axis sets into prose here; if the
+    floor changes, this guidance changes with it automatically.
+    """
+    pairs = stage04_owner_operation_pairs(stage03)
+    owners_seen: list[str] = []
+    for owner, _operation in pairs:
+        if owner not in owners_seen:
+            owners_seen.append(owner)
+    for route in stage03.get("owner_routes") or []:
+        if isinstance(route, dict):
+            owner = non_empty_string(route.get("owner_id") or route.get("owner"))
+            if owner and owner not in owners_seen:
+                owners_seen.append(owner)
+    relevant_owners = [owner for owner in owners_seen if owner in OWNER_REGISTER_AXIS_FLOORS]
+    relevant_pairs = [pair for pair in pairs if pair in OWNER_OPERATION_REGISTER_AXIS_FLOORS]
+    if not relevant_owners and not relevant_pairs:
+        return ""
+    lines = [
+        "",
+        "Stage 04 approved register_axis floor per owner (source of truth: "
+        "register_axis_contract.py; the handshake checker rejects any axis not listed here "
+        "for the selected owner/operation):",
+    ]
+    for owner, operation in relevant_pairs:
+        axes = ", ".join(sorted(OWNER_OPERATION_REGISTER_AXIS_FLOORS[(owner, operation)]))
+        lines.append(f"- `{owner}.{operation}` register_axis floor: {axes}")
+    for owner in relevant_owners:
+        axes = ", ".join(sorted(OWNER_REGISTER_AXIS_FLOORS[owner]))
+        lines.append(f"- `{owner}` register_axis floor (all operations without a more specific floor above): {axes}")
+    lines.append(
+        "- Do not use a register_axis outside the listed floor for that owner/operation, even "
+        "if the burden's diagnostic content also touches another register; HOLD/PARTIAL the "
+        "row instead of borrowing an unapproved axis."
+    )
+    return "\n".join(lines)
+
+
 def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> str:
     stage03 = stage_by_id(previous_stages, "stage-03-routing-owner-gate")
     if not isinstance(stage03, dict):
@@ -6533,8 +6681,9 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
             and not canonical_delta_owner(split_route_owner_operation(owner)[0])
         ]
     )
+    axis_guidance = stage04_register_axis_guidance(stage03)
     if not families and not unmapped:
-        return ""
+        return axis_guidance
     lines = [
         "",
         "Stage 04 controlled delta_result vocabulary:",
@@ -6618,6 +6767,8 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
                 "Use `M9.predication-repair` or `M9.sense-split` in `[owner.operation]`, "
                 "then put the state-change token in the `Δ=...:<delta_result>` slot."
             )
+    if axis_guidance:
+        lines.append(axis_guidance)
     return "\n".join(lines)
 
 

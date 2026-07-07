@@ -1,0 +1,152 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "stage05-pressure-activations-missing",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_order": [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir",
+    "stage-03-routing-owner-gate",
+    "stage-04-burden-execution-act",
+    "stage-05-mrp-reread-terminal-state"
+  ],
+  "stages": [
+    {
+      "id": "stage-01-intake",
+      "status": "pass",
+      "produces": ["input_digest"],
+      "requires": [],
+      "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "stage-02-layer-a-diagnostic-ir",
+      "status": "pass",
+      "produces": ["burden_floor", "selected_n_frame", "live_registers"],
+      "requires": ["input_digest"],
+      "burden_floor": ["B1", "B2", "B3"],
+      "selected_n_frame": "trinitarian-identity-counting-pressure",
+      "live_registers": ["m", "sigma", "xi"]
+    },
+    {
+      "id": "stage-03-routing-owner-gate",
+      "status": "pass",
+      "produces": ["route_targets", "owner_routes"],
+      "requires": ["burden_floor"],
+      "route_targets": ["B1", "B2", "B3"],
+      "owner_routes": [
+        {"burden_id": "B1", "owner_id": "FPD", "operation": "foreign-premise-detection"},
+        {"burden_id": "B2", "owner_id": "M9", "operation": "predication-repair"},
+        {"burden_id": "B3", "owner_id": "do-christian-extensions", "operation": "model-identification"}
+      ]
+    },
+    {
+      "id": "stage-04-burden-execution-act",
+      "status": "pass",
+      "produces": ["act_targets", "act_body_refs", "act_rows"],
+      "requires": ["route_targets", "owner_routes"],
+      "act_targets": ["B1", "B2", "B3"],
+      "act_burdens": ["B1", "B2", "B3"],
+      "act_body_refs": ["¹B₁", "²B₁", "³B₁"],
+      "act_rows": [
+        "⟦ACT ¹B₁[FPD.foreign-premise-detection] :: π=unjustified-scope-shift :: body_ref=¹B₁ :: Δ=Δ¹B:foreign-premise-exposed :: Land(B1)⟧",
+        "⟦ACT ²B₁[M9.predication-repair] :: π=unaddressed-referent-distinction :: body_ref=²B₁ :: Δ=Δ²B:referent-separated :: Land(B2)⟧",
+        "⟦ACT ³B₁[do-christian-extensions.model-identification] :: π=tritheism-or-shared-nature-gap :: body_ref=³B₁ :: Δ=Δ³B:trinitarian-model-identified :: Land(B3)⟧"
+      ]
+    },
+    {
+      "id": "stage-05-mrp-reread-terminal-state",
+      "status": "pass",
+      "produces": ["terminal_states", "dependency_graph_edges", "no_new_resultant_proof", "per_burden_reread"],
+      "requires": ["act_rows"],
+      "terminal_states": {
+        "B1": "landed",
+        "B2": "landed",
+        "B3": "landed"
+      },
+      "dependency_graph_edges": [],
+      "no_new_resultant_proof": {
+        "proved": true,
+        "basis": "All three routed burdens landed with no generated MRP burden remaining live.",
+        "unresolved_burdens": []
+      },
+      "per_burden_reread": [
+        {
+          "burden_id": "B1",
+          "target": "¹B / unjustified-scope-shift burden",
+          "reread": "R(H,Δ): held routes rechecked: none; live remainder: none; release/next: STOP after ¹B.",
+          "landed_delta": "Δ¹B:foreign-premise-exposed",
+          "route_gradient": "FPD.foreign-premise-detection closes the scope-shift pressure with no downstream carry.",
+          "divergence": "settled / foreign premise exposed and bounded",
+          "curl": "null / no circular dependency remains",
+          "finding": "stable",
+          "route_result_type": "no_new_resultant",
+          "mrp_resultant": "no new resultant burden after B1",
+          "graph_delta": "none",
+          "preemption_basis": "none",
+          "route": "STOP",
+          "boundary": "T_lang does not imply guaranteed uptake; this reread records runtime release state only."
+        },
+        {
+          "burden_id": "B2",
+          "target": "²B / unaddressed-referent-distinction burden",
+          "reread": "R(H,Δ): held routes rechecked: none; live remainder: none; release/next: STOP after ²B.",
+          "landed_delta": "Δ²B:referent-separated",
+          "route_gradient": "M9.predication-repair closes the referent-distinction pressure with no downstream carry.",
+          "divergence": "settled / referent separation resolved",
+          "curl": "null / no circular dependency remains",
+          "finding": "stable",
+          "route_result_type": "no_new_resultant",
+          "mrp_resultant": "no new resultant burden after B2",
+          "graph_delta": "none",
+          "preemption_basis": "none",
+          "route": "STOP",
+          "boundary": "T_lang does not imply guaranteed uptake; this reread records runtime release state only."
+        },
+        {
+          "burden_id": "B3",
+          "target": "³B / tritheism-or-shared-nature-gap burden",
+          "reread": "R(H,Δ): held routes rechecked: none; live remainder: none; release/next: STOP after ³B.",
+          "landed_delta": "Δ³B:trinitarian-model-identified",
+          "route_gradient": "do-christian-extensions.model-identification closes the shared-nature pressure with no downstream carry.",
+          "divergence": "settled / tritheism reading foreclosed by shared-nature identification",
+          "curl": "null / no circular dependency remains",
+          "finding": "stable",
+          "route_result_type": "no_new_resultant",
+          "mrp_resultant": "no new resultant burden after B3",
+          "graph_delta": "none",
+          "preemption_basis": "none",
+          "route": "STOP",
+          "boundary": "T_lang does not imply guaranteed uptake; this reread records runtime release state only."
+        }
+      ]
+    }
+  ],
+  "handoffs": [
+    {"from": "stage-01-intake", "to": "stage-02-layer-a-diagnostic-ir", "checks": ["input_boundary_preserved"], "status": "pass"},
+    {"from": "stage-02-layer-a-diagnostic-ir", "to": "stage-03-routing-owner-gate", "checks": ["burden_floor_to_route_targets", "live_registers_present", "n_frame_present"], "status": "pass"},
+    {"from": "stage-03-routing-owner-gate", "to": "stage-04-burden-execution-act", "checks": ["owner_eligibility_backed", "route_targets_to_act_targets"], "status": "pass"},
+    {"from": "stage-04-burden-execution-act", "to": "stage-05-mrp-reread-terminal-state", "checks": ["act_body_refs_present", "act_rows_present"], "status": "pass"}
+  ],
+  "non_claims": {
+    "not_model_smoke": false,
+    "not_broad_model_behavior": true,
+    "not_broad_model_matrix": true,
+    "not_runtime_default_emission_proof": true,
+    "not_arbitrary_nl_ir_parser": true,
+    "not_package_provenance": true,
+    "not_guaranteed_t_lang_uptake": true,
+    "not_graphify_or_activegraph_proof": true
+  },
+  "stage_scope": {
+    "stop_after_stage": "stage-05-mrp-reread-terminal-state",
+    "stage_count": 5,
+    "not_release_output": true,
+    "not_verifier_sidecars": true
+  },
+  "model_scope": {
+    "type": "focused-current-skill-stage-smoke",
+    "case_count": 1,
+    "case_family": "trinitarian-j173-pressure-activations-omission",
+    "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "stage04-axis-not-approved-for-owner",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_scope": {
+    "stop_after_stage": "stage-04-burden-execution-act",
+    "stage_count": 4,
+    "not_release_output": true,
+    "not_verifier_sidecars": true
+  },
+  "model_scope": {
+    "type": "focused-current-skill-stage-smoke",
+    "case_count": 1,
+    "case_family": "tst-lillard-do-second-loop-tau-axis-negative",
+    "retained_replay_target": "tests/staged-runtime-handshake/invalid/stage04-do-second-loop-punishment-h-axis.json"
+  },
+  "stage_order": [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir",
+    "stage-03-routing-owner-gate",
+    "stage-04-burden-execution-act"
+  ],
+  "stages": [
+    {
+      "id": "stage-01-intake",
+      "status": "pass",
+      "produces": ["input_digest"],
+      "requires": [],
+      "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "stage-02-layer-a-diagnostic-ir",
+      "status": "pass",
+      "produces": ["burden_floor", "selected_n_frame", "live_registers"],
+      "requires": ["input_digest"],
+      "burden_floor": ["B1", "B2", "B3"],
+      "selected_n_frame": "N_fitri_moral_worship_objection",
+      "live_registers": ["tau", "kappa", "H"]
+    },
+    {
+      "id": "stage-03-routing-owner-gate",
+      "status": "pass",
+      "produces": ["route_targets", "owner_routes"],
+      "requires": ["burden_floor"],
+      "route_targets": ["B1", "B2", "B3"],
+      "owner_routes": [
+        {"burden_id": "B1", "owner_id": "do-christian-extensions", "operation": "model-identification"},
+        {"burden_id": "B2", "owner_id": "do-second-loop", "operation": "accountability-hujjah-compression"},
+        {"burden_id": "B3", "owner_id": "do-attribute-precision", "operation": "attribute-precision"}
+      ]
+    },
+    {
+      "id": "stage-04-burden-execution-act",
+      "status": "pass",
+      "produces": ["act_targets", "act_body_refs", "act_rows"],
+      "requires": ["route_targets", "owner_routes"],
+      "act_targets": ["B1", "B2", "B3"],
+      "act_burdens": ["B1", "B2", "B3"],
+      "act_body_refs": ["¹B₁", "²B₁", "³B₁"],
+      "act_rows": [
+        "⟦ACT ¹B₁[do-christian-extensions.model-identification] :: π=doctrinal-representation-burden :: body_ref=¹B₁ :: Δ=ΔB1:fan-out-route-named :: Land(B1)⟧",
+        "⟦ACT ²B₁[do-second-loop.accountability-hujjah-compression] :: π=theodicy-and-hiddenness-burden :: body_ref=²B₁ :: Δ=ΔB2:accountability-hujjah-narrowed :: Land(B2)⟧",
+        "⟦ACT ³B₁[do-attribute-precision.attribute-precision] :: π=interlocutor-position-representation-burden :: body_ref=³B₁ :: Δ=ΔB3:attribute-precision-typed :: Land(B3)⟧"
+      ],
+      "act_row_details": [
+        {"body_ref": "¹B₁", "burden_id": "B1", "owner_id": "do-christian-extensions", "operation": "model-identification", "register_axis": "N", "delta_result": "fan-out-route-named"},
+        {"body_ref": "²B₁", "burden_id": "B2", "owner_id": "do-second-loop", "operation": "accountability-hujjah-compression", "register_axis": "τ", "delta_result": "accountability-hujjah-narrowed"},
+        {"body_ref": "³B₁", "burden_id": "B3", "owner_id": "do-attribute-precision", "operation": "attribute-precision", "register_axis": "σ", "delta_result": "attribute-precision-typed"}
+      ]
+    }
+  ],
+  "handoffs": [
+    {"from": "stage-01-intake", "to": "stage-02-layer-a-diagnostic-ir", "checks": ["input_boundary_preserved"], "status": "pass"},
+    {"from": "stage-02-layer-a-diagnostic-ir", "to": "stage-03-routing-owner-gate", "checks": ["burden_floor_to_route_targets", "live_registers_present", "n_frame_present"], "status": "pass"},
+    {"from": "stage-03-routing-owner-gate", "to": "stage-04-burden-execution-act", "checks": ["owner_eligibility_backed", "route_targets_to_act_targets"], "status": "pass"}
+  ],
+  "non_claims": {
+    "not_model_smoke": false,
+    "not_broad_model_behavior": true,
+    "not_broad_model_matrix": true,
+    "not_runtime_default_emission_proof": true,
+    "not_arbitrary_nl_ir_parser": true,
+    "not_package_provenance": true,
+    "not_guaranteed_t_lang_uptake": true,
+    "not_graphify_or_activegraph_proof": true
+  }
+}

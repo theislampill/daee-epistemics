@@ -1,0 +1,9 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "genuine-dependent-witness-graph-all-roots.md",
+  "kind": "invalid-single-signature",
+  "expected_error_substrings": [
+    "genuine-dependent finding requires closure graph edge"
+  ],
+  "provenance": "Producer-side reproduction of the codex/trinitarian-j173 v0.4.6.0-rc-matrix cycle-02 render defect: per-block Graph delta claimed a B1->B2->B3->B4 chain but the Closure/Reconstruction Witness rendered every burden as an independent root."
+}
