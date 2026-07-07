@@ -1,0 +1,11 @@
+{
+ "schema": "expected-diagnostic-v1",
+ "fixture": "held-curl-no-circularity-reason.md",
+ "kind": "composite-historical",
+ "expected_error_substrings": [
+  "contradicts a no-loop/no-circularity reason"
+ ],
+ "provenance": "Producer-side reproduction of the codex/trinitarian-j173 v0.4.6.0-rc-matrix cycle-03 curl-consistency defect: the per-block Field diagnostics line phrased a held curl as \"no loop is closed at ...\", a no-loop-EXISTS claim that contradicts a held/non-null curl head.",
+ "primary_signature": "held ∇×T contradicts a no-loop/no-circularity reason",
+ "note": "Fails with 5 distinct error lines when checked in isolation (the named primary signature plus graph-root-marking/divergence/curl/closure side effects of the minimal two-burden stub); the primary intended signature is the curl/no-circularity contradiction rule. Labeled composite-historical per docs/fixture-taxonomy.md."
+}

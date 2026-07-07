@@ -245,6 +245,50 @@ TRANSPORT_TIMEOUT_RE = re.compile(
     r"network error|temporarily unavailable|service unavailable|gateway timeout"
     r")\b"
 )
+# RC-matrix cycle-03 Lane 4: minimum content floor for a section/expansion response, in bytes.
+# Justified by the retained-corpus/self-test floor: the smallest genuine (non-refusal,
+# non-tool-echo) section-expansion response actually observed across the cycle-03 matrix is
+# tools/../.daee/v0.4.6.0-rc-matrix/cycle-03/claude-sonnet-5/trinitarian-j173/release-section-expansions/06-act-body-4-expansion-1.md
+# at 482 bytes of real diagnostic prose; every confirmed bad response (tool-invocation echoes,
+# 1-byte/whitespace-only stdout) in that same matrix was under 300 bytes. 200 bytes sits below
+# the smallest known-good response and above the largest confirmed-bad one, so it flags the bad
+# shapes without clipping legitimate short expansions.
+TRANSPORT_MIN_CONTENT_BYTES = 200
+# A tool-invocation echo is model output that leaked a tool-call payload instead of governed
+# section prose: either a JSON tool-call object (`{"command": ..., "description": ...}`, the
+# exact shape of the 172-byte artifact at
+# .daee/v0.4.6.0-rc-matrix/cycle-03/claude-sonnet-5/tst-lillard/release-sections/09-closing-formulation.md)
+# or an inline pseudo-XML tool tag (`<Bash>...</Bash>`, `="Bash">...`), both generalized here to
+# detect the shape rather than any one literal command string.
+TOOL_INVOCATION_ECHO_RE = re.compile(
+    r'(?is)\{\s*"command"\s*:\s*"|'
+    r"</?(?:bash|shell|tool_use|function_calls?|invoke|antml:invoke)\b|"
+    r'="(?:bash|shell)">'
+)
+
+
+def classify_response_content_shape(exit_code: int, output_text: str) -> dict[str, Any]:
+    """Classify a zero-exit-code model response by CONTENT shape, not just process exit status.
+
+    RC-matrix cycle-03 Lane 4 root cause: expansion/section calls returned exit code 0 with
+    stdout that was empty, whitespace-only, or a leaked tool-invocation echo instead of governed
+    section prose, and classify_transport_failure alone always reports retryable=False for
+    exit_code == 0 (it only inspects transport-log markers). That let a 1-byte or 172-byte
+    non-answer be recorded with status:pass. This classifier is content-shape-only and must be
+    combined with classify_transport_failure's log-based signal, not replace it.
+    """
+    stripped = output_text.strip()
+    is_empty = not stripped
+    below_floor = bool(stripped) and len(output_text.encode("utf-8")) < TRANSPORT_MIN_CONTENT_BYTES
+    is_tool_echo = bool(TOOL_INVOCATION_ECHO_RE.search(output_text))
+    retryable = exit_code == 0 and (is_empty or below_floor or is_tool_echo)
+    return {
+        "content_empty": is_empty,
+        "content_below_min_bytes": below_floor,
+        "content_min_bytes_floor": TRANSPORT_MIN_CONTENT_BYTES,
+        "tool_invocation_echo": is_tool_echo,
+        "retryable": retryable,
+    }
 
 STAGE_SPECS: dict[str, dict[str, Any]] = {
     "stage-01-intake": {
@@ -4185,6 +4229,38 @@ def mrp_resultant_rows_from_entries(entries: list[dict[str, Any]]) -> list[dict[
     ]
 
 
+def graph_delta_edges_from_entries(entries: list[dict[str, Any]]) -> list[dict[str, str]]:
+    """Mirror check_mid_reread_pressure's witness-graph-edge rule (tools/check_mid_reread_pressure.py:867,
+    'genuine-dependent finding requires closure graph edge') by deriving, from each per-block
+    `graph_delta`, the exact edge the RENDERED Burden dependency graph must carry.
+
+    Root cause this guards: the cycle-02 fix made Stage 05 `per_burden_reread` records carry a
+    non-none `graph_delta` (e.g. `B1 -> B2`) for every `genuine-dependent` block, but the separate
+    Stage 05 JSON field `dependency_graph_edges` can still be left empty by the producer. The
+    Stage-07 witness renderer only reads `dependency_graph_edges`, so an empty array silently
+    falls back to an all-parallel-roots graph even though every block prose declares a chain --
+    exactly the codex khaybar/secularism cycle-03 failure shape. This helper gives the Stage-07
+    prompt a concrete, checker-shaped edge list to require regardless of whether
+    `dependency_graph_edges` was separately populated.
+    """
+    edges: list[dict[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+    for entry in entries:
+        graph_delta = str(entry.get("graph_delta") or "").strip()
+        if not graph_delta or graph_delta.lower() == "none":
+            continue
+        match = PUBLIC_ASCII_EDGE_RE.search(graph_delta)
+        if not match:
+            continue
+        source, target = f"B{match.group(1)}", f"B{match.group(2)}"
+        key = (source, target)
+        if key in seen:
+            continue
+        seen.add(key)
+        edges.append({"from": source, "to": target, "type": "held_burden_activation"})
+    return edges
+
+
 def self_test_reread_entry(
     burden_id: str,
     *,
@@ -4477,6 +4553,7 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         *[f"  {line}" for line in ledger_lines],
         "- `field_witness.formal_reread_states[]` and `field_witness.mrp_resultants[]` must mirror the Stage 05 per_burden_reread records 1:1: same burden order, `route_result_type`, graph delta, and route; `formal_reread_states[].delta` preserves the public `landed_delta` notation while also carrying machine `Delta(Bn)` identity.",
         "- Do not rely on a later `MRP(ⁿB): ...` closure-ledger row as the only public MRP evidence; the harness-injected blocks carry the public per-burden reread proof.",
+        "- The harness-injected `[Mid-Reread Pressure]` blocks above are rendered verbatim from Stage 05 `per_burden_reread[].curl`; if any of those curl reasons phrase a `held`/`non-null` curl head as \"no loop is closed\"/\"no circularity remains\"/\"not a loop\" (a no-loop-EXISTS claim), that per-block record contradicts itself (check_mid_reread_pressure.py curl_diagnostic_errors: 'held/non-null curl contradicts a no-loop/no-circularity reason') and must not be requested for regeneration with that phrasing; a held/non-null curl must instead say the loop/dependency has not yet been broken/closed/resolved (e.g. \"no loop break has landed yet\" or \"the dependency loop remains open at ...\"), naming the concrete next burden that keeps it open.",
     ]
     return "\n".join(lines)
 
@@ -4588,6 +4665,7 @@ def stage07_act_contract_guidance(
             "- For compact `typed` deltas, the public `Result/state-change:` facet must include checker-stable state-change language such as `State change: ... classified`, `... exposed`, or `no longer treated as ...`; the delta token alone is not a state change.",
             "- For `proof-method-audit.proof-family-and-carrier-audit`, the dereferenced body must audit the proof family/carrier by naming the premise or predicate set, inference grammar, conclusion scope, and visible state change. Use a parser-stable result phrase such as `State change: the proof carrier is classified as a proof carrier whose premise set, inference grammar, and conclusion scope are no longer treated as a neutral proof.`",
             "- For `proof-method-audit.proof-route-status-audit`, the dereferenced body must identify the proof forum, standard of proof, tribunal/burden-function, proof eligibility, supporting texts, and premise/inference/conclusion scope. Generic proof-route labels do not Land.",
+            "- No-interior-state boundary (checker rule: check_manual_smoke_render_contract.py INTERIOR_CERTIFICATION_RE, 'governed output positively certifies an interior state'): when scoping what an inference/conclusion may NOT reach, never write the literal collocation `<referent> is/are insincere|lying|a hypocrite|outside the faith|kafir|munafiq` -- the checker flags that collocation even inside a negated boundary sentence such as \"may not infer that the named person is insincere\". Rephrase every such boundary as a positive scope limit instead of a negated interior-state predication: say the inference/conclusion \"may not certify the referent's sincerity, insincerity, interior state, or standing before God\", or \"is not licensed to reach a verdict on the referent's heart/interior state\", never `<referent> is <interior-state-word>` in any polarity. This restates without narrowing the underlying boundary: concealment-mode diagnostics and inference-grammar scoping remain fully in force and must still name the excluded inference, just without the flagged collocation shape.",
             "- For `pattern-profiling.loaded-label-carrier-audit`, the dereferenced body must identify the label as a noetic/worldview/identity carrier, expose the hidden proof/source/authority rule it transmits, and show `carrier-function-typed` as a burden-local state transition. Owner and delta labels alone do not Land.",
             "- For `pattern-profiling.loaded-label-carrier-audit`, the `Result/state-change:` facet must say the loaded label carrier function is exposed or classified; do not rely on `carrier-function-typed` by itself.",
             "- For `pattern-profiling.proof-packet-reconstruction`, the dereferenced body must reconstruct the proof packet, expose hidden source moves, predicate transfers, conclusion jumps, or forum switches, and show `proof-packet-reconstructed` as a burden-local state transition. Owner and delta labels alone do not Land.",
@@ -4757,6 +4835,14 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
     terminal_states = {burden: str(terminal_states.get(burden) or "landed") for burden in b_total}
     generated_record_by_id = {str(record.get("id")): dict(record) for record in generated_records if record.get("id")}
     edges = stage05_dependency_edges(stage05)
+    edges_from_graph_delta = graph_delta_edges_from_entries(stage05_per_burden_entries(stage05))
+    missing_delta_edges = [
+        edge
+        for edge in edges_from_graph_delta
+        if (edge["from"], edge["to"]) not in {(existing["from"], existing["to"]) for existing in edges}
+    ]
+    if missing_delta_edges:
+        edges = [*edges, *missing_delta_edges]
     reread_state = stage05.get("reread_state") if isinstance(stage05, dict) else {}
     if not isinstance(reread_state, dict):
         reread_state = {}
@@ -5101,6 +5187,13 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- Every live register must additionally have burden-floor coverage visible in the witness itself: either at least one `B_LA` node typed with that register, or an explicit `non-load-bearing` / `not load-bearing` / `outside scope` / `held-with-reason` / `carried-PARTIAL` statement naming that register in the visible output. A live register with neither is rejected (`live register ... lacks ... burden-floor coverage or explicit non-load-bearing/HOLD/PARTIAL proof`); never silently omit a Stage 02 live register from the register/coverage mirror.",
         "- If the dependency edge list is empty and `B_total` has multiple nodes, the visible graph line must declare every node as a parallel root, for example `¹B (root) || ²B (root)`, and JSON `parallel_groups` must mirror the full node group.",
         "- If the dependency edge list is non-empty, the visible graph must declare every root node plus every actual edge, for example `¹B (root); ²B (root); ⁴B → ⁵B`; never convert an edgeful graph into `¹B (root) → ⁵B` unless Stage 05 actually records that edge.",
+        "- Witness-graph-mirror law (this is the check_mid_reread_pressure.py rendered-output rule 'genuine-dependent finding requires closure graph edge'): the rendered `Burden dependency graph:` line MUST carry one edge per non-none per-block `Graph delta`, using the exact same edge tokens the per-block MRP text already states. A block with `Finding: genuine-dependent` and a non-none `Graph delta` (for example `Graph delta: ¹B → ²B`) REQUIRES that same `¹B → ²B` edge to appear in the rendered graph; do not silently drop it into an all-parallel-roots rendering just because the separate `dependency_graph_edges` JSON array was left empty. A block with `Graph delta: none` contributes no edge for that source. If Stage 05 `dependency_graph_edges` disagrees with (is missing edges present in) the per-block `Graph delta` chain, the per-block `Graph delta` values are authoritative for what the rendered graph and JSON mirror must show:",
+        *(
+            [f"  {edge['from']} -> {edge['to']}" for edge in edges_from_graph_delta]
+            if edges_from_graph_delta
+            else ["  (none required by per-block Graph delta for this case)"]
+        ),
+        "- Curl-consistency law: never render a no-loop / no-circularity reason (e.g. \"no loop is closed at ...\", \"no circularity remains\") in `∇×κ` / `Field diagnostics` / the MRP `curl` line for a burden while that same line's curl head is `held` or `non-null`. A held/non-null curl means the loop is still open; state the held reason instead (for example \"no loop is closed at ¹B because ²B remains the next already-routed burden\" is fine only when the head is genuinely resolved/null, not when it is held). If the curl is still open, resolve it or explicitly say it is HELD with the concrete unresolved dependency naming the next burden; do not phrase a held curl as if circularity has already been ruled out.",
         "- A generated `B_MRP` burden must appear in `generated_burdens[]`, `nodes[]`, `B_total`, `terminal_states`, `coverage_proof.dependency_graph.nodes`, and `normalized_activation_record.per_burden[]` with `generation_depth`, `track`, and `generated_by` provenance.",
         "- If Stage 05 leaves `unresolved_burdens`, any terminal state is `held-with-reason`, `carried-PARTIAL`, `carried-RECURSE`, or otherwise HOLD/PARTIAL, or `no_new_resultant_proof.proved=false`, do not claim `coverage_complete=true`; set `coverage_complete` false and keep the burden held/unresolved instead of synthesizing terminal STOP proof.",
         "- Do not synthesize a generated-burden `MRP(Bn)` row with `graph=none`; visible generated/held MRP resultants must expose the concrete Stage 05 graph edge such as `⁴B → ⁵B`, while JSON mirrors keep ASCII machine IDs.",
@@ -7200,7 +7293,14 @@ def release_section_prompt(
             "The remainder line must name any generated or unresolved B_MRP pressure that remains held/scoped/reopenable. "
             "Do not include Closing Formulation here. "
             "Do not claim guaranteed uptake, package operations or provenance claims, sidecar proof, retained promotion, "
-            "broad model behavior, or broad A/B/C/D closure."
+            "broad model behavior, or broad A/B/C/D closure. "
+            "No-interior-state boundary: never positively certify the interlocutor's/target's interior state, sincerity, "
+            "soul-state, or standing (kufr/nifaq/takfir-as-fact), in either polarity -- do not write `<referent> is/are "
+            "insincere|lying|a hypocrite|outside the faith|kafir|munafiq` even inside a negated scope-limit sentence, "
+            "since that literal collocation trips the render-contract check regardless of polarity. Any concealment-mode "
+            "diagnosis stays DISCOURSE-side with a held/not-certified qualifier (`no hidden soul-state judgment is made`, "
+            "`this stays a discourse-pattern diagnosis, not a takfir/interior-state verdict`); state the boundary as what "
+            "the response does NOT certify, not as a named-referent interior-state predication."
         ),
         "closing_formulation": (
             "Write only the Closing Formulation section. Begin with the exact public role heading `Closing Formulation`. "
@@ -7210,7 +7310,14 @@ def release_section_prompt(
             "Established failure, Restored criterion/orientation, and Scoped boundary or Reopen boundary. "
             "Use these exact subsection labels: `### Established failure`, `### Restored criterion/orientation`, and either `### Scoped boundary` or `### Reopen boundary`. "
             "Do not claim guaranteed uptake, package operations or provenance claims, sidecar proof, retained promotion, "
-            "broad model behavior, or broad A/B/C/D closure."
+            "broad model behavior, or broad A/B/C/D closure. "
+            "No-interior-state boundary: never positively certify the interlocutor's/target's interior state, sincerity, "
+            "soul-state, or standing (kufr/nifaq/takfir-as-fact), in either polarity -- do not write `<referent> is/are "
+            "insincere|lying|a hypocrite|outside the faith|kafir|munafiq` even inside a negated scope-limit sentence, "
+            "since that literal collocation trips the render-contract check regardless of polarity. Any concealment-mode "
+            "diagnosis stays DISCOURSE-side with a held/not-certified qualifier (`no hidden soul-state judgment is made`, "
+            "`this stays a discourse-pattern diagnosis, not a takfir/interior-state verdict`); state the boundary as what "
+            "the response does NOT certify, not as a named-referent interior-state predication."
         ),
     }
     target_line = ""
@@ -7237,20 +7344,34 @@ def release_section_prompt(
         assigned = assigned_body_refs or []
         assigned_json = json.dumps(assigned, ensure_ascii=False)
         completion_flags_json = json.dumps(body_ref_completion_flags(all_act_body_refs, assigned), ensure_ascii=False)
+        last_for_burden_refs = [
+            ref for ref, flags in body_ref_completion_flags(all_act_body_refs, assigned).items()
+            if flags.get("last_for_burden") and ref in assigned
+        ]
+        land_gate_examples = ", ".join(
+            f"`Land({public_burden_id(body_ref_burden_id(ref))}):`"
+            for ref in last_for_burden_refs
+            if body_ref_burden_id(ref)
+        ) or "(no burden closes in this section)"
         partition_line = f"""
-ACT partition contract for this section:
-- Assigned Stage 04 ACT body_refs: {assigned_json}
+ACT partition contract for this section (hard producer requirements -- the assembler
+checks these exact rules in tools/build_staged_governed_output.py before any Stage 07
+validator runs, and a refusal, meta-commentary, or short placeholder response in place
+of real governed content will fail every one of them):
+- Assigned Stage 04 ACT body_refs (ALL of these EXACT tokens must appear as `body_ref=` in this section's ACT rows -- assembler rule 'assigned body_ref(s) missing from section'): {assigned_json}
 - First Stage 04 ACT body_ref for the compiled answer: {json.dumps(first_act_body_ref, ensure_ascii=False)}
 - Per-body_ref completion flags for this section: {completion_flags_json}
 - Emit ACT rows only for those exact `body_ref=` tokens.
-- Do not emit ACT rows for unassigned body_refs, even if they appear in the validated compact stage state.
-- Every assigned body_ref must appear exactly once in this section.
+- Do not emit ACT rows for unassigned body_refs, even if they appear in the validated compact stage state (assembler rule 'unassigned body_ref(s) emitted').
+- Every assigned body_ref must appear exactly once in this section (assembler rule 'assigned body_ref(s) not present in visible ACT output' fires if even one assigned body_ref above is dropped, truncated, or replaced with commentary).
 - Do not repeat any assigned body_ref in planning prose, examples, or explanatory
   notes; after the one visible ACT row, refer back with prose such as "this submove"
   rather than printing another `body_ref=` token.
 - Preserve public burden grouping: body_refs for the same burden must stay contiguous in the final assembled body.
 - Emit a burden heading only for a body_ref marked `first_for_burden`; emit a standalone Land/HOLD line only for a body_ref marked `last_for_burden`.
+- Every burden that closes in this section MUST end with a visible, line-start `Land(ⁿB):` gate (or `HOLD(ⁿB):` / a PARTIAL boundary line if not landed) using the exact superscript burden id -- assembler rule 'per_burden_reread record(s) have no visible Land(nB): landing gate' fires on any assigned closing burden without one. Required landing gate(s) for this section: {land_gate_examples}.
 - Do not repeat `## Layer B — Bounded Governed Response` unless this section owns the first Stage 04 ACT body_ref.
+- This section's floor is {section_min_bytes if section_min_bytes else section_floor} UTF-8 bytes of genuine ACT/submove content (assembler rule 'under section budget'); a short refusal, clarification request, or meta-commentary about this being a harness/prompt is not governed content and will read as far under budget on top of failing the body_ref/Land-gate rules above -- if something about this prompt seems wrong, still return the governed section content for the assigned body_refs, since this section text is the actual public artifact being assembled, not a chat turn to negotiate.
 - The assembler will fail duplicate, missing, or unassigned ACT body_refs before Stage 07 validators run.
 """
     semantic_contract = ""
@@ -7345,7 +7466,17 @@ def release_section_expansion_prompt(
             "Do not emit new `⟦ACT` rows or new `body_ref=` tokens during expansion; "
             "expand only owner operation bodies, local result prose, and Land(...) consequences. "
             "Do not repeat the main Layer B bounded heading or print Land(...) before all submoves "
-            "for that burden have rendered."
+            "for that burden have rendered. "
+            f"The existing section text already committed to assigned body_refs {assigned}; every one of "
+            "those tokens must still be present, unchanged, after this expansion -- the assembler fails "
+            "the whole run on any assigned body_ref that goes missing between rounds ('assigned body_ref(s) "
+            "missing from section'). Every burden that closes in this section still needs its visible "
+            "`Land(ⁿB):` (or `HOLD(ⁿB):`) gate after expansion ('per_burden_reread record(s) have no visible "
+            "Land(nB): landing gate'). This expansion call is answering a real byte-floor shortfall in "
+            "already-committed governed content, not a new or ambiguous request: return more genuine ACT/"
+            "submove prose for the existing assigned body_refs, not a refusal, clarifying question, or "
+            "meta-commentary about the harness -- those would leave the section under budget and would not "
+            "satisfy the body_ref/Land-gate rules above either."
         ),
         "field_witness_nar": (
             "Add human-readable Closure/Reconstruction Witness detail without emitting a second "
@@ -8206,7 +8337,19 @@ def invoke_expansion_with_transport_policy(
         log_text = read_text_if_exists(log_path)
         transport = classify_transport_failure(exit_code, log_text)
         if exit_code == 0:
-            if not output_path.exists() or output_path.stat().st_size == 0:
+            output_exists = output_path.exists()
+            output_text = read_text_if_exists(output_path) if output_exists else ""
+            content_shape = classify_response_content_shape(exit_code, output_text)
+            # Content-shape retryable transport failure (RC-matrix cycle-03 Lane 4): the
+            # subprocess exited 0 but stdout was missing, empty/whitespace-only, below the
+            # minimum content floor, or a leaked tool-invocation echo instead of governed
+            # section prose. classify_transport_failure alone cannot see this (it only reads
+            # transport-log markers, and exit_code == 0 has none), so merge the content-shape
+            # signal into the same transport record and route it through the existing
+            # transport-retry-rounds machinery instead of recording a false "pass".
+            content_retryable = bool(content_shape["retryable"]) or not output_exists
+            transport = {**transport, **content_shape, "retryable": content_retryable}
+            if content_retryable:
                 attempts.append(
                     transport_attempt_record(
                         root=root,
@@ -8220,14 +8363,21 @@ def invoke_expansion_with_transport_policy(
                         response_path=output_path,
                         log_path=log_path,
                         exit_code=exit_code,
-                        status="failed_semantic",
+                        status="failed_transport",
                         transport=transport,
                     )
                 )
                 write_transport_attempts_record(attempts_record_path, root=root, attempts=attempts)
+                if attempt < last_attempt:
+                    continue
                 raise HarnessError(
                     f"stage-07-release-output {section_id} expansion {expansion_round}: "
-                    "expansion output was not produced"
+                    f"transport retry budget exhausted after {attempt - first_attempt + 1} attempt(s) "
+                    f"-- last attempt returned exit code 0 with a retryable non-answer shape "
+                    f"(missing={not output_exists}, empty={content_shape['content_empty']}, "
+                    f"below_min_bytes={content_shape['content_below_min_bytes']}, "
+                    f"tool_invocation_echo={content_shape['tool_invocation_echo']}); "
+                    f"see {rel(output_path, root)}"
                 )
             attempts.append(
                 transport_attempt_record(
@@ -9242,6 +9392,131 @@ def run_self_test(root: Path) -> int:
         invoke_codex = real_invoke_codex
     if len(retry_attempts) != 2:
         raise HarnessError("Self-test retry budget did not record exactly two attempts")
+
+    # RC-matrix cycle-03 Lane 4 regression canaries: exit_code == 0 with content that is
+    # empty/whitespace-only, below the minimum content floor, or a leaked tool-invocation
+    # echo must be classified retryable and routed through the same transport-retry-rounds
+    # machinery as an exit_code != 0 transport failure -- not silently recorded as status:pass.
+    if classify_response_content_shape(0, "")["retryable"] is not True:
+        raise HarnessError("Self-test failed to classify empty exit-0 stdout as retryable")
+    if classify_response_content_shape(0, "   \n\t\n")["retryable"] is not True:
+        raise HarnessError("Self-test failed to classify whitespace-only exit-0 stdout as retryable")
+    if classify_response_content_shape(0, "short reply")["retryable"] is not True:
+        raise HarnessError("Self-test failed to classify below-floor exit-0 stdout as retryable")
+    tool_echo_sample = (
+        '\n\t{\n\t  "command": "find . -iname \\"*gate88*\\" 2>/dev/null",\n'
+        '\t  "description": "Search for gate88 fixture"\n\t}\n'
+    )
+    tool_echo_classification = classify_response_content_shape(0, tool_echo_sample)
+    if tool_echo_classification["retryable"] is not True or tool_echo_classification["tool_invocation_echo"] is not True:
+        raise HarnessError("Self-test failed to classify a leaked tool-invocation echo as retryable")
+    xml_tool_echo_sample = '="Bash">Get-ChildItem -Recurse -Filter "SKILL.md" -Path .</Bash>'
+    if classify_response_content_shape(0, xml_tool_echo_sample)["tool_invocation_echo"] is not True:
+        raise HarnessError("Self-test failed to classify an inline pseudo-XML tool tag as a tool-invocation echo")
+    valid_expansion_sample = (
+        "Target: divine-attributes-worship-worthiness burden.\n"
+        "Operation: attribute-precision separates God's nature, God's act of judgment, human moral "
+        "appraisal, and the obligation of worship, and blocks the transfer from recoil to a worthiness "
+        "verdict; the burden-local state changes from collapsed accusation to a typed dispute across "
+        "those levels, which licenses Land(B6) because the predicate relation is no longer conflated.\n"
+    )
+    if len(valid_expansion_sample.encode("utf-8")) < TRANSPORT_MIN_CONTENT_BYTES:
+        raise HarnessError("Self-test valid-expansion content-shape fixture must exceed the min-bytes floor")
+    valid_classification = classify_response_content_shape(0, valid_expansion_sample)
+    if valid_classification["retryable"] is not False:
+        raise HarnessError("Self-test misclassified a normal valid expansion response as retryable")
+
+    content_shape_fixture = run_dir / "transport-content-shape-retry"
+    content_shape_fixture.mkdir(parents=True, exist_ok=True)
+    content_shape_attempts: list[dict[str, Any]] = []
+    content_shape_stage_files: list[Path] = []
+    tool_echo_responses = iter([tool_echo_sample, valid_expansion_sample])
+
+    def fake_tool_echo_then_valid(
+        _root: Path,
+        _model: str,
+        _prompt: str,
+        output_path: Path,
+        log_path: Path,
+    ) -> int:
+        write_text(output_path, next(tool_echo_responses))
+        write_text(log_path, "ok\n")
+        return 0
+
+    try:
+        invoke_codex = fake_tool_echo_then_valid
+        recovered_path = invoke_expansion_with_transport_policy(
+            root=root,
+            model="fake-model",
+            prompt="expand\n",
+            base_prompt_path=content_shape_fixture / "call.prompt.md",
+            base_output_path=content_shape_fixture / "call.md",
+            base_log_path=content_shape_fixture / "call.codex-log.txt",
+            section_id="act-body",
+            section_role="layer_b_act",
+            expansion_round=1,
+            first_attempt=1,
+            retry_rounds=1,
+            attempts=content_shape_attempts,
+            attempts_record_path=content_shape_fixture / "stage-07-transport-attempts.json",
+            stage_files=content_shape_stage_files,
+        )
+    finally:
+        invoke_codex = real_invoke_codex
+    if read_text_if_exists(recovered_path) != valid_expansion_sample:
+        raise HarnessError("Self-test content-shape retry did not recover the valid second attempt")
+    if len(content_shape_attempts) != 2:
+        raise HarnessError("Self-test content-shape retry did not record exactly two attempts")
+    if content_shape_attempts[0]["status"] != "failed_transport" or content_shape_attempts[0]["transport"].get("tool_invocation_echo") is not True:
+        raise HarnessError("Self-test content-shape retry did not mark the tool-echo attempt failed_transport")
+    if content_shape_attempts[1]["status"] != "pass":
+        raise HarnessError("Self-test content-shape retry did not mark the recovered attempt pass")
+
+    content_shape_exhaust_fixture = run_dir / "transport-content-shape-exhaust"
+    content_shape_exhaust_fixture.mkdir(parents=True, exist_ok=True)
+    content_shape_exhaust_attempts: list[dict[str, Any]] = []
+    content_shape_exhaust_stage_files: list[Path] = []
+
+    def fake_always_empty(
+        _root: Path,
+        _model: str,
+        _prompt: str,
+        output_path: Path,
+        log_path: Path,
+    ) -> int:
+        write_text(output_path, "\n")
+        write_text(log_path, "ok\n")
+        return 0
+
+    try:
+        invoke_codex = fake_always_empty
+        try:
+            invoke_expansion_with_transport_policy(
+                root=root,
+                model="fake-model",
+                prompt="expand\n",
+                base_prompt_path=content_shape_exhaust_fixture / "call.prompt.md",
+                base_output_path=content_shape_exhaust_fixture / "call.md",
+                base_log_path=content_shape_exhaust_fixture / "call.codex-log.txt",
+                section_id="act-body",
+                section_role="layer_b_act",
+                expansion_round=1,
+                first_attempt=1,
+                retry_rounds=1,
+                attempts=content_shape_exhaust_attempts,
+                attempts_record_path=content_shape_exhaust_fixture / "stage-07-transport-attempts.json",
+                stage_files=content_shape_exhaust_stage_files,
+            )
+        except HarnessError as exc:
+            if "retryable non-answer shape" not in str(exc):
+                raise
+        else:
+            raise HarnessError("Self-test content-shape retry did not exhaust on repeated empty exit-0 stdout")
+    finally:
+        invoke_codex = real_invoke_codex
+    if len(content_shape_exhaust_attempts) != 2:
+        raise HarnessError("Self-test content-shape exhaustion did not record exactly two attempts")
+
     normalized_stage02 = normalized_stage(
         "stage-02-layer-a-diagnostic-ir",
         {
@@ -11958,6 +12233,47 @@ def run_self_test(root: Path) -> int:
             raise
     else:
         raise HarnessError("Self-test failed to wrap compiled assembly errors as HarnessError")
+    # RC-matrix cycle-03 Lane 3 regression canaries: deterministic (no-model) reproductions of the
+    # three claude-sonnet-5 trinitarian-j173/khaybar assembly failure shapes -- under-budget section,
+    # dropped assigned body_ref, and missing Land(nB) gate -- so producer-scaffolding drift in
+    # release_section_prompt/stage07_act_contract_guidance is caught without a live model run.
+    dropped_body_ref_manifest = staged_output.manifest_for_sections(
+        run_dir / "invalid-assembly-dropped-body-ref",
+        case_id="self-test-lane3-dropped-body-ref",
+        source_input="self-test",
+        section_specs=staged_output.small_sections(
+            act_text="Layer B - Bounded Governed Response\nACT records:\nLand(¹B): landed.\n"
+        ),
+        act_partition=staged_output.act_partition_payload([("act-body", ["¹B₁"])]),
+    )
+    try:
+        assemble_compiled_manifest(dropped_body_ref_manifest, root=root)
+    except HarnessError as exc:
+        if "assigned body_ref(s) missing from section" not in str(exc):
+            raise HarnessError(
+                f"Self-test dropped-body_ref canary failed with the wrong signature: {exc}"
+            )
+    else:
+        raise HarnessError("Self-test failed to reject a section that dropped an assigned ACT body_ref")
+    missing_land_gate_manifest = staged_output.manifest_for_sections(
+        run_dir / "invalid-assembly-missing-land-gate",
+        case_id="self-test-lane3-missing-land-gate",
+        source_input="self-test",
+        section_specs=[
+            spec if spec[0] != "act-body" else staged_output.act_section("act-body", "¹B₁", land_burdens=[])
+            for spec in staged_output.small_sections()
+        ],
+        act_partition=staged_output.act_partition_payload([("act-body", ["¹B₁"])]),
+    )
+    try:
+        assemble_compiled_manifest(missing_land_gate_manifest, root=root)
+    except HarnessError as exc:
+        if "no visible Land(ⁿB): landing gate" not in str(exc):
+            raise HarnessError(
+                f"Self-test missing-Land-gate canary failed with the wrong signature: {exc}"
+            )
+    else:
+        raise HarnessError("Self-test failed to reject a landed burden with no visible Land(nB) gate")
     graph_line, graph_roots, graph_parallel = stage07_dependency_graph_scaffold(["B1", "B2", "B3"], [])
     if graph_line != "B1 (root) || B2 (root) || B3 (root)":
         raise HarnessError("Self-test Stage 07 graph scaffold omitted edge-empty parallel roots")
