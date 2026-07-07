@@ -1,0 +1,71 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "stage03-operation-token-as-owner-id",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_scope": {
+    "stop_after_stage": "stage-03-routing-owner-gate",
+    "stage_count": 3,
+    "not_release_output": true,
+    "not_verifier_sidecars": true
+  },
+  "model_scope": {
+    "type": "focused-current-skill-stage-smoke",
+    "case_count": 1,
+    "case_family": "neutral-m7-definition-anchor-owner-id-confusion",
+    "retained_replay_target": "tests/staged-runtime-handshake/valid/stage03-model-scope-normalized.json"
+  },
+  "stage_order": [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir",
+    "stage-03-routing-owner-gate"
+  ],
+  "stages": [
+    {
+      "id": "stage-01-intake",
+      "status": "pass",
+      "produces": ["input_digest"],
+      "requires": [],
+      "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "stage-02-layer-a-diagnostic-ir",
+      "status": "pass",
+      "produces": ["burden_floor", "selected_n_frame", "live_registers"],
+      "requires": ["input_digest"],
+      "burden_floor": ["B1"],
+      "selected_n_frame": "neutral-m7-definition-anchor-route",
+      "live_registers": ["kappa"]
+    },
+    {
+      "id": "stage-03-routing-owner-gate",
+      "status": "pass",
+      "produces": ["route_targets", "owner_routes"],
+      "requires": ["burden_floor"],
+      "route_targets": ["B1"],
+      "owner_routes": [
+        {
+          "burden_id": "B1",
+          "owner_id": "definition-anchor",
+          "operation": "definition-anchor",
+          "owner_operation": "definition-anchor",
+          "route_status": "executable"
+        }
+      ]
+    }
+  ],
+  "handoffs": [
+    {"from": "stage-01-intake", "to": "stage-02-layer-a-diagnostic-ir", "checks": ["input_boundary_preserved"], "status": "pass"},
+    {"from": "stage-02-layer-a-diagnostic-ir", "to": "stage-03-routing-owner-gate", "checks": ["burden_floor_to_route_targets", "live_registers_present", "n_frame_present"], "status": "pass"}
+  ],
+  "non_claims": {
+    "not_model_smoke": false,
+    "not_broad_model_behavior": true,
+    "not_broad_model_matrix": true,
+    "not_runtime_default_emission_proof": true,
+    "not_arbitrary_nl_ir_parser": true,
+    "not_package_provenance": true,
+    "not_guaranteed_t_lang_uptake": true,
+    "not_graphify_or_activegraph_proof": true
+  }
+}

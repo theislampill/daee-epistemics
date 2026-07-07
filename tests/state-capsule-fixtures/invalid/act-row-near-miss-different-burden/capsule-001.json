@@ -1,0 +1,71 @@
+{
+  "schema": "daee-state-capsule-v1",
+  "case_id": "case-act-row-near-miss",
+  "input_fingerprint": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "stage": "04",
+  "n_frame": {
+    "selected": "authority-order",
+    "held_candidates": []
+  },
+  "live_registers": [
+    "N",
+    "m",
+    "tau",
+    "sigma"
+  ],
+  "register_state": {
+    "tau": "live per stage-02 diagnostic",
+    "sigma": "live per stage-02 diagnostic"
+  },
+  "B_LA": [
+    "B1"
+  ],
+  "B_MRP": [],
+  "B_total": [
+    "B1"
+  ],
+  "current_burden": null,
+  "held_set_H": [],
+  "completed_acts": [
+    {
+      "body_ref": "B1_1",
+      "owner_id": "M3",
+      "operation": "activation",
+      "register_axis": "xi",
+      "delta_result": "uptake-recorded",
+      "land": "Land(B1)"
+    }
+  ],
+  "last_terminal": {
+    "burden": null,
+    "state": null
+  },
+  "last_delta": null,
+  "last_mrp_resultant": {
+    "source": null,
+    "route_result_type": "none"
+  },
+  "route_result_type": "none",
+  "field_diagnostics": {
+    "divergence_state": "neutral",
+    "curl_state": "null-state"
+  },
+  "transport": "file-retained",
+  "terminal_states": {
+    "B1": "Land(B1)"
+  },
+  "next_burden": null,
+  "current_owner_route": {
+    "burden": "B1",
+    "owner_id": "M3",
+    "shards": []
+  },
+  "coverage_complete": true,
+  "next_required_action": "",
+  "output_artifact_path": "artifact.md",
+  "output_sha256": "8d2258987cd2309d3c3dd8ed1a85457ebcd851757cc92f6d3f86603598afd3c8",
+  "output_offset_bytes": 158,
+  "cold_law_refs_used": [],
+  "shards_loaded": [],
+  "notes": "G1 fixture: capsule claims burden B1 / body_ref B1_1, but the artifact's only real ACT row is for burden 2 (superscript ²B₁, Land(²B)) -- a genuine near-miss, not a real-vs-fenced distinction. normalize_burden_token equality must still fail this (not launder it via substring)."
+}

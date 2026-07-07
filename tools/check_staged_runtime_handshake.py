@@ -1443,6 +1443,11 @@ def per_burden_reread_errors(label: str, stage05: dict[str, Any]) -> list[str]:
                     staged_output.PER_BURDEN_CURL_HEADS,
                 )
             )
+            # G2: held/non-null curl reasons must phrase the dependency loop
+            # as still open (mirrors tools/check_mid_reread_pressure.py's
+            # CURL_NEGATION_RE), enforced here too so --explain-stage-failure
+            # covers a violating record with a precise Stage 05 message.
+            errors.extend(staged_output.held_curl_phrasing_errors(f"{entry_label}.curl", curl))
         activations = entry.get("pressure_activations")
         if not isinstance(activations, dict):
             errors.append(f"{entry_label}.pressure_activations must be an object carrying the six fixed slots")

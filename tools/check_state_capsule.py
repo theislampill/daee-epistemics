@@ -118,6 +118,13 @@ SHA256_RE = re.compile(r"^[A-Fa-f0-9]{64}$")
 SUPERSCRIPT_DIGITS = "⁰¹²³⁴⁵⁶⁷⁸⁹"
 BODY_REF_RE = re.compile(rf"^[{SUPERSCRIPT_DIGITS}]*B[0-9]+(?:_[0-9]+)?$")
 
+# G1: subscript digits, used by the harness's public submove notation
+# (e.g. `¹B₁`: superscript burden digit before B, subscript submove digit
+# after B). Same non-contiguous-range caveat as SUPERSCRIPT_DIGITS applies
+# (subscript 0-9 spans 0x2080-0x2089 contiguously, unlike superscript, but
+# both are spelled out explicitly here for a single shared translate table).
+SUBSCRIPT_DIGITS = "₀₁₂₃₄₅₆₇₈₉"
+
 WARN_BYTES = 16_000
 # Hard smuggling line. The law's own capsule-relevant surface targets roughly
 # ~4k estimated tokens (~16KB); 24KB gives headroom above WARN_BYTES while
@@ -160,6 +167,25 @@ CLOSED_STAGE05_TERMINAL_STATES = {"landed", "cleared", "discharged-as-derivative
 ACT_ROW_LOOSE_RE = re.compile(r"^\s*(?:[-*]\s*)?ACT\s+\S.*::")
 ACT_ROW_COMPACT_RE = re.compile(r"⟦ACT\b[^⟧\n]*⟧")
 FENCE_RE = re.compile(r"```.*?```", re.DOTALL)
+
+# G1: candidate body_ref token extractors for an already-confirmed real
+# ACT-row line (ACT_ROW_LOOSE_RE / ACT_ROW_COMPACT_RE above). The row-head
+# token is whatever immediately follows `ACT`/`⟦ACT` up to the first
+# bracket/colon/space (the public submove ref, e.g. `¹B₁` in
+# `⟦ACT ¹B₁[owner.op] :: ...⟧` or `B1_1` in `ACT B1_1 :: op :: ...`); the
+# `body_ref=` field is the harness's canonical explicit carrier. Both are
+# collected as candidates and compared via normalize_burden_token()
+# EQUALITY (not substring) against the capsule's body_ref.
+ACT_ROW_HEAD_TOKEN_RE = re.compile(r"⟦?ACT\s+([^\s\[:]+)")
+ACT_ROW_BODY_REF_FIELD_RE = re.compile(r"\bbody_ref=([^\s:⟧]+)")
+
+# G1: Land(<token>) token family, used both to look up a burden's landing
+# token by literal substring (legacy call sites already anchored to a
+# specific literal) and, via normalize_burden_token(), to find every
+# Land(...) occurrence whose inner token denotes the SAME burden under
+# either harness-sanctioned notation (ASCII `Land(B1)` or superscript
+# `Land(¹B)`).
+LAND_TOKEN_RE = re.compile(r"Land\(([^)]*)\)")
 
 
 def rel(path: Path) -> str:
@@ -782,6 +808,43 @@ def strip_fenced_code_blocks(text: str) -> str:
     return FENCE_RE.sub(_blank, text)
 
 
+SUP_SUB_TO_ASCII = str.maketrans(SUPERSCRIPT_DIGITS + SUBSCRIPT_DIGITS, "01234567890123456789")
+_PUBLIC_SUBMOVE_TOKEN_RE = re.compile(rf"^([{SUPERSCRIPT_DIGITS}]+)B([{SUBSCRIPT_DIGITS}]+)$")
+_PUBLIC_BURDEN_TOKEN_RE = re.compile(rf"^([{SUPERSCRIPT_DIGITS}]+)B$")
+
+
+def normalize_burden_token(value: str) -> str:
+    """G1: canonicalize a burden/body_ref/Land(...) token to the ASCII
+    join-key form (`B1`, `B1_1`) so parity checks compare the SAME notation
+    on both sides, regardless of which of the two harness-sanctioned
+    surfaces produced it:
+      - the capsule builder's ASCII join key (`B1_1`), and
+      - the harness's own prompts/scaffolds/act_partition public Unicode
+        surface (superscript burden digit before B, subscript submove
+        digit after B: `¹B₁` == burden 1 submove 1; `¹B` == burden 1 with
+        no submove).
+    Independently mirrors tools/run_staged_current_skill_smoke.py's
+    _capsule_bare_join_key_body_ref (that function converts at emission
+    time when building a capsule; this one normalizes at validation time
+    on both the capsule value AND whatever token appears in the artifact
+    text) so this schema-adjacent checker does not import the harness
+    module. Idempotent: B1_1 -> B1_1, ¹B₁ -> B1_1, ¹B -> B1, B1 -> B1.
+    Unrecognized/malformed input is returned with only its literal
+    superscript/subscript digits translated to ASCII, so a genuine
+    mismatch still surfaces as a mismatch rather than being silently
+    coerced into a false match."""
+    text = (value or "").strip()
+    match = _PUBLIC_SUBMOVE_TOKEN_RE.match(text)
+    if match:
+        burden = match.group(1).translate(SUP_SUB_TO_ASCII)
+        submove = match.group(2).translate(SUP_SUB_TO_ASCII)
+        return f"B{burden}_{submove}"
+    match = _PUBLIC_BURDEN_TOKEN_RE.match(text)
+    if match:
+        return f"B{match.group(1).translate(SUP_SUB_TO_ASCII)}"
+    return text.translate(SUP_SUB_TO_ASCII)
+
+
 def act_row_lines(text: str) -> list[str]:
     """FIX 1: return only the lines of `text` that satisfy the real ACT-row
     grammar family (either the loose `ACT ... ::` row form or the compact
@@ -799,11 +862,40 @@ def act_row_lines(text: str) -> list[str]:
     return rows
 
 
+def _act_row_candidate_tokens(line: str) -> list[str]:
+    """G1: extract the candidate body_ref tokens off an already-confirmed
+    real ACT-row line -- the row-head token immediately after ACT/⟦ACT, and
+    every explicit body_ref=<tok> field. These are the ONLY two places a
+    body_ref legitimately appears on a real ACT row; a token elsewhere on
+    the line does not count."""
+    tokens: list[str] = []
+    head_match = ACT_ROW_HEAD_TOKEN_RE.search(line)
+    if head_match:
+        tokens.append(head_match.group(1))
+    tokens.extend(match.group(1) for match in ACT_ROW_BODY_REF_FIELD_RE.finditer(line))
+    return tokens
+
+
 def body_ref_has_act_row_parity(body_ref: str, act_lines: list[str]) -> bool:
     """FIX 1: body_ref must appear within a line matching the real ACT-row
     grammar, not merely anywhere in the artifact text (which is defeated by
-    the token appearing only in a code fence, a quotation, or a negation)."""
-    return any(body_ref in line for line in act_lines)
+    the token appearing only in a code fence, a quotation, or a negation).
+
+    G1: comparison is by normalize_burden_token() EQUALITY against each
+    candidate token extracted from the ACT-row line (the row-head token
+    and/or the body_ref= field), not a raw substring test -- the capsule's
+    ASCII join key (`B1_1`) and the harness's own public superscript/
+    subscript surface (`¹B₁`) are the SAME token under two harness-
+    sanctioned notations (schema/state-capsule.schema.json documents both).
+    Equality (rather than "normalized body_ref in normalized line") also
+    avoids a near-miss token like `B1_1` false-matching inside a longer
+    token such as `B11_1`."""
+    target = normalize_burden_token(body_ref)
+    for line in act_lines:
+        for token in _act_row_candidate_tokens(line):
+            if normalize_burden_token(token) == target:
+                return True
+    return False
 
 
 def land_token_has_row_parity(land_token: str, text_lines: list[str]) -> bool:
@@ -812,7 +904,11 @@ def land_token_has_row_parity(land_token: str, text_lines: list[str]) -> bool:
     ': PARTIAL' or ': HOLD' that would make the claim of closure false. This
     mirrors is_closed_state's grammar: after the Land(...) token, the line
     (once trimmed of a trailing '+') must not continue with a colon-qualifier
-    before end of line/sentence."""
+    before end of line/sentence.
+
+    Literal-token primitive: `land_token` must be the exact `Land(<token>)`
+    string to look for. See land_token_has_row_parity_for_burden() for the
+    G1 normalized-notation analogue used by replay_sequence_errors."""
     suffix_re = re.compile(re.escape(land_token) + r"\)?\s*\+?\s*:\s*(PARTIAL|HOLD)\b", re.IGNORECASE)
     found = False
     for line in text_lines:
@@ -821,6 +917,44 @@ def land_token_has_row_parity(land_token: str, text_lines: list[str]) -> bool:
         found = True
         if suffix_re.search(line):
             return False
+    return found
+
+
+def any_land_token_for_burden(burden: str, text: str) -> bool:
+    """G1: does `text` contain a Land(<token>) occurrence whose inner token
+    normalizes (per normalize_burden_token) to the same burden id as
+    `burden`? This is still whole-token (LAND_TOKEN_RE only captures the
+    literal content between the parens of a real `Land(...)` occurrence,
+    it does not do substring search across arbitrary text) and
+    equality-based, so it satisfies a superscript artifact token like
+    `Land(¹B)` against an ASCII capsule burden `B1` without reintroducing
+    substring laundering."""
+    target = normalize_burden_token(burden)
+    return any(normalize_burden_token(match.group(1)) == target for match in LAND_TOKEN_RE.finditer(text))
+
+
+def land_token_has_row_parity_for_burden(burden: str, text_lines: list[str]) -> bool:
+    """G1: normalized-notation analogue of land_token_has_row_parity --
+    checks every Land(...) occurrence, on every line, whose inner token
+    normalizes to the same burden id (across BOTH the ASCII `Land(B1)` and
+    superscript `Land(¹B)` surfaces), rather than a single literal string.
+    Preserves the original semantics exactly for the pure-ASCII case (one
+    literal token -> this degenerates to land_token_has_row_parity's
+    behavior) and extends it, per-occurrence, to the superscript surface:
+    at least one qualifying occurrence must exist, and any qualifying
+    occurrence immediately suffixed with a PARTIAL/HOLD qualifier fails
+    closure (mirrors is_closed_state's grammar)."""
+    target = normalize_burden_token(burden)
+    found = False
+    for line in text_lines:
+        for match in LAND_TOKEN_RE.finditer(line):
+            if normalize_burden_token(match.group(1)) != target:
+                continue
+            found = True
+            literal = f"Land({match.group(1)})"
+            suffix_re = re.compile(re.escape(literal) + r"\)?\s*\+?\s*:\s*(PARTIAL|HOLD)\b", re.IGNORECASE)
+            if suffix_re.search(line):
+                return False
     return found
 
 
@@ -994,16 +1128,26 @@ def replay_sequence_errors(
             for burden, state in terminal_states.items():
                 if isinstance(state, str) and "land" in state.lower():
                     land_token = f"Land({burden})"
-                    if land_token not in fence_stripped_text:
+                    # G1: existence + row-parity are checked by normalized
+                    # burden-token EQUALITY (any_land_token_for_burden /
+                    # land_token_has_row_parity_for_burden), not a literal
+                    # substring, so a superscript artifact token like
+                    # `Land(¹B)` satisfies an ASCII capsule burden `B1`
+                    # without reintroducing substring laundering (matching
+                    # is still whole-token via LAND_TOKEN_RE).
+                    if not any_land_token_for_burden(burden, fence_stripped_text):
                         return [
                             f"{label}: capsule index {index}: terminal_states burden {burden!r} "
-                            f"marked Land but {land_token!r} does not appear in artifact.md"
+                            f"marked Land but no {land_token!r} token (in either harness-sanctioned "
+                            "burden notation) appears in artifact.md"
                         ]
-                    if is_closed_state(state) and not land_token_has_row_parity(land_token, fence_stripped_lines):
+                    if is_closed_state(state) and not land_token_has_row_parity_for_burden(
+                        burden, fence_stripped_lines
+                    ):
                         return [
                             f"{label}: capsule index {index}: terminal_states burden {burden!r} claims closed "
-                            f"state {state!r} but the artifact line carrying {land_token!r} is suffixed with a "
-                            "PARTIAL/HOLD qualifier (false coverage vs artifact replay)"
+                            f"state {state!r} but the artifact line carrying its Land(...) token is suffixed "
+                            "with a PARTIAL/HOLD qualifier (false coverage vs artifact replay)"
                         ]
 
     final = capsules[-1]
@@ -1040,9 +1184,9 @@ def run_capsule(path: Path) -> int:
     return 0
 
 
-def run_replay(directory: Path) -> int:
+def run_replay(directory: Path, artifact_path: Path | None = None) -> int:
     schema = load_schema()
-    errors = replay_errors(directory, schema)
+    errors = replay_errors(directory, schema, artifact_path=artifact_path)
     if errors:
         print(f"state-capsule --replay {rel(directory)}: FAIL")
         for error in errors:
@@ -1393,6 +1537,104 @@ def embedded_self_test_cases() -> list[tuple[str, bool]]:
         replay_sequence_errors("t", [cap_real_act], real_act_artifact, real_act_bytes) == [],
     ))
 
+    # G1: normalize_burden_token direct cases.
+    cases.append(("normalize_burden_token: ASCII join key is idempotent", normalize_burden_token("B1_1") == "B1_1"))
+    cases.append(("normalize_burden_token: bare ASCII burden is idempotent", normalize_burden_token("B1") == "B1"))
+    cases.append(("normalize_burden_token: superscript+subscript submove", normalize_burden_token("¹B₁") == "B1_1"))
+    cases.append(("normalize_burden_token: superscript bare burden", normalize_burden_token("¹B") == "B1"))
+    cases.append((
+        "normalize_burden_token: multi-digit superscript+subscript",
+        normalize_burden_token("¹²B₃") == "B12_3",
+    ))
+    cases.append((
+        "normalize_burden_token: distinct burdens stay distinct",
+        normalize_burden_token("²B₁") != normalize_burden_token("B1_1"),
+    ))
+
+    # G1: superscript ACT row satisfies ASCII capsule body_ref (real-world
+    # regression shape: harness renders `⟦ACT ¹B₁[...] :: ... body_ref=¹B₁
+    # ... :: Land(¹B)+⟧`, capsule stores the ASCII join key `B1_1`).
+    superscript_row_artifact = (
+        "# Case\n\n"
+        "⟦ACT ¹B₁[M3.activation] :: π=pressure :: body_ref=¹B₁ :: "
+        "Δ=Δ¹B:uptake-recorded :: Land(¹B)+⟧\n"
+        "Land(¹B): closed on sound-reason ground.\n"
+    )
+    superscript_row_bytes = superscript_row_artifact.encode("utf-8")
+    cap_superscript_row = _base_capsule(
+        completed_acts=[
+            {
+                "body_ref": "B1_1",
+                "owner_id": "M3",
+                "operation": "activation",
+                "register_axis": "xi",
+                "delta_result": "d",
+                "land": "Land(B1)",
+            }
+        ],
+        terminal_states={"B1": "Land(B1)"},
+        output_offset_bytes=len(superscript_row_bytes),
+        output_artifact_path="artifact.md",
+        output_sha256=hashlib.sha256(superscript_row_bytes).hexdigest(),
+    )
+    cases.append((
+        "G1: superscript ACT row + ASCII capsule body_ref satisfies parity",
+        replay_sequence_errors("t", [cap_superscript_row], superscript_row_artifact, superscript_row_bytes) == [],
+    ))
+    cases.append((
+        "G1: superscript Land(<burden>) token satisfies ASCII terminal_states burden",
+        any_land_token_for_burden("B1", superscript_row_artifact),
+    ))
+    cases.append((
+        "G1: superscript Land(<burden>) token has row parity for ASCII burden",
+        land_token_has_row_parity_for_burden("B1", superscript_row_artifact.splitlines()),
+    ))
+
+    # G1: body_ref genuinely absent still fails with the same message, even
+    # though the artifact carries a superscript ACT row for a DIFFERENT
+    # burden.
+    superscript_absent_artifact = (
+        "# Case\n\n⟦ACT ²B₁[M3.activation] :: π=pressure :: body_ref=²B₁ :: "
+        "Δ=Δ²B:uptake-recorded :: Land(²B)+⟧\n"
+    )
+    superscript_absent_bytes = superscript_absent_artifact.encode("utf-8")
+    cap_superscript_absent = _base_capsule(
+        completed_acts=[
+            {
+                "body_ref": "B1_1",
+                "owner_id": "M3",
+                "operation": "activation",
+                "register_axis": "xi",
+                "delta_result": "d",
+                "land": "Land(B1)",
+            }
+        ],
+        output_offset_bytes=len(superscript_absent_bytes),
+        output_artifact_path="artifact.md",
+        output_sha256=hashlib.sha256(superscript_absent_bytes).hexdigest(),
+    )
+    cases.append((
+        "G1: body_ref genuinely absent (different burden's superscript row present) still fails",
+        any(
+            "does not appear within a real ACT-row line" in e
+            for e in replay_sequence_errors(
+                "t", [cap_superscript_absent], superscript_absent_artifact, superscript_absent_bytes
+            )
+        ),
+    ))
+
+    # G1: near-miss token (capsule B1_1 vs row ONLY ²B₁, i.e. a different
+    # burden's submove-1, not a genuine match) still fails -- guards against
+    # normalized-substring laundering (equality, not "in", is required).
+    cases.append((
+        "G1: near-miss superscript token (different burden) does not satisfy parity",
+        not body_ref_has_act_row_parity("B1_1", ["⟦ACT ²B₁[M3.op] :: body_ref=²B₁ :: Land(²B)+⟧"]),
+    ))
+    cases.append((
+        "G1: near-miss ASCII substring token (B1_1 vs B11_1) does not satisfy parity",
+        not body_ref_has_act_row_parity("B1_1", ["ACT B11_1 :: op :: Land(B11)+"]),
+    ))
+
     # FIX 2: closed-state whole-token vocabulary.
     cases.append(("is_closed_state accepts bare Land(...)", is_closed_state("Land(B1)")))
     cases.append(("is_closed_state accepts bare Land(...)+", is_closed_state("Land(B1)+")))
@@ -1517,7 +1759,7 @@ def fixture_self_test(root: Path) -> tuple[list[str], int, int]:
 
     # valid/multi-call-append and valid/partial-hold-resume: --replay style
     # directories (each contains capsule-NNN.json + artifact.md).
-    for name in ("multi-call-append", "partial-hold-resume"):
+    for name in ("multi-call-append", "partial-hold-resume", "superscript-act-row-parity"):
         directory = valid_root / name
         if not directory.is_dir():
             errors.append(f"{rel(directory)}: expected valid replay fixture directory missing")
@@ -1558,6 +1800,7 @@ def fixture_self_test(root: Path) -> tuple[list[str], int, int]:
         "bla-incomplete-at-first-capsule": "B_LA incomplete at first capsule",
         "capsule-missing-live-register": "live register without register_state entry",
         "next-required-action-prose-smuggling": "exceeds max 400",
+        "act-row-near-miss-different-burden": "does not appear within a real ACT-row line in artifact.md",
     }
     for name, expected_substring in invalid_specs.items():
         directory = invalid_root / name
@@ -1655,13 +1898,26 @@ def main() -> int:
     group.add_argument("--capsule", type=Path, help="Validate a single capsule JSON file")
     group.add_argument("--replay", type=Path, help="Validate an ordered capsule sequence directory + artifact.md")
     group.add_argument("--self-test", action="store_true", help="Run embedded + fixture self-tests")
+    parser.add_argument(
+        "--artifact",
+        type=Path,
+        default=None,
+        help=(
+            "With --replay: explicit path to the artifact/output.md to replay against, "
+            "overriding the default of <replay-dir>/artifact.md (for real runs whose "
+            "output.md lives alongside the case, not inside the capsules directory)."
+        ),
+    )
     args = parser.parse_args()
+
+    if args.artifact is not None and args.replay is None:
+        parser.error("--artifact is only valid together with --replay")
 
     if args.self_test:
         return self_test()
     if args.capsule is not None:
         return run_capsule(args.capsule)
-    return run_replay(args.replay)
+    return run_replay(args.replay, artifact_path=args.artifact)
 
 
 if __name__ == "__main__":

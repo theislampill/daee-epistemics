@@ -12,6 +12,7 @@ import argparse
 import contextlib
 import copy
 import datetime as dt
+import functools
 import hashlib
 import io
 import json
@@ -260,10 +261,20 @@ TRANSPORT_MIN_CONTENT_BYTES = 200
 # .daee/v0.4.6.0-rc-matrix/cycle-03/claude-sonnet-5/tst-lillard/release-sections/09-closing-formulation.md)
 # or an inline pseudo-XML tool tag (`<Bash>...</Bash>`, `="Bash">...`), both generalized here to
 # detect the shape rather than any one literal command string.
+# G4(c): a THIRD echo shape, `{"name": "<tool>", "arguments": {...}}` (possibly after a prose
+# preamble), was observed in cycle-04 -- the literal payload
+# `{"name": "Bash", "arguments": {"command": "find . -iname \"SKILL.md\" ...", "description":
+# "..."}}` at .daee/v0.4.6.0-rc-matrix/cycle-04/claude-sonnet-5/khaybar/responses/
+# stage-01-intake.response.txt. The pattern requires "name" to be IMMEDIATELY followed by
+# "arguments" as the very next key (only whitespace/comma between them) so it is anchored to
+# the top-level tool-call-echo context and cannot match a legitimate stage payload that merely
+# happens to carry an unrelated "name" key elsewhere in its JSON (no controlled field in this
+# harness's stage/capsule/field_witness vocabulary is named "arguments").
 TOOL_INVOCATION_ECHO_RE = re.compile(
     r'(?is)\{\s*"command"\s*:\s*"|'
     r"</?(?:bash|shell|tool_use|function_calls?|invoke|antml:invoke)\b|"
-    r'="(?:bash|shell)">'
+    r'="(?:bash|shell)">|'
+    r'\{\s*"name"\s*:\s*"[^"]*"\s*,\s*"arguments"\s*:\s*\{'
 )
 
 
@@ -370,7 +381,18 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "owner-local callable operation token. Do not prefix `operation` with "
             "`owner_id`, an owner alias, a route label, or an ACT display token; for "
             "example use `owner_id: source-status-repair` with `operation: source-order`, "
-            "not `operation: source-status-repair.source-order`. If a selected "
+            "not `operation: source-status-repair.source-order`. "
+            "`owner_id` must itself be an owner-family token or a named owner body "
+            "(e.g. `M7`, `P7`, `SOURCE`, `authority-order-repair`, `source-status-repair`, "
+            "`do-second-loop`) -- never the owner-local operation it performs. A row "
+            "where `owner_id` equals its own `operation`/`owner_operation` value is the "
+            "operation-token-as-owner_id confusion and is auto-invalid; for example "
+            "`owner_id: definition-anchor` with `operation: definition-anchor` is WRONG "
+            "-- `definition-anchor` is M7's operation, not an owner family, so the correct "
+            "row is `owner_id: M7` with `operation: definition-anchor`. If you are unsure "
+            "which owner family a chosen operation belongs to, name it explicitly via "
+            "`owner_family` in `owner_route_details` rather than repeating the operation "
+            "token into `owner_id`. If a selected "
             "route has no loaded callable owner body, no controlled operation, or no "
             "owner-local delta_result vocabulary, preserve it as HOLD/PARTIAL with "
             "OWNER-BODY-NOT-LOADED / controlled-vocabulary-gap evidence instead of "
@@ -558,6 +580,21 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "`unresolved_burdens` is non-empty, or while any burden is still held/carried, is a "
             "direct contradiction and is rejected; a genuinely open case must report `proved: "
             "false` with the honest `unresolved_burdens` list, not a premature `proved: true`. "
+            "For every `per_burden_reread[].curl` entry whose head is `held` or `non-null`, the "
+            "`<reason>` text after the head must phrase the dependency loop as still OPEN, never "
+            "as resolved or absent: use open-loop phrasing such as `the dependency loop remains "
+            "open until <burden/owner>` or `no loop break has landed yet`, and name the concrete "
+            "next burden or owner id that would close it (e.g. `³B` or `M7`). The reason text "
+            "must NOT contain the literal collocations `no circular`, `not circular`, `no churn`, "
+            "or `not a loop`, and must not use `no loop` unless immediately followed by a "
+            "break/close/resolution verb form (`break`, `broke`, `broken`, `close`, `closed`, "
+            "`closes`, `closing`, `closure`, `resolve`, `resolved`, `resolves`, `resolving`) -- "
+            "this mirrors tools/check_mid_reread_pressure.py's CURL_NEGATION_RE, which grants that "
+            "same resolution-verb lookahead only to `no loop` and treats every other bare negation "
+            "of loop/circular/churn as a contradiction of a held/non-null curl. A held/non-null "
+            "curl reason that reads as if no loop or circularity exists, or that never names the "
+            "concrete next burden/owner keeping it open, is rejected at Stage 05 before it ever "
+            "reaches rendering. "
             "Return one syntactically valid JSON object only: every array item must have exactly "
             "one object-closing brace before a comma, every string quote inside a value must be "
             "escaped, and no prose or second object may appear outside the root object. "
@@ -7568,12 +7605,29 @@ PROMPT_PACK_PRIOR_OUTPUT_SUBSTRING_BYTES_FLOOR = 10_000
 
 def _prompt_pack_component_is_prior_output_named(name: str) -> bool:
     """True when a known_parts component name marks it as prior-OUTPUT-shaped --
-    a previously rendered output artifact (a prior stage's full output, or a
-    section's own existing body text fed into an expansion prompt) -- as opposed
-    to state/instruction-shaped components (previous_stages_json, state_capsule,
-    raw_input_text, instructions, section_role_guidance) that are exempt from the
-    size-based includes_prior_full_output rule below."""
+    a previously rendered output ARTIFACT being replayed verbatim (e.g. a prior
+    stage's full rendered output) -- as opposed to state/instruction-shaped or
+    sanctioned-expansion-machinery components that are exempt from the
+    size-based includes_prior_full_output rule below.
+
+    G5 (cycle-04): ``section_existing_text`` -- the CURRENT section's own
+    in-progress text, passed back by design so --section-expansion-rounds can
+    keep growing it -- previously matched here via a generic "existing_text"
+    substring check, and tripped the >10KB rule at 13-16KB on real deep
+    lanes even though it is not a prior stage's OUTPUT being replayed at all;
+    it is the section's own draft, exactly the kind of sanctioned expansion
+    machinery previous_stages_json/state_capsule already were exempted for at
+    a5da02f's FIX A. Per the cycle-04 adversarial review, the exemption is the
+    single LITERAL name ``section_existing_text`` (the one sanctioned user of
+    that name family) rather than dropping the "existing_text" family match
+    entirely: any OTHER present or future component whose name contains
+    "existing_text"/"existing-text" (e.g. a hypothetical prior_existing_text)
+    stays prior-output-shaped and subject to the >10KB rule, so a genuinely
+    prior-output-shaped component cannot be laundered under a natural-sounding
+    existing_text-family name."""
     lowered = name.lower()
+    if lowered == "section_existing_text":
+        return False
     return (
         "prior-output" in lowered
         or "prior_output" in lowered
@@ -7990,6 +8044,85 @@ def invoke_codex(root: Path, model: str, prompt: str, output_path: Path, log_pat
 MODEL_RUNNER = "codex"
 
 
+@functools.lru_cache(maxsize=None)
+def _claude_cli_help_text(claude_executable: str) -> str:
+    """Cache one `claude --help` invocation per executable path so G4(a)'s
+    context-sterilization flag detection does not spawn an extra subprocess
+    before every single stage/section call in a run."""
+    try:
+        result = subprocess.run(
+            [claude_executable, "--help"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            check=False,
+            timeout=30,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    return (result.stdout or "") + (result.stderr or "")
+
+
+def _claude_context_sterilization_flags_for_help_text(help_text: str) -> list[str]:
+    """Pure core of _claude_context_sterilization_flags: given raw `--help`
+    output text, return the supported sterilization flags. Split out from
+    the subprocess-invoking wrapper below so both directions -- graceful
+    degradation on an older CLI missing a flag, and the full flag set on a
+    current CLI -- can be unit-tested without shelling out.
+
+    Each flag strips a distinct project-context injection vector implicated
+    in the cycle-04 G4 defect (the claude lane, run with cwd=repo root,
+    received the orchestration project's own CLAUDE.md AND the
+    orchestration session's memory notes, and the lane agent became
+    meta-aware and interrogated the harness instead of producing governed
+    Stage output):
+      --setting-sources "": load NO user/project/local settings sources at
+        all (CLAUDE.md project instructions are loaded as part of the
+        project settings source), independent of cwd.
+      --strict-mcp-config: with no --mcp-config given, refuse to fall back
+        to any ambient project/user MCP configuration.
+    (--disallowedTools is not added: --tools "" already disables every
+    built-in tool, so a tool denylist has nothing left to additionally
+    restrict.)
+    """
+    flags: list[str] = []
+    if "--setting-sources" in help_text:
+        flags.extend(["--setting-sources", ""])
+    if "--strict-mcp-config" in help_text:
+        flags.append("--strict-mcp-config")
+    return flags
+
+
+def _claude_context_sterilization_flags(claude_executable: str) -> list[str]:
+    """G4(a): return whichever context-sterilization CLI flags this installed
+    claude CLI version supports, degrading gracefully (returning fewer
+    flags, never raising) when a flag is unavailable in an older/newer CLI
+    build. See _claude_context_sterilization_flags_for_help_text for the
+    flag rationale."""
+    return _claude_context_sterilization_flags_for_help_text(_claude_cli_help_text(claude_executable))
+
+
+def claude_neutral_cwd(run_dir: Path) -> Path:
+    """G4(a): a context-sterile working directory for the claude subprocess,
+    created once per run under `run_dir`. The claude CLI maps its cwd onto a
+    stored project directory (session history/memory keyed by the literal
+    cwd path) and, separately, discovers CLAUDE.md project instructions --
+    running the lane with cwd=<this repo's root> (the pre-G4a behavior) let
+    THIS orchestration project's own CLAUDE.md and memory notes leak into
+    the lane's model call. A freshly created, never-before-used directory
+    under the run's own scratch space has no prior claude-cli project
+    history to discover, and (paired with the --setting-sources ""
+    /--strict-mcp-config flags in _claude_context_sterilization_flags)
+    no project/user settings to load either. Idempotent: safe to call once
+    per stage/section call within the same run; later calls just find the
+    directory already present.
+    """
+    neutral_dir = run_dir / "claude-neutral-cwd"
+    neutral_dir.mkdir(parents=True, exist_ok=True)
+    return neutral_dir
+
+
 def build_claude_command(
     root: Path,
     model: str,
@@ -8008,13 +8141,20 @@ def build_claude_command(
     "you said not to execute yet" clarification (an ANDON reproduced on the Stage-07
     section requests). ``claude -p`` prints the final message to stdout, which
     invoke_claude captures (claude has no ``--output-last-message`` flag).
+
+    G4(a): appends whichever context-sterilization flags the installed CLI
+    supports (see _claude_context_sterilization_flags) -- this is the
+    CLI-flag half of the cycle-04 adapter-contamination fix; the other half
+    (running in a neutral cwd) is applied by the caller via claude_neutral_cwd
+    and invoke_claude's `cwd` parameter, not here (this function only builds
+    the argv, it does not know the run's scratch directory).
     """
     claude = claude_executable or shutil.which("claude")
     if claude is None:
         raise HarnessError(
             "claude CLI not found on PATH; Claude model smoke is blocked by harness/credential environment"
         )
-    return [claude, "-p", "--model", model, "--tools", ""]
+    return [claude, "-p", "--model", model, "--tools", "", *_claude_context_sterilization_flags(claude)]
 
 
 def invoke_claude(
@@ -8025,14 +8165,21 @@ def invoke_claude(
     log_path: Path,
     *,
     claude_executable: str | None = None,
+    cwd: Path | None = None,
 ) -> int:
+    """`cwd` (G4a): the claude subprocess's working directory. Defaults to
+    `root` (the pre-G4a behavior) when not given -- callers that have a
+    run-scoped scratch directory available should pass
+    claude_neutral_cwd(run_dir) instead, to avoid project-context injection
+    (see build_claude_command's docstring)."""
     command = build_claude_command(root, model, claude_executable=claude_executable)
+    effective_cwd = cwd if cwd is not None else root
     # Capture stdout (the final message) separately from stderr so the message is
     # not contaminated by transport logs; utf-8 so register glyphs (tau, Delta,
     # act brackets) survive intact.
     result = subprocess.run(
         command,
-        cwd=str(root),
+        cwd=str(effective_cwd),
         input=prompt,
         text=True,
         encoding="utf-8",
@@ -8049,10 +8196,24 @@ def invoke_claude(
     return result.returncode
 
 
-def invoke_model(root: Path, model: str, prompt: str, output_path: Path, log_path: Path) -> int:
-    """Dispatch the model invocation to the selected runner (default codex)."""
+def invoke_model(
+    root: Path,
+    model: str,
+    prompt: str,
+    output_path: Path,
+    log_path: Path,
+    *,
+    run_dir: Path | None = None,
+) -> int:
+    """Dispatch the model invocation to the selected runner (default codex).
+
+    `run_dir` (G4a) is used only by the claude lane, to run in a
+    context-sterile working directory (claude_neutral_cwd) instead of
+    `root`; the codex lane is unaffected and always uses `root` (codex has
+    no equivalent project-context/memory injection surface)."""
     if MODEL_RUNNER == "claude":
-        return invoke_claude(root, model, prompt, output_path, log_path)
+        claude_cwd = claude_neutral_cwd(run_dir) if run_dir is not None else None
+        return invoke_claude(root, model, prompt, output_path, log_path, cwd=claude_cwd)
     return invoke_codex(root, model, prompt, output_path, log_path)
 
 
@@ -8060,6 +8221,122 @@ def read_text_if_exists(path: Path) -> str:
     if not path.exists() or not path.is_file():
         return ""
     return path.read_text(encoding="utf-8", errors="replace")
+
+
+def classify_stage_response_transport_shape(response_text: str, stage_id: str) -> dict[str, Any]:
+    """G4(b): classify a STAGE call's (stage-01..stage-06/08, not Stage-07
+    section/expansion calls) raw response text for TRANSPORT-shape
+    retryability, distinct from classify_response_content_shape (which
+    governs Stage-07 section/expansion calls and is content-byte/tool-echo
+    based, not JSON-shape based).
+
+    Two shapes are RETRYABLE TRANSPORT failures, not producer content
+    failures: the response is not a parseable JSON object at all
+    (json_parse_failure), or it parses but the object lacks the expected
+    `id` field ENTIRELY, or its raw text carries a tool-invocation echo
+    shape (TOOL_INVOCATION_ECHO_RE) -- the RC-matrix cycle-04 sonnet/khaybar
+    defect: the adapter's contaminated cwd (see G4(a)) made the model
+    interrogate the harness and echo a literal `{"name": "Bash",
+    "arguments": {...}}` tool-call payload instead of governed stage JSON.
+
+    A syntactically valid stage JSON object that carries the WRONG id (id
+    present, just mismatched -- e.g. a crossed-stage response) is NOT
+    retryable here: that is producer content behavior, not a transport
+    artifact, per the conservative G4(b) boundary. Be conservative in the
+    other direction too: this classifier never inspects field CONTENT
+    beyond the `id` key's mere presence/absence.
+    """
+    tool_echo = bool(TOOL_INVOCATION_ECHO_RE.search(response_text))
+    try:
+        payload = extract_json_object(response_text)
+    except HarnessError:
+        return {"retryable": True, "reason": "json_parse_failure", "tool_invocation_echo": tool_echo}
+    if not isinstance(payload, dict) or "id" not in payload:
+        return {"retryable": True, "reason": "missing id field entirely", "tool_invocation_echo": tool_echo}
+    if tool_echo:
+        return {"retryable": True, "reason": "tool-invocation echo shape", "tool_invocation_echo": tool_echo}
+    return {"retryable": False, "reason": "", "tool_invocation_echo": tool_echo}
+
+
+def invoke_stage_call_with_transport_retry(
+    *,
+    root: Path,
+    model: str,
+    prompt: str,
+    stage_id: str,
+    base_response_path: Path,
+    base_log_path: Path,
+    retry_rounds: int,
+    stage_files: list[Path],
+    run_dir: Path | None = None,
+) -> dict[str, Any]:
+    """G4(b): STAGE-call analogue of invoke_call_with_transport_policy
+    (which is Stage-07 section/expansion-call-shaped machinery). Retries a
+    STAGE call up to `retry_rounds` additional times ONLY while the
+    response classifies as a transport-shape failure per
+    classify_stage_response_transport_shape; a response that parses with
+    the right shape but the wrong content (including a present-but-wrong
+    `id`) is never retried and fails immediately on that same attempt,
+    exactly as before this fix.
+
+    When retry_rounds == 0 (the default), behavior is identical to the
+    pre-G4(b) code -- a single attempt, and extract_json_object /
+    normalized_stage raise their original exact messages unmodified -- with
+    ONE deliberate exception: a response carrying a tool-invocation echo is
+    now rejected fail-closed even when its surrounding JSON is valid with
+    the right id (pre-G4(b) code would have silently accepted that
+    contamination; see the BLOCKING branch below). When retries are configured and exhausted on a
+    genuinely transport-shaped failure, the ORIGINAL exact message is still
+    raised, with a note appended that the transport retry budget was
+    exhausted (per the G4(b) spec: "fail with the existing message + a note
+    that transport retries were exhausted").
+    """
+    if retry_rounds < 0:
+        raise HarnessError("--transport-retry-rounds must be a non-negative integer")
+    last_attempt = 1 + retry_rounds
+    for attempt in range(1, last_attempt + 1):
+        response_path = attempt_path(base_response_path, attempt)
+        log_path = attempt_path(base_log_path, attempt)
+        exit_code = invoke_model(root, model, prompt, response_path, log_path, run_dir=run_dir)
+        stage_files.extend([response_path, log_path])
+        if exit_code != 0:
+            raise HarnessError(f"{stage_id}: codex exec failed with exit code {exit_code}; see {rel(log_path, root)}")
+        response_text = read_text_if_exists(response_path)
+        shape = classify_stage_response_transport_shape(response_text, stage_id)
+        if shape["retryable"] and attempt < last_attempt:
+            continue
+        if shape["tool_invocation_echo"]:
+            # Fail CLOSED (cycle-04 adversarial-review BLOCKING finding): a
+            # response whose raw text carries a tool-invocation echo is
+            # transport contamination and must NEVER be accepted, even when
+            # the surrounding text also parses as valid stage JSON with the
+            # right id -- otherwise the final attempt silently accepts the
+            # exact contamination shape this machinery exists to reject
+            # (the sibling invoke_call_with_transport_policy is fail-closed
+            # on exhaustion; this mirrors that shape). json_parse_failure
+            # and missing-id shapes need no branch here: extract_json_object
+            # / normalized_stage below independently raise their original
+            # exact messages for those.
+            raise HarnessError(
+                f"{stage_id}: response carries a tool-invocation echo shape (transport contamination; "
+                "never accepted regardless of surrounding JSON validity)"
+                + (
+                    f"; transport retry budget ({retry_rounds}) exhausted after {attempt} attempt(s)"
+                    if retry_rounds > 0
+                    else ""
+                )
+                + f"; see {rel(response_path, root)}"
+            )
+        try:
+            payload = extract_json_object(response_text)
+            return normalized_stage(stage_id, payload)
+        except HarnessError as exc:
+            if shape["retryable"] and retry_rounds > 0:
+                raise HarnessError(
+                    f"{exc}; transport retry budget ({retry_rounds}) exhausted after {attempt} attempt(s)"
+                ) from exc
+            raise
+    raise HarnessError("transport retry loop exited unexpectedly")
 
 
 def classify_transport_failure(exit_code: int, log_text: str) -> dict[str, Any]:
@@ -8357,6 +8634,7 @@ def invoke_call_with_transport_policy(
     attempts: list[dict[str, Any]],
     attempts_record_path: Path,
     stage_files: list[Path],
+    run_dir: Path | None = None,
 ) -> Path:
     """Shared transport-retry machinery for any Stage 07 section-shaped model call.
 
@@ -8366,6 +8644,10 @@ def invoke_call_with_transport_policy(
     Both the initial per-section call and each section-expansion round route through
     this one function so a tool-echo/below-floor/empty response is retried and
     classified identically regardless of which call produced it.
+
+    ``run_dir`` (G4a): forwarded to invoke_model so the claude lane runs in a
+    context-sterile working directory instead of ``root``; unused by the
+    codex lane.
     """
     if retry_rounds < 0:
         raise HarnessError("--transport-retry-rounds must be a non-negative integer")
@@ -8375,7 +8657,7 @@ def invoke_call_with_transport_policy(
         output_path = attempt_path(base_output_path, attempt)
         log_path = attempt_path(base_log_path, attempt)
         write_text(prompt_path, prompt)
-        exit_code = invoke_model(root, model, prompt, output_path, log_path)
+        exit_code = invoke_model(root, model, prompt, output_path, log_path, run_dir=run_dir)
         stage_files.extend([prompt_path, output_path, log_path])
         log_text = read_text_if_exists(log_path)
         transport = classify_transport_failure(exit_code, log_text)
@@ -8490,6 +8772,7 @@ def invoke_expansion_with_transport_policy(
     attempts: list[dict[str, Any]],
     attempts_record_path: Path,
     stage_files: list[Path],
+    run_dir: Path | None = None,
 ) -> Path:
     """Section-expansion call: thin wrapper over invoke_call_with_transport_policy
     that preserves the original expansion-only call signature and naming
@@ -8511,6 +8794,7 @@ def invoke_expansion_with_transport_policy(
         attempts=attempts,
         attempts_record_path=attempts_record_path,
         stage_files=stage_files,
+        run_dir=run_dir,
     )
 
 
@@ -8691,7 +8975,17 @@ def run_self_test(root: Path) -> int:
     if MODEL_RUNNER != "codex":
         raise HarnessError("Self-test default MODEL_RUNNER must be codex (Codex lane behavior-preserving)")
     claude_command = build_claude_command(root, "claude-opus-4-8", claude_executable="claude")
-    if claude_command != ["claude", "-p", "--model", "claude-opus-4-8", "--tools", ""]:
+    # G4(a): the sterilization flags appended are whatever the INSTALLED claude CLI
+    # supports (detected dynamically), so the expected command mirrors the same
+    # detection call rather than a hardcoded literal list -- this still pins the
+    # base argv (model/tools) exactly, and separately (below) pins the flag-
+    # detection logic itself against synthetic --help text so a CLI-version change
+    # in the test environment cannot silently defeat this canary.
+    expected_claude_command = [
+        "claude", "-p", "--model", "claude-opus-4-8", "--tools", "",
+        *_claude_context_sterilization_flags("claude"),
+    ]
+    if claude_command != expected_claude_command:
         raise HarnessError(f"Self-test build_claude_command shape drifted: {claude_command}")
     # Canary: the Claude command must NOT use plan mode (plan mode makes Claude PLAN
     # instead of producing the governed Stage output); it must disable all tools for
@@ -8700,16 +8994,58 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test: Claude command must not use plan mode (it withholds the governed output)")
     if "--tools" not in claude_command or claude_command[claude_command.index("--tools") + 1] != "":
         raise HarnessError("Self-test: Claude command must disable all tools via --tools \"\" (read-only, no execution)")
+    # G4(a) no-model canary: _claude_context_sterilization_flags_for_help_text must
+    # detect each flag independently from synthetic --help text (both directions:
+    # full support on a current CLI, and graceful degradation -- fewer flags, never
+    # an error -- on an older CLI missing one or both flags).
+    _both_flags_help = "--setting-sources <sources>  ...\n--strict-mcp-config  ...\n--tools <tools...>  ...\n"
+    if _claude_context_sterilization_flags_for_help_text(_both_flags_help) != ["--setting-sources", "", "--strict-mcp-config"]:
+        raise HarnessError("Self-test: sterilization-flag detection did not find both flags in synthetic --help text")
+    _neither_flag_help = "--tools <tools...>  ...\n--model <model>  ...\n"
+    if _claude_context_sterilization_flags_for_help_text(_neither_flag_help) != []:
+        raise HarnessError(
+            "Self-test: sterilization-flag detection wrongly found flags absent from synthetic --help text "
+            "(must degrade gracefully on an older CLI, not raise or fabricate flags)"
+        )
+    _setting_sources_only_help = "--setting-sources <sources>  ...\n--tools <tools...>  ...\n"
+    if _claude_context_sterilization_flags_for_help_text(_setting_sources_only_help) != ["--setting-sources", ""]:
+        raise HarnessError("Self-test: sterilization-flag detection did not degrade to the single supported flag")
+    # G4(a) canary: an unresolvable claude executable must degrade to an empty help
+    # text (OSError swallowed), not raise. lru_cache.cache_clear() wipes the WHOLE
+    # cache (not per-key), so this must run BEFORE build_claude_command's earlier
+    # call above ever primes the real "claude" entry that the later _fake_claude_run
+    # block below relies on being cache-hit (not re-probed through the fake
+    # subprocess.run, which would misclassify a --help probe as a malformed stage
+    # command) -- probing a distinctly-named nonexistent executable here does not
+    # touch the "claude" cache entry, so no re-priming is needed afterward.
+    if _claude_context_sterilization_flags("__self-test-nonexistent-claude-executable__") != []:
+        raise HarnessError("Self-test: an unresolvable claude executable must degrade to zero sterilization flags")
+    # G4(a) no-model canary: claude_neutral_cwd must create a fresh, empty directory
+    # under run_dir (never the repo root itself) and be idempotent across repeated
+    # calls within the same run.
+    _neutral_cwd_run_dir = root / ".daee" / "validation" / f"g4a-neutral-cwd-self-test-{uuid.uuid4().hex}"
+    _neutral_cwd_run_dir.mkdir(parents=True, exist_ok=True)
+    _neutral_cwd_first = claude_neutral_cwd(_neutral_cwd_run_dir)
+    if not _neutral_cwd_first.is_dir() or _neutral_cwd_first == root:
+        raise HarnessError("Self-test: claude_neutral_cwd did not create a fresh directory distinct from repo root")
+    if _neutral_cwd_first.parent.resolve() != _neutral_cwd_run_dir.resolve():
+        raise HarnessError("Self-test: claude_neutral_cwd must nest under the given run_dir")
+    _neutral_cwd_second = claude_neutral_cwd(_neutral_cwd_run_dir)
+    if _neutral_cwd_second != _neutral_cwd_first:
+        raise HarnessError("Self-test: claude_neutral_cwd must be idempotent (same path on repeat calls)")
     claude_capture_dir = root / ".daee" / "validation"
     claude_capture_dir.mkdir(parents=True, exist_ok=True)
     claude_out_path = claude_capture_dir / "self-test-claude-output.txt"
     claude_log_path = claude_capture_dir / "self-test-claude-log.txt"
+
+    _fake_claude_run_cwds: list[str] = []
 
     def _fake_claude_run(command, **kwargs):
         if "--tools" not in command or command[command.index("--tools") + 1] != "":
             raise HarnessError("Self-test claude subprocess command lost read-only no-tools mode (--tools \"\")")
         if "--permission-mode" in command or "plan" in command:
             raise HarnessError("Self-test claude subprocess command must not use plan mode")
+        _fake_claude_run_cwds.append(kwargs.get("cwd"))
         return subprocess.CompletedProcess(command, 0, stdout="SELF_TEST_CLAUDE_STAGE_RESPONSE\n", stderr="")
 
     real_subprocess_run = subprocess.run
@@ -8723,10 +9059,28 @@ def run_self_test(root: Path) -> int:
             claude_log_path,
             claude_executable="claude",
         )
+        # G4(a): invoke_claude's `cwd` parameter, when given, must be honored
+        # (not silently overridden back to `root`) -- this is the second half of
+        # the context-sterilization fix (the flag half is pinned above).
+        invoke_claude(
+            root,
+            "claude-opus-4-8",
+            "self-test prompt",
+            claude_out_path,
+            claude_log_path,
+            claude_executable="claude",
+            cwd=_neutral_cwd_first,
+        )
     finally:
         subprocess.run = real_subprocess_run
     if claude_exit != 0 or claude_out_path.read_text(encoding="utf-8") != "SELF_TEST_CLAUDE_STAGE_RESPONSE\n":
         raise HarnessError("Self-test invoke_claude did not capture model stdout into the output path")
+    if len(_fake_claude_run_cwds) != 2:
+        raise HarnessError("Self-test invoke_claude did not invoke the subprocess exactly twice")
+    if _fake_claude_run_cwds[0] != str(root):
+        raise HarnessError("Self-test invoke_claude without a cwd override must default to root (backward-compatible)")
+    if _fake_claude_run_cwds[1] != str(_neutral_cwd_first):
+        raise HarnessError("Self-test invoke_claude did not honor an explicit cwd override (G4a neutral cwd)")
     # Scaffold-text canaries: the compiled-output section framing must be truthful --
     # the byte minimum is an anti-slimming / evidence-mass floor (NOT a padding target)
     # and the interface boundary is artifact discipline (NOT a request to hide reasoning)
@@ -9496,6 +9850,35 @@ def run_self_test(root: Path) -> int:
     xml_tool_echo_sample = '="Bash">Get-ChildItem -Recurse -Filter "SKILL.md" -Path .</Bash>'
     if classify_response_content_shape(0, xml_tool_echo_sample)["tool_invocation_echo"] is not True:
         raise HarnessError("Self-test failed to classify an inline pseudo-XML tool tag as a tool-invocation echo")
+    # G4(c): the `{"name": "<tool>", "arguments": {...}}` echo shape (cycle-04 sonnet/khaybar
+    # literal payload, reproduced here verbatim minus the file path), including its prose
+    # preamble -- the pattern must match even after leading non-JSON prose.
+    name_arguments_echo_sample = (
+        "I'll check whether this \"stage harness\" text corresponds to real infrastructure "
+        "in the repo before treating it as a legitimate task.\n\n"
+        '{"name": "Bash", "arguments": {"command": "find . -iname \\"SKILL.md\\" 2>/dev/null '
+        '| head -20", "description": "Search for SKILL.md files in repo"}}\n'
+    )
+    if not TOOL_INVOCATION_ECHO_RE.search(name_arguments_echo_sample):
+        raise HarnessError(
+            'Self-test failed to classify a {"name": ..., "arguments": {...}} tool-call echo '
+            "(with prose preamble) as a tool-invocation echo"
+        )
+    # Negative control: a legitimate stage/field_witness-shaped JSON object that happens to
+    # carry an unrelated "name" key (not immediately followed by "arguments") must NOT match --
+    # the pattern is anchored to the top-level echo context, not any occurrence of "name".
+    legitimate_nested_name_sample = json.dumps(
+        {
+            "id": "stage-06-field-witness-nar",
+            "status": "pass",
+            "owner_activations": [{"body_ref": "B1_1", "name": "source-status-repair", "operation": "source-order"}],
+        }
+    )
+    if TOOL_INVOCATION_ECHO_RE.search(legitimate_nested_name_sample):
+        raise HarnessError(
+            'Self-test wrongly classified a legitimate stage payload with a nested "name" key '
+            "(not followed by \"arguments\") as a tool-invocation echo"
+        )
     valid_expansion_sample = (
         "Target: divine-attributes-worship-worthiness burden.\n"
         "Operation: attribute-precision separates God's nature, God's act of judgment, human moral "
@@ -9707,6 +10090,173 @@ def run_self_test(root: Path) -> int:
             "Self-test initial-section-call content-shape exhaustion must not silently record a pass status "
             "-- exhaustion must be classified/reported, not swallowed"
         )
+
+    # G4(b): classify_stage_response_transport_shape pure-function cases.
+    _tool_echo_stage_sample = (
+        'preamble prose\n{"name": "Bash", "arguments": {"command": "find .", "description": "d"}}\n'
+    )
+    _malformed_json_shape = classify_stage_response_transport_shape("not json at all {{{", "stage-01-intake")
+    if _malformed_json_shape["retryable"] is not True:
+        raise HarnessError("Self-test: unparseable stage response must classify as transport-shape retryable")
+    _tool_echo_shape = classify_stage_response_transport_shape(_tool_echo_stage_sample, "stage-01-intake")
+    if _tool_echo_shape["retryable"] is not True:
+        raise HarnessError(
+            'Self-test: a {"name": ..., "arguments": {...}} tool-invocation echo stage response must '
+            "classify as transport-shape retryable"
+        )
+    _missing_id_shape = classify_stage_response_transport_shape(
+        json.dumps({"status": "pass", "input_digest": "0" * 64}), "stage-01-intake"
+    )
+    if _missing_id_shape["retryable"] is not True:
+        raise HarnessError("Self-test: a stage response with no id field at all must classify as transport-shape retryable")
+    _valid_stage_shape = classify_stage_response_transport_shape(
+        json.dumps({"id": "stage-01-intake", "status": "pass", "input_digest": "0" * 64}), "stage-01-intake"
+    )
+    if _valid_stage_shape["retryable"] is not False:
+        raise HarnessError("Self-test: a well-shaped, correctly-id'd stage response must NOT classify as retryable")
+    # Conservative boundary: id PRESENT but WRONG is producer CONTENT, not a
+    # transport artifact -- must NOT be classified retryable.
+    _wrong_id_shape = classify_stage_response_transport_shape(
+        json.dumps({"id": "stage-02-layer-a-diagnostic-ir", "status": "pass"}), "stage-01-intake"
+    )
+    if _wrong_id_shape["retryable"] is not False:
+        raise HarnessError(
+            "Self-test: a syntactically valid stage response with a present-but-WRONG id must NOT classify "
+            "as transport-shape retryable (that is producer content, not transport)"
+        )
+
+    # G4(b): invoke_stage_call_with_transport_retry integration, reusing the
+    # invoke_codex monkeypatch technique the section-call self-tests above use
+    # (MODEL_RUNNER stays "codex" in self-test context; invoke_model dispatches
+    # to the module-level invoke_codex name, which these tests reassign).
+    stage_retry_dir = run_dir / "transport-stage-shape-retry"
+    stage_retry_dir.mkdir(parents=True, exist_ok=True)
+    stage_retry_stage_files: list[Path] = []
+
+    def _fake_stage_invoke(_responses: "list[tuple[int, str]]"):
+        _iterator = iter(_responses)
+
+        def _invoke(_root: Path, _model: str, _prompt: str, output_path: Path, log_path: Path) -> int:
+            exit_code, text = next(_iterator)
+            write_text(output_path, text)
+            write_text(log_path, "ok\n")
+            return exit_code
+
+        return _invoke
+
+    _valid_stage01_text = json.dumps({"id": "stage-01-intake", "status": "pass", "input_digest": "0" * 64})
+
+    # (1) retry_rounds=0 (default): a malformed response on the only attempt
+    # must raise the ORIGINAL exact extract_json_object message, byte-for-byte
+    # backward compatible with the pre-G4(b) code.
+    try:
+        invoke_codex = _fake_stage_invoke([(0, "not json {{{")])
+        try:
+            invoke_stage_call_with_transport_retry(
+                root=root, model="fake-model", prompt="p", stage_id="stage-01-intake",
+                base_response_path=stage_retry_dir / "r0.response.txt",
+                base_log_path=stage_retry_dir / "r0.codex-log.txt",
+                retry_rounds=0, stage_files=stage_retry_stage_files,
+            )
+        except HarnessError as exc:
+            if "json_parse_failure" not in str(exc) or "transport retry budget" in str(exc):
+                raise
+        else:
+            raise HarnessError("Self-test: retry_rounds=0 malformed stage response must still fail")
+    finally:
+        invoke_codex = real_invoke_codex
+
+    # (2) retry_rounds=1: a tool-echo first attempt, valid second attempt --
+    # must recover and return the normalized stage, exactly like the section-
+    # call transport retry machinery recovers from the same shape family.
+    try:
+        invoke_codex = _fake_stage_invoke([(0, _tool_echo_stage_sample), (0, _valid_stage01_text)])
+        recovered_stage = invoke_stage_call_with_transport_retry(
+            root=root, model="fake-model", prompt="p", stage_id="stage-01-intake",
+            base_response_path=stage_retry_dir / "r1.response.txt",
+            base_log_path=stage_retry_dir / "r1.codex-log.txt",
+            retry_rounds=1, stage_files=stage_retry_stage_files,
+        )
+    finally:
+        invoke_codex = real_invoke_codex
+    if recovered_stage.get("id") != "stage-01-intake":
+        raise HarnessError("Self-test: invoke_stage_call_with_transport_retry did not recover a valid retried stage")
+
+    # (3) retry_rounds=1, BOTH attempts malformed: must exhaust with the
+    # ORIGINAL exact message PLUS the exhausted-retries note appended.
+    try:
+        invoke_codex = _fake_stage_invoke([(0, "not json {{{"), (0, "still not json {{{")])
+        try:
+            invoke_stage_call_with_transport_retry(
+                root=root, model="fake-model", prompt="p", stage_id="stage-01-intake",
+                base_response_path=stage_retry_dir / "r2.response.txt",
+                base_log_path=stage_retry_dir / "r2.codex-log.txt",
+                retry_rounds=1, stage_files=stage_retry_stage_files,
+            )
+        except HarnessError as exc:
+            if "json_parse_failure" not in str(exc) or "transport retry budget (1) exhausted after 2 attempt(s)" not in str(exc):
+                raise HarnessError(f"Self-test: exhausted stage transport retry message shape drifted: {exc}")
+        else:
+            raise HarnessError("Self-test: retry_rounds=1 with two malformed attempts must still fail")
+    finally:
+        invoke_codex = real_invoke_codex
+
+    # (4) Conservative boundary: a syntactically valid stage JSON with the
+    # WRONG id must fail IMMEDIATELY on the first attempt, never retried, even
+    # with retry_rounds configured -- proven by an iterator with only ONE
+    # response queued (a second invocation would raise StopIteration).
+    _wrong_id_text = json.dumps({"id": "stage-02-layer-a-diagnostic-ir", "status": "pass"})
+    try:
+        invoke_codex = _fake_stage_invoke([(0, _wrong_id_text)])
+        try:
+            invoke_stage_call_with_transport_retry(
+                root=root, model="fake-model", prompt="p", stage_id="stage-01-intake",
+                base_response_path=stage_retry_dir / "r3.response.txt",
+                base_log_path=stage_retry_dir / "r3.codex-log.txt",
+                retry_rounds=2, stage_files=stage_retry_stage_files,
+            )
+        except HarnessError as exc:
+            if "response id must be" not in str(exc) or "transport retry budget" in str(exc):
+                raise HarnessError(f"Self-test: wrong-id stage response error message shape drifted: {exc}")
+        else:
+            raise HarnessError("Self-test: a present-but-wrong stage id must still fail (never silently accepted)")
+    finally:
+        invoke_codex = real_invoke_codex
+
+    # (5) FAIL-CLOSED (cycle-04 adversarial-review BLOCKING finding): a
+    # response that is a syntactically VALID stage JSON with the RIGHT id but
+    # whose raw text ALSO carries a tool-invocation echo must be REJECTED --
+    # on a single attempt (retry_rounds=0) and at exhaustion when the
+    # contamination persists across every retry -- never parse-and-accepted.
+    _poisoned_valid_text = (
+        "```json\n" + _valid_stage01_text + "\n```\n"
+        '{"name": "Bash", "arguments": {"command": "id", "description": "d"}}\n'
+    )
+    for _poison_rounds, _poison_responses in (
+        (0, [(0, _poisoned_valid_text)]),
+        (2, [(0, _poisoned_valid_text), (0, _poisoned_valid_text), (0, _poisoned_valid_text)]),
+    ):
+        try:
+            invoke_codex = _fake_stage_invoke(_poison_responses)
+            try:
+                invoke_stage_call_with_transport_retry(
+                    root=root, model="fake-model", prompt="p", stage_id="stage-01-intake",
+                    base_response_path=stage_retry_dir / f"r4-rounds{_poison_rounds}.response.txt",
+                    base_log_path=stage_retry_dir / f"r4-rounds{_poison_rounds}.codex-log.txt",
+                    retry_rounds=_poison_rounds, stage_files=stage_retry_stage_files,
+                )
+            except HarnessError as exc:
+                if "tool-invocation echo shape" not in str(exc):
+                    raise HarnessError(f"Self-test: poisoned-valid stage rejection message shape drifted: {exc}")
+                if _poison_rounds > 0 and "transport retry budget (2) exhausted after 3 attempt(s)" not in str(exc):
+                    raise HarnessError(f"Self-test: poisoned-valid exhaustion note missing: {exc}")
+            else:
+                raise HarnessError(
+                    "Self-test: a valid-JSON right-id stage response carrying a tool-invocation echo "
+                    f"was ACCEPTED at retry_rounds={_poison_rounds} (fail-open transport contamination)"
+                )
+        finally:
+            invoke_codex = real_invoke_codex
 
     normalized_stage02 = normalized_stage(
         "stage-02-layer-a-diagnostic-ir",
@@ -10415,7 +10965,7 @@ def run_self_test(root: Path) -> int:
             },
         )
     except HarnessError as exc:
-        if "executable owner route 'scope-boundary' has no controlled owner family" not in str(exc):
+        if "operation token used as owner_id" not in str(exc):
             raise
     else:
         raise HarnessError("Self-test accepted operation token as owner_id without owner_family evidence")
@@ -16685,6 +17235,63 @@ def run_self_test(root: Path) -> int:
             "prior-output-NAMED components trigger the size-based flag"
         )
 
+    # G5 (cycle-04): case (c3) is the negative control for section_existing_text --
+    # the section's own in-progress text, passed back by design for
+    # --section-expansion-rounds, is sanctioned expansion machinery exactly like
+    # previous_stages_json/state_capsule (case c2 above), NOT a prior stage's OUTPUT
+    # being replayed. A 13KB section_existing_text component (the real cycle-04 size,
+    # 13,196-16,384 bytes) must NOT flag includes_prior_full_output.
+    _ppm_section_existing_text = "Z" * 13_000
+    if len(_ppm_section_existing_text.encode("utf-8")) <= PROMPT_PACK_PRIOR_OUTPUT_SUBSTRING_BYTES_FLOOR:
+        raise HarnessError("Self-test: synthetic section_existing_text fixture must exceed the 10000-byte floor")
+    _ppm_prompt_with_existing_text = (
+        _ppm_prompt + "\nSection existing text:\n" + _ppm_section_existing_text + "\n"
+    )
+    _ppm_known_parts_existing_text = dict(_ppm_known_parts)
+    _ppm_known_parts_existing_text["section_existing_text"] = _ppm_section_existing_text
+    _ppm_manifest_c3 = build_prompt_pack_manifest(
+        _ppm_prompt_with_existing_text, _ppm_known_parts_existing_text, "self-test-case-c3", "stage-07", 1
+    )
+    if _ppm_manifest_c3["includes_prior_full_output"]:
+        raise HarnessError(
+            "Self-test: build_prompt_pack_manifest (c3) flagged includes_prior_full_output for a "
+            ">10000-byte section_existing_text component -- section_existing_text is sanctioned "
+            "--section-expansion-rounds machinery (the section's OWN in-progress text, not a prior "
+            "stage's rendered OUTPUT being replayed) and must be exempt from the size-based rule "
+            "(G5 cycle-04 calibration)"
+        )
+    # Case (c4): a genuinely prior-output-NAMED component must still flag, even at
+    # the same 13KB size as (c3) -- proves the exemption is name-scoped, not a
+    # blanket size-based exemption that would silently defeat case (c) above too.
+    _ppm_known_parts_prior_13kb = dict(_ppm_known_parts)
+    _ppm_known_parts_prior_13kb["prior-output-stage-06"] = _ppm_section_existing_text
+    _ppm_manifest_c4 = build_prompt_pack_manifest(
+        _ppm_prompt_with_existing_text.replace("Section existing text:", "Prior output:"),
+        _ppm_known_parts_prior_13kb, "self-test-case-c4", "stage-07", 1,
+    )
+    if not _ppm_manifest_c4["includes_prior_full_output"]:
+        raise HarnessError(
+            "Self-test: build_prompt_pack_manifest (c4) did not flag includes_prior_full_output for a "
+            "13KB prior-output-NAMED component -- the section_existing_text exemption must be scoped "
+            "to that name family, not a blanket size exemption"
+        )
+    # Case (c5) (cycle-04 adversarial review): the exemption is the LITERAL
+    # name section_existing_text only. Any OTHER existing_text-family name at
+    # the same 13KB size (a natural-sounding name a future call site might
+    # pick for a genuinely prior-output-shaped component) must still flag --
+    # proving prior-output content cannot be laundered under the name family.
+    _ppm_known_parts_laundered = dict(_ppm_known_parts)
+    _ppm_known_parts_laundered["prior_existing_text"] = _ppm_section_existing_text
+    _ppm_manifest_c5 = build_prompt_pack_manifest(
+        _ppm_prompt_with_existing_text, _ppm_known_parts_laundered, "self-test-case-c5", "stage-07", 1
+    )
+    if not _ppm_manifest_c5["includes_prior_full_output"]:
+        raise HarnessError(
+            "Self-test: build_prompt_pack_manifest (c5) did not flag a 13KB existing_text-family "
+            "component other than the literal section_existing_text -- the G5 exemption must be the "
+            "single literal name, not the whole name family (laundering channel)"
+        )
+
     # FIX 8: whitespace-normalization probe case. Take the same verbatim
     # runtime probe used in case (b), but insert one extra space mid-probe
     # before embedding it in the prompt. An exact-substring check alone would
@@ -16837,6 +17444,36 @@ def run_self_test(root: Path) -> int:
 
     capsule_checker = check_state_capsule_module()
     capsule_schema = capsule_checker.load_schema()
+
+    # G1 LOCKSTEP guard (4-way-lockstep precedent): the checker's validation-
+    # time normalize_burden_token and this harness's emission-time
+    # _capsule_bare_join_key_body_ref are declared independent mirrors of the
+    # SAME superscript/subscript<->ASCII join-key mapping. Assert they agree
+    # over a representative token battery (both sanctioned surfaces, near-miss
+    # and fallthrough shapes) so a future edit to either side cannot silently
+    # make capsules emit one canonical form while the replay gate normalizes
+    # to another -- which would reintroduce the cycle-04 G1 latent defect.
+    # Battery covers the sanctioned dual-surface grammar only (ASCII join keys
+    # + superscript/subscript public forms, incl. multi-digit). Unrecognized/
+    # malformed tokens are deliberately excluded: the two functions diverge
+    # there BY DESIGN (emission passes through verbatim; validation digit-
+    # translates) and such tokens cannot appear in a schema-valid capsule, so
+    # the divergence can never affect parity.
+    for _lockstep_token in (
+        "B1", "B1_1", "B11_1", "B1_11",
+        "¹B₁", "²B₃", "¹²B₃", "¹B",
+        "¹B₁₁", "¹²B₁₂",
+    ):
+        _emission_form = _capsule_bare_join_key_body_ref(_lockstep_token)
+        _validation_form = capsule_checker.normalize_burden_token(_lockstep_token)
+        if _emission_form != _validation_form:
+            raise HarnessError(
+                "Self-test: capsule body_ref normalization drift between harness emission "
+                f"(_capsule_bare_join_key_body_ref) and checker validation (normalize_burden_token) "
+                f"for token {_lockstep_token!r}: emission {_emission_form!r} != validation "
+                f"{_validation_form!r} (update both mirrors in lockstep)"
+            )
+
     capsule_payloads: list[dict[str, Any]] = []
     for capsule_path in capsule_written_paths:
         capsule_payload = load_json(capsule_path)
@@ -17379,12 +18016,22 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 response_path = responses_dir / f"{stage_id}.response.txt"
                 log_path = responses_dir / f"{stage_id}.codex-log.txt"
                 write_text(prompt_path, prompt)
-                exit_code = invoke_model(root, args.model, prompt, response_path, log_path)
-                stage_files.extend([prompt_path, response_path, log_path])
-                if exit_code != 0:
-                    raise HarnessError(f"{stage_id}: codex exec failed with exit code {exit_code}; see {rel(log_path, root)}")
-                payload = extract_json_object(response_path.read_text(encoding="utf-8", errors="replace"))
-                stage = normalized_stage(stage_id, payload)
+                stage_files.append(prompt_path)
+                # G4(b): transport-shape retryable (json_parse_failure / missing id /
+                # tool-invocation echo) up to --transport-retry-rounds; a syntactically
+                # valid stage JSON with the wrong content (including a present-but-wrong
+                # id) still fails immediately, unretried, exactly as before this fix.
+                stage = invoke_stage_call_with_transport_retry(
+                    root=root,
+                    model=args.model,
+                    prompt=prompt,
+                    stage_id=stage_id,
+                    base_response_path=response_path,
+                    base_log_path=log_path,
+                    retry_rounds=args.transport_retry_rounds,
+                    stage_files=stage_files,
+                    run_dir=run_dir,
+                )
                 if stage.get("status") == "fail":
                     stage_fail_reason = f"{stage_id}: model returned fail: {stage.get('error')}"
                     emit_explain_stage_failure(stage_id, stage_fail_reason)
@@ -17547,6 +18194,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                         attempts=transport_attempts,
                         attempts_record_path=transport_attempts_record_path,
                         stage_files=stage_files,
+                        run_dir=run_dir,
                     )
                     if not section_output_path.exists() or section_output_path.stat().st_size == 0:
                         raise HarnessError(f"stage-07-release-output {section_id}: section output was not produced")
@@ -17624,6 +18272,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                             attempts=transport_attempts,
                             attempts_record_path=transport_attempts_record_path,
                             stage_files=stage_files,
+                            run_dir=run_dir,
                         )
                     if not expansion_output_path.exists() or expansion_output_path.stat().st_size == 0:
                         raise HarnessError(
@@ -17748,7 +18397,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             release_prompt_path = prompts_dir / "stage-07-release-output.prompt.md"
             release_log_path = responses_dir / "stage-07-release-output.codex-log.txt"
             write_text(release_prompt_path, release)
-            exit_code = invoke_model(root, args.model, release, output_path, release_log_path)
+            exit_code = invoke_model(root, args.model, release, output_path, release_log_path, run_dir=run_dir)
             stage_files.extend([release_prompt_path, output_path, release_log_path])
             if exit_code != 0:
                 raise HarnessError(

@@ -445,6 +445,23 @@ def route_owner_vocabulary_errors(label: str, route: dict[str, Any]) -> list[str
         return alias_errors
     family = canonical_delta_owner(owner)
     if not family:
+        # G3: distinguish the specific "operation token used as owner_id"
+        # confusion (owner_id and operation/owner_operation carry the exact
+        # same token, and no owner_family hint resolved it to a real owner
+        # family/callable owner body above) from the generic missing-
+        # vocabulary case. This is the same underlying rejection (owner_id
+        # still fails canonical_delta_owner), just a clearer diagnostic that
+        # names the confusion directly instead of leaving the model to
+        # rediscover it from a generic vocabulary message.
+        raw_operation = str(route.get("operation") or route.get("owner_operation") or "").strip()
+        if raw_operation and raw_owner.strip() == raw_operation:
+            return [
+                f"{label}: owner_id {raw_owner!r} is an operation token used as owner_id (confusion: "
+                "owner_id must name an owner family or callable owner body -- e.g. M7, P7, SOURCE, "
+                "authority-order-repair -- not the owner-local operation it performs); supply the real "
+                "owner family via owner_family in owner_route_details, or mark the route HOLD/PARTIAL / "
+                "OWNER-BODY-NOT-LOADED"
+            ]
         return [
             f"{label}: executable owner route {raw_owner!r} has no controlled owner family/delta_result vocabulary; "
             "mark the route HOLD/PARTIAL / OWNER-BODY-NOT-LOADED or add source-owned owner vocabulary with canaries"
