@@ -479,7 +479,17 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "carries an explicit string `act_row` for harness normalization. "
             "The ACT bracket owner must be a callable selected owner/TTP floor, not a "
             "route/context umbrella label, case-library label, noetic-frame label, or "
-            "code lookup. When the selected owner body is unavailable/not loaded, or "
+            "code lookup. "
+            "Owner-execution mass law for held/generated burdens: when an ACT row targets a "
+            "held or MRP-generated burden, its dereferenced submove body must EXECUTE the "
+            "routed owner's operation -- the owner's mechanism acting on the burden content "
+            "with a concrete burden-local state delta -- not merely name, cite, or look up "
+            "the owner code or its definition; tools/check_mrp_generated_burden.py rejects "
+            "lookup-only records ('Code lookup is not owner activation; Land(...) requires "
+            "mechanism/action/state-delta operation mass', 'names owner codes but does not "
+            "execute owner-specific operations') and fails the route with 'ACT records did "
+            "not prove routed owners' when no executing record proves a routed owner. "
+            "When the selected owner body is unavailable/not loaded, or "
             "when the selected owner has no controlled Stage 04 operation/delta_result "
             "vocabulary, emit HOLD/PARTIAL / OWNER-BODY-NOT-LOADED / "
             "controlled-vocabulary-gap handoff evidence instead of claiming `Land(...)`. "
@@ -521,8 +531,14 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "`per_burden_reread` is REQUIRED: a JSON array carrying exactly one object per "
             "`terminal_states` burden id, recording the real post-Land R(H,Δ) reread for that "
             "burden. Required string fields per entry: `burden_id` (machine `B<n>`), `target` "
-            "(public burden read, e.g. `¹B / imported tribunal burden`), `reread` (must start "
-            "`R(H,` and record `held routes rechecked: ...; live remainder: ...; release/next: ...`), "
+            "(public burden read, e.g. `¹B / imported tribunal burden`), `reread` (must start with the "
+            "literal invocation `R(H,Δ): ` -- capital H, comma, capital delta, closing paren, colon -- "
+            "and record `held routes rechecked: ...; live remainder: ...; release/next: ...`; "
+            "tools/check_mid_reread_pressure.py requires the Δ argument on every rendered Reread line "
+            "via `R\\(H,\\s*(?:Delta|Δ)...\\)` and fails 'Reread must invoke R(H,Delta)' when it is "
+            "dropped. WRONG: `R(H, held routes rechecked: ...` -- the Δ argument was dropped, so the "
+            "invocation never parses. RIGHT: `R(H,Δ): held routes rechecked: ...; live remainder: ...; "
+            "release/next: ...`), "
             "`landed_delta` (must name Δ/Delta), `route_gradient`, `divergence` "
             "(`<head> / <reason>` with head neutral|settled|bounded|non-neutral), `curl` "
             "(`<head> / <reason>` with head null|resolved|held|non-null), `finding` "
@@ -4547,9 +4563,17 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
                 ]
             )
             if burden in executed_act_burdens:
+                # Non-gate shape on purpose (cycle-05 adversarial-review BLOCKING
+                # finding): this ledger line is reproduced by the producer in the
+                # mrp_reread_terminal section, where a line-start `Land(ⁿB):`
+                # token would be BOTH a duplicate landing gate AND a stray gate
+                # outside layer_b_act (LAND_GATE_LINE_RE matches line-start
+                # colon-form only). State the landed status without that shape.
                 lines.append(
-                    f"Land({public_burden}): generated MRP burden has visible Stage 04 ACT execution; "
-                    "its landed/terminal status must match owner activations, MRP, and field_witness."
+                    f"- state=landed ({public_burden}): generated MRP burden has visible Stage 04 ACT execution; "
+                    "its landed/terminal status must match owner activations, MRP, and field_witness "
+                    f"(the burden's one line-start `Land({public_burden}):` landing gate lives in its Layer B / ACT "
+                    "section; do not restate it here)."
                 )
             else:
                 lines.append(
@@ -4584,6 +4608,8 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
         "- The harness injects one canonical `[Mid-Reread Pressure]` block immediately after each line-start superscript `Land(ⁿB):` landing gate, rendered verbatim from the Stage 05 `per_burden_reread` records. Do NOT print any `[Mid-Reread Pressure]` heading or block yourself, in any section; a model-authored heading fails assembly.",
         "- In the Layer B / ACT sections, print exactly one line-start superscript landing gate per terminal burden, for example `Land(¹B): landed.`; machine ⟦ACT⟧ rows and ASCII `Land(B1)` aliases do not count as public landing gates.",
         "- Every landing gate must match one Stage 05 per_burden_reread record and every record must match one gate; assembly fails on either mismatch or on a duplicate gate.",
+        "- Land-gate exactly-once cardinality law (tools/build_staged_governed_output.py assembly): each per_burden_reread burden record must be matched by EXACTLY ONE visible line-start `Land(ⁿB):` landing gate in the assembled body. A burden with no gate fails assembly with 'per_burden_reread record(s) have no visible Land(ⁿB): landing gate'; a burden with two or more gates fails assembly with 'duplicate Land(ⁿB): landing gate(s)'. When revising or expanding a burden record, REPLACE its existing landing-gate line rather than appending a second one; never restate `Land(ⁿB):` at line start for a burden that already carries its gate.",
+        "- R(H,Δ) literal-invocation law: the terminal reread state line printed in this section must carry the literal `R(H,Δ)` token; a reread line that drops the Δ argument (e.g. `R(H, held routes rechecked: ...`) fails tools/check_mid_reread_pressure.py with 'reconstructibility missing R(H,Delta) reread state'. Right: `R(H,Δ): held routes rechecked: ...; live remainder: ...; release/next: ...`.",
         "- Harness-injected blocks for this case (reference only; never print these yourself):",
         *[f"  {line}" for line in preview_lines],
         "- The MRP/reread/terminal section is ledger-only: print the reconstruction floor, route-state ledger, and terminal states below; no `[Mid-Reread Pressure]` heading block:",
@@ -4627,6 +4653,7 @@ def stage07_layer_a_contract_guidance(previous_stages: list[dict[str, Any]]) -> 
         "Stage 07 Layer A parser-stable contract:",
         "- Print these checker-owned Layer A lines near the top of the Layer A section before prose expansion:",
         *[f"  {line}" for line in visible_lines],
+        "- Begin the Layer A section with a plain line-start heading such as `## Layer A Compact DSL / Diagnostic IR`; check_field_witness_convergence.extract_layer_a anchors on `^\\s*#{0,6}\\s*Layer A\\b`, so an emphasis-wrapped header like `**Layer A / Diagnostic IR**` makes the whole section unparsable ('Layer A Initial burden set missing or unparsable').",
         "- Do not replace `Initial burden set: [...]` with `Initial burden set ledger:`; prose ledgers may follow only after the exact line exists.",
         "- `𝔅_LA (B_LA)` must equal the initial burden set; `𝔅_MRP (B_MRP)` must contain only Stage 05 generated burdens and must be `{}` when there are none.",
         "- `𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP` is required exactly as the public total-ledger relation, followed by the concrete public burden set.",
@@ -4693,6 +4720,8 @@ def stage07_act_contract_guidance(
             "- If the selected route names only an umbrella/context module, resolve to a callable owner/TTP floor before ACT; otherwise keep the route as HOLD/PARTIAL instead of inventing an ACT owner.",
             "- If the matched owner body is not loaded, emit HOLD/PARTIAL with `OWNER-BODY-NOT-LOADED` and do not emit `Land(Bn):` for that burden.",
             "- The `TTP Operation Body:` must visibly perform target -> operation -> result -> contribution; do not merely restate the conclusion, cite an owner name, or summarize that the burden fails.",
+            "- Owner-execution mass law for held/generated-burden ACT records (tools/check_mrp_generated_burden.py): an ACT record whose Land target is a held or MRP-generated burden must EXECUTE the routed owner's operation in its dereferenced submove body -- show the owner's mechanism acting on this burden's content and the concrete burden-local state delta it produces. Merely naming, citing, or quoting the routed owner code or its catalogue definition is code lookup, which the checker rejects: 'ACT ... record alone does not pass; dereferenced body is not owner-specific', 'names owner codes but does not execute owner-specific operations', and 'Code lookup is not owner activation; Land(...) requires mechanism/action/state-delta operation mass'. Every routed owner on the matched owner/TTP route must be proven by at least one fully valid executing ACT record, or the checker fails with 'ACT records did not prove routed owners'.",
+            "- Wrong (pure code lookup): `Operation: <owner> is the registered owner for this burden; its catalogue entry defines <operation>, which applies here.` Right (operation mass): `Operation: <operation> acts on <this burden's named pressure>: <the owner's mechanism visibly performed on the burden content>. Result/state-change: <concrete burden-local state delta>; the BEFORE state no longer holds.`",
             "- Operation-token discipline: keep the registered callable operation token from the copied ACT row and skeleton. Do not replace it with a result, pressure, route label, or prose description; result labels belong in `Result/state-change:` and local prose.",
             "- Delta-layer discipline: the ACT `Δ=` carrier before the colon must be only a burden-state delta such as `Δ¹B` / `ΔB1` or dependency-radius `Δκ`; never print `D7`, `D8`, `Δ¹B₁`, `ΔB1_1`, owner.operation, register axes, or prose labels as the carrier.",
             "- Keep `delta_result` as the owner-local suffix after the colon and in `Result/state-change:`; the carrier proves which hidden transition state changed, while the suffix names what changed locally.",
@@ -7284,12 +7313,34 @@ def release_section_prompt(
             "normal `/daee-epistemics` answer exposes. Do not include Layer B, field_witness, "
             "Restorative Response, Closing Formulation, or any `⟦ACT` fence. If the opening needs "
             "to preview live burdens or selected owners, use ordinary prose or bullet text without "
-            "ACT-row syntax."
+            "ACT-row syntax. "
+            "Layer-A header-anchor law (check_field_witness_convergence.extract_layer_a): the assembled "
+            "answer's Layer A section is anchored on a PLAIN line-start heading matching the regex "
+            "`^\\s*#{0,6}\\s*Layer A\\b`. Do not print the Layer A header in the opening, and never emit "
+            "an emphasis-wrapped line such as `**Layer A / Diagnostic IR**` anywhere: emphasis/quote "
+            "markers before `Layer A` break the line-start anchor, so the checker reports 'Layer A "
+            "Initial burden set missing or unparsable' even when the ledger lines exist. The plain "
+            "`## Layer A Compact DSL / Diagnostic IR` heading belongs to the Layer A section, not here."
         ),
         "layer_a_diagnostic_ir": (
             "Write only the compact Layer A / Diagnostic IR public surface. It must include a Layer A "
             "Compact DSL/IR or Diagnostic IR header, B_LA, B_MRP, B_total, and Initial burden set "
-            "ledger lines. Do not include raw dev harness internals or downstream proof claims."
+            "ledger lines. Do not include raw dev harness internals or downstream proof claims. "
+            "Layer-A header grammar law (check_field_witness_convergence.extract_layer_a): this section "
+            "MUST begin with a plain heading line of the shape `## Layer A Compact DSL / Diagnostic IR` "
+            "-- a markdown heading or a bare line whose first non-space characters (after optional `#` "
+            "marks) are `Layer A`; NEVER wrap it in `**...**`, `_..._`, `>` quoting, or any other "
+            "emphasis/quote markers. The checker anchors the ENTIRE Layer A section on the line-start "
+            "regex `^\\s*#{0,6}\\s*Layer A\\b`; an emphasis-wrapped header does not match that anchor, "
+            "the whole section becomes invisible, and the checker fails with 'Layer A Initial burden set "
+            "missing or unparsable' even when the ledger line exists later in the section. The "
+            "visible-output battery separately requires a line matching "
+            "`Layer A\\b.*(DSL/IR|Diagnostic IR|Header)`, which the same plain heading satisfies. "
+            "Wrong: `**Layer A / Diagnostic IR**`. Right: `## Layer A Compact DSL / Diagnostic IR`. "
+            "The section MUST also carry the literal `Initial burden set: [¹B, ²B, ...]` line -- the "
+            "parser reads only the exact bracketed shape via `Initial burden set\\s*:\\s*\\[...\\]` -- "
+            "plus the `𝔅_LA (B_LA) = {...}` ledger line, exactly as the checker-owned scaffold lines "
+            "below render them."
         ),
         "layer_b_act": (
             "Write only this bounded Layer B / ACT section. "
@@ -7303,7 +7354,16 @@ def release_section_prompt(
             "Write only the MRP/reread/terminal-state section consistent with Stage 05. It must include "
             "`[Mid-Reread Pressure]`, `R(H,Delta)` or `R(H,Δ)`, terminal states, `MRP route result type`, "
             "`Graph delta`, `Field diagnostics`, and the STOP/HOLD/PARTIAL/RECURSE route consequence. "
-            "Do not include final verifier sidecars or retained proof claims."
+            "Do not include final verifier sidecars or retained proof claims. "
+            "R(H,Δ) literal-invocation law (tools/check_mid_reread_pressure.py): the terminal reread "
+            "state line MUST contain the literal token `R(H,Δ)` (or ASCII `R(H,Delta)`) -- capital H, "
+            "comma, capital delta, closing paren, with no other words inside the parentheses before the "
+            "Δ argument. The reconstructibility check matches the line-start pattern "
+            "`(?:Reread\\s*:\\s*)?R\\(H,\\s*(?:Delta|Δ)\\)` and fails with 'reconstructibility missing "
+            "R(H,Delta) reread state' when the Δ argument is dropped; every per-block Reread line is "
+            "checked the same way ('Reread must invoke R(H,Delta)'). "
+            "Wrong: `R(H, held routes rechecked: ...`. "
+            "Right: `R(H,Δ): held routes rechecked: ...; live remainder: ...; release/next: ...`."
         ),
         "field_witness_nar": (
             "Write only the Closure/Reconstruction Witness plus parser-stable `field_witness` JSON as the final compiled section after Closing Formulation. "
@@ -7407,6 +7467,7 @@ of real governed content will fail every one of them):
 - Preserve public burden grouping: body_refs for the same burden must stay contiguous in the final assembled body.
 - Emit a burden heading only for a body_ref marked `first_for_burden`; emit a standalone Land/HOLD line only for a body_ref marked `last_for_burden`.
 - Every burden that closes in this section MUST end with a visible, line-start `Land(ⁿB):` gate (or `HOLD(ⁿB):` / a PARTIAL boundary line if not landed) using the exact superscript burden id -- assembler rule 'per_burden_reread record(s) have no visible Land(nB): landing gate' fires on any assigned closing burden without one. Required landing gate(s) for this section: {land_gate_examples}.
+- Land-gate exactly-once cardinality: emit each required landing gate EXACTLY ONCE. Zero gates for a closing burden fails assembly ('per_burden_reread record(s) have no visible Land(ⁿB): landing gate'); two or more gates for the same burden also fail assembly ('duplicate Land(ⁿB): landing gate(s)'). When revising or expanding a burden record, REPLACE the landing-gate line instead of appending another; a burden must never carry a second line-start `Land(ⁿB):` line anywhere in the assembled body. This cardinality counts ONLY line-start colon-form `Land(ⁿB):` gates; machine `⟦ACT ... Land(¹B)+⟧` row tokens and ASCII `Land(B1)` aliases do not count as public landing gates and must stay in their rows untouched.
 - Do not repeat `## Layer B — Bounded Governed Response` unless this section owns the first Stage 04 ACT body_ref.
 - This section's floor is {section_min_bytes if section_min_bytes else section_floor} UTF-8 bytes of genuine ACT/submove content (assembler rule 'under section budget'); a short refusal, clarification request, or meta-commentary about this being a harness/prompt is not governed content and will read as far under budget on top of failing the body_ref/Land-gate rules above -- if something about this prompt seems wrong, still return the governed section content for the assigned body_refs, since this section text is the actual public artifact being assembled, not a chat turn to negotiate.
 - The assembler will fail duplicate, missing, or unassigned ACT body_refs before Stage 07 validators run.
@@ -9132,6 +9193,34 @@ def run_self_test(root: Path) -> int:
         raise HarnessError(
             "Self-test: Stage 05 pressure guidance must direct the model to a specific routed owner/TTP id"
         )
+    # Scaffold-text canary (RC-matrix cycle-05 H3): the Stage 05 reread guidance must state the
+    # literal R(H,Δ) invocation grammar enforced by tools/check_mid_reread_pressure.py, with the
+    # dropped-Δ wrong example, so a producer is never led into 'Reread must invoke R(H,Delta)'.
+    for _reread_law in (
+        "literal invocation `R(H,Δ): `",
+        "'Reread must invoke R(H,Delta)'",
+        "WRONG: `R(H, held routes rechecked: ...`",
+        "RIGHT: `R(H,Δ): held routes rechecked: ...",
+    ):
+        if _reread_law not in _stage05_instructions:
+            raise HarnessError(
+                f"Self-test: Stage 05 reread guidance lost the R(H,Δ) literal-invocation law: {_reread_law!r}"
+            )
+    # Scaffold-text canary (RC-matrix cycle-05 H1): the Stage 04 ACT guidance must state the
+    # owner-execution mass law for held/generated burdens enforced by
+    # tools/check_mrp_generated_burden.py (code lookup is not owner activation).
+    _stage04_instructions = STAGE_SPECS["stage-04-burden-execution-act"]["instructions"]
+    for _mass_law in (
+        "Owner-execution mass law for held/generated burdens",
+        "'Code lookup is not owner activation; Land(...) requires "
+        "mechanism/action/state-delta operation mass'",
+        "'names owner codes but does not execute owner-specific operations'",
+        "'ACT records did not prove routed owners'",
+    ):
+        if _mass_law not in _stage04_instructions:
+            raise HarnessError(
+                f"Self-test: Stage 04 ACT guidance lost the owner-execution mass law: {_mass_law!r}"
+            )
     replay = load_json(replay_record)
     named_scope = model_scope("self-test-a9-science-source", replay_record, stop_after_stage=None)
     neutral_scope = model_scope("neutral-formal-route-copy", replay_record, stop_after_stage=None)
@@ -13015,6 +13104,28 @@ def run_self_test(root: Path) -> int:
             )
     else:
         raise HarnessError("Self-test failed to reject a landed burden with no visible Land(nB) gate")
+    # RC-matrix cycle-05 H5 regression canary: a burden whose record is matched by TWO line-start
+    # Land(ⁿB): gates must fail assembly with the duplicate-gate signature, mirroring the
+    # missing-gate canary above so the exactly-once cardinality law stays checker-backed.
+    duplicate_land_gate_manifest = staged_output.manifest_for_sections(
+        run_dir / "invalid-assembly-duplicate-land-gate",
+        case_id="self-test-duplicate-land-gate",
+        source_input="self-test",
+        section_specs=[
+            spec if spec[0] != "act-body" else staged_output.act_section("act-body", "¹B₁", land_burdens=["B1", "B1"])
+            for spec in staged_output.small_sections()
+        ],
+        act_partition=staged_output.act_partition_payload([("act-body", ["¹B₁"])]),
+    )
+    try:
+        assemble_compiled_manifest(duplicate_land_gate_manifest, root=root)
+    except HarnessError as exc:
+        if "duplicate Land(ⁿB): landing gate(s)" not in str(exc):
+            raise HarnessError(
+                f"Self-test duplicate-Land-gate canary failed with the wrong signature: {exc}"
+            )
+    else:
+        raise HarnessError("Self-test failed to reject a burden carrying two Land(nB) landing gates")
     graph_line, graph_roots, graph_parallel = stage07_dependency_graph_scaffold(["B1", "B2", "B3"], [])
     if graph_line != "B1 (root) || B2 (root) || B3 (root)":
         raise HarnessError("Self-test Stage 07 graph scaffold omitted edge-empty parallel roots")
@@ -14026,6 +14137,9 @@ def run_self_test(root: Path) -> int:
         "outside\n  `layer_b_act` sections, do not emit any line beginning with `⟦ACT`",
         "Restorative Response, Closing Formulation, or any `⟦ACT` fence",
         "use ordinary prose or bullet text without ACT-row syntax",
+        "Layer-A header-anchor law (check_field_witness_convergence.extract_layer_a)",
+        "never emit an emphasis-wrapped line such as `**Layer A / Diagnostic IR**` anywhere",
+        "'Layer A Initial burden set missing or unparsable'",
     ):
         if required not in stage07_opening_prompt:
             raise HarnessError(f"Self-test Stage 07 opening prompt omitted ACT-fence boundary: {required}")
@@ -14052,6 +14166,13 @@ def run_self_test(root: Path) -> int:
         "𝔅_total (B_total) = 𝔅_LA ∪ 𝔅_MRP = {¹B}",
         "¹B [xi, kappa] status=initial-live",
         "Do not replace `Initial burden set: [...]` with `Initial burden set ledger:`",
+        "Layer-A header grammar law (check_field_witness_convergence.extract_layer_a)",
+        "MUST begin with a plain heading line of the shape `## Layer A Compact DSL / Diagnostic IR`",
+        "`^\\s*#{0,6}\\s*Layer A\\b`",
+        "Wrong: `**Layer A / Diagnostic IR**`. Right: `## Layer A Compact DSL / Diagnostic IR`.",
+        "'Layer A Initial burden set missing or unparsable'",
+        "MUST also carry the literal `Initial burden set: [¹B, ²B, ...]` line",
+        "an emphasis-wrapped header like `**Layer A / Diagnostic IR**` makes the whole section unparsable",
     ):
         if required not in stage07_layer_prompt:
             raise HarnessError(f"Self-test Stage 07 Layer A prompt omitted parser-stable scaffold: {required}")
@@ -14135,6 +14256,14 @@ def run_self_test(root: Path) -> int:
         "`formal_reread_states[].delta` preserves the public `landed_delta` notation while also carrying machine `Delta(Bn)` identity",
         "ledger-only: print the reconstruction floor",
         "- MRP(¹B): type=no_new_resultant; finding=stable; graph=none; route=STOP",
+        "Land-gate exactly-once cardinality law (tools/build_staged_governed_output.py assembly)",
+        "'per_burden_reread record(s) have no visible Land(ⁿB): landing gate'",
+        "'duplicate Land(ⁿB): landing gate(s)'",
+        "REPLACE its existing landing-gate line rather than appending a second one",
+        "R(H,Δ) literal-invocation law",
+        "'reconstructibility missing R(H,Delta) reread state'",
+        "Wrong: `R(H, held routes rechecked: ...`",
+        "Right: `R(H,Δ): held routes rechecked: ...; live remainder: ...; release/next: ...`",
     ):
         if required not in stage07_mrp_prompt:
             raise HarnessError(f"Self-test Stage 07 MRP prompt omitted per-burden scaffold: {required}")
@@ -14177,6 +14306,15 @@ def run_self_test(root: Path) -> int:
         "For every landed row, `Contribution-to-Land(Bn):` must include the local LAND-LICENSE",
         "SOURCE/source-status operation: explicitly sort source authority, source function, proof-stack order, or hidden support",
         "`status` is not a callable ACT operation; use a registered SOURCE operation",
+        "Owner-execution mass law for held/generated-burden ACT records (tools/check_mrp_generated_burden.py)",
+        "'Code lookup is not owner activation; Land(...) requires mechanism/action/state-delta operation mass'",
+        "'names owner codes but does not execute owner-specific operations'",
+        "'ACT records did not prove routed owners'",
+        "Wrong (pure code lookup):",
+        "Right (operation mass):",
+        "Land-gate exactly-once cardinality: emit each required landing gate EXACTLY ONCE",
+        "'duplicate Land(ⁿB): landing gate(s)'",
+        "REPLACE the landing-gate line instead of appending another",
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
