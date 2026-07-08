@@ -1,0 +1,68 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "workbench-stage06-invalid-missing-field-witness-body-refs",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_scope": {"stop_after_stage": "stage-06-field-witness-nar", "stage_count": 6, "not_release_output": true, "not_verifier_sidecars": true},
+  "model_scope": {"type": "focused-current-skill-stage-smoke", "case_count": 1, "case_family": "workbench-stage06-invalid-missing", "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"},
+  "stage_order": ["stage-01-intake", "stage-02-layer-a-diagnostic-ir", "stage-03-routing-owner-gate", "stage-04-burden-execution-act", "stage-05-mrp-reread-terminal-state", "stage-06-field-witness-nar"],
+  "stages": [
+    {"id": "stage-01-intake", "status": "pass", "produces": ["input_digest"], "requires": [], "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"id": "stage-02-layer-a-diagnostic-ir", "status": "pass", "produces": ["burden_floor", "selected_n_frame", "live_registers"], "requires": ["input_digest"], "burden_floor": ["B1"], "selected_n_frame": "workbench-minimal-frame", "live_registers": ["xi"]},
+    {"id": "stage-03-routing-owner-gate", "status": "pass", "produces": ["route_targets", "owner_routes"], "requires": ["burden_floor"], "route_targets": ["B1"], "owner_routes": [{"burden_id": "B1", "owner_id": "source-status-repair", "eligibility": "catalogue-backed"}]},
+    {"id": "stage-04-burden-execution-act", "status": "pass", "produces": ["act_targets", "act_body_refs", "act_rows"], "requires": ["route_targets", "owner_routes"], "act_targets": ["B1"], "act_burdens": ["B1"], "act_body_refs": ["B1_1"], "act_rows": ["⟦ACT B1_1[source-status-repair.source-order-repair] :: π=source-order-pressure :: body_ref=B1_1 :: Δ=ΔB1:source-order-repaired :: Land(B1)+⟧"]},
+    {
+      "id": "stage-05-mrp-reread-terminal-state",
+      "status": "pass",
+      "produces": ["terminal_states", "dependency_graph_edges", "no_new_resultant_proof"],
+      "requires": ["act_rows"],
+      "terminal_states": {"B1": "landed"},
+      "dependency_graph_edges": [],
+      "no_new_resultant_proof": true,
+      "per_burden_reread": [
+        {
+          "burden_id": "B1",
+          "target": "B1 / source-order pressure",
+          "reread": "R(H,Δ): held routes rechecked: none; live remainder: none load-bearing; release/next: closure",
+          "landed_delta": "Delta(B1): source-order-repaired recorded; no remaining load-bearing recoil",
+          "pressure_activations": {
+            "freeze-landed-move": "source-status-repair — Land(B1) frozen before reread.",
+            "dependency-tug": "pressure class: cleared — no downstream burden required.",
+            "hidden-framework-recoil": "pressure class: cleared — no hidden framework support reopens the landed move.",
+            "entailment-pressure": "pressure class: cleared — no entailment pressure remains against the bounded source order.",
+            "doubt-churn-guard": "pressure class: cleared — no churn or proof-carousel loop is live.",
+            "reorientation-reminder": "P1 — reorientation reminder cleared toward the landed source order."
+          },
+          "divergence": "∇·B: neutral / B1 landed and no remaining burden pressure",
+          "curl": "∇×κ: null / no circular dependency remains",
+          "route_gradient": "no newly generated burden; STOP after B1.",
+          "finding": "stable",
+          "route_result_type": "no_new_resultant",
+          "mrp_resultant": "stable -> no new graph edge; STOP",
+          "graph_delta": "none",
+          "preemption_basis": "none",
+          "route": "STOP",
+          "boundary": "T_lang does not imply guaranteed uptake"
+        }
+      ]
+    },
+    {
+      "id": "stage-06-field-witness-nar",
+      "status": "pass",
+      "produces": ["field_witness_body_refs", "nar_burdens", "normalized_activation_record"],
+      "requires": ["terminal_states", "act_body_refs"],
+      "nar_burdens": ["B1"],
+      "owner_activations": ["B1_1"],
+      "normalized_activation_record": true,
+      "register_deltas": {"xi": "source-order-repaired"}
+    }
+  ],
+  "handoffs": [
+    {"from": "stage-01-intake", "to": "stage-02-layer-a-diagnostic-ir", "checks": ["input_boundary_preserved"], "status": "pass"},
+    {"from": "stage-02-layer-a-diagnostic-ir", "to": "stage-03-routing-owner-gate", "checks": ["burden_floor_to_route_targets", "n_frame_present", "live_registers_present"], "status": "pass"},
+    {"from": "stage-03-routing-owner-gate", "to": "stage-04-burden-execution-act", "checks": ["owner_eligibility_backed", "route_targets_to_act_targets"], "status": "pass"},
+    {"from": "stage-04-burden-execution-act", "to": "stage-05-mrp-reread-terminal-state", "checks": ["act_rows_present", "act_body_refs_present"], "status": "pass"},
+    {"from": "stage-05-mrp-reread-terminal-state", "to": "stage-06-field-witness-nar", "checks": ["terminal_states_to_field_witness", "dependency_graph_explicit"], "status": "pass"}
+  ],
+  "non_claims": {"not_model_smoke": false, "not_broad_model_behavior": true, "not_broad_model_matrix": true, "not_runtime_default_emission_proof": true, "not_arbitrary_nl_ir_parser": true, "not_package_provenance": true, "not_guaranteed_t_lang_uptake": true, "not_graphify_or_activegraph_proof": true}
+}

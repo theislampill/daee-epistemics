@@ -659,11 +659,21 @@ REQUIRED_TOKENS = {
     ],
 }
 
+# Post-Slice-C: each required phrase is redistributed to the shard file that
+# actually carries it (verified by grepping the split source modules). The old
+# runtime-dispatch-gate.md phrases split across diagnostic-ir.md (now
+# runtime-core-ir.md) and recursive-state-transitions.md (now
+# runtime-core-recursion.md); the old runtime-output-governance.md phrases split
+# across output-release.md (now runtime-shard-output-release.md) and
+# diagnostic-render-contract.md (now runtime-shard-render-contract.md). No phrase
+# was dropped, only relocated to its new shard owner.
 GENERATED_REQUIRED = {
-    "skill/references/runtime-dispatch-gate.md": [
+    "skill/references/runtime-core-ir.md": [
         "register-formalism bridge status",
         "derived/conditional runtime bridge",
         "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+    ],
+    "skill/references/runtime-core-recursion.md": [
         "Sameτ ∧ Sameξ ∧ SameΩ ∧ Sameσ ∧ Sameκ",
         "Plain `∇` is the route-gradient",
         "LoopBreak(∇×T)",
@@ -671,12 +681,16 @@ GENERATED_REQUIRED = {
         "R(H,ΔⁿB{♥,ξ,Ω,σ,μ},Δκ)",
         "Terminal formalism",
     ],
-    "skill/references/runtime-output-governance.md": [
+    "skill/references/runtime-shard-output-release.md": [
         "Derived register release discipline",
         "Terminal release boundary",
+        "∇ route-gradient",
+        "LoopBreak(∇×T)",
+        "𝒞(Ψᴺ)",
+    ],
+    "skill/references/runtime-shard-render-contract.md": [
         "Anti-symbol-theater rule",
         "Expanded formalism render boundary",
-        "∇ route-gradient",
         "LoopBreak(∇×T)",
         "𝒞(Ψᴺ)",
     ],
@@ -1483,10 +1497,23 @@ def check_divergence_curl_audit_docs(root: Path, errors: list[str]) -> None:
 
 def check_default_runtime_operator_boundary(root: Path, errors: list[str]) -> None:
     runtime_root = out_dir(root)
+    # Post-Slice-C: runtime-dispatch-gate.md and runtime-output-governance.md were
+    # split into 11 route shards (see tools/compiled_runtime_lib.py BUNDLE_SOURCES).
+    # This boundary scan must still cover every line that used to live in those two
+    # bundles, so it now walks the full shard set instead of the two retired names.
     for rel in (
         "SKILL.md",
-        "references/runtime-output-governance.md",
-        "references/runtime-dispatch-gate.md",
+        "references/runtime-core-ir.md",
+        "references/runtime-core-pipeline.md",
+        "references/runtime-core-recursion.md",
+        "references/runtime-core-routing.md",
+        "references/runtime-shard-ir-support.md",
+        "references/runtime-shard-diagnostic.md",
+        "references/runtime-shard-audit.md",
+        "references/runtime-shard-thesis.md",
+        "references/runtime-shard-restoration.md",
+        "references/runtime-shard-output-release.md",
+        "references/runtime-shard-render-contract.md",
     ):
         path = runtime_root / rel
         if not path.exists():

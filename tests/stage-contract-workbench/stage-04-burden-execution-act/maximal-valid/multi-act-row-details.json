@@ -1,0 +1,65 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "workbench-stage04-maximal-multi-act-row-details",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_scope": {"stop_after_stage": "stage-04-burden-execution-act", "stage_count": 4, "not_release_output": true, "not_verifier_sidecars": true},
+  "model_scope": {"type": "focused-current-skill-stage-smoke", "case_count": 1, "case_family": "workbench-stage04-maximal", "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"},
+  "stage_order": ["stage-01-intake", "stage-02-layer-a-diagnostic-ir", "stage-03-routing-owner-gate", "stage-04-burden-execution-act"],
+  "stages": [
+    {"id": "stage-01-intake", "status": "pass", "produces": ["input_digest"], "requires": [], "input_digest": "E98591DB1FB40621524E792FAA9E22FEEBBE9D705FE354457583E62464CA7D82"},
+    {"id": "stage-02-layer-a-diagnostic-ir", "status": "pass", "produces": ["burden_floor", "selected_n_frame", "live_registers"], "requires": ["input_digest"], "burden_floor": ["B1"], "selected_n_frame": "science-only-source-order-warrant", "live_registers": ["xi", "kappa"]},
+    {
+      "id": "stage-03-routing-owner-gate",
+      "status": "pass",
+      "produces": ["route_targets", "owner_routes"],
+      "requires": ["burden_floor"],
+      "route_targets": ["B1"],
+      "owner_routes": [
+        {"burden_id": "B1", "owner_id": "source-status-repair", "eligibility": "retained-field-witness-owner-activation"},
+        {"burden_id": "B1", "owner_id": "M1", "eligibility": "retained-field-witness-owner-activation"}
+      ]
+    },
+    {
+      "id": "stage-04-burden-execution-act",
+      "status": "pass",
+      "produces": ["act_targets", "act_body_refs", "act_rows"],
+      "requires": ["route_targets", "owner_routes"],
+      "act_targets": ["B1"],
+      "act_burdens": ["B1"],
+      "act_body_refs": ["¹B₁", "¹B₂"],
+      "act_rows": [
+        "⟦ACT ¹B₁[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=¹B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧",
+        "⟦ACT ¹B₂[M1.self-grounding-test] :: π=only-science-counts-standard :: body_ref=¹B₂ :: Δ=Δ¹B:self-authorizing-standard-invalidated :: Land(¹B)+⟧"
+      ],
+      "act_row_details": [
+        {
+          "burden_id": "B1",
+          "body_ref": "¹B₁",
+          "owner_id": "source-status-repair",
+          "operation": "source-order",
+          "register_axis": "σ",
+          "pressure": "scientific-explanations-only-knowledge-source",
+          "delta_result": "science-source-bounded",
+          "act_row": "⟦ACT ¹B₁[source-status-repair.source-order] :: π=scientific-explanations-only-knowledge-source :: body_ref=¹B₁ :: Δ=Δ¹B:science-source-bounded :: Land(¹B)+⟧"
+        },
+        {
+          "burden_id": "B1",
+          "body_ref": "¹B₂",
+          "owner_id": "M1",
+          "operation": "self-grounding-test",
+          "register_axis": "ξ",
+          "pressure": "only-science-counts-standard",
+          "delta_result": "self-authorizing-standard-invalidated",
+          "act_row": "⟦ACT ¹B₂[M1.self-grounding-test] :: π=only-science-counts-standard :: body_ref=¹B₂ :: Δ=Δ¹B:self-authorizing-standard-invalidated :: Land(¹B)+⟧"
+        }
+      ]
+    }
+  ],
+  "handoffs": [
+    {"from": "stage-01-intake", "to": "stage-02-layer-a-diagnostic-ir", "checks": ["input_boundary_preserved"], "status": "pass"},
+    {"from": "stage-02-layer-a-diagnostic-ir", "to": "stage-03-routing-owner-gate", "checks": ["burden_floor_to_route_targets", "n_frame_present", "live_registers_present"], "status": "pass"},
+    {"from": "stage-03-routing-owner-gate", "to": "stage-04-burden-execution-act", "checks": ["owner_eligibility_backed", "route_targets_to_act_targets"], "status": "pass"}
+  ],
+  "non_claims": {"not_model_smoke": false, "not_broad_model_behavior": true, "not_broad_model_matrix": true, "not_runtime_default_emission_proof": true, "not_arbitrary_nl_ir_parser": true, "not_package_provenance": true, "not_guaranteed_t_lang_uptake": true, "not_graphify_or_activegraph_proof": true}
+}

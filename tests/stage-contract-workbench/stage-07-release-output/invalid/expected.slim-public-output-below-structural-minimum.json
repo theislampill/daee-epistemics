@@ -1,0 +1,9 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "slim-public-output-below-structural-minimum.json",
+  "stage": "stage-07-release-output",
+  "failure_class_hint": "stage-07 output missing required structural sections (opening header, ACT rows, Land, MRP, field_witness, NAR)",
+  "checker": "check_staged_runtime_handshake",
+  "kind": "composite-historical",
+  "provenance": "corresponds to sweep operator slim-public-while-sidecar-rich (tools/gen_fixture_mutations.py), which is marked expected_checker:render-family in the sweep manifest because it targets rendered release_output text rather than the JSON record. Unlike the record-only sweep, this workbench fixture DOES supply a real slimmed .output.md artifact so it is fully checkable here via --records. Composite: the minimal no-model-fixture stub for stage-04/06 also trips independent required-field/vocabulary checks; the primary intended signature is the set of 'stage-07 output ... missing <structural section>' errors."
+}

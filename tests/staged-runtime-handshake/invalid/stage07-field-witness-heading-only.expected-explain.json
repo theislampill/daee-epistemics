@@ -1,0 +1,16 @@
+{
+  "downstream_invalidated": [
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08"
+  ],
+  "earliest_stage": "01",
+  "failure_class": "sequence",
+  "repair_lane": "no-model fixture/checker/runtime-contract repair",
+  "requires_model_rerun": false,
+  "stage": "01"
+}

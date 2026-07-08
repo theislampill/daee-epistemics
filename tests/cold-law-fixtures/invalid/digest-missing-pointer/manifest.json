@@ -1,0 +1,14 @@
+{
+  "schema": "daee-cold-law-manifest-v1",
+  "generated": true,
+  "source": "cold.md",
+  "clauses": {
+    "clause.alpha": {
+      "span_lines": [3, 3],
+      "sha256": "563d2b7a0db1b2ac692b53a41d91a25084621933e5b65dab7d443448cc8e670d",
+      "checkers": ["tools/check_fake_alpha.py"],
+      "load_when": "alpha situations",
+      "advisory": false
+    }
+  }
+}

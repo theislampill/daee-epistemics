@@ -39,15 +39,16 @@ from compiled_runtime_lib import normalize_runtime_surface_text, parse_compiled_
 
 ROOT = Path.cwd()
 # framework-pipeline.md is a governance source file in atomics; it is compiled into
-# the runtime-dispatch-gate bundle (not as a standalone runtime file). This dev-time
-# validator reads the canonical atomics source directly.
+# the runtime-core-pipeline shard bundle (its own single-module shard post-Slice-C
+# split; not as a standalone runtime file). This dev-time validator reads the
+# canonical atomics source directly.
 SKILL_PATH = ROOT / "atomics" / "skill" / "SKILL.md"
 ATOMICS_REFERENCES_ROOT = ROOT / "atomics" / "skill" / "references"
 REFERENCES_ROOT = ATOMICS_REFERENCES_ROOT
 FRAMEWORK_PATH = ROOT / FRAMEWORK_MD_REL
 FRAMEWORK_YAML_PATH = ROOT / PIPELINE_YAML_REL
 RECURSIVE_STATE_PATH = ATOMICS_REFERENCES_ROOT / "diagnostics" / "recursive-state-transitions.md"
-COMPILED_DISPATCH_GATE_PATH = ROOT / "skill" / "references" / "runtime-dispatch-gate.md"
+COMPILED_DISPATCH_GATE_PATH = ROOT / "skill" / "references" / "runtime-core-pipeline.md"
 # module-catalogue.json and coverage-scope.yaml are runtime metadata copies; read from skill/
 CATALOGUE_PATH = ROOT / "skill" / "references" / "diagnostics" / "module-catalogue.json"
 COVERAGE_PATH = ATOMICS_REFERENCES_ROOT / "diagnostics" / "coverage-scope.yaml"

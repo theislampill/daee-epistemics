@@ -32,8 +32,8 @@
     "expected_bundles": [
       "references/runtime-foundation.md",
       "references/runtime-diagnostic-core.md",
-      "references/runtime-dispatch-gate.md",
-      "references/runtime-output-governance.md",
+      "references/runtime-core-ir.md",
+      "references/runtime-shard-restoration.md",
       "references/omnibus/OMNIBUS-tactics.md",
       "references/omnibus/OMNIBUS-procedures.md"
     ],

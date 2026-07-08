@@ -1,0 +1,8 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "act-row-missing-land.json",
+  "stage": "stage-04-burden-execution-act",
+  "failure_class_hint": "stage-04 act_rows[0] must match canonical slot order '...Land(Bn)+⟧'",
+  "checker": "check_staged_runtime_handshake",
+  "provenance": "minimal-pair variant of tests/staged-runtime-handshake/invalid/stage04-act-row-missing-land.json, revocabularized to this workbench's controlled delta_result token."
+}

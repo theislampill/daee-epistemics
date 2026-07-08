@@ -1,0 +1,8 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "missing-input-digest.json",
+  "stage": "stage-01-intake",
+  "failure_class_hint": "stage-01 input_digest is required and must be a non-empty string",
+  "checker": "check_staged_runtime_handshake",
+  "provenance": "companion to sweep operator delete-required-field-stage-01-intake; this was formerly a documented closed gap (stage01_intake_errors now enforces field presence) (see tools/gen_fixture_mutations.py KNOWN_CHECKER_GAPS history) because check_staged_runtime_handshake.py had no stage-01-intake field-presence validator. That gap is now closed by stage01_intake_errors() in tools/check_staged_runtime_handshake.py, so this fixture is rejected with failure_class custody / earliest_stage 01, matching tests/staged-runtime-handshake/invalid/stage01-missing-input-digest.json."
+}

@@ -13,8 +13,29 @@ SKILL = "skill/SKILL.md"
 FOUNDATION = "skill/references/runtime-foundation.md"
 CORE = "skill/references/runtime-diagnostic-core.md"
 PHASE2 = "skill/references/runtime-phase2-passes.md"
-GATE = "skill/references/runtime-dispatch-gate.md"
-OUTPUT = "skill/references/runtime-output-governance.md"
+# GATE and OUTPUT were single-file bundles pre-Slice-C (runtime-dispatch-gate.md,
+# runtime-output-governance.md). Slice C split each into route shards (see
+# tools/compiled_runtime_lib.py BUNDLE_SOURCES). Each is now a TUPLE of the
+# successor shard paths, but is still counted as ONE LOGICAL UNIT in the call-budget
+# math below (see logical_call_count()) -- the split relocates modules into
+# separately loadable files but does not change how many "logical" gate/output
+# calls a case makes, so the split must not silently tighten these thresholds by
+# inflating a single conceptual load into many counted calls.
+GATE = (
+    "skill/references/runtime-core-ir.md",
+    "skill/references/runtime-core-pipeline.md",
+    "skill/references/runtime-core-recursion.md",
+    "skill/references/runtime-core-routing.md",
+    "skill/references/runtime-shard-ir-support.md",
+    "skill/references/runtime-shard-diagnostic.md",
+    "skill/references/runtime-shard-audit.md",
+    "skill/references/runtime-shard-thesis.md",
+    "skill/references/runtime-shard-restoration.md",
+)
+OUTPUT = (
+    "skill/references/runtime-shard-output-release.md",
+    "skill/references/runtime-shard-render-contract.md",
+)
 PROFILES = "skill/references/omnibus/OMNIBUS-profiles.md"
 DO = "skill/references/omnibus/OMNIBUS-do-families.md"
 RT = "skill/references/omnibus/OMNIBUS-rt-transmission.md"
@@ -24,11 +45,32 @@ PROCEDURES = "skill/references/omnibus/OMNIBUS-procedures.md"
 SPECIALTY = "skill/references/omnibus/OMNIBUS-specialty-diagnostics.md"
 
 
+def flatten_load_path(load_path: tuple[str | tuple[str, ...], ...]) -> list[str]:
+    """Flatten a load_path whose entries may be single files or logical-unit tuples."""
+    flattened: list[str] = []
+    for entry in load_path:
+        if isinstance(entry, tuple):
+            flattened.extend(entry)
+        else:
+            flattened.append(entry)
+    return flattened
+
+
+def logical_call_count(load_path: tuple[str | tuple[str, ...], ...]) -> int:
+    """Count each top-level entry as ONE logical call, even if it is a multi-file
+    shard-group tuple (GATE, OUTPUT). This preserves the pre-split threshold math:
+    a case that used to make one dispatch-gate call and one output-governance call
+    still counts as making exactly those two logical calls, regardless of how many
+    physical shard files those bundles were divided into.
+    """
+    return len(load_path)
+
+
 @dataclass(frozen=True)
 class CaseClass:
     name: str
     category: str
-    load_path: tuple[str, ...]
+    load_path: tuple[str | tuple[str, ...], ...]
     normal: bool = True
 
     @property
@@ -69,7 +111,7 @@ def main() -> int:
     print("Case class call budget")
     print("------------------------------------------------------------")
     for case in CASES:
-        count = len(case.load_path)
+        count = logical_call_count(case.load_path)
         threshold = case.threshold
         status = "PASS"
         if threshold is not None and count > threshold:
@@ -78,7 +120,7 @@ def main() -> int:
         if threshold is None and count > 20 and case.normal:
             status = "FAIL"
             errors.append(f"{case.name}: exceeds 20 but is not marked non-normal")
-        for rel in case.load_path:
+        for rel in flatten_load_path(case.load_path):
             if not (root / rel).is_file():
                 errors.append(f"{case.name}: load path missing: {rel}")
                 status = "FAIL"

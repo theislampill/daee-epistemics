@@ -1,0 +1,62 @@
+{
+  "schema": "daee-state-capsule-v1",
+  "case_id": "case-phr-001",
+  "input_fingerprint": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "stage": "01",
+  "n_frame": {
+    "selected": "authority-order",
+    "held_candidates": []
+  },
+  "live_registers": [
+    "N",
+    "m",
+    "tau",
+    "sigma"
+  ],
+  "register_state": {
+    "tau": "live per stage-02 diagnostic",
+    "sigma": "live per stage-02 diagnostic"
+  },
+  "B_LA": [
+    "B1",
+    "B2"
+  ],
+  "B_MRP": [],
+  "B_total": [
+    "B1",
+    "B2"
+  ],
+  "current_burden": null,
+  "held_set_H": [],
+  "completed_acts": [],
+  "last_terminal": {
+    "burden": null,
+    "state": null
+  },
+  "last_delta": null,
+  "last_mrp_resultant": {
+    "source": null,
+    "route_result_type": "none"
+  },
+  "route_result_type": "none",
+  "field_diagnostics": {
+    "divergence_state": "neutral",
+    "curl_state": "null-state"
+  },
+  "transport": "file-retained",
+  "terminal_states": {},
+  "next_burden": "B1",
+  "current_owner_route": {
+    "burden": "B1",
+    "owner_id": "M3",
+    "shards": []
+  },
+  "coverage_complete": false,
+  "next_required_action": "activate B1",
+  "output_artifact_path": "artifact.md",
+  "output_sha256": "d68ab2a864e5f3875df343138ca6556f1ab253f7e991493b2372e126b3aeb108",
+  "output_offset_bytes": 47,
+  "cold_law_refs_used": [],
+  "shards_loaded": [],
+  "notes": "capsule 1: intake, B1/B2 identified"
+}

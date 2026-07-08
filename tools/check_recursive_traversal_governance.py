@@ -23,8 +23,17 @@ SOURCE_FILES = [
 
 RUNTIME_FILES = [
     "SKILL.md",
-    "references/runtime-dispatch-gate.md",
-    "references/runtime-output-governance.md",
+    "references/runtime-core-ir.md",
+    "references/runtime-core-pipeline.md",
+    "references/runtime-core-recursion.md",
+    "references/runtime-core-routing.md",
+    "references/runtime-shard-ir-support.md",
+    "references/runtime-shard-diagnostic.md",
+    "references/runtime-shard-audit.md",
+    "references/runtime-shard-thesis.md",
+    "references/runtime-shard-restoration.md",
+    "references/runtime-shard-output-release.md",
+    "references/runtime-shard-render-contract.md",
 ]
 
 GLOBAL_INVARIANTS = [

@@ -1,0 +1,8 @@
+{
+  "downstream_invalidated": [],
+  "earliest_stage": "08",
+  "failure_class": "sidecar",
+  "repair_lane": "no-model fixture/checker/runtime-contract repair",
+  "requires_model_rerun": false,
+  "stage": "08"
+}

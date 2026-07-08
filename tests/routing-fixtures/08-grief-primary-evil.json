@@ -36,14 +36,18 @@
       "references/runtime-foundation.md",
       "references/runtime-diagnostic-core.md",
       "references/runtime-phase2-passes.md",
-      "references/runtime-dispatch-gate.md",
-      "references/runtime-output-governance.md",
+      "references/runtime-core-ir.md",
+      "references/runtime-shard-diagnostic.md",
+      "references/runtime-shard-output-release.md",
+      "references/runtime-shard-restoration.md",
       "references/omnibus/OMNIBUS-tactics.md",
       "references/omnibus/OMNIBUS-procedures.md"
     ],
     "owner_clusters": [
-      "dispatch-gate",
-      "output-governance",
+      "core-ir",
+      "shard-diagnostic",
+      "shard-output-release",
+      "shard-restoration",
       "tactics",
       "procedures"
     ],

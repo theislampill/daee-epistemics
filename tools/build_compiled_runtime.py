@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -32,7 +34,165 @@ from compiled_runtime_lib import (
 )
 
 DEV_ONLY_GENERATED_ROOTS = {"data", "scripts", "tests"}
-MANUAL_CONTRACT_REL = "skill/references/rubrics/non-droppable-manual-contract.md"
+MANUAL_CONTRACT_REL = "skill/references/rubrics/manual-contract-digest.md"
+FULL_MANUAL_CONTRACT_REL = "skill/references/rubrics/non-droppable-manual-contract.md"
+
+# Checker map: which output checker(s) enforce each cold-law clause once it is
+# either inlined in the hot digest or loaded on demand from the cold source.
+# advisory=True means no output checker exists today for that clause; it is
+# flagged pending an owner decision (see clause.preamble-size-partial).
+COLD_LAW_CHECKER_MAP: dict[str, dict[str, object]] = {
+    "clause.preamble-size-partial": {
+        "checkers": [],
+        "load_when": "any mass/size PARTIAL route decision for hard/default manual output",
+        "advisory": True,
+    },
+    "clause.banner": {
+        "checkers": ["tools/check_manual_smoke_render_contract.py"],
+        "load_when": "rendering the opening banner + Layer A/Layer B heading sequence",
+        "advisory": False,
+    },
+    "clause.layer-a-ledger": {
+        "checkers": ["tools/check_manual_smoke_render_contract.py"],
+        "load_when": "rendering or closing the 𝔅_LA/𝔅_MRP/𝔅_total ledger and field_witness graph keys",
+        "advisory": False,
+    },
+    "clause.concealment-mode": {
+        "checkers": ["tools/check_concealment_mode.py"],
+        "load_when": "rendering Layer A `Concealment mode:` for named-worldview or shubhah pressure",
+        "advisory": False,
+    },
+    "clause.canonical-notation": {
+        "checkers": ["tools/check_manual_smoke_render_contract.py"],
+        "load_when": "rendering burden/submove notation, ACT rows, or the 𝔅/𝒞 ledger and closure symbols",
+        "advisory": False,
+    },
+    "clause.mrp-block-grammar": {
+        "checkers": [
+            "tools/check_mid_reread_pressure.py",
+            "tools/check_mrp_route_invariants.py",
+        ],
+        "load_when": "rendering any post-land [Mid-Reread Pressure] block",
+        "advisory": False,
+    },
+    "clause.held-burden-activation": {
+        "checkers": [
+            "tools/check_mid_reread_pressure.py",
+            "tools/check_mrp_route_invariants.py",
+        ],
+        "load_when": "an MRP route resolves to held_burden_activation or generated_burden_instantiation",
+        "advisory": False,
+    },
+    "clause.owner-ttp-route": {
+        "checkers": [
+            "tools/check_owner_activation_ordering.py",
+            "tools/check_ttp_operator_contracts.py",
+        ],
+        "load_when": "selecting/ordering owners or rendering an ACT records block for a burden",
+        "advisory": False,
+    },
+    "clause.no-burden-shrink": {
+        "checkers": ["tools/check_manual_smoke_render_contract.py"],
+        "load_when": "a final MRP route considers no_new_resultant after baseline burdens land",
+        "advisory": False,
+    },
+    "clause.proof-tail-order": {
+        "checkers": ["tools/check_manual_smoke_render_contract.py"],
+        "load_when": "rendering the Restorative Response / Closing Formulation / Closure witness tail",
+        "advisory": False,
+    },
+    "clause.field-witness-spec": {
+        "checkers": [
+            "tools/check_field_witness_binding.py",
+            "tools/check_ir_instance_integrity.py",
+        ],
+        "load_when": "emitting the final field_witness JSON payload",
+        "advisory": False,
+    },
+    "clause.execution-mandate-detail": {
+        "checkers": ["tools/check_manual_smoke_render_contract.py"],
+        "load_when": "any default-mode execution needing the full mandate mechanics beyond the hot digest",
+        "advisory": False,
+    },
+    "clause.output-surface-invariant": {
+        "checkers": ["tools/check_metacompliance_current_canon.py"],
+        "load_when": "verifying the default output surface against the full invariant text",
+        "advisory": False,
+    },
+}
+
+COLD_LAW_CLAUSE_START_RE = re.compile(r"^<!-- COLD-LAW-CLAUSE: (clause\.[a-z0-9-]+) -->$")
+COLD_LAW_CLAUSE_END_RE = re.compile(r"^<!-- END-COLD-LAW-CLAUSE: (clause\.[a-z0-9-]+) -->$")
+
+
+def build_cold_law_manifest(root: Path) -> dict[str, object]:
+    """Parse clause anchors from the cold full contract and emit the manifest.
+
+    Each clause's sha256 is computed over the exact text strictly between its
+    START/END anchor comments (anchors excluded), so any future edit to a
+    clause's substance is hash-detectable without depending on the anchors
+    themselves.
+    """
+    path = source_path_for(root, FULL_MANUAL_CONTRACT_REL)
+    text = path.read_text(encoding="utf-8")
+    lines = text.split("\n")
+
+    clauses: dict[str, dict[str, object]] = {}
+    current: str | None = None
+    current_start_line = 0
+    buf: list[str] = []
+    for index, line in enumerate(lines):
+        start_match = COLD_LAW_CLAUSE_START_RE.match(line)
+        if start_match:
+            if current is not None:
+                raise ValueError(f"nested cold-law-clause anchor at line {index + 1}: {current}")
+            current = start_match.group(1)
+            current_start_line = index + 2  # 1-indexed line following the anchor comment
+            buf = []
+            continue
+        end_match = COLD_LAW_CLAUSE_END_RE.match(line)
+        if end_match:
+            clause_id = end_match.group(1)
+            if clause_id != current:
+                raise ValueError(
+                    f"mismatched cold-law-clause end anchor at line {index + 1}: "
+                    f"expected {current!r}, found {clause_id!r}"
+                )
+            span_text = "\n".join(buf)
+            clauses[clause_id] = {
+                "span_lines": [current_start_line, index],
+                "sha256": hashlib.sha256(span_text.encode("utf-8")).hexdigest(),
+            }
+            current = None
+            buf = []
+            continue
+        if current is not None:
+            buf.append(line)
+    if current is not None:
+        raise ValueError(f"unclosed cold-law-clause anchor: {current}")
+
+    missing_map_entries = sorted(set(clauses) - set(COLD_LAW_CHECKER_MAP))
+    missing_clause_entries = sorted(set(COLD_LAW_CHECKER_MAP) - set(clauses))
+    if missing_map_entries:
+        raise ValueError(f"cold-law clauses without a checker-map entry: {missing_map_entries}")
+    if missing_clause_entries:
+        raise ValueError(f"checker-map entries without a cold-law clause anchor: {missing_clause_entries}")
+
+    clause_table: dict[str, object] = {}
+    for clause_id in sorted(clauses):
+        entry = dict(clauses[clause_id])
+        mapping = COLD_LAW_CHECKER_MAP[clause_id]
+        entry["checkers"] = list(mapping["checkers"])
+        entry["load_when"] = mapping["load_when"]
+        entry["advisory"] = bool(mapping["advisory"])
+        clause_table[clause_id] = entry
+
+    return {
+        "schema": "daee-cold-law-manifest-v1",
+        "generated": True,
+        "source": source_rel_from_legacy(FULL_MANUAL_CONTRACT_REL),
+        "clauses": clause_table,
+    }
 
 
 def canonical_package_files_from_generated(generated_files: list[str]) -> list[str]:
@@ -229,6 +389,13 @@ def build() -> int:
     map_out = compiled_root / "compiled-module-map.json"
     map_out.write_text(json.dumps(compiled_map, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
     generated_files.append(posix_rel(map_out, root))
+
+    cold_law_manifest = build_cold_law_manifest(root)
+    cold_law_out = compiled_root / "cold-law-manifest.json"
+    cold_law_out.write_text(
+        json.dumps(cold_law_manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n"
+    )
+    generated_files.append(posix_rel(cold_law_out, root))
 
     extra_inputs = {
         canonical_source_rel(rel_path): sha256_file(source_path_for(root, rel_path))

@@ -1,0 +1,245 @@
+{
+  "schema": "load-path-budget-config-v1",
+  "metric": {
+    "declared": "est_tok = bytes // 4",
+    "calibration": {
+      "date": "2026-07-06",
+      "tokenizer": "tiktoken o200k_base",
+      "note": "bytes/4 OVERestimates real o200k_base tokens by ~11% on this corpus (ratio real/est = 0.8932 overall pre-Slice-B); conservative for gating. Pre-Slice-B full instructed load = 268,871 real tokens, still exceeding a 200k window. Slice B wave 1 (this baseline) shrank skill/SKILL.md from 216,112 to 110,797 bytes by replacing the inlined full non-droppable-manual-contract.md with a hot manual-contract-digest.md plus a cold-law-manifest.json binding digest clauses back to the full cold contract by sha256; per-bundle rows are unaffected by this slice.",
+      "surfaces": [
+        {
+          "surface": "skill/SKILL.md",
+          "bytes": 110797,
+          "est_tok": 27699,
+          "real_tok": null,
+          "ratio": null,
+          "_note": "Slice B wave 1: shrunk from 216112 bytes / 54028 est_tok; real_tok not remeasured this slice"
+        },
+        {
+          "surface": "skill/references/runtime-foundation.md",
+          "bytes": 103208,
+          "est_tok": 25802,
+          "real_tok": 23477,
+          "ratio": 0.9099
+        },
+        {
+          "surface": "skill/references/runtime-diagnostic-core.md",
+          "bytes": 122746,
+          "est_tok": 30686,
+          "real_tok": 27123,
+          "ratio": 0.8839
+        },
+        {
+          "surface": "skill/references/runtime-phase2-passes.md",
+          "bytes": 48639,
+          "est_tok": 12159,
+          "real_tok": 10377,
+          "ratio": 0.8534
+        },
+        {
+          "surface": "skill/references/runtime-core-ir.md",
+          "bytes": 88604,
+          "est_tok": 22151,
+          "real_tok": null,
+          "ratio": null,
+          "_note": "Slice C shard (split from runtime-dispatch-gate.md); real_tok not remeasured this slice"
+        },
+        {
+          "surface": "skill/references/runtime-core-pipeline.md",
+          "bytes": 47687,
+          "est_tok": 11921,
+          "real_tok": null,
+          "ratio": null,
+          "_note": "Slice C shard (split from runtime-dispatch-gate.md); real_tok not remeasured this slice"
+        },
+        {
+          "surface": "skill/references/runtime-core-recursion.md",
+          "bytes": 92946,
+          "est_tok": 23236,
+          "real_tok": null,
+          "ratio": null,
+          "_note": "Slice C shard (split from runtime-dispatch-gate.md); real_tok not remeasured this slice"
+        },
+        {
+          "surface": "skill/references/runtime-core-routing.md",
+          "bytes": 21487,
+          "est_tok": 5371,
+          "real_tok": null,
+          "ratio": null,
+          "_note": "Slice C shard (split from runtime-dispatch-gate.md); now the sole unconditional 'Load path for substantive cases' entry; real_tok not remeasured this slice"
+        },
+        {
+          "surface": "skill/references/runtime-shard-ir-support.md",
+          "bytes": 36721,
+          "est_tok": 9180,
+          "real_tok": null,
+          "ratio": null,
+          "_note": "Slice C shard (split from runtime-dispatch-gate.md); real_tok not remeasured this slice"
+        },
+        {
+          "surface": "skill/references/runtime-shard-diagnostic.md",
+          "bytes": 45049,
+          "est_tok": 11262,
+          "real_tok": null,
+          "ratio": null,
+          "_note": "Slice C shard (split from runtime-dispatch-gate.md); real_tok not remeasured this slice"
+        },
+        {
+          "surface": "skill/references/runtime-shard-audit.md",
+          "bytes": 73995,
+          "est_tok": 18498,
+          "real_tok": null,
+          "ratio": null,
+          "_note": "Slice C shard (split from runtime-dispatch-gate.md); real_tok not remeasured this slice"
+        },
+        {
+          "surface": "skill/references/runtime-shard-thesis.md",
+          "bytes": 20697,
+          "est_tok": 5174,
+          "real_tok": null,
+          "ratio": null,
+          "_note": "Slice C shard (split from runtime-dispatch-gate.md); real_tok not remeasured this slice"
+        },
+        {
+          "surface": "skill/references/runtime-shard-restoration.md",
+          "bytes": 20654,
+          "est_tok": 5163,
+          "real_tok": null,
+          "ratio": null,
+          "_note": "Slice C shard (split from runtime-dispatch-gate.md); real_tok not remeasured this slice"
+        },
+        {
+          "surface": "skill/references/runtime-shard-output-release.md",
+          "bytes": 117383,
+          "est_tok": 29345,
+          "real_tok": null,
+          "ratio": null,
+          "_note": "Slice C shard (split from runtime-output-governance.md); real_tok not remeasured this slice"
+        },
+        {
+          "surface": "skill/references/runtime-shard-render-contract.md",
+          "bytes": 149319,
+          "est_tok": 37329,
+          "real_tok": null,
+          "ratio": null,
+          "_note": "Slice C shard (split from runtime-output-governance.md); real_tok not remeasured this slice"
+        }
+      ],
+      "total": {
+        "bytes": 1119855,
+        "est_tok": 279963,
+        "real_tok": null,
+        "ratio": null,
+        "_note": "Slice C: runtime-dispatch-gate.md (13 modules) and runtime-output-governance.md (2 modules) were split into 11 single/small-group route shards (tools/compiled_runtime_lib.py BUNDLE_SOURCES); skill-md-only also grew because the retired 5-line 'Load path for substantive cases' list was replaced by a 1-line load path plus a Dispatch Index table (skill/SKILL.md 127954->130720 bytes); total shrank slightly overall net of shard-header overhead vs the prior five-bundle total; real_tok not remeasured this slice"
+      }
+    }
+  },
+  "ratchet": {
+    "enabled": true,
+    "tolerance_pct": 2.0,
+    "aggregate_tolerance_pct": 1.0,
+    "_comment_aggregate_tolerance": "total-hot-surfaces (the aggregate ratchet row) is gated at this strictly tighter tolerance than tolerance_pct. If it used the same tolerance_pct as per-row checks, growth spread evenly across every per-row surface (each individually still within tolerance_pct) would also land inside tolerance_pct in aggregate, defeating the point of an aggregate check.",
+    "baseline_date": "2026-07-06",
+    "baseline_ref": "codex/v0.4.6.0-runtime-footprint Slice C (route-shard split of runtime-dispatch-gate.md and runtime-output-governance.md into 11 shards)",
+    "_comment_slice_b": "skill-md-only, five-bundle-substantive, always-load-bundles, structural-diagnosis-floor, and total-hot-surfaces are lowered/raised in this change to the newly measured post-reduction values. The compiled root skill/SKILL.md dropped from 216112 to 110797 bytes in the prior wave (non-droppable-manual-contract digest); per-bundle rows are unchanged by that or this wave.",
+    "_comment_slice_b_final_wave": "Final wave: the '### Always Load' table previously listed 4 references/*.md files (terminology.md, case-library/INDEX.md, module-codes.md, techniques/heuristics.md) that all resolved to the 103KB runtime-foundation.md bundle, dragging the whole bundle hot on every substantive case (always-load-bundles floor = 214005 bytes / 53501 est_tok). Those 4 files' load-bearing content is now authored as compact in-kernel digests inside atomics/skill/SKILL.md ('### Always-Load Digests (kernel)', ~15.5KB), and the Always Load table carries 0 references/*.md rows -- the full files remain available on demand, compiled cold in runtime-foundation.md. This is LICENSED growth on skill-md-only (+16010 bytes / +4002 est_tok: 110797->126807 bytes, 27699->31701 est_tok) for a much larger floor win: always-load-bundles drops from 53501 to 31701 est_tok (-21800 est_tok), because it is now == skill-md-only (0 bundles resolve). five-bundle-substantive and total-hot-surfaces necessarily grow by the same root delta (they sum skill-md-only + all 5 bundles, and per-bundle rows are untouched): 1098840->1114850 bytes, 274710->278712 est_tok (+16010 bytes / +4002 est_tok). structural-diagnosis-floor also drops because it is always-load-bundles (now == root) + the Mandatory Diagnostic Core bundle, which is untouched: 336751->249553 bytes, 84187->62388 est_tok. Net: +4002 est_tok root growth buys -21800 est_tok floor reduction. Root stays under the 130000-byte / ~32500-est_tok ceiling (126807 bytes / 31701 est_tok, margin 3193 bytes). Note: this also required raising two independent hard-coded 80,000-char control-plane size ceilings on atomics/skill/SKILL.md (tools/check_metacompliance_current_canon.py ROOT_MAX_CHARS and tools/check_recursion_collapse_noetic_frame.py's inline 80_000 check) to 96,000 -- the atomics source file itself grew from 79,979 to 95,420 chars carrying the digest prose (a larger delta than the compiled/byte view above because the atomics source has no bundle-substitution accounting).",
+    "_comment_slice_c": "Slice C splits runtime-dispatch-gate.md (13 source modules) and runtime-output-governance.md (2 source modules) into 11 route shards, RELOCATING modules only (anti-slimming law: nothing removed). The two retired per-bundle baseline keys (runtime-dispatch-gate.md, runtime-output-governance.md) are replaced by 11 new per-bundle baseline keys, one per shard. skill-md-only grows from 127954 to 130720 bytes (+2766 bytes / +692 est_tok): the retired 5-line 'Load path for substantive cases' numbered list is replaced by a 1-line load path (runtime-core-routing.md only) plus a Dispatch Index table describing all 11 shards' trigger signals/load-when conditions and the selection law -- this is licensed growth (the routing addendum text itself, not module content). five-bundle-substantive and total-hot-surfaces are recomputed as skill-md-only + the sum of ALL per-bundle rows (now 14 bundles: runtime-foundation.md, runtime-diagnostic-core.md, runtime-phase2-passes.md, and the 11 new shards -- the 'five-bundle' row name is retained per the tool's glob-derived row naming; it now sums 14 files, which is EXPECTED per the migration instructions, not a bug): 1119855 bytes / 279963 est_tok (down slightly from 1115997+... pre-split total net of shard-header overhead, since the two retired bundles' combined 713450 bytes are replaced by the 11 shards' combined byte total plus per-file compiled-section header overhead). always-load-bundles is unchanged in mechanism (still 0 always-load bundles resolve; equals skill-md-only, now 130720/32680). structural-diagnosis-floor is skill-md-only + runtime-diagnostic-core.md (untouched by the split): 253466 bytes / 63366 est_tok.",
+    "_comment_slice_d": "Slice D wave 1 (Plan 03) adds the MULTI-CALL STATE CAPSULE LAW (daee-state-capsule-v1) section to atomics/skill/references/rubrics/manual-contract-digest.md, in the EXECUTION MANDATE region (after the MRP/PARTIAL blocks, before Default Output Surface Invariant): the recursive-call contract, append-only artifact law, capsule honesty (B_LA/B_MRP/B_total, anti-slimming, MRP provenance, coverage_complete), PARTIAL/HOLD resume, the plain-single-call-host inline-capsule PARTIAL law, and the schema/checker/size pointer. This is licensed growth: it is new executable law governing the schema/state-capsule.schema.json typed capsule contract and tools/check_state_capsule.py replay checker landed alongside it, not restated module content. skill-md-only (compiled root, == always-load-bundles since 0 always-load bundles resolve) grows from 130720 to 136086 bytes (+5366 bytes / +1341 est_tok: 32680->34021 est_tok). structural-diagnosis-floor grows by the same root delta (skill-md-only + the untouched runtime-diagnostic-core.md bundle): 253466->258832 bytes, 63366->64708 est_tok. five-bundle-substantive and total-hot-surfaces are unaffected beyond the same root delta (per-bundle rows untouched): 1119855->1125221 bytes, 279963->281305 est_tok. Per-bundle rows are unchanged; only the compiled root grew.",
+    "baseline": {
+      "skill-md-only": {
+        "bytes": 136086,
+        "est_tok": 34021
+      },
+      "per-bundle:skill/references/runtime-diagnostic-core.md": {
+        "bytes": 122746,
+        "est_tok": 30686
+      },
+      "per-bundle:skill/references/runtime-foundation.md": {
+        "bytes": 103208,
+        "est_tok": 25802
+      },
+      "per-bundle:skill/references/runtime-phase2-passes.md": {
+        "bytes": 48639,
+        "est_tok": 12159
+      },
+      "per-bundle:skill/references/runtime-core-ir.md": {
+        "bytes": 88604,
+        "est_tok": 22151
+      },
+      "per-bundle:skill/references/runtime-core-pipeline.md": {
+        "bytes": 47687,
+        "est_tok": 11921
+      },
+      "per-bundle:skill/references/runtime-core-recursion.md": {
+        "bytes": 92946,
+        "est_tok": 23236
+      },
+      "per-bundle:skill/references/runtime-core-routing.md": {
+        "bytes": 21487,
+        "est_tok": 5371
+      },
+      "per-bundle:skill/references/runtime-shard-ir-support.md": {
+        "bytes": 36721,
+        "est_tok": 9180
+      },
+      "per-bundle:skill/references/runtime-shard-diagnostic.md": {
+        "bytes": 45049,
+        "est_tok": 11262
+      },
+      "per-bundle:skill/references/runtime-shard-audit.md": {
+        "bytes": 73995,
+        "est_tok": 18498
+      },
+      "per-bundle:skill/references/runtime-shard-thesis.md": {
+        "bytes": 20697,
+        "est_tok": 5174
+      },
+      "per-bundle:skill/references/runtime-shard-restoration.md": {
+        "bytes": 20654,
+        "est_tok": 5163
+      },
+      "per-bundle:skill/references/runtime-shard-output-release.md": {
+        "bytes": 117383,
+        "est_tok": 29345
+      },
+      "per-bundle:skill/references/runtime-shard-render-contract.md": {
+        "bytes": 149319,
+        "est_tok": 37329
+      },
+      "five-bundle-substantive": {
+        "bytes": 1125221,
+        "est_tok": 281305
+      },
+      "total-hot-surfaces": {
+        "bytes": 1125221,
+        "est_tok": 281305
+      },
+      "always-load-bundles": {
+        "bytes": 136086,
+        "est_tok": 34021
+      },
+      "structural-diagnosis-floor": {
+        "bytes": 258832,
+        "est_tok": 64708
+      }
+    }
+  },
+  "aspirational": {
+    "enforced": true,
+    "profile": "execution-mini",
+    "hot_root_target_est_tok": 25000,
+    "hot_root_ceiling_est_tok": 35000,
+    "default_hot_shard_target_est_tok": 15000,
+    "default_hot_shard_ceiling_est_tok": 25000,
+    "default_exec_target_est_tok": 60000,
+    "default_exec_ceiling_est_tok": 105000,
+    "_owner_note_exec_ceiling": "Plan 06 proposed 90k; measured worst-case (root 34,021 + capsule 4,000 + top-3 co-selectable default-hot shards [core-recursion 23,236 + core-ir 22,151 + shard-audit 18,498 = 63,885]) = 101,906 est-tok. Initial enforced ceiling set to 105k so the gate is real but not born red; owner may tighten to 90k after shard slimming (core-recursion/core-ir/shard-audit are the fat shards). Target 60k still warns (and is already exceeded by the worst case, by design -- warn is advisory).",
+    "shard_classes": {
+      "default_hot": ["runtime-core-ir.md","runtime-core-pipeline.md","runtime-core-recursion.md","runtime-core-routing.md","runtime-shard-ir-support.md","runtime-shard-diagnostic.md","runtime-shard-audit.md","runtime-shard-thesis.md","runtime-shard-restoration.md"],
+      "stage_warm": ["runtime-shard-output-release.md","runtime-shard-render-contract.md","runtime-phase2-passes.md"],
+      "on_demand_cold": ["runtime-foundation.md","runtime-diagnostic-core.md"],
+      "_note": "stage_warm shards load at their stage (Stage-07 mandatory loads / Phase-2 pass) and are exempt from the default-hot shard ceiling but reported; diagnostic-core is loaded per the Mandatory Diagnostic Core table for structural diagnosis (reported via structural-diagnosis-floor row); foundation is on-demand full-version backing for the kernel digests."
+    }
+  },
+  "_comment_exclusions": "largest-retained-output is intentionally excluded from ratchet.baseline: it measures the size of a retained proof-corpus case output, and it is legal (and expected over time) for retained outputs to grow large as cases accumulate more traversal detail. Gating on it would penalize correct, larger-but-valid outputs, so this row is measured for visibility only and is never enforced by the ratchet."
+}

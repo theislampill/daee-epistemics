@@ -1,0 +1,56 @@
+{
+  "schema": "staged-runtime-handshake-v1",
+  "case_id": "stage02-bare-directive-refusal",
+  "mode": "staged-current-skill-stage-local-smoke",
+  "user_interface_preserved": true,
+  "stage_scope": {
+    "stop_after_stage": "stage-02-layer-a-diagnostic-ir",
+    "stage_count": 2,
+    "not_release_output": true,
+    "not_verifier_sidecars": true
+  },
+  "model_scope": {
+    "type": "focused-current-skill-stage-smoke",
+    "case_count": 1,
+    "case_family": "bare-directive-refusal-shape-canary",
+    "retained_replay_target": "tests/staged-runtime-handshake/valid/retained-a9-science-source.json"
+  },
+  "stage_order": [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir"
+  ],
+  "stages": [
+    {
+      "id": "stage-01-intake",
+      "status": "pass",
+      "produces": ["input_digest"],
+      "requires": [],
+      "input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "id": "stage-02-layer-a-diagnostic-ir",
+      "status": "fail",
+      "produces": ["burden_floor", "selected_n_frame", "live_registers"],
+      "requires": ["input_digest"],
+      "error": "Raw input is a bare topic directive with no argumentative content: no stated claim, premise, contested proposition, or disambiguation of which sense of the named target is intended. Selecting an N-frame, a burden_floor, or live_registers for this input would require inventing argument structure not present in the retained input rather than diagnosing it."
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "stage-01-intake",
+      "to": "stage-02-layer-a-diagnostic-ir",
+      "checks": ["input_boundary_preserved"],
+      "status": "pass"
+    }
+  ],
+  "non_claims": {
+    "not_model_smoke": false,
+    "not_broad_model_behavior": true,
+    "not_broad_model_matrix": true,
+    "not_runtime_default_emission_proof": true,
+    "not_arbitrary_nl_ir_parser": true,
+    "not_package_provenance": true,
+    "not_guaranteed_t_lang_uptake": true,
+    "not_graphify_or_activegraph_proof": true
+  }
+}

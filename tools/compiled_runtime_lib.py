@@ -257,23 +257,41 @@ BUNDLE_SOURCES: dict[str, list[str]] = {
         "skill/references/diagnostics/prophetic-discourse-neutralization.md",
         "skill/references/diagnostics/arabic-backbone-predicates.md",
     ],
-    "references/runtime-dispatch-gate.md": [
+    "references/runtime-core-ir.md": [
         "skill/references/diagnostics/diagnostic-ir.md",
+    ],
+    "references/runtime-core-pipeline.md": [
+        "skill/references/diagnostics/framework-pipeline.md",
+    ],
+    "references/runtime-core-recursion.md": [
+        "skill/references/diagnostics/recursive-state-transitions.md",
+    ],
+    "references/runtime-core-routing.md": [
+        "skill/references/diagnostics/routing-precedence.md",
+    ],
+    "references/runtime-shard-ir-support.md": [
         "skill/references/diagnostics/ir-reconstruction-pass.md",
         "skill/references/diagnostics/case-state-schema.md",
+    ],
+    "references/runtime-shard-diagnostic.md": [
         "skill/references/diagnostics/pattern-profiling.md",
         "skill/references/diagnostics/inference-boundary.md",
         "skill/references/diagnostics/mixed-case-handling.md",
+    ],
+    "references/runtime-shard-audit.md": [
         "skill/references/diagnostics/anti-patterns.md",
-        "skill/references/diagnostics/framework-pipeline.md",
-        "skill/references/diagnostics/recursive-state-transitions.md",
-        "skill/references/diagnostics/routing-precedence.md",
+    ],
+    "references/runtime-shard-thesis.md": [
         "skill/references/kernel-thesis.md",
         "skill/references/metaphysical-architecture.md",
+    ],
+    "references/runtime-shard-restoration.md": [
         "skill/references/procedures/P7-restoration-stops.md",
     ],
-    "references/runtime-output-governance.md": [
+    "references/runtime-shard-output-release.md": [
         "skill/references/rubrics/output-release.md",
+    ],
+    "references/runtime-shard-render-contract.md": [
         "skill/references/rubrics/diagnostic-render-contract.md",
     ],
     "references/omnibus/OMNIBUS-profiles.md": [
@@ -371,6 +389,7 @@ BUNDLE_SOURCES: dict[str, list[str]] = {
 EXTRA_INPUTS = [
     "skill/SKILL.md",
     "skill/references/rubrics/non-droppable-manual-contract.md",
+    "skill/references/rubrics/manual-contract-digest.md",
     "skill/references/diagnostics/framework-pipeline.yaml",
     "skill/references/diagnostics/module-catalogue.json",
     "skill/references/diagnostics/delta-result-vocabulary.json",
@@ -380,6 +399,7 @@ EXTRA_INPUTS = [
 
 RUNTIME_METADATA_COPIES = [
     "skill/README.md",
+    "skill/references/rubrics/non-droppable-manual-contract.md",
     "skill/data/module-catalogue.json",
     "skill/data/ontology-licenses.yaml",
     "skill/data/routing-precedence.yaml",

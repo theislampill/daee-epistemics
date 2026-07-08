@@ -1,0 +1,9 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "b5-sidecar-claim-without-verifier-evidence.json",
+  "stage": "stage-08-verifier-sidecars",
+  "failure_class_hint": "B.5.4.1 sidecar claim requires retained artifact_bindings",
+  "checker": "check_staged_runtime_handshake",
+  "kind": "composite-historical",
+  "provenance": "copy of tests/staged-runtime-handshake/invalid/b5-sidecar-claim-without-verifier-evidence.json (missing output.md artifact plus b5_4_1 claimed=true with none of builder/schema/role/non_claims backing it)."
+}

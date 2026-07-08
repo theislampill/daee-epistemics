@@ -1,0 +1,262 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "schema/state-capsule.schema.json",
+  "title": "DAEE Typed State Capsule (daee-state-capsule-v1)",
+  "description": "Per-call typed state capsule contract for Slice D wave 1 (Plan 03). A capsule is the small, structured hand-off that lets a single model call receive kernel + capsule + selected shards instead of replaying a full 150-300KB output.md or a 300k-token runtime. This schema pins the STRUCTURAL shape of one capsule instance only (required + allowed-optional top-level keys and their inner shapes); cross-capsule replay invariants (monotonic offsets, append-only ledgers, artifact parity, provenance-of-generated-burdens) are enforced by tools/check_state_capsule.py, not by this schema. This is not a semantic-faithfulness, interlocutor-uptake, or release-provenance claim. live_registers accepts both the plain ASCII register names (N, m, tau, sigma, heart, xi, Omega, mu, kappa, H) and their Unicode glyph aliases (τ, σ, ♥, ξ, Ω, μ, κ) per tools/register_axis_contract.py's REGISTER_AXIS_ALIASES; both forms are legitimate live-register spellings and neither is mojibake. body_ref and other burden-token fields legitimately carry Unicode superscript burden forms (e.g. ¹B) alongside the bare ASCII form (e.g. B1); both are in scope and are not encoding drift.",
+  "schema_version": "daee-state-capsule-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "case_id",
+    "input_fingerprint",
+    "stage",
+    "n_frame",
+    "live_registers",
+    "register_state",
+    "B_LA",
+    "B_MRP",
+    "B_total",
+    "current_burden",
+    "held_set_H",
+    "completed_acts",
+    "last_terminal",
+    "last_delta",
+    "last_mrp_resultant",
+    "route_result_type",
+    "field_diagnostics",
+    "transport",
+    "terminal_states",
+    "next_burden",
+    "current_owner_route",
+    "coverage_complete",
+    "next_required_action",
+    "output_artifact_path",
+    "output_sha256",
+    "output_offset_bytes",
+    "cold_law_refs_used",
+    "shards_loaded"
+  ],
+  "properties": {
+    "schema": {
+      "const": "daee-state-capsule-v1"
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier for the case/run this capsule sequence belongs to; constant across a replay sequence."
+    },
+    "input_fingerprint": {
+      "type": "string",
+      "pattern": "^sha256:[A-Fa-f0-9]{64}$",
+      "description": "SHA-256 fingerprint of normalized D0 input, prefixed sha256:; constant across a replay sequence."
+    },
+    "stage": {
+      "type": "string",
+      "enum": ["01", "02", "03", "04", "05", "06", "07", "08"],
+      "description": "Current pipeline stage; STAGE ORDER 01..08 must be non-decreasing across a replay sequence."
+    },
+    "n_frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selected", "held_candidates"],
+      "properties": {
+        "selected": {
+          "type": "string",
+          "minLength": 1
+        },
+        "held_candidates": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "live_registers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "N", "m", "tau", "sigma", "heart", "xi", "Omega", "mu", "kappa", "H",
+          "τ", "σ", "♥", "ξ", "Ω", "μ", "κ"
+        ]
+      },
+      "description": "Subset of the live-register set. Both plain-name (N,m,tau,sigma,heart,xi,Omega,mu,kappa,H) and Unicode glyph alias forms (τ=tau, σ=sigma, ♥=heart, ξ=xi, Ω=Omega, μ=mu, κ=kappa) are accepted; see tools/register_axis_contract.py REGISTER_AXIS_ALIASES for the canonical alias table."
+    },
+    "register_state": {
+      "type": "object",
+      "description": "Current value/annotation per live register; keys are register names/aliases, values are register-specific state payloads."
+    },
+    "B_LA": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "description": "Layer-A burden ledger, order-preserving, no duplicates. Anti-slimming: across a replay sequence this list never shrinks."
+    },
+    "B_MRP": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "description": "MRP-generated burden ledger, order-preserving, no duplicates. Append-only across a replay sequence; every entry must carry MRP provenance (see tools/check_state_capsule.py)."
+    },
+    "B_total": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "description": "Order-preserving union of B_LA and B_MRP, no duplicates."
+    },
+    "current_burden": {
+      "type": ["string", "null"],
+      "description": "Burden token currently under traversal, or null when none is active (e.g. terminal capsule)."
+    },
+    "held_set_H": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["burden", "reason"],
+        "properties": {
+          "burden": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "completed_acts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["body_ref", "owner_id", "operation", "register_axis", "delta_result", "land"],
+        "properties": {
+          "body_ref": {
+            "type": "string",
+            "pattern": "^[⁰¹²³⁴⁵⁶⁷⁸⁹]*B[0-9]+(?:_[0-9]+)?$",
+            "description": "Bare join key only (e.g. B1_1 or the Unicode superscript-prefixed form, superscript digits 0-9); must not carry owner/operation pollution such as '[' or '.'."
+          },
+          "owner_id": {"type": "string", "minLength": 1},
+          "operation": {"type": "string", "minLength": 1},
+          "register_axis": {"type": "string", "minLength": 1},
+          "delta_result": {"type": "string", "minLength": 1},
+          "land": {"type": "string", "minLength": 1}
+        }
+      },
+      "description": "Append-only across a replay sequence; earlier entries preserved verbatim."
+    },
+    "last_terminal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["burden", "state"],
+      "properties": {
+        "burden": {"type": ["string", "null"]},
+        "state": {"type": ["string", "null"]}
+      }
+    },
+    "last_delta": {
+      "type": ["string", "null"]
+    },
+    "last_mrp_resultant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "route_result_type"],
+      "properties": {
+        "source": {"type": ["string", "null"]},
+        "route_result_type": {
+          "type": "string",
+          "enum": [
+            "held_burden_activation",
+            "generated_burden_instantiation",
+            "no_new_resultant",
+            "loopbreak",
+            "hold_partial",
+            "none"
+          ]
+        },
+        "generated_by": {"type": "string", "minLength": 1},
+        "next_burden": {"type": ["string", "null"]}
+      }
+    },
+    "route_result_type": {
+      "type": "string",
+      "enum": [
+        "held_burden_activation",
+        "generated_burden_instantiation",
+        "no_new_resultant",
+        "loopbreak",
+        "hold_partial",
+        "none"
+      ]
+    },
+    "field_diagnostics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["divergence_state", "curl_state"],
+      "properties": {
+        "divergence_state": {
+          "type": "string",
+          "enum": ["neutral", "settled", "bounded", "non-neutral"]
+        },
+        "curl_state": {
+          "type": "string",
+          "enum": ["null-state", "resolved", "held", "non-null"]
+        }
+      }
+    },
+    "transport": {
+      "type": "string",
+      "enum": ["chat", "file-retained"]
+    },
+    "terminal_states": {
+      "type": "object",
+      "description": "Map of burden token -> terminal-state label (e.g. Land, rejected, merged) for burdens that have reached closure."
+    },
+    "next_burden": {
+      "type": ["string", "null"]
+    },
+    "current_owner_route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["burden", "owner_id", "shards"],
+      "properties": {
+        "burden": {"type": ["string", "null"]},
+        "owner_id": {"type": ["string", "null"]},
+        "shards": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "coverage_complete": {
+      "type": "boolean",
+      "description": "True only when held_set_H is empty AND every burden in B_total is present in terminal_states with a closed state (e.g. Land, rejected, merged)."
+    },
+    "next_required_action": {
+      "type": "string",
+      "maxLength": 400,
+      "description": "Required non-empty when coverage_complete is false and the capsule is in a PARTIAL/hold_partial state; may be empty string only for fully covered/terminal capsules. Capped at 400 chars to prevent prose-smuggling of law/runtime content into a field meant to be a short imperative."
+    },
+    "output_artifact_path": {
+      "type": ["string", "null"],
+      "description": "Path to the retained output.md artifact this capsule sequence writes into, or null for chat-transport capsules with no retained artifact yet."
+    },
+    "output_sha256": {
+      "type": ["string", "null"],
+      "pattern": "^([A-Fa-f0-9]{64})?$",
+      "description": "SHA-256 of the artifact bytes at output_offset_bytes; required (non-null) whenever output_artifact_path is set."
+    },
+    "output_offset_bytes": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Byte length of the retained artifact as of this capsule; monotonic non-decreasing across a replay sequence."
+    },
+    "cold_law_refs_used": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "shards_loaded": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 1200,
+      "description": "Free-text annotation; capped at 1200 chars to prevent prose-smuggling of law/runtime content past the capsule's small-hand-off size discipline."
+    }
+  }
+}

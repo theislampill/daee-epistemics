@@ -32,8 +32,7 @@
     "expected_bundles": [
       "references/runtime-foundation.md",
       "references/runtime-diagnostic-core.md",
-      "references/runtime-dispatch-gate.md",
-      "references/runtime-output-governance.md",
+      "references/runtime-core-ir.md",
       "references/omnibus/OMNIBUS-tactics.md",
       "references/omnibus/OMNIBUS-specialty-diagnostics.md",
       "references/omnibus/OMNIBUS-techniques.md",
@@ -42,8 +41,7 @@
     "owner_clusters": [
       "runtime-foundation",
       "diagnostic-core",
-      "dispatch-gate",
-      "output-governance",
+      "core-ir",
       "tactics",
       "specialty-diagnostics",
       "techniques",

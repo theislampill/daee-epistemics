@@ -1,0 +1,10 @@
+{
+  "downstream_invalidated": [
+    "08"
+  ],
+  "earliest_stage": "07",
+  "failure_class": "public-projection",
+  "repair_lane": "no-model fixture/checker/runtime-contract repair",
+  "requires_model_rerun": false,
+  "stage": "07"
+}

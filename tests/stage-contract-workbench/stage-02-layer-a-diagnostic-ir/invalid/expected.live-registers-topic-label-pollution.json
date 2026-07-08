@@ -1,0 +1,8 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "live-registers-topic-label-pollution.json",
+  "stage": "stage-02-layer-a-diagnostic-ir",
+  "failure_class_hint": "live_registers entry must be one of the canonical register tuple tokens (N, m, tau, sigma, heart, xi, Omega, mu, kappa, H)",
+  "checker": "check_staged_runtime_handshake",
+  "provenance": "minimal-pair variant of tests/staged-runtime-handshake/invalid/stage02-live-registers-topic-labels.json, scoped to this workbench's minimal stage-02/03 shape; reproduces the live-matrix cycle-01 topic-label leak into live_registers (case-independent vocabulary law, not tuned to any smoke prompt)."
+}

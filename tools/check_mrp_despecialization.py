@@ -26,7 +26,8 @@ RUNTIME_OWNER_PATHS = [
     "atomics/skill/references/rubrics/output-release.md",
     "tools/build_compiled_runtime.py",
     "skill/SKILL.md",
-    "skill/references/runtime-output-governance.md",
+    "skill/references/runtime-shard-output-release.md",
+    "skill/references/runtime-shard-render-contract.md",
     "skill/references/omnibus/OMNIBUS-tactics.md",
 ]
 

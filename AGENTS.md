@@ -951,8 +951,11 @@ SKILL.md
 -> runtime-foundation
 -> runtime-diagnostic-core
 -> runtime-phase2-passes
--> runtime-dispatch-gate
--> runtime-output-governance
+-> runtime-core-routing (unconditional; Dispatch Index selects the other route shards below)
+-> runtime-core-ir / runtime-core-pipeline / runtime-core-recursion / runtime-shard-ir-support /
+   runtime-shard-diagnostic / runtime-shard-audit / runtime-shard-thesis /
+   runtime-shard-restoration / runtime-shard-output-release / runtime-shard-render-contract
+   (loaded on dispatch-index selection, not eagerly)
 -> selective omnibus sections
 -> post-render gate
 -> STOP / HOLD / RECURSE / PARTIAL
@@ -1128,6 +1131,39 @@ Avoid:
 - turning recursive traversal into argument dumping
 - declaring STOP while an eligible live noetic burden remains
 - changing packaging so `SKILL.md` is not at archive root
+
+## v0.4.6.0 runtime-footprint rules
+
+Durable rules only; details in `docs/load-path-architecture.md`,
+`docs/recursive-state-capsule.md`, `docs/stage-contract-workbench.md`,
+`docs/four-smoke-release-playbook.md`, `docs/staged-smoke-maintenance.md`.
+
+- Never re-inline the full manual contract into the hot compiled root; it
+  stays cold behind `manual-contract-digest.md` + generated
+  `cold-law-manifest.json`, presence proven by
+  `tools/check_cold_law_digest.py` hash-parity/clause-mapping checks.
+- Never re-add eager bundles to the load-path numbered list; it must stay
+  exactly `runtime-core-routing.md`
+  (`check_route_shard_selection.py`'s `EXPECTED_EAGER_LIST` canary).
+- Every `runtime-*.md` shard on disk must be classified `default_hot` /
+  `stage_warm` / `on_demand_cold` in `load-path-budget.config.json`'s
+  `aspirational.shard_classes`, or `measure_load_path_budget.py --enforce`
+  fails.
+- Ratchet baselines in `load-path-budget.config.json` change only with a
+  deliberate `_comment_<slice>` note; anti-banking rejects a baseline
+  pre-raised above measured reality.
+- State capsules (`daee-state-capsule-v1`) are structure, not prose:
+  validate-then-write always; never hand-edit a run-dir `capsule-NNN.json`
+  (`tools/check_state_capsule.py`).
+- A new model call site (`invoke_model(...)` in
+  `run_staged_current_skill_smoke.py`) requires a matching
+  `emit_prompt_pack_manifest(...)` call, or the static call-site parity
+  self-test in `check_prompt_pack_budget.py` fails.
+- Prefer extending an existing stage-contract-workbench family fixture over
+  a one-off canary; add a canary only for a reusable basis family.
+- Stage-07 mandatory loads (`runtime-shard-output-release.md`,
+  `runtime-shard-render-contract.md`) are not selection-gated -- a fixed
+  post-gate stage; release waits for them regardless of dispatch selection.
 
 ## Where To Start
 

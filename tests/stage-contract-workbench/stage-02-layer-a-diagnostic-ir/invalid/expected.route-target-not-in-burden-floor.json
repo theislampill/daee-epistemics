@@ -1,0 +1,9 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "route-target-not-in-burden-floor.json",
+  "stage": "stage-02-layer-a-diagnostic-ir",
+  "kind": "composite-historical",
+  "failure_class_hint": "stage-03 route_targets must match stage-02 burden_floor",
+  "checker": "check_staged_runtime_handshake",
+  "provenance": "copy of tests/staged-runtime-handshake/invalid/route-target-not-in-burden-floor.json, filed here because the defect originates in stage-02's burden_floor not covering the downstream route target. Note (per docs/fixture-taxonomy.md kind rules): this fixture is composite-historical -- the burden_floor/route_target mismatch cascades into stage-04..08 companion errors because those stages were left minimally stubbed rather than independently repaired. burden-floor-public-label-pollution.json in this same directory is the single-signature minimal-pair sibling for the stage-02 burden_floor format defect specifically."
+}

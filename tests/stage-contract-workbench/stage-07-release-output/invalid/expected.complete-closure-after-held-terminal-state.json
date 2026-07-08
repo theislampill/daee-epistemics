@@ -1,0 +1,9 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "complete-closure-after-held-terminal-state.json",
+  "stage": "stage-07-release-output",
+  "failure_class_hint": "release must not claim complete closure after held/partial stage state",
+  "checker": "check_staged_runtime_handshake",
+  "kind": "composite-historical",
+  "provenance": "minimal-pair variant of tests/staged-runtime-handshake/invalid/release-complete-after-held.json. Composite: it inherits that fixture's minimal-stub cascades in stages 03/04/06 plus a missing output.md artifact; the primary signature is 'release must not claim complete closure after held/partial stage state'."
+}

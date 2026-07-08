@@ -1,0 +1,2 @@
+python tools/check_fake_alpha.py
+python tools/check_other_thing.py

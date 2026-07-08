@@ -1,0 +1,8 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "malformed-input-digest.json",
+  "stage": "stage-01-intake",
+  "failure_class_hint": "input_digest is not a valid SHA256 hex digest",
+  "checker": "check_staged_runtime_handshake",
+  "provenance": "hand-authored companion to sweep operator family delete-required-field-stage-01-intake; the delete variant is a documented closed gap (stage01_intake_errors now enforces field presence) (see tools/gen_fixture_mutations.py KNOWN_CHECKER_GAPS), so this fixture instead corrupts the value to exercise the sha_errors() format check, which IS enforced."
+}

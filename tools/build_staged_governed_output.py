@@ -1296,6 +1296,49 @@ def per_burden_diag_errors(label: str, value: str, prefix_re: re.Pattern[str], h
     return errors
 
 
+# G2: exact mirror of tools/check_mid_reread_pressure.py's CURL_NEGATION_RE.
+# "no loop" / "no circular" / "not a loop" (the loop does NOT EXIST / no
+# circularity remains) contradicts a held curl. But a loop-RESOLUTION
+# operation that has NOT yet happened is a VALID reason FOR a held curl (the
+# loop is still active/unresolved), so "no loop break/broke/broken",
+# "no loop closed/closes/closing/closure", and "no loop resolved/resolves/
+# resolving" must NOT be read as no-loop claims: they say the loop has not
+# been broken/closed/resolved, i.e. it persists -- exactly what "held"
+# records. Producer-side enforcement at Stage 05, before the rendered
+# [Mid-Reread Pressure] block ever reaches the checker, per G2 (cycle-04):
+# the checker's own asymmetric lookahead (granted only to "no loop", not to
+# "no circular"/"no churn") is PARKED for owner review, not touched here.
+CURL_HELD_NEGATION_RE = re.compile(
+    r"(?i)\bno\s+loop\b(?!\s*[-\s]?(?:break|broke|broken|clos(?:e|ed|es|ing|ure)|"
+    r"resolv(?:e|ed|es|ing)))|"
+    r"\bno\s+circular\b|\bno\s+churn\b|\bnot\s+a\s+loop\b|\bnot\s+circular\b"
+)
+
+
+def held_curl_phrasing_errors(label: str, curl_value: str) -> list[str]:
+    """G2: a held/non-null curl's <reason> must phrase the dependency loop as
+    still OPEN (e.g. "the dependency loop remains open until <burden>", "no
+    loop break has landed yet"), never as resolved or absent. Rejects the
+    same collocations CURL_HELD_NEGATION_RE above rejects, at the Stage 05
+    producer surface -- the Stage 07 renderer copies the curl reason
+    verbatim into the public [Mid-Reread Pressure] block and cannot repair
+    it after the fact, so this must fail fast here, not downstream."""
+    if not isinstance(curl_value, str) or not curl_value.strip():
+        return []
+    body = per_burden_diag_body(curl_value, PER_BURDEN_CURL_PREFIX_RE)
+    head, _, reason = body.partition("/")
+    if head.strip() not in {"held", "non-null"}:
+        return []
+    if CURL_HELD_NEGATION_RE.search(reason):
+        return [
+            f"{label}: held/non-null curl reason contradicts the open-loop law (contains a "
+            "no-loop/no-circular/no-churn/not-a-loop collocation not followed by a "
+            "break/close/resolution verb); phrase the loop as still open and name the concrete "
+            "next burden/owner keeping it open"
+        ]
+    return []
+
+
 def per_burden_reread_entry_errors(
     entries: Any,
     *,
@@ -1379,6 +1422,7 @@ def per_burden_reread_entry_errors(
             errors.extend(
                 per_burden_diag_errors(f"{entry_label}.curl", curl, PER_BURDEN_CURL_PREFIX_RE, PER_BURDEN_CURL_HEADS)
             )
+            errors.extend(held_curl_phrasing_errors(f"{entry_label}.curl", curl))
         graph_delta = entry.get("graph_delta")
         has_edge = False
         if isinstance(graph_delta, str) and graph_delta:
@@ -2391,6 +2435,52 @@ def run_self_test(root: Path) -> int:
         if not PER_BURDEN_SLOT_START_RE.match(_accept):
             raise AssemblyError(
                 f"self-test: pressure-activation prefix contract wrongly rejected an admissible prefix: {_accept!r}"
+            )
+
+    # G2 LOCKSTEP guard (4-way-lockstep precedent): CURL_HELD_NEGATION_RE is a
+    # declared exact mirror of check_mid_reread_pressure.py's CURL_NEGATION_RE
+    # -- assert byte-identical patterns so a future edit to the checker regex
+    # (e.g. the owner-parked resolution-verb-lookahead alignment for the
+    # `no circular` branch) cannot silently leave this producer-side mirror
+    # enforcing a DIFFERENT law than the rendered-output checker reads.
+    import check_mid_reread_pressure as _mrp_checker_module
+
+    if CURL_HELD_NEGATION_RE.pattern != _mrp_checker_module.CURL_NEGATION_RE.pattern:
+        raise AssemblyError(
+            "self-test: CURL_HELD_NEGATION_RE has drifted from "
+            "check_mid_reread_pressure.CURL_NEGATION_RE -- the producer-side stage-05 phrasing "
+            "law and the rendered-output checker must reject the same collocations (update the "
+            "mirror in lockstep)"
+        )
+
+    # G2 no-model canary: held_curl_phrasing_errors must reject a held/non-null
+    # curl reason that reads as if no loop/circularity exists (the cycle-04
+    # secularism defect shape: "held / no circular recoil is resolved until
+    # <burden>"), and must accept the open-loop phrasing the stage-05 law now
+    # requires. Both directions pinned so the producer law and this producer-
+    # side check never silently drift apart.
+    for _reject_curl in (
+        "∇×κ: held / no circular dependency remains until ²B tests authority pressure",
+        "∇×κ: non-null / not circular, resolution pending ³B",
+        "∇×κ: held / no churn remains before ²B clears",
+        "∇×κ: held / not a loop, ²B will close it",
+        "∇×κ: held / no loop is present until ²B closes",
+    ):
+        if not held_curl_phrasing_errors("self-test", _reject_curl):
+            raise AssemblyError(
+                f"self-test: held_curl_phrasing_errors wrongly accepted a no-loop/no-circularity "
+                f"collocation on a held/non-null curl: {_reject_curl!r}"
+            )
+    for _accept_curl in (
+        "∇×κ: held / the dependency loop remains open until ²B tests authority pressure",
+        "∇×κ: non-null / no loop break has landed yet; ³B still owes the closing test",
+        "∇×κ: held / no loop closure has happened yet; ²B is the next owner",
+        "∇×κ: null / no circular dependency remains",  # head is "null": rule does not apply
+    ):
+        if held_curl_phrasing_errors("self-test", _accept_curl):
+            raise AssemblyError(
+                f"self-test: held_curl_phrasing_errors wrongly rejected valid open-loop/non-held "
+                f"curl phrasing: {_accept_curl!r}"
             )
 
     small_manifest = manifest_for_sections(

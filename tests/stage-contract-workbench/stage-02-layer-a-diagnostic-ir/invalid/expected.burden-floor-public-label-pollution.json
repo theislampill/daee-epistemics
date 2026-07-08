@@ -1,0 +1,8 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "burden-floor-public-label-pollution.json",
+  "stage": "stage-02-layer-a-diagnostic-ir",
+  "failure_class_hint": "burden_floor entry must be a bare canonical burden id such as B1",
+  "checker": "check_staged_runtime_handshake",
+  "provenance": "minimal-pair variant of tests/staged-runtime-handshake/invalid/stage02-burden-floor-public-label-pollution.json, scoped to this workbench's minimal stage-02/03 shape."
+}

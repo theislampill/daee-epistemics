@@ -1,0 +1,8 @@
+{
+  "schema": "expected-diagnostic-v1",
+  "fixture": "missing-handoff-to-stage02.json",
+  "stage": "stage-01-intake",
+  "failure_class_hint": "missing required handoff stage-01-intake -> stage-02-layer-a-diagnostic-ir",
+  "checker": "check_staged_runtime_handshake",
+  "provenance": "hand-authored: stage_scope covers stage-01/02 but handoffs is empty, so handoff_errors() must reject the missing pair."
+}

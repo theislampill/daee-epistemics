@@ -1,0 +1,11 @@
+{
+  "downstream_invalidated": [
+    "07",
+    "08"
+  ],
+  "earliest_stage": "06",
+  "failure_class": "field_witness",
+  "repair_lane": "no-model fixture/checker/runtime-contract repair",
+  "requires_model_rerun": false,
+  "stage": "06"
+}

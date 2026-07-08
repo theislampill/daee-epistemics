@@ -35,12 +35,17 @@
       "references/runtime-foundation.md",
       "references/runtime-diagnostic-core.md",
       "references/runtime-phase2-passes.md",
-      "references/runtime-dispatch-gate.md",
-      "references/runtime-output-governance.md"
+      "references/runtime-core-ir.md",
+      "references/runtime-shard-diagnostic.md",
+      "references/runtime-shard-ir-support.md",
+      "references/runtime-shard-restoration.md"
     ],
     "owner_clusters": [
       "diagnostic-core",
-      "dispatch-gate"
+      "core-ir",
+      "shard-diagnostic",
+      "shard-ir-support",
+      "shard-restoration"
     ],
     "max_calls": 12
   }

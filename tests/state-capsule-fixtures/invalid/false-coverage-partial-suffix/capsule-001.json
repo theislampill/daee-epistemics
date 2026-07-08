@@ -1,0 +1,70 @@
+{
+  "schema": "daee-state-capsule-v1",
+  "case_id": "case-inv-partial-suffix",
+  "input_fingerprint": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "stage": "04",
+  "n_frame": {
+    "selected": "authority-order",
+    "held_candidates": []
+  },
+  "live_registers": [
+    "N",
+    "m",
+    "tau",
+    "sigma"
+  ],
+  "register_state": {
+    "tau": "live per stage-02 diagnostic",
+    "sigma": "live per stage-02 diagnostic"
+  },
+  "B_LA": [
+    "B2"
+  ],
+  "B_MRP": [],
+  "B_total": [
+    "B2"
+  ],
+  "current_burden": null,
+  "held_set_H": [],
+  "completed_acts": [
+    {
+      "body_ref": "B2_1",
+      "owner_id": "M3",
+      "operation": "activation",
+      "register_axis": "xi",
+      "delta_result": "uptake-recorded",
+      "land": "Land(B2)"
+    }
+  ],
+  "last_terminal": {
+    "burden": null,
+    "state": null
+  },
+  "last_delta": null,
+  "last_mrp_resultant": {
+    "source": null,
+    "route_result_type": "none"
+  },
+  "route_result_type": "none",
+  "field_diagnostics": {
+    "divergence_state": "neutral",
+    "curl_state": "null-state"
+  },
+  "transport": "file-retained",
+  "terminal_states": {
+    "B2": "Land(B2)"
+  },
+  "next_burden": null,
+  "current_owner_route": {
+    "burden": "B2",
+    "owner_id": "M3",
+    "shards": []
+  },
+  "coverage_complete": true,
+  "next_required_action": "",
+  "output_artifact_path": "artifact.md",
+  "output_sha256": "368b0540f3ba6a219e27ff245fc27b7e7d13fd3665b27ce2a9673ba791310e15",
+  "output_offset_bytes": 146,
+  "cold_law_refs_used": [],
+  "shards_loaded": []
+}

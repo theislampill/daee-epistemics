@@ -15,6 +15,9 @@
     "check_closure_witness_graph.py": {
       "class": "required"
     },
+    "check_cold_law_digest.py": {
+      "class": "required"
+    },
     "check_collapse_certificate_schema.py": {
       "class": "required"
     },
@@ -176,6 +179,9 @@
       "class": "sample-suite",
       "owner_adjudication": "pending"
     },
+    "check_prompt_pack_budget.py": {
+      "class": "required"
+    },
     "check_public_burden_grouping.py": {
       "class": "required"
     },
@@ -209,6 +215,9 @@
     "check_retained_row_claims.py": {
       "class": "required"
     },
+    "check_route_shard_selection.py": {
+      "class": "required"
+    },
     "check_routing_parity.py": {
       "class": "required"
     },
@@ -234,6 +243,9 @@
       "owner_adjudication": "pending"
     },
     "check_staged_runtime_handshake.py": {
+      "class": "required"
+    },
+    "check_state_capsule.py": {
       "class": "required"
     },
     "check_stub_integrity.py": {
