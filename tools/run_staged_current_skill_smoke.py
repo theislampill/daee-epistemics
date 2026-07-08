@@ -52,11 +52,29 @@ from register_axis_contract import (
 )
 from stage05_basis_contract import normalize_terminal_detail_basis
 from check_mrp_generated_burden import (
+    BODY_SUPPORTED_GENERIC_DELTA_RESULTS,
     FORMAL_OWNER_CONTRACT_OPERATIONS,
     SOURCE_OWNED_ACT_OPERATIONS,
+    STATE_CHANGE_RE,
     owner_alias_key as mrp_owner_alias_key,
 )
-from check_manual_smoke_render_contract import OWNER_OPERATION_PATTERNS
+from check_manual_smoke_render_contract import (
+    DO_SECOND_LOOP_ACTION_RE,
+    DOUBT_ACTION_RE,
+    DOUBT_METHOD_RE,
+    DOUBT_SINCERE_RE,
+    HIGH_MASS_TERMS_RE,
+    LOW_MASS_ASSERTION_RE,
+    LOW_MASS_LICENSE_RE,
+    OWNER_OPERATION_PATTERNS,
+    V10_ACTION_RE,
+    V10_AUTHORITY_RE,
+    V10_CONTENT_RE,
+    V10_NEGATED_ACTION_RE,
+    V10_PROVENANCE_RE,
+    V10_STATE_RE,
+    owner_specific_failure_message,
+)
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -374,7 +392,18 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "unless the route is backed. The canonical `route_targets` field must be a "
             "JSON array of burden-id strings only, such as [\"B1\"]. If richer routing "
             "metadata is useful, put it in optional `route_target_details`; do not put "
-            "objects in `route_targets`. The canonical `owner_routes` field must be a "
+            "objects in `route_targets`. "
+            "J5 route_targets/burden_floor equality law (check_staged_runtime_handshake.py): "
+            "`route_targets` must be EXACTLY the Stage 02 `burden_floor` ids -- the same ids, "
+            "all of them, nothing added, order does not matter (set equality, not list-order "
+            "equality). Quoting the checker: 'stage-03 route_targets must match stage-02 "
+            "burden_floor'. Anti-example: if `burden_floor` is [\"B1\", \"B2\"], writing "
+            "`route_targets: [\"B1\"]` (dropping a floor burden) fails this check, and so does "
+            "`route_targets: [\"B1\", \"B2\", \"B3\"]` (adding a non-floor id) -- both are the "
+            "identical failure, not two different ones. A HOLD/PARTIAL owner route for a "
+            "burden still keeps that burden's id in `route_targets`; HOLD/PARTIAL is expressed "
+            "in the owner route status, never by omitting the burden id from `route_targets`. "
+            "The canonical `owner_routes` field must be a "
             "JSON array of objects with string `burden_id` and `owner_id` fields; richer "
             "owner-order evidence may be placed in optional detail fields. Route/context "
             "labels, umbrella family labels, and case-library labels are route context, "
@@ -3288,6 +3317,33 @@ def body_ref_burden_id(value: str) -> str:
     return ""
 
 
+def record_without_act_burdens(previous_stages: list[dict[str, Any]]) -> list[str]:
+    """J4 (RC-matrix cycle-08): the ACT partition below derives each section's
+    required landing gate(s) ONLY from Stage 04 act_body_refs. A burden that
+    has a Stage 05 per_burden_reread record (assembly demands exactly one
+    `Land(nB):` gate for it) but produced NO Stage 04 ACT body_ref -- because
+    it holds/carries at Stage 04 with no ACT rows -- is therefore never
+    assigned a gate home in ANY section, which structurally guarantees
+    'per_burden_reread record(s) have no visible Land(nB): landing gate' at
+    assembly. Returns canonical burden ids (e.g. ['B7']), in per_burden_reread
+    order, for every burden with a record but no ACT body_ref."""
+    stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    stage05 = stage_by_id(previous_stages, "stage-05-mrp-reread-terminal-state")
+    act_body_refs = list_field(stage04, "act_body_refs")
+    act_burden_ids = {body_ref_burden_id(ref) for ref in act_body_refs if body_ref_burden_id(ref)}
+    entries = stage05.get("per_burden_reread") if isinstance(stage05, dict) else None
+    if not isinstance(entries, list):
+        return []
+    result: list[str] = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        burden_id = canonical_burden_id(str(entry.get("burden_id") or "").strip())
+        if burden_id and burden_id not in act_burden_ids and burden_id not in result:
+            result.append(burden_id)
+    return result
+
+
 def body_ref_completion_flags(all_body_refs: list[str], assigned_body_refs: list[str]) -> dict[str, dict[str, bool]]:
     by_burden: dict[str, list[str]] = {}
     for ref in all_body_refs:
@@ -4746,6 +4802,8 @@ def stage07_act_contract_guidance(
             "- If this section continues a burden started in the prior ACT slice, continue with the next submove only; do not repeat the burden heading.",
             "- Each submove block heading must begin with that canonical public submove ID plus `[{owner}] - ...` with the owner token only; put the operation in the `Operation:` facet.",
             "- Each submove block must contain `Target:`, `Operation:`, `Result/state-change:`, and `Contribution-to-Land(Bn):` facets.",
+            "- J3 four-field submove completeness law (check_mrp_generated_burden.complete_owner_submove_blocks): a submove block is invisible to the checker's dereference index unless ALL FOUR field lines are present and matched by these exact regexes: `\\bTarget\\s*:`, `\\bOperation\\s*:`, `\\bResult(?:/state-change)?\\s*:`, and `\\bContribution-to-Land(?:\\([^)]*\\))?\\s*:`. A block missing even ONE of the four fields (e.g. Target/Operation/Contribution present but no `Result/state-change:` line) does not exist for the checker -- it is dropped from the submove index entirely, not merely flagged. That cascades into 'ACT ... body_ref must dereference to exactly one Layer B submove block' (zero blocks found) plus the field_witness/NAR mirror errors below, from one missing field line.",
+            "- Witness mirror reminder (I4, restated because the J3 cascade above surfaces as these same messages): `land` and `land_target` must mirror the ACT row's `Land(...)` token VERBATIM -- same notation, exact characters, never retyped or renotated. A mismatch (or a block dropped by the J3 completeness law, which starves the mirror of a valid body_ref) fails 'field_witness land does not target Land({target})' and 'field_witness target {mirror_target} disagrees with ACT Land({target})'.",
             "- The block prose must make the ACT pressure, operation, delta/result, and Land(Bn) contribution recoverable without relying on the ACT row alone.",
             "- Stage07 locality rule: every landed ACT row must make a local proof capsule recoverable near that row: BEFORE (what pressure/state was live), OPERATION (which owner operation acted), AFTER (what changed in this burden), DELTA (how the compact delta_result names it), and LAND-LICENSE (why Land(Bn) is licensed instead of HOLD/PARTIAL).",
             "- For every landed row, `Contribution-to-Land(Bn):` must include the local LAND-LICENSE: it must say why this row licenses `Land(Bn)` because the named burden-local state changed. Do not write a generic contribution such as `this submove bounds the carrier function` without the concrete Land license.",
@@ -4756,6 +4814,14 @@ def stage07_act_contract_guidance(
             "- The `TTP Operation Body:` must visibly perform target -> operation -> result -> contribution; do not merely restate the conclusion, cite an owner name, or summarize that the burden fails.",
             "- Owner-execution mass law for held/generated-burden ACT records (tools/check_mrp_generated_burden.py): an ACT record whose Land target is a held or MRP-generated burden must EXECUTE the routed owner's operation in its dereferenced submove body -- show the owner's mechanism acting on this burden's content and the concrete burden-local state delta it produces. Merely naming, citing, or quoting the routed owner code or its catalogue definition is code lookup, which the checker rejects: 'ACT ... record alone does not pass; dereferenced body is not owner-specific', 'names owner codes but does not execute owner-specific operations', and 'Code lookup is not owner activation; Land(...) requires mechanism/action/state-delta operation mass'. Every routed owner on the matched owner/TTP route must be proven by at least one fully valid executing ACT record, or the checker fails with 'ACT records did not prove routed owners'.",
             "- Wrong (pure code lookup): `Operation: <owner> is the registered owner for this burden; its catalogue entry defines <operation>, which applies here.` Right (operation mass): `Operation: <operation> acts on <this burden's named pressure>: <the owner's mechanism visibly performed on the burden content>. Result/state-change: <concrete burden-local state delta>; the BEFORE state no longer holds.`",
+            "- J2 Land-mass law (check_manual_smoke_render_contract.mass_insufficiency_errors): a burden is HIGH-MASS when its section text carries any of this checker-recognized high-mass vocabulary (read live from HIGH_MASS_TERMS_RE): "
+            + ", ".join(owner_operation_pattern_terms(HIGH_MASS_TERMS_RE))
+            + ". Claiming `Land(Bn):`/`HOLD(Bn):` on a high-mass burden with no complete Target/Operation/Result/Contribution-to-Land submove block fails 'Land(Bn) claimed without mass-sufficient Layer B treatment'; with an incomplete/conclusion-shaped block it fails the same message plus the family's own owner_specific_failure_message. A high-mass burden needs at least one COMPLETE, operation-shaped submove block, not merely a Land line.",
+            "- J2 baseline-burden-mass law (check_manual_smoke_render_contract.mass_insufficiency_errors): if the section asserts low mass (checker-recognized low-mass assertion vocabulary, read live from LOW_MASS_ASSERTION_RE: "
+            + ", ".join(owner_operation_pattern_terms(LOW_MASS_ASSERTION_RE))
+            + "), that claim requires an explicit diagnostic LICENSE in the same section (read live from LOW_MASS_LICENSE_RE: "
+            + ", ".join(owner_operation_pattern_terms(LOW_MASS_LICENSE_RE))
+            + "). Asserting low mass with no such license fails with the message shape 'baseline burden <Bn> treated as if low-mass without diagnostic license' (lowercase, the burden id embedded; 'generated burden <Bn> ...' for a B_MRP burden). SEPARATELY, a HIGH-mass burden whose complete submove blocks are conclusion-shaped rather than operation-shaped fails 'Land(Bn) claimed without mass-sufficient Layer B treatment' plus the capitalized summary 'Baseline burden treated as if low-mass without diagnostic license' (or 'Generated burden treated as if low-mass despite post-land recoil pressure') -- that capitalized pair fires from conclusion-shaped work on a high-mass burden even when NO low-mass language appears anywhere. Do not write \"bounded scope makes it low-mass\" or similar low-mass language unless the section also states the diagnostic basis for that license, and keep every high-mass submove operation-shaped.",
             "- Operation-token discipline: keep the registered callable operation token from the copied ACT row and skeleton. Do not replace it with a result, pressure, route label, or prose description; result labels belong in `Result/state-change:` and local prose.",
             "- Delta-layer discipline: the ACT `Δ=` carrier before the colon must be only a burden-state delta such as `Δ¹B` / `ΔB1` or dependency-radius `Δκ`; never print `D7`, `D8`, `Δ¹B₁`, `ΔB1_1`, owner.operation, register axes, or prose labels as the carrier.",
             "- Keep `delta_result` as the owner-local suffix after the colon and in `Result/state-change:`; the carrier proves which hidden transition state changed, while the suffix names what changed locally.",
@@ -6899,7 +6965,15 @@ def owner_operation_pattern_terms(pattern: re.Pattern[str]) -> list[str]:
     OWNER_OPERATION_PATTERNS entry, parsed live from the pattern's own alternation
     text (never a hardcoded copy) so the hint always tracks whatever the checker
     currently recognizes."""
-    raw = pattern.pattern.replace("(?i)", "").strip()
+    # J2 fix (RC-matrix cycle-08): strip ANY leading inline-flags group, not
+    # only the literal `(?i)` -- several checker constants used for the J2
+    # function-based work-test cards (e.g. V10_ACTION_RE, DOUBT_SINCERE_RE) are
+    # authored as `(?is)` and were silently parsed to an EMPTY term list
+    # (`(?i)` is not a substring of `(?is)`, so the old .replace() no-op left
+    # the flags group in place and the alternation splitter then saw it as
+    # unparseable noise). A regex-syntax-shaped flags prefix, once stripped,
+    # never carries a real keyword, so this is strictly a parser-coverage fix.
+    raw = re.sub(r"^\(\?[a-zA-Z]+\)", "", pattern.pattern).strip()
     raw = re.sub(r"^\\b\(\?:", "", raw)
     raw = re.sub(r"\)\\b$", "", raw)
     terms: list[str] = []
@@ -6957,6 +7031,108 @@ def owner_registered_operation_tokens(owner_token: str, family: str) -> tuple[li
     return tokens, narrowed
 
 
+def delta_result_passability(family: str) -> tuple[list[str], list[str]]:
+    """J1 (RC-matrix cycle-08): partition DELTA_RESULT_VOCABULARY[family] into
+    PASSABLE and REGISTERED-BUT-REJECTED tokens, computed live against the SAME
+    two registries check_mrp_generated_burden.delta_result_has_concrete_state_change
+    reads -- never a hardcoded copy. cycle-07 found a hard registry
+    contradiction: `article-strengthening-sequenced` is a REGISTERED P5 token
+    (delta-result-vocabulary.json, advertised by Stage 04 guidance) that can
+    NEVER pass the concreteness gate, because it has no STATE_CHANGE_RE verb
+    and P5 has no BODY_SUPPORTED_GENERIC_DELTA_RESULTS entry -- the checker's
+    fallback body-backed path is only reachable for families/tokens listed in
+    that map. A token is PASSABLE when STATE_CHANGE_RE matches the token text
+    itself (passes standalone), OR when this family has a
+    BODY_SUPPORTED_GENERIC_DELTA_RESULTS entry containing the token (passes
+    only WITH visible body backing -- Result/Contribution/Operation must show
+    the concrete state change; the token alone is not sufficient there).
+    Everything else in the family's registered vocabulary is
+    REGISTERED-BUT-REJECTED: it is a real Stage 04 vocabulary entry that
+    delta_result_has_concrete_state_change can never accept, regardless of
+    body content. Returns (passable_sorted, rejected_sorted)."""
+    tokens = DELTA_RESULT_VOCABULARY.get(family) or set()
+    supported = BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get(family, set())
+    passable = [token for token in tokens if STATE_CHANGE_RE.search(token) or token in supported]
+    rejected = [token for token in tokens if token not in passable]
+    return sorted(passable), sorted(rejected)
+
+
+FUNCTION_BASED_OWNER_FAMILIES = ("V10", "DOUBT_SKEPTICISM", "DO_CHRISTIAN", "DO_SECOND_LOOP")
+
+
+def function_based_owner_work_test_note(family: str) -> str:
+    """J2 (RC-matrix cycle-08): the I5 pattern/registry card above proves an
+    owner used its OWN mechanism vocabulary, but several owner families are
+    additionally gated by a bespoke work-test FUNCTION in
+    check_manual_smoke_render_contract.py -- vocabulary alone does not satisfy
+    them; sonnet/trinitarian's DO_CHRISTIAN submove had the vocabulary but
+    still failed 'do-christian-extensions submove did not perform
+    model-identification or Christian-overlay routing work' because the
+    conjunctive work-test itself was not visibly performed. Derive each
+    family's WORK-TEST summary live from that function's OWN regex constants
+    where they exist (never a hardcoded copy of a drifting vocabulary list).
+    Where the function's remaining requirement is pure conjunctive logic with
+    no vocabulary list of its own (only a per-family failure STRING), quote
+    that string live via owner_specific_failure_message -- that call reads the
+    checker's own text, so it is not a hardcoded duplicate of checker data,
+    only the checker naming its own rule."""
+    if family == "V10":
+        action = owner_operation_pattern_terms(V10_ACTION_RE)
+        negated = owner_operation_pattern_terms(V10_NEGATED_ACTION_RE)
+        provenance = owner_operation_pattern_terms(V10_PROVENANCE_RE)
+        content = owner_operation_pattern_terms(V10_CONTENT_RE)
+        authority = owner_operation_pattern_terms(V10_AUTHORITY_RE)
+        state = owner_operation_pattern_terms(V10_STATE_RE)
+        return (
+            "WORK-TEST (check_manual_smoke_render_contract.v10_operation_performed): a mechanism "
+            f"vocabulary hit alone does not pass; the body must show a NON-NEGATED action verb ({', '.join(action)}) "
+            "such that a local window around it ALSO contains ALL FOUR of: provenance vocabulary "
+            f"({', '.join(provenance)}), content vocabulary ({', '.join(content)}), authority vocabulary "
+            f"({', '.join(authority)}), and state vocabulary ({', '.join(state)}). A negated action "
+            f"({', '.join(negated)}) at or before the verb voids the match even when all four vocabularies are present."
+        )
+    if family == "DOUBT_SKEPTICISM":
+        sincere = owner_operation_pattern_terms(DOUBT_SINCERE_RE)
+        method = owner_operation_pattern_terms(DOUBT_METHOD_RE)
+        action = owner_operation_pattern_terms(DOUBT_ACTION_RE)
+        return (
+            "WORK-TEST (check_manual_smoke_render_contract.doubt_skepticism_operation_performed): "
+            "requires ALL THREE of: sincere-doubt vocabulary "
+            f"({', '.join(sincere)}), skeptical-methodology-tribunal vocabulary ({', '.join(method)}), "
+            f"and an action verb that separates them ({', '.join(action)}). Any one missing fails the work-test "
+            "even if the other two are present."
+        )
+    if family == "DO_SECOND_LOOP":
+        action = owner_operation_pattern_terms(DO_SECOND_LOOP_ACTION_RE)
+        message = owner_specific_failure_message(family.replace("_", "-"))
+        return (
+            "WORK-TEST (check_manual_smoke_render_contract.do_second_loop_pressure_action_backed): "
+            "requires the named Target pressure to make literal word contact with the Operation text, "
+            "the family mechanism vocabulary on this card to be performed (not merely named), a visible "
+            f"burden-local state change, AND a DO_SECOND_LOOP action verb ({', '.join(action)}) acting on that "
+            f"pressure. Checker's own family-failure string when this work-test is not met: {message!r}"
+        )
+    if family in {"DO_CHRISTIAN", "DO_ATTRIBUTE", "PROOF_METHOD", "SOURCE"}:
+        # These families have no standalone drifting-vocabulary work-test function
+        # beyond the mechanism-vocabulary card above; the checker's remaining
+        # requirement is pure conjunctive logic (operation-shaped vs.
+        # conclusion-shaped, state-change visible, pressure acted on) named only
+        # by its own per-family failure string, quoted live rather than copied.
+        # B1 (cycle-07 adversarial review): the checker's owner_family() only
+        # recognizes HYPHENATED forms; the underscore family constant
+        # "DO_ATTRIBUTE" falls through its prefix chain to V8 and quotes the
+        # WRONG family's failure string. Pass the hyphenated owner token; a
+        # self-test canary asserts the round-trip lands on this family.
+        message = owner_specific_failure_message(family.replace("_", "-"))
+        return (
+            "WORK-TEST reminder: the mechanism-vocabulary hit above is necessary but not sufficient -- "
+            "the submove must be operation-shaped (target -> operation -> visible state change -> "
+            "Contribution-to-Land), not conclusion-shaped or a citation of the owner's catalogue entry. "
+            f"Checker's own family-failure string when that work is not visibly performed: {message!r}"
+        )
+    return ""
+
+
 def stage_owner_contract_card_line(owner_token: str, family: str) -> str:
     """One compact per-owner CONTRACT CARD line combining the registered ACT
     operation token(s) and the mechanism vocabulary the checker recognizes in
@@ -6973,6 +7149,9 @@ def stage_owner_contract_card_line(owner_token: str, family: str) -> str:
         terms = owner_operation_pattern_terms(pattern)
         if terms:
             pieces.append("mechanism vocabulary the checker recognizes in the dereferenced body: " + ", ".join(terms))
+    work_test_note = function_based_owner_work_test_note(family)
+    if work_test_note:
+        pieces.append(work_test_note)
     if not pieces:
         # N3 (cycle-06 adversarial review): an owner with no entry in any
         # checker registry gets an HONEST cardless line instead of silent
@@ -7065,6 +7244,46 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
             lines.append(f"- {family} operations: {', '.join(sorted(operations))}")
         tokens = ", ".join(sorted(DELTA_RESULT_VOCABULARY[family]))
         lines.append(f"- {family}: {tokens}")
+        # J1 registry-contradiction countermeasure (RC-matrix cycle-08): the
+        # full family vocabulary line above lists every REGISTERED token, but
+        # cycle-07 found that registration alone does not license a token --
+        # `article-strengthening-sequenced` was a registered P5 token that
+        # could NEVER pass check_mrp_generated_burden.delta_result_has_concrete_state_change
+        # (no STATE_CHANGE_RE verb, no BODY_SUPPORTED_GENERIC_DELTA_RESULTS
+        # entry for P5). Partition the SAME family vocabulary above through
+        # that checker's own gate, live, and print the passable/rejected split
+        # right after it so the model never has to guess which registered
+        # token the concreteness gate will actually accept.
+        passable_tokens, rejected_tokens = delta_result_passability(family)
+        body_supported = BODY_SUPPORTED_GENERIC_DELTA_RESULTS.get(family, set())
+        if passable_tokens:
+            # N1 (cycle-07 adversarial review): body-supported tokens pass ONLY
+            # through their family's strict body-backing work-test (e.g. M8's
+            # trace-step requirements, PROOF_METHOD's carrier-transition
+            # conjunction, PATTERN_PROFILE's exact operation<->delta pairing) --
+            # say so instead of the earlier one-liner that understated it.
+            annotated = [
+                f"{token} (passes ONLY with the family's strict body-backing work-test satisfied "
+                "in the dereferenced body -- see this owner's WORK-TEST/contract card; the token "
+                "alone never passes)"
+                if token in body_supported
+                else token
+                for token in passable_tokens
+            ]
+            lines.append(
+                f"- {family} PASSABLE delta_result tokens (pass "
+                "check_mrp_generated_burden.delta_result_has_concrete_state_change -- quoting the "
+                "checker: 'Delta result must name a concrete burden-local state change'): "
+                + ", ".join(annotated)
+                + "."
+            )
+        if rejected_tokens:
+            lines.append(
+                f"- {family} registered but rejected by the concreteness gate "
+                "(delta_result_has_concrete_state_change) -- do not use: "
+                + ", ".join(rejected_tokens)
+                + "."
+            )
         # I5 registry-depth countermeasure: only add the per-owner contract card
         # here when it carries information the two lines above do not already
         # state -- a formal owner contract narrower than the family-wide
@@ -7509,6 +7728,36 @@ def compiled_act_partition(
     }
 
 
+def orphan_gate_law_text(orphan_gate_burdens: list[str]) -> str:
+    """J4 record-without-ACT gate law, shared by the initial section prompt and
+    the expansion prompt for the last ACT-body section (cycle-07 adversarial
+    review B3: expansion previously carried no orphan awareness, so an
+    expansion round could silently drop the orphan gate; B4: the multi-orphan
+    fallback printed the literal token `Land(nB):`, which cannot match the
+    assembler's LAND_GATE_LINE_RE -- every burden's REAL gate token is now
+    enumerated, one gate per burden)."""
+    if not orphan_gate_burdens:
+        return ""
+    orphan_public_ids = ", ".join(public_burden_id(burden_id) for burden_id in orphan_gate_burdens)
+    per_burden_gates = "; ".join(
+        f"`Land({public_burden_id(burden_id)}): HOLD — <reason>` or "
+        f"`Land({public_burden_id(burden_id)}): carried-PARTIAL — <reason + reopen condition>`"
+        for burden_id in orphan_gate_burdens
+    )
+    return (
+        "\n- J4 record-without-ACT gate law (harness partition): "
+        f"{orphan_public_ids} carr(y/ies) a Stage 05 per_burden_reread record but produced NO Stage 04 "
+        "ACT body_ref -- it holds/carries at Stage 04 with no ACT rows. This is the LAST ACT-body section, "
+        "so this section (not any ACT row) is that burden's gate home: emit EXACTLY ONE line-start gate "
+        f"PER burden listed, each with its honest non-landed payload -- {per_burden_gates} "
+        "(never `: landed. ...`, since no ACT row executed anything for these burdens). Do NOT "
+        "invent a Stage 04 ACT row, `⟦ACT ...⟧` fence, or submove block for these burdens to justify the gates; "
+        "each gate stands alone as prose, exactly like any other HOLD/PARTIAL disposition. Without its gate, "
+        "assembly fails 'per_burden_reread record(s) have no visible Land(nB): landing gate' for "
+        f"{orphan_public_ids} even though every ACT-assigned burden above is fully gated."
+    )
+
+
 def release_section_prompt(
     *,
     root: Path,
@@ -7525,6 +7774,7 @@ def release_section_prompt(
     target_output_kb: int | None,
     section_min_bytes: int = 0,
     assigned_body_refs: list[str] | None = None,
+    is_last_act_body_section: bool = False,
 ) -> str:
     previous = json.dumps(compact_state(previous_stages), ensure_ascii=False, indent=2)
     target = max(0, int(target_output_kb or 0))
@@ -7700,11 +7950,27 @@ def release_section_prompt(
             ref for ref, flags in body_ref_completion_flags(all_act_body_refs, assigned).items()
             if flags.get("last_for_burden") and ref in assigned
         ]
+        # J4 (RC-matrix cycle-08): burdens with a Stage 05 per_burden_reread
+        # record but NO Stage 04 ACT body_ref never appear in any section's
+        # `last_for_burden` set above, since that set is derived only from ACT
+        # body_refs -- they need an explicit gate home. The LAST act-body
+        # section is that home; append them there so the required-gate list
+        # is satisfiable rather than structurally short by one gate per such
+        # burden.
+        orphan_gate_burdens = record_without_act_burdens(previous_stages) if is_last_act_body_section else []
         land_gate_examples = ", ".join(
             f"`Land({public_burden_id(body_ref_burden_id(ref))}):`"
             for ref in last_for_burden_refs
             if body_ref_burden_id(ref)
         ) or "(no burden closes in this section)"
+        if orphan_gate_burdens:
+            orphan_gate_list = ", ".join(f"`Land({public_burden_id(burden_id)}):`" for burden_id in orphan_gate_burdens)
+            land_gate_examples = (
+                orphan_gate_list
+                if land_gate_examples == "(no burden closes in this section)"
+                else f"{land_gate_examples}, {orphan_gate_list}"
+            )
+        orphan_gate_law = orphan_gate_law_text(orphan_gate_burdens)
         partition_line = f"""
 ACT partition contract for this section (hard producer requirements -- the assembler
 checks these exact rules in tools/build_staged_governed_output.py before any Stage 07
@@ -7722,7 +7988,7 @@ of real governed content will fail every one of them):
 - Preserve public burden grouping: body_refs for the same burden must stay contiguous in the final assembled body.
 - Emit a burden heading only for a body_ref marked `first_for_burden`; emit a standalone Land/HOLD line only for a body_ref marked `last_for_burden`.
 - Every burden that closes in this section MUST end with a visible, line-start `Land(ⁿB):` gate using the exact superscript burden id, whose PAYLOAD carries the honest status: `Land(ⁿB): landed. <grounds>` when landed, `Land(ⁿB): carried-PARTIAL — <reason + reopen condition>` or `Land(ⁿB): HOLD — <reason>` when not. NEVER use a `HOLD(ⁿB):`-headed line as the gate: the assembler counts ONLY line-start `Land(ⁿB):` lines (LAND_GATE_LINE_RE), so a burden gated with `HOLD(ⁿB):` fails 'per_burden_reread record(s) have no visible Land(nB): landing gate' even when the disposition is honest. Required landing gate(s) for this section: {land_gate_examples}.
-- Land-gate exactly-once cardinality: emit each required landing gate EXACTLY ONCE. Zero gates for a closing burden fails assembly ('per_burden_reread record(s) have no visible Land(ⁿB): landing gate'); two or more gates for the same burden also fail assembly ('duplicate Land(ⁿB): landing gate(s)'). When revising or expanding a burden record, REPLACE the landing-gate line instead of appending another; a burden must never carry a second line-start `Land(ⁿB):` line anywhere in the assembled body. This cardinality counts ONLY line-start colon-form `Land(ⁿB):` gates; machine `⟦ACT ... Land(¹B)+⟧` row tokens and ASCII `Land(B1)` aliases do not count as public landing gates and must stay in their rows untouched.
+- Land-gate exactly-once cardinality: emit each required landing gate EXACTLY ONCE. Zero gates for a closing burden fails assembly ('per_burden_reread record(s) have no visible Land(ⁿB): landing gate'); two or more gates for the same burden also fail assembly ('duplicate Land(ⁿB): landing gate(s)'). When revising or expanding a burden record, REPLACE the landing-gate line instead of appending another; a burden must never carry a second line-start `Land(ⁿB):` line anywhere in the assembled body. This cardinality counts ONLY line-start colon-form `Land(ⁿB):` gates; machine `⟦ACT ... Land(¹B)+⟧` row tokens and ASCII `Land(B1)` aliases do not count as public landing gates and must stay in their rows untouched.{orphan_gate_law}
 - Do not repeat `## Layer B — Bounded Governed Response` unless this section owns the first Stage 04 ACT body_ref.
 - This section's floor is {section_min_bytes if section_min_bytes else section_floor} UTF-8 bytes of genuine ACT/submove content (assembler rule 'under section budget'); a short refusal, clarification request, or meta-commentary about this being a harness/prompt is not governed content and will read as far under budget on top of failing the body_ref/Land-gate rules above -- if something about this prompt seems wrong, still return the governed section content for the assigned body_refs, since this section text is the actual public artifact being assembled, not a chat turn to negotiate.
 - The assembler will fail duplicate, missing, or unassigned ACT body_refs before Stage 07 validators run.
@@ -7823,9 +8089,15 @@ def release_section_expansion_prompt(
     max_rounds: int,
     assigned_body_refs: list[str] | None,
     existing_text: str,
+    orphan_gate_burdens: list[str] | None = None,
 ) -> str:
     remaining = max(0, section_min_bytes - current_bytes)
     assigned = json.dumps(assigned_body_refs or [], ensure_ascii=False)
+    # B3 (cycle-07 adversarial review): the expansion prompt for the LAST
+    # ACT-body section must restate the orphan-gate requirement, otherwise an
+    # expansion round carries no reminder that this section owes extra gates
+    # for record-without-ACT burdens and the producer can drop them.
+    orphan_law = orphan_gate_law_text(orphan_gate_burdens or [])
     role_notes = {
         "layer_b_act": (
             "Use only the assigned ACT body_refs. Do not add ACT rows for unassigned body_refs. "
@@ -7840,7 +8112,9 @@ def release_section_expansion_prompt(
             "line-start `Land(ⁿB):` gate after expansion, payload carrying the honest status (landed / "
             "carried-PARTIAL — reason / HOLD — reason); never a `HOLD(ⁿB):`-headed line as the gate "
             "('per_burden_reread record(s) have no visible "
-            "Land(nB): landing gate'). This expansion call is answering a real byte-floor shortfall in "
+            "Land(nB): landing gate')."
+            + orphan_law
+            + " This expansion call is answering a real byte-floor shortfall in "
             "already-committed governed content, not a new or ambiguous request: return more genuine ACT/"
             "submove prose for the existing assigned body_refs, not a refusal, clarifying question, or "
             "meta-commentary about the harness -- those would leave the section under budget and would not "
@@ -9291,6 +9565,47 @@ def write_hash_record(
 def run_self_test(root: Path) -> int:
     global invoke_codex
     files = validate_required_files(root)
+    # J1 registry-contradiction canary (RC-matrix cycle-08): a family whose
+    # PASSABLE delta_result set is empty is a hard registry contradiction --
+    # every registered token in that family's Stage 04 vocabulary would be
+    # rejected by check_mrp_generated_burden.delta_result_has_concrete_state_change
+    # no matter what body content backs it, so no ACT record routed to that
+    # family could ever Land. Fail the self-test loudly rather than silently
+    # shipping an unusable family; this needs an owner decision (align the
+    # registry, not the checker -- see cycle-07 report's parked owner item).
+    _empty_passable_families = [
+        family for family in sorted(DELTA_RESULT_VOCABULARY) if not delta_result_passability(family)[0]
+    ]
+    if _empty_passable_families:
+        raise HarnessError(
+            "Self-test: delta_result registry contradiction -- family(ies) with ZERO passable "
+            f"delta_result tokens (every registered token fails delta_result_has_concrete_state_change "
+            f"regardless of body content): {_empty_passable_families}. This is a registry "
+            "contradiction requiring an owner decision, not a harness/prompt fix."
+        )
+    # B1 round-trip canary (cycle-07 adversarial review): the work-test note's
+    # static-message families quote owner_specific_failure_message(<token>);
+    # the checker's owner_family() only recognizes hyphenated forms, and the
+    # underscore constant "DO_ATTRIBUTE" silently resolved to V8 and quoted the
+    # WRONG family's failure string. Assert the hyphenated token round-trips to
+    # the intended family so any future owner_family() drift fails loudly.
+    from check_manual_smoke_render_contract import owner_family as _cmsrc_owner_family
+
+    for _wt_family in ("DO_CHRISTIAN", "DO_ATTRIBUTE", "PROOF_METHOD", "SOURCE", "DO_SECOND_LOOP"):
+        _resolved = _cmsrc_owner_family(_wt_family.replace("_", "-"))
+        if _resolved != _wt_family:
+            raise HarnessError(
+                f"Self-test: work-test note family round-trip drifted -- owner_family("
+                f"{_wt_family.replace('_', '-')!r}) resolved to {_resolved!r}, expected {_wt_family!r}; "
+                "function_based_owner_work_test_note would quote the wrong family's failure string"
+            )
+        _note = function_based_owner_work_test_note(_wt_family)
+        _expected_message = owner_specific_failure_message(_wt_family.replace("_", "-"))
+        if _expected_message and _expected_message not in _note:
+            raise HarnessError(
+                f"Self-test: work-test note for {_wt_family} does not quote its own family failure "
+                f"string {_expected_message!r}"
+            )
     replay_record = DEFAULT_REPLAY_RECORD
     raw_input = DEFAULT_INPUT
     validate_replay_record(root, replay_record)
@@ -9491,6 +9806,22 @@ def run_self_test(root: Path) -> int:
         if _mass_law not in _stage04_instructions:
             raise HarnessError(
                 f"Self-test: Stage 04 ACT guidance lost the owner-execution mass law: {_mass_law!r}"
+            )
+    # J5 canary (RC-matrix cycle-08): the Stage 03 instructions must state the
+    # exact-equality law between route_targets and stage-02 burden_floor, quote
+    # the checker message verbatim, and give the drop/add anti-example.
+    _stage03_instructions = STAGE_SPECS["stage-03-routing-owner-gate"]["instructions"]
+    for _floor_law in (
+        "J5 route_targets/burden_floor equality law",
+        "must be EXACTLY the Stage 02 `burden_floor` ids",
+        "set equality, not list-order equality",
+        "'stage-03 route_targets must match stage-02 burden_floor'",
+        "dropping a floor burden",
+        "adding a non-floor id",
+    ):
+        if _floor_law not in _stage03_instructions:
+            raise HarnessError(
+                f"Self-test: Stage 03 routing guidance lost the route_targets/burden_floor equality law: {_floor_law!r}"
             )
     replay = load_json(replay_record)
     named_scope = model_scope("self-test-a9-science-source", replay_record, stop_after_stage=None)
@@ -12245,6 +12576,27 @@ def run_self_test(root: Path) -> int:
         raise HarnessError("Self-test Stage 04 guidance laundered an M9 delta/result label into operation space")
     if "SOURCE operations: authority-order-repair, sort, source-order, source-order-repair, status" in selected_model_delta_guidance:
         raise HarnessError("Self-test Stage 04 guidance exposed SOURCE status as a callable operation")
+    # J1 canary (RC-matrix cycle-08): P5's registered `article-strengthening-sequenced`
+    # token is the exact cycle-07 registry contradiction -- it must be surfaced
+    # as REJECTED, and P5's only passable token (`examined-conviction-stabilized`)
+    # must be surfaced as PASSABLE, live from the guidance text.
+    p5_delta_guidance = stage04_delta_vocabulary_guidance(
+        [
+            {
+                "id": "stage-03-routing-owner-gate",
+                "owner_routes": [{"burden_id": "B1", "owner_id": "P5-already-believing"}],
+            }
+        ]
+    )
+    for required in (
+        "P5 PASSABLE delta_result tokens",
+        "delta_result_has_concrete_state_change",
+        "'Delta result must name a concrete burden-local state change'",
+        "examined-conviction-stabilized",
+        "P5 registered but rejected by the concreteness gate (delta_result_has_concrete_state_change) -- do not use: article-strengthening-sequenced.",
+    ):
+        if required not in p5_delta_guidance:
+            raise HarnessError(f"Self-test Stage 04 P5 delta passability guidance omitted {required!r}")
     pattern_loaded_label_n_axis_row = (
         "⟦ACT ¹B₁[pattern-profiling.loaded-label-carrier-audit] :: "
         "π=identity-label-and-claim-boundary :: body_ref=¹B₁ :: "
@@ -14571,6 +14923,12 @@ def run_self_test(root: Path) -> int:
         "Never emit a bare `HOLD(¹B):`-headed line as the gate",
         "I3b landing-gate license (canonical form): emit exactly ONE line-start `Land(Bn): <status>` line",
         "I5 registry-depth law (owner REGISTRY, not just operation-body mass)",
+        "J3 four-field submove completeness law (check_mrp_generated_burden.complete_owner_submove_blocks)",
+        "\\bTarget\\s*:",
+        "\\bOperation\\s*:",
+        "\\bResult(?:/state-change)?\\s*:",
+        "\\bContribution-to-Land(?:\\([^)]*\\))?\\s*:",
+        "Witness mirror reminder (I4, restated because the J3 cascade above surfaces as these same messages)",
         "route/context umbrella labels, case-library labels, noetic-frame labels, and code lookups are not load-bearing ACT owners",
         "The `TTP Operation Body:` must visibly perform target -> operation -> result -> contribution",
         "Operation-token discipline: keep the registered callable operation token from the copied ACT row and skeleton.",
@@ -14594,6 +14952,127 @@ def run_self_test(root: Path) -> int:
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
+    # J4 canary (RC-matrix cycle-08): a burden with a Stage 05 per_burden_reread
+    # record but NO Stage 04 ACT body_ref (B2 here, alongside ACT-covered B1)
+    # must be homed to the LAST act-body section's required landing gates,
+    # never invented as an ACT row.
+    orphan_gate_stage05 = normalized_stage(
+        "stage-05-mrp-reread-terminal-state",
+        {
+            "id": "stage-05-mrp-reread-terminal-state",
+            "status": "pass",
+            "terminal_states": {"B1": "landed", "B2": "held-with-reason"},
+            "dependency_graph_edges": [],
+            "no_new_resultant_proof": {
+                "proved": False,
+                "basis": "B2 holds with no Stage 04 ACT rows; reread produced no generated burden.",
+                "unresolved_burdens": ["B2"],
+            },
+            "per_burden_reread": [self_test_reread_entry("B1"), self_test_reread_hold_entry("B2")],
+        },
+    )
+    if record_without_act_burdens([normalized_stage04, orphan_gate_stage05]) != ["B2"]:
+        raise HarnessError("Self-test record_without_act_burdens failed to isolate the ACTless per_burden_reread burden")
+    orphan_gate_previous_stages = [normalized_stage02, normalized_stage04, orphan_gate_stage05, normalized_stage06]
+    orphan_gate_last_section_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=orphan_gate_previous_stages,
+        section_id="act-body-1",
+        section_role="layer_b_act",
+        section_number=3,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=["¹B₁"],
+        is_last_act_body_section=True,
+    )
+    for required in (
+        "Required landing gate(s) for this section: `Land(¹B):`, `Land(²B):`.",
+        "J4 record-without-ACT gate law",
+        "²B carr(y/ies) a Stage 05 per_burden_reread record but produced NO Stage 04 ACT body_ref",
+        "Do NOT invent a Stage 04 ACT row",
+    ):
+        if required not in orphan_gate_last_section_prompt:
+            raise HarnessError(f"Self-test Stage 07 ACT prompt (last act-body section) omitted J4 gate-home law: {required!r}")
+    orphan_gate_non_last_section_prompt = release_section_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_text=raw_input.read_text(encoding="utf-8", errors="replace"),
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        previous_stages=orphan_gate_previous_stages,
+        section_id="act-body-1",
+        section_role="layer_b_act",
+        section_number=3,
+        section_count=9,
+        target_output_kb=70,
+        section_min_bytes=1024,
+        assigned_body_refs=["¹B₁"],
+        is_last_act_body_section=False,
+    )
+    if "J4 record-without-ACT gate law" in orphan_gate_non_last_section_prompt:
+        raise HarnessError("Self-test homed the record-without-ACT burden gate outside the last act-body section")
+    if "Required landing gate(s) for this section: `Land(¹B):`." not in orphan_gate_non_last_section_prompt:
+        raise HarnessError("Self-test non-last act-body section required-gate list unexpectedly changed")
+    # B4 canary (cycle-07 adversarial review): MULTI-orphan case -- the law must
+    # enumerate each burden's REAL gate token (one gate per burden) and must
+    # never fall back to the literal placeholder `Land(nB):`, which cannot
+    # match the assembler's LAND_GATE_LINE_RE and would reproduce the exact
+    # missing-gate failure this law exists to prevent.
+    _multi_orphan_law = orphan_gate_law_text(["B3", "B7"])
+    for _required in ("`Land(³B): HOLD — <reason>`", "`Land(⁷B): HOLD — <reason>`", "EXACTLY ONE line-start gate PER burden"):
+        if _required not in _multi_orphan_law:
+            raise HarnessError(f"Self-test multi-orphan gate law omitted {_required!r}")
+    if "`Land(nB):`" in _multi_orphan_law:
+        raise HarnessError(
+            "Self-test multi-orphan gate law regressed to the literal `Land(nB):` placeholder "
+            "(invisible to LAND_GATE_LINE_RE)"
+        )
+    # B3 canary (cycle-07 adversarial review): the EXPANSION prompt for the last
+    # act-body section must restate the orphan-gate law; a non-last/orphanless
+    # expansion must not carry it.
+    _orphan_expansion_prompt = release_section_expansion_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        section_id="act-body-1",
+        section_role="layer_b_act",
+        section_min_bytes=4096,
+        current_bytes=1024,
+        expansion_round=1,
+        max_rounds=2,
+        assigned_body_refs=["¹B₁"],
+        existing_text="existing section text",
+        orphan_gate_burdens=record_without_act_burdens(orphan_gate_previous_stages),
+    )
+    for _required in ("J4 record-without-ACT gate law", "`Land(²B): HOLD — <reason>`"):
+        if _required not in _orphan_expansion_prompt:
+            raise HarnessError(f"Self-test expansion prompt (last act-body section) omitted orphan gate law: {_required!r}")
+    _plain_expansion_prompt = release_section_expansion_prompt(
+        root=root,
+        case_name="self-test-a9-science-source",
+        raw_input_path=raw_input,
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        section_id="act-body-1",
+        section_role="layer_b_act",
+        section_min_bytes=4096,
+        current_bytes=1024,
+        expansion_round=1,
+        max_rounds=2,
+        assigned_body_refs=["¹B₁"],
+        existing_text="existing section text",
+    )
+    if "J4 record-without-ACT gate law" in _plain_expansion_prompt:
+        raise HarnessError("Self-test expansion prompt carried the orphan gate law without orphan burdens")
     drifted_visible_act = canonical_act_row.replace("Land(¹B)+", "Land(additional burden 1)+")
     canonical_act_text, canonical_act_event = canonical_compiled_structural_section(
         "layer_b_act",
@@ -18515,6 +18994,11 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 for item in act_partition["assignments"]
                 if isinstance(item, dict)
             }
+            # J4 (RC-matrix cycle-08): the last act-body section is the gate
+            # home for any per_burden_reread burden with no Stage 04 ACT
+            # body_ref (see record_without_act_burdens / release_section_prompt).
+            act_body_section_ids = [sid for sid, role in section_plan if role == "layer_b_act"]
+            last_act_body_section_id = act_body_section_ids[-1] if act_body_section_ids else None
             sections_dir = run_dir / "release-sections"
             sections_dir.mkdir(parents=True, exist_ok=True)
             expansions_dir = run_dir / "release-section-expansions"
@@ -18557,6 +19041,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                     target_output_kb=args.target_output_kb,
                     section_min_bytes=section_min_bytes,
                     assigned_body_refs=assigned_refs,
+                    is_last_act_body_section=(section_id == last_act_body_section_id),
                 )
                 prompt_pack_call_index += 1
                 emit_prompt_pack_manifest(
@@ -18631,6 +19116,11 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                         max_rounds=args.section_expansion_rounds,
                         assigned_body_refs=assigned_refs,
                         existing_text=current_text,
+                        orphan_gate_burdens=(
+                            record_without_act_burdens(stages)
+                            if section_id == last_act_body_section_id
+                            else []
+                        ),
                     )
                     expansion_prompt_path = (
                         prompts_dir
