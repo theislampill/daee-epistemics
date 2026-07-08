@@ -51,6 +51,12 @@ from register_axis_contract import (
     register_axis_floor,
 )
 from stage05_basis_contract import normalize_terminal_detail_basis
+from check_mrp_generated_burden import (
+    FORMAL_OWNER_CONTRACT_OPERATIONS,
+    SOURCE_OWNED_ACT_OPERATIONS,
+    owner_alias_key as mrp_owner_alias_key,
+)
+from check_manual_smoke_render_contract import OWNER_OPERATION_PATTERNS
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -4572,8 +4578,12 @@ def stage07_mrp_reread_contract_guidance(previous_stages: list[dict[str, Any]]) 
                 lines.append(
                     f"- state=landed ({public_burden}): generated MRP burden has visible Stage 04 ACT execution; "
                     "its landed/terminal status must match owner activations, MRP, and field_witness "
-                    f"(the burden's one line-start `Land({public_burden}):` landing gate lives in its Layer B / ACT "
-                    "section; do not restate it here)."
+                    f"(the burden's one line-start `Land({public_burden}):` landing gate AND its one "
+                    f"dereferenceable `{public_burden}₁[owner] - ...` submove body heading both live in its "
+                    "Layer B / ACT section; this ledger line does not satisfy either requirement -- do not "
+                    "restate the gate or invent a submove body here; "
+                    "check_nla_decode_semantic_faithfulness.py fails 'body_ref must dereference to exactly "
+                    "one Layer B submove body' if the ACT section's submove heading is missing)."
                 )
             else:
                 lines.append(
@@ -4687,9 +4697,11 @@ def stage07_act_contract_guidance(
     if not assigned_body_refs:
         return ""
     stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    stage05 = stage_by_id(previous_stages, "stage-05-mrp-reread-terminal-state")
     stage06 = stage_by_id(previous_stages, "stage-06-field-witness-nar")
     act_details = stage04_act_details_by_ref(stage04)
     owner_details = stage06_owner_activation_details_by_ref(stage06)
+    generated_burden_ids = set(stage05_generated_burdens(stage05))
     all_body_refs = list_field(stage04, "act_body_refs")
     completion_flags = body_ref_completion_flags(all_body_refs, assigned_body_refs)
     missing = [ref for ref in assigned_body_refs if ref not in act_details]
@@ -4702,6 +4714,28 @@ def stage07_act_contract_guidance(
         "- Copy these canonical Stage 04 ACT rows exactly; do not rewrite their owner, operation, pressure, delta, body_ref, or Land slots:",
     ]
     lines.extend(f"  {act_details[ref]['row']}" for ref in assigned_body_refs)
+    unique_owners = ordered_unique(
+        [act_details[ref]["owner"] for ref in assigned_body_refs if act_details[ref].get("owner")]
+    )
+    contract_card_lines: list[str] = []
+    for owner_token in unique_owners:
+        family = canonical_delta_owner(owner_token) or str(owner_token).strip().upper()
+        card_line = stage_owner_contract_card_line(owner_token, family)
+        if card_line:
+            contract_card_lines.append(card_line)
+    if contract_card_lines:
+        lines.append(
+            "- I5 registry-depth law (owner REGISTRY, not just operation-body mass): the ACT "
+            "operation token must be one of the routed owner's REGISTERED operations, and the "
+            "dereferenced body must exercise the owner's registered mechanism vocabulary -- "
+            "quoting the checkers: check_mrp_generated_burden.py 'ACT ... operation ... is not "
+            "declared by formal owner contract for ...; expected one of: ...', "
+            "delta_result_vocabulary.py 'operation token ... is outside controlled operation "
+            "vocabulary for ...', and check_manual_smoke_render_contract.py '<owner> submove did "
+            "not handle <register>'. Per-owner contract card(s) for this ACT slice, read live "
+            "from those same registries (never invent a token or register outside these):"
+        )
+        lines.extend(contract_card_lines)
     lines.extend(
         [
             "- Do not write malformed rows such as `⟦ACT [owner.operation] ...⟧`; the body_ref must appear immediately after `ACT`.",
@@ -4736,7 +4770,7 @@ def stage07_act_contract_guidance(
             "- For `pattern-profiling.loaded-label-carrier-audit`, the `Result/state-change:` facet must say the loaded label carrier function is exposed or classified; do not rely on `carrier-function-typed` by itself.",
             "- For `pattern-profiling.proof-packet-reconstruction`, the dereferenced body must reconstruct the proof packet, expose hidden source moves, predicate transfers, conclusion jumps, or forum switches, and show `proof-packet-reconstructed` as a burden-local state transition. Owner and delta labels alone do not Land.",
             "- For `FPD.foreign-premise-detection`, the dereferenced body must expose the foreign/imported premise, imported criterion, hidden criterion, or imported tribunal that was functioning as proof. Owner labels or generic criterion language do not Land.",
-            "- Emit standalone public landing lines such as `Land(Bn): ...` or `HOLD(Bn): ...` only after the final Stage 04 body_ref for that burden; `Contribution-to-Land(Bn):` alone is not a landing line.",
+            "- I3b landing-gate license (canonical form): emit exactly ONE line-start `Land(Bn): <status>` line only after the final Stage 04 body_ref for that burden, whose PAYLOAD carries the honest terminal status (`landed. ...` / `carried-PARTIAL — ...` / `HOLD — ...`); never a bare `HOLD(Bn):`-headed line as the gate -- the assembler counts ONLY line-start `Land(Bn):` gates, so a `HOLD(Bn):`-headed line is invisible to it and fails 'per_burden_reread record(s) have no visible Land(nB): landing gate'. `Contribution-to-Land(Bn):` alone is not a landing line.",
             "- Never print `Land(Bn):` for a burden while another assigned or later Stage 04 body_ref for the same burden remains unrendered.",
             "Required submove block skeletons:",
         ]
@@ -4759,8 +4793,14 @@ def stage07_act_contract_guidance(
         if burden_id and flags.get("last_for_burden") and burden_id not in seen_landing_targets:
             seen_landing_targets.add(burden_id)
             landing_lines.append(
-                f"  Land({public_burden}): summarize the cumulative state delta from the visible submove block(s); "
-                f"use `HOLD({public_burden}):` instead if the burden is not landed."
+                f"  Land({public_burden}): PAYLOAD carries the honest terminal status. Landed: "
+                f"`Land({public_burden}): landed. <summarize the cumulative state delta from the visible "
+                f"submove block(s)>`. Honestly not landed: `Land({public_burden}): carried-PARTIAL — "
+                f"<reason + reopen condition>` or `Land({public_burden}): HOLD — <reason>`. Never emit a "
+                f"bare `HOLD({public_burden}):`-headed line as the gate -- the assembler counts ONLY "
+                f"line-start `Land({public_burden}):` gates, so a `HOLD({public_burden}):`-headed line is "
+                f"invisible to it and fails 'per_burden_reread record(s) have no visible Land(nB): "
+                f"landing gate'."
             )
         lines.extend(
             [
@@ -4773,6 +4813,18 @@ def stage07_act_contract_guidance(
                 "  TTP Operation Body: expand the local governed operation in ordinary public prose.",
             ]
         )
+        if burden_id in generated_burden_ids:
+            lines.append(
+                f"  I4 generated-burden dereference law (check_nla_decode_semantic_faithfulness.py "
+                f"'body_ref must dereference to exactly one Layer B submove body'): {public_burden} is a "
+                f"Stage 05 GENERATED (`B_MRP`) burden. The `## Burden {burden_id[1:]} / {public_burden} "
+                f"[generated-by: MRP(...)]` / `### Layer A — Generated Burden Accounting` ledger heading "
+                f"printed in the MRP/reread/terminal section is a SEPARATE ledger-only accounting and does "
+                f"NOT satisfy this requirement -- this ACT slice must still emit exactly ONE dereferenceable "
+                f"`{public_ref}[{detail['owner']}] - ...` submove body heading for {ref}, the same grammar "
+                f"as any baseline burden, or the checker fails with 'body_ref must dereference to exactly "
+                f"one Layer B submove body'."
+            )
         family = canonical_delta_owner(detail["owner"]) or str(detail["owner"]).strip().upper()
         if family == "P7":
             lines.append(
@@ -5265,6 +5317,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- Do not synthesize a generated-burden `MRP(Bn)` row with `graph=none`; visible generated/held MRP resultants must expose the concrete Stage 05 graph edge such as `⁴B → ⁵B`, while JSON mirrors keep ASCII machine IDs.",
         "- Each `nodes[]` burden payload must include `register_types` copied from Stage 02 `burden_floor_details` when live registers are present.",
         "- Every `owner_activations[]` object must include both `target` and `land_target`; the checker reads `target` for terminal-state evidence.",
+        "- I2 owner_activations completeness law (check_field_witness_convergence.py): `field_witness.owner_activations` must contain one entry (with a valid `target`) for EVERY terminal burden whose state is `landed`, not only held/MRP-activated burdens -- the checker fires 'landed terminal states require field_witness.owner_activations target evidence' whenever any landed burden lacks a target, and 'terminal landed burden {burden} lacks owner activation target evidence' per missing landed burden. The held/generated-burden emphasis elsewhere in this contract does NOT narrow this enumeration: every burden in this section's `terminal_states` marked `landed` needs its own `owner_activations[]` target, in addition to any held/generated coverage.",
         "- `field_witness.owner_activation_ordering` must be an object with `policy_id=\"diagnostic-ir-pressure-owner-floor-v1\"`; an `owner_activations[]` list or prose ordering explanation is not a deterministic ordering plan.",
         "- If multiple load-bearing `owner_activations[]` rows land the same target, set each row's `ordering_role` and add `owner_activation_ordering.required_before[]` edges that mirror Stage 04 / visible ACT order. If the same owner lands multiple operations on the same target, every required-before edge for that pair must include `before_operation`, `after_operation`, `before_body_ref`, and `after_body_ref`; owner-only self-edges do not prove operation order, and repeated same-owner-operation rows need body_ref endpoints. For genuinely parallel owner work, set every involved row to `ordering_role=\"parallel\"`, give them a stable `ordering_group`, and mirror that group in `owner_activation_ordering.parallel_groups[]`; same-owner parallel operations must be listed in `parallel_groups[].members[]` with `owner` and `operation`.",
         "- Emit one `normalized_activation_record.per_burden[]` row per `owner_activations[]` mirror, plus one MRP-owned row for each generated `B_MRP` burden that has no Stage 04 ACT rows; do not collapse these into one summary row per burden.",
@@ -5278,6 +5331,7 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- The line `field_witness` is only a marker. It must be followed by a parseable JSON object containing the checker-owned witness, including `normalized_activation_record`; YAML, prose, or a heading-only witness is invalid.",
         "- `body_ref` remains the bare join key copied from ACT. Public submove headings, owner labels, operations, register axes, deltas, and graph proof text must not be encoded into `body_ref`.",
         "- `land` and `land_target` are witness mirrors of visible `Land(Bn)` clauses; every owner activation must copy the same target burden rather than summarizing closure in prose.",
+        "- I4 land-notation parity law (check_nla_decode_semantic_faithfulness.py), load-bearing for generated (`B_MRP`) burdens above all: `land` and `land_target` must mirror the ACT row's `Land(...)` token VERBATIM -- copy the exact characters (same notation, superscript `Land(⁵B)` or ASCII `Land(B5)`, whichever the ACT row actually used), never retype or renotate it. A mismatch fails 'field_witness land does not target Land({target})' and 'field_witness target {mirror_target} disagrees with ACT Land({target})'.",
         "- For every `owner_activations[]` mirror, `owner` must contain only the ACT owner token or owner family, not `owner.operation`.",
         "- Put the operation in the separate `operation` field, and keep `owner_id` aligned with the owner token.",
         "- Do not set `owner` to `owner.operation`; for example use `\"owner\": \"FPD\"` and `\"operation\": \"foreign-premise-detection\"`.",
@@ -6806,6 +6860,133 @@ def stage04_register_axis_guidance(stage03: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+OWNER_OPERATION_PATTERN_BY_FAMILY: dict[str, re.Pattern[str]] = dict(OWNER_OPERATION_PATTERNS)
+
+
+def _split_top_level_regex_alternation(raw: str) -> list[str]:
+    """Split a regex alternation string on `|` at paren-depth 0 only, so a
+    nested group such as `reason is (?:not|more than)` stays one alternative
+    instead of fragmenting mid-phrase."""
+    parts: list[str] = []
+    depth = 0
+    current: list[str] = []
+    index = 0
+    while index < len(raw):
+        char = raw[index]
+        if char == "\\" and index + 1 < len(raw):
+            current.append(char)
+            current.append(raw[index + 1])
+            index += 2
+            continue
+        if char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+        elif char == "|" and depth == 0:
+            parts.append("".join(current))
+            current = []
+            index += 1
+            continue
+        current.append(char)
+        index += 1
+    if current:
+        parts.append("".join(current))
+    return parts
+
+
+def owner_operation_pattern_terms(pattern: re.Pattern[str]) -> list[str]:
+    """Best-effort plain-language keyword list for one check_manual_smoke_render_contract.py
+    OWNER_OPERATION_PATTERNS entry, parsed live from the pattern's own alternation
+    text (never a hardcoded copy) so the hint always tracks whatever the checker
+    currently recognizes."""
+    raw = pattern.pattern.replace("(?i)", "").strip()
+    raw = re.sub(r"^\\b\(\?:", "", raw)
+    raw = re.sub(r"\)\\b$", "", raw)
+    terms: list[str] = []
+    for term in _split_top_level_regex_alternation(raw):
+        term = re.sub(r"\[- \]", "-", term)
+        term = term.replace("(?:", "").replace(")", "")
+        term = term.replace("|", "/")
+        term = re.sub(r"\\w\+", "...", term)
+        term = term.replace("\\", "")
+        # N2 (cycle-06 adversarial review): a trailing optional-char quantifier
+        # on a word reads fine without it ("entails?" -> "entails"); any term
+        # still carrying regex syntax after that is skipped rather than shown
+        # as a garbage "keyword" -- each family has several clean alternatives,
+        # and a misleading hint is worse than a shorter list.
+        term = re.sub(r"(?<=\w)\?", "", term)
+        term = term.strip()
+        if term and not re.search(r"[?*+\[\]{}^$.]", term):
+            terms.append(term)
+    return terms
+
+
+def owner_registered_operation_tokens(owner_token: str, family: str) -> tuple[list[str], bool]:
+    """Registered ACT operation token(s) for one owner, read live from the SAME
+    registries the checkers enforce -- never a hardcoded copy. THREE registries
+    apply conjunctively (cycle-06 adversarial-review finding N1: quoting only
+    the first two re-licensed 'reason-role-repair' for V2, the exact token the
+    checker had just rejected):
+    - check_mrp_generated_burden.FORMAL_OWNER_CONTRACT_OPERATIONS
+      ('operation ... is not declared by formal owner contract for ...;
+      expected one of: ...'), keyed by owner id or family alias, when present
+      -- the module-specific contract, wins over the broad vocabulary.
+    - delta_result_vocabulary.OWNER_OPERATION_VOCABULARY[family]
+      ('operation token ... is outside controlled operation vocabulary for ...')
+      otherwise.
+    - check_mrp_generated_burden.SOURCE_OWNED_ACT_OPERATIONS[family]
+      ('operation ... is not a registered source-owned operation for ...;
+      expected one of: ...') -- an INDEPENDENT gate: when the family is in this
+      map, only its operation keys pass, so the card list is intersected with
+      them (and falls back to exactly them if the intersection is empty --
+      the source-owned gate is the one that fires).
+    Returns (tokens, narrowed)."""
+    formal = (
+        FORMAL_OWNER_CONTRACT_OPERATIONS.get(mrp_owner_alias_key(owner_token))
+        or FORMAL_OWNER_CONTRACT_OPERATIONS.get(mrp_owner_alias_key(family))
+    )
+    if formal:
+        tokens, narrowed = sorted(formal), True
+    else:
+        tokens, narrowed = sorted(OWNER_OPERATION_VOCABULARY.get(family) or []), False
+    source_owned = SOURCE_OWNED_ACT_OPERATIONS.get(family)
+    if source_owned:
+        intersected = [token for token in tokens if token.lower() in source_owned]
+        tokens = intersected if intersected else sorted(source_owned)
+        narrowed = True
+    return tokens, narrowed
+
+
+def stage_owner_contract_card_line(owner_token: str, family: str) -> str:
+    """One compact per-owner CONTRACT CARD line combining the registered ACT
+    operation token(s) and the mechanism vocabulary the checker recognizes in
+    the dereferenced operation body, both drawn live from the checker's own
+    registries/data (never a hardcoded copy of either list) -- single source
+    of truth so this card cannot drift from what the checkers actually read."""
+    tokens, narrowed = owner_registered_operation_tokens(owner_token, family)
+    pieces: list[str] = []
+    if tokens:
+        narrow_note = " (narrowed by this owner's formal owner contract)" if narrowed else ""
+        pieces.append(f"registered ACT operation token(s){narrow_note}: {', '.join(tokens)}")
+    pattern = OWNER_OPERATION_PATTERN_BY_FAMILY.get(family)
+    if pattern is not None:
+        terms = owner_operation_pattern_terms(pattern)
+        if terms:
+            pieces.append("mechanism vocabulary the checker recognizes in the dereferenced body: " + ", ".join(terms))
+    if not pieces:
+        # N3 (cycle-06 adversarial review): an owner with no entry in any
+        # checker registry gets an HONEST cardless line instead of silent
+        # omission -- otherwise the registered-operations law above reads as
+        # unconditionally applicable while giving this owner no token list.
+        return (
+            f"  Owner {owner_token} [{family or 'unmapped'}] contract card -- no registered "
+            "operation tokens or mechanism vocabulary found in the checker registries for this "
+            "owner; use exactly the operation routed for it at Stage 03/04 and show its mechanism "
+            "acting on the burden content with a concrete state delta."
+        )
+    return f"  Owner {owner_token} [{family}] contract card -- " + "; ".join(pieces) + "."
+
+
 def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> str:
     stage03 = stage_by_id(previous_stages, "stage-03-routing-owner-gate")
     if not isinstance(stage03, dict):
@@ -6833,6 +7014,14 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
             if family and family in DELTA_RESULT_VOCABULARY
         ]
     )
+    family_to_owner_tokens: dict[str, list[str]] = {}
+    for owner in route_tokens:
+        family = canonical_delta_owner(owner)
+        if not family or family not in DELTA_RESULT_VOCABULARY:
+            continue
+        bucket = family_to_owner_tokens.setdefault(family, [])
+        if owner not in bucket:
+            bucket.append(owner)
     unmapped = ordered_unique(
         [
             owner
@@ -6876,6 +7065,21 @@ def stage04_delta_vocabulary_guidance(previous_stages: list[dict[str, Any]]) -> 
             lines.append(f"- {family} operations: {', '.join(sorted(operations))}")
         tokens = ", ".join(sorted(DELTA_RESULT_VOCABULARY[family]))
         lines.append(f"- {family}: {tokens}")
+        # I5 registry-depth countermeasure: only add the per-owner contract card
+        # here when it carries information the two lines above do not already
+        # state -- a formal owner contract narrower than the family-wide
+        # operations list, or the mechanism-vocabulary register the Stage 07
+        # dereferenced-body checker later looks for. This is a pointer to the
+        # same card (single source of truth) injected per-owner into the
+        # Stage 07 ACT-body section prompt in stage07_act_contract_guidance.
+        for owner_token in family_to_owner_tokens.get(family, [family]):
+            _, narrowed_by_formal = owner_registered_operation_tokens(owner_token, family)
+            pattern_terms = owner_operation_pattern_terms(OWNER_OPERATION_PATTERN_BY_FAMILY[family]) if family in OWNER_OPERATION_PATTERN_BY_FAMILY else []
+            if not narrowed_by_formal and not pattern_terms:
+                continue
+            card_line = stage_owner_contract_card_line(owner_token, family)
+            if card_line:
+                lines.append(card_line)
         if family == "SOURCE":
             lines.append(
                 "- SOURCE is a delta/register vocabulary family, not an executable ACT "
@@ -7046,6 +7250,12 @@ def release_prompt(
     previous_stages: list[dict[str, Any]],
 ) -> str:
     previous = json.dumps(compact_state(previous_stages), ensure_ascii=False, indent=2)
+    stage04_for_prompt = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    all_act_body_refs = list_field(stage04_for_prompt, "act_body_refs")
+    resolvable_act_body_refs = [
+        ref for ref in all_act_body_refs if ref in stage04_act_details_by_ref(stage04_for_prompt)
+    ]
+    act_contract = stage07_act_contract_guidance(previous_stages, resolvable_act_body_refs)
     field_witness_contract = stage07_field_witness_contract_guidance(previous_stages)
     mrp_surface_contract = stage07_single_output_mrp_surface_contract(previous_stages)
     return f"""Runtime SHA256: {skill_hash}
@@ -7060,6 +7270,16 @@ Public interface boundary:
 - Preserve `/daee-epistemics` governed output shape.
 - Preserve the visible opening noetic-field read/header.
 - Do not expose raw dev harness internals as a new public mode.
+- Line-start token grammar law (generalized): every checker-anchored line-start
+  token -- `Land(ⁿB):` landing gates, the `## Layer A Compact DSL / Diagnostic
+  IR` heading, `R(H,Δ):` reread lines, the `field_witness` heading, and
+  `## Burden N / ...` headings -- MUST be plain text at the very start of its
+  line, NEVER wrapped in emphasis (`**...**`, `_..._`), block-quote (`> `), or
+  list markers (`- `, `* `); the checkers anchor these with line-start regexes
+  that do not tolerate a leading `**`, `_`, `>`, `-`, or `*`, so a wrapped
+  token is INVISIBLE to the checker, not merely reformatted. Wrong:
+  `**Layer A / Diagnostic IR**`, `**Land(⁴B):**`. Right:
+  `## Layer A Compact DSL / Diagnostic IR`, `Land(⁴B): landed. ...`.
 
 Run metadata: redacted from model-facing route surface; case IDs and paths are
 custody fields only and must not determine routing, owner selection, proof
@@ -7081,9 +7301,11 @@ Produce the final governed `output.md` only.
 Required public output surface:
 - Preserve the normal visible noetic-field opening/header.
 - Include the compact Layer A / Diagnostic IR opening header.
-- Include Layer B / ACT rows consistent with the validated Stage 04 state.
+- Include Layer B / ACT rows consistent with the validated Stage 04 state, per the ACT contract below.
 - Include MRP/reread/terminal-state surface consistent with Stage 05: one line-start
-  superscript `Land(ⁿB):` landing gate per terminal burden, each followed by its
+  superscript `Land(ⁿB):` landing gate per terminal burden, whose PAYLOAD carries the
+  honest terminal status (`landed. ...` / `carried-PARTIAL — ...` / `HOLD — ...`; never
+  a bare `HOLD(ⁿB):`-headed line as the gate), each followed by its
   record-rendered `[Mid-Reread Pressure]` block per the contract below.
 - Include parser-stable field_witness/NAR evidence consistent with Stage 06.
 - Include visible Closure/Reconstruction Witness diagnostics for `∇·B` and
@@ -7097,6 +7319,9 @@ Required public output surface:
 - Include Restorative Response.
 - Include Closing Formulation.
 
+Stage07 ACT contract (NLA semantic-faithfulness, owner registry contract cards, landing-gate license):
+{act_contract}
+
 {mrp_surface_contract}
 
 Stage07 checker-owned field_witness/NAR clone-state contract:
@@ -7108,6 +7333,14 @@ Do not build or claim verifier sidecars, collapse certificates, Grapher output,
 B.5 projection sidecars, retained promotion, package operations or provenance
 claims, guaranteed uptake, broad model behavior, broad A/B/C/D closure,
 Graphify proof, or ActiveGraph proof.
+I1 sidecar-claim boundary-phrasing law: when disclaiming verification status,
+never place `sidecar`/`Stage 8`/`Grapher`/`collapse certificate` in the same
+sentence as a `proof`/`proves`/`passed`/`built` shape, even negated (a
+hyphenated form such as `sidecar-verified proof` still trips the checker's
+forbidden pattern). Wrong: "does not assert package operations, provenance
+chains, or sidecar-verified proof." Right: "Verification status: Stage-8
+verifier sidecars have not yet run; this output makes no verification-status
+claims."
 """
 
 
@@ -7391,6 +7624,17 @@ def release_section_prompt(
             "Do not include Closing Formulation here. "
             "Do not claim guaranteed uptake, package operations or provenance claims, sidecar proof, retained promotion, "
             "broad model behavior, or broad A/B/C/D closure. "
+            "I1 sidecar-claim boundary-phrasing law (build_staged_governed_output.py forbidden pattern 'sidecar proof "
+            "claim before Stage 8'): when disclaiming verification status, NEVER place `sidecar`/`Stage 8`/`Grapher`/"
+            "`collapse certificate` inside a sentence that also contains a `proof`/`proves`/`passed`/`built` shape, "
+            "even as an honest negated disclaimer -- the checker's non-claim exemption is narrower than natural "
+            "phrasing (it requires an exact verb from a short list plus the exact adjacent phrase `sidecar proof`, "
+            "not a hyphenated variant like `sidecar-verified proof`) and flags the collocation in any polarity. "
+            "Wrong (the real cycle-06 failure): \"This output does not assert package operations, provenance chains, "
+            "or sidecar-verified proof.\" Right: \"Verification status: Stage-8 verifier sidecars have not yet run; "
+            "this output makes no verification-status claims.\" -- state the scope limit without ever pairing a "
+            "sidecar/Stage-8/Grapher/collapse-certificate token with a proof/proves/passed/built token in the same "
+            "sentence. "
             "No-interior-state boundary: never positively certify the interlocutor's/target's interior state, sincerity, "
             "soul-state, or standing (kufr/nifaq/takfir-as-fact), in either polarity -- do not write `<referent> is/are "
             "insincere|lying|a hypocrite|outside the faith|kafir|munafiq` even inside a negated scope-limit sentence, "
@@ -7408,6 +7652,17 @@ def release_section_prompt(
             "Use these exact subsection labels: `### Established failure`, `### Restored criterion/orientation`, and either `### Scoped boundary` or `### Reopen boundary`. "
             "Do not claim guaranteed uptake, package operations or provenance claims, sidecar proof, retained promotion, "
             "broad model behavior, or broad A/B/C/D closure. "
+            "I1 sidecar-claim boundary-phrasing law (build_staged_governed_output.py forbidden pattern 'sidecar proof "
+            "claim before Stage 8'): when disclaiming verification status, NEVER place `sidecar`/`Stage 8`/`Grapher`/"
+            "`collapse certificate` inside a sentence that also contains a `proof`/`proves`/`passed`/`built` shape, "
+            "even as an honest negated disclaimer -- the checker's non-claim exemption is narrower than natural "
+            "phrasing (it requires an exact verb from a short list plus the exact adjacent phrase `sidecar proof`, "
+            "not a hyphenated variant like `sidecar-verified proof`) and flags the collocation in any polarity. "
+            "Wrong (the real cycle-06 failure): \"This output does not assert package operations, provenance chains, "
+            "or sidecar-verified proof.\" Right: \"Verification status: Stage-8 verifier sidecars have not yet run; "
+            "this output makes no verification-status claims.\" -- state the scope limit without ever pairing a "
+            "sidecar/Stage-8/Grapher/collapse-certificate token with a proof/proves/passed/built token in the same "
+            "sentence. "
             "No-interior-state boundary: never positively certify the interlocutor's/target's interior state, sincerity, "
             "soul-state, or standing (kufr/nifaq/takfir-as-fact), in either polarity -- do not write `<referent> is/are "
             "insincere|lying|a hypocrite|outside the faith|kafir|munafiq` even inside a negated scope-limit sentence, "
@@ -7466,7 +7721,7 @@ of real governed content will fail every one of them):
   rather than printing another `body_ref=` token.
 - Preserve public burden grouping: body_refs for the same burden must stay contiguous in the final assembled body.
 - Emit a burden heading only for a body_ref marked `first_for_burden`; emit a standalone Land/HOLD line only for a body_ref marked `last_for_burden`.
-- Every burden that closes in this section MUST end with a visible, line-start `Land(ⁿB):` gate (or `HOLD(ⁿB):` / a PARTIAL boundary line if not landed) using the exact superscript burden id -- assembler rule 'per_burden_reread record(s) have no visible Land(nB): landing gate' fires on any assigned closing burden without one. Required landing gate(s) for this section: {land_gate_examples}.
+- Every burden that closes in this section MUST end with a visible, line-start `Land(ⁿB):` gate using the exact superscript burden id, whose PAYLOAD carries the honest status: `Land(ⁿB): landed. <grounds>` when landed, `Land(ⁿB): carried-PARTIAL — <reason + reopen condition>` or `Land(ⁿB): HOLD — <reason>` when not. NEVER use a `HOLD(ⁿB):`-headed line as the gate: the assembler counts ONLY line-start `Land(ⁿB):` lines (LAND_GATE_LINE_RE), so a burden gated with `HOLD(ⁿB):` fails 'per_burden_reread record(s) have no visible Land(nB): landing gate' even when the disposition is honest. Required landing gate(s) for this section: {land_gate_examples}.
 - Land-gate exactly-once cardinality: emit each required landing gate EXACTLY ONCE. Zero gates for a closing burden fails assembly ('per_burden_reread record(s) have no visible Land(ⁿB): landing gate'); two or more gates for the same burden also fail assembly ('duplicate Land(ⁿB): landing gate(s)'). When revising or expanding a burden record, REPLACE the landing-gate line instead of appending another; a burden must never carry a second line-start `Land(ⁿB):` line anywhere in the assembled body. This cardinality counts ONLY line-start colon-form `Land(ⁿB):` gates; machine `⟦ACT ... Land(¹B)+⟧` row tokens and ASCII `Land(B1)` aliases do not count as public landing gates and must stay in their rows untouched.
 - Do not repeat `## Layer B — Bounded Governed Response` unless this section owns the first Stage 04 ACT body_ref.
 - This section's floor is {section_min_bytes if section_min_bytes else section_floor} UTF-8 bytes of genuine ACT/submove content (assembler rule 'under section budget'); a short refusal, clarification request, or meta-commentary about this being a harness/prompt is not governed content and will read as far under budget on top of failing the body_ref/Land-gate rules above -- if something about this prompt seems wrong, still return the governed section content for the assigned body_refs, since this section text is the actual public artifact being assembled, not a chat turn to negotiate.
@@ -7510,6 +7765,19 @@ artifact; it does not ask you to hide or suppress your reasoning):
   canonical Stage 04 row and must include `body_ref=`. Opening summaries, Layer
   A prose, MRP, restoration, closing, and field_witness sections may refer to
   burdens in prose, but they must not invent ACT-looking summary rows.
+- Line-start token grammar law (generalized, applies to every section of this
+  assembled answer): every checker-anchored line-start token -- `Land(ⁿB):`
+  landing gates, the `## Layer A Compact DSL / Diagnostic IR` heading,
+  `R(H,Δ):` reread lines, the `field_witness` heading, and `## Burden N / ...`
+  headings -- MUST be plain text at the very start of its line, NEVER wrapped
+  in emphasis (`**...**`, `_..._`), block-quote (`> `), or list markers
+  (`- `, `* `). The checkers anchor these with line-start regexes that do not
+  tolerate a leading `**`, `_`, `>`, `-`, or `*` -- e.g. `LAND_GATE_LINE_RE`
+  = `(?m)^Land\((?P<burden>[¹²³⁴⁵⁶⁷⁸⁹]B)\):` and
+  `check_field_witness_convergence.extract_layer_a`'s anchor
+  `^\s*#{0,6}\s*Layer A\b`; a wrapped token is INVISIBLE to the checker, not
+  merely reformatted. Wrong: `**Layer A / Diagnostic IR**`, `**Land(⁴B):**`.
+  Right: `## Layer A Compact DSL / Diagnostic IR`, `Land(⁴B): landed. ...`.
 
 Run metadata: redacted from model-facing route surface; case IDs and paths are
 custody fields only and must not determine routing, owner selection, proof
@@ -7569,7 +7837,9 @@ def release_section_expansion_prompt(
             "those tokens must still be present, unchanged, after this expansion -- the assembler fails "
             "the whole run on any assigned body_ref that goes missing between rounds ('assigned body_ref(s) "
             "missing from section'). Every burden that closes in this section still needs its visible "
-            "`Land(ⁿB):` (or `HOLD(ⁿB):`) gate after expansion ('per_burden_reread record(s) have no visible "
+            "line-start `Land(ⁿB):` gate after expansion, payload carrying the honest status (landed / "
+            "carried-PARTIAL — reason / HOLD — reason); never a `HOLD(ⁿB):`-headed line as the gate "
+            "('per_burden_reread record(s) have no visible "
             "Land(nB): landing gate'). This expansion call is answering a real byte-floor shortfall in "
             "already-committed governed content, not a new or ambiguous request: return more genuine ACT/"
             "submove prose for the existing assigned body_refs, not a refusal, clarifying question, or "
@@ -7628,6 +7898,7 @@ Expansion contract:
 - Do not contradict or replace existing text.
 - Do not include JSON or code fences unless the section role itself requires JSON and the added text is valid for that role.
 - Do not claim verifier sidecars, retained promotion, package operations or provenance claims, guaranteed uptake, broad model behavior, broad A/B/C/D closure, Graphify proof, or ActiveGraph proof.
+- I1 sidecar-claim boundary-phrasing law: when disclaiming verification status, never place `sidecar`/`Stage 8`/`Grapher`/`collapse certificate` in the same sentence as a `proof`/`proves`/`passed`/`built` shape, even negated (a hyphenated form such as `sidecar-verified proof` still trips the checker's forbidden pattern). Wrong: "does not assert package operations, provenance chains, or sidecar-verified proof." Right: "Verification status: Stage-8 verifier sidecars have not yet run; this output makes no verification-status claims."
 - Keep commentary about this harness, expansion loop, byte budget, manifest, or
   compiler out of the public artifact (reason about them internally if needed; just
   do not put that commentary in the governed output text).
@@ -14294,7 +14565,12 @@ def run_self_test(root: Path) -> int:
         "Do not write any ACT-looking summary row outside this ACT slice.",
         "¹B₁[source-status-repair] - source-order over scientific-explanations-only-knowledge-source",
         "Contribution-to-Land(¹B)",
-        "Land(¹B): summarize the cumulative state delta from the visible submove block(s)",
+        "Land(¹B): PAYLOAD carries the honest terminal status",
+        "`Land(¹B): landed. <summarize the cumulative state delta from the visible submove block(s)>`",
+        "`Land(¹B): carried-PARTIAL — <reason + reopen condition>` or `Land(¹B): HOLD — <reason>`",
+        "Never emit a bare `HOLD(¹B):`-headed line as the gate",
+        "I3b landing-gate license (canonical form): emit exactly ONE line-start `Land(Bn): <status>` line",
+        "I5 registry-depth law (owner REGISTRY, not just operation-body mass)",
         "route/context umbrella labels, case-library labels, noetic-frame labels, and code lookups are not load-bearing ACT owners",
         "The `TTP Operation Body:` must visibly perform target -> operation -> result -> contribution",
         "Operation-token discipline: keep the registered callable operation token from the copied ACT row and skeleton.",
