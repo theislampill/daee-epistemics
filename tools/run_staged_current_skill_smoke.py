@@ -552,7 +552,18 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "carried-PARTIAL, carried-RECURSE, or discharged-as-derivative. Put burden-local "
             "delta_result/result detail in ACT/NAR/witness detail fields, not in "
             "`terminal_states`; never emit values like `terminal_landed_*` as terminal "
-            "states. `dependency_graph_edges` must be a "
+            "states. "
+            "K3 primary-root landing law (check_graph_completeness.primary_root_verification): "
+            "the burden listed FIRST in Stage 02 `burden_floor` is the PRIMARY/root burden -- "
+            "`terminal_states[burden_floor[0]]` must resolve to `landed` by the end of this run's "
+            "reread, independent of every other check passing. A chain where the first-listed burden's "
+            "own closure is deferred behind every later burden (it stays `carried-RECURSE`/held while "
+            "only the LAST burden in the chain lands) fails the checker's `terminal_landed` condition "
+            "even when owner activation, semantic root evidence, and every other structural check pass. "
+            "If the first-listed burden genuinely cannot land independently of the others, do not leave "
+            "it `carried-RECURSE`/held at the end of Stage 05 -- either land it on its own evidence or "
+            "flag the ordering problem back rather than terminating with the root still open. "
+            "`dependency_graph_edges` must be a "
             "JSON array; use [] when no dependency edge remains. If no new resultant "
             "burden is live, set `no_new_resultant_proof` to true or to an object "
             "`{\"proved\": true, \"basis\": \"...\", \"unresolved_burdens\": []}`. "
@@ -621,6 +632,25 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "Instead set `route_result_type` to `held_burden_activation`, `finding` to "
             "`genuine-dependent`, `route` to `RECURSE`, `graph_delta` to the concrete ASCII edge "
             "`Bn -> Bm`, and `preemption_basis` to `graph-bound` for the next already-held burden. "
+            "K3 field-level STOP-licensing law (check_graph_completeness.no_new_resultant_terminal_proof "
+            "via the Stage 07 harness projection): a `route_result_type: no_new_resultant` / route "
+            "`STOP` claim is field-level licensed only when EVERY burden in this run's terminal_states -- "
+            "not only burdens numbered after this one -- is already landed/cleared/discharged-as-derivative, "
+            "with none left held-with-reason/carried-PARTIAL/carried-RECURSE/unresolved. This holds even "
+            "when the STOP burden is the LAST in the chain and no burden depends on it: if ANY other burden "
+            "anywhere in the run (earlier or later) is still held/carried, the harness synthesizes a stub "
+            "`no_new_resultant_proof` for the STOP burden's Stage 07 formal_reread_states row (`proved: "
+            "false`, no `stop_licensed`, `escape_routes_checked: []`) instead of a licensed one, and "
+            "check_graph_completeness fails `no_new_resultant_terminal_proof` with "
+            "'formal_reread_states[N].no_new_resultant_proof.stop_licensed must be true', "
+            "'...field_state_at_stop must be an object', and '...escape_routes_checked missing canonical "
+            "route(s): authority-order-recoil, closure-boundary-immunity, doubt-churn, "
+            "hidden-framework-recoil, moral-tribunal, proof-carousel, restoration-recoil, "
+            "total-system-exhaustion' -- even though the STOP burden's own local closure was clean. If an "
+            "earlier burden in the same chain is genuinely still open pending this or a later burden's "
+            "result, keep that earlier burden's own terminal_state held/carried (do not land it "
+            "prematurely) and do not claim STOP/no_new_resultant for any burden in the run until every "
+            "burden closes. "
             "`no_new_resultant_proof.proved` may be `true` ONLY when `unresolved_burdens` (both the "
             "stage-level list and any `no_new_resultant_proof.unresolved_burdens` list) is empty. "
             "Separately, every burden's terminal state must be a legal controlled token; closed "
@@ -658,6 +688,7 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
         "produces": [
             "field_witness_body_refs",
             "nar_burdens",
+            "owner_activations",
             "normalized_activation_record",
             "register_deltas",
         ],
@@ -667,7 +698,19 @@ STAGE_SPECS: dict[str, dict[str, Any]] = {
             "Closing Formulation, sidecars, release output, Grapher output, or certificate "
             "evidence. `field_witness_body_refs` must be a JSON array of strings that exactly "
             "matches Stage 04 `act_body_refs`. `nar_burdens` must include Stage 04 ACT burdens "
-            "and every Stage 05 terminal-state burden. `owner_activations` must be body-ref "
+            "and every Stage 05 terminal-state burden. "
+            "K4 owner_activations item-shape law: top-level `owner_activations` is a REQUIRED field "
+            "(it is listed in `produces` above) -- do not omit it. It must be a non-empty JSON array "
+            "whose items are ALL the SAME shape, one of exactly two accepted shapes: (1) every item a "
+            "non-empty body_ref string, e.g. `\"owner_activations\": [\"¹B₁\", \"²B₁\"]`; or (2) every "
+            "item an object carrying a non-empty string `body_ref` field, e.g. `\"owner_activations\": "
+            "[{\"body_ref\": \"¹B₁\", \"owner_id\": \"P7\", \"operation\": \"scope-boundary\", "
+            "\"delta_result\": \"scope-boundary-named\"}]` (the harness normalizes these into body-ref "
+            "strings while preserving the object detail under `owner_activation_details`). A MISSING "
+            "`owner_activations` field, an empty list, or a list mixing string and object items (or "
+            "containing any other item type) all fail with the same harness error: 'stage-06 "
+            "owner_activations must be body-ref strings or objects with body_ref'. "
+            "`owner_activations` must be body-ref "
             "strings, or objects with explicit string `body_ref` so the harness can normalize "
             "them while preserving details under `owner_activation_details`. Object-shaped "
             "`owner_activations` must include the exact Stage 04 `owner_id`, `operation`, "
@@ -5393,6 +5436,8 @@ def stage07_field_witness_contract_guidance(previous_stages: list[dict[str, Any]
         "- `curl_state` values must be parser-stable JSON strings. When curl is absent/resolved, emit JSON string `\"null\"`, never bare JSON null.",
         "- Terminal `STOP` / `no_new_resultant` rows must set `reread` to `R(H,Delta)`, `divergence_state` to `neutral`, `curl_state` to JSON string `\"null\"`, `graph_delta` to `none`, omit `next_burden`, and include `no_new_resultant_proof.escape_routes_checked` as a JSON list.",
         "- Complete closure must have no HOLD/PARTIAL formal rows and no held terminal burdens. If a terminal `STOP` / `no_new_resultant` row is only a bounded MRP row for a generated or unresolved burden, keep `coverage_complete=false`, set `no_new_resultant_proof.proved=false`, and keep explicit HOLD/PARTIAL accounting instead of claiming clean closure.",
+        "- K3 primary-root landing law (check_graph_completeness.primary_root_verification): the PRIMARY burden is the FIRST entry of `coverage_proof.initial_burden_set` (Stage 02 `burden_floor[0]`) -- not any burden you choose at Stage 07. That primary burden must (a) appear in `coverage_proof.dependency_graph.roots`, (b) carry no incoming dependency edge, and (c) reach `terminal_states[primary] == \"landed\"`. The checker's `checks` dict scores `terminal_landed` independently of every other primary-root condition (`primary_named`, `in_B_LA`, `in_roots`, `no_incoming_edges`, `has_complete_owner_activation`, `has_semantic_root_activation`, `mrp_act_evidence_passes`, `convergence_root_evidence_passes` can all be `true` while `terminal_landed` alone is `false`, and the whole battery still fails). The real cycle-08 failure: burden_floor was `[B1, B2, B3, B4, B5]`, B1 was the acyclic root with no incoming edge, but B1's own closure was deferred all the way down a `B1 -> B2 -> B3 -> B4 -> B5` chain and stayed `carried-RECURSE` while only B5 (the last link) landed -- `primary_root_verification` failed on `terminal_landed` alone even though B1's owner activation and semantic root evidence were complete. Do not build a chain where `burden_floor[0]` is the burden most dependent on every other burden's outcome; either give the first-listed burden a finding that lands on its own (independent of the later burdens), or reorder `burden_floor`/`initial_burden_set` so the burden that is genuinely closable without waiting on any other burden is listed first.",
+        "- K3 field-level STOP-licensing law (check_graph_completeness.no_new_resultant_terminal_proof): a `route_result_type: no_new_resultant` / route `STOP` claim on ANY burden's `formal_reread_states[]` row is licensed only when every OTHER burden's `terminal_states` entry is already landed/cleared/discharged-as-derivative -- this comes straight from Stage 05 `terminal_states` and is not something you can fix at this stage. If any burden anywhere remains held-with-reason/carried-PARTIAL/carried-RECURSE, the harness emits a stub `no_new_resultant_proof` for the STOP row (`proved: false`, no `stop_licensed`, empty `escape_routes_checked`) and the checker fails with '...no_new_resultant_proof.stop_licensed must be true', '...field_state_at_stop must be an object', and '...escape_routes_checked missing canonical route(s): authority-order-recoil, closure-boundary-immunity, doubt-churn, hidden-framework-recoil, moral-tribunal, proof-carousel, restoration-recoil, total-system-exhaustion' -- even when the STOP burden's own reread was clean. Mirror Stage 05's honest held/carried terminal states here rather than smoothing them into a clean-looking STOP.",
         "- Treat the visible Closure/Reconstruction Witness, machine `field_witness` JSON, NAR rows, and optional sidecars as separate clone states that must mirror the same ACT/body_ref chain; do not let prose or sidecar custody substitute for the machine witness.",
         "- The line `field_witness` is only a marker. It must be followed by a parseable JSON object containing the checker-owned witness, including `normalized_activation_record`; YAML, prose, or a heading-only witness is invalid.",
         "- `body_ref` remains the bare join key copied from ACT. Public submove headings, owner labels, operations, register axes, deltas, and graph proof text must not be encoded into `body_ref`.",
@@ -7831,7 +7876,14 @@ def release_section_prompt(
             + "ACT-readable rows, body_ref tokens, local operation/result prose, and Land(...) surfaces "
             "consistent with Stage 04. Expand the operation bodies instead of summarizing them. "
             "Do not include MRP, field_witness, Restorative Response, or Closing Formulation. "
-            "This section is an ACT partition slice inside one coherent public Layer B body."
+            "This section is an ACT partition slice inside one coherent public Layer B body. "
+            "K5 machine-row-first law: under EVERY burden/submove heading, the FIRST line must be that "
+            "submove's own `⟦ACT ...⟧` machine row carrying its assigned `body_ref=` token -- a full prose "
+            "submove body (heading, owner name, operation prose) is never a substitute for the machine "
+            "row, no matter how much genuine diagnostic detail it carries. A section that writes rich "
+            "prose bodies under burden/submove headings but never actually emits the `⟦ACT ...⟧` row for "
+            "an assigned body_ref fails assembly TWICE: 'assigned body_ref(s) missing from section' and "
+            "'assigned body_ref(s) not present in visible ACT output', even though the prose looks complete."
         ),
         "mrp_reread_terminal": (
             "Write only the MRP/reread/terminal-state section consistent with Stage 05. It must include "
@@ -7872,6 +7924,13 @@ def release_section_prompt(
             "`Held/scoped/reopenable remainder: ...`. "
             "The remainder line must name any generated or unresolved B_MRP pressure that remains held/scoped/reopenable. "
             "Do not include Closing Formulation here. "
+            "K2 no-stray-gate law (build_staged_governed_output.py stray-gate rule): never begin any line in "
+            "this section with `Land(ⁿB):` -- the assembler treats every line-start superscript `Land(ⁿB):` "
+            "token as a public landing gate and its rule 'superscript Land(ⁿB): landing gate(s) [...] are only "
+            "allowed inside layer_b_act sections' fails the whole run if one appears here, even when that "
+            "burden was correctly gated earlier in its ACT section. Summarize landing status in prose instead "
+            "(e.g. \"B7 landed in the ACT section above\"); a mid-line mention of `Land(⁷B)` that is not the "
+            "first characters of its line is fine, only a line-START colon-form gate is forbidden. "
             "Do not claim guaranteed uptake, package operations or provenance claims, sidecar proof, retained promotion, "
             "broad model behavior, or broad A/B/C/D closure. "
             "I1 sidecar-claim boundary-phrasing law (build_staged_governed_output.py forbidden pattern 'sidecar proof "
@@ -7900,6 +7959,13 @@ def release_section_prompt(
             "It must include explicit high-mass slots for "
             "Established failure, Restored criterion/orientation, and Scoped boundary or Reopen boundary. "
             "Use these exact subsection labels: `### Established failure`, `### Restored criterion/orientation`, and either `### Scoped boundary` or `### Reopen boundary`. "
+            "K2 no-stray-gate law (build_staged_governed_output.py stray-gate rule): never begin any line in "
+            "this section with `Land(ⁿB):` -- the assembler treats every line-start superscript `Land(ⁿB):` "
+            "token as a public landing gate and its rule 'superscript Land(ⁿB): landing gate(s) [...] are only "
+            "allowed inside layer_b_act sections' fails the whole run if one appears here, even when that "
+            "burden was correctly gated earlier in its ACT section. Summarize landing status in prose instead "
+            "(e.g. \"B7 landed in the ACT section above\"); a mid-line mention of `Land(⁷B)` that is not the "
+            "first characters of its line is fine, only a line-START colon-form gate is forbidden. "
             "Do not claim guaranteed uptake, package operations or provenance claims, sidecar proof, retained promotion, "
             "broad model behavior, or broad A/B/C/D closure. "
             "I1 sidecar-claim boundary-phrasing law (build_staged_governed_output.py forbidden pattern 'sidecar proof "
@@ -7982,6 +8048,7 @@ of real governed content will fail every one of them):
 - Emit ACT rows only for those exact `body_ref=` tokens.
 - Do not emit ACT rows for unassigned body_refs, even if they appear in the validated compact stage state (assembler rule 'unassigned body_ref(s) emitted').
 - Every assigned body_ref must appear exactly once in this section (assembler rule 'assigned body_ref(s) not present in visible ACT output' fires if even one assigned body_ref above is dropped, truncated, or replaced with commentary).
+- K5 machine-row-first law: the FIRST line under each burden/submove heading is that submove's `⟦ACT ...⟧` row carrying its `body_ref=` token; write the full owner/operation prose body AFTER that row, never instead of it. A submove section that is all prose (headings, owner names, operation narrative) with zero `⟦ACT ...⟧` rows fails assembly with BOTH 'assigned body_ref(s) missing from section' and 'assigned body_ref(s) not present in visible ACT output' for every assigned body_ref that never got its machine row, however long and genuine the prose is.
 - Do not repeat any assigned body_ref in planning prose, examples, or explanatory
   notes; after the one visible ACT row, refer back with prose such as "this submove"
   rather than printing another `body_ref=` token.
@@ -8098,22 +8165,55 @@ def release_section_expansion_prompt(
     # expansion round carries no reminder that this section owes extra gates
     # for record-without-ACT burdens and the producer can drop them.
     orphan_law = orphan_gate_law_text(orphan_gate_burdens or [])
+    # K1 (RC-matrix cycle-08): the harness APPENDS expansion output verbatim
+    # (`current_text + separator + expansion_text`, see the CONTINUATION law in
+    # the expansion contract below). The role note below used to tell the
+    # layer_b_act expansion that the section "still needs its visible
+    # line-start Land(nB): gate after expansion" -- read literally that is an
+    # instruction to RE-EMIT the gate in the continuation, and the verbatim
+    # append then turns a correctly-landed existing gate into a duplicate
+    # ('duplicate Land(nB): landing gate(s)'), exactly what two real sonnet
+    # lanes did this cycle. The fix is conditional, not unconditional: only
+    # emit a burden's gate if the existing text below does not already
+    # contain that exact line-start `Land(nB):` line.
+    orphan_conditional_note = (
+        (
+            " The orphan-gate law above lists burden(s) whose gate this section owes; before emitting any "
+            "of those gate lines, check the existing section text below -- if that exact line-start "
+            "`Land(nB):` line for a given burden is already present verbatim, do NOT emit it again (the "
+            "verbatim append would turn it into a duplicate); only emit the gate for a burden from that "
+            "list whose exact gate line is genuinely absent from the existing text."
+        )
+        if orphan_law
+        else ""
+    )
     role_notes = {
         "layer_b_act": (
             "Use only the assigned ACT body_refs. Do not add ACT rows for unassigned body_refs. "
-            "Do not emit new `⟦ACT` rows or new `body_ref=` tokens during expansion; "
-            "expand only owner operation bodies, local result prose, and Land(...) consequences. "
+            "Do not re-emit any `⟦ACT` row or `body_ref=` token already present in the existing "
+            "section text; expand only owner operation bodies, local result prose, and Land(...) "
+            "consequences. EXCEPTION (assigned-row rescue): if an ASSIGNED body_ref listed above is "
+            "genuinely absent from the existing section text (the initial call under-delivered its "
+            "machine row), this continuation MUST add that submove's single `⟦ACT ...⟧` row with its "
+            "`body_ref=` token (the assembler validates the CONCATENATED section, so a row first "
+            "appearing here satisfies 'assigned body_ref(s) missing from section') -- exactly once, "
+            "never a duplicate of a row that already exists. "
             "Do not repeat the main Layer B bounded heading or print Land(...) before all submoves "
             "for that burden have rendered. "
             f"The existing section text already committed to assigned body_refs {assigned}; every one of "
             "those tokens must still be present, unchanged, after this expansion -- the assembler fails "
             "the whole run on any assigned body_ref that goes missing between rounds ('assigned body_ref(s) "
-            "missing from section'). Every burden that closes in this section still needs its visible "
-            "line-start `Land(ⁿB):` gate after expansion, payload carrying the honest status (landed / "
-            "carried-PARTIAL — reason / HOLD — reason); never a `HOLD(ⁿB):`-headed line as the gate "
+            "missing from section'). Every burden that closes in this section needs exactly one visible "
+            "line-start `Land(ⁿB):` gate, payload carrying the honest status (landed / "
+            "carried-PARTIAL — reason / HOLD — reason), somewhere in the FINAL concatenated section -- check "
+            "the existing section text below first: if that burden's exact gate line is already present "
+            "there, do NOT print it again in this continuation (see the append/duplicate law above); only "
+            "emit a landing gate here for a burden that closes in this section and does not already have "
+            "one in the existing text. Never use a `HOLD(ⁿB):`-headed line as the gate "
             "('per_burden_reread record(s) have no visible "
             "Land(nB): landing gate')."
             + orphan_law
+            + orphan_conditional_note
             + " This expansion call is answering a real byte-floor shortfall in "
             "already-committed governed content, not a new or ambiguous request: return more genuine ACT/"
             "submove prose for the existing assigned body_refs, not a refusal, clarifying question, or "
@@ -8122,23 +8222,42 @@ def release_section_expansion_prompt(
         ),
         "field_witness_nar": (
             "Add human-readable Closure/Reconstruction Witness detail without emitting a second "
-            "`field_witness` JSON object and without changing existing JSON proof values."
+            "`field_witness` JSON object and without changing existing JSON proof values. The `field_witness` "
+            "heading line and JSON object already exist verbatim in the existing text below; this is a "
+            "continuation, so add only new prose before or around it -- never print a second `field_witness` "
+            "heading or a second JSON object."
         ),
         "mrp_reread_terminal": (
             "Expand MRP reread, terminal-state, graph-delta, and field-diagnostic detail without "
             "changing the route result. This section is ledger-only: never print a "
             "`[Mid-Reread Pressure]` heading or block; the harness injects the canonical "
-            "per-burden blocks after each `Land(ⁿB):` landing gate from the Stage 05 records."
+            "per-burden blocks after each `Land(ⁿB):` landing gate from the Stage 05 records. Any "
+            "`Land(ⁿB):` gate line already visible in the existing text below stays exactly as it is -- "
+            "this is a continuation, not a rewrite, so do not reprint it."
         ),
         "restorative_response": (
             "Preserve the exact Restorative Response heading and keep the parser-stable lines "
             "`Restored criterion/order:`, `Relieved pressure:`, and "
             "`Held/scoped/reopenable remainder:` visible before any added prose. "
-            "Do not repeat the `Restorative Response` heading."
+            "Do not repeat the `Restorative Response` heading. "
+            "These lines and the heading already exist verbatim in the existing text below -- this "
+            "expansion is a continuation appended after them, not a rewrite; add only new prose, and never "
+            "reprint the heading or any of the three parser-stable lines a second time. "
+            "K2 no-stray-gate law: never begin any line in this expansion with `Land(ⁿB):` -- that "
+            "line-start token is a public landing gate and is only allowed inside layer_b_act sections; "
+            "summarize landing status in prose instead."
         ),
         "closing_formulation": (
             "Preserve the exact Closing Formulation heading and keep the required public closing slots "
-            "visible before any added prose. Do not repeat the `Closing Formulation` heading."
+            "visible before any added prose. Do not repeat the `Closing Formulation` heading. "
+            "The heading and the `### Established failure` / `### Restored criterion/orientation` / "
+            "`### Scoped boundary` or `### Reopen boundary` slot headings already exist verbatim in the "
+            "existing text below -- this expansion is a continuation appended after them, not a rewrite; "
+            "add only new prose under the existing slots, and never reprint the heading or any slot "
+            "heading a second time. "
+            "K2 no-stray-gate law: never begin any line in this expansion with `Land(ⁿB):` -- that "
+            "line-start token is a public landing gate and is only allowed inside layer_b_act sections; "
+            "summarize landing status in prose instead."
         ),
     }
     return f"""Runtime SHA256: {skill_hash}
@@ -8167,6 +8286,21 @@ Approximate remaining bytes needed: {remaining}
 Assigned ACT body_refs for this section: {assigned}
 
 Expansion contract:
+- K1 append/continuation law (harness assembly mechanics): the harness appends your returned text
+  VERBATIM after the existing section text shown below (`current_text + separator + your_text`) and
+  re-validates the CONCATENATED result -- it never replaces, edits, or deduplicates anything you or the
+  prior call already wrote. Your output is a CONTINUATION, not a new draft and not a restatement: return
+  ONLY genuinely new content that belongs after the existing text.
+- K1 never-re-emit law: NEVER re-print any existing line-start `Land(ⁿB):` landing gate, any `⟦ACT ...⟧`
+  row, any `body_ref=` token, any section/heading line (`Restorative Response`, `Closing Formulation`,
+  `### Established failure`, `### Restored criterion/orientation`, `### Scoped boundary`,
+  `### Reopen boundary`, the `field_witness` marker line, `## Layer B — Bounded Governed Response`), or any
+  other checker-anchored line that already appears in the existing section text below -- the assembler
+  requires each of these to appear EXACTLY ONCE in the final concatenated section, and the existing text
+  already carries every one it committed to. Re-emitting one (even verbatim, even relabeled as "restated")
+  turns it into a second copy after the verbatim append and fails assembly, for example
+  'duplicate Land(ⁿB): landing gate(s) for [...]'. Before writing anything, scan the existing section text
+  below for the checker-anchored lines you might be about to write, and drop any that are already there.
 - Return only additional public governed-output text for this same section.
 - Do not repeat the whole section.
 - Do not contradict or replace existing text.
@@ -9823,6 +9957,36 @@ def run_self_test(root: Path) -> int:
             raise HarnessError(
                 f"Self-test: Stage 03 routing guidance lost the route_targets/burden_floor equality law: {_floor_law!r}"
             )
+    # K3 canary (RC-matrix cycle-08): the Stage 05 instructions must state both
+    # the primary-root landing law and the field-level STOP-licensing law
+    # surfaced by the real sonnet/trinitarian graph-completeness failure
+    # (primary_root_verification + no_new_resultant_terminal_proof).
+    for _k3_law in (
+        "K3 primary-root landing law (check_graph_completeness.primary_root_verification)",
+        "`terminal_states[burden_floor[0]]` must resolve to `landed`",
+        "K3 field-level STOP-licensing law (check_graph_completeness.no_new_resultant_terminal_proof",
+        "'formal_reread_states[N].no_new_resultant_proof.stop_licensed must be true'",
+        "escape_routes_checked missing canonical route(s): authority-order-recoil, closure-boundary-immunity, doubt-churn, hidden-framework-recoil, moral-tribunal, proof-carousel, restoration-recoil, total-system-exhaustion",
+    ):
+        if _k3_law not in _stage05_instructions:
+            raise HarnessError(f"Self-test: Stage 05 instructions lost K3 graph-completeness law: {_k3_law!r}")
+    # K4 canary (RC-matrix cycle-08): stage-06 owner_activations must be listed
+    # as a required produced field (the real sonnet/tst-lillard defect was a
+    # Stage 06 response that omitted owner_activations entirely because the
+    # prompt's "Required stage-specific fields: produces" list never named it)
+    # and the instructions must state the exact accepted item shapes.
+    if "owner_activations" not in STAGE_SPECS["stage-06-field-witness-nar"]["produces"]:
+        raise HarnessError("Self-test: Stage 06 produces list omitted owner_activations (K4)")
+    _stage06_instructions = STAGE_SPECS["stage-06-field-witness-nar"]["instructions"]
+    for _k4_law in (
+        "K4 owner_activations item-shape law",
+        "is a REQUIRED field",
+        '`"owner_activations": ["¹B₁", "²B₁"]`',
+        '`"owner_activations": [{"body_ref": "¹B₁", "owner_id": "P7", "operation": "scope-boundary", "delta_result": "scope-boundary-named"}]`',
+        "'stage-06 owner_activations must be body-ref strings or objects with body_ref'",
+    ):
+        if _k4_law not in _stage06_instructions:
+            raise HarnessError(f"Self-test: Stage 06 instructions lost K4 owner_activations shape law: {_k4_law!r}")
     replay = load_json(replay_record)
     named_scope = model_scope("self-test-a9-science-source", replay_record, stop_after_stage=None)
     neutral_scope = model_scope("neutral-formal-route-copy", replay_record, stop_after_stage=None)
@@ -14949,6 +15113,8 @@ def run_self_test(root: Path) -> int:
         "Land-gate exactly-once cardinality: emit each required landing gate EXACTLY ONCE",
         "'duplicate Land(ⁿB): landing gate(s)'",
         "REPLACE the landing-gate line instead of appending another",
+        "K5 machine-row-first law",
+        "'assigned body_ref(s) missing from section' and 'assigned body_ref(s) not present in visible ACT output'",
     ):
         if required not in stage07_act_prompt:
             raise HarnessError(f"Self-test Stage 07 ACT prompt omitted semantic scaffold: {required}")
@@ -15056,6 +15222,11 @@ def run_self_test(root: Path) -> int:
     for _required in ("J4 record-without-ACT gate law", "`Land(²B): HOLD — <reason>`"):
         if _required not in _orphan_expansion_prompt:
             raise HarnessError(f"Self-test expansion prompt (last act-body section) omitted orphan gate law: {_required!r}")
+    # K1 differential canary: the orphan-gate conditional note (K1's fix to the
+    # J4 orphan sentence's own re-emission hazard) must appear ONLY when there
+    # are orphan burdens to gate, mirroring orphan_law's own conditionality.
+    if "before emitting any" not in _orphan_expansion_prompt or "already present verbatim, do NOT emit it again" not in _orphan_expansion_prompt:
+        raise HarnessError("Self-test orphan expansion prompt omitted the K1 conditional orphan-gate check-first note")
     _plain_expansion_prompt = release_section_expansion_prompt(
         root=root,
         case_name="self-test-a9-science-source",
@@ -15073,6 +15244,79 @@ def run_self_test(root: Path) -> int:
     )
     if "J4 record-without-ACT gate law" in _plain_expansion_prompt:
         raise HarnessError("Self-test expansion prompt carried the orphan gate law without orphan burdens")
+    if "before emitting any" in _plain_expansion_prompt:
+        raise HarnessError("Self-test expansion prompt carried the K1 conditional orphan-gate note without orphan burdens")
+    # K1 canary (RC-matrix cycle-08): every expansion-prompt role must carry the
+    # append/continuation merge-semantics law and the never-re-emit list, and
+    # must never regress to the old re-emission-inducing "still needs its
+    # visible line-start Land(nB): gate after expansion" phrasing that induced
+    # duplicate landing gates on two real sonnet lanes this cycle.
+    for _k1_role, _k1_section_id, _k1_assigned in (
+        ("layer_b_act", "act-body-1", ["¹B₁"]),
+        ("field_witness_nar", "field-witness-nar", None),
+        ("mrp_reread_terminal", "mrp-reread-terminal", None),
+        ("restorative_response", "restorative-response", None),
+        ("closing_formulation", "closing-formulation", None),
+    ):
+        _k1_expansion_prompt = release_section_expansion_prompt(
+            root=root,
+            case_name="self-test-k1-continuation",
+            raw_input_path=raw_input,
+            input_digest=sha256_file(raw_input),
+            skill_hash="SELFTEST",
+            section_id=_k1_section_id,
+            section_role=_k1_role,
+            section_min_bytes=4096,
+            current_bytes=1024,
+            expansion_round=1,
+            max_rounds=2,
+            assigned_body_refs=_k1_assigned,
+            existing_text="existing section text",
+        )
+        for _k1_required in ("K1 append/continuation law", "K1 never-re-emit law"):
+            if _k1_required not in _k1_expansion_prompt:
+                raise HarnessError(
+                    f"Self-test expansion prompt for role {_k1_role!r} omitted {_k1_required!r}"
+                )
+        if "still needs its visible line-start `Land(ⁿB):` gate after expansion" in _k1_expansion_prompt:
+            raise HarnessError(
+                f"Self-test expansion prompt for role {_k1_role!r} regressed to the re-emission-inducing "
+                "'still needs its visible line-start Land(nB): gate after expansion' phrasing"
+            )
+    if "check the existing section text below first" not in _plain_expansion_prompt:
+        raise HarnessError("Self-test layer_b_act expansion prompt omitted the K1 check-before-emit gate law")
+    if "K2 no-stray-gate law" not in release_section_expansion_prompt(
+        root=root,
+        case_name="self-test-k2-stray-gate",
+        raw_input_path=raw_input,
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        section_id="restorative-response",
+        section_role="restorative_response",
+        section_min_bytes=4096,
+        current_bytes=1024,
+        expansion_round=1,
+        max_rounds=2,
+        assigned_body_refs=None,
+        existing_text="existing section text",
+    ):
+        raise HarnessError("Self-test restorative_response expansion prompt omitted K2 no-stray-gate law")
+    if "K2 no-stray-gate law" not in release_section_expansion_prompt(
+        root=root,
+        case_name="self-test-k2-stray-gate",
+        raw_input_path=raw_input,
+        input_digest=sha256_file(raw_input),
+        skill_hash="SELFTEST",
+        section_id="closing-formulation",
+        section_role="closing_formulation",
+        section_min_bytes=4096,
+        current_bytes=1024,
+        expansion_round=1,
+        max_rounds=2,
+        assigned_body_refs=None,
+        existing_text="existing section text",
+    ):
+        raise HarnessError("Self-test closing_formulation expansion prompt omitted K2 no-stray-gate law")
     drifted_visible_act = canonical_act_row.replace("Land(¹B)+", "Land(additional burden 1)+")
     canonical_act_text, canonical_act_event = canonical_compiled_structural_section(
         "layer_b_act",
@@ -15777,6 +16021,8 @@ def run_self_test(root: Path) -> int:
         "`Relieved pressure: ...`",
         "`Held/scoped/reopenable remainder: ...`",
         "Do not include Closing Formulation here",
+        "K2 no-stray-gate law",
+        "are only allowed inside layer_b_act sections",
     ):
         if required not in stage07_restorative_prompt:
             raise HarnessError(f"Self-test Stage 07 Restorative prompt omitted role-heading scaffold: {required}")
@@ -15851,6 +16097,9 @@ def run_self_test(root: Path) -> int:
         section_min_bytes=1024,
         assigned_body_refs=None,
     )
+    for required in ("K2 no-stray-gate law", "are only allowed inside layer_b_act sections"):
+        if required not in stage07_closing_prompt:
+            raise HarnessError(f"Self-test Stage 07 Closing prompt omitted K2 no-stray-gate law: {required}")
     stage07_full_prompt = release_prompt(
         root=root,
         case_name="self-test-a9-science-source",
@@ -16122,6 +16371,10 @@ def run_self_test(root: Path) -> int:
         '"generation_depth": 0',
         '"owner": "source-status-repair"',
         '"operation": "source-order"',
+        "K3 primary-root landing law (check_graph_completeness.primary_root_verification)",
+        "the PRIMARY burden is the FIRST entry of `coverage_proof.initial_burden_set`",
+        "K3 field-level STOP-licensing law (check_graph_completeness.no_new_resultant_terminal_proof)",
+        "escape_routes_checked missing canonical route(s): authority-order-recoil, closure-boundary-immunity, doubt-churn, hidden-framework-recoil, moral-tribunal, proof-carousel, restoration-recoil, total-system-exhaustion",
     ):
         if required not in stage07_witness_prompt:
             raise HarnessError(f"Self-test Stage 07 field_witness prompt omitted mirror scaffold: {required}")
