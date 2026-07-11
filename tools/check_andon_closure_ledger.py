@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import re
 import subprocess
@@ -36,6 +37,12 @@ TERMINAL_COMPLETION = {"VERIFIED_STRUCTURAL", "VERIFIED_SCOPED_MODEL", "CLOSED_O
 EXPECTATION_SCHEMA_PATH = ROOT / "schema" / "negative-fixture-expectation.schema.json"
 EXIT_CATEGORY = "structural-rejection"
 DOWNSTREAM_INVALIDATED = ["closure-view", "completion-verdict", "candidate-package", "release-action"]
+_GIT_BLOB_CACHE: dict[tuple[str, str], tuple[str | None, bytes | None, str | None]] = {}
+_FILE_SHA256_CACHE: dict[str, tuple[str | None, str | None]] = {}
+
+
+class DuplicateObjectKey(ValueError):
+    pass
 
 
 @dataclass(frozen=True)
@@ -51,11 +58,22 @@ def rel(path: Path) -> str:
         return path.as_posix()
 
 
+def _strict_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise DuplicateObjectKey(f"duplicate object key {key!r}")
+        result[key] = value
+    return result
+
+
 def read_json(path: Path) -> Any:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_strict_object)
     except FileNotFoundError as exc:
         raise ValueError(f"{rel(path)}: file not found") from exc
+    except DuplicateObjectKey as exc:
+        raise ValueError(f"{rel(path)}: invalid JSON: {exc}") from exc
     except json.JSONDecodeError as exc:
         raise ValueError(f"{rel(path)}: invalid JSON: {exc}") from exc
 
@@ -254,6 +272,78 @@ def _cycle(graph: dict[str, list[str]]) -> list[str] | None:
     return None
 
 
+def _repo_relative_path(value: Any) -> tuple[Path | None, str | None]:
+    if not isinstance(value, str) or not value.strip():
+        return None, "retained_artifact is missing"
+    candidate = Path(value)
+    if candidate.is_absolute() or ".." in candidate.parts:
+        return None, f"retained_artifact is not a repository-relative path: {value}"
+    resolved = (ROOT / candidate).resolve()
+    try:
+        resolved.relative_to(ROOT.resolve())
+    except ValueError:
+        return None, f"retained_artifact escapes the repository: {value}"
+    return resolved, None
+
+
+def _git_blob_bytes(commit_sha1: str, path: str) -> tuple[str | None, bytes | None, str | None]:
+    cache_key = (commit_sha1, path)
+    if cache_key in _GIT_BLOB_CACHE:
+        return _GIT_BLOB_CACHE[cache_key]
+    object_type = subprocess.run(
+        ["git", "cat-file", "-t", commit_sha1],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if object_type.returncode != 0 or object_type.stdout.strip() != "commit":
+        shown = object_type.stdout.strip() or object_type.stderr.strip() or "missing"
+        result = (None, None, f"commit_sha1_not_commit: expected commit object, got {shown}")
+        _GIT_BLOB_CACHE[cache_key] = result
+        return result
+    rev_parse = subprocess.run(
+        ["git", "rev-parse", f"{commit_sha1}:{path}"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if rev_parse.returncode != 0:
+        result = (None, None, rev_parse.stderr.strip() or "git rev-parse failed")
+        _GIT_BLOB_CACHE[cache_key] = result
+        return result
+    blob_sha1 = rev_parse.stdout.strip()
+    cat_file = subprocess.run(
+        ["git", "cat-file", "blob", blob_sha1],
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if cat_file.returncode != 0:
+        result = (blob_sha1, None, cat_file.stderr.decode("utf-8", errors="replace").strip() or "git cat-file failed")
+        _GIT_BLOB_CACHE[cache_key] = result
+        return result
+    result = (blob_sha1, cat_file.stdout, None)
+    _GIT_BLOB_CACHE[cache_key] = result
+    return result
+
+
+def _retained_file_sha256(path: str) -> tuple[str | None, str | None]:
+    if path in _FILE_SHA256_CACHE:
+        return _FILE_SHA256_CACHE[path]
+    resolved, problem = _repo_relative_path(path)
+    if problem or resolved is None:
+        result = (None, problem)
+    else:
+        try:
+            result = (hashlib.sha256(resolved.read_bytes()).hexdigest(), None)
+        except OSError as exc:
+            result = (None, str(exc))
+    _FILE_SHA256_CACHE[path] = result
+    return result
+
+
 def semantic_findings(document: Any, *, expected_head: str | None) -> list[Finding]:
     if not isinstance(document, dict) or not isinstance(document.get("rows"), list):
         return []
@@ -275,14 +365,157 @@ def semantic_findings(document: Any, *, expected_head: str | None) -> list[Findi
     for row in rows:
         row_id = str(row.get("andon_id"))
         status = row.get("status")
-        milestone_statuses = [m.get("status") for m in row.get("milestones", []) if isinstance(m, dict)]
-        if status == "HANDOFF" and any(value in TERMINAL_COMPLETION for value in milestone_statuses):
-            completed = next(value for value in milestone_statuses if value in TERMINAL_COMPLETION)
-            return [Finding("contradictory_terminal_state", f"{row_id} is HANDOFF while a milestone is {completed}")]
+        bounded_verified = row.get("bounded_verified")
+        integration_open = row.get("integration_open") is True
+        remaining_joins = row.get("remaining_joins", [])
+        owner_gated = row.get("owner_gated") is True
+        owner_gate_present = bool(row.get("owner_gates", []))
+        artifact_gated = row.get("artifact_gated") is True
+        artifact_gate_present = bool(row.get("artifact_gates", []))
+        terminal_open = row.get("terminal_open") is True
+
         if status in {"VERIFIED_STRUCTURAL", "VERIFIED_SCOPED_MODEL"}:
             verification = row.get("verification", {})
             if verification.get("structural_only") is not True:
                 return [Finding("semantic_overclaim", f"{row_id} {status} must retain verification.structural_only=true and cannot claim semantic truth")]
+
+        if integration_open and not remaining_joins:
+            return [
+                Finding(
+                    "integration_open_missing_joins",
+                    f"{row_id} integration_open=true requires nonempty remaining_joins",
+                )
+            ]
+        if not integration_open and remaining_joins:
+            return [
+                Finding(
+                    "integration_join_dimension_mismatch",
+                    f"{row_id} integration_open=false requires empty remaining_joins",
+                )
+            ]
+        if owner_gated != owner_gate_present:
+            return [
+                Finding(
+                    "owner_gate_dimension_mismatch",
+                    f"{row_id} owner_gated={str(owner_gated).lower()} does not match "
+                    f"owner_gates present={str(owner_gate_present).lower()}",
+                )
+            ]
+        if artifact_gated != artifact_gate_present:
+            return [
+                Finding(
+                    "artifact_gate_dimension_mismatch",
+                    f"{row_id} artifact_gated={str(artifact_gated).lower()} does not match "
+                    f"artifact_gates present={str(artifact_gate_present).lower()}",
+                )
+            ]
+
+        for index, evidence in enumerate(row.get("evidence_refs", [])):
+            if not isinstance(evidence, dict):
+                continue
+            kind = evidence.get("kind")
+            commit_sha1 = evidence.get("commit_sha1")
+            blob_sha1 = evidence.get("blob_sha1")
+            sha256 = evidence.get("sha256")
+            command = evidence.get("command")
+            exit_code = evidence.get("exit_code")
+            retained_artifact = evidence.get("retained_artifact")
+            unretained_reason = evidence.get("unretained_reason")
+            location = f"{row_id} evidence_refs[{index}] {kind}"
+            if kind == "source_blob":
+                if not all(isinstance(value, str) and value for value in (commit_sha1, blob_sha1, sha256)):
+                    return [Finding("source_blob_evidence_incomplete", f"{location} requires exact commit_sha1, blob_sha1, and sha256")]
+                if command is not None or exit_code is not None or not retained_artifact or unretained_reason is not None:
+                    return [Finding("source_blob_evidence_inconsistent", f"{location} must identify retained source bytes without command or unretained fields")]
+                _, path_problem = _repo_relative_path(retained_artifact)
+                if path_problem:
+                    return [Finding("source_blob_path_invalid", f"{row_id} {path_problem}")]
+                actual_blob, blob_bytes, git_problem = _git_blob_bytes(commit_sha1, retained_artifact)
+                if git_problem and git_problem.startswith("commit_sha1_not_commit:"):
+                    return [Finding("source_commit_not_commit", f"{row_id} {git_problem}")]
+                if git_problem or actual_blob is None or blob_bytes is None:
+                    return [Finding("source_blob_unavailable", f"{row_id} {retained_artifact} cannot be read from {commit_sha1}: {git_problem}")]
+                if actual_blob != blob_sha1:
+                    return [Finding("source_blob_id_mismatch", f"{row_id} {retained_artifact} blob mismatch: expected {blob_sha1}, got {actual_blob}")]
+                actual_sha256 = hashlib.sha256(blob_bytes).hexdigest()
+                if actual_sha256 != sha256:
+                    return [Finding("source_blob_sha256_mismatch", f"{row_id} {retained_artifact} source_blob sha256 mismatch: expected {sha256}, got {actual_sha256}")]
+                if bounded_verified == "CURRENT":
+                    working_sha256, working_problem = _retained_file_sha256(retained_artifact)
+                    if working_problem or working_sha256 is None:
+                        return [Finding("bounded_current_source_unavailable", f"{row_id} CURRENT evidence cannot read {retained_artifact}: {working_problem}")]
+                    if working_sha256 != sha256:
+                        return [
+                            Finding(
+                                "bounded_current_source_drift",
+                                f"{row_id} CURRENT evidence for {retained_artifact} has working-tree sha256 "
+                                f"{working_sha256}, expected {sha256}",
+                            )
+                        ]
+            elif kind == "file_sha256":
+                if not isinstance(sha256, str) or not sha256 or not retained_artifact:
+                    return [Finding("file_sha256_evidence_incomplete", f"{location} requires sha256 and retained_artifact")]
+                if any(value is not None for value in (commit_sha1, blob_sha1, command, exit_code, unretained_reason)):
+                    return [Finding("file_sha256_evidence_inconsistent", f"{location} may carry only retained file SHA-256 evidence")]
+                actual_sha256, file_problem = _retained_file_sha256(retained_artifact)
+                if file_problem or actual_sha256 is None:
+                    return [Finding("file_sha256_unavailable", f"{row_id} {retained_artifact} cannot be read: {file_problem}")]
+                if actual_sha256 != sha256:
+                    return [Finding("file_sha256_mismatch", f"{row_id} {retained_artifact} file sha256 mismatch: expected {sha256}, got {actual_sha256}")]
+            elif kind == "command_result":
+                if not isinstance(command, str) or not command.strip() or not isinstance(exit_code, int):
+                    return [Finding("command_evidence_incomplete", f"{location} requires an exact command and integer exit_code")]
+                if commit_sha1 is not None or blob_sha1 is not None:
+                    return [Finding("command_evidence_inconsistent", f"{location} must not impersonate source-blob custody")]
+                if retained_artifact:
+                    if not isinstance(sha256, str) or not sha256 or unretained_reason is not None:
+                        return [Finding("retained_command_evidence_incomplete", f"{location} requires retained artifact SHA-256 and no unretained_reason")]
+                    actual_sha256, file_problem = _retained_file_sha256(retained_artifact)
+                    if file_problem or actual_sha256 is None:
+                        return [Finding("retained_command_evidence_unavailable", f"{row_id} {retained_artifact} cannot be read: {file_problem}")]
+                    if actual_sha256 != sha256:
+                        return [
+                            Finding(
+                                "retained_command_evidence_sha256_mismatch",
+                                f"{row_id} {retained_artifact} retained command evidence sha256 mismatch: "
+                                f"expected {sha256}, got {actual_sha256}",
+                            )
+                        ]
+                else:
+                    if sha256 is not None:
+                        return [Finding("unretained_evidence_invented_hash", f"{location} cannot carry a transcript SHA-256 without a retained_artifact")]
+                    if not isinstance(unretained_reason, str) or not unretained_reason.strip():
+                        return [Finding("unretained_evidence_missing_reason", f"{location} requires explicit unretained_reason")]
+
+        if status in TERMINAL_COMPLETION and (integration_open or owner_gated or artifact_gated or terminal_open):
+            open_dimensions = [
+                name
+                for name, value in (
+                    ("integration_open", integration_open),
+                    ("owner_gated", owner_gated),
+                    ("artifact_gated", artifact_gated),
+                    ("terminal_open", terminal_open),
+                )
+                if value
+            ]
+            return [
+                Finding(
+                    "terminal_dimension_conflict",
+                    f"{row_id} {status} cannot close while {', '.join(f'{name}=true' for name in open_dimensions)}",
+                )
+            ]
+        if status not in TERMINAL_COMPLETION and not terminal_open:
+            return [
+                Finding(
+                    "terminal_dimension_mismatch",
+                    f"{row_id} {status} requires terminal_open=true until a terminal completion status is independently reached",
+                )
+            ]
+
+        milestone_statuses = [m.get("status") for m in row.get("milestones", []) if isinstance(m, dict)]
+        if status == "HANDOFF" and any(value in TERMINAL_COMPLETION for value in milestone_statuses):
+            completed = next(value for value in milestone_statuses if value in TERMINAL_COMPLETION)
+            return [Finding("contradictory_terminal_state", f"{row_id} is HANDOFF while a milestone is {completed}")]
 
     for row in rows:
         if row.get("status") not in TERMINAL_COMPLETION:
@@ -429,7 +662,11 @@ def expectation_problems(
 
 def self_test() -> int:
     problems: list[str] = []
-    head = git_head()
+    # Fixture semantics are pinned to the canonical ledger's declared source
+    # boundary so a later repository commit does not turn every focused fixture
+    # into the same stale-head failure.  The live CLI and renderer continue to
+    # compare the canonical ledger to git HEAD without an allow-stale path.
+    head = str(read_json(LIVE_LEDGER).get("source_head", ""))
     valid_files = sorted((FIXTURE_ROOT / "valid").glob("*.json"))
     invalid_files = sorted(
         path for path in (FIXTURE_ROOT / "invalid").glob("*.json") if not path.name.endswith(".expectation.json")
@@ -446,8 +683,7 @@ def self_test() -> int:
         try:
             findings = validate_ledger(materialize_fixture(fixture, LIVE_LEDGER), expected_head=head)
         except (KeyError, IndexError, TypeError, ValueError) as exc:
-            problems.append(f"{rel(fixture)}: {exc}")
-            continue
+            findings = [Finding("fixture_or_json", str(exc))]
         if not findings:
             problems.append(f"{rel(fixture)}: invalid fixture survived")
             continue

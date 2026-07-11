@@ -33,6 +33,7 @@ from validation_registry import (  # noqa: E402
     materialize_fixture,
     read_json,
     sha256_file,
+    snapshot_registry,
     validate_registry,
     validate_verdict,
 )
@@ -85,6 +86,33 @@ class ValidationHardeningTests(unittest.TestCase):
         for name, registry, failure_class in cases:
             with self.subTest(name=name):
                 self.assert_failure(validate_registry(registry, root=ROOT, scan_repo=False), failure_class)
+
+    def test_registry_decoding_rejects_recursive_duplicate_keys(self) -> None:
+        canonical = (ROOT / "tools/validation-registry.json").read_text(encoding="utf-8")
+        duplicate = canonical.replace(
+            '"checker_id":"act-surface-syntax"',
+            '"checker_id":"conflicting-id","checker_id":"act-surface-syntax"',
+            1,
+        )
+        with tempfile.TemporaryDirectory(dir=ROOT / "tests/validation-integrity") as temp:
+            scratch = Path(temp)
+            intact_path = scratch / "intact.json"
+            duplicate_path = scratch / "duplicate.json"
+            intact_path.write_text(canonical, encoding="utf-8")
+            duplicate_path.write_text(duplicate, encoding="utf-8")
+            self.assertEqual(self.registry, load_registry(intact_path.relative_to(ROOT), root=ROOT))
+            self.assertEqual(self.registry, snapshot_registry(intact_path.relative_to(ROOT), root=ROOT).value)
+            for loader in (load_registry, snapshot_registry):
+                with self.subTest(loader=loader.__name__):
+                    with self.assertRaisesRegex(ValueError, "duplicate JSON object key: checker_id"):
+                        loader(duplicate_path.relative_to(ROOT), root=ROOT)
+            verdict = copy.deepcopy(self.base)
+            verdict["registry_path"] = duplicate_path.relative_to(ROOT).as_posix()
+            verdict["registry_sha256"] = sha256_file(duplicate_path)
+            self.assert_failure(
+                validate_verdict(verdict, self.registry, root=ROOT, verify_files=True),
+                "malformed_registry",
+            )
 
     def test_escape_schema_and_event_identity_mutations_fail(self) -> None:
         value = build_case("scoped-no"); value["unexpected"] = True
@@ -148,7 +176,7 @@ class ValidationHardeningTests(unittest.TestCase):
         self.assert_failure(validate_registry(value, root=ROOT, scan_repo=False), "path_custody")
 
         value = copy.deepcopy(self.registry)
-        value["consumers"] = [{"consumer_id":"outside-consumer", "source_path":"../daee-v45-tag/schema/hard-smoke-manifest.schema.json", "profile_id":"scorecard", "policy_source":"registry"}]
+        value["consumers"] = [{"consumer_id":"outside-consumer", "source_path":"../daee-v45-tag/schema/hard-smoke-manifest.schema.json", "source_sha256":sha256_file(outside), "profile_id":"scorecard", "policy_source":"registry"}]
         self.assert_failure(validate_registry(value, root=ROOT, scan_repo=True), "path_custody")
 
     def test_symlink_escape_when_supported(self) -> None:

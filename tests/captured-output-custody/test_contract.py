@@ -4,6 +4,7 @@ import importlib.util
 import errno
 import os
 import json
+import shutil
 import sys
 import tempfile
 import unittest
@@ -130,7 +131,7 @@ class CustodyContractTests(unittest.TestCase):
             with mock.patch.object(cold_module,"verify_artifact",incident_then_swap):findings=cold_module.validate_cold_review(retry,root)
             self.assertEqual(findings,[]);self.assertTrue(swapped)
 
-    def test_verdict_publication_race_and_failure_do_not_overwrite_or_leak(self) -> None:
+    def test_verdict_publication_race_preserves_competitor_and_fault_boundary_is_explicit(self) -> None:
         import build_captured_output_verdict as module
         import check_captured_output_manifest as custody
         from _support import build_base_bundle
@@ -147,9 +148,11 @@ class CustodyContractTests(unittest.TestCase):
             with self.subTest(boundary=boundary),tempfile.TemporaryDirectory(prefix="daee-a01-verdict-fault-") as temp:
                 root=Path(temp);target=root/"verdict.json"
                 with self.assertRaises(custody.PublicationError):custody.atomic_publish_bytes(target,b'complete\n',fault_at=boundary)
-                self.assertFalse(target.exists());self.assertFalse(any(root.glob(".*.stage-*")))
+                if boundary=="after-publish":self.assertEqual(target.read_bytes(),b'complete\n')
+                else:self.assertFalse(target.exists())
+                self.assertFalse(any(root.glob(".*.stage-*")))
 
-    def test_packet_publication_failure_leaves_no_final_or_staging(self) -> None:
+    def test_packet_publication_cleans_prepublish_and_preserves_visible_final(self) -> None:
         import build_cold_review_packet as module
         import check_captured_output_manifest as custody
         from _support import artifact, build_base_bundle, write_json
@@ -158,10 +161,36 @@ class CustodyContractTests(unittest.TestCase):
             for boundary in ("after-stage-file-0","after-stage-file-1","after-stage-write","after-stage-verify","after-publish"):
                 with self.subTest(boundary=boundary):
                     with self.assertRaisesRegex(ValueError,"injected publication failure"):module.build(root/"atomic-spec.json",root,"packet-final",fault_at=boundary)
-                    self.assertFalse((root/"packet-final").exists());self.assertFalse(any(root.glob(".*.stage-*")))
+                    if boundary=="after-publish":
+                        self.assertTrue((root/"packet-final"/"manifest.json").is_file());shutil.rmtree(root/"packet-final")
+                    else:self.assertFalse((root/"packet-final").exists())
+                    self.assertFalse(any(root.glob(".*.stage-*")))
             competitor=root/"packet-final";competitor.mkdir();(competitor/"owner.txt").write_bytes(b'competitor')
             with self.assertRaisesRegex(ValueError,"target already exists"):module.build(root/"atomic-spec.json",root,"packet-final")
             self.assertEqual((competitor/"owner.txt").read_bytes(),b'competitor');self.assertFalse(any(root.glob(".*.stage-*")))
+
+    def test_publication_cleanup_preserves_swapped_competitors(self) -> None:
+        import check_captured_output_manifest as custody
+        with tempfile.TemporaryDirectory(prefix="daee-a01-file-swap-") as temp:
+            root=Path(temp);target=root/"verdict.json";competitor=b'competitor-bytes\n';original_read=Path.read_bytes;swapped=[]
+            def swap_file_before_final_cas(path):
+                if path==target and not swapped:
+                    path.unlink();path.write_bytes(competitor);swapped.append(True)
+                return original_read(path)
+            with mock.patch.object(Path,"read_bytes",swap_file_before_final_cas):
+                with self.assertRaisesRegex(ValueError,"changed during final CAS"):
+                    custody.atomic_publish_bytes(target,b'publisher-bytes\n')
+            self.assertEqual(target.read_bytes(),competitor);self.assertFalse(any(root.glob(".*.stage-*")))
+        with tempfile.TemporaryDirectory(prefix="daee-a01-directory-swap-") as temp:
+            root=Path(temp);target=root/"packet-final";competitor=b'competitor-manifest\n';original_read=Path.read_bytes;swapped=[]
+            def swap_directory_before_final_cas(path):
+                if path==target/"manifest.json" and not swapped:
+                    shutil.rmtree(target);target.mkdir();(target/"manifest.json").write_bytes(competitor);(target/"owner.txt").write_bytes(b'competitor-owner\n');swapped.append(True)
+                return original_read(path)
+            with mock.patch.object(Path,"read_bytes",swap_directory_before_final_cas):
+                with self.assertRaisesRegex(ValueError,"changed during final CAS"):
+                    custody.atomic_publish_directory(target,{"manifest.json":b'publisher-manifest\n'})
+            self.assertEqual((target/"manifest.json").read_bytes(),competitor);self.assertEqual((target/"owner.txt").read_bytes(),b'competitor-owner\n');self.assertFalse(any(root.glob(".*.stage-*")))
 
     def test_empty_directory_competitor_is_never_replaced_even_with_posix_rename_semantics(self) -> None:
         import check_captured_output_manifest as custody

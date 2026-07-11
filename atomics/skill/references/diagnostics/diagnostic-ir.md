@@ -1205,4 +1205,35 @@ Structural pattern print: self-negation / identity-continuity pressure / two-lev
 Load-bearing node: whether the claim denies enduring subjecthood, denies independent ego, or uses therapeutic anti-essentialism differently from metaphysical denial
 Collapse radius: Buddhist owner content, primary Buddhist-source claims, broad Buddhism coverage
 Intervention target: clarify self, nafs, ruh, person, continuity, moral responsibility, and created dependence before response
-Framing notes: do not treat anatta as simple mate
+Framing notes: do not treat anatta as simple materialism; do not equate Islamic nafs with an autonomous self-existent ego
+Existing route: M9 + V9 + metaphysical-architecture as appropriate
+Held: Buddhist anatta/impermanence owner content and broad Buddhism coverage
+Must not dump: primary Buddhist-source claims or generalized Buddhism rebuttal
+```
+
+---
+
+## Connection to Framework Pipeline
+
+`references/diagnostics/framework-pipeline.md` shows the structural branching of the canonical pipeline. `references/diagnostics/routing-precedence.md` specifies the decision rules at each branch point. This file is the gate and the typed state produced at the end of V1 Phase 2 - the check that must be passed before module selection occurs.
+
+**IR-to-surfaced-output derivation:** The field-by-field mapping from internal IR fields to
+surfaced `[Case State]` output fields is in
+`references/diagnostics/case-state-schema.md §IR Derivation Map`. Use that table to verify
+that a surfaced case-state is derived from the validated IR rather than improvised.
+
+---
+
+## Failure Tests
+
+This file has not governed the response if any of the following is true:
+
+- The IR was written after the response.
+- The restoration target names what argument is being won, not what epistemic faculty or ordering is being restored.
+- Mandatory minimum fields are empty but the IR is presented as complete.
+- A suppression rule was active but the corresponding module was still dispatched.
+- A consistency-rule violation is present but the response proceeded anyway.
+- A semantic-discipline blocker was present but doctrinal content still released.
+- The IR carried the previous round's matched modules forward after Stop-2 or another boundary reset without re-running V1.
+- A bounded restorative move rendered, then the response closed without populating `post_render_gate`.
+- `recursion_decision: STOP` was emitted before the gate rechecked held routes and confirmed `next_eligible_pass: none`.

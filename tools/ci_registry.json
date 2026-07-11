@@ -5,14 +5,32 @@
     "check_act_surface_syntax.py": {
       "class": "required"
     },
+    "check_andon_closure_ledger.py": {
+      "class": "required"
+    },
+    "check_andon_contract_registry.py": {
+      "class": "required"
+    },
+    "check_architecture_decision_ledger.py": {
+      "class": "required"
+    },
     "check_as_child_mode_execution_samples.py": {
       "class": "sample-suite",
       "owner_adjudication": "pending"
+    },
+    "check_captured_output_manifest.py": {
+      "class": "required"
+    },
+    "check_case_registry_taint.py": {
+      "class": "required"
     },
     "check_ci_registry_coverage.py": {
       "class": "required"
     },
     "check_closure_witness_graph.py": {
+      "class": "required"
+    },
+    "check_cold_comprehensiveness_review.py": {
       "class": "required"
     },
     "check_cold_law_digest.py": {
@@ -95,6 +113,9 @@
     "check_hard_smoke_manifest.py": {
       "class": "required"
     },
+    "check_input_pressure_coverage.py": {
+      "class": "required"
+    },
     "check_ir_instance_integrity.py": {
       "class": "required"
     },
@@ -125,6 +146,9 @@
       "class": "sample-suite",
       "owner_adjudication": "pending"
     },
+    "check_model_smoke_escape_registry.py": {
+      "class": "required"
+    },
     "check_mojibake.py": {
       "class": "required"
     },
@@ -133,6 +157,9 @@
       "owner_adjudication": "pending"
     },
     "check_mrp_generated_burden.py": {
+      "class": "required"
+    },
+    "check_mrp_recursion_lifecycle.py": {
       "class": "required"
     },
     "check_mrp_route_invariants.py": {
@@ -144,9 +171,15 @@
     "check_nla_decode_semantic_faithfulness.py": {
       "class": "required"
     },
+    "check_no_fixed_topology_floors.py": {
+      "class": "required"
+    },
     "check_noetic_field_banner_samples.py": {
       "class": "sample-suite",
       "owner_adjudication": "pending"
+    },
+    "check_opening_closure_state.py": {
+      "class": "required"
     },
     "check_operative_contracts.py": {
       "class": "advisory",
@@ -168,7 +201,16 @@
     "check_owner_contract_parity.py": {
       "class": "required"
     },
+    "check_package_harness_parity.py": {
+      "class": "required"
+    },
     "check_package_shape.py": {
+      "class": "required"
+    },
+    "check_paired_cross_model_manifest.py": {
+      "class": "required"
+    },
+    "check_parallel_dispatch_manifest.py": {
       "class": "required"
     },
     "check_pipeline2_bridge.py": {
@@ -178,6 +220,9 @@
     "check_pm_child_mode_execution_samples.py": {
       "class": "sample-suite",
       "owner_adjudication": "pending"
+    },
+    "check_producer_checker_parity.py": {
+      "class": "required"
     },
     "check_prompt_pack_budget.py": {
       "class": "required"
@@ -215,10 +260,16 @@
     "check_retained_row_claims.py": {
       "class": "required"
     },
+    "check_review_incident_report.py": {
+      "class": "required"
+    },
     "check_route_shard_selection.py": {
       "class": "required"
     },
     "check_routing_parity.py": {
+      "class": "required"
+    },
+    "check_runtime_context_delivery.py": {
       "class": "required"
     },
     "check_shannon_finite_fold.py": {
@@ -235,7 +286,13 @@
     "check_smoke_artifacts.py": {
       "class": "required"
     },
+    "check_smoke_matrix_manifest.py": {
+      "class": "required"
+    },
     "check_spec_authoring_pack.py": {
+      "class": "required"
+    },
+    "check_stage_projection_parity.py": {
       "class": "required"
     },
     "check_staged_governed_output_high_mass.py": {
@@ -254,6 +311,15 @@
     "check_tlang_response_closure.py": {
       "class": "required"
     },
+    "check_topology_capacity_properties.py": {
+      "class": "required"
+    },
+    "check_topology_mass_accounting.py": {
+      "class": "required"
+    },
+    "check_topology_review.py": {
+      "class": "required"
+    },
     "check_trigger_eval_manifest.py": {
       "class": "required"
     },
@@ -269,6 +335,9 @@
     "check_underfixtured_module_coverage.py": {
       "class": "advisory",
       "owner_adjudication": "pending"
+    },
+    "check_validation_registry.py": {
+      "class": "required"
     }
   }
 }

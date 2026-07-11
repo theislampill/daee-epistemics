@@ -13,6 +13,12 @@ declared source of truth that MUST match reality:
   3. The required<->wired invariant holds: a checker is wired into
      `tools/run_local_ci.py` COMMANDS iff its registry class is `required`.
 
+Wiring requires a direct checker execution command. Python launcher argv is
+classified without execution: value-taking options are consumed, terminal
+command/module modes stop, and only the resulting script slot is evidence. A
+help-only invocation or checker filename appearing only as another command's
+argument is not evidence.
+
 It does NOT adjudicate whether a non-required label is the *correct* label — that
 is owner work (Plan 08 Phase 2 / Plan 19). It only enforces that the accounting
 exists and that the lane wiring matches the declared intent, so a checker can no
@@ -32,6 +38,8 @@ import glob
 import importlib.util
 import json
 import os
+import re
+import shlex
 import sys
 from pathlib import Path
 
@@ -48,6 +56,10 @@ NON_REQUIRED_CLASSES = {
     "deprecated-candidate",
 }
 VALID_CLASSES = {REQUIRED_CLASS} | NON_REQUIRED_CLASSES
+ALWAYS_NON_GATING_FLAGS = {"-h", "--help"}
+NON_GATING_FLAGS_BY_CHECKER = {
+    "check_ci_registry_coverage.py": {"--report"},
+}
 
 
 def evaluate(checker_files: set[str], wired: set[str], entries: dict[str, dict]) -> list[str]:
@@ -91,10 +103,115 @@ def _load_commands() -> list[str]:
     return list(module.COMMANDS)
 
 
+def _python_launcher_kind(executable: str) -> str | None:
+    leaf = executable.replace("\\", "/").rsplit("/", 1)[-1].lower()
+    if leaf in {"py", "py.exe"}:
+        return "py"
+    if re.fullmatch(
+        r"(?:pythonw?(?:\d+(?:\.\d+)*t?)?|pypy(?:\d+(?:\.\d+)*)?)(?:\.exe)?",
+        leaf,
+    ):
+        return "python"
+    return None
+
+
+def _python_script_index(parts: list[str], launcher_kind: str) -> int | None:
+    flag_only = {
+        "-B", "-d", "-E", "-i", "-I", "-P", "-q", "-R", "-s", "-S", "-u", "-v", "-x",
+        "--debug", "--dont-write-bytecode", "--ignore-environment", "--inspect", "--isolated",
+        "--no-site", "--no-user-site", "--optimize", "--quiet", "--safe-path", "--unbuffered",
+        "--verbose",
+    }
+    consumes_value = {"-W", "-X", "--check-hash-based-pycs"}
+    terminal = {"-", "-c", "-m", "-h", "--help", "-V", "--version"}
+    index = 1
+    while index < len(parts):
+        token = parts[index]
+        if launcher_kind == "py" and token in {"-0", "-0p", "--list", "--list-paths"}:
+            return None
+        if launcher_kind == "py" and (
+            re.fullmatch(r"-\d+(?:\.\d+)*(?:-\d+)?", token)
+            or re.fullmatch(r"-V:.+", token, flags=re.IGNORECASE)
+        ):
+            index += 1
+            continue
+        if token == "--":
+            return index + 1 if index + 1 < len(parts) else None
+        if (
+            token in terminal
+            or (token.startswith("-c") and token != "-c")
+            or (token.startswith("-m") and token != "-m")
+        ):
+            return None
+        if token in consumes_value:
+            if index + 1 >= len(parts):
+                return None
+            index += 2
+            continue
+        if (
+            token in flag_only
+            or re.fullmatch(r"-(?:b+|O+|q+|v+)", token)
+            or (token.startswith("-W") and token != "-W")
+            or (token.startswith("-X") and token != "-X")
+            or token.startswith("--check-hash-based-pycs=")
+        ):
+            index += 1
+            continue
+        if token.startswith("-"):
+            return None
+        return index
+    return None
+
+
+def wired_checkers(checker_files: set[str], commands: list[str]) -> set[str]:
+    """Return checkers directly executed in an owner-gating local-CI mode.
+
+    A checker filename in an argument, comment-like string, generic help probe,
+    or checker-owned explicitly non-gating mode is not execution evidence.
+    """
+    wired: set[str] = set()
+    for command in commands:
+        try:
+            parts = shlex.split(command, posix=False)
+        except ValueError:
+            continue
+        parts = [
+            part[1:-1]
+            if len(part) >= 2 and part[0] == part[-1] and part[0] in {"'", '"'}
+            else part
+            for part in parts
+        ]
+        if not parts:
+            continue
+
+        launcher_kind = _python_launcher_kind(parts[0])
+        script_index: int | None = None
+        if launcher_kind is not None:
+            script_index = _python_script_index(parts, launcher_kind)
+        elif parts[0].lower().endswith(".py"):
+            script_index = 0
+
+        if script_index is None:
+            continue
+        script = parts[script_index]
+        checker_args = parts[script_index + 1:]
+        if any(part in ALWAYS_NON_GATING_FLAGS for part in checker_args):
+            continue
+        normalized = script.replace("\\", "/").removeprefix("./")
+        if not normalized.startswith("tools/"):
+            continue
+        name = normalized.removeprefix("tools/")
+        if any(part in NON_GATING_FLAGS_BY_CHECKER.get(name, set()) for part in checker_args):
+            continue
+        if "/" not in name and name in checker_files:
+            wired.add(name)
+    return wired
+
+
 def _disk_state() -> tuple[set[str], set[str], dict[str, dict]]:
     checker_files = {os.path.basename(p) for p in glob.glob(str(ROOT / "tools" / "check_*.py"))}
     commands = _load_commands()
-    wired = {name for name in checker_files if any(f"tools/{name}" in c for c in commands)}
+    wired = wired_checkers(checker_files, commands)
     data = json.loads(REGISTRY.read_text(encoding="utf-8"))
     return checker_files, wired, data.get("checkers", {})
 
@@ -125,6 +242,89 @@ def self_test() -> int:
         ("bad class flagged",
          any("bad class for check_c.py" in e
              for e in evaluate(files, wired, {**good, "check_c.py": {"class": "mystery"}}))),
+        ("wiring requires a direct owner-gating checker invocation",
+         wired_checkers(
+             files | {"check_ci_registry_coverage.py"},
+             [
+                 "python tools/check_a.py --help",
+                 "python tools/check_ci_registry_coverage.py --report",
+                 "python tools/helper.py --example tools/check_b.py",
+                 "python tools/check_c.py --self-test",
+                 "python tools/check_d.py --report artifact.json",
+             ],
+         ) == {"check_c.py", "check_d.py"}),
+        ("interpreter options consume their values before script selection",
+         wired_checkers(
+             files,
+             [
+                 "python -X tools/check_a.py tools/check_b.py",
+                 "python -W tools/check_c.py tools/check_d.py",
+                 "python --check-hash-based-pycs tools/check_a.py tools/check_c.py",
+             ],
+         ) == {"check_b.py", "check_c.py", "check_d.py"}),
+        ("command and module modes are terminal before later checker arguments",
+         wired_checkers(
+             files,
+             [
+                 'python -c "print(1)" tools/check_a.py',
+                 'python "-cprint(1)" tools/check_b.py',
+                 "python -m http.server tools/check_c.py",
+                 "python -mhttp.server tools/check_d.py",
+             ],
+         ) == set()),
+        ("end-of-options and direct checker scripts remain wired",
+         wired_checkers(
+             files,
+             [
+                 "python -- tools/check_a.py",
+                 "python -B tools/check_b.py",
+                 "python tools/check_c.py",
+                 "tools/check_d.py --report artifact.json",
+             ],
+         ) == files),
+        ("bounded interpreter launchers selectors and attached options are recognized",
+         wired_checkers(
+             files,
+             [
+                 "python3.13t -Xdev tools/check_a.py",
+                 "C:/Python313/python3.13t.exe tools/check_a.py",
+                 r"C:\Python313\python3.13t.exe tools/check_a.py",
+                 r'"C:\Program Files\Python313\python3.13t.exe" tools/check_a.py',
+                 "C:/Python312/pythonw.exe -Wignore tools/check_b.py",
+                 "py -3 tools/check_c.py",
+                 "pypy3.exe tools/check_d.py",
+             ],
+         ) == files),
+        ("near-miss free-threaded names remain non-Python launchers",
+         wired_checkers(
+             files,
+             [
+                 "python3.13tx tools/check_a.py",
+                 "cpython3.13t tools/check_b.py",
+             ],
+         ) == set()),
+        ("unknown pre-script interpreter options fail closed",
+         wired_checkers(files, ["python --future-option tools/check_a.py"]) == set()),
+        ("py launcher list modes are terminal",
+         wired_checkers(
+             files,
+             [
+                 "py -0 tools/check_a.py",
+                 "py -0p tools/check_b.py",
+                 "py --list tools/check_c.py",
+                 "py --list-paths tools/check_d.py",
+             ],
+         ) == set()),
+        ("non-gating flags apply only after the selected checker script",
+         wired_checkers(
+             files | {"check_ci_registry_coverage.py"},
+             [
+                 "python -X --help tools/check_a.py",
+                 "python -W --report tools/check_ci_registry_coverage.py",
+                 "python --help tools/check_b.py",
+                 "python tools/check_c.py --help",
+             ],
+         ) == {"check_a.py", "check_ci_registry_coverage.py"}),
         ("class breakdown groups by class",
          class_breakdown({"a.py": {"class": "required"}, "b.py": {"class": "advisory"},
                           "c.py": {"class": "required"}}) == {"required": ["a.py", "c.py"], "advisory": ["b.py"]}),

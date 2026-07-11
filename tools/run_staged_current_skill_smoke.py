@@ -21,12 +21,14 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import uuid
 from pathlib import Path
 from typing import Any
 
 import build_staged_governed_output as staged_output
 import check_staged_runtime_handshake as staged_handshake_check
+from checker_execution_snapshot import create_execution_snapshot
 from check_field_witness_convergence import registers_in_text as checker_field_witness_registers_in_text
 from closure_witness_lib import extract_embedded_field_witness, extract_field_witness, parse_closure_witness, status_head
 from delta_result_vocabulary import (
@@ -51,6 +53,9 @@ from register_axis_contract import (
     register_axis_floor,
 )
 from stage05_basis_contract import normalize_terminal_detail_basis
+from validation_registry import load_registry as load_validation_registry
+from validation_registry import profile_invocations
+from validation_registry import snapshot_registry as snapshot_validation_registry
 from check_mrp_generated_burden import (
     BODY_SUPPORTED_GENERIC_DELTA_RESULTS,
     FORMAL_OWNER_CONTRACT_OPERATIONS,
@@ -228,21 +233,59 @@ def ordering_owner_family(owner: str) -> str:
     return canonical_delta_owner(raw) or raw
 
 
-STAGE07_RELEASE_VALIDATION_ORDER = (
-    "visible_opening_header",
-    "nla_semantic_faithfulness",
-    "field_witness_convergence",
-    "formal_reread_state_semantics",
-    "mid_reread_pressure",
-    "mrp_route_invariants",
-    "mrp_record_surface_parity",
-    "mrp_generated_burden",
-    "graph_completeness_json",
-    "manual_smoke_render_contract",
-    "public_burden_grouping",
-    "owner_activation_ordering",
-)
-STAGE07_RELEASE_VALIDATION_KEYS = set(STAGE07_RELEASE_VALIDATION_ORDER)
+def _stage07_release_projection(
+    root: Path,
+    output_path: Path | None = None,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    snapshot = snapshot_validation_registry(root=root)
+    plan = profile_invocations(
+        snapshot.value,
+        "stage07-release",
+        bindings={"output": str(output_path)} if output_path is not None else None,
+        root=root,
+    )
+    policy = {
+        "selected_profile": "stage07-release",
+        "registry_path": snapshot.relative_path,
+        "registry_sha256": snapshot.sha256,
+        "result_order": [str(row["result_key"]) for row in plan],
+    }
+    return plan, policy
+
+
+def stage07_release_invocation_plan(root: Path, output_path: Path) -> list[dict[str, Any]]:
+    return _stage07_release_projection(root, output_path)[0]
+
+
+def stage07_release_validation_order(root: Path = ROOT) -> tuple[str, ...]:
+    return tuple(row["result_key"] for row in _stage07_release_projection(root)[0])
+
+
+def stage07_release_validation_policy(root: Path = ROOT) -> dict[str, Any]:
+    return _stage07_release_projection(root)[1]
+
+
+def execute_release_invocation_plan(
+    plan: list[dict[str, Any]],
+    *,
+    run_adapter,
+    run_checker,
+) -> dict[str, str]:
+    """Execute the ordered Stage 07 projection and stop on its first failure."""
+
+    results: dict[str, str] = {}
+    for row in plan:
+        kind = row.get("invocation_kind")
+        if kind == "in-process-adapter":
+            run_adapter(row)
+        elif kind == "checker":
+            run_checker(row)
+        else:
+            raise HarnessError(f"stage-07-release-output: unknown invocation kind {kind!r}")
+        results[str(row["result_key"])] = "pass"
+    return results
+
+
 B5_PROJECTION_REQUIRED_TRUE_FIELDS = (
     "collapse_positive",
     "coverage_complete",
@@ -999,14 +1042,10 @@ def validate_required_files(root: Path) -> dict[str, Path]:
         "handshake_checker": root / "tools" / "check_staged_runtime_handshake.py",
         "sidecar_builder": root / "tools" / "build_retained_proof_sidecars.py",
         "b5_sidecar_builder": root / "tools" / "build_b5_full_ir_projection_sidecar.py",
-        "nla_checker": root / "tools" / "check_nla_decode_semantic_faithfulness.py",
-        "field_witness_checker": root / "tools" / "check_field_witness_convergence.py",
-        "formal_reread_checker": root / "tools" / "check_formal_reread_state_semantics.py",
-        "graph_checker": root / "tools" / "check_graph_completeness.py",
-        "manual_render_checker": root / "tools" / "check_manual_smoke_render_contract.py",
-        "public_burden_grouping_checker": root / "tools" / "check_public_burden_grouping.py",
-        "owner_ordering_checker": root / "tools" / "check_owner_activation_ordering.py",
     }
+    for row in profile_invocations(load_validation_registry(root=root), "stage07-release", root=root):
+        if row["invocation_kind"] == "checker":
+            required[f"stage07_{row['result_key']}"] = root / str(row["source_path"])
     missing = [f"{name}: {path}" for name, path in required.items() if not path.exists()]
     if missing:
         raise HarnessError("Required file(s) missing:\n- " + "\n- ".join(missing))
@@ -8728,6 +8767,7 @@ def run_compiled_release_self_test(
         "sha256": assembly_record["output"]["sha256"],
     }
     stage07_stage["release_validation"] = dict(compiled_validation)
+    stage07_stage["release_validation_policy"] = stage07_release_validation_policy(root)
     stage07_stage["release_field_diagnostics"] = dict(compiled_diagnostics)
     stage07_stage["release_output_mode"] = "compiled-output"
     stage07_stage["assembly_manifest"] = dict(assembly_record["assembly_manifest"])
@@ -17996,21 +18036,9 @@ def run_self_test(root: Path) -> int:
     if invalid_result.returncode == 0:
         raise HarnessError("Self-test failed to reject Stage 06 release_output")
 
-    stage07_validation = {
-        "visible_opening_header": "pass",
-        "nla_semantic_faithfulness": "pass",
-        "field_witness_convergence": "pass",
-        "formal_reread_state_semantics": "pass",
-        "mid_reread_pressure": "pass",
-        "mrp_route_invariants": "pass",
-        "mrp_record_surface_parity": "pass",
-        "mrp_generated_burden": "pass",
-        "graph_completeness_json": "pass",
-        "manual_smoke_render_contract": "pass",
-        "public_burden_grouping": "pass",
-        "owner_activation_ordering": "pass",
-    }
-    if STAGE07_RELEASE_VALIDATION_ORDER.index("mrp_generated_burden") > STAGE07_RELEASE_VALIDATION_ORDER.index(
+    stage07_validation_order = stage07_release_validation_order(root)
+    stage07_validation = {result_key: "pass" for result_key in stage07_validation_order}
+    if stage07_validation_order.index("mrp_generated_burden") > stage07_validation_order.index(
         "graph_completeness_json"
     ):
         raise HarnessError("Self-test Stage 07 validator order must run MRP before graph completeness")
@@ -18179,6 +18207,7 @@ def run_self_test(root: Path) -> int:
     )
     stage07_stage = dict(replay["stages"][6])
     stage07_stage["release_validation"] = dict(stage07_validation)
+    stage07_stage["release_validation_policy"] = stage07_release_validation_policy(root)
     stage07_stage["release_field_diagnostics"] = dict(stage07_diagnostics)
     stage07_local_record["stages"] = [*replay["stages"][:6], stage07_stage]
     if stage07_local_record.get("stage_scope", {}).get("release_output") is not True:
@@ -18820,85 +18849,77 @@ def build_release_field_diagnostics(output_path: Path) -> dict[str, Any]:
     }
 
 
+def run_release_validators_with_policy(
+    root: Path,
+    output_path: Path,
+    per_burden_reread: list[dict[str, Any]],
+) -> tuple[dict[str, str], dict[str, Any]]:
+    plan, policy = _stage07_release_projection(root, output_path)
+    output_bytes = output_path.read_bytes()
+    custody_parent = root / ".daee" / "validation" / "stage07-release"
+    custody_parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="execution-", dir=custody_parent) as temp:
+        try:
+            execution = create_execution_snapshot(
+                root=root,
+                destination=Path(temp) / "snapshot",
+                plan=plan,
+                output_path=output_path,
+            )
+        except (OSError, ValueError) as exc:
+            raise HarnessError(f"stage-07-release-output: execution snapshot failed: {exc}") from exc
+        plan = execution.bind_plan(plan, original_output=output_path)
+        frozen_output = execution.output_path
+
+        def run_adapter(row: dict[str, Any]) -> None:
+            adapter_id = row.get("adapter_id")
+            if adapter_id == "visible-governed-output":
+                visible_errors = visible_governed_output_errors(frozen_output)
+                if visible_errors:
+                    raise HarnessError(
+                        "stage-07-release-output: visible governed output validation failed:\n- "
+                        + "\n- ".join(visible_errors)
+                    )
+                return
+            if adapter_id == "mrp-record-surface-parity":
+                parity_errors = staged_output.visible_block_parity_errors(
+                    frozen_output.read_text(encoding="utf-8", errors="replace"),
+                    per_burden_reread,
+                )
+                if parity_errors:
+                    raise HarnessError(
+                        "stage-07-release-output: MRP record-surface parity failed; visible "
+                        "[Mid-Reread Pressure] blocks must mirror the stage-05 per_burden_reread "
+                        "records verbatim:\n- " + "\n- ".join(parity_errors)
+                    )
+                return
+            raise HarnessError(f"stage-07-release-output: unknown in-process adapter {adapter_id!r}")
+
+        def run_checker(row: dict[str, Any]) -> None:
+            command = execution.checker_command(row)
+            require_command_success(command, cwd=execution.root)
+
+        results = execute_release_invocation_plan(
+            plan,
+            run_adapter=run_adapter,
+            run_checker=run_checker,
+        )
+        expected_order = tuple(row["result_key"] for row in plan)
+        if tuple(results) != expected_order:
+            raise HarnessError("stage-07-release-output: registry invocation order drifted during execution")
+        execution.verify()
+        if output_path.read_bytes() != output_bytes:
+            raise HarnessError("stage-07-release-output: live output changed during checker execution")
+        policy = {**policy, "execution_snapshot": execution.manifest}
+        return results, policy
+
+
 def run_release_validators(
     root: Path,
     output_path: Path,
     per_burden_reread: list[dict[str, Any]],
 ) -> dict[str, str]:
-    visible_errors = visible_governed_output_errors(output_path)
-    if visible_errors:
-        raise HarnessError(
-            "stage-07-release-output: visible governed output validation failed:\n- "
-            + "\n- ".join(visible_errors)
-        )
-    validators = [
-        (
-            "nla_semantic_faithfulness",
-            [sys.executable, str(root / "tools" / "check_nla_decode_semantic_faithfulness.py"), "--outputs", str(output_path)],
-        ),
-        (
-            "field_witness_convergence",
-            [sys.executable, str(root / "tools" / "check_field_witness_convergence.py"), "--outputs", str(output_path)],
-        ),
-        (
-            "formal_reread_state_semantics",
-            [sys.executable, str(root / "tools" / "check_formal_reread_state_semantics.py"), "--outputs", str(output_path)],
-        ),
-        (
-            "mid_reread_pressure",
-            [sys.executable, str(root / "tools" / "check_mid_reread_pressure.py"), "--outputs", str(output_path)],
-        ),
-        (
-            "mrp_route_invariants",
-            [sys.executable, str(root / "tools" / "check_mrp_route_invariants.py"), "--outputs", str(output_path)],
-        ),
-        (
-            "mrp_generated_burden",
-            [
-                sys.executable,
-                str(root / "tools" / "check_mrp_generated_burden.py"),
-                "--outputs",
-                str(output_path),
-                "--show-advisories",
-            ],
-        ),
-        (
-            "graph_completeness_json",
-            [sys.executable, str(root / "tools" / "check_graph_completeness.py"), "--outputs", str(output_path), "--json"],
-        ),
-        (
-            "manual_smoke_render_contract",
-            [sys.executable, str(root / "tools" / "check_manual_smoke_render_contract.py"), "--outputs", str(output_path)],
-        ),
-        (
-            "public_burden_grouping",
-            [sys.executable, str(root / "tools" / "check_public_burden_grouping.py"), "--outputs", str(output_path)],
-        ),
-        (
-            "owner_activation_ordering",
-            [sys.executable, str(root / "tools" / "check_owner_activation_ordering.py"), "--require-plan", "--outputs", str(output_path)],
-        ),
-    ]
-    results = {"visible_opening_header": "pass"}
-    for key, command in validators:
-        require_command_success(command, cwd=root)
-        results[key] = "pass"
-        if key == "mid_reread_pressure":
-            parity_errors = staged_output.visible_block_parity_errors(
-                output_path.read_text(encoding="utf-8", errors="replace"),
-                per_burden_reread,
-            )
-            if parity_errors:
-                raise HarnessError(
-                    "stage-07-release-output: MRP record-surface parity failed; visible "
-                    "[Mid-Reread Pressure] blocks must mirror the stage-05 per_burden_reread "
-                    "records verbatim:\n- " + "\n- ".join(parity_errors)
-                )
-            results["mrp_record_surface_parity"] = "pass"
-    missing = STAGE07_RELEASE_VALIDATION_KEYS - set(results)
-    if missing:
-        raise HarnessError(f"stage-07-release-output: internal validator set missing {sorted(missing)}")
-    return results
+    return run_release_validators_with_policy(root, output_path, per_burden_reread)[0]
 
 
 def build_sidecars(
@@ -19563,7 +19584,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                 )
         if not output_path.exists() or output_path.stat().st_size == 0:
             raise HarnessError("stage-07-release-output: output.md was not produced")
-        release_validation = run_release_validators(
+        release_validation, release_validation_policy = run_release_validators_with_policy(
             root,
             output_path,
             stage05_per_burden_entries(stage_by_id(stages, "stage-05-mrp-reread-terminal-state")),
@@ -19580,6 +19601,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             "closure_claim": "complete",
             "output_is_full_governed_answer": True,
             "release_validation": release_validation,
+            "release_validation_policy": release_validation_policy,
             "release_field_diagnostics": release_field_diagnostics,
             "release_output_mode": release_output_mode,
         }
@@ -19662,6 +19684,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
             "status": "pass",
             "produces": ["verifier_sidecars"],
             "requires": ["release_output"],
+            "release_validation_policy": dict(release_validation_policy),
             "verifier_sidecars": {
                 "proof_sidecars": {
                     "claimed": True,

@@ -12,8 +12,9 @@ from typing import Any, Iterable
 from assert_expected_rejection import assert_rejection
 from contract_validation import PathCustodyError
 from validation_registry import (
-    ROOT, Finding, hydrate_fixture, load_registry, materialize_fixture,
-    profile_map, read_json, scan_anti_bank, validate_registry, validate_verdict,
+    ROOT, Finding, _source_has_private_policy, hydrate_fixture, load_registry,
+    materialize_fixture, profile_map, read_json, scan_anti_bank, validate_registry,
+    validate_verdict,
 )
 
 CHECKER_ID = "validation-registry"
@@ -86,9 +87,14 @@ def _case_findings(case_id: str, registry: dict[str, Any]) -> list[Finding]:
     elif case_id == "forbidden-artifact-exists":
         verdict["checker_results"][0]["forbidden_artifact_readback"] = [{"path":"tests/validation-integrity/artifacts/input.txt", "exists":True}]
     elif case_id == "private-scorecard-list":
-        mutated = copy.deepcopy(registry)
-        mutated["consumers"] = [{"consumer_id":"fixture-scorecard","source_path":"tests/validation-integrity/helpers/private_scorecard_consumer.py","profile_id":"scorecard","policy_source":"legacy-private-list"}]
-        return [f for f in validate_registry(mutated, root=ROOT, scan_repo=True) if f.failure_class == "private_consumer_battery"]
+        fixture = ROOT / "tests/validation-integrity/helpers/private_scorecard_consumer.py"
+        return [
+            Finding(
+                "private_consumer_battery",
+                "fixture-scorecard: supported declarative private checker policy remains",
+                "private-battery",
+            )
+        ] if _source_has_private_policy(fixture, registry) else []
     else: return [Finding("unknown_fixture", f"unknown validation-integrity case {case_id}", "unknown-fixture")]
     verdict = hydrate_fixture(verdict, root=ROOT)
     if case_id in {"wrong-earliest-stage", "wrong-failure-class", "wrong-failure-subcode"}:
@@ -138,24 +144,24 @@ def self_test() -> int:
     structural_findings = validate_registry(registry, root=ROOT, scan_repo=False)
     problems.extend(f"registry: [{f.failure_class}] {f.message}" for f in structural_findings)
     live = validate_registry(registry, root=ROOT, scan_repo=True)
-    unexpected_live = [f for f in live if f.failure_class != "private_consumer_battery"]
-    problems.extend(f"live: [{f.failure_class}] {f.message}" for f in unexpected_live)
-    if not any(f.failure_class == "private_consumer_battery" for f in live):
-        problems.append("live scan failed to detect read-only legacy private consumers")
+    problems.extend(f"live: [{f.failure_class}] {f.message}" for f in live)
     mutations = []
     duplicate = copy.deepcopy(registry); duplicate["checkers"].append(copy.deepcopy(duplicate["checkers"][0])); mutations.append(("duplicate_checker_id", duplicate, False))
     missing_tool = copy.deepcopy(registry); missing_tool["checkers"][0]["source_path"] = "tools/missing_validation_tool.py"; mutations.append(("nonexistent_checker_tool", missing_tool, False))
     deprecated = copy.deepcopy(registry); deprecated["checkers"][0]["deprecated_aliases"] = ["old-checker-name"]; deprecated["profiles"][0]["requirements"][0]["checker_id"] = "old-checker-name"; mutations.append(("deprecated_checker_alias", deprecated, False))
-    missing_consumer = copy.deepcopy(registry); missing_consumer["consumers"] = [{"consumer_id":"missing","source_path":"tools/missing_consumer.py","profile_id":"scorecard","policy_source":"registry"}]; mutations.append(("unregistered_consumer", missing_consumer, True))
+    missing_consumer = copy.deepcopy(registry); missing_consumer["consumers"] = [{"consumer_id":"missing","source_path":"tools/missing_consumer.py","source_sha256":"0" * 64,"profile_id":"scorecard","policy_source":"registry"}]; mutations.append(("unregistered_consumer", missing_consumer, True))
     for expected_class, document, scan_repo in mutations:
         found = validate_registry(document, root=ROOT, scan_repo=scan_repo)
         if not any(f.failure_class == expected_class for f in found):
             problems.append(f"registry mutation failed to detect {expected_class}")
+    private_fixture = ROOT / "tests/validation-integrity/helpers/private_scorecard_consumer.py"
+    if not _source_has_private_policy(private_fixture, registry):
+        problems.append("supported declarative private-scorecard fixture was not rejected")
     if problems:
         for problem in problems: print(f"FAIL: {problem}")
         print(f"validation registry self-test: FAIL ({len(problems)} problem(s))")
         return 1
-    print(f"validation registry self-test: PASS ({counts[0]} valid, {counts[1]} invalid; legacy consumers detected and blocked)")
+    print(f"validation registry self-test: PASS ({counts[0]} valid, {counts[1]} invalid; zero live private consumers; synthetic private policy rejected)")
     return 0
 
 

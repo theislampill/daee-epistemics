@@ -4,7 +4,7 @@
   "title": "DAEE canonical validation registry",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "registry_id", "artifact_types", "checkers", "profiles", "consumers", "structural_non_claims"],
+  "required": ["schema", "registry_id", "artifact_types", "checkers", "diagnostic_adapters", "profiles", "consumers", "structural_non_claims"],
   "properties": {
     "schema": {"const": "daee-validation-registry-v1"},
     "registry_id": {"type": "string", "minLength": 1},
@@ -23,6 +23,7 @@
           "deprecated_aliases": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
           "source_path": {"type": "string", "minLength": 1},
           "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "runtime_resources": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
           "accepted_exit_categories": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["accepted", "structural-rejection"]}},
           "requirement_status": {"enum": ["required", "optional", "advisory", "mode-specific", "inapplicable"]},
           "artifact_applicability": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
@@ -30,16 +31,45 @@
         }
       }
     },
+    "diagnostic_adapters": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["adapter_id", "checker_ids", "exit_code", "require_nonempty_output", "reject_traceback", "required_markers"],
+        "properties": {
+          "adapter_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+          "checker_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "exit_code": {"const": 1},
+          "require_nonempty_output": {"const": true},
+          "reject_traceback": {"const": true},
+          "required_markers": {"type": "array", "minItems": 1, "maxItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "pattern": "^[^\\r\\n]+$"}}
+        }
+      }
+    },
     "profiles": {
       "type": "array", "minItems": 6,
       "items": {
         "type": "object", "additionalProperties": false,
-        "required": ["profile_id", "purpose", "artifact_types", "requirements", "missing_prerequisite_behavior", "structural_non_claims"],
+        "required": ["profile_id", "purpose", "artifact_types", "requirements", "invocations", "missing_prerequisite_behavior", "structural_non_claims"],
         "properties": {
           "profile_id": {"enum": ["stage07-release", "captured-output-structural", "stage08-proof-surface", "promotion", "scorecard", "advisory"]},
           "purpose": {"type": "string", "minLength": 1},
           "artifact_types": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
           "requirements": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["checker_id", "required"], "properties": {"checker_id": {"type": "string"}, "required": {"type": "boolean"}}}},
+          "invocations": {
+            "type": "array", "uniqueItems": true,
+            "items": {
+              "type": "object", "additionalProperties": false,
+              "required": ["result_key", "invocation_kind", "checker_id", "adapter_id", "arguments"],
+              "properties": {
+                "result_key": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_]*$"},
+                "invocation_kind": {"enum": ["checker", "in-process-adapter"]},
+                "checker_id": {"type": ["string", "null"]},
+                "adapter_id": {"type": ["string", "null"]},
+                "arguments": {"type": "array", "items": {"type": "string"}}
+              }
+            }
+          },
           "missing_prerequisite_behavior": {"enum": ["hard-fail", "quarantine", "projection-only", "advisory-only"]},
           "structural_non_claims": {"type": "array", "minItems": 1, "items": {"type": "string"}}
         }
@@ -47,7 +77,7 @@
     },
     "consumers": {
       "type": "array", "minItems": 1,
-      "items": {"type": "object", "additionalProperties": false, "required": ["consumer_id", "source_path", "profile_id", "policy_source"], "properties": {"consumer_id": {"type": "string"}, "source_path": {"type": "string"}, "profile_id": {"type": "string"}, "policy_source": {"enum": ["registry", "legacy-private-list"]}}}
+      "items": {"type": "object", "additionalProperties": false, "required": ["consumer_id", "source_path", "source_sha256", "profile_id", "policy_source"], "properties": {"consumer_id": {"type": "string"}, "source_path": {"type": "string"}, "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "profile_id": {"type": "string"}, "policy_source": {"enum": ["registry", "legacy-private-list"]}}}
     },
     "structural_non_claims": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string"}}
   }

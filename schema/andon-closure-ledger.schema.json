@@ -1,9 +1,96 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://theislampill.github.io/daee-epistemics/schema/andon-closure-ledger.schema.json",
-  "title": "DAEE v0.4.6 ANDON closure ledger",
+  "title": "DAEE v0.4.6 ANDON closure ledger v2",
   "type": "object",
   "additionalProperties": false,
+  "$defs": {
+    "evidence_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "source_ref",
+        "commit_sha1",
+        "blob_sha1",
+        "sha256",
+        "command",
+        "exit_code",
+        "retained_artifact",
+        "unretained_reason"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "source_blob",
+            "file_sha256",
+            "command_result"
+          ]
+        },
+        "source_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit_sha1": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "blob_sha1": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "command": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "exit_code": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "retained_artifact": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unretained_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
   "required": [
     "schema",
     "ledger_id",
@@ -18,7 +105,7 @@
   ],
   "properties": {
     "schema": {
-      "const": "daee-andon-closure-ledger-v1"
+      "const": "daee-andon-closure-ledger-v2"
     },
     "ledger_id": {
       "type": "string",
@@ -109,6 +196,14 @@
           "title",
           "priority",
           "status",
+          "bounded_verified",
+          "integration_open",
+          "owner_gated",
+          "artifact_gated",
+          "terminal_open",
+          "remaining_joins",
+          "scope_exclusions",
+          "evidence_refs",
           "evidence_class",
           "code_lineage",
           "regression_status",
@@ -165,6 +260,50 @@
               "DEFERRED",
               "CLOSED_OWNER_ACCEPTED"
             ]
+          },
+          "bounded_verified": {
+            "enum": [
+              "CURRENT",
+              "PREDECESSOR_VERIFIED_CURRENT_DRIFTED",
+              "PARTIAL",
+              "UNVERIFIED"
+            ]
+          },
+          "integration_open": {
+            "type": "boolean"
+          },
+          "owner_gated": {
+            "type": "boolean"
+          },
+          "artifact_gated": {
+            "type": "boolean"
+          },
+          "terminal_open": {
+            "type": "boolean"
+          },
+          "remaining_joins": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "scope_exclusions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "evidence_refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/$defs/evidence_ref"
+            }
           },
           "evidence_class": {
             "enum": [

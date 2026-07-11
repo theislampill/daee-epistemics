@@ -395,6 +395,7 @@ def main() -> int:
     if failures:
         for failure in failures:
             print(f"ERROR: {failure}")
+        print("public burden grouping check: FAIL")
         return 1
     print(
         "public burden grouping: PASS "

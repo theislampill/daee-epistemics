@@ -56,6 +56,22 @@ class ArtifactSnapshot:
         return self.canonical_path
 
 
+@dataclass(frozen=True)
+class PublicationIdentity:
+    """Identity receipt for deleting only the object this publisher created."""
+
+    kind: str
+    device: int
+    inode: int
+    ctime_ns: int
+    payload_sha256: str
+
+
+def _publication_identity(path: Path, kind: str, payload_sha256: str) -> PublicationIdentity:
+    stat = path.stat(follow_symlinks=False)
+    return PublicationIdentity(kind, stat.st_dev, stat.st_ino, stat.st_ctime_ns, payload_sha256)
+
+
 ArtifactSource = Path | ArtifactSnapshot
 
 
@@ -208,7 +224,9 @@ def _write_new_file(path: Path, data: bytes) -> None:
         raise
 
 
-def atomic_publish_bytes(target: Path, data: bytes, *, fault_at: str | None = None) -> None:
+def atomic_publish_bytes(
+    target: Path, data: bytes, *, fault_at: str | None = None
+) -> PublicationIdentity:
     """Stage, CAS-check, and publish a file without replacing an existing target."""
     target.parent.mkdir(parents=True, exist_ok=True)
     stage = target.parent / f".{target.name}.stage-{uuid.uuid4().hex}"
@@ -224,23 +242,23 @@ def atomic_publish_bytes(target: Path, data: bytes, *, fault_at: str | None = No
             os.link(stage, target)
         except FileExistsError as exc:
             raise PublicationError("publication target already exists") from exc
+        identity = _publication_identity(target, "file", hashlib.sha256(data).hexdigest())
         if fault_at == "after-publish":
-            target.unlink(missing_ok=True)
             raise PublicationError("injected publication failure after publish")
         if target.read_bytes() != data:
-            target.unlink(missing_ok=True)
             raise PublicationError("published bytes changed during final CAS readback")
+        return identity
     finally:
         stage.unlink(missing_ok=True)
 
 
 def atomic_publish_directory(
     target: Path, files: dict[str, bytes], *, fault_at: str | None = None
-) -> None:
+) -> PublicationIdentity:
     """Publish a complete same-parent directory without replacing a competitor."""
     target.parent.mkdir(parents=True, exist_ok=True)
     stage = target.parent / f".{target.name}.stage-{uuid.uuid4().hex}"
-    published = False
+    identity: PublicationIdentity | None = None
     try:
         stage.mkdir()
         for index, (name, data) in enumerate(files.items()):
@@ -254,20 +272,21 @@ def atomic_publish_directory(
         if fault_at == "after-stage-verify":
             raise PublicationError("injected publication failure after directory verification")
         _rename_directory_noreplace(stage, target)
-        published = True
+        payload_sha256 = hashlib.sha256(
+            b"".join(
+                name.encode("utf-8") + b"\0" + hashlib.sha256(data).digest()
+                for name, data in files.items()
+            )
+        ).hexdigest()
+        identity = _publication_identity(target, "directory", payload_sha256)
         if fault_at == "after-publish":
-            shutil.rmtree(target)
-            published = False
             raise PublicationError("injected publication failure after directory publish")
         if any((target / name).read_bytes() != data for name, data in files.items()):
-            shutil.rmtree(target)
-            published = False
             raise PublicationError("published directory changed during final CAS readback")
+        return identity
     finally:
         if stage.exists():
             shutil.rmtree(stage)
-        if fault_at and published and target.exists():
-            shutil.rmtree(target)
 
 
 def _refs(value: Any, prefix: str = "artifact"):

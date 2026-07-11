@@ -35,6 +35,7 @@ import check_mrp_route_invariants as mrp_route_invariants
 import check_retained_proof_corpus as retained
 import build_staged_governed_output as staged_output
 import check_state_capsule  # canonical live_registers vocabulary (single source of truth)
+from validation_registry import profile_invocations, snapshot_registry
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -167,6 +168,7 @@ STAGE07_RELEASE_VALIDATION_KEYS = {
     "manual_smoke_render_contract",
     "public_burden_grouping",
     "owner_activation_ordering",
+    "act_surface_syntax",
 }
 STAGE07_OPTIONAL_VALIDATION_KEYS: set[str] = set()
 RELEASE_DIVERGENCE_STATES = {"neutral", "non-neutral"}
@@ -184,6 +186,36 @@ REREAD_ROUTE_RESULT_TYPES = {
     "loopbreak",
 }
 REREAD_ROUTES = {"STOP", "HOLD", "PARTIAL", "RECURSE", "LoopBreak", "LOOPBREAK"}
+
+
+def release_validation_policy_errors(
+    label: str,
+    policy: Any,
+    validation: Any,
+) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(policy, dict):
+        return [f"{label}: release_validation_policy must be an object"]
+    expected_keys = {"selected_profile", "registry_path", "registry_sha256", "result_order"}
+    if set(policy) != expected_keys:
+        errors.append(f"{label}: release_validation_policy must have exact keys {sorted(expected_keys)}")
+    snapshot = snapshot_registry(root=ROOT)
+    expected_order = [
+        str(row["result_key"])
+        for row in profile_invocations(snapshot.value, "stage07-release", root=ROOT)
+    ]
+    expected = {
+        "selected_profile": "stage07-release",
+        "registry_path": snapshot.relative_path,
+        "registry_sha256": snapshot.sha256,
+        "result_order": expected_order,
+    }
+    for key, expected_value in expected.items():
+        if policy.get(key) != expected_value:
+            errors.append(f"{label}: release_validation_policy.{key} does not match canonical registry projection")
+    if isinstance(validation, dict) and list(validation) != expected_order:
+        errors.append(f"{label}: release_validation result order does not match the bound registry profile")
+    return errors
 STAGE05_FORBIDDEN_PER_BURDEN_TEXT_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     (
         "guaranteed T_lang uptake claim",
@@ -1228,6 +1260,11 @@ def stage07_release_errors(
             for key, value in validation.items():
                 if value != "pass":
                     errors.append(f"{label}: stage-07 release_validation.{key} must be 'pass'")
+    policy = stage07.get("release_validation_policy")
+    if mode in MODEL_MODES and policy is None:
+        errors.append(f"{label}: model-mode stage-07 requires release_validation_policy")
+    if policy is not None:
+        errors.extend(release_validation_policy_errors(f"{label}: stage-07", policy, validation))
     release_field_diagnostics = stage07.get("release_field_diagnostics")
     if mode in MODEL_MODES and release_field_diagnostics is None:
         errors.append(f"{label}: model-mode stage-07 requires release_field_diagnostics object")
@@ -2213,6 +2250,21 @@ def semantic_errors(path: Path, record: dict[str, Any], stages: dict[str, dict[s
                         errors.append(
                             f"{label}: proof_sidecars path must be repo-relative without '..' or an absolute prefix: {raw!r}"
                         )
+    if stage08 is not None and record.get("mode") in MODEL_MODES:
+        stage08_policy = stage08.get("release_validation_policy")
+        if stage08_policy is None:
+            errors.append(f"{label}: model-mode stage-08 requires retained release_validation_policy")
+        else:
+            stage07_validation = stage07.get("release_validation") if isinstance(stage07, dict) else None
+            errors.extend(
+                release_validation_policy_errors(
+                    f"{label}: stage-08 retained policy",
+                    stage08_policy,
+                    stage07_validation,
+                )
+            )
+            if isinstance(stage07, dict) and stage08_policy != stage07.get("release_validation_policy"):
+                errors.append(f"{label}: stage-08 retained release_validation_policy must equal stage-07")
     return errors
 
 

@@ -9,10 +9,10 @@ final decision token as its last stdout line:
     MATRIX_AUTHORIZED_AFTER_PREFLIGHT   -- every gate passed
     MATRIX_NOT_AUTHORIZED               -- at least one gate failed
 
-It is the stop-line gate that must pass before any four-smoke model matrix
+It is the stop-line gate that must pass before any five-smoke model matrix
 is launched. The matrix itself remains owner-gated: this tool does not
 launch it, does not decide to launch it, and does not contain any code path
-that invokes a model. Gate 14 (four-smoke input-path preflight) calls
+that invokes a model. Gate 14 (five-smoke input-path preflight) calls
 `tools/run_staged_current_skill_smoke.py --preflight-input-only`, which is
 input-shape validation only -- it returns before reaching that harness's
 `run_model_smoke()` function (see that file's `main()`: the
@@ -34,10 +34,10 @@ JSON report (if --json is given) and a short tail is printed to the console.
 Usage:
     python tools/run_no_model_preflight.py               run the full sweep
     python tools/run_no_model_preflight.py --json out.json   also write a report
-    python tools/run_no_model_preflight.py --self-test    validate gate-table
-                                                           shape + decision
-                                                           aggregation logic
-                                                           (no subprocesses)
+    python tools/run_no_model_preflight.py --self-test    validate gate-table,
+                                                           decision aggregation,
+                                                           and Gate 14 registry
+                                                           custody (no subprocesses)
 """
 
 from __future__ import annotations
@@ -48,10 +48,13 @@ import json
 import shlex
 import subprocess
 import sys
+import tempfile
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
+
+import smoke_matrix_registry
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -70,13 +73,6 @@ RETAINED_CASES_ROOT = (
     "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases"
 )
 RETAINED_OUTPUTS_GLOB = f"{RETAINED_CASES_ROOT}/*/output.md"
-
-FOUR_SMOKE_CASES = (
-    "gate88-trinitarian-j173",
-    "gate88-tst-lillard",
-    "gate88-khaybar",
-    "gate88-secularism",
-)
 
 STABLE_EXPLAIN_FIXTURE = "tests/staged-runtime-handshake/invalid/absolute-output-path.json"
 
@@ -405,23 +401,64 @@ def gate_large_output_retained() -> tuple[bool, list[StepResult], str]:
     return True, [step], ""
 
 
-def gate_four_smoke_input_preflight() -> tuple[bool, list[StepResult], str]:
-    steps: list[StepResult] = []
+def load_five_smoke_preflight_rows(
+    registry_path: Path = smoke_matrix_registry.DEFAULT_REGISTRY,
+    registry_root: Path = ROOT,
+) -> tuple[tuple[str, str], ...]:
+    """Return Gate 14 rows in canonical registry order after owner validation."""
+    registry = smoke_matrix_registry.load_registry(registry_path, registry_root)
+    return tuple((row["case_id"], row["input_path"]) for row in registry["cases"])
+
+
+def gate_five_smoke_input_preflight(
+    *,
+    registry_path: Path = smoke_matrix_registry.DEFAULT_REGISTRY,
+    registry_root: Path = ROOT,
+    step_runner: Callable[[str], StepResult] = run_step,
+    timestamp: str | None = None,
+) -> tuple[bool, list[StepResult], str]:
+    registry_command = "in-process: smoke_matrix_registry.load_registry(canonical registry)"
+    try:
+        rows = load_five_smoke_preflight_rows(registry_path, registry_root)
+    except (OSError, ValueError) as exc:
+        return False, [
+            StepResult(
+                command=registry_command,
+                argv=[],
+                returncode=1,
+                stdout="",
+                stderr=f"Gate 14 canonical registry validation failed: {exc}",
+                duration_sec=0.0,
+            )
+        ], (
+            "restore the immutable five-smoke registry and its exact input byte/hash custody through "
+            "tools/smoke_matrix_registry.py before retrying Gate 14"
+        )
+
+    steps: list[StepResult] = [
+        StepResult(
+            command=registry_command,
+            argv=[],
+            returncode=0,
+            stdout=f"validated {len(rows)} canonical rows in registry order",
+            stderr="",
+            duration_sec=0.0,
+        )
+    ]
     ok = True
-    timestamp = time.strftime("%Y%m%d-%H%M%S", time.gmtime())
-    for case in FOUR_SMOKE_CASES:
-        input_path = f"{RETAINED_CASES_ROOT}/{case}/input.txt"
-        run_dir = f".daee/no-model-preflight/{timestamp}-{case}-input-preflight"
+    timestamp = timestamp or time.strftime("%Y%m%d-%H%M%S", time.gmtime())
+    for case_id, input_path in rows:
+        run_dir = f".daee/no-model-preflight/{timestamp}-{case_id}-input-preflight"
         command = (
             "python tools/run_staged_current_skill_smoke.py --preflight-input-only "
-            f"--case-name {case} --raw-input-path {input_path} --run-dir {run_dir}"
+            f"--case-name {case_id} --raw-input-path {input_path} --run-dir {run_dir}"
         )
-        result = run_step(command)
+        result = step_runner(command)
         steps.append(result)
         if result.returncode != 0:
             ok = False
     return ok, steps, (
-        "confirm each case's input.txt exists and is non-empty and that the run-dir did not already exist; "
+        "confirm each registry-owned input exists with its canonical bytes/hash and that the run-dir did not already exist; "
         "this mode never invokes a model (verified by reading run_staged_current_skill_smoke.py: "
         "--preflight-input-only returns from preflight_smoke_inputs() before run_model_smoke() is reachable)"
     )
@@ -523,7 +560,7 @@ GATES: list[Gate] = [
     Gate(11, "dry-run emulator", gate_dry_run_emulator),
     Gate(12, "retained-proof replay", gate_retained_proof_replay),
     Gate(13, "large-output/file-retained", gate_large_output_retained),
-    Gate(14, "four-smoke input-path preflight", gate_four_smoke_input_preflight),
+    Gate(14, "five-smoke input-path preflight", gate_five_smoke_input_preflight),
     Gate(15, "prompt-pack manifest discipline", gate_prompt_pack_manifest_discipline),
     Gate(16, "first-failed-checker reporting", gate_first_failed_checker_reporting),
 ]
@@ -569,11 +606,9 @@ def run_self_test() -> int:
         if not gate.name.strip():
             failures.append(f"gate {gate.number}: name required")
 
-    # Repair lanes: every gate function must be able to produce a non-empty
-    # repair-lane string on a synthetic failing GateResult. We do not invoke
-    # the real gate functions here (that would run subprocesses); instead we
-    # verify the aggregation function and the two literal tokens, which is
-    # what the plan asks --self-test to prove without a model or subprocess.
+    # Most real gates would run subprocesses, so aggregation uses synthetic
+    # results. Gate 14 is exercised below with an injected in-memory step
+    # runner so its registry binding is also covered without a subprocess.
     all_pass = [
         GateResult(name=g.name, passed=True, repair_lane="") for g in GATES
     ]
@@ -607,6 +642,106 @@ def run_self_test() -> int:
     if AUTHORIZED_TOKEN == NOT_AUTHORIZED_TOKEN:
         failures.append("tokens must be distinct")
 
+    gate14_rows_ok = False
+    gate14_registry_drift_ok = False
+    gate14_input_hash_drift_ok = False
+    try:
+        registry = smoke_matrix_registry.load_registry()
+        expected_rows = tuple(
+            (row["case_id"], row["input_path"])
+            for row in registry["cases"]
+        )
+        recorded_commands: list[str] = []
+
+        def record_gate14_step(command: str) -> StepResult:
+            recorded_commands.append(command)
+            return StepResult(
+                command=command,
+                argv=[],
+                returncode=0,
+                stdout="",
+                stderr="",
+                duration_sec=0.0,
+            )
+
+        gate14_passed, gate14_steps, _ = gate_five_smoke_input_preflight(
+            step_runner=record_gate14_step,
+            timestamp="20000101-000000",
+        )
+        expected_commands = [
+            "python tools/run_staged_current_skill_smoke.py --preflight-input-only "
+            f"--case-name {case_id} --raw-input-path {input_path} "
+            f"--run-dir .daee/no-model-preflight/20000101-000000-{case_id}-input-preflight"
+            for case_id, input_path in expected_rows
+        ]
+        gate14_rows_ok = (
+            len(expected_rows) == 5
+            and load_five_smoke_preflight_rows() == expected_rows
+            and gate14_passed
+            and len(gate14_steps) == 6
+            and recorded_commands == expected_commands
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            temporary_root = Path(directory)
+            drifted_registry = json.loads(json.dumps(registry))
+            drifted_registry["cases"][0]["case_id"] += "-drift"
+            drifted_registry_path = temporary_root / "registry.json"
+            drifted_registry_path.write_text(
+                json.dumps(drifted_registry),
+                encoding="utf-8",
+            )
+            unexpected_steps: list[str] = []
+
+            def record_unexpected_step(command: str) -> StepResult:
+                unexpected_steps.append(command)
+                return record_gate14_step(command)
+
+            drift_passed, drift_steps, _ = gate_five_smoke_input_preflight(
+                registry_path=drifted_registry_path,
+                registry_root=ROOT,
+                step_runner=record_unexpected_step,
+            )
+            gate14_registry_drift_ok = (
+                not drift_passed
+                and len(drift_steps) == 1
+                and "registry_identity" in drift_steps[0].stderr
+                and not unexpected_steps
+            )
+
+        with tempfile.TemporaryDirectory() as directory:
+            mirror = Path(directory)
+            for row in registry["cases"]:
+                source = ROOT / row["input_path"]
+                target = mirror / row["input_path"]
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(source.read_bytes())
+            first = mirror / registry["cases"][0]["input_path"]
+            raw = first.read_bytes()
+            replacement = b"X" if raw[:1] != b"X" else b"Y"
+            first.write_bytes(replacement + raw[1:])
+            unexpected_steps = []
+            hash_passed, hash_steps, _ = gate_five_smoke_input_preflight(
+                registry_path=smoke_matrix_registry.DEFAULT_REGISTRY,
+                registry_root=mirror,
+                step_runner=record_unexpected_step,
+            )
+            gate14_input_hash_drift_ok = (
+                not hash_passed
+                and len(hash_steps) == 1
+                and "registry_input_hash" in hash_steps[0].stderr
+                and not unexpected_steps
+            )
+    except (OSError, ValueError) as exc:
+        failures.append(f"Gate 14 registry canary could not run: {exc}")
+
+    if not gate14_rows_ok:
+        failures.append("Gate 14 did not derive exactly five ordered canonical registry rows")
+    if not gate14_registry_drift_ok:
+        failures.append("Gate 14 did not reject registry tuple drift as registry_identity")
+    if not gate14_input_hash_drift_ok:
+        failures.append("Gate 14 did not reject same-length input drift as registry_input_hash")
+
     for name, ok in (
         ("gate table well-formed", not table_errors),
         ("16 gates present", len(GATES) == 16),
@@ -620,6 +755,9 @@ def run_self_test() -> int:
         ("aggregate rejects empty gate list", aggregate_decision(empty) == NOT_AUTHORIZED_TOKEN),
         ("decision tokens exact + distinct", AUTHORIZED_TOKEN == "MATRIX_AUTHORIZED_AFTER_PREFLIGHT"
             and NOT_AUTHORIZED_TOKEN == "MATRIX_NOT_AUTHORIZED"),
+        ("Gate 14 derives exactly five ordered registry rows", gate14_rows_ok),
+        ("Gate 14 rejects registry identity drift", gate14_registry_drift_ok),
+        ("Gate 14 rejects input hash drift", gate14_input_hash_drift_ok),
     ):
         print(f"  self-test {'PASS' if ok else 'FAIL'}: {name}")
 
@@ -643,7 +781,7 @@ def step_tail(step: StepResult, limit: int = 2000) -> str:
 def print_banner() -> None:
     print("=" * 78)
     print("run_no_model_preflight: composed no-model stop-line gate (Plan 12 Section 3)")
-    print("This tool NEVER runs a model smoke. The four-smoke matrix remains owner-gated.")
+    print("This tool NEVER runs a model smoke. The five-smoke matrix remains owner-gated.")
     print("=" * 78)
 
 

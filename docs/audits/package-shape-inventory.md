@@ -18,7 +18,7 @@ Shipped-file list is `package_shape.package_file_paths()` - the same function `t
 | `skill/references/runtime-shard-output-release.md` | 117383 | 29345 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
 | `skill/references/runtime-foundation.md` | 103208 | 25802 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
 | `skill/references/runtime-core-recursion.md` | 92946 | 23236 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
-| `skill/references/runtime-core-ir.md` | 88604 | 22151 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
+| `skill/references/runtime-core-ir.md` | 90522 | 22630 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
 | `skill/references/runtime-shard-audit.md` | 73995 | 18498 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
 | `skill/references/diagnostics/diagnostic-ir.schema.json` | 60634 | 15158 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
 | `skill/references/runtime-phase2-passes.md` | 48639 | 12159 | route-warm | DEFAULTED route-warm: no explicit SKILL.md anchor found for this file; verify manually |
@@ -47,9 +47,9 @@ Shipped-file list is `package_shape.package_file_paths()` - the same function `t
 | --- | ---: | ---: | ---: |
 | host-hot | 4 | 250343 | 62584 |
 | prompt-hot | 1 | 21487 | 5371 |
-| route-warm | 18 | 1080282 | 270063 |
+| route-warm | 18 | 1082200 | 270542 |
 | cold-law | 8 | 1064730 | 266179 |
 | audit-only | 1 | 1789 | 447 |
-| **grand total** | **32** | **2418631** | **604644** |
+| **grand total** | **32** | **2420549** | **605123** |
 
 `est_tok` is `bytes // 4`, a rough measurement heuristic, not a tokenizer-accurate count.
