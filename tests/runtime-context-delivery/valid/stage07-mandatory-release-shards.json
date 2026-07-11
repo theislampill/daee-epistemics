@@ -1,0 +1,6 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "stage07-mandatory-release-shards",
+  "expected_valid": true,
+  "kind": "stage07-release"
+}

@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-mrp-recursion-lifecycle-mutation-v1","base":"tests/mrp-recursion-lifecycle/valid/current-stop-closure-candidate.json","operations":[{"op":"set","path":"/burden_cycles/0/reread/raw_exit/raw_exit_sha256","value":"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"}]}

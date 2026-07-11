@@ -1,0 +1,1 @@
+{"schema":"daee-smoke-matrix-v1","kind":"cycle-observation-finalizer","cycle_id":"cycle-1","cycle_claim_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","status":"FINALIZED","root_creation":"CREATED","dispatch_count":5,"usage_status":"SETTLED","candidate_status":"CONSUMED_OBSERVED","completion_status":"PASS"}

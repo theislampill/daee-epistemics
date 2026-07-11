@@ -1,0 +1,27 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "capsule-field-component-mismatch.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "runtime-context-delivery",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "02",
+  "expected_failure_class": "capsule-binding-mismatch",
+  "expected_failure_subcode": "capsule-field-component-mismatch",
+  "expected_downstream_invalidated": [
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08"
+  ],
+  "required_diagnostic_markers": [
+    "capsule-field-component-mismatch"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "review-repair-capsule-field-component-mismatch"
+}

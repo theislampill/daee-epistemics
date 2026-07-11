@@ -1,0 +1,6 @@
+{
+  "schema": "daee-package-harness-scenario-v1",
+  "scenario": "neighbor-harness-assisted",
+  "expected_valid": true,
+  "kind": "harness-assisted"
+}

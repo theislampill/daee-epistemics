@@ -1,0 +1,6 @@
+{
+  "schema": "daee-producer-checker-scenario-v1",
+  "scenario": "unregistered-model-visible-clause",
+  "expected_valid": false,
+  "mutation": "unregistered-model-visible-clause"
+}

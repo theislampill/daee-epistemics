@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "declared-used-not-delivered",
+  "expected_valid": false,
+  "mutation": "declared-use-not-delivered",
+  "stage": "04"
+}

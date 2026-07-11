@@ -1,0 +1,136 @@
+{
+  "schema": "daee-mrp-recursion-lifecycle-fixture-v1",
+  "fixture_id": "loopbreak-post-reread-no-new",
+  "resource_policy": {
+    "policy_id": "runtime-budget-v1",
+    "policy_sha256": "63fbafb34c6be06aa92c2c24f7472e617e44b3697de5e41e2f0d1807270444c6",
+    "semantic_depth_cap": null,
+    "on_exhaustion": "PARTIAL"
+  },
+  "burden_cycles": [
+    {
+      "cycle_id": "C1",
+      "burden_id": "B1",
+      "origin": "B_LA",
+      "generation_depth": 0,
+      "parent_cycle_id": null,
+      "route": {
+        "record_id": "S03-C1",
+        "sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "target_burden_id": "B1"
+      },
+      "operation": {
+        "record_id": "S04-C1",
+        "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "performed": true,
+        "local_delta": {
+          "state": "B1-landable"
+        }
+      },
+      "land": {
+        "status": "landed",
+        "event_index": 40
+      },
+      "reread": {
+        "record_id": "S05-C1",
+        "sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "raw_exit": {
+          "event_id": "E1",
+          "event_index": 90,
+          "exit_disposition": "STOP",
+          "candidate_events": [],
+          "field_diagnostics": [],
+          "noetic_dependency_graph": {
+            "nodes": [
+              "N1",
+              "N2"
+            ],
+            "edges": [
+              [
+                "N1",
+                "N2"
+              ]
+            ],
+            "graph_sha256": "abcd7fb6b5ac8f797e8b3e8c445fb9d04e9605d1c66c84c035881718290bbac7"
+          },
+          "no_new_resultant": {
+            "observed": true,
+            "live_obligation_ids": [],
+            "unresolved_candidate_ids": []
+          },
+          "loopbreak": {
+            "loopbreak_id": "LB-C1",
+            "observed_loop": [
+              "N1",
+              "N2",
+              "N1"
+            ],
+            "observed_loop_event_index": 55,
+            "pre_break_graph": {
+              "nodes": [
+                "N1",
+                "N2"
+              ],
+              "edges": [
+                [
+                  "N1",
+                  "N2"
+                ],
+                [
+                  "N2",
+                  "N1"
+                ]
+              ],
+              "graph_sha256": "9aa3d01b2b90b09300d55671a1211382c74110e6d11685209a71d43ca22680d3"
+            },
+            "owner_ground_ref": {
+              "ref_id": "owner-ground-1",
+              "sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+            },
+            "performed_operation_ref": {
+              "ref_id": "interrupt-recoil",
+              "sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+            },
+            "local_delta_ref": {
+              "delta_id": "DELTA-C1",
+              "sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+            },
+            "interruption_event_index": 65,
+            "post_break_graph": {
+              "nodes": [
+                "N1",
+                "N2"
+              ],
+              "edges": [
+                [
+                  "N1",
+                  "N2"
+                ]
+              ],
+              "graph_sha256": "abcd7fb6b5ac8f797e8b3e8c445fb9d04e9605d1c66c84c035881718290bbac7"
+            },
+            "post_break_reread": {
+              "record_id": "S05-C1-post-break",
+              "record_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+              "event_index": 75,
+              "field_diagnostics": []
+            },
+            "loopbreak_sha256": "91c82b20a29f887bac4bab97d9eb7275761ac4ac7282db3d4e0167d1635cbb6d"
+          },
+          "resource_exhaustion": null,
+          "raw_exit_sha256": "21f956c79e9fc7514de2d4ed5376144aa551d3e5a2a6e5f0214299d0b5dba75c"
+        }
+      },
+      "lifecycle_status": "landed",
+      "terminal_state": "landed"
+    }
+  ],
+  "non_claims": [
+    "A cyclic noetic graph is distinct from the acyclic custody DAG."
+  ],
+  "validation_profile": "current-a07-v2",
+  "promotion_eligible": true,
+  "trace_id": "TRACE-loopbreak-post-reread-no-new",
+  "predecessor_trace_id": null,
+  "event_dag_edges": []
+}

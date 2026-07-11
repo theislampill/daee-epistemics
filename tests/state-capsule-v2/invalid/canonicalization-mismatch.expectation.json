@@ -1,0 +1,21 @@
+{
+  "expected_checker_id": "state-capsule",
+  "expected_downstream_invalidated": [
+    "candidate-package"
+  ],
+  "expected_earliest_stage": "preflight",
+  "expected_exit_category": "validation-failure",
+  "expected_exit_code": 1,
+  "expected_failure_class": "state-capsule-custody",
+  "expected_failure_subcode": "canonicalization-mismatch",
+  "fixture": "canonicalization-mismatch.json",
+  "forbidden_artifacts": [
+    "candidate-package-record.json"
+  ],
+  "kind": "invalid-single-signature",
+  "provenance": "xhigh frozen additive state-capsule-v2 interface TDD",
+  "required_diagnostic_markers": [
+    "daee-canonical-json-v1"
+  ],
+  "schema": "daee-negative-fixture-expectation-v1"
+}

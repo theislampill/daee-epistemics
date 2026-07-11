@@ -1,0 +1,22 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "stage07-shards-stage-derived-only.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "runtime-context-delivery",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "07",
+  "expected_failure_class": "stage-derived-delivery-claim",
+  "expected_failure_subcode": "stage07-shards-stage-derived-only",
+  "expected_downstream_invalidated": [
+    "08"
+  ],
+  "required_diagnostic_markers": [
+    "stage-derived-delivery-claim"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "plan-12-stage07-shards-stage-derived-only"
+}

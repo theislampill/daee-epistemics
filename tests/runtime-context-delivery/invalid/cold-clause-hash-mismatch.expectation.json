@@ -1,0 +1,25 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "cold-clause-hash-mismatch.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "runtime-context-delivery",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "04",
+  "expected_failure_class": "component-hash-mismatch",
+  "expected_failure_subcode": "cold-clause-hash-mismatch",
+  "expected_downstream_invalidated": [
+    "05",
+    "06",
+    "07",
+    "08"
+  ],
+  "required_diagnostic_markers": [
+    "component-hash-mismatch"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "plan-12-cold-clause-hash-mismatch"
+}

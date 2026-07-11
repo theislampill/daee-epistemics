@@ -1,0 +1,6 @@
+{
+  "schema": "daee-package-harness-scenario-v1",
+  "scenario": "opaque-host-ambient",
+  "expected_valid": false,
+  "mutation": "unverified-host-ambient"
+}

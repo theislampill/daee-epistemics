@@ -1,0 +1,1 @@
+{"schema":"daee-smoke-matrix-v1","kind":"cycle-observation-finalizer","cycle_id":"c","cycle_claim_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","status":"FALLBACK_FINALIZED","root_creation":"FAILED","dispatch_count":0,"usage_status":"SETTLED","candidate_status":"CONSUMED_NO_DISPATCH","fallback_path":null}

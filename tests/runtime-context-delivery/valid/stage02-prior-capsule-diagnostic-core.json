@@ -1,0 +1,6 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "stage02-prior-capsule-diagnostic-core",
+  "expected_valid": true,
+  "kind": "prior-capsule"
+}

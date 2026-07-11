@@ -1,0 +1,7 @@
+{
+  "fixture_schema": "daee-mrp-recursion-lifecycle-mutation-v1",
+  "base": "tests/state-capsule-v2/valid/composed-all-plan-fields.json",
+  "operations": [
+    {"op": "set", "path": "/operation_capsules/0/delta/result", "value": "tampered without operation self-hash update"}
+  ]
+}

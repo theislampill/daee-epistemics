@@ -1,0 +1,22 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "missing-both-stage07-shards.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "runtime-context-delivery",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "07",
+  "expected_failure_class": "mandatory-stage-component-missing",
+  "expected_failure_subcode": "missing-both-stage07-shards",
+  "expected_downstream_invalidated": [
+    "08"
+  ],
+  "required_diagnostic_markers": [
+    "missing-both-stage07-shards"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "review-repair-missing-both-stage07-shards"
+}

@@ -1,5 +1,13 @@
 # Four-Smoke Release Playbook
 
+> Historical/current-boundary note: this file retains the four-smoke name and
+> evidence lineage. The v0.4.6.0-wip prospective five-case convergence law is
+> owned by
+> `docs/audits/v0.4.6.0-wip-five-smoke-andon-convergence-north-star-addendum.md`.
+> That addendum adds the Torah/Qur'an source-authentication input, cold GPT-5.6
+> plus human review, and a full-five rerun after every audited countermeasure.
+> It does not retroactively turn any four-smoke artifact into five-smoke proof.
+
 Measurement-only reference for the four-smoke ("Gate88"-style) matrix
 protocol and the no-model preflight gate that must pass before any of the
 four smokes may run a model. This document describes mechanism and cost

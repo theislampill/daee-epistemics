@@ -1,0 +1,6 @@
+{
+  "schema": "daee-producer-checker-scenario-v1",
+  "scenario": "post-producer-custody-check",
+  "expected_valid": true,
+  "kind": "post-producer-custody"
+}

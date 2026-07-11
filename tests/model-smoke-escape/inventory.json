@@ -1,0 +1,22 @@
+{
+  "schema": "daee-model-smoke-escape-inventory-v1",
+  "valid": [
+    "closed-deterministic-escape",
+    "scoped-no",
+    "reassessment-due-without-mutation",
+    "adjudicated-no-to-unknown",
+    "renewed-no"
+  ],
+  "invalid": [
+    "open-yes-offered-mature",
+    "open-unknown-offered-mature",
+    "green-only-no-red-boundary",
+    "case-topic-tainted-canary",
+    "wrong-reason-canary",
+    "recurring-escape-called-closed",
+    "automatic-no-to-unknown",
+    "speculative-unknown",
+    "no-launch-waiver-lacking-controls",
+    "speculative-calls-avoided"
+  ]
+}

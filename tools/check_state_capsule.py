@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Validate the typed state capsule contract daee-state-capsule-v1 (Slice D wave 1, Plan 03).
+"""Validate DAEE state-capsule v1 historical replay and composed v2 execution.
 
 A state capsule is the small, structured hand-off meant to let a single model
 call receive kernel + capsule + selected shards instead of replaying a full
 150-300KB output.md or a 300k-token runtime. This checker validates ONE
-capsule's shape + semantic invariants (--capsule), an ORDERED capsule sequence
+capsule's shape + cross-field/reference invariants (--capsule), an ORDERED capsule sequence
 against an artifact.md for cross-capsule replay invariants (--replay), and
 runs an embedded + fixture self-test (--self-test).
 
-Scope discipline: this is a structural + semantic validation of the capsule
-contract only. It does not certify interlocutor uptake, semantic faithfulness,
+Scope discipline: this is structural, referential, and replay validation of the
+capsule contract only. It never infers semantic truth from structural validity
+and does not certify interlocutor uptake, semantic faithfulness,
 or release provenance, and it does not replace the harness emission wave that
 will actually produce capsules at runtime (that is the next wave, not this one).
 
@@ -17,7 +18,7 @@ Stdlib-only; no jsonschema dependency, following the repo's existing custom
 validation style (see tools/check_collapse_certificate_schema.py).
 
 Usage:
-  python tools/check_state_capsule.py --capsule <path.json>
+  python tools/check_state_capsule.py --capsule <path.json> [--release-bearing]
   python tools/check_state_capsule.py --replay <dir>
   python tools/check_state_capsule.py --self-test
 """
@@ -31,6 +32,23 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from operation_capsule_contract import (
+    validate_operation_capsule as validate_owned_operation_capsule,
+    validate_operation_record as validate_owned_operation_record,
+)
+from owner_obligation_coverage import obligation_set_sha256, stable_obligation_id, validate_owner_obligation_coverage
+from stage_projection_contract import canonical_json_bytes, canonical_json_sha256
+from closure_state_lib import (
+    FINAL_RENDER_ORDER,
+    ClosureUniverseAuthorityError,
+    build_closure_witness_projection,
+    canonical_universe_sha256,
+    derive_closure_decision,
+    validate_trace as validate_closure_trace,
+)
+from mrp_recursion_lib import validate_lifecycle_record
+from topology_mass_accounting import validate_accounting as validate_topology_mass_accounting
+
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -41,8 +59,27 @@ if hasattr(sys.stderr, "reconfigure"):
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schema" / "state-capsule.schema.json"
 FIXTURE_ROOT = ROOT / "tests" / "state-capsule-fixtures"
+V2_SCHEMA_PATH = ROOT / "schema" / "state-capsule-v2.schema.json"
+V2_FIXTURE_ROOT = ROOT / "tests" / "state-capsule-v2"
+NEGATIVE_EXPECTATION_SCHEMA_PATH = ROOT / "schema" / "negative-fixture-expectation.schema.json"
+CONTRACT_REGISTRY_PATH = ROOT / "docs" / "audits" / "v0.4.6.0-wip-andon-contract-registry.json"
+V2_MIGRATION_LEDGER_PATH = ROOT / "docs" / "audits" / "v0.4.6.0-wip-state-capsule-v2-migration-ledger.json"
 
 SCHEMA_CONST = "daee-state-capsule-v1"
+SCHEMA_V2_CONST = "daee-state-capsule-v2"
+V2_SCHEMA_OWNER = "A16"
+
+V2_STAGE_ORDER = [
+    "stage-01-intake",
+    "stage-02-layer-a-diagnostic-ir",
+    "stage-03-routing-owner-gate",
+    "stage-04-burden-execution-act",
+    "stage-05-mrp-reread-terminal-state",
+    "stage-06-field-witness-nar",
+    "stage-07-release-output",
+    "stage-08-verifier-sidecars",
+]
+V2_STAGE_INDEX = {stage: index for index, stage in enumerate(V2_STAGE_ORDER)}
 
 STAGE_ORDER = ["01", "02", "03", "04", "05", "06", "07", "08"]
 STAGE_INDEX = {stage: index for index, stage in enumerate(STAGE_ORDER)}
@@ -206,6 +243,1132 @@ def load_json(path: Path) -> tuple[Any | None, list[str]]:
 
 def load_schema() -> dict[str, Any]:
     return json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+
+
+def load_v2_schema() -> dict[str, Any]:
+    return json.loads(V2_SCHEMA_PATH.read_text(encoding="utf-8"))
+
+
+def _resolve_local_ref(root_schema: dict[str, Any], ref: str) -> dict[str, Any] | None:
+    if not ref.startswith("#/"):
+        return None
+    current: Any = root_schema
+    for token in ref[2:].split("/"):
+        token = token.replace("~1", "/").replace("~0", "~")
+        if not isinstance(current, dict) or token not in current:
+            return None
+        current = current[token]
+    return current if isinstance(current, dict) else None
+
+
+def _json_identity(value: Any) -> str:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def json_schema_errors(
+    label: str,
+    value: Any,
+    root_schema: dict[str, Any],
+    node_schema: dict[str, Any] | None = None,
+    path: str = "$",
+) -> list[str]:
+    """Validate the JSON-Schema subset used by state-capsule-v2.
+
+    This remains stdlib-only and intentionally does not claim general Draft
+    2020-12 conformance. It covers the frozen schema's refs, anyOf, const,
+    enums, types, object/array constraints, lengths, patterns, and minima.
+    """
+    schema = root_schema if node_schema is None else node_schema
+    if "$ref" in schema:
+        resolved = _resolve_local_ref(root_schema, schema["$ref"])
+        if resolved is None:
+            return [f"{label}: {path}: unresolved schema ref {schema['$ref']!r}"]
+        return json_schema_errors(label, value, root_schema, resolved, path)
+
+    if "anyOf" in schema:
+        branches = schema["anyOf"]
+        if not any(not json_schema_errors(label, value, root_schema, branch, path) for branch in branches):
+            return [f"{label}: {path}: value does not satisfy anyOf"]
+
+    errors: list[str] = []
+    if "const" in schema and value != schema["const"]:
+        errors.append(f"{label}: {path}: must equal {schema['const']!r}, got {value!r}")
+    if "enum" in schema and value not in schema["enum"]:
+        errors.append(f"{label}: {path}: must be one of {schema['enum']!r}, got {value!r}")
+
+    expected_type = schema.get("type")
+    if expected_type is not None and not _type_ok(value, expected_type):
+        return errors + [f"{label}: {path}: expected type {expected_type!r}, got {type(value).__name__}"]
+
+    if isinstance(value, dict):
+        required = set(schema.get("required", []))
+        missing = sorted(required - set(value))
+        if missing:
+            errors.append(f"{label}: {path}: missing required field(s): {missing}")
+        properties = schema.get("properties", {})
+        if schema.get("additionalProperties") is False:
+            unknown = sorted(set(value) - set(properties))
+            if unknown:
+                errors.append(f"{label}: {path}: unknown field(s) (additionalProperties=false): {unknown}")
+        minimum_properties = schema.get("minProperties")
+        if isinstance(minimum_properties, int) and len(value) < minimum_properties:
+            errors.append(f"{label}: {path}: requires at least {minimum_properties} properties")
+        for key, child in value.items():
+            child_schema = properties.get(key)
+            if isinstance(child_schema, dict):
+                errors.extend(json_schema_errors(label, child, root_schema, child_schema, f"{path}.{key}"))
+
+    if isinstance(value, list):
+        minimum_items = schema.get("minItems")
+        if isinstance(minimum_items, int) and len(value) < minimum_items:
+            errors.append(f"{label}: {path}: requires at least {minimum_items} item(s)")
+        if schema.get("uniqueItems") is True:
+            identities = [_json_identity(item) for item in value]
+            if len(identities) != len(set(identities)):
+                errors.append(f"{label}: {path}: array items must be unique")
+        item_schema = schema.get("items")
+        if isinstance(item_schema, dict):
+            for index, item in enumerate(value):
+                errors.extend(json_schema_errors(label, item, root_schema, item_schema, f"{path}[{index}]"))
+
+    if isinstance(value, str):
+        minimum_length = schema.get("minLength")
+        if isinstance(minimum_length, int) and len(value) < minimum_length:
+            errors.append(f"{label}: {path}: string length must be at least {minimum_length}")
+        pattern = schema.get("pattern")
+        if isinstance(pattern, str) and re.search(pattern, value) is None:
+            errors.append(f"{label}: {path}: value {value!r} does not match {pattern!r}")
+
+    if isinstance(value, int) and not isinstance(value, bool):
+        minimum = schema.get("minimum")
+        if isinstance(minimum, (int, float)) and value < minimum:
+            errors.append(f"{label}: {path}: value {value} is less than minimum {minimum}")
+        maximum = schema.get("maximum")
+        if isinstance(maximum, (int, float)) and value > maximum:
+            errors.append(f"{label}: {path}: value {value} is greater than maximum {maximum}")
+    return errors
+
+
+def v2_schema_owner_errors(label: str, payload: dict[str, Any]) -> list[str]:
+    if "schema_owner" in payload:
+        return [
+            f"{label}: competing-schema-owner: {V2_SCHEMA_OWNER} is the sole state-capsule-v2 schema owner; "
+            f"payload proposed {payload.get('schema_owner')!r}"
+        ]
+    try:
+        registry = json.loads(CONTRACT_REGISTRY_PATH.read_text(encoding="utf-8"))
+        migration = json.loads(V2_MIGRATION_LEDGER_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"{label}: competing-schema-owner: cannot read frozen A16 ownership evidence: {exc}"]
+    registry_v2 = registry.get("state_capsule_v2", {})
+    release_contract = migration.get("release_bearing_contract", {})
+    observed = {
+        registry_v2.get("single_owner"),
+        migration.get("integration_owner"),
+        release_contract.get("single_schema_owner"),
+    }
+    if observed != {V2_SCHEMA_OWNER}:
+        return [
+            f"{label}: competing-schema-owner: frozen ownership must resolve only to {V2_SCHEMA_OWNER}; "
+            f"observed {sorted(str(item) for item in observed)!r}"
+        ]
+    if registry_v2.get("schema_path") != "schema/state-capsule-v2.schema.json":
+        return [f"{label}: competing-schema-owner: registry points to a noncanonical v2 schema path"]
+    return []
+
+
+def _duplicate_id_errors(label: str, collection: str, rows: Any, key: str) -> list[str]:
+    if not isinstance(rows, list):
+        return []
+    seen: set[Any] = set()
+    errors: list[str] = []
+    for row in rows:
+        value = row.get(key) if isinstance(row, dict) else None
+        if value in seen:
+            errors.append(f"{label}: duplicate-id: {collection}.{key} {value!r} appears more than once")
+        seen.add(value)
+    return errors
+
+
+def _row_map(rows: Any, key: str) -> dict[str, dict[str, Any]]:
+    if not isinstance(rows, list):
+        return {}
+    return {
+        row[key]: row
+        for row in rows
+        if isinstance(row, dict) and isinstance(row.get(key), str)
+    }
+
+
+def _dangling_errors(
+    label: str,
+    owner: str,
+    field: str,
+    values: Any,
+    known: set[str],
+) -> list[str]:
+    if not isinstance(values, list):
+        return []
+    missing = [value for value in values if value not in known]
+    return [f"{label}: dangling-reference: {owner}.{field} references missing ID {value!r}" for value in missing]
+
+
+# Frozen additive v2 interface (ADR-046-001/014/015/016 and Plan 21).
+# These validators adapt to the existing semantic owners instead of cloning
+# their acceptance logic.  A07's public reducer core is composed through a
+# lossless corrected-state projection; its provisional state-v2 adapter remains
+# a read-only follow-up boundary recorded by the migration ledger.
+def _v2_diag(label: str, stage: str, failure_class: str, subcode: str, message: str) -> str:
+    return f"{label}: [stage={stage} class={failure_class} subcode={subcode}] {message}"
+
+
+def _v2_self_hash(value: dict[str, Any], field: str) -> str:
+    return canonical_json_sha256({key: item for key, item in value.items() if key != field})
+
+
+def _v2_map(rows: Any, key: str) -> dict[str, dict[str, Any]]:
+    return {row[key]: row for row in rows if isinstance(row, dict) and isinstance(row.get(key), str)} if isinstance(rows, list) else {}
+
+
+def _v2_duplicate(values: list[Any]) -> Any | None:
+    seen: set[Any] = set()
+    for value in values:
+        if value in seen:
+            return value
+        seen.add(value)
+    return None
+
+
+def _v2_control_preflight_errors(label: str, payload: dict[str, Any]) -> list[str]:
+    if "schema_owner" in payload:
+        return [_v2_diag(label, "control-plane", "competing-schema-owner", "competing-schema-owner",
+            f"A16 is the sole schema owner; competing owner {payload.get('schema_owner')!r} is forbidden")]
+    owner_errors = v2_schema_owner_errors(label, payload)
+    if owner_errors:
+        return [_v2_diag(label, "control-plane", "competing-schema-owner", "competing-schema-owner", owner_errors[0])]
+    if payload.get("canonicalization") != "daee-canonical-json-v1":
+        return [_v2_diag(label, "preflight", "state-capsule-custody", "canonicalization-mismatch",
+            "canonicalization must be daee-canonical-json-v1")]
+    for collection, key in (("observation_units", "unit_id"), ("candidate_states", "state_id"),
+                            ("input_pressures", "pressure_id"), ("candidate_state_partitions", "partition_id")):
+        values = [row.get(key) for row in payload.get(collection, []) if isinstance(row, dict)]
+        duplicate = _v2_duplicate(values)
+        if duplicate is not None:
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                f"duplicate {collection}.{key} {duplicate!r}")]
+    resource_policy = payload.get("resource_policy")
+    if isinstance(resource_policy, dict) and resource_policy.get("semantic_depth_cap") is not None:
+        return [_v2_diag(label, "preflight", "semantic-depth-cap", "semantic-depth-cap",
+            f"semantic_depth_cap must be null; fixed cap {resource_policy.get('semantic_depth_cap')!r} is forbidden")]
+    for cycle in payload.get("burden_cycles", []):
+        raw = cycle.get("reread", {}).get("raw_exit", {}) if isinstance(cycle, dict) else {}
+        if isinstance(raw, dict) and raw.get("exit_disposition") == "COMPLETE":
+            return [_v2_diag(label, "05", "mrp", "raw-complete-forbidden",
+                "raw exit COMPLETE is forbidden; only the Stage07 derived closure oracle may yield COMPLETE")]
+        loop = raw.get("loopbreak") if isinstance(raw, dict) else None
+        if isinstance(loop, dict):
+            required = {"loopbreak_id", "observed_loop", "observed_loop_event_index", "pre_break_graph",
+                "owner_ground_ref", "performed_operation_ref", "local_delta_ref", "interruption_event_index",
+                "post_break_graph", "post_break_reread", "loopbreak_sha256"}
+            missing = sorted(required - set(loop))
+            if missing:
+                return [_v2_diag(label, "05", "mrp", "incomplete-loopbreak",
+                    f"LoopBreak evidence is incomplete; missing {missing!r}")]
+    projection = payload.get("projection", {})
+    stage_number = V2_STAGE_INDEX.get(str(payload.get("stage")), -1) + 1
+    if stage_number >= 7 and isinstance(projection, dict) and projection.get("public_field_witness_sha256") is None:
+        return [_v2_diag(label, "07", "witness-binding", "public-witness-hash-missing",
+            "Stage07 requires public_field_witness_sha256; ambiguous field_witness_sha256 is not accepted")]
+    return []
+
+
+def _v2_topology_errors(label: str, payload: dict[str, Any]) -> list[str]:
+    specs = [
+        ("observation_units", "unit_id"), ("candidate_states", "state_id"),
+        ("input_pressures", "pressure_id"), ("candidate_state_partitions", "partition_id"),
+        ("burden_partition_decisions", "decision_id"), ("owner_routes", "obligation_id"),
+        ("operation_capsules", "capsule_id"), ("burden_cycles", "cycle_id"),
+    ]
+    for collection, key in specs:
+        values = [row.get(key) for row in payload.get(collection, []) if isinstance(row, dict)]
+        duplicate = _v2_duplicate(values)
+        if duplicate is not None:
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                f"duplicate {collection}.{key} {duplicate!r}")]
+    observations = _v2_map(payload.get("observation_units"), "unit_id")
+    candidates = _v2_map(payload.get("candidate_states"), "state_id")
+    pressures = _v2_map(payload.get("input_pressures"), "pressure_id")
+    partitions = _v2_map(payload.get("candidate_state_partitions"), "partition_id")
+    decisions = _v2_map(payload.get("burden_partition_decisions"), "decision_id")
+    known_units = set(observations)
+    for unit_id, row in observations.items():
+        parent = row.get("parent_unit_id")
+        if parent is not None and parent not in observations:
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                f"observation unit {unit_id} parent_unit_id {parent!r} is dangling")]
+        if row.get("source_start", 0) >= row.get("source_end", 0):
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                f"observation unit {unit_id} has an empty or reversed source range")]
+    for state_id, row in candidates.items():
+        for field, known in (("observation_unit_ids", known_units), ("pressure_ids", set(pressures)), ("partition_ids", set(partitions))):
+            missing = sorted(set(row.get(field, [])) - known)
+            if missing:
+                return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                    f"candidate {state_id} {field} has dangling reference(s) {missing!r}")]
+        merged_into = row.get("merged_into")
+        if merged_into is not None and merged_into not in candidates:
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                f"candidate {state_id} merged_into {merged_into!r} is dangling")]
+    for pressure_id, row in pressures.items():
+        for field, known in (("observation_unit_ids", known_units), ("candidate_state_ids", set(candidates))):
+            missing = sorted(set(row.get(field, [])) - known)
+            if missing:
+                return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                    f"pressure {pressure_id} {field} has dangling reference(s) {missing!r}")]
+        decision_id = row.get("decision_id")
+        if decision_id is not None and decision_id not in decisions:
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                f"pressure {pressure_id} decision_id {decision_id!r} is dangling")]
+    memberships: dict[str, set[str]] = {state_id: set() for state_id in candidates}
+    for partition_id, row in partitions.items():
+        members = row.get("member_state_ids", [])
+        missing = sorted(set(members) - set(candidates))
+        if missing:
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                f"partition {partition_id} member_state_ids has dangling reference(s) {missing!r}")]
+        for state_id in members:
+            memberships[state_id].add(partition_id)
+        declared = {
+            "selected": set([row["selected_state_id"]]) if row.get("selected_state_id") else set(),
+            "held": set(row.get("held_state_ids", [])), "merged": set(row.get("merged_state_ids", [])),
+            "rejected": set(row.get("rejected_state_ids", [])),
+        }
+        if any(not values.issubset(set(members)) for values in declared.values()):
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                f"partition {partition_id} terminal sets must be subsets of member_state_ids")]
+        for status, values in declared.items():
+            for state_id in values:
+                actual = candidates[state_id].get("status")
+                if actual != status and not (status == "held" and actual == "underdetermined"):
+                    return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                        f"overlapping hyperedge {partition_id} assigns {state_id}={status} but global status is {actual!r}")]
+    for state_id, actual_memberships in memberships.items():
+        if not actual_memberships or actual_memberships != set(candidates[state_id].get("partition_ids", [])):
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                f"candidate {state_id} partition_ids do not equal overlapping hyperedge memberships {sorted(actual_memberships)!r}")]
+    selected = [row for row in candidates.values() if row.get("status") == "selected"]
+    if payload.get("selection_status") == "licensed":
+        if len(selected) != 1 or payload.get("selected_n_frame") != selected[0].get("frame_token"):
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                "licensed selection must name exactly one selected candidate frame_token")]
+    elif selected or payload.get("selected_n_frame") is not None:
+        return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+            "not_licensed selection requires no selected candidate and selected_n_frame null")]
+    pressure_decisions: dict[str, list[str]] = {pressure_id: [] for pressure_id in pressures}
+    edges: dict[str, list[str]] = {pressure_id: [] for pressure_id in pressures}
+    for decision_id, row in decisions.items():
+        for pressure_id in row.get("pressure_ids", []):
+            if pressure_id not in pressures:
+                return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                    f"burden partition {decision_id} pressure_id {pressure_id!r} is dangling")]
+            pressure_decisions[pressure_id].append(decision_id)
+        for edge in row.get("pressure_to_burden", []):
+            pressure_id = edge.get("pressure_id")
+            if pressure_id not in pressures:
+                return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                    f"burden partition {decision_id} edge pressure_id {pressure_id!r} is dangling")]
+            edges[pressure_id].append(str(edge.get("burden_id")))
+    for pressure_id, owners in pressure_decisions.items():
+        if len(owners) != 1:
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                f"pressure {pressure_id} must appear in exactly one burden partition; got {owners!r}")]
+        row = pressures[pressure_id]
+        if row.get("status") in {"routed", "merged"} and edges[pressure_id] != [row.get("burden_id")]:
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+                f"pressure {pressure_id} route does not match pressure_to_burden")]
+    produced_burdens = [burden for routes in edges.values() for burden in routes]
+    if set(produced_burdens) != set(payload.get("burden_floor", [])):
+        return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+            f"burden_floor must equal partition-produced burdens; produced={sorted(set(produced_burdens))!r}")]
+    coverage = payload.get("input_coverage", {})
+    if set(coverage.get("all_observation_unit_ids", [])) != known_units or coverage.get("unaccounted_unit_ids"):
+        return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-missing",
+            "input_coverage must exactly account for all observation unit IDs with no unaccounted IDs")]
+    freeze = payload.get("stage02_freeze", {})
+    observation_ids = [row.get("unit_id") for row in payload.get("observation_units", [])]
+    candidate_ids = [row.get("state_id") for row in payload.get("candidate_states", [])]
+    pressure_ids = [row.get("pressure_id") for row in payload.get("input_pressures", [])]
+    candidate_partition_ids = [row.get("partition_id") for row in payload.get("candidate_state_partitions", [])]
+    burden_partition_ids = [row.get("decision_id") for row in payload.get("burden_partition_decisions", [])]
+    topology = {"candidate_states": payload.get("candidate_states", []), "input_pressures": payload.get("input_pressures", []),
+        "candidate_state_partitions": payload.get("candidate_state_partitions", []),
+        "burden_partition_decisions": payload.get("burden_partition_decisions", []), "B_LA": freeze.get("B_LA", [])}
+    expected_hashes = {
+        "observation_unit_set_sha256": canonical_json_sha256(sorted(observation_ids)),
+        "candidate_state_set_sha256": canonical_json_sha256(sorted(candidate_ids)),
+        "input_pressure_set_sha256": canonical_json_sha256(sorted(pressure_ids)),
+        "candidate_partition_set_sha256": canonical_json_sha256(sorted(candidate_partition_ids)),
+        "burden_partition_decision_set_sha256": canonical_json_sha256(sorted(burden_partition_ids)),
+        "B_LA_sequence_sha256": canonical_json_sha256(freeze.get("B_LA", [])),
+        "topology_state_sha256": canonical_json_sha256(topology),
+    }
+    sequence_fields = {
+        "observation_unit_ids": observation_ids, "candidate_state_ids": candidate_ids,
+        "input_pressure_ids": pressure_ids, "candidate_partition_ids": candidate_partition_ids,
+        "burden_partition_decision_ids": burden_partition_ids,
+    }
+    if any(freeze.get(field) != values for field, values in sequence_fields.items()):
+        return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-hash",
+            "stage02_freeze independent observation/candidate/pressure/partition universes do not preserve canonical source sequences")]
+    for field, expected in expected_hashes.items():
+        if freeze.get(field) != expected:
+            return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-hash",
+                f"stage02_freeze {field} mismatch: expected {expected}")]
+    if freeze.get("record_sha256") != _v2_self_hash(freeze, "record_sha256"):
+        return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "baseline-freeze-hash",
+            "stage02_freeze record_sha256 mismatch")]
+    initial_burdens = [row.get("burden_id") for row in payload.get("burden_cycles", []) if row.get("origin") == "B_LA"]
+    late = [burden for burden in initial_burdens if burden not in freeze.get("B_LA", [])]
+    if late:
+        return [_v2_diag(label, "02", "stage02-input-pressure-coverage", "b-la-late-append",
+            f"B_LA burden(s) {late!r} appear after stage02_freeze")]
+    return []
+
+
+def _v2_obligation_errors(label: str, payload: dict[str, Any]) -> list[str]:
+    routes = payload.get("owner_routes", [])
+    if routes:
+        record = {
+            "topology_contract": payload["topology_contract"],
+            "upstream_obligation_ids": payload["upstream_obligation_ids"],
+            "upstream_obligation_set_sha256": payload["upstream_obligation_set_sha256"],
+            "owner_routes": routes,
+            "act_row_details": payload["act_row_details"],
+            "owner_execution_dispositions": payload["owner_execution_dispositions"],
+            "partition_derivative_mappings": payload["partition_derivative_mappings"],
+            "stage04_status": "pass",
+            "downstream_release_state": payload.get("closure_state", {}).get("derived_decision"),
+        }
+        findings = validate_owner_obligation_coverage(
+            record,
+            upstream_obligation_ids=[row["obligation_id"] for row in routes],
+            upstream_pressure_ids=[row["pressure_id"] for row in payload["input_pressures"]],
+            upstream_partition_decision_ids=[row["decision_id"] for row in payload["burden_partition_decisions"]],
+            upstream_derivative_inventory=payload["partition_derivative_mappings"],
+            upstream_derivative_inventory_sha256=payload["partition_derivative_mappings_sha256"],
+        )
+        if findings:
+            finding = findings[0]
+            return [_v2_diag(label, "03", finding["failure_class"], finding["failure_subcode"], finding["message"])]
+    elif any(payload.get(field) for field in ("upstream_obligation_ids", "act_row_details", "owner_execution_dispositions")):
+        return [_v2_diag(label, "03", "owner-obligation-coverage", "obligation-universe-mismatch",
+            "empty owner route universe cannot carry obligations, ACT rows, or dispositions")]
+    dispositions = payload.get("owner_execution_dispositions", [])
+    expected_state = {
+        "declared_ids": [row["obligation_id"] for row in routes],
+        "executed_ids": [row["obligation_id"] for row in dispositions if row["disposition"] == "executed"],
+        "held_ids": [row["obligation_id"] for row in dispositions if row["disposition"] == "held"],
+        "partial_ids": [row["obligation_id"] for row in dispositions if row["disposition"] == "partial"],
+        "terminal_disposition_sha256": canonical_json_sha256(dispositions),
+    }
+    if payload.get("owner_obligation_state") != expected_state:
+        return [_v2_diag(label, "04", "owner-obligation-coverage", "owner-obligation-state-projection",
+            "owner_obligation_state is not the exact declared/executed/held/partial disposition projection")]
+    for cycle in payload.get("burden_cycles", []):
+        expected = obligation_set_sha256(cycle.get("obligation_ids", []))
+        if cycle.get("obligation_set_sha256") != expected:
+            return [_v2_diag(label, "03", "owner-obligation-coverage", "obligation-universe-hash",
+                f"cycle {cycle.get('cycle_id')} obligation_set_sha256 mismatch; expected {expected}")]
+    return []
+
+
+def _v2_event_hash_error(label: str, stage: str, failure_class: str, subcode: str,
+                         row: dict[str, Any], hash_field: str, identity: str) -> list[str]:
+    expected = _v2_self_hash(row, hash_field)
+    if row.get(hash_field) != expected:
+        return [_v2_diag(label, stage, failure_class, subcode,
+            f"{identity} {hash_field} mismatch; expected {expected}")]
+    return []
+
+
+def _v2_operation_errors(label: str, payload: dict[str, Any]) -> list[str]:
+    obligations = _v2_map(payload.get("owner_routes"), "obligation_id")
+    acts = _v2_map(payload.get("act_row_details"), "obligation_id")
+    operations = _v2_map(payload.get("operation_capsules"), "capsule_id")
+    cycles = _v2_map(payload.get("burden_cycles"), "cycle_id")
+    body_hashes: dict[str, str] = {}
+    for capsule_id, capsule in operations.items():
+        expected_hash = "sha256:" + _v2_self_hash(capsule, "operation_capsule_sha256")
+        if capsule.get("operation_capsule_sha256") != expected_hash:
+            return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join",
+                f"operation capsule {capsule_id} operation_capsule_sha256 mismatch; expected {expected_hash}")]
+        owner_findings = validate_owned_operation_capsule(capsule)
+        if owner_findings:
+            return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join",
+                f"operation capsule {capsule_id} fails operation owner: {owner_findings[0]}")]
+        cycle = cycles.get(str(capsule.get("cycle_id")))
+        capsule_obligation_ids = capsule.get("obligation_ids", [])
+        joined = [obligations.get(str(value)) for value in capsule_obligation_ids]
+        if cycle is None or not capsule_obligation_ids or any(value is None for value in joined):
+            return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join",
+                f"operation capsule {capsule_id} has dangling obligation_ids/cycle reference")]
+        for obligation in joined:
+            assert obligation is not None
+            for field in ("burden_id", "pressure_ids", "owner_id", "operation", "register_axis"):
+                if capsule.get(field) != obligation.get(field):
+                    return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join",
+                        f"operation capsule {capsule_id} {field} does not match obligation {obligation.get('obligation_id')}")]
+            act = acts.get(str(obligation["obligation_id"]))
+            if act is None or act.get("body_ref") != capsule.get("body_ref"):
+                return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join",
+                    f"operation capsule {capsule_id} does not exactly join ACT body_ref for {obligation['obligation_id']}")]
+        if capsule.get("burden_id") != cycle.get("burden_id"):
+            return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join",
+                f"operation capsule {capsule_id} burden_id does not match cycle {cycle.get('cycle_id')}")]
+        body_ref, body_sha = str(capsule.get("body_ref")), str(capsule.get("body_sha256"))
+        if body_ref in body_hashes and body_hashes[body_ref] != body_sha:
+            return [_v2_diag(label, "04", "act_body_evidence", "body-hash-conflict",
+                f"body_ref {body_ref!r} has conflicting body_sha256 values {body_hashes[body_ref]!r} and {body_sha!r}")]
+        body_hashes[body_ref] = body_sha
+    executed = {row["obligation_id"] for row in payload.get("owner_execution_dispositions", []) if row.get("disposition") == "executed"}
+    for obligation_id in executed:
+        matches = [row for row in operations.values() if obligation_id in row.get("obligation_ids", [])]
+        if not matches:
+            return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join",
+                f"executed obligation {obligation_id} maps to no operation capsule")]
+    executed_routes = [row for row in payload.get("owner_routes", []) if row.get("obligation_id") in executed]
+    if not executed_routes:
+        if payload.get("operation_capsules") or payload.get("operation_body_artifacts"):
+            return [_v2_diag(label, "04", "act_body_evidence", "obligation-capsule-cardinality",
+                "an empty executed-obligation universe cannot carry operation capsules or body artifacts")]
+        return []
+    independent_inventory = {
+        "obligation_ids": [row["obligation_id"] for row in executed_routes],
+        "pressure_ids": [row["pressure_id"] for row in payload.get("input_pressures", [])],
+        "cycle_ids": [row["cycle_id"] for row in payload.get("burden_cycles", [])],
+    }
+    operation_record = {
+        "execution_contract": "operation-capsule-v1",
+        "hydration_policy": "projection-only",
+        "operation_capsules": payload.get("operation_capsules", []),
+        "events": [
+            {
+                "event_id": event["event_id"], "capsule_id": event["operation_capsule_id"],
+                "sequence": event["sequence"], "kind": event["kind"], "ref": event["ref"],
+            }
+            for cycle in payload.get("burden_cycles", []) for event in cycle.get("operation_events", [])
+        ],
+        "obligations": executed_routes,
+        "pressures": payload.get("input_pressures", []),
+        "owner_routes": executed_routes,
+        "act_row_details": [row for row in payload.get("act_row_details", []) if row.get("obligation_id") in executed],
+        "cycles": [{"cycle_id": row["cycle_id"], "burden_id": row["burden_id"],
+                    "obligation_ids": row["obligation_ids"], "operation_capsule_ids": row["operation_capsule_ids"]}
+                   for row in payload.get("burden_cycles", [])],
+        "body_artifacts": payload.get("operation_body_artifacts"),
+        "release_state": payload.get("closure_state", {}).get("derived_decision"),
+        "operation_capsule_hashes": {row["body_ref"]: row["operation_capsule_sha256"]
+                                     for row in payload.get("operation_capsules", [])},
+    }
+    owner_findings = validate_owned_operation_record(
+        operation_record,
+        upstream_inventory=independent_inventory,
+        upstream_inventory_sha256=canonical_json_sha256(independent_inventory),
+    )
+    if owner_findings:
+        finding = owner_findings[0]
+        return [_v2_diag(label, "04", finding["failure_class"], finding["failure_subcode"], finding["message"])]
+    return []
+
+
+def _v2_topology_mass_errors(label: str, payload: dict[str, Any]) -> list[str]:
+    if payload.get("partition_derivative_mappings_sha256") != canonical_json_sha256(payload.get("partition_derivative_mappings", [])):
+        return [_v2_diag(label, "03", "owner-obligation-coverage", "derivative-inventory-hash",
+            "partition_derivative_mappings_sha256 does not bind the independent Plan03 derivative inventory")]
+    authority = payload.get("topology_mass_evidence_authority")
+    authority_sha256 = payload.get("topology_mass_evidence_authority_sha256")
+    findings = validate_topology_mass_accounting(
+        payload.get("topology_mass_accounting"),
+        upstream_obligation_ids=[row["obligation_id"] for row in payload.get("owner_routes", [])],
+        upstream_inventory_sha256=payload.get("upstream_obligation_set_sha256"),
+        evidence_authority=authority,
+        evidence_authority_sha256=authority_sha256,
+    )
+    if findings:
+        finding = findings[0]
+        return [_v2_diag(label, "06", finding["failure_class"], finding["failure_subcode"], finding["message"])]
+    return []
+
+
+def _v2_graph_hash_error(label: str, graph: dict[str, Any], identity: str) -> list[str]:
+    return _v2_event_hash_error(label, "05", "mrp", "incomplete-loopbreak", graph, "graph_sha256", identity)
+
+
+def _v2_has_cycle(nodes: list[str], edges: list[dict[str, str]]) -> bool:
+    adjacency: dict[str, list[str]] = {node: [] for node in nodes}
+    for edge in edges:
+        adjacency.setdefault(str(edge.get("from")), []).append(str(edge.get("to")))
+    visiting: set[str] = set()
+    visited: set[str] = set()
+    def visit(node: str) -> bool:
+        if node in visiting:
+            return True
+        if node in visited:
+            return False
+        visiting.add(node)
+        if any(visit(target) for target in adjacency.get(node, [])):
+            return True
+        visiting.remove(node)
+        visited.add(node)
+        return False
+    return any(visit(node) for node in list(adjacency))
+
+
+def _v2_cycle_errors(label: str, payload: dict[str, Any]) -> list[str]:
+    operations = _v2_map(payload.get("operation_capsules"), "capsule_id")
+    obligations = _v2_map(payload.get("owner_routes"), "obligation_id")
+    cycles = payload.get("burden_cycles", [])
+    cycles_by_id = _v2_map(cycles, "cycle_id")
+    all_indices: list[int] = [payload.get("stage02_freeze", {}).get("event_index")]
+    all_event_ids: list[str] = [str(payload.get("stage02_freeze", {}).get("record_id"))]
+    candidate_events_by_id: dict[str, dict[str, Any]] = {}
+    indexed_nodes: list[tuple[int, str]] = [(payload["stage02_freeze"]["event_index"], payload["stage02_freeze"]["record_id"])]
+    extra_edges: list[dict[str, str]] = []
+    seen_cycles: dict[str, dict[str, Any]] = {}
+    for cycle in cycles:
+        cycle_id = str(cycle.get("cycle_id"))
+        origin, depth, parent_id = cycle.get("origin"), cycle.get("generation_depth"), cycle.get("parent_cycle_id")
+        if origin == "B_LA":
+            if depth != 0 or parent_id is not None:
+                return [_v2_diag(label, "05", "mrp", "generation-parentage",
+                    f"B_LA cycle {cycle_id} must have generation_depth 0 and parent null")]
+        else:
+            parent = seen_cycles.get(str(parent_id))
+            if parent is None or depth != parent.get("generation_depth", -1) + 1:
+                return [_v2_diag(label, "05", "mrp", "generation-parentage",
+                    f"B_MRP cycle {cycle_id} requires an earlier parent and generation_depth parent+1")]
+            parent_events = parent.get("reread", {}).get("raw_exit", {}).get("candidate_events", [])
+            generators = [event for event in parent_events if event.get("disposition") == "instantiate_generated"
+                and event.get("target_burden_id") == cycle.get("burden_id") and event.get("next_cycle_id") == cycle_id]
+            if len(generators) != 1:
+                return [_v2_diag(label, "05", "mrp", "generation-parentage",
+                    f"B_MRP cycle {cycle_id} is not bound to exactly one parent candidate generation event")]
+        seen_cycles[cycle_id] = cycle
+        phase = cycle.get("phase")
+        phase_rank = {"ROUTED": 1, "EXECUTED": 2, "LANDED": 3, "REREAD_EVALUATED": 4}[phase]
+        phase_fields = (("route_gradient", 1), ("operation_events", 2), ("land", 3), ("post_land_delta", 3), ("reread", 4))
+        for field, required_rank in phase_fields:
+            present = field in cycle
+            if phase_rank >= required_rank and not present:
+                return [_v2_diag(label, "05", "mrp", "replay-history-mutation",
+                    f"cycle {cycle_id} phase {phase} requires {field}")]
+            if phase_rank < required_rank and present:
+                return [_v2_diag(label, "05", "mrp", "replay-history-mutation",
+                    f"cycle {cycle_id} phase {phase} cannot assert later field {field}")]
+        route = cycle["route_gradient"]
+        if route.get("target_burden_id") != cycle.get("burden_id"):
+            return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join",
+                f"route target {route.get('target_burden_id')!r} does not match cycle burden {cycle.get('burden_id')!r}")]
+        for row, field, identity in ((route, "event_sha256", f"cycle {cycle_id} route"),):
+            errors = _v2_event_hash_error(label, "04", "act_body_evidence", "operation-capsule-join", row, field, identity)
+            if errors: return errors
+        expected_route_record = canonical_json_sha256({key: route[key] for key in ("record_id", "target_burden_id", "source_refs", "basis_refs")})
+        if route.get("record_sha256") != expected_route_record:
+            return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join", "route record_sha256 mismatch")]
+        event_rows = cycle.get("operation_events", [])
+        expected_capsules = [row.get("capsule_id") for row in payload.get("operation_capsules", []) if row.get("cycle_id") == cycle_id]
+        if cycle.get("operation_capsule_ids") != expected_capsules:
+            return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join",
+                f"cycle {cycle_id} operation_capsule_ids do not match embedded operations")]
+        expected_obligations = [obligation_id for capsule_id in expected_capsules for obligation_id in operations[capsule_id].get("obligation_ids", [])]
+        if cycle.get("obligation_ids") != expected_obligations:
+            return [_v2_diag(label, "03", "owner-obligation-coverage", "obligation-universe-hash",
+                f"cycle {cycle_id} obligation_ids do not equal its obligation universe")]
+        expected_kinds = ["before_state", "owner.operation", "performed_evidence", "local_delta", "residual", "land_contribution"]
+        if len(event_rows) != 6 * len(expected_capsules):
+            return [_v2_diag(label, "04", "act_body_evidence", "performed-event-order",
+                f"cycle {cycle_id} operation event cardinality does not equal six per capsule")]
+        for ordinal, capsule_id in enumerate(expected_capsules):
+            capsule = operations[capsule_id]
+            group = event_rows[ordinal * 6:(ordinal + 1) * 6]
+            expected_refs = [
+                f"capsule:{capsule_id}#before_state",
+                f"route:{capsule['obligation_ids'][0]}#owner.operation",
+                f"capsule:{capsule_id}#performed_operation",
+                f"capsule:{capsule_id}#delta",
+                f"capsule:{capsule_id}#residual",
+                f"capsule:{capsule_id}#land_contribution",
+            ]
+            if [row.get("sequence") for row in group] != list(range(1, 7)) or [row.get("kind") for row in group] != expected_kinds:
+                return [_v2_diag(label, "04", "act_body_evidence", "performed-event-order",
+                    "operation chronology must be before_state, owner.operation, performed_evidence, local_delta, residual, land_contribution")]
+            if [row.get("ref") for row in group] != expected_refs or any(row.get("operation_capsule_id") != capsule_id for row in group):
+                return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join",
+                    f"operation events for {capsule_id} do not bind distinct state/delta/residual identities")]
+            for row in group:
+                errors = _v2_event_hash_error(label, "04", "act_body_evidence", "operation-capsule-join", row, "event_sha256", row["event_id"])
+                if errors: return errors
+        route_index = route["event_index"]
+        operation_indices = [row["event_index"] for row in event_rows]
+        if operation_indices and not (route_index < min(operation_indices) and operation_indices == sorted(operation_indices)):
+            return [_v2_diag(label, "04", "act_body_evidence", "performed-event-order", "route must precede ordered operation events")]
+        land = cycle["land"]
+        if operation_indices and land["event_index"] <= max(operation_indices):
+            return [_v2_diag(label, "04", "act_body_evidence", "land-before-operation", "Land event occurs before operation chronology completes")]
+        if land.get("operation_capsule_ids") != expected_capsules or land.get("contribution_refs") != [f"capsule:{item}#land_contribution" for item in expected_capsules]:
+            return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join", "Land does not join operation capsules/contributions")]
+        expected_land_record = canonical_json_sha256({key: land[key] for key in ("record_id", "status", "operation_capsule_ids", "contribution_refs")})
+        if land.get("record_sha256") != expected_land_record or land.get("event_sha256") != _v2_self_hash(land, "event_sha256"):
+            return [_v2_diag(label, "04", "act_body_evidence", "operation-capsule-join", "Land record/event hash mismatch")]
+        delta = cycle["post_land_delta"]
+        if delta["event_index"] <= land["event_index"]:
+            return [_v2_diag(label, "05", "mrp", "post-land-order", "post-Land delta event_index must be after Land")]
+        if delta.get("source_land_event_id") != land.get("event_id") or delta.get("source_operation_capsule_ids") != expected_capsules:
+            return [_v2_diag(label, "05", "mrp", "post-land-order", "post-Land delta references do not join Land/operation capsules")]
+        expected_delta = canonical_json_sha256({key: delta[key] for key in ("delta_id", "source_land_event_id", "source_operation_capsule_ids", "basis_refs")})
+        if delta.get("delta_sha256") != expected_delta or delta.get("event_sha256") != _v2_self_hash(delta, "event_sha256"):
+            return [_v2_diag(label, "05", "mrp", "post-land-order", "post-Land delta hash mismatch")]
+        reread = cycle["reread"]
+        raw = reread["raw_exit"]
+        if reread.get("source_land_event_id") != land.get("event_id") or reread.get("source_delta_event_id") != delta.get("event_id"):
+            return [_v2_diag(label, "05", "mrp", "post-land-order", "reread does not reference Land and post-Land delta")]
+        post_rows: list[tuple[int, str]] = []
+        for candidate in raw.get("candidate_events", []):
+            if candidate.get("candidate_event_sha256") != _v2_self_hash(candidate, "candidate_event_sha256"):
+                return [_v2_diag(label, "05", "mrp", "candidate-transition-invalid", f"candidate event {candidate.get('candidate_event_id')} hash mismatch")]
+            event_id = str(candidate.get("candidate_event_id"))
+            if event_id in candidate_events_by_id:
+                return [_v2_diag(label, "05", "mrp", "candidate-transition-invalid", f"duplicate candidate_event_id {event_id!r}")]
+            previous = candidate.get("previous_candidate_event_id")
+            if previous is not None and previous not in candidate_events_by_id:
+                return [_v2_diag(label, "05", "mrp", "candidate-transition-invalid", f"candidate event {event_id} previous ID {previous!r} is unresolved")]
+            candidate_events_by_id[event_id] = candidate
+            post_rows.append((candidate["event_index"], event_id))
+            if candidate.get("next_cycle_id") in cycles_by_id:
+                extra_edges.append({"from": event_id, "to": cycles_by_id[candidate["next_cycle_id"]]["route_gradient"]["event_id"]})
+        for diagnostic in raw.get("field_diagnostics", []):
+            if diagnostic.get("event_sha256") != _v2_self_hash(diagnostic, "event_sha256"):
+                return [_v2_diag(label, "05", "mrp", "post-land-order", f"diagnostic {diagnostic.get('diagnostic_id')} event hash mismatch")]
+            post_rows.append((diagnostic["event_index"], diagnostic["diagnostic_id"]))
+        graph = raw.get("noetic_dependency_graph")
+        errors = _v2_graph_hash_error(label, graph, "noetic dependency graph")
+        if errors: return errors
+        loop = raw.get("loopbreak")
+        if loop is not None:
+            for key in ("pre_break_graph", "post_break_graph"):
+                errors = _v2_graph_hash_error(label, loop[key], key)
+                if errors: return errors
+            post = loop["post_break_reread"]
+            for diagnostic in post.get("field_diagnostics", []):
+                if diagnostic.get("event_sha256") != _v2_self_hash(diagnostic, "event_sha256"):
+                    return [_v2_diag(label, "05", "mrp", "incomplete-loopbreak", "LoopBreak post-reread diagnostic hash mismatch")]
+                post_rows.append((diagnostic["event_index"], diagnostic["diagnostic_id"]))
+            if post.get("record_sha256") != _v2_self_hash(post, "record_sha256") or loop.get("loopbreak_sha256") != _v2_self_hash(loop, "loopbreak_sha256"):
+                return [_v2_diag(label, "05", "mrp", "incomplete-loopbreak", "LoopBreak reread or evidence hash mismatch")]
+            post_rows.extend([(loop["observed_loop_event_index"], f"{loop['loopbreak_id']}:observed"),
+                (loop["interruption_event_index"], f"{loop['loopbreak_id']}:interruption"),
+                (post["event_index"], f"{loop['loopbreak_id']}:reread")])
+        if any(index <= delta["event_index"] for index, _ in post_rows) or raw["event_index"] <= max([delta["event_index"]] + [i for i, _ in post_rows]):
+            return [_v2_diag(label, "05", "mrp", "post-land-order",
+                "candidate/diagnostic/LoopBreak events must follow post-Land delta and precede exactly one raw exit")]
+        if raw.get("exit_disposition") == "STOP" and not isinstance(raw.get("no_new_resultant"), dict):
+            return [_v2_diag(label, "05", "mrp", "raw-exit-cardinality", "STOP requires a hash-bound no_new_resultant")]
+        if isinstance(raw.get("no_new_resultant"), dict) and raw["no_new_resultant"].get("sha256") != _v2_self_hash(raw["no_new_resultant"], "sha256"):
+            return [_v2_diag(label, "05", "mrp", "raw-exit-cardinality", "no_new_resultant hash mismatch")]
+        if raw.get("raw_exit_sha256") != _v2_self_hash(raw, "raw_exit_sha256") or reread.get("record_sha256") != _v2_self_hash(reread, "record_sha256"):
+            return [_v2_diag(label, "05", "mrp", "raw-exit-cardinality", "raw exit or reread hash mismatch")]
+        if cycle.get("cycle_sha256") != _v2_self_hash(cycle, "cycle_sha256"):
+            return [_v2_diag(label, "05", "state-capsule-custody", "replay-history-mutation", f"cycle {cycle_id} cycle_sha256 mismatch")]
+        event_pairs = [(route["event_index"], route["event_id"])] + [(row["event_index"], row["event_id"]) for row in event_rows]
+        event_pairs += [(land["event_index"], land["event_id"]), (delta["event_index"], delta["event_id"])] + post_rows + [(raw["event_index"], raw["event_id"])]
+        indexed_nodes.extend(event_pairs)
+        all_indices.extend(index for index, _ in event_pairs)
+        all_event_ids.extend(identity for _, identity in event_pairs)
+    duplicate_index = _v2_duplicate(all_indices)
+    if duplicate_index is not None:
+        return [_v2_diag(label, "05", "mrp", "post-land-order", f"global event_index {duplicate_index!r} is duplicated")]
+    duplicate_event = _v2_duplicate(all_event_ids)
+    if duplicate_event is not None:
+        return [_v2_diag(label, "05", "mrp", "event-dag-cycle", f"global event identity {duplicate_event!r} is duplicated")]
+    ordered = [identity for _, identity in sorted(indexed_nodes)]
+    dag_edges = [{"from": ordered[index], "to": ordered[index + 1]} for index in range(len(ordered) - 1)] + extra_edges
+    if _v2_has_cycle(ordered, dag_edges):
+        return [_v2_diag(label, "05", "mrp", "event-dag-cycle",
+            "provenance/event DAG is cyclic; noetic dependency graph cycles remain allowed")]
+    return []
+
+
+def _a07_hash(value: Any) -> str:
+    encoded = json.dumps(value, ensure_ascii=True, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _v2_reducer_errors(label: str, payload: dict[str, Any]) -> list[str]:
+    expected_policy_hash = _a07_hash({key:value for key,value in payload["resource_policy"].items() if key != "policy_sha256"})
+    if payload["resource_policy"].get("policy_sha256") != expected_policy_hash:
+        return [_v2_diag(label, "preflight", "mrp", "resource-policy-hash-mismatch",
+            f"resource_policy policy_sha256 mismatch; expected {expected_policy_hash}")]
+    if not payload["burden_cycles"]:
+        if payload["reread_signature_history"] or payload["reread_signature_history_sha256"] != canonical_json_sha256([]):
+            return [_v2_diag(label, "05", "mrp", "reread-signature-history", "empty cycle sequence requires an empty hash-bound reread history")]
+        return []
+    state = validate_lifecycle_record(payload, release_bearing=True)
+    if not state.valid:
+        finding = state.findings[0]
+        subcode = "reread-signature-mismatch" if finding.subcode == "state_v2_reread_signature_mismatch" else finding.subcode
+        return [_v2_diag(label, "05", finding.failure_class, subcode, finding.message)]
+    capsules = _v2_map(payload["operation_capsules"], "capsule_id")
+    cycles = _v2_map(payload["burden_cycles"], "cycle_id")
+    expected_history: list[dict[str, Any]] = []
+    for cycle_id, event_id, a07_signature in state.reread_signature_history:
+        cycle = cycles[cycle_id]
+        signature = canonical_json_sha256({
+            "a07_reducer_signature_sha256":a07_signature,
+            "performed_operation_capsule_sha256s":[capsules[value]["operation_capsule_sha256"] for value in cycle["operation_capsule_ids"]],
+            "land_record_sha256":cycle["land"]["record_sha256"], "land_event_sha256":cycle["land"]["event_sha256"],
+            "post_land_delta_sha256":cycle["post_land_delta"]["delta_sha256"], "post_land_delta_event_sha256":cycle["post_land_delta"]["event_sha256"],
+        })
+        expected_history.append({"cycle_id":cycle_id,"raw_exit_event_id":event_id,"a07_reducer_signature_sha256":a07_signature,"reread_signature_sha256":signature})
+        reread = cycle["reread"]
+        if reread.get("a07_reducer_signature_sha256") != a07_signature or reread.get("reread_signature_sha256") != signature:
+            return [_v2_diag(label, "05", "mrp", "reread-signature-mismatch",
+                f"cycle {cycle_id} reread signature does not bind A07 state plus performed operation, Land, and post-Land delta")]
+    if payload.get("reread_signature_history") != expected_history or payload.get("reread_signature_history_sha256") != canonical_json_sha256(expected_history):
+        return [_v2_diag(label, "05", "mrp", "reread-signature-history",
+            "reread_signature_history is not the exact ordered delta-sensitive reducer projection")]
+    return []
+
+
+def _v2_event_dag(payload: dict[str, Any]) -> dict[str, Any]:
+    indexed: list[tuple[int, str]] = [(payload["stage02_freeze"]["event_index"], payload["stage02_freeze"]["record_id"])]
+    extra_edges: list[dict[str, str]] = []
+    cycles = _v2_map(payload.get("burden_cycles"), "cycle_id")
+    for cycle in payload.get("burden_cycles", []):
+        indexed.append((cycle["route_gradient"]["event_index"], cycle["route_gradient"]["event_id"]))
+        indexed.extend((row["event_index"], row["event_id"]) for row in cycle.get("operation_events", []))
+        indexed.append((cycle["land"]["event_index"], cycle["land"]["event_id"]))
+        indexed.append((cycle["post_land_delta"]["event_index"], cycle["post_land_delta"]["event_id"]))
+        raw = cycle["reread"]["raw_exit"]
+        indexed.extend((row["event_index"], row["candidate_event_id"]) for row in raw.get("candidate_events", []))
+        indexed.extend((row["event_index"], row["diagnostic_id"]) for row in raw.get("field_diagnostics", []))
+        loop = raw.get("loopbreak")
+        if loop:
+            indexed.extend([(loop["observed_loop_event_index"], f"{loop['loopbreak_id']}:observed"),
+                (loop["interruption_event_index"], f"{loop['loopbreak_id']}:interruption"),
+                (loop["post_break_reread"]["event_index"], f"{loop['loopbreak_id']}:reread")])
+            indexed.extend((row["event_index"], row["diagnostic_id"]) for row in loop["post_break_reread"].get("field_diagnostics", []))
+        indexed.append((raw["event_index"], raw["event_id"]))
+        for candidate in raw.get("candidate_events", []):
+            target = cycles.get(str(candidate.get("next_cycle_id")))
+            if target:
+                extra_edges.append({"from": candidate["candidate_event_id"], "to": target["route_gradient"]["event_id"]})
+    ordered = [identity for _, identity in sorted(indexed)]
+    return {"nodes": ordered, "edges": [{"from": ordered[index], "to": ordered[index + 1]} for index in range(len(ordered) - 1)] + extra_edges}
+
+
+def _v2_projection_values(payload: dict[str, Any]) -> dict[str, str | None]:
+    stage_number = V2_STAGE_INDEX[str(payload["stage"])] + 1
+    b_mrp = [cycle["burden_id"] for cycle in payload["burden_cycles"] if cycle["origin"] == "B_MRP"]
+    stage04 = {"upstream_obligation_ids": payload["upstream_obligation_ids"], "owner_routes": payload["owner_routes"],
+        "act_row_details": payload["act_row_details"], "owner_execution_dispositions": payload["owner_execution_dispositions"],
+        "owner_obligation_state": payload["owner_obligation_state"], "operation_capsules": payload["operation_capsules"],
+        "operation_events": [event for cycle in payload["burden_cycles"] for event in cycle.get("operation_events", [])]}
+    stage05 = {"burden_cycles": payload["burden_cycles"]}
+    reducer = {"B_LA": payload["stage02_freeze"]["B_LA"], "B_MRP": b_mrp,
+        "current_live_burdens": payload["current_live_burdens"], "held": payload["held"], "closure_state": payload["closure_state"],
+        "reread_signature_history": payload["reread_signature_history"]}
+    dag = _v2_event_dag(payload)
+    activation = {"owner_routes": payload["owner_routes"], "act_row_details": payload["act_row_details"],
+        "owner_execution_dispositions": payload["owner_execution_dispositions"], "operation_capsules": payload["operation_capsules"],
+        "burden_cycles": payload["burden_cycles"]}
+    release = {"stage04": stage04, "stage05": stage05, "reducer": reducer, "event_dag": dag}
+    public = {"trace_id": payload["trace_id"], "B_LA": payload["stage02_freeze"]["B_LA"], "B_MRP": b_mrp,
+        "burden_cycles": payload["burden_cycles"], "closure_state": payload["closure_state"]}
+    values: dict[str, str | None] = {
+        "stage04_activation_projection_sha256": canonical_json_sha256(stage04) if stage_number >= 4 else None,
+        "stage05_lifecycle_projection_sha256": canonical_json_sha256(stage05) if stage_number >= 5 else None,
+        "reducer_state_sha256": canonical_json_sha256(reducer) if stage_number >= 5 else None,
+        "event_dag_sha256": canonical_json_sha256(dag) if stage_number >= 5 else None,
+        "activation_lifecycle_fingerprint_sha256": canonical_json_sha256(activation) if stage_number >= 4 else None,
+        "stage06_projection_sha256": canonical_json_sha256(release) if stage_number >= 6 else None,
+        "stage07_projection_sha256": canonical_json_sha256(release) if stage_number >= 7 else None,
+        "public_field_witness_sha256": canonical_json_sha256(public) if stage_number >= 7 else None,
+        "field_witness_envelope_sha256": None,
+    }
+    if stage_number >= 8:
+        values["field_witness_envelope_sha256"] = canonical_json_sha256({
+            "capsule_id": payload["capsule_id"], "source_commit": payload["source_commit"], "trace_id": payload["trace_id"],
+            "public_field_witness_sha256": values["public_field_witness_sha256"],
+            "activation_lifecycle_fingerprint_sha256": values["activation_lifecycle_fingerprint_sha256"],
+        })
+    return values
+
+
+def _v2_closure_inputs(payload: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any], str]:
+    """Project state-v2 plus an independently derived upstream authority."""
+    burdens = []
+    lands = []
+    rereads = []
+    diagnostics = []
+    loopbreak_owner: dict[str, Any] | None = None
+    no_new: dict[str, Any] | None = None
+    for cycle in payload.get("burden_cycles", []):
+        burden = {"burden_id": cycle["burden_id"], "origin": cycle["origin"],
+            "terminal_state": cycle["terminal_state"], "load_bearing": True}
+        if cycle["terminal_state"] == "recurse":
+            burden["next_action"] = "continue generated cycle"
+        burdens.append(burden)
+        reread = cycle.get("reread")
+        if isinstance(reread, dict):
+            rereads.append({"reread_id": reread["record_id"], "status": "evaluated", "post_break": bool(reread["raw_exit"].get("loopbreak"))})
+            operations = _v2_map(payload.get("operation_capsules"), "capsule_id")
+            lands.append({"burden_id": cycle["burden_id"], "reread_id": reread["record_id"],
+                "body_refs": [operations[item]["body_ref"] for item in cycle.get("operation_capsule_ids", [])],
+                "delta_ref": cycle["post_land_delta"]["delta_id"]})
+            raw = reread["raw_exit"]
+            diagnostics.extend(raw.get("field_diagnostics", []))
+            if raw.get("exit_disposition") == "STOP" and isinstance(raw.get("no_new_resultant"), dict):
+                no_new = {"stop_licensed": raw["no_new_resultant"].get("stop_licensed") is True,
+                    "candidate_ids": list(raw["no_new_resultant"].get("unresolved_candidate_ids", []))}
+            loop = raw.get("loopbreak")
+            if isinstance(loop, dict):
+                if diagnostics:
+                    diagnostics[-1] = dict(diagnostics[-1])
+                    diagnostics[-1]["dependency_refs"] = [loop["pre_break_graph"]["graph_id"]]
+                loopbreak_owner = {
+                    "loopbreak_id": loop["loopbreak_id"], "observed_loop_ref": loop["pre_break_graph"]["graph_id"],
+                    "owner_ground_ref": loop["owner_ground_ref"]["id"],
+                    "performed_operation_ref": loop["performed_operation_ref"]["id"],
+                    "delta_ref": loop["local_delta_ref"]["delta_id"],
+                    "post_break_graph_ref": loop["post_break_graph"]["graph_id"],
+                    "full_reread_ref": loop["post_break_reread"]["record_id"],
+                }
+                rereads.append({"reread_id":loop["post_break_reread"]["record_id"],"status":"evaluated","post_break":True})
+    if not diagnostics:
+        closure = payload.get("closure_state", {})
+        # Before Stage05, an unevaluated field is not evidence of a loop.
+        diagnostics = [{"operator":"divergence","target":payload["trace_id"],"status":closure.get("divergence", "unknown"),"basis_refs":["opening-state"],"delta_ref":"none"},
+            {"operator":"curl","target":payload["trace_id"],"status":"null" if not burdens else closure.get("curl", "unknown"),"basis_refs":["opening-state"],"delta_ref":"none"}]
+    candidates = [{"candidate_id": row["state_id"], "status": row["status"], "basis": row["basis"]}
+                  for row in payload.get("candidate_states", [])]
+    all_body_refs = [row["body_ref"] for row in payload.get("operation_capsules", [])]
+    dispositions = [{"obligation_id":row["obligation_id"],"disposition":row["disposition"],"basis":row["basis"]}
+                    for row in payload.get("owner_execution_dispositions", [])]
+    burdens = list({row["burden_id"]: row for row in burdens}.values())
+    lands = list({row["burden_id"]: row for row in lands}.values())
+    if lands:
+        current_delta_refs = {row["delta_ref"] for row in lands}
+        diagnostics = [row for row in diagnostics if row.get("delta_ref") in current_delta_refs]
+    transitions = ["INTAKE", "OPEN"]
+    if payload.get("burden_cycles"):
+        transitions.append("REREAD_EVALUATED")
+    if any(cycle.get("reread", {}).get("raw_exit", {}).get("exit_disposition") == "RECURSE" for cycle in payload.get("burden_cycles", [])):
+        transitions.append("RECURSE")
+    raw_exit = payload.get("burden_cycles", [{}])[-1].get("reread", {}).get("raw_exit", {}).get("exit_disposition") if payload.get("burden_cycles") else None
+    post_break_graphs = [{"graph_id":cycle["reread"]["raw_exit"]["loopbreak"]["post_break_graph"]["graph_id"]}
+                         for cycle in payload.get("burden_cycles", []) if isinstance(cycle.get("reread", {}).get("raw_exit", {}).get("loopbreak"), dict)]
+    trace = {"opening":{"opening_state_contract":"opening-state-v2","phase":"ENTRY","state":"OPEN","closure_claim":"PENDING","trace_id":payload["trace_id"]},
+        "transitions":transitions, "raw_exit_disposition":raw_exit, "proposed_closure_claim":None,
+        "burdens": burdens, "candidate_states": candidates, "owner_obligations": dispositions,
+        "diagnostics": diagnostics, "lands": lands, "rereads": rereads, "no_new_resultant": no_new,
+        "loopbreak": loopbreak_owner, "post_break_graphs":post_break_graphs,
+        "witness": {"body_refs": all_body_refs}, "render_order": FINAL_RENDER_ORDER}
+    authority = {
+        "burden_ids": list(dict.fromkeys(payload.get("stage02_freeze", {}).get("B_LA", []) + [cycle["burden_id"] for cycle in payload.get("burden_cycles", []) if cycle.get("origin") == "B_MRP"])),
+        "candidate_state_ids": [row["state_id"] for row in payload.get("candidate_states", [])],
+        "owner_obligation_ids": [row["obligation_id"] for row in payload.get("owner_routes", [])],
+    }
+    return trace, authority, canonical_universe_sha256(authority)
+
+
+def _v2_owner_closure_decision(payload: dict[str, Any]) -> str:
+    trace, upstream_universe, upstream_inventory_sha256 = _v2_closure_inputs(payload)
+    owned = derive_closure_decision(
+        trace,
+        upstream_universe=upstream_universe,
+        upstream_inventory_sha256=upstream_inventory_sha256,
+    )
+    build_closure_witness_projection(
+        trace,
+        upstream_universe=upstream_universe,
+        upstream_inventory_sha256=upstream_inventory_sha256,
+    )
+    stage_number = V2_STAGE_INDEX[str(payload["stage"])] + 1
+    return "CLOSURE_CANDIDATE" if owned == "COMPLETE" and stage_number < 7 else owned
+
+
+def _v2_lifecycle_and_closure_errors(label: str, payload: dict[str, Any]) -> list[str]:
+    lifecycle_pairs = {
+        "candidate": {"open"}, "active": {"open"}, "generated": {"open", "recurse"},
+        "recurse": {"recurse"}, "held": {"held"}, "partial": {"partial"},
+        "preempted": {"preempted"}, "landed": {"landed"},
+    }
+    for cycle in payload.get("burden_cycles", []):
+        if cycle.get("terminal_state") not in lifecycle_pairs.get(str(cycle.get("lifecycle_status")), set()):
+            return [_v2_diag(label, "05", "state-capsule-custody", "derived-live-held-mismatch",
+                f"cycle {cycle.get('cycle_id')} lifecycle_status {cycle.get('lifecycle_status')!r} conflicts with terminal_state {cycle.get('terminal_state')!r}")]
+    derived_live = [cycle["burden_id"] for cycle in payload.get("burden_cycles", []) if cycle.get("terminal_state") in {"open", "recurse", "held", "partial"}]
+    expected_held: set[tuple[str, str]] = set()
+    expected_held |= {("candidate", row["state_id"]) for row in payload.get("candidate_states", []) if row.get("status") in {"held", "underdetermined"}}
+    expected_held |= {("pressure", row["pressure_id"]) for row in payload.get("input_pressures", []) if row.get("status") in {"held", "unresolved"}}
+    expected_held |= {("burden", row["burden_id"]) for row in payload.get("burden_cycles", []) if row.get("terminal_state") in {"held", "partial"}}
+    expected_held |= {("obligation", row["obligation_id"]) for row in payload.get("owner_execution_dispositions", []) if row.get("disposition") in {"held", "partial"}}
+    expected_held |= {("candidate", row["candidate_id"]) for cycle in payload.get("burden_cycles", [])
+                      for row in cycle.get("reread", {}).get("raw_exit", {}).get("candidate_events", [])
+                      if row.get("disposition") in {"defer_preempted", "hold_partial"}}
+    actual_held = {(str(row.get("kind")), str(row.get("item_id"))) for row in payload.get("held", [])}
+    if payload.get("current_live_burdens") != derived_live or actual_held != expected_held:
+        cycle_projection = [(row.get("burden_id"), row.get("lifecycle_status"), row.get("terminal_state"))
+                            for row in payload.get("burden_cycles", [])]
+        return [_v2_diag(label, "05", "state-capsule-custody", "derived-live-held-mismatch",
+            f"current_live_burdens/held are not exact projections; actual live={payload.get('current_live_burdens')!r}, "
+            f"actual held={sorted(actual_held)!r}, live expected {derived_live!r}, held expected {sorted(expected_held)!r}; "
+            f"lifecycle_status/terminal_state rows={cycle_projection!r}")]
+    expected_open = set(derived_live) | {item_id for kind, item_id in expected_held if kind != "burden"}
+    closure = payload.get("closure_state", {})
+    if set(closure.get("remaining_open_ids", [])) != expected_open:
+        return [_v2_diag(label, "07", "public-projection", "coverage-predicate-mismatch",
+            f"remaining_open_ids must equal live/held projection {sorted(expected_open)!r}; got {closure.get('remaining_open_ids')!r}")]
+    coverage_complete = not payload.get("input_coverage", {}).get("unaccounted_unit_ids")
+    trace, upstream_universe, upstream_inventory_sha256 = _v2_closure_inputs(payload)
+    expected_authority = dict(upstream_universe)
+    expected_authority["inventory_sha256"] = upstream_inventory_sha256
+    if payload.get("closure_authority") != expected_authority:
+        return [_v2_diag(label, "02", "topology-accounting", "closure-universe-source-mismatch",
+            "closure_authority is not the exact independently recomputed Stage02/cycle/Plan04 universe")]
+    try:
+        owner_raw_decision = derive_closure_decision(
+            trace,
+            upstream_universe=upstream_universe,
+            upstream_inventory_sha256=upstream_inventory_sha256,
+        )
+    except ClosureUniverseAuthorityError as exc:
+        finding = exc.finding
+        return [_v2_diag(label, finding["earliest_stage"], finding["failure_class"], finding["failure_subcode"], finding["message"])]
+    validation_trace = dict(trace)
+    validation_trace["proposed_closure_claim"] = owner_raw_decision
+    validation_trace["transitions"] = list(trace["transitions"])
+    if owner_raw_decision == "COMPLETE":
+        validation_trace["transitions"].extend(["CLOSURE_CANDIDATE", "CLOSURE_CONFIRMED"])
+    validation_trace["coverage"] = {
+        "initial_coverage_complete": closure.get("initial_coverage_complete"),
+        "lifecycle_accounting_complete": closure.get("lifecycle_accounting_complete"),
+        "collapse_positive": owner_raw_decision == "COMPLETE",
+        "closure_confirmed": True,
+    }
+    closure_findings = validate_closure_trace(validation_trace, upstream_universe=upstream_universe,
+        upstream_inventory_sha256=upstream_inventory_sha256)
+    if closure_findings:
+        finding = closure_findings[0]
+        return [_v2_diag(label, finding["earliest_stage"], finding["failure_class"], finding["failure_subcode"], finding["message"])]
+    try:
+        derived_decision = _v2_owner_closure_decision(payload)
+    except ClosureUniverseAuthorityError as exc:
+        finding = exc.finding
+        return [_v2_diag(label, finding["earliest_stage"], finding["failure_class"], finding["failure_subcode"], finding["message"])]
+    expected_closure = {
+        "opening_state": "OPEN", "opening_closure_claim": "PENDING", "derived_decision": derived_decision,
+        "initial_coverage_complete": coverage_complete, "lifecycle_accounting_complete": True,
+        "collapse_positive": derived_decision == "COMPLETE", "closure_confirmed": derived_decision == "COMPLETE",
+        "remaining_open_ids": closure.get("remaining_open_ids"), "divergence": closure.get("divergence"),
+        "curl": closure.get("curl"), "loopbreak": closure.get("loopbreak"),
+    }
+    predicate_fields = ("opening_state", "opening_closure_claim", "initial_coverage_complete", "lifecycle_accounting_complete",
+        "collapse_positive", "closure_confirmed")
+    mismatch = [field for field in predicate_fields if closure.get(field) != expected_closure[field]]
+    if mismatch:
+        return [_v2_diag(label, "07", "public-projection", "coverage-predicate-mismatch",
+            f"closure coverage predicates mismatch derived values for {mismatch!r}")]
+    if closure.get("derived_decision") != derived_decision:
+        return [_v2_diag(label, "07", "public-projection", "producer-oracle-mismatch",
+            f"producer asserted {closure.get('derived_decision')!r}; derived Stage07 oracle yields {derived_decision}")]
+    return []
+
+
+def _v2_projection_errors(label: str, payload: dict[str, Any]) -> list[str]:
+    expected = _v2_projection_values(payload)
+    actual = payload.get("projection", {})
+    stage_number = V2_STAGE_INDEX[str(payload["stage"])] + 1
+    for field, expected_hash in expected.items():
+        if actual.get(field) != expected_hash:
+            if field == "public_field_witness_sha256":
+                return [_v2_diag(label, "07", "witness-binding", "public-witness-hash-missing",
+                    f"{field} does not equal the recomputed public witness-role hash {expected_hash}")]
+            stage = "08" if field == "field_witness_envelope_sha256" else ("07" if stage_number >= 7 else "06")
+            failure_class = "witness-binding" if field == "field_witness_envelope_sha256" else "projection-parity"
+            subcode = "field-witness-envelope-hash" if field == "field_witness_envelope_sha256" else "projection-hash-mismatch"
+            return [_v2_diag(label, stage, failure_class, subcode, f"{field} mismatch; expected {expected_hash}")]
+    expected_refs = [{"id": "context-stage", "sha256": "7" * 64}]
+    if stage_number >= 7:
+        expected_refs.append({"id": "public-field-witness", "sha256": expected["public_field_witness_sha256"]})
+    if stage_number >= 8:
+        expected_refs.append({"id": "field-witness-envelope", "sha256": expected["field_witness_envelope_sha256"]})
+    if payload.get("runtime_call_context_refs") != expected_refs:
+        return [_v2_diag(label, "08" if stage_number >= 8 else "07", "witness-binding", "witness-context-reference",
+            "runtime_call_context_refs do not equal the stage-specific witness-role bindings")]
+    return []
+
+
+def validate_v2_capsule_payload(label: str, payload: Any) -> list[str]:
+    if not isinstance(payload, dict):
+        return [f"{label}: state-capsule-v2 must be a JSON object"]
+    errors = _v2_control_preflight_errors(label, payload)
+    if errors:
+        return errors
+    errors = json_schema_errors(label, payload, load_v2_schema())
+    if errors:
+        return errors
+    for validator in (
+        _v2_topology_errors,
+        _v2_obligation_errors,
+        _v2_operation_errors,
+        _v2_cycle_errors,
+        _v2_reducer_errors,
+        _v2_topology_mass_errors,
+        _v2_lifecycle_and_closure_errors,
+        _v2_projection_errors,
+    ):
+        errors = validator(label, payload)
+        if errors:
+            return errors
+    return []
+
+
+def validate_capsule_payload_dispatch(label: str, payload: Any, *, release_bearing: bool = False) -> list[str]:
+    identity = payload.get("schema") if isinstance(payload, dict) else None
+    if identity == SCHEMA_CONST:
+        if release_bearing:
+            return [
+                _v2_diag(label, "preflight", "release-bearing-v1", "release-bearing-v1",
+                    f"{SCHEMA_CONST} is historical replay only; new release-bearing execution requires {SCHEMA_V2_CONST}")
+            ]
+        return validate_capsule_payload(label, payload, load_schema())
+    if identity == SCHEMA_V2_CONST:
+        return validate_v2_capsule_payload(label, payload)
+    return [
+        f"{label}: unsupported-schema-identity: expected {SCHEMA_CONST!r} or {SCHEMA_V2_CONST!r}, got {identity!r}"
+    ]
+
+
+def validate_capsule_file_dispatch(path: Path, *, release_bearing: bool = False) -> list[str]:
+    payload, errors = load_json(path)
+    if errors:
+        return errors
+    label = rel(path)
+    errors = validate_capsule_payload_dispatch(label, payload, release_bearing=release_bearing)
+    raw_bytes = path.read_bytes()
+    if isinstance(payload, dict) and payload.get("schema") == SCHEMA_V2_CONST:
+        if len(raw_bytes) > WARN_BYTES:
+            print(
+                f"  WARNING: {label}: v2 capsule is {len(raw_bytes)} bytes; size is telemetry only and "
+                "must not act as a semantic topology limit"
+            )
+    else:
+        warnings, failures = capsule_size_errors(label, raw_bytes)
+        for warning in warnings:
+            print(f"  WARNING: {warning}")
+        errors.extend(failures)
+    return errors
 
 
 # ---------------------------------------------------------------------------
@@ -1172,9 +2335,8 @@ def replay_sequence_errors(
 # CLI entrypoints
 # ---------------------------------------------------------------------------
 
-def run_capsule(path: Path) -> int:
-    schema = load_schema()
-    errors = validate_capsule_file(path, schema)
+def run_capsule(path: Path, *, release_bearing: bool = False) -> int:
+    errors = validate_capsule_file_dispatch(path, release_bearing=release_bearing)
     if errors:
         print(f"state-capsule --capsule {rel(path)}: FAIL")
         for error in errors:
@@ -1184,9 +2346,144 @@ def run_capsule(path: Path) -> int:
     return 0
 
 
-def run_replay(directory: Path, artifact_path: Path | None = None) -> int:
-    schema = load_schema()
-    errors = replay_errors(directory, schema, artifact_path=artifact_path)
+def v2_replay_sequence_errors(paths: list[Path], capsules: list[dict[str, Any]]) -> list[str]:
+    """Validate v2 replay as append-only evidence with frozen Stage02 custody."""
+    if not capsules:
+        return ["state-capsule-v2 replay: empty capsule sequence"]
+    first = capsules[0]
+    frozen_topology = {key: first.get(key) for key in (
+        "trace_id", "source_commit", "topology_contract", "observation_units", "candidate_states",
+        "input_pressures", "candidate_state_partitions", "burden_partition_decisions", "input_coverage",
+        "selection_status", "selected_n_frame", "burden_floor", "stage02_freeze",
+    )}
+    prior_stage = -1
+    seen_capsule_ids: set[str] = set()
+    previous: dict[str, Any] | None = None
+    phase_rank = {"ROUTED": 1, "EXECUTED": 2, "LANDED": 3, "REREAD_EVALUATED": 4}
+    for index, (path, capsule) in enumerate(zip(paths, capsules), 1):
+        capsule_id = str(capsule.get("capsule_id"))
+        if capsule_id in seen_capsule_ids:
+            return [_v2_diag(rel(path), "05", "state-capsule-custody", "replay-history-mutation",
+                f"duplicate replay capsule_id {capsule_id!r}")]
+        seen_capsule_ids.add(capsule_id)
+        stage = V2_STAGE_INDEX.get(str(capsule.get("stage")), -1)
+        if stage < prior_stage:
+            return [_v2_diag(rel(path), "05", "state-capsule-custody", "replay-history-mutation", "replay stage regressed")]
+        prior_stage = stage
+        for key, frozen in frozen_topology.items():
+            if capsule.get(key) != frozen:
+                subcode = "b-la-late-append" if key in {"burden_floor", "stage02_freeze"} else "replay-history-mutation"
+                failure_class = "stage02-input-pressure-coverage" if subcode == "b-la-late-append" else "state-capsule-custody"
+                failure_stage = "02" if subcode == "b-la-late-append" else "05"
+                return [_v2_diag(rel(path), failure_stage, failure_class, subcode,
+                    f"frozen replay field {key} changed within trace {first.get('trace_id')!r}")]
+        if index == 1:
+            if capsule.get("previous_capsule_sha256") is not None:
+                return [_v2_diag(rel(path), "05", "state-capsule-custody", "replay-history-mutation",
+                    "first replay capsule previous_capsule_sha256 must be null")]
+        else:
+            expected_previous = hashlib.sha256(paths[index - 2].read_bytes()).hexdigest()
+            if capsule.get("previous_capsule_sha256") != expected_previous:
+                return [_v2_diag(rel(path), "05", "state-capsule-custody", "replay-history-mutation",
+                    f"previous_capsule_sha256 mismatch; expected {expected_previous}")]
+        if previous is not None:
+            for collection, id_key in (("owner_routes", "obligation_id"), ("act_row_details", "obligation_id"),
+                                       ("owner_execution_dispositions", "obligation_id"), ("operation_capsules", "capsule_id"),
+                                       ("burden_cycles", "cycle_id")):
+                old = _v2_map(previous.get(collection), id_key)
+                new = _v2_map(capsule.get(collection), id_key)
+                missing = sorted(set(old) - set(new))
+                if missing:
+                    return [_v2_diag(rel(path), "05", "state-capsule-custody", "replay-history-mutation",
+                        f"{collection} lost prior IDs {missing!r}")]
+                for row_id, old_row in old.items():
+                    new_row = new[row_id]
+                    if collection in {"owner_routes", "act_row_details", "owner_execution_dispositions", "operation_capsules"} and new_row != old_row:
+                        return [_v2_diag(rel(path), "05", "state-capsule-custody", "replay-history-mutation",
+                            f"immutable {collection} row {row_id!r} changed")]
+                    if collection == "burden_cycles":
+                        old_rank, new_rank = phase_rank[old_row["phase"]], phase_rank[new_row["phase"]]
+                        if new_rank < old_rank:
+                            return [_v2_diag(rel(path), "05", "state-capsule-custody", "replay-history-mutation",
+                                f"cycle {row_id} phase regressed")]
+                        phase_fields = (("route_gradient", 1), ("obligation_ids", 1), ("obligation_set_sha256", 1),
+                            ("operation_capsule_ids", 2), ("operation_events", 2), ("land", 3), ("post_land_delta", 3))
+                        for field, rank in phase_fields:
+                            if old_rank >= rank and new_row.get(field) != old_row.get(field):
+                                return [_v2_diag(rel(path), "05", "state-capsule-custody", "replay-history-mutation",
+                                    f"cycle {row_id} mutated frozen phase evidence {field}")]
+                        if old_rank >= 4:
+                            old_raw = old_row["reread"]["raw_exit"]
+                            new_raw = new_row["reread"]["raw_exit"]
+                            old_candidates = old_raw.get("candidate_events", [])
+                            new_candidates = new_raw.get("candidate_events", [])
+                            if new_candidates[:len(old_candidates)] != old_candidates:
+                                return [_v2_diag(rel(path), "05", "mrp", "candidate-transition-invalid",
+                                    f"cycle {row_id} candidate-event history changed or disappeared")]
+                            immutable_reread = {key: value for key, value in old_row["reread"].items() if key != "raw_exit"}
+                            if {key: value for key, value in new_row["reread"].items() if key != "raw_exit"} != immutable_reread:
+                                return [_v2_diag(rel(path), "05", "state-capsule-custody", "replay-history-mutation",
+                                    f"cycle {row_id} reread custody changed")]
+                            old_raw_without_candidates = {key: value for key, value in old_raw.items() if key not in {"candidate_events", "raw_exit_sha256"}}
+                            new_raw_without_candidates = {key: value for key, value in new_raw.items() if key not in {"candidate_events", "raw_exit_sha256"}}
+                            if old_raw_without_candidates != new_raw_without_candidates:
+                                return [_v2_diag(rel(path), "05", "state-capsule-custody", "replay-history-mutation",
+                                    f"cycle {row_id} raw exit history changed")]
+            if previous.get("closure_state", {}).get("closure_confirmed") is True:
+                semantic_keys = ("owner_routes", "act_row_details", "owner_execution_dispositions", "operation_capsules",
+                                 "burden_cycles", "reread_signature_history", "current_live_burdens", "held", "closure_state")
+                changed = [key for key in semantic_keys if capsule.get(key) != previous.get(key)]
+                if changed:
+                    return [_v2_diag(rel(path), "07", "public-projection", "producer-oracle-mismatch",
+                        f"terminal COMPLETE trace cannot append or mutate semantic events; changed {changed!r}")]
+        previous = capsule
+    return []
+
+
+def replay_errors_dispatch(
+    directory: Path,
+    *,
+    artifact_path: Path | None = None,
+    release_bearing: bool = False,
+) -> list[str]:
+    paths = discover_capsule_sequence(directory)
+    if not paths:
+        return [f"{rel(directory)}: no capsule-NNN.json files found"]
+    first, first_errors = load_json(paths[0])
+    if first_errors:
+        return first_errors
+    if isinstance(first, dict) and first.get("schema") == SCHEMA_V2_CONST:
+        capsules: list[dict[str, Any]] = []
+        for index, path in enumerate(paths, start=1):
+            payload, load_errors = load_json(path)
+            if load_errors:
+                return [f"{rel(directory)}: capsule index {index}: {'; '.join(load_errors)}"]
+            errors = validate_capsule_file_dispatch(path, release_bearing=release_bearing)
+            if errors:
+                return [f"{rel(directory)}: capsule index {index}: {'; '.join(errors)}"]
+            if not isinstance(payload, dict) or payload.get("schema") != SCHEMA_V2_CONST:
+                return [f"{rel(path)}: mixed-schema-replay: v2 replay cannot contain another schema identity"]
+            capsules.append(payload)
+        return v2_replay_sequence_errors(paths, capsules)
+    if release_bearing:
+        return [
+            f"{rel(paths[0])}: release-bearing-v1: {SCHEMA_CONST} is historical replay only; "
+            f"new release-bearing execution requires {SCHEMA_V2_CONST}"
+        ]
+    return replay_errors(directory, load_schema(), artifact_path=artifact_path)
+
+
+def run_replay(
+    directory: Path,
+    artifact_path: Path | None = None,
+    *,
+    release_bearing: bool = False,
+) -> int:
+    errors = replay_errors_dispatch(
+        directory,
+        artifact_path=artifact_path,
+        release_bearing=release_bearing,
+    )
     if errors:
         print(f"state-capsule --replay {rel(directory)}: FAIL")
         for error in errors:
@@ -1873,6 +3170,92 @@ def large_artifact_fixture_errors(directory: Path, schema: dict[str, Any]) -> li
     return local_errors
 
 
+def v2_fixture_self_test(root: Path) -> tuple[list[str], int, int]:
+    errors: list[str] = []
+    valid_checked = 0
+    invalid_checked = 0
+    expectation_schema = json.loads(NEGATIVE_EXPECTATION_SCHEMA_PATH.read_text(encoding="utf-8"))
+
+    valid_dir = root / "valid"
+    for fixture in sorted(valid_dir.glob("*.json")):
+        valid_checked += 1
+        found = validate_capsule_file_dispatch(fixture, release_bearing=True)
+        if found:
+            errors.extend(f"v2 valid fixture {fixture.name} unexpectedly failed: {item}" for item in found)
+
+    invalid_dir = root / "invalid"
+    fixture_paths = sorted(
+        path for path in invalid_dir.glob("*.json") if not path.name.endswith(".expectation.json")
+    )
+    expectation_paths = sorted(invalid_dir.glob("*.expectation.json"))
+    expected_sidecars = {path.with_name(path.stem + ".expectation.json") for path in fixture_paths}
+    orphan_sidecars = sorted(set(expectation_paths) - expected_sidecars)
+    missing_sidecars = sorted(expected_sidecars - set(expectation_paths))
+    for path in missing_sidecars:
+        errors.append(f"v2 invalid fixture is missing canonical sidecar: {rel(path)}")
+    for path in orphan_sidecars:
+        errors.append(f"v2 expectation has no same-stem fixture: {rel(path)}")
+
+    for fixture in fixture_paths:
+        invalid_checked += 1
+        sidecar = fixture.with_name(fixture.stem + ".expectation.json")
+        if not sidecar.is_file():
+            continue
+        expectation, load_errors = load_json(sidecar)
+        if load_errors:
+            errors.extend(load_errors)
+            continue
+        shape_errors = json_schema_errors(rel(sidecar), expectation, expectation_schema)
+        if shape_errors:
+            errors.extend(f"canonical expectation shape failed: {item}" for item in shape_errors)
+            continue
+        if not isinstance(expectation, dict):
+            errors.append(f"{rel(sidecar)}: expectation must be an object")
+            continue
+        if expectation.get("fixture") != fixture.name:
+            errors.append(
+                f"{rel(sidecar)}: fixture field {expectation.get('fixture')!r} does not equal {fixture.name!r}"
+            )
+        if expectation.get("expected_checker_id") != "state-capsule":
+            errors.append(f"{rel(sidecar)}: expected_checker_id must be 'state-capsule'")
+        if expectation.get("expected_exit_code") != 1:
+            errors.append(f"{rel(sidecar)}: state-capsule invalid fixtures must expect exit code 1")
+        if not isinstance(expectation.get("expected_failure_subcode"), str) or not expectation["expected_failure_subcode"]:
+            errors.append(f"{rel(sidecar)}: expected_failure_subcode is required by the state-capsule-v2 fixture lattice")
+
+        found = validate_capsule_file_dispatch(fixture, release_bearing=True)
+        if not found:
+            errors.append(f"v2 invalid fixture {fixture.name} unexpectedly passed")
+            continue
+        diagnostic = "\n".join(found)
+        failure_class = str(expectation.get("expected_failure_class"))
+        failure_subcode = str(expectation.get("expected_failure_subcode"))
+        earliest_stage = str(expectation.get("expected_earliest_stage"))
+        if failure_class not in diagnostic:
+            errors.append(
+                f"v2 invalid fixture {fixture.name} failed for wrong class; expected {failure_class!r}, got {diagnostic!r}"
+            )
+        if failure_subcode not in diagnostic:
+            errors.append(
+                f"v2 invalid fixture {fixture.name} failed for wrong subcode; expected {failure_subcode!r}, got {diagnostic!r}"
+            )
+        if f"stage={earliest_stage}" not in diagnostic:
+            errors.append(
+                f"v2 invalid fixture {fixture.name} failed at wrong stage; expected {earliest_stage!r}, got {diagnostic!r}"
+            )
+        for marker in expectation.get("required_diagnostic_markers", []):
+            if str(marker).lower() not in diagnostic.lower():
+                errors.append(
+                    f"v2 invalid fixture {fixture.name} missing diagnostic marker {marker!r}; got {diagnostic!r}"
+                )
+
+    historical = invalid_dir / "release-bearing-v1.json"
+    historical_errors = validate_capsule_file_dispatch(historical, release_bearing=False)
+    if historical_errors:
+        errors.extend(f"historical v1 control unexpectedly failed: {item}" for item in historical_errors)
+    return errors, valid_checked, invalid_checked
+
+
 def self_test() -> int:
     cases = embedded_self_test_cases()
     ok = True
@@ -1885,9 +3268,15 @@ def self_test() -> int:
         print(f"  self-test FAIL: {error}")
     ok = ok and not fixture_errors
 
+    v2_errors, v2_valid_checked, v2_invalid_checked = v2_fixture_self_test(V2_FIXTURE_ROOT)
+    for error in v2_errors:
+        print(f"  self-test FAIL: {error}")
+    ok = ok and not v2_errors
+
     print(
         f"state-capsule self-test: {'PASS' if ok else 'FAIL'} "
-        f"({len(cases)} embedded case(s), {valid_checked} valid fixture(s), {invalid_checked} invalid fixture(s))"
+        f"({len(cases)} embedded case(s), {valid_checked} v1 valid fixture(s), {invalid_checked} v1 invalid fixture(s), "
+        f"{v2_valid_checked} v2 valid fixture(s), {v2_invalid_checked} v2 invalid fixture(s))"
     )
     return 0 if ok else 1
 
@@ -1908,16 +3297,26 @@ def main() -> int:
             "output.md lives alongside the case, not inside the capsules directory)."
         ),
     )
+    parser.add_argument(
+        "--release-bearing",
+        action="store_true",
+        help=(
+            "Require the composed daee-state-capsule-v2 contract. Historical v1 remains readable "
+            "without this flag but cannot satisfy a new release-bearing execution."
+        ),
+    )
     args = parser.parse_args()
 
     if args.artifact is not None and args.replay is None:
         parser.error("--artifact is only valid together with --replay")
+    if args.release_bearing and args.self_test:
+        parser.error("--release-bearing is only valid together with --capsule or --replay")
 
     if args.self_test:
         return self_test()
     if args.capsule is not None:
-        return run_capsule(args.capsule)
-    return run_replay(args.replay, artifact_path=args.artifact)
+        return run_capsule(args.capsule, release_bearing=args.release_bearing)
+    return run_replay(args.replay, artifact_path=args.artifact, release_bearing=args.release_bearing)
 
 
 if __name__ == "__main__":

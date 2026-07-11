@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "shard-selected-not-delivered",
+  "expected_valid": false,
+  "mutation": "selected-component-not-delivered",
+  "stage": "03"
+}

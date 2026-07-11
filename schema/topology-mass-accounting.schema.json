@@ -1,0 +1,25 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://theislampill.github.io/daee-epistemics/schema/topology-mass-accounting.schema.json",
+  "title":"DAEE Plan06 topology-mass-accounting-v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["schema","case_id","input_sha256","staged_handoff_sha256","output_sha256","obligations","evidence_inventory","partition_decisions","unaccounted_obligation_ids","unreconstructible_obligation_ids","open_obligation_ids","orphan_evidence_refs","duplicate_evidence_groups","initial_coverage_complete","lifecycle_accounting_complete","collapse_positive","advisory_metrics","non_claims"],
+  "properties":{
+    "schema":{"const":"daee-topology-mass-accounting-v1"},"case_id":{"type":"string","minLength":1},"input_sha256":{"$ref":"#/$defs/hash"},"staged_handoff_sha256":{"$ref":"#/$defs/hash"},"output_sha256":{"$ref":"#/$defs/hash"},
+    "obligations":{"type":"array","items":{"$ref":"#/$defs/obligation"}},
+    "evidence_inventory":{"type":"array","uniqueItems":true,"items":{"$ref":"#/$defs/evidence"}},
+    "partition_decisions":{"type":"array","uniqueItems":true,"items":{"$ref":"#/$defs/decision"}},
+    "unaccounted_obligation_ids":{"$ref":"#/$defs/id_set"},"unreconstructible_obligation_ids":{"$ref":"#/$defs/id_set"},"open_obligation_ids":{"$ref":"#/$defs/id_set"},"orphan_evidence_refs":{"$ref":"#/$defs/id_set"},"duplicate_evidence_groups":{"type":"array","items":{"type":"array","minItems":2,"uniqueItems":true,"items":{"type":"string","minLength":1}}},
+    "initial_coverage_complete":{"type":"boolean"},"lifecycle_accounting_complete":{"type":"boolean"},"collapse_positive":{"type":"boolean"},
+    "advisory_metrics":{"type":"object","required":["output_bytes"],"additionalProperties":{"type":"integer","minimum":0}},
+    "non_claims":{"type":"array","minItems":3,"maxItems":3,"uniqueItems":true,"items":{"enum":["counts and bytes do not determine PASS","structural accounting is not semantic truth","one run is not broad model behavior"]}},
+    "authoritative_empty_universe":{"type":"object","additionalProperties":false,"required":["source_count","source_inventory_sha256","basis"],"properties":{"source_count":{"const":0},"source_inventory_sha256":{"$ref":"#/$defs/hash"},"basis":{"type":"string","minLength":1}}}
+  },
+  "$defs":{
+    "hash":{"type":"string","pattern":"^[0-9a-f]{64}$"},"id_set":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},
+    "obligation":{"type":"object","additionalProperties":false,"required":["obligation_id","kind","origin_stage","source_ids","allowed_dispositions","disposition","evidence_refs","basis"],"properties":{"obligation_id":{"type":"string","minLength":1},"kind":{"enum":["source_pressure","candidate_state","burden_route","owner_operation","land_delta","mrp_reread","residual_pressure","generated_burden","field_projection","public_projection","restorative_consequence","closure_boundary"]},"origin_stage":{"enum":["01","02","03","04","05","06","07","08"]},"source_ids":{"type":"array","minItems":1,"uniqueItems":true,"items":{"type":"string","minLength":1}},"allowed_dispositions":{"type":"array","minItems":1,"uniqueItems":true,"items":{"enum":["satisfied","discharged_duplicate","non_load_bearing","preempted_not_instantiated","held","carried_partial","carried_recurse"]}},"disposition":{"enum":["satisfied","discharged_duplicate","non_load_bearing","preempted_not_instantiated","held","carried_partial","carried_recurse"]},"evidence_refs":{"$ref":"#/$defs/id_set"},"basis":{"type":"string","minLength":1},"receiving_obligation_id":{"type":"string","minLength":1},"decision_id":{"type":"string","minLength":1}}},
+    "evidence":{"type":"object","additionalProperties":false,"required":["evidence_id","evidence_type","artifact_id","artifact_sha256","validator_receipt_id"],"properties":{"evidence_id":{"type":"string","minLength":1},"evidence_type":{"enum":["operation_capsule","body","partition_decision","route","land","reread","projection","public_section","closure","basis"]},"artifact_id":{"type":"string","minLength":1},"artifact_sha256":{"$ref":"#/$defs/hash"},"validator_receipt_id":{"type":"string","minLength":1}}},
+    "decision":{"type":"object","additionalProperties":false,"required":["decision_id","decision_type","source_obligation_ids","receiving_obligation_id","basis"],"properties":{"decision_id":{"type":"string","minLength":1},"decision_type":{"enum":["split","merge","shared_operation"]},"source_obligation_ids":{"type":"array","minItems":1,"uniqueItems":true,"items":{"type":"string","minLength":1}},"receiving_obligation_id":{"type":"string","minLength":1},"basis":{"type":"string","minLength":1}}}
+  }
+}

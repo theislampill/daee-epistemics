@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-mrp-recursion-lifecycle-mutation-v1","base":"tests/mrp-recursion-lifecycle/valid/candidate-non-load-bearing.json","operations":[{"op":"merge","path":"/burden_cycles/0/reread/raw_exit/candidate_events/0","value":{"target_burden_id":"B2","next_cycle_id":"C2"}}]}

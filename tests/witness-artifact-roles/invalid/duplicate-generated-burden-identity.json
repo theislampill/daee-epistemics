@@ -1,0 +1,1 @@
+{"schema":"daee-witness-artifact-mutation-v1","base":"tests/witness-artifact-roles/valid/current-triplet/public-graph.json","expected_role":"public_graph","mutation":{"op":"append","path":"/generated_burdens","value":{"id":"B2","source":"B1","generation_depth":1,"event_id":"E2"}}}

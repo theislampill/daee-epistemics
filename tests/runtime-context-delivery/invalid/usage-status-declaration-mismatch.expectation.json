@@ -1,0 +1,25 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "usage-status-declaration-mismatch.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "runtime-context-delivery",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "04",
+  "expected_failure_class": "usage-evidence-mismatch",
+  "expected_failure_subcode": "usage-status-declaration-mismatch",
+  "expected_downstream_invalidated": [
+    "05",
+    "06",
+    "07",
+    "08"
+  ],
+  "required_diagnostic_markers": [
+    "usage-status-declaration-mismatch"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "review-repair-usage-status-declaration-mismatch"
+}

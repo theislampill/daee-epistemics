@@ -1,0 +1,33 @@
+{
+  "schema": "daee-validation-hardening-inventory-v1",
+  "invalid": [
+    "verdict-missing-launch",
+    "verdict-duplicate-checker-result",
+    "verdict-missing-stdout",
+    "verdict-duplicate-artifact-role",
+    "verdict-duplicate-artifact-path",
+    "verdict-pass-over-rejection",
+    "verdict-accepted-exit-one",
+    "verdict-duplicate-forbidden-readback",
+    "registry-unexpected-root",
+    "registry-missing-checker-nonclaims",
+    "registry-requirement-missing-required",
+    "registry-duplicate-checker",
+    "registry-duplicate-consumer",
+    "registry-duplicate-profile",
+    "registry-duplicate-alias",
+    "escape-unexpected-root",
+    "escape-duplicate-event-id",
+    "escape-duplicate-event-hash",
+    "path-outside-artifact",
+    "path-registry-object-split",
+    "path-traversal",
+    "path-absolute",
+    "path-mutation-base",
+    "path-forbidden-artifact",
+    "path-checker-source",
+    "path-consumer-source",
+    "path-symlink-escape",
+    "expectation-missing-subcode"
+  ]
+}

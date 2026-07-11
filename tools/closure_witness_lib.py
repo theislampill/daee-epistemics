@@ -538,6 +538,172 @@ def extract_balanced_json_from(text: str, start_index: int) -> str:
     return ""
 
 
+def extract_balanced_json_extent(text: str, start_index: int) -> tuple[int, int, str] | None:
+    """Return the exact complete JSON extent beginning after ``start_index``."""
+    source = str(text or "")
+    opener_match = re.search(r"[\{\[]", source[start_index:])
+    if not opener_match:
+        return None
+    json_start = start_index + opener_match.start()
+    opener = source[json_start]
+    closer = "}" if opener == "{" else "]"
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(json_start, len(source)):
+        char = source[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == opener:
+            depth += 1
+        elif char == closer:
+            depth -= 1
+            if depth == 0:
+                return json_start, index + 1, source[json_start : index + 1]
+    return None
+
+
+TERMINAL_SECTION_PATTERNS = {
+    "restorative": re.compile(r"(?im)^\s*(?:#{1,6}\s*)?Restorative Response\s*$"),
+    "closing": re.compile(r"(?im)^\s*(?:#{1,6}\s*)?Closing Formulation\s*$"),
+    "closure_witness": re.compile(r"(?im)^\s*(?:#{1,6}\s*)?Closure/Reconstruction Witness\s*$"),
+    "field_witness": re.compile(r"(?im)^\s*(?:#{1,6}\s*)?field_witness\s*$"),
+}
+
+
+def _terminal_diagnostic(subcode: str, message: str) -> dict[str, Any]:
+    return {
+        "failure_class": "witness-order",
+        "failure_subcode": subcode,
+        "earliest_stage": "07",
+        "downstream_invalidated": ["08"],
+        "message": message,
+    }
+
+
+def terminal_public_order_diagnostics(text: str) -> list[dict[str, Any]]:
+    """Validate the complete inline public tail and final JSON extent.
+
+    Closing Formulation is the final human formulation before the proof tail; it
+    is deliberately not treated as literal EOF.
+    """
+    source = str(text or "")
+    matches = {name: list(pattern.finditer(source)) for name, pattern in TERMINAL_SECTION_PATTERNS.items()}
+    labels = {
+        "restorative": "Restorative Response",
+        "closing": "Closing Formulation",
+        "closure_witness": "Closure/Reconstruction Witness",
+        "field_witness": "field_witness",
+    }
+    for name in ("restorative", "closing", "closure_witness", "field_witness"):
+        if not matches[name]:
+            return [_terminal_diagnostic("terminal-order-missing-section", f"missing terminal section {labels[name]}")]
+        if len(matches[name]) != 1:
+            return [_terminal_diagnostic("terminal-order-duplicate-section", f"duplicate terminal section {labels[name]}")]
+    restorative = matches["restorative"][0]
+    closing = matches["closing"][0]
+    closure = matches["closure_witness"][0]
+    field = matches["field_witness"][0]
+    if restorative.start() > closing.start():
+        return [_terminal_diagnostic("terminal-order-restorative-after-closing", "Restorative Response must precede Closing Formulation")]
+    if closure.start() < closing.start():
+        return [_terminal_diagnostic("terminal-order-closure-before-closing", "Closure/Reconstruction Witness must follow Closing Formulation")]
+    if field.start() < closure.start():
+        return [_terminal_diagnostic("terminal-order-field-before-closure", "field_witness must follow Closure/Reconstruction Witness")]
+    extent = extract_balanced_json_extent(source, field.end())
+    if extent is None:
+        return [_terminal_diagnostic("terminal-order-invalid-field-json", "incomplete or missing field_witness JSON")]
+    _, json_end, raw_json = extent
+    try:
+        decoded = json.loads(raw_json)
+    except json.JSONDecodeError:
+        return [_terminal_diagnostic("terminal-order-invalid-field-json", "incomplete or invalid field_witness JSON")]
+    if not isinstance(decoded, dict):
+        return [_terminal_diagnostic("terminal-order-invalid-field-json", "field_witness JSON must be one object")]
+    trailing = source[json_end:]
+    cleaned = re.sub(r"^\s*```\s*", "", trailing, count=1)
+    if cleaned.strip():
+        if re.match(r"^\s*[\{\[]", cleaned):
+            return [_terminal_diagnostic("terminal-order-duplicate-field-json", "duplicate field_witness JSON after the final object")]
+        return [_terminal_diagnostic("terminal-order-content-after-inline-field", "trailing content is forbidden after final JSON")]
+    return []
+
+
+def _directed_cycle(nodes: set[str], edges: list[tuple[str, str]]) -> bool:
+    adjacency: dict[str, list[str]] = {node: [] for node in nodes}
+    for source, target in edges:
+        adjacency.setdefault(source, []).append(target)
+        adjacency.setdefault(target, [])
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit(node: str) -> bool:
+        if node in visiting:
+            return True
+        if node in visited:
+            return False
+        visiting.add(node)
+        if any(visit(target) for target in adjacency.get(node, [])):
+            return True
+        visiting.remove(node)
+        visited.add(node)
+        return False
+
+    return any(visit(node) for node in adjacency)
+
+
+def public_graph_integrity_diagnostics(field_witness: Any, *, compatibility: str = "current") -> list[dict[str, Any]]:
+    """Enforce current graph identity and distinguish event DAG from noetic graph."""
+    if not isinstance(field_witness, dict):
+        return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-not-object", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "public graph must be an object"}]
+    b_la = field_witness.get("B_LA", [])
+    b_mrp = field_witness.get("B_MRP", [])
+    b_total = field_witness.get("B_total", [])
+    if isinstance(b_la, list) and isinstance(b_mrp, list) and set(b_la).intersection(b_mrp):
+        return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-burden-identity", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "B_LA and B_MRP must be disjoint"}]
+    if isinstance(b_la, list) and isinstance(b_mrp, list) and isinstance(b_total, list) and b_total != list(dict.fromkeys(b_la + b_mrp)):
+        return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-burden-identity", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "B_total must equal B_LA plus B_MRP in order"}]
+    nodes = field_witness.get("nodes", [])
+    node_id_list = [str(row.get("id")) for row in nodes if isinstance(row, dict) and row.get("id")]
+    if len(node_id_list) != len(set(node_id_list)):
+        duplicate = next(node for node in node_id_list if node_id_list.count(node) > 1)
+        return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-duplicate-node", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"duplicate node identity {duplicate}"}]
+    node_ids = set(node_id_list)
+    if compatibility == "current" and isinstance(b_total, list) and node_ids != set(b_total):
+        return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-dangling-node", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"graph node identities {sorted(node_ids)} must equal B_total {sorted(set(b_total))}"}]
+    for edge in field_witness.get("edges", []) if isinstance(field_witness.get("edges"), list) else []:
+        if isinstance(edge, dict) and (edge.get("from") not in node_ids or edge.get("to") not in node_ids):
+            return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-dangling-edge", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"edge {edge.get('from')}->{edge.get('to')} references missing node"}]
+    generated_list = [str(row.get("id")) for row in field_witness.get("generated_burdens", []) if isinstance(row, dict)]
+    if len(generated_list) != len(set(generated_list)):
+        duplicate = next(node for node in generated_list if generated_list.count(node) > 1)
+        return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-duplicate-generated-burden", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"duplicate generated burden identity {duplicate}"}]
+    generated = set(generated_list)
+    if compatibility == "current" and generated != set(b_mrp):
+        return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-generated-identity", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "generated_burdens identities must equal B_MRP"}]
+    coverage = field_witness.get("coverage_proof", {})
+    event_graph = coverage.get("provenance_event_dag", {}) if isinstance(coverage, dict) else {}
+    if isinstance(event_graph, dict):
+        event_nodes = {str(node) for node in event_graph.get("nodes", [])}
+        event_edges = [(str(edge.get("from")), str(edge.get("to"))) for edge in event_graph.get("edges", []) if isinstance(edge, dict)]
+        if any(source not in event_nodes or target not in event_nodes for source, target in event_edges):
+            return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-dangling-event", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "provenance event edge references a missing event node"}]
+        if _directed_cycle(event_nodes, event_edges):
+            return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-event-dag-cycle", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "provenance event DAG must be acyclic; noetic dependency cycles are a distinct relation"}]
+    t_lang = field_witness.get("T_lang")
+    if compatibility == "current" and (not isinstance(t_lang, dict) or t_lang.get("projection") != "partial_coupling" or t_lang.get("uptake_guaranteed") is not False):
+        return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-t-lang-overclaim", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "T_lang must remain partial coupling with non-guaranteed uptake"}]
+    return []
+
+
 def extract_embedded_field_witness(text: str) -> dict[str, Any] | None:
     match = re.search(r"(?:^|\n)\s*(?:#{1,6}\s*)?field_witness\b", str(text or ""), re.IGNORECASE)
     if not match:

@@ -1,0 +1,25 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "declared-used-not-delivered.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "runtime-context-delivery",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "04",
+  "expected_failure_class": "declared-use-not-delivered",
+  "expected_failure_subcode": "declared-used-not-delivered",
+  "expected_downstream_invalidated": [
+    "05",
+    "06",
+    "07",
+    "08"
+  ],
+  "required_diagnostic_markers": [
+    "declared-use-not-delivered"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "plan-12-declared-used-not-delivered"
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "duplicate-clause-owner.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "producer-checker-parity",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "preflight",
+  "expected_failure_class": "ambiguous-clause-ownership",
+  "expected_failure_subcode": "duplicate-clause-owner",
+  "expected_downstream_invalidated": [
+    "model-call",
+    "promotion"
+  ],
+  "required_diagnostic_markers": [
+    "ambiguous-clause-ownership"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "plan-13-duplicate-clause-owner"
+}

@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-mrp-recursion-lifecycle-mutation-v1","base":"tests/mrp-recursion-lifecycle/valid/generated-depth-five-executed.json","operations":[{"op":"set","path":"/resource_policy/semantic_depth_cap","value":2}]}

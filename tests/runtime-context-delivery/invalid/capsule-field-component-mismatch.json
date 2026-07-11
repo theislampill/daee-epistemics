@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "capsule-field-component-mismatch",
+  "expected_valid": false,
+  "mutation": "capsule-binding-mismatch",
+  "stage": "02"
+}

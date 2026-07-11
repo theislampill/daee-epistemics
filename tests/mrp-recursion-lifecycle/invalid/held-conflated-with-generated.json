@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-mrp-recursion-lifecycle-mutation-v1","base":"tests/mrp-recursion-lifecycle/valid/held-baseline-activation.json","operations":[{"op":"set","path":"/burden_cycles/0/reread/raw_exit/candidate_events/0/disposition","value":"instantiate_generated"}]}

@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "package-membership-only-claim",
+  "expected_valid": false,
+  "mutation": "membership-is-not-delivery",
+  "stage": "03"
+}

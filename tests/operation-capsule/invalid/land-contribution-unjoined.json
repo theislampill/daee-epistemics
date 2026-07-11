@@ -1,0 +1,60 @@
+{
+    "execution_contract": "operation-capsule-v1",
+    "operation_capsules": [
+      {
+        "schema": "daee-operation-capsule-v1",
+        "canonicalization": "daee-canonical-json-v1",
+        "capsule_id": "OC1",
+        "cycle_id": "C1",
+        "body_ref": "B1_1",
+        "body_sha256": "8ed3f6ad685b959ead7022518e1af76cd816f8e8ec7ccdda1ed4018e8f2223f8",
+        "burden_id": "B1",
+        "obligation_ids": [
+            "O1"
+        ],
+        "pressure_ids": [
+            "P1"
+        ],
+        "owner_id": "owner-a",
+        "operation": "operate-a",
+        "register_axis": "axis-a",
+        "before_state": {
+            "claim_state": "before",
+            "source_pressure_ids": ["P1"]
+        },
+        "performed_operation": {
+            "mechanism": "separate states",
+            "application": "apply separation to P1"
+        },
+        "after_state": {
+            "claim_state": "after"
+        },
+        "delta": {
+            "delta_id": "D1",
+            "carrier": "Delta(B1)",
+            "result": "changed",
+            "recoverability_evidence": [
+                {
+                    "after_state_path": "claim_state",
+                    "value": "after"
+                }
+            ]
+        },
+        "residual": {
+            "status": "none",
+            "pressure_ids": [],
+            "basis": "none"
+        },
+        "land_contribution": {
+            "decision": "contributes",
+            "delta_ref": "D999",
+            "basis": "unjoined contribution"
+        },
+        "source_contract_refs": [
+            "ref"
+        ],
+        "operation_capsule_sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    ],
+    "hydration_policy": "projection-only"
+}

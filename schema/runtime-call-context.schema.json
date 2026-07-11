@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dawah.wiki/schema/runtime-call-context.schema.json",
+  "title": "DAEE runtime call context v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "stage", "call_index", "runtime", "input", "state_capsule", "validated_state", "selection", "components", "cold_law_clauses_delivered", "producer_declared_used", "operation_bound_components", "prompt", "delivery_status", "usage_status", "proof_mode", "budget_telemetry", "non_claims"],
+  "properties": {
+    "schema": {"const": "daee-runtime-call-context-v1"},
+    "case_id": {"type": "string"},
+    "stage": {"type": "string", "pattern": "^(01|02|03|04|05|06|07)$"},
+    "call_index": {"type": "integer", "minimum": 1},
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["delivery_mode", "evidence_lane", "package_profile", "package_sha256", "build_manifest_sha256", "skill_root_sha256", "source_commit"],
+      "properties": {
+        "delivery_mode": {"enum": ["explicit-prompt-components", "host-skill-context-receipt", "unverified-host-ambient"]},
+        "evidence_lane": {"enum": ["package-faithful", "harness-assisted", "unverified-host-ambient"]},
+        "package_profile": {"type": "string"},
+        "package_sha256": {"$ref": "#/$defs/sha256"},
+        "build_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "skill_root_sha256": {"$ref": "#/$defs/sha256"},
+        "source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "byte_count", "included"],
+      "properties": {
+        "path": {"type": "string"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_count": {"type": "integer", "minimum": 1},
+        "included": {"type": "boolean"}
+      }
+    },
+    "state_capsule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bootstrap", "path", "sha256", "included", "validated"],
+      "properties": {
+        "bootstrap": {"type": "boolean"},
+        "path": {"type": ["string", "null"]},
+        "sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "included": {"type": "boolean"},
+        "validated": {"type": "boolean"}
+      }
+    },
+    "validated_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route_shards", "owner_module_ids", "cold_clause_ids", "live_pressure", "ambiguous"],
+      "properties": {
+        "route_shards": {"type": "array", "items": {"type": "string"}},
+        "owner_module_ids": {"type": "array", "items": {"type": "string"}},
+        "cold_clause_ids": {"type": "array", "items": {"type": "string"}},
+        "live_pressure": {"type": "boolean"},
+        "ambiguous": {"type": "boolean"}
+      }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["basis_kind", "basis_ids", "candidate_components", "selected_components", "status", "hold_reason", "candidate_cap"],
+      "properties": {
+        "basis_kind": {"enum": ["stage-policy", "owner-module-map", "structural-trigger", "mandatory-release", "validated-ambiguity"]},
+        "basis_ids": {"type": "array", "items": {"type": "string"}},
+        "candidate_components": {"type": "array", "items": {"type": "string"}},
+        "selected_components": {"type": "array", "items": {"type": "string"}},
+        "status": {"enum": ["selected", "HOLD", "PARTIAL"]},
+        "hold_reason": {"type": ["string", "null"]},
+        "candidate_cap": {"type": "integer", "minimum": 1}
+      }
+    },
+    "components": {"type": "array", "items": {"$ref": "#/$defs/component"}},
+    "cold_law_clauses_delivered": {"type": "array", "items": {"type": "string"}},
+    "producer_declared_used": {"type": "array", "items": {"type": "string"}},
+    "operation_bound_components": {"type": "array", "items": {"type": "string"}},
+    "prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "byte_count", "includes_full_runtime", "includes_prior_full_output"],
+      "properties": {
+        "path": {"type": "string"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_count": {"type": "integer", "minimum": 1},
+        "includes_full_runtime": {"type": "boolean"},
+        "includes_prior_full_output": {"type": "boolean"}
+      }
+    },
+    "delivery_status": {"enum": ["DELIVERED", "PARTIAL", "HOLD", "UNVERIFIED"]},
+    "usage_status": {"enum": ["NOT_DECLARED", "PRODUCER_DECLARED", "OPERATION_BOUND", "PARTIAL", "HOLD"]},
+    "proof_mode": {"enum": ["package-faithful", "harness-assisted", "unverified-host-ambient"]},
+    "host_receipt": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["opaque", "self_attested", "package_sha256", "components"],
+          "properties": {
+            "opaque": {"type": "boolean"},
+            "self_attested": {"type": "boolean"},
+            "package_sha256": {"$ref": "#/$defs/sha256"},
+            "components": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["component_id", "sha256"],
+                "properties": {"component_id": {"type": "string"}, "sha256": {"$ref": "#/$defs/sha256"}}
+              }
+            }
+          }
+        }
+      ]
+    },
+    "budget_telemetry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transport_frame_bytes", "runtime_component_bytes", "capsule_bytes", "local_excerpt_bytes", "effective_context_bytes", "effective_context_limit", "selected_component_count"],
+      "properties": {
+        "transport_frame_bytes": {"type": "integer", "minimum": 0},
+        "runtime_component_bytes": {"type": "integer", "minimum": 0},
+        "capsule_bytes": {"type": "integer", "minimum": 0},
+        "local_excerpt_bytes": {"type": "integer", "minimum": 0},
+        "effective_context_bytes": {"type": "integer", "minimum": 0},
+        "effective_context_limit": {"type": "integer", "minimum": 1},
+        "selected_component_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "non_claims": {"type": "array", "minItems": 2, "items": {"type": "string"}}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["component_id", "kind", "source_path", "source_slice", "sha256", "byte_count", "delivery", "prompt_start_byte", "prompt_end_byte"],
+      "properties": {
+        "component_id": {"type": "string"},
+        "kind": {"enum": ["kernel", "raw-input", "state-capsule", "route-shard", "owner-module", "cold-law-clause", "local-excerpt", "harness-supplement"]},
+        "source_path": {"type": "string"},
+        "source_slice": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "start", "end"],
+          "properties": {
+            "kind": {"enum": ["bytes", "lines", "whole-file"]},
+            "start": {"type": "integer", "minimum": 0},
+            "end": {"type": "integer", "minimum": 0}
+          }
+        },
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_count": {"type": "integer", "minimum": 1},
+        "delivery": {"enum": ["prompt-bound", "host-receipt-bound", "not-delivered"]},
+        "prompt_start_byte": {"type": ["integer", "null"], "minimum": 0},
+        "prompt_end_byte": {"type": ["integer", "null"], "minimum": 0}
+      }
+    }
+  }
+}

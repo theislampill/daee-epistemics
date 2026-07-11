@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "cold-clause-hash-mismatch",
+  "expected_valid": false,
+  "mutation": "component-hash-mismatch",
+  "stage": "04"
+}

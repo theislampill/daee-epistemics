@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/validation-registry.schema.json",
+  "title": "DAEE canonical validation registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "registry_id", "artifact_types", "checkers", "profiles", "consumers", "structural_non_claims"],
+  "properties": {
+    "schema": {"const": "daee-validation-registry-v1"},
+    "registry_id": {"type": "string", "minLength": 1},
+    "artifact_types": {
+      "type": "array", "minItems": 8, "maxItems": 8, "uniqueItems": true,
+      "items": {"enum": ["output-md", "input-output-pair", "staged-handoff-record", "state-capsule-sequence", "prompt-context-manifest", "proof-sidecar-set", "retained-case-manifest", "captured-output-custody-manifest"]}
+    },
+    "checkers": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["checker_id", "source_path", "source_sha256", "accepted_exit_categories", "requirement_status", "artifact_applicability", "structural_non_claims"],
+        "properties": {
+          "checker_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+          "aliases": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "deprecated_aliases": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+          "source_path": {"type": "string", "minLength": 1},
+          "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "accepted_exit_categories": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["accepted", "structural-rejection"]}},
+          "requirement_status": {"enum": ["required", "optional", "advisory", "mode-specific", "inapplicable"]},
+          "artifact_applicability": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "structural_non_claims": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}
+        }
+      }
+    },
+    "profiles": {
+      "type": "array", "minItems": 6,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["profile_id", "purpose", "artifact_types", "requirements", "missing_prerequisite_behavior", "structural_non_claims"],
+        "properties": {
+          "profile_id": {"enum": ["stage07-release", "captured-output-structural", "stage08-proof-surface", "promotion", "scorecard", "advisory"]},
+          "purpose": {"type": "string", "minLength": 1},
+          "artifact_types": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "requirements": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["checker_id", "required"], "properties": {"checker_id": {"type": "string"}, "required": {"type": "boolean"}}}},
+          "missing_prerequisite_behavior": {"enum": ["hard-fail", "quarantine", "projection-only", "advisory-only"]},
+          "structural_non_claims": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+        }
+      }
+    },
+    "consumers": {
+      "type": "array", "minItems": 1,
+      "items": {"type": "object", "additionalProperties": false, "required": ["consumer_id", "source_path", "profile_id", "policy_source"], "properties": {"consumer_id": {"type": "string"}, "source_path": {"type": "string"}, "profile_id": {"type": "string"}, "policy_source": {"enum": ["registry", "legacy-private-list"]}}}
+    },
+    "structural_non_claims": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string"}}
+  }
+}

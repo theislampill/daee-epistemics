@@ -1,0 +1,20 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "generated-child-missing-reread.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "topology-capacity-properties",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "05",
+  "expected_failure_class": "reread-terminal-coverage",
+  "expected_failure_subcode": "instantiated-burden-missing-reread",
+  "expected_downstream_invalidated": ["06", "07", "08"],
+  "required_diagnostic_markers": ["generated:1", "reread"],
+  "forbidden_artifacts": [
+    "stage-06-field-witness.json",
+    "stage-07-public-projection.json",
+    "stage-08-verifier-sidecars.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "A15 generated-child reread deletion RED"
+}

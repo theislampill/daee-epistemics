@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "stage04-live-pressure-owner-resolved",
+  "expected_valid": true,
+  "kind": "live-pressure-owner-resolved",
+  "stage": "04"
+}

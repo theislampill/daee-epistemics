@@ -1,0 +1,1 @@
+{"schema":"daee-stage-projection-mutation-v1","base":"tests/stage-projection-parity/valid/lossless-stage06-stage07.json","mutation":{"op":"replace","path":"/stage07/closure_projection/derived_decision","value":"HOLD"}}

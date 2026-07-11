@@ -1,0 +1,7 @@
+{
+  "fixture_schema": "daee-mrp-recursion-lifecycle-mutation-v1",
+  "base": "tests/mrp-recursion-lifecycle/valid/single-baseline-no-new.json",
+  "operations": [
+    {"op": "merge", "path": "/resource_policy", "value": {"limits": {"wall_clock_seconds": 601}}}
+  ]
+}

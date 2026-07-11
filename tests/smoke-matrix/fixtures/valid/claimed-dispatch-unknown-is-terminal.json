@@ -1,0 +1,1 @@
+{"schema":"daee-smoke-matrix-v1","kind":"candidate-transition","candidate_id":"c","from_status":"READY_UNUSED","claimed":true,"dispatch_count":null,"to_status":"CONSUMED_DISPATCH_UNKNOWN","unresolved_usage":true}

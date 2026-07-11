@@ -1,0 +1,75 @@
+{
+  "schema_version": "daee-stage-projection-v1",
+  "projection_id": "neutral-lossless-projection",
+  "stage04": {
+    "activation_lifecycle_fingerprint_sha256": "9c371ad35380fcb3920b8a7edcdf01ce7e72c2c2c7a22b5c3751507b0ebb3a13",
+    "activations": [
+      {
+        "ordinal": 0,
+        "obligation_id": "O1",
+        "operation_capsule_id": "OC1",
+        "body_ref": "B1_1",
+        "burden_id": "B1",
+        "owner_id": "owner-alpha",
+        "operation": "operation-alpha",
+        "pressure_ids": ["P1"],
+        "before_state_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "performed_evidence_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "resultant_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "residual_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+        "land_contribution_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+        "semantic_body_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+      }
+    ]
+  },
+  "stage05": {
+    "activation_lifecycle_fingerprint_sha256": "9c371ad35380fcb3920b8a7edcdf01ce7e72c2c2c7a22b5c3751507b0ebb3a13",
+    "burden_cycles": [
+      {
+        "cycle_id": "C1",
+        "burden_id": "B1",
+        "origin": "B_LA",
+        "generation_depth": 0,
+        "parent_cycle_id": null,
+        "obligation_ids": ["O1"],
+        "operation_capsule_ids": ["OC1"],
+        "lifecycle_status": "complete",
+        "terminal_state": "complete",
+        "land_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "reread_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+        "resultant_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+      }
+    ],
+    "provenance_event_dag": {"nodes": ["E1"], "edges": []},
+    "noetic_dependency_graph": {"nodes": ["B1"], "edges": []},
+    "closure_projection": {
+      "opening_state": "OPEN",
+      "derived_decision": "COMPLETE",
+      "initial_coverage_complete": true,
+      "lifecycle_accounting_complete": true,
+      "collapse_positive": true,
+      "closure_confirmed": true,
+      "remaining_open_ids": [],
+      "divergence": "neutral",
+      "curl": "null",
+      "loopbreak": null
+    }
+  },
+  "stage06": {
+    "activation_lifecycle_fingerprint_sha256": "9c371ad35380fcb3920b8a7edcdf01ce7e72c2c2c7a22b5c3751507b0ebb3a13",
+    "activations": [{"ordinal": 0, "obligation_id": "O1", "operation_capsule_id": "OC1", "body_ref": "B1_1", "burden_id": "B1", "owner_id": "owner-alpha", "operation": "operation-alpha", "pressure_ids": ["P1"], "before_state_sha256": "1111111111111111111111111111111111111111111111111111111111111111", "performed_evidence_sha256": "2222222222222222222222222222222222222222222222222222222222222222", "resultant_sha256": "3333333333333333333333333333333333333333333333333333333333333333", "residual_sha256": "4444444444444444444444444444444444444444444444444444444444444444", "land_contribution_sha256": "5555555555555555555555555555555555555555555555555555555555555555", "semantic_body_sha256": "6666666666666666666666666666666666666666666666666666666666666666"}],
+    "burden_cycles": [{"cycle_id": "C1", "burden_id": "B1", "origin": "B_LA", "generation_depth": 0, "parent_cycle_id": null, "obligation_ids": ["O1"], "operation_capsule_ids": ["OC1"], "lifecycle_status": "complete", "terminal_state": "complete", "land_sha256": "7777777777777777777777777777777777777777777777777777777777777777", "reread_sha256": "8888888888888888888888888888888888888888888888888888888888888888", "resultant_sha256": "3333333333333333333333333333333333333333333333333333333333333333"}],
+    "closure_projection": {"opening_state": "OPEN", "derived_decision": "COMPLETE", "initial_coverage_complete": true, "lifecycle_accounting_complete": true, "collapse_positive": true, "closure_confirmed": true, "remaining_open_ids": [], "divergence": "neutral", "curl": "null", "loopbreak": null},
+    "normalized_activation_record": {"schema_version": "daee-nar-v2", "per_activation": [{"ordinal": 0, "obligation_id": "O1", "body_ref": "B1_1", "burden_id": "B1", "owner_id": "owner-alpha", "operation": "operation-alpha", "resultant_sha256": "3333333333333333333333333333333333333333333333333333333333333333"}], "per_burden": [{"burden_id": "B1", "cycle_id": "C1", "activation_ordinals": [0]}]}
+  },
+  "stage07": {
+    "activation_lifecycle_fingerprint_sha256": "9c371ad35380fcb3920b8a7edcdf01ce7e72c2c2c7a22b5c3751507b0ebb3a13",
+    "activations": [{"ordinal": 0, "obligation_id": "O1", "operation_capsule_id": "OC1", "body_ref": "B1_1", "burden_id": "B1", "owner_id": "owner-alpha", "operation": "operation-alpha", "pressure_ids": ["P1"], "before_state_sha256": "1111111111111111111111111111111111111111111111111111111111111111", "performed_evidence_sha256": "2222222222222222222222222222222222222222222222222222222222222222", "resultant_sha256": "3333333333333333333333333333333333333333333333333333333333333333", "residual_sha256": "4444444444444444444444444444444444444444444444444444444444444444", "land_contribution_sha256": "5555555555555555555555555555555555555555555555555555555555555555", "semantic_body_sha256": "6666666666666666666666666666666666666666666666666666666666666666"}],
+    "burden_cycles": [{"cycle_id": "C1", "burden_id": "B1", "origin": "B_LA", "generation_depth": 0, "parent_cycle_id": null, "obligation_ids": ["O1"], "operation_capsule_ids": ["OC1"], "lifecycle_status": "complete", "terminal_state": "complete", "land_sha256": "7777777777777777777777777777777777777777777777777777777777777777", "reread_sha256": "8888888888888888888888888888888888888888888888888888888888888888", "resultant_sha256": "3333333333333333333333333333333333333333333333333333333333333333"}],
+    "closure_projection": {"opening_state": "OPEN", "derived_decision": "COMPLETE", "initial_coverage_complete": true, "lifecycle_accounting_complete": true, "collapse_positive": true, "closure_confirmed": true, "remaining_open_ids": [], "divergence": "neutral", "curl": "null", "loopbreak": null},
+    "normalized_activation_record": {"schema_version": "daee-nar-v2", "per_activation": [{"ordinal": 0, "obligation_id": "O1", "body_ref": "B1_1", "burden_id": "B1", "owner_id": "owner-alpha", "operation": "operation-alpha", "resultant_sha256": "3333333333333333333333333333333333333333333333333333333333333333"}], "per_burden": [{"burden_id": "B1", "cycle_id": "C1", "activation_ordinals": [0]}]},
+    "semantic_body_hashes": {"B1_1": "6666666666666666666666666666666666666666666666666666666666666666"},
+    "T_lang": {"projection": "partial_coupling", "uptake_guaranteed": false, "boundary": "structural projection does not guarantee uptake"}
+  },
+  "non_claims": ["Structural parity does not establish semantic truth or guaranteed uptake."]
+}

@@ -1,0 +1,1 @@
+{"schema":"daee-smoke-matrix-v1","kind":"evidence-export","cycle_id":"cycle-1","phase":"STAGING","staging_verified":true,"resume_mode":"HASH_EQUAL_ONLY","resume_hash_equal":true,"final_readback":false,"final_path_unused_before_publish":true,"completion_evidence":true}

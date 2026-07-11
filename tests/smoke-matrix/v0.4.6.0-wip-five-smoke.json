@@ -1,0 +1,20 @@
+{
+  "schema": "daee-smoke-matrix-v1",
+  "kind": "input-registry",
+  "matrix_id": "v0.4.6.0-wip-five-smoke",
+  "cases": [
+    {"case_id": "gate88-secularism", "input_path": "tests/smokes/v0.4.3.0-release-regression/prompts/06-secularism.md", "raw_bytes": 35, "raw_sha256": "F315B91F2B2BD3531FC1714F01A5682F0588180D71AEB6C7BE895122EE1D7E70"},
+    {"case_id": "gate88-khaybar", "input_path": "tests/smokes/v0.4.3.0-release-regression/prompts/03-khaybar.md", "raw_bytes": 4896, "raw_sha256": "76351ACEB44F9836F6AD7763D91A80D660BF2840FEE5C948FE6753D1774127A9"},
+    {"case_id": "gate88-trinitarian-j173", "input_path": "tests/smokes/v0.4.3.0-release-regression/prompts/01-trinitarian-j173.md", "raw_bytes": 1095, "raw_sha256": "DD7B21625FA55ECDC47110927C00EB66BC9919EF0576DB9076249A7FC197845C"},
+    {"case_id": "gate88-tst-lillard", "input_path": "tests/smokes/v0.4.3.0-release-regression/prompts/02-tst-lillard.md", "raw_bytes": 560, "raw_sha256": "0A901886CEFADFCBA596D999A8716BDEA889AA729B71C960821CDAFD2DFDAC36"},
+    {"case_id": "gate88-torah-quran-source-authentication", "input_path": "tests/smokes/v0.4.3.0-release-regression/prompts/07-torah-quran-source-authentication.md", "raw_bytes": 1332, "raw_sha256": "EFE68F87F54255EB268ECBAEB5C290303CB337B2962355D20EBE3D4CC4C8C36A"}
+  ],
+  "forbidden_case_fields": [
+    "expected_burdens",
+    "expected_submoves",
+    "expected_route",
+    "expected_citations",
+    "expected_answer",
+    "expected_output_bytes"
+  ]
+}

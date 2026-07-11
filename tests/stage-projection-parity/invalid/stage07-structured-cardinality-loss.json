@@ -1,0 +1,1 @@
+{"schema":"daee-stage-projection-mutation-v1","base":"tests/stage-projection-parity/valid/lossless-stage06-stage07.json","mutation":{"op":"remove","path":"/stage07/normalized_activation_record/per_activation/0"}}

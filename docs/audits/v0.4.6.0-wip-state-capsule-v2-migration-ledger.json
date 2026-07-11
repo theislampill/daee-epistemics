@@ -1,0 +1,119 @@
+{
+  "schema": "daee-state-capsule-v2-migration-ledger-v1",
+  "ledger_id": "v0.4.6.0-wip-state-capsule-v2-migration",
+  "source_head": "6987c9ebf1de45af700b1fa74b1ed25ec0beeb7c",
+  "regression_status": "unproven",
+  "integration_owner": "A16",
+  "binding_adr_ids": [
+    "DAEE-ADR-046-001",
+    "DAEE-ADR-046-014",
+    "DAEE-ADR-046-015",
+    "DAEE-ADR-046-016"
+  ],
+  "legacy_contract": {
+    "schema_id": "daee-state-capsule-v1",
+    "schema_path": "schema/state-capsule.schema.json",
+    "role": "historical-replay-only",
+    "readable": true,
+    "writable_for_new_release_bearing_runs": false,
+    "deprecation_status": "not-deprecated",
+    "deprecation_gate": "separate accepted deprecation ADR with retained-artifact migration proof"
+  },
+  "release_bearing_contract": {
+    "schema_id": "daee-state-capsule-v2",
+    "schema_path": "schema/state-capsule-v2.schema.json",
+    "role": "new-release-bearing-execution",
+    "single_schema_owner": "A16",
+    "implementation_status": "checker-verified-structural-current-owner-composition",
+    "checker_path": "tools/check_state_capsule.py"
+  },
+  "migration_policy": {
+    "automatic_v1_to_v2_promotion": false,
+    "reason": "v1 lacks reconstructible candidate partitions and derivative authority, exact Plan04 route/ACT/disposition set equations, canonical Plan05 operation capsules and native body artifacts, Plan06 source/artifact/receipt accounting authority, recursive cycle and delta-sensitive reread custody, independent closure authority, projection fingerprints, and runtime-call-context bindings required by v2",
+    "historical_v1_replay_may_satisfy_v2_release_gate": false,
+    "new_release_bearing_runs_must_emit_v2": true,
+    "failed_cutover_action": "restore the explicit v1 historical consumer route without deleting v2 fixtures, migration evidence, or retained artifacts",
+    "conflict_action": "STOP_ANDON_ARCHITECTURE_DECISION"
+  },
+  "field_lineage": [
+    {
+      "v1_sources": ["n_frame"],
+      "v2_targets": ["candidate_states", "candidate_state_partitions"],
+      "conversion": "requires-source-reconstruction",
+      "lossless_from_v1_alone": false
+    },
+    {
+      "v1_sources": ["B_LA", "B_MRP", "B_total", "current_burden", "terminal_states"],
+      "v2_targets": ["burden_cycles", "current_live_burdens", "closure_state"],
+      "conversion": "requires-retained-stage03-stage04-stage05-records-and-cycle-hashes",
+      "lossless_from_v1_alone": false
+    },
+    {
+      "v1_sources": ["completed_acts"],
+      "v2_targets": ["owner_routes", "act_row_details", "owner_execution_dispositions", "owner_obligation_state", "operation_capsules", "operation_body_artifacts", "topology_mass_accounting"],
+      "conversion": "requires-exact-Plan04-set-equations, canonical Plan05 before/performed/after/delta/residual/Land self-hash and native-body custody, and independently receipt-validated Plan06 accounting",
+      "lossless_from_v1_alone": false
+    },
+    {
+      "v1_sources": ["held_set_H", "next_required_action"],
+      "v2_targets": ["held"],
+      "conversion": "requires-explicit-kind-gate-next-action-and-basis",
+      "lossless_from_v1_alone": false
+    },
+    {
+      "v1_sources": ["field_diagnostics", "coverage_complete"],
+      "v2_targets": ["closure_state"],
+      "conversion": "compatible-observation-only-not-closure-proof",
+      "lossless_from_v1_alone": false
+    },
+    {
+      "v1_sources": ["cold_law_refs_used", "shards_loaded", "output_artifact_path", "output_sha256", "output_offset_bytes"],
+      "v2_targets": ["runtime_call_context_refs", "projection"],
+      "conversion": "requires-hash-bound-external-call-context-and-projection-artifacts",
+      "lossless_from_v1_alone": false
+    }
+  ],
+  "composed_v2_contributors": [
+    {"andon_id": "A02", "fields": ["candidate_states", "input_pressures"]},
+    {"andon_id": "A03", "fields": ["candidate_state_partitions", "burden_partition_decisions", "partition_derivative_mappings", "partition_derivative_mappings_sha256"]},
+    {"andon_id": "A04", "fields": ["upstream_obligation_ids", "upstream_obligation_set_sha256", "upstream_pressure_ids", "upstream_partition_decision_ids", "owner_routes", "act_row_details", "owner_execution_dispositions", "owner_obligation_state"]},
+    {"andon_id": "A05", "fields": ["operation_capsules", "operation_body_artifacts"]},
+    {"andon_id": "A06", "fields": ["topology_mass_accounting", "topology_mass_evidence_authority", "topology_mass_evidence_authority_sha256"]},
+    {"andon_id": "A07", "fields": ["burden_cycles", "reread_signature_history", "reread_signature_history_sha256", "current_live_burdens", "held", "resource_policy"]},
+    {"andon_id": "A08", "fields": ["closure_authority", "closure_state"]},
+    {"andon_id": "A10", "fields": ["projection"]},
+    {"andon_id": "A12", "fields": ["runtime_call_context_refs"]}
+  ],
+  "required_checker_proofs": [
+    "v1 historical replay remains readable",
+    "v1 cannot satisfy a new release-bearing run",
+    "v2 validates the composed contributor fields",
+    "a competing v2 schema owner fails",
+    "no semantic depth cap is inferred from a capacity probe or resource limit",
+    "embedded operation capsule is congruent with the standalone Plan05 owner",
+    "all five canonical A07 candidate dispositions have neighboring release-bearing controls",
+    "closure validation, derivation, and witness projection receive an independently recomputed universe and canonical hash",
+    "state-v2 reread signatures bind A07 state plus performed operation, Land, and post-Land delta",
+    "Plan03 derivative mappings and Plan06 source/artifact/validator-receipt authority are independently hash-bound"
+  ],
+  "known_shared_interface_deltas": [
+    {
+      "owner": "A07",
+      "read_only_paths": ["tests/mrp-recursion-lifecycle/test_checker.py"],
+      "status": "FOLLOW_UP_REQUIRED",
+      "delta": "Replace test_frozen_state_v2_signatures_fail_closed_as_stale_after_richer_a07_repair with a current-fixture direct-adapter acceptance assertion (or move the stale bytes to an A07-owned historical fixture). The regenerated release-bearing state-v2 exemplar now intentionally carries the richer A07 signature and validate_lifecycle_record(..., release_bearing=True) returns valid.",
+      "state_v2_behavior": "The A16 checker now composes the public A07 validate_lifecycle_record adapter directly and carries its richer delta-sensitive signature without a current-v2 compatibility fallback."
+    }
+  ],
+  "rollback": {
+    "schema_files_are_append_only_during_bootstrap": true,
+    "historical_artifacts_are_never_rewritten": true,
+    "consumer_cutover_is_reversible": true
+  },
+  "status": "CHECKER_VERIFIED_STRUCTURAL",
+  "shared_integration_status": "PARTIAL_SHARED_INTERFACE_ANDON",
+  "non_claims": [
+    "This ledger records migration custody and deterministic checker evidence; it does not prove that a release-bearing runtime producer has emitted a live v2 capsule.",
+    "No v1 artifact is promoted to release-bearing v2 evidence by declaration."
+  ]
+}

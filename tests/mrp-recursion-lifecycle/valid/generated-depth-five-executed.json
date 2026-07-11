@@ -1,0 +1,401 @@
+{
+  "schema": "daee-mrp-recursion-lifecycle-fixture-v1",
+  "fixture_id": "generated-depth-five-executed",
+  "resource_policy": {
+    "policy_id": "runtime-budget-v1",
+    "policy_sha256": "63fbafb34c6be06aa92c2c24f7472e617e44b3697de5e41e2f0d1807270444c6",
+    "semantic_depth_cap": null,
+    "on_exhaustion": "PARTIAL"
+  },
+  "burden_cycles": [
+    {
+      "cycle_id": "C1",
+      "burden_id": "B1",
+      "origin": "B_LA",
+      "generation_depth": 0,
+      "parent_cycle_id": null,
+      "route": {
+        "record_id": "S03-C1",
+        "sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "target_burden_id": "B1"
+      },
+      "operation": {
+        "record_id": "S04-C1",
+        "sha256": "2111111111111111111111111111111111111111111111111111111111111111",
+        "performed": true,
+        "local_delta": {
+          "state": "B1-landable"
+        }
+      },
+      "land": {
+        "status": "landed",
+        "event_index": 40
+      },
+      "reread": {
+        "record_id": "S05-C1",
+        "sha256": "3111111111111111111111111111111111111111111111111111111111111111",
+        "raw_exit": {
+          "event_id": "E1",
+          "event_index": 90,
+          "exit_disposition": "RECURSE",
+          "candidate_events": [
+            {
+              "candidate_event_id": "CE-C1-K1-1",
+              "candidate_id": "K1",
+              "previous_candidate_event_id": null,
+              "event_index": 50,
+              "kind": "generated_instantiation",
+              "disposition": "instantiate_generated",
+              "target_burden_id": "B2",
+              "next_cycle_id": "C2",
+              "basis_refs": [
+                "Post-Land child."
+              ],
+              "gate": null,
+              "next_action": "Execute C2."
+            }
+          ],
+          "field_diagnostics": [],
+          "noetic_dependency_graph": {
+            "nodes": [],
+            "edges": [],
+            "graph_sha256": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7"
+          },
+          "no_new_resultant": null,
+          "loopbreak": null,
+          "resource_exhaustion": null,
+          "raw_exit_sha256": "76a35a1c3ad2bf56f09eeca82777db02b189fda8e34a6c9a1c10ad63eef736ef"
+        }
+      },
+      "lifecycle_status": "landed",
+      "terminal_state": "landed"
+    },
+    {
+      "cycle_id": "C2",
+      "burden_id": "B2",
+      "origin": "B_MRP",
+      "generation_depth": 1,
+      "parent_cycle_id": "C1",
+      "route": {
+        "record_id": "S03-C2",
+        "sha256": "1222222222222222222222222222222222222222222222222222222222222222",
+        "target_burden_id": "B2"
+      },
+      "operation": {
+        "record_id": "S04-C2",
+        "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "performed": true,
+        "local_delta": {
+          "state": "B2-landable"
+        }
+      },
+      "land": {
+        "status": "landed",
+        "event_index": 140
+      },
+      "reread": {
+        "record_id": "S05-C2",
+        "sha256": "3222222222222222222222222222222222222222222222222222222222222222",
+        "raw_exit": {
+          "event_id": "E2",
+          "event_index": 190,
+          "exit_disposition": "RECURSE",
+          "candidate_events": [
+            {
+              "candidate_event_id": "CE-C2-K2-1",
+              "candidate_id": "K2",
+              "previous_candidate_event_id": null,
+              "event_index": 150,
+              "kind": "generated_instantiation",
+              "disposition": "instantiate_generated",
+              "target_burden_id": "B3",
+              "next_cycle_id": "C3",
+              "basis_refs": [
+                "Post-Land child."
+              ],
+              "gate": null,
+              "next_action": "Execute C3."
+            }
+          ],
+          "field_diagnostics": [],
+          "noetic_dependency_graph": {
+            "nodes": [],
+            "edges": [],
+            "graph_sha256": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7"
+          },
+          "no_new_resultant": null,
+          "loopbreak": null,
+          "resource_exhaustion": null,
+          "raw_exit_sha256": "c37aee8656c2969b71ae61ee6f46180d2a137efd59e1105cd0f418c7efb21e8c"
+        }
+      },
+      "lifecycle_status": "landed",
+      "terminal_state": "landed"
+    },
+    {
+      "cycle_id": "C3",
+      "burden_id": "B3",
+      "origin": "B_MRP",
+      "generation_depth": 2,
+      "parent_cycle_id": "C2",
+      "route": {
+        "record_id": "S03-C3",
+        "sha256": "1333333333333333333333333333333333333333333333333333333333333333",
+        "target_burden_id": "B3"
+      },
+      "operation": {
+        "record_id": "S04-C3",
+        "sha256": "2333333333333333333333333333333333333333333333333333333333333333",
+        "performed": true,
+        "local_delta": {
+          "state": "B3-landable"
+        }
+      },
+      "land": {
+        "status": "landed",
+        "event_index": 240
+      },
+      "reread": {
+        "record_id": "S05-C3",
+        "sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "raw_exit": {
+          "event_id": "E3",
+          "event_index": 290,
+          "exit_disposition": "RECURSE",
+          "candidate_events": [
+            {
+              "candidate_event_id": "CE-C3-K3-1",
+              "candidate_id": "K3",
+              "previous_candidate_event_id": null,
+              "event_index": 250,
+              "kind": "generated_instantiation",
+              "disposition": "instantiate_generated",
+              "target_burden_id": "B4",
+              "next_cycle_id": "C4",
+              "basis_refs": [
+                "Post-Land child."
+              ],
+              "gate": null,
+              "next_action": "Execute C4."
+            }
+          ],
+          "field_diagnostics": [],
+          "noetic_dependency_graph": {
+            "nodes": [],
+            "edges": [],
+            "graph_sha256": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7"
+          },
+          "no_new_resultant": null,
+          "loopbreak": null,
+          "resource_exhaustion": null,
+          "raw_exit_sha256": "80491355d7eec709372ad0d889a429cb95aff286b36c9bef58d4f15cc2b607f4"
+        }
+      },
+      "lifecycle_status": "landed",
+      "terminal_state": "landed"
+    },
+    {
+      "cycle_id": "C4",
+      "burden_id": "B4",
+      "origin": "B_MRP",
+      "generation_depth": 3,
+      "parent_cycle_id": "C3",
+      "route": {
+        "record_id": "S03-C4",
+        "sha256": "1444444444444444444444444444444444444444444444444444444444444444",
+        "target_burden_id": "B4"
+      },
+      "operation": {
+        "record_id": "S04-C4",
+        "sha256": "2444444444444444444444444444444444444444444444444444444444444444",
+        "performed": true,
+        "local_delta": {
+          "state": "B4-landable"
+        }
+      },
+      "land": {
+        "status": "landed",
+        "event_index": 340
+      },
+      "reread": {
+        "record_id": "S05-C4",
+        "sha256": "3444444444444444444444444444444444444444444444444444444444444444",
+        "raw_exit": {
+          "event_id": "E4",
+          "event_index": 390,
+          "exit_disposition": "RECURSE",
+          "candidate_events": [
+            {
+              "candidate_event_id": "CE-C4-K4-1",
+              "candidate_id": "K4",
+              "previous_candidate_event_id": null,
+              "event_index": 350,
+              "kind": "generated_instantiation",
+              "disposition": "instantiate_generated",
+              "target_burden_id": "B5",
+              "next_cycle_id": "C5",
+              "basis_refs": [
+                "Post-Land child."
+              ],
+              "gate": null,
+              "next_action": "Execute C5."
+            }
+          ],
+          "field_diagnostics": [],
+          "noetic_dependency_graph": {
+            "nodes": [],
+            "edges": [],
+            "graph_sha256": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7"
+          },
+          "no_new_resultant": null,
+          "loopbreak": null,
+          "resource_exhaustion": null,
+          "raw_exit_sha256": "9103387a4252da5d0a061e0a6b7770696e4e30fc4813b848eb1c86ed21284dad"
+        }
+      },
+      "lifecycle_status": "landed",
+      "terminal_state": "landed"
+    },
+    {
+      "cycle_id": "C5",
+      "burden_id": "B5",
+      "origin": "B_MRP",
+      "generation_depth": 4,
+      "parent_cycle_id": "C4",
+      "route": {
+        "record_id": "S03-C5",
+        "sha256": "1555555555555555555555555555555555555555555555555555555555555555",
+        "target_burden_id": "B5"
+      },
+      "operation": {
+        "record_id": "S04-C5",
+        "sha256": "2555555555555555555555555555555555555555555555555555555555555555",
+        "performed": true,
+        "local_delta": {
+          "state": "B5-landable"
+        }
+      },
+      "land": {
+        "status": "landed",
+        "event_index": 440
+      },
+      "reread": {
+        "record_id": "S05-C5",
+        "sha256": "3555555555555555555555555555555555555555555555555555555555555555",
+        "raw_exit": {
+          "event_id": "E5",
+          "event_index": 490,
+          "exit_disposition": "RECURSE",
+          "candidate_events": [
+            {
+              "candidate_event_id": "CE-C5-K5-1",
+              "candidate_id": "K5",
+              "previous_candidate_event_id": null,
+              "event_index": 450,
+              "kind": "generated_instantiation",
+              "disposition": "instantiate_generated",
+              "target_burden_id": "B6",
+              "next_cycle_id": "C6",
+              "basis_refs": [
+                "Post-Land child."
+              ],
+              "gate": null,
+              "next_action": "Execute C6."
+            }
+          ],
+          "field_diagnostics": [],
+          "noetic_dependency_graph": {
+            "nodes": [],
+            "edges": [],
+            "graph_sha256": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7"
+          },
+          "no_new_resultant": null,
+          "loopbreak": null,
+          "resource_exhaustion": null,
+          "raw_exit_sha256": "6030880642dfe3a91468967068fac4807516b3523481196248c96fc7d82086ec"
+        }
+      },
+      "lifecycle_status": "landed",
+      "terminal_state": "landed"
+    },
+    {
+      "cycle_id": "C6",
+      "burden_id": "B6",
+      "origin": "B_MRP",
+      "generation_depth": 5,
+      "parent_cycle_id": "C5",
+      "route": {
+        "record_id": "S03-C6",
+        "sha256": "1666666666666666666666666666666666666666666666666666666666666666",
+        "target_burden_id": "B6"
+      },
+      "operation": {
+        "record_id": "S04-C6",
+        "sha256": "2666666666666666666666666666666666666666666666666666666666666666",
+        "performed": true,
+        "local_delta": {
+          "state": "B6-landable"
+        }
+      },
+      "land": {
+        "status": "landed",
+        "event_index": 540
+      },
+      "reread": {
+        "record_id": "S05-C6",
+        "sha256": "3666666666666666666666666666666666666666666666666666666666666666",
+        "raw_exit": {
+          "event_id": "E6",
+          "event_index": 590,
+          "exit_disposition": "STOP",
+          "candidate_events": [],
+          "field_diagnostics": [],
+          "noetic_dependency_graph": {
+            "nodes": [],
+            "edges": [],
+            "graph_sha256": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7"
+          },
+          "no_new_resultant": {
+            "observed": true,
+            "live_obligation_ids": [],
+            "unresolved_candidate_ids": []
+          },
+          "loopbreak": null,
+          "resource_exhaustion": null,
+          "raw_exit_sha256": "96f82ada971cfc50549bf55d85b8b1e393005ad07092ac05fe3b327fd9303a11"
+        }
+      },
+      "lifecycle_status": "landed",
+      "terminal_state": "landed"
+    }
+  ],
+  "non_claims": [
+    "Depth five is a finite capacity probe, never a depth limit."
+  ],
+  "validation_profile": "current-a07-v2",
+  "promotion_eligible": true,
+  "trace_id": "TRACE-generated-depth-five-executed",
+  "predecessor_trace_id": null,
+  "event_dag_edges": [
+    [
+      "C1",
+      "C2"
+    ],
+    [
+      "C2",
+      "C3"
+    ],
+    [
+      "C3",
+      "C4"
+    ],
+    [
+      "C4",
+      "C5"
+    ],
+    [
+      "C5",
+      "C6"
+    ]
+  ]
+}

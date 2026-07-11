@@ -1,0 +1,6 @@
+{
+  "schema": "daee-producer-checker-scenario-v1",
+  "scenario": "visible-before-model-call",
+  "expected_valid": true,
+  "kind": "visible-before-call"
+}

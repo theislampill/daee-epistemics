@@ -1,0 +1,6 @@
+{
+  "schema": "daee-producer-checker-scenario-v1",
+  "scenario": "harness-clause-absent-from-package",
+  "expected_valid": false,
+  "mutation": "canonical-package-clause-missing"
+}

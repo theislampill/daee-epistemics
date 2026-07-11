@@ -1,0 +1,21 @@
+{
+  "topology_contract": "input-pressure-v1",
+  "upstream_obligation_ids": ["O-cd7aade8cee23cb05b941960", "O-6979f78443c0b7e6e5f13ed6"],
+  "upstream_obligation_set_sha256": "4b3eb043995b9f88966154c440fcf3df4eb1205ad5cc3aa46b7b25c24fc82f24",
+  "owner_routes": [
+    {"obligation_id":"O-cd7aade8cee23cb05b941960","burden_id":"B1","pressure_ids":["P1"],"partition_decision_id":"BP1","owner_id":"owner-a","operation":"operate-a","register_axis":"axis-a","execution_class":"required","route_status":"executable","trigger":null,"owner_body_status":"loaded","same_burden_cohesion":{"target_family_relation":"same","tau_relation":"same","source_frame_relation":"same","claim_cluster_relation":"same","restoration_vector_relation":"same","already_handled":false},"basis":"The receiving transition is executable."},
+    {"obligation_id":"O-6979f78443c0b7e6e5f13ed6","burden_id":"B1","pressure_ids":["P2"],"partition_decision_id":"BP1","owner_id":"owner-a","operation":"operate-a","register_axis":"axis-a","execution_class":"required","route_status":"executable","trigger":null,"owner_body_status":"loaded","same_burden_cohesion":{"target_family_relation":"same","tau_relation":"same","source_frame_relation":"same","claim_cluster_relation":"same","restoration_vector_relation":"same","already_handled":false},"basis":"The derivative transition remains explicitly routed."}
+  ],
+  "act_row_details": [
+    {"obligation_id":"O-cd7aade8cee23cb05b941960","burden_id":"B1","pressure_ids":["P1"],"owner_id":"owner-a","operation":"operate-a","register_axis":"axis-a","body_ref":"B1_1"}
+  ],
+  "owner_execution_dispositions": [
+    {"obligation_id":"O-cd7aade8cee23cb05b941960","burden_id":"B1","disposition":"executed","body_ref":"B1_1","satisfied_by_obligation_id":null,"trigger_evidence":null,"basis":"The receiving ACT executed once.","gate":null,"next_action":null},
+    {"obligation_id":"O-6979f78443c0b7e6e5f13ed6","burden_id":"B1","disposition":"integrated_duplicate","body_ref":null,"satisfied_by_obligation_id":"O-cd7aade8cee23cb05b941960","trigger_evidence":null,"basis":"Plan03 proves this pressure derivative is received by the executed transition.","gate":null,"next_action":null,"derivative_decision_id":"PD1"}
+  ],
+  "partition_derivative_mappings": [
+    {"decision_id":"PD1","decision":"merge_same_function","source_obligation_ids":["O-6979f78443c0b7e6e5f13ed6"],"receiving_obligation_id":"O-cd7aade8cee23cb05b941960","source_pressure_ids":["P2"],"receiving_pressure_ids":["P1"],"same_function_proof":{"register_transition_relation":"same","owner_operation_relation":"same","restoration_vector_relation":"same"}}
+  ],
+  "stage04_status": "pass",
+  "downstream_release_state": "OPEN"
+}

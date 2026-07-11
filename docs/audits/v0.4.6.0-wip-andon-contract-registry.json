@@ -1,0 +1,272 @@
+{
+  "schema": "daee-andon-contract-registry-v1",
+  "registry_id": "v0.4.6.0-wip-andon-contracts",
+  "source_head": "6987c9ebf1de45af700b1fa74b1ed25ec0beeb7c",
+  "architecture_decision_ledger": "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
+  "required_andon_ids": ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10", "A11", "A12", "A13", "A14", "A15", "A16"],
+  "required_case_registry": {
+    "path": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+    "owner": "A14",
+    "bootstrap_state": "materialized",
+    "case_ids": [
+      "gate88-secularism",
+      "gate88-khaybar",
+      "gate88-trinitarian-j173",
+      "gate88-tst-lillard",
+      "gate88-torah-quran-source-authentication"
+    ],
+    "rule": "This registry is the sole downstream case-array source after A14 materializes it; bootstrap may record the planned identity but may not authorize a model call."
+  },
+  "state_capsule_v2": {
+    "schema_path": "schema/state-capsule-v2.schema.json",
+    "single_owner": "A16",
+    "migration_ledger_path": "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json",
+    "legacy_schema_path": "schema/state-capsule.schema.json",
+    "legacy_role": "historical-replay-only"
+  },
+  "contracts": [
+    {
+      "andon_id": "A01",
+      "title": "Evidence custody and causal attribution are incomplete",
+      "plan_filename": "01_evidence_custody_and_causal_attribution_plan.md",
+      "plan_sha256": "1b21e7423941ae8ce20f608f1578c0f43ff83c72fb083b1f38b415a22d89ea6b",
+      "milestones": [{"milestone_id": "A01.terminal", "dependencies": ["A16.bootstrap"]}],
+      "owned_schema_paths": ["schema/captured-output-manifest.schema.json", "schema/captured-output-comparison.schema.json", "schema/checker-replay-verdict.schema.json", "schema/topology-initial-assessment.schema.json", "schema/topology-review.schema.json", "schema/cold-comprehensiveness-review.schema.json", "schema/review-incident-report.schema.json"],
+      "owned_tool_paths": ["tools/check_captured_output_manifest.py", "tools/build_captured_output_verdict.py", "tools/build_cold_review_packet.py", "tools/check_cold_comprehensiveness_review.py", "tools/check_topology_review.py", "tools/check_review_incident_report.py"],
+      "state_capsule_contribution": [],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-006", "DAEE-ADR-046-010", "DAEE-ADR-046-012", "DAEE-ADR-046-013", "DAEE-ADR-046-019", "DAEE-ADR-046-021", "DAEE-ADR-046-023"]
+    },
+    {
+      "andon_id": "A02",
+      "title": "Input pressures can disappear before the burden floor is checked",
+      "plan_filename": "02_input_pressure_inventory_and_dynamic_burden_topology_plan.md",
+      "plan_sha256": "3224f5faa6ee75a31738d2fde2f68920b0a2a40d3ecd6d774474e5b2b1f9055a",
+      "milestones": [{"milestone_id": "A02.terminal", "dependencies": ["A01.terminal"]}],
+      "owned_schema_paths": [],
+      "owned_tool_paths": ["tools/input_observation_units.py", "tools/check_input_pressure_coverage.py"],
+      "state_capsule_contribution": ["candidate_states", "input_pressures"],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-003", "DAEE-ADR-046-014"]
+    },
+    {
+      "andon_id": "A03",
+      "title": "Distinct latent states can be merged without a reconstructible reason",
+      "plan_filename": "03_candidate_state_partition_and_split_merge_plan.md",
+      "plan_sha256": "44adfc33439054eef5423002cdfe2ce257393437a740db66fb80d4261d3ef2b2",
+      "milestones": [{"milestone_id": "A03.terminal", "dependencies": ["A02.terminal"]}],
+      "owned_schema_paths": [],
+      "owned_tool_paths": ["tools/topology_partition.py"],
+      "state_capsule_contribution": [
+        "candidate_state_partitions",
+        "burden_partition_decisions",
+        "partition_derivative_mappings",
+        "partition_derivative_mappings_sha256"
+      ],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-014"]
+    },
+    {
+      "andon_id": "A04",
+      "title": "Routed burdens do not all acquire an execution obligation",
+      "plan_filename": "04_dynamic_submove_cardinality_and_owner_coverage_plan.md",
+      "plan_sha256": "491dd9bcfe8bfbf4c6df435297221d4fc2c0601d3edf792259101cb44f6dba49",
+      "milestones": [{"milestone_id": "A04.terminal", "dependencies": ["A03.terminal"]}],
+      "owned_schema_paths": [],
+      "owned_tool_paths": ["tools/owner_obligation_coverage.py"],
+      "state_capsule_contribution": [
+        "upstream_obligation_ids",
+        "upstream_obligation_set_sha256",
+        "upstream_pressure_ids",
+        "upstream_partition_decision_ids",
+        "owner_routes",
+        "act_row_details",
+        "owner_execution_dispositions",
+        "owner_obligation_state"
+      ],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-003", "DAEE-ADR-046-015"]
+    },
+    {
+      "andon_id": "A05",
+      "title": "A syntactically present submove can still be too thin",
+      "plan_filename": "05_submove_body_depth_and_land_license_plan.md",
+      "plan_sha256": "2e2653c7729231971b2190283e76a8c33f0918473b322863738f72543190e40d",
+      "milestones": [{"milestone_id": "A05.terminal", "dependencies": ["A04.terminal"]}],
+      "owned_schema_paths": ["schema/operation-capsule.schema.json"],
+      "owned_tool_paths": ["tools/operation_capsule_contract.py"],
+      "state_capsule_contribution": ["operation_capsules", "operation_body_artifacts"],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-015"]
+    },
+    {
+      "andon_id": "A06",
+      "title": "Whole-output mass can be inadequate or padded",
+      "plan_filename": "06_topology_derived_output_mass_and_anti_slimming_plan.md",
+      "plan_sha256": "030485939fd6bff4884764a2892ba0c50901b93061dfb1d5f166d4d6c5aabccf",
+      "milestones": [{"milestone_id": "A06.terminal", "dependencies": ["A02.terminal", "A03.terminal", "A04.terminal", "A05.terminal", "A07.terminal", "A09.terminal", "A10.terminal"]}],
+      "owned_schema_paths": ["schema/topology-mass-accounting.schema.json"],
+      "owned_tool_paths": ["tools/topology_mass_accounting.py", "tools/build_topology_mass_accounting.py", "tools/check_topology_mass_accounting.py"],
+      "state_capsule_contribution": [
+        "topology_mass_accounting",
+        "topology_mass_evidence_authority",
+        "topology_mass_evidence_authority_sha256"
+      ],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-003"]
+    },
+    {
+      "andon_id": "A07",
+      "title": "Generated, held, and pre-empted burdens can be conflated or left unexecuted",
+      "plan_filename": "07_mrp_recursion_generated_held_preempted_plan.md",
+      "plan_sha256": "5a3da00734ad94e25f37879e74d7a983080bf70efcabe972d3c3dc882d588b22",
+      "milestones": [{"milestone_id": "A07.terminal", "dependencies": ["A02.terminal", "A03.terminal", "A04.terminal", "A05.terminal", "A08.opening"]}],
+      "owned_schema_paths": [],
+      "owned_tool_paths": ["tools/mrp_recursion_lib.py", "tools/check_mrp_recursion_lifecycle.py"],
+      "state_capsule_contribution": [
+        "burden_cycles",
+        "reread_signature_history",
+        "reread_signature_history_sha256",
+        "current_live_burdens",
+        "held",
+        "resource_policy"
+      ],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-001", "DAEE-ADR-046-002", "DAEE-ADR-046-003", "DAEE-ADR-046-004"]
+    },
+    {
+      "andon_id": "A08",
+      "title": "Opening and closure states can claim completion too early",
+      "plan_filename": "08_opening_closure_and_recursion_state_plan.md",
+      "plan_sha256": "ebd6541d2c1da7794a2b8980a2009ca8e5743e1bf90cf66d777f485c36002796",
+      "milestones": [
+        {"milestone_id": "A08.opening", "dependencies": ["A02.terminal", "A03.terminal", "A04.terminal", "A05.terminal"]},
+        {"milestone_id": "A08.terminal", "dependencies": ["A08.opening", "A07.terminal", "A09.witness-decision"]}
+      ],
+      "owned_schema_paths": [],
+      "owned_tool_paths": ["tools/closure_state_lib.py", "tools/check_opening_closure_state.py"],
+      "state_capsule_contribution": ["closure_authority", "closure_state"],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-016"]
+    },
+    {
+      "andon_id": "A09",
+      "title": "Witness names, shapes, and public order conflict",
+      "plan_filename": "09_witness_dialect_reconstruction_and_public_order_plan.md",
+      "plan_sha256": "b324a185aa873cbd3f0fcd49175103d19c1160d381432806b26f57b85798ceb3",
+      "milestones": [
+        {"milestone_id": "A09.witness-decision", "dependencies": ["A02.terminal", "A03.terminal", "A04.terminal", "A05.terminal", "A08.opening"]},
+        {"milestone_id": "A09.terminal", "dependencies": ["A09.witness-decision", "A07.terminal", "A08.terminal"]}
+      ],
+      "owned_schema_paths": ["schema/field-witness.schema.json", "schema/field-witness-envelope.schema.json"],
+      "owned_tool_paths": ["tools/witness_artifact_roles.py"],
+      "state_capsule_contribution": [],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-005", "DAEE-ADR-046-016"]
+    },
+    {
+      "andon_id": "A10",
+      "title": "Stage06 can disagree with the Stage07 output and still pass",
+      "plan_filename": "10_cross_stage_projection_parity_plan.md",
+      "plan_sha256": "095018a943307c10f2048efd2284dc4665d696a835beb61a12a131463a4b9041",
+      "milestones": [{"milestone_id": "A10.terminal", "dependencies": ["A07.terminal", "A08.terminal", "A09.witness-decision"]}],
+      "owned_schema_paths": ["schema/stage-projection.schema.json"],
+      "owned_tool_paths": ["tools/stage_projection_contract.py", "tools/check_stage_projection_parity.py"],
+      "state_capsule_contribution": ["projection"],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-001", "DAEE-ADR-046-004", "DAEE-ADR-046-005", "DAEE-ADR-046-015", "DAEE-ADR-046-016"]
+    },
+    {
+      "andon_id": "A11",
+      "title": "Verification is post-hoc and fixtures can fail for the wrong reason",
+      "plan_filename": "11_checker_fixture_and_promotion_integrity_plan.md",
+      "plan_sha256": "5a5d1c4a644bf35a80ac273501945a3c3b0f9be00a8cf833f313c97cc2a0b96c",
+      "milestones": [
+        {"milestone_id": "A11.scaffold", "dependencies": ["A01.terminal", "A05.terminal", "A09.witness-decision"]},
+        {"milestone_id": "A11.terminal", "dependencies": ["A11.scaffold", "A01.terminal", "A06.terminal", "A07.terminal", "A08.terminal", "A09.terminal", "A10.terminal", "A12.terminal", "A13.terminal", "A15.terminal"]}
+      ],
+      "owned_schema_paths": ["schema/negative-fixture-expectation.schema.json", "schema/model-smoke-escape.schema.json"],
+      "owned_tool_paths": ["tools/validation_registry.py", "tools/check_validation_registry.py", "tools/assert_expected_rejection.py", "tools/check_model_smoke_escape_registry.py"],
+      "state_capsule_contribution": [],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-007", "DAEE-ADR-046-022"]
+    },
+    {
+      "andon_id": "A12",
+      "title": "Runtime-footprint compaction may hide obligations from the producer",
+      "plan_filename": "12_runtime_footprint_salience_and_load_path_fidelity_plan.md",
+      "plan_sha256": "07f2a35d34e0b62d533f61ae09d468aee6a6870dd6c19fcb13696a0228ecdb11",
+      "milestones": [{"milestone_id": "A12.terminal", "dependencies": ["A16.bootstrap", "A07.terminal", "A10.terminal"]}],
+      "owned_schema_paths": ["schema/runtime-call-context.schema.json"],
+      "owned_tool_paths": ["tools/runtime_context_resolver.py", "tools/check_runtime_context_delivery.py"],
+      "state_capsule_contribution": ["runtime_call_context_refs"],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-003"]
+    },
+    {
+      "andon_id": "A13",
+      "title": "Producer and checker contracts have drifted apart",
+      "plan_filename": "13_producer_checker_contract_and_harness_parity_plan.md",
+      "plan_sha256": "ed677f48e7cac499910c69b697eebb4096a41000848f58483d0c28cf1b0457e9",
+      "milestones": [{"milestone_id": "A13.terminal", "dependencies": ["A10.terminal", "A12.terminal"]}],
+      "owned_schema_paths": ["schema/package-harness-parity.schema.json"],
+      "owned_tool_paths": ["tools/producer-contract-registry.json", "tools/check_producer_checker_parity.py", "tools/check_package_harness_parity.py"],
+      "state_capsule_contribution": [],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-002", "DAEE-ADR-046-009", "DAEE-ADR-046-017", "DAEE-ADR-046-025"]
+    },
+    {
+      "andon_id": "A14",
+      "title": "The smoke matrix does not yet include the source-authentication stress input",
+      "plan_filename": "14_five_smoke_stage01_stage08_completion_matrix_plan.md",
+      "plan_sha256": "c9806064cff6c67c8b5ccdde747d95531c8924c0280a7e2dea547685ff0e431a",
+      "milestones": [{"milestone_id": "A14.terminal", "dependencies": ["A01.terminal", "A10.terminal", "A11.terminal", "A12.terminal", "A13.terminal", "A15.terminal"]}],
+      "owned_schema_paths": ["schema/smoke-matrix.schema.json", "schema/cross-model-paired-cycle.schema.json"],
+      "owned_tool_paths": ["tools/smoke_matrix_registry.py", "tools/check_smoke_matrix_manifest.py", "tools/campaign_usage_ledger.py", "tools/check_parallel_dispatch_manifest.py", "tools/build_candidate_package_record.py", "tools/build_smoke_matrix_verdict.py", "tools/run_five_smoke_matrix.py", "tools/run_paired_cross_model_matrix.py", "tools/check_paired_cross_model_manifest.py"],
+      "state_capsule_contribution": [],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-006", "DAEE-ADR-046-007", "DAEE-ADR-046-008", "DAEE-ADR-046-009", "DAEE-ADR-046-010", "DAEE-ADR-046-011", "DAEE-ADR-046-012", "DAEE-ADR-046-013", "DAEE-ADR-046-017", "DAEE-ADR-046-018", "DAEE-ADR-046-019", "DAEE-ADR-046-020", "DAEE-ADR-046-021", "DAEE-ADR-046-022", "DAEE-ADR-046-023", "DAEE-ADR-046-024", "DAEE-ADR-046-025", "DAEE-ADR-046-026"]
+    },
+    {
+      "andon_id": "A15",
+      "title": "High-topology capacity is asserted but not demonstrated",
+      "plan_filename": "15_arbitrary_topology_capacity_and_metamorphic_testing_plan.md",
+      "plan_sha256": "d949ad63b31c8a210415966129292132db6afce68c6a10e5be7da77695ceb9c8",
+      "milestones": [{"milestone_id": "A15.terminal", "dependencies": ["A02.terminal", "A03.terminal", "A04.terminal", "A05.terminal", "A06.terminal", "A07.terminal", "A08.terminal", "A09.terminal", "A10.terminal", "A11.scaffold", "A12.terminal", "A13.terminal"]}],
+      "owned_schema_paths": ["schema/topology-capacity-spec.schema.json"],
+      "owned_tool_paths": ["tools/topology_capacity_lib.py", "tools/generate_topology_capacity_cases.py", "tools/check_topology_capacity_properties.py", "tools/check_no_fixed_topology_floors.py", "tools/check_case_registry_taint.py"],
+      "state_capsule_contribution": [],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-003", "DAEE-ADR-046-007", "DAEE-ADR-046-014"]
+    },
+    {
+      "andon_id": "A16",
+      "title": "Closure and sustainment criteria are fragmented",
+      "plan_filename": "17_sustainment_hansei_and_release_completion_plan.md",
+      "plan_sha256": "15e641cfdc271705fbd540bfb041240460ca03498c74b49fe430a428a4440a29",
+      "milestones": [
+        {"milestone_id": "A16.bootstrap", "dependencies": []},
+        {"milestone_id": "A16.terminal", "dependencies": ["A01.terminal", "A02.terminal", "A03.terminal", "A04.terminal", "A05.terminal", "A06.terminal", "A07.terminal", "A08.terminal", "A09.terminal", "A10.terminal", "A11.terminal", "A12.terminal", "A13.terminal", "A14.terminal", "A15.terminal"]}
+      ],
+      "owned_schema_paths": ["schema/andon-closure-ledger.schema.json", "schema/architecture-decision-ledger.schema.json", "schema/state-capsule-v2.schema.json", "schema/release-action-authorization.schema.json", "schema/vcs-action-authorization.schema.json", "schema/ci-readback.schema.json", "schema/no-model-candidate-maturity.schema.json", "schema/evidence-retention-manifest.schema.json"],
+      "owned_tool_paths": ["tools/check_andon_closure_ledger.py", "tools/render_andon_closure_ledger.py", "tools/check_andon_contract_registry.py", "tools/check_architecture_decision_ledger.py", "tools/check_release_action_authorization.py", "tools/check_vcs_action_authorization.py", "tools/check_ci_readback.py", "tools/build_no_model_candidate_maturity_verdict.py", "tools/check_no_model_candidate_maturity.py", "tools/export_cycle_evidence_bundle.py", "tools/check_evidence_retention_manifest.py", "tools/check_state_capsule.py"],
+      "state_capsule_contribution": ["schema-integration-ownership", "migration-custody", "non-claims"],
+      "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+      "binding_adr_ids": ["DAEE-ADR-046-001", "DAEE-ADR-046-004", "DAEE-ADR-046-006", "DAEE-ADR-046-007", "DAEE-ADR-046-008", "DAEE-ADR-046-009", "DAEE-ADR-046-010", "DAEE-ADR-046-011", "DAEE-ADR-046-012", "DAEE-ADR-046-017", "DAEE-ADR-046-018", "DAEE-ADR-046-019", "DAEE-ADR-046-020", "DAEE-ADR-046-022", "DAEE-ADR-046-024", "DAEE-ADR-046-025", "DAEE-ADR-046-026"]
+    }
+  ],
+  "rules": {
+    "schema_paths_have_one_owner": true,
+    "tool_paths_have_one_owner": true,
+    "milestone_graph_must_be_acyclic": true,
+    "a16_plan_level_self_dependency_forbidden": true,
+    "case_set_must_equal_a14_registry_when_materialized": true,
+    "all_binding_adrs_must_be_present_and_accepted": true,
+    "generated_files_are_not_writable_owners": true
+  },
+  "status": "VERIFIED_STRUCTURAL",
+  "non_claims": [
+    "This registry freezes file and milestone ownership only; it does not prove implementation, semantic fidelity, deterministic green, candidate maturity, or model behavior.",
+    "A materialized input registry is not authority to build a candidate or dispatch a model call."
+  ]
+}

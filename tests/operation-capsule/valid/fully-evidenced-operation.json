@@ -1,0 +1,168 @@
+{
+    "execution_contract": "operation-capsule-v1",
+    "operation_capsules": [
+      {
+        "schema": "daee-operation-capsule-v1",
+        "canonicalization": "daee-canonical-json-v1",
+        "capsule_id": "OC1",
+        "cycle_id": "C1",
+        "body_ref": "B1_1",
+        "body_sha256": "8ed3f6ad685b959ead7022518e1af76cd816f8e8ec7ccdda1ed4018e8f2223f8",
+        "burden_id": "B1",
+        "obligation_ids": [
+            "O1"
+        ],
+        "pressure_ids": [
+            "P1"
+        ],
+        "owner_id": "owner-a",
+        "operation": "operate-a",
+        "register_axis": "axis-a",
+        "before_state": {
+            "claim_state": "before",
+            "source_pressure_ids": [
+                "P1"
+            ]
+        },
+        "performed_operation": {
+            "mechanism": "separate the prior state from the licensed transition",
+            "application": "apply the separation to P1"
+        },
+        "after_state": {
+            "claim_state": "after",
+            "transition_marker": "changed"
+        },
+        "delta": {
+            "delta_id": "D1",
+            "carrier": "Delta(B1)",
+            "result": "changed",
+            "recoverability_evidence": [
+                {
+                    "after_state_path": "transition_marker",
+                    "value": "changed"
+                }
+            ]
+        },
+        "residual": {
+            "status": "none",
+            "pressure_ids": [],
+            "basis": "no unworked pressure remains"
+        },
+        "land_contribution": {
+            "decision": "contributes",
+            "delta_ref": "D1",
+            "basis": "the changed state contributes while Stage05 retains terminal authority"
+        },
+        "source_contract_refs": [
+            "references/diagnostics/recursive-state-transitions.md",
+            "references/rubrics/output-release.md"
+        ],
+        "operation_capsule_sha256": "sha256:22bc856715ab3d423641b9b62ca6d69d277439f0d51e75f844d0dfdc06f74bff"
+      }
+    ],
+    "obligations": [
+        {
+            "obligation_id": "O1",
+            "burden_id": "B1",
+            "owner_id": "owner-a",
+            "operation": "operate-a",
+            "register_axis": "axis-a",
+            "pressure_ids": [
+                "P1"
+            ]
+        }
+    ],
+    "pressures": [
+        {
+            "pressure_id": "P1"
+        }
+    ],
+    "owner_routes": [
+        {
+            "obligation_id": "O1",
+            "owner_id": "owner-a",
+            "operation": "operate-a",
+            "register_axis": "axis-a",
+            "burden_id": "B1",
+            "pressure_ids": ["P1"]
+        }
+    ],
+    "act_row_details": [
+        {
+            "obligation_id": "O1",
+            "body_ref": "B1_1",
+            "burden_id": "B1",
+            "owner_id": "owner-a",
+            "operation": "operate-a",
+            "register_axis": "axis-a",
+            "pressure_ids": ["P1"]
+        }
+    ],
+    "cycles": [
+        {
+            "cycle_id": "C1",
+            "burden_id": "B1",
+            "obligation_ids": [
+                "O1"
+            ],
+            "operation_capsule_ids": [
+                "OC1"
+            ]
+        }
+    ],
+    "body_artifacts": {
+        "B1_1": {
+            "content": "alpha",
+            "sha256": "8ed3f6ad685b959ead7022518e1af76cd816f8e8ec7ccdda1ed4018e8f2223f8"
+        }
+    },
+    "operation_capsule_hashes": {
+        "B1_1": "sha256:22bc856715ab3d423641b9b62ca6d69d277439f0d51e75f844d0dfdc06f74bff"
+    },
+    "events": [
+        {
+            "event_id": "E1",
+            "capsule_id": "OC1",
+            "sequence": 1,
+            "kind": "before_state",
+            "ref": "capsule:OC1#before_state"
+        },
+        {
+            "event_id": "E2",
+            "capsule_id": "OC1",
+            "sequence": 2,
+            "kind": "owner.operation",
+            "ref": "route:O1#owner.operation"
+        },
+        {
+            "event_id": "E3",
+            "capsule_id": "OC1",
+            "sequence": 3,
+            "kind": "performed_evidence",
+            "ref": "capsule:OC1#performed_operation"
+        },
+        {
+            "event_id": "E4",
+            "capsule_id": "OC1",
+            "sequence": 4,
+            "kind": "local_delta",
+            "ref": "capsule:OC1#delta"
+        },
+        {
+            "event_id": "E5",
+            "capsule_id": "OC1",
+            "sequence": 5,
+            "kind": "residual",
+            "ref": "capsule:OC1#residual"
+        },
+        {
+            "event_id": "E6",
+            "capsule_id": "OC1",
+            "sequence": 6,
+            "kind": "land_contribution",
+            "ref": "capsule:OC1#land_contribution"
+        }
+    ],
+    "hydration_policy": "projection-only",
+    "release_state": "OPEN"
+}

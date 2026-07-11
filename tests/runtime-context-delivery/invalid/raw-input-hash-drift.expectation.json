@@ -1,0 +1,28 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "raw-input-hash-drift.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "runtime-context-delivery",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "01",
+  "expected_failure_class": "raw-input-hash-mismatch",
+  "expected_failure_subcode": "raw-input-hash-drift",
+  "expected_downstream_invalidated": [
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08"
+  ],
+  "required_diagnostic_markers": [
+    "raw-input-hash-drift"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "review-repair-raw-input-hash-drift"
+}

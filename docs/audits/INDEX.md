@@ -9,6 +9,19 @@ reference search found inbound links for the audit corpus, so superseded audits
 are archived by classification here unless a future owner-approved link-update
 sweep moves them.
 
+## Current Implementation Targets
+
+This is the current work queue described by `docs/audits/README.md`. Entries
+here are active implementation contracts, not evidence that implementation,
+smokes, readiness, or release already passed.
+
+| Path | Status | Note |
+|---|---|---|
+| `docs/audits/v0.4.6.0-wip-five-smoke-andon-convergence-north-star-addendum.md` | ACTIVE CURRENT TRUTH | Five-smoke matrix-level PDCA/ANDON law: canonical package-faithful Codex runner lane, neutral immutable candidate custody, usage-head CAS, provable five-way barrier, recoverable claim/finalizer, transactional evidence publish, full-cycle reruns, and cold GPT-5.6 plus human review. It is process truth, not evidence that implementation or a model matrix has run. |
+| `docs/audits/v0.4.3.0-implementaudit-orchestrator.md` | ACTIVE OPEN-WORK LEDGER | Repository-designated IMPLEMENTAUDIT proof ledger; historical sections remain evidence-scoped and current claims require live readback. |
+| `docs/audits/release-gate-ledger.md` | ACTIVE CURRENT TRUTH | Release authorization and custody boundary; the five-smoke addendum does not open it. |
+| `docs/audits/retained-corpus-requalification-ledger.md` | ACTIVE CURRENT TRUTH | Retained-proof eligibility boundary; a fresh smoke PASS does not automatically promote a case. |
+
 ## Current Release / Readiness Evidence
 
 | Path | Status | Note |

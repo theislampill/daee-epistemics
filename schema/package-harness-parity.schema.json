@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dawah.wiki/schema/package-harness-parity.schema.json",
+  "title": "DAEE package harness parity v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "classification", "package_profile", "package_tree_sha256", "producer_registry_sha256", "model_visible_clause_ids", "artifacts", "harness_supplements", "delivery_proof", "semantic_repair_count", "non_claims"],
+  "properties": {
+    "schema": {"const": "daee-package-harness-parity-v1"},
+    "classification": {"enum": ["package-faithful", "harness-assisted", "unverified-host-ambient"]},
+    "package_profile": {"const": "execution-mini"},
+    "package_tree_sha256": {"$ref": "#/$defs/sha256"},
+    "producer_registry_sha256": {"$ref": "#/$defs/sha256"},
+    "model_visible_clause_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "artifacts": {"type": "array", "minItems": 8, "items": {"$ref": "#/$defs/artifact"}},
+    "harness_supplements": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/supplement"}},
+    "delivery_proof": {"enum": ["exact-component-binding", "exact-host-receipt", "membership-only", "opaque-ambient"]},
+    "semantic_repair_count": {"type": "integer", "minimum": 0},
+    "non_claims": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string"}}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "scope", "path", "sha256", "byte_count"],
+      "properties": {
+        "kind": {"enum": ["skill-root", "build-manifest", "cold-law-manifest", "module-map", "call-context", "prompt", "checker", "normalizer"]},
+        "scope": {"enum": ["package", "run", "repo"]},
+        "path": {"type": "string"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "supplement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supplement_id", "path", "sha256", "byte_count", "semantic", "claimed_package_bound"],
+      "properties": {
+        "supplement_id": {"type": "string"},
+        "path": {"type": "string"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_count": {"type": "integer", "minimum": 1},
+        "semantic": {"type": "boolean"},
+        "claimed_package_bound": {"type": "boolean"}
+      }
+    }
+  }
+}

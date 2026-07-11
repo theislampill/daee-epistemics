@@ -1,0 +1,10 @@
+{
+  "fixture_schema": "daee-mrp-recursion-lifecycle-mutation-v1",
+  "base": "tests/mrp-recursion-lifecycle/valid/held-baseline-activation.json",
+  "operations": [
+    {"op": "set", "path": "/burden_cycles/0/reread/raw_exit/candidate_events/0/target_burden_id", "value": "B1"},
+    {"op": "set", "path": "/burden_cycles/1/burden_id", "value": "B1"},
+    {"op": "set", "path": "/burden_cycles/1/route/target_burden_id", "value": "B1"},
+    {"op": "set", "path": "/burden_cycles/1/operation/local_delta/state", "value": "B1-reopened-landable"}
+  ]
+}

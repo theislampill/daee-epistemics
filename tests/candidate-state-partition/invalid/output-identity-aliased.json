@@ -1,0 +1,119 @@
+{
+    "topology_contract": "input-pressure-v1",
+    "upstream_candidate_ids": [
+        "N1"
+    ],
+    "upstream_candidate_set_sha256": "8df4e9192a705469c44305ab6f3d34bc14eb18411f791384516e6fd9cbfba227",
+    "upstream_pressure_ids": [
+        "P1"
+    ],
+    "upstream_pressure_set_sha256": "1ea012f63ce7253d3af8dbb22c0dc71079d087575b56223cac612bf9df0e1d93",
+    "selection_status": "licensed",
+    "selected_n_frame": "frame-one",
+    "candidate_states": [
+        {
+            "state_id": "N1", "frame_token": "frame-one", "observation_unit_ids": ["U1"], "pressure_ids": ["P1"], "live_registers": ["axis-a"], "read_status": "dominant", "confidence": "strong", "status": "selected", "partition_ids": ["NP1"], "merged_into": null, "decisive_missing_differentiator": null, "hold_gate": null, "next_review_point": null, "basis": "The source anchors license the operative frame."
+        }
+    ],
+    "input_pressures": [
+        {
+            "pressure_id": "P1", "observation_unit_ids": ["U1"], "candidate_state_ids": ["N1"], "pressure_function": "Bound the atomic transition.", "register_axes": ["axis-a"], "status": "routed", "burden_id": "B1", "decision_id": "BP1", "basis": "The observation carries this function."
+        }
+    ],
+    "candidate_state_partitions": [
+        {
+            "partition_id": "NP1",
+            "member_state_ids": [
+                "N1"
+            ],
+            "shared_observation_unit_ids": [
+                "U1"
+            ],
+            "decision": "select_single",
+            "selected_state_id": "N1",
+            "held_state_ids": [],
+            "merged_state_ids": [],
+            "rejected_state_ids": [],
+            "comparison": {
+                "pressure_set_relation": "same",
+                "register_relation": "same",
+                "owner_eligibility_relation": "same",
+                "held_route_relation": "same",
+                "closure_consequence_relation": "same"
+            },
+            "decisive_differentiator": "none",
+            "basis_unit_ids": [
+                "U1"
+            ],
+            "basis": "One candidate."
+        }
+    ],
+    "burden_partition_decisions": [
+        {
+            "decision_id": "BP1",
+            "candidate_state_ids": [
+                "N1"
+            ],
+            "observation_unit_ids": [
+                "U1"
+            ],
+            "pressure_ids": [
+                "P1"
+            ],
+            "decision": "one_to_one",
+            "pressure_to_burden": [
+                {
+                    "pressure_id": "P1",
+                    "burden_id": "B1"
+                }
+            ],
+            "same_function_proof": {
+                "tau_relation": "same",
+                "source_frame_relation": "same",
+                "claim_cluster_relation": "same",
+                "register_transition_relation": "compatible",
+                "owner_operation_relation": "compatible",
+                "restoration_vector_relation": "same",
+                "collapse_dependency_relation": "same"
+            },
+            "residual_pressure_ids": [],
+            "held_pressure_ids": [],
+            "basis": "First decision."
+        },
+        {
+            "decision_id": "BP2",
+            "candidate_state_ids": [
+                "N1"
+            ],
+            "observation_unit_ids": [
+                "U1"
+            ],
+            "pressure_ids": [
+                "P1"
+            ],
+            "decision": "one_to_one",
+            "pressure_to_burden": [
+                {
+                    "pressure_id": "P1",
+                    "burden_id": "B2"
+                }
+            ],
+            "same_function_proof": {
+                "tau_relation": "same",
+                "source_frame_relation": "same",
+                "claim_cluster_relation": "same",
+                "register_transition_relation": "compatible",
+                "owner_operation_relation": "compatible",
+                "restoration_vector_relation": "same",
+                "collapse_dependency_relation": "same"
+            },
+            "residual_pressure_ids": [],
+            "held_pressure_ids": [],
+            "basis": "Second decision repeats P1."
+        }
+    ],
+    "burden_floor": [
+        "B1",
+        "B2"
+    ]
+}

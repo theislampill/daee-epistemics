@@ -1,0 +1,1 @@
+{"schema":"daee-package-harness-scenario-v1","scenario":"duplicate-artifact-kind","expected_valid":false,"mutation":"artifact-kind-duplicate"}

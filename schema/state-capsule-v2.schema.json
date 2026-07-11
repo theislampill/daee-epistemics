@@ -1,0 +1,500 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/state-capsule-v2.schema.json",
+  "title": "DAEE composed release-bearing state capsule v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "canonicalization", "capsule_id", "trace_id", "source_commit",
+    "previous_capsule_sha256", "stage", "topology_contract", "observation_units",
+    "candidate_states", "input_pressures", "candidate_state_partitions",
+    "burden_partition_decisions", "input_coverage", "selection_status",
+    "selected_n_frame", "burden_floor", "stage02_freeze", "upstream_obligation_ids",
+    "upstream_obligation_set_sha256", "upstream_pressure_ids", "upstream_partition_decision_ids",
+    "partition_derivative_mappings", "partition_derivative_mappings_sha256",
+    "owner_routes", "act_row_details", "owner_execution_dispositions", "owner_obligation_state",
+    "operation_capsules", "operation_body_artifacts", "topology_mass_accounting",
+    "topology_mass_evidence_authority", "topology_mass_evidence_authority_sha256",
+    "burden_cycles", "reread_signature_history", "reread_signature_history_sha256",
+    "current_live_burdens", "held", "resource_policy", "projection", "runtime_call_context_refs",
+    "closure_authority", "closure_state", "non_claims"
+  ],
+  "properties": {
+    "schema": {"const": "daee-state-capsule-v2"},
+    "canonicalization": {"const": "daee-canonical-json-v1"},
+    "capsule_id": {"$ref": "#/$defs/id"},
+    "trace_id": {"$ref": "#/$defs/id"},
+    "source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "previous_capsule_sha256": {"$ref": "#/$defs/nullable_sha256"},
+    "stage": {"enum": [
+      "stage-01-intake", "stage-02-layer-a-diagnostic-ir", "stage-03-routing-owner-gate",
+      "stage-04-burden-execution-act", "stage-05-mrp-reread-terminal-state",
+      "stage-06-field-witness-nar", "stage-07-release-output", "stage-08-verifier-sidecars"
+    ]},
+    "topology_contract": {"const": "input-pressure-v1"},
+    "observation_units": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/observation_unit"}},
+    "candidate_states": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/candidate_state"}},
+    "input_pressures": {"type": "array", "items": {"$ref": "#/$defs/input_pressure"}},
+    "candidate_state_partitions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/candidate_partition"}},
+    "burden_partition_decisions": {"type": "array", "items": {"$ref": "#/$defs/burden_partition"}},
+    "input_coverage": {"$ref": "#/$defs/input_coverage"},
+    "selection_status": {"enum": ["licensed", "not_licensed"]},
+    "selected_n_frame": {"type": ["string", "null"]},
+    "burden_floor": {"$ref": "#/$defs/burden_id_array"},
+    "stage02_freeze": {"$ref": "#/$defs/stage02_freeze"},
+    "upstream_obligation_ids": {"$ref": "#/$defs/id_array"},
+    "upstream_obligation_set_sha256": {"$ref": "#/$defs/sha256"},
+    "upstream_pressure_ids": {"$ref": "#/$defs/id_array"},
+    "upstream_partition_decision_ids": {"$ref": "#/$defs/id_array"},
+    "partition_derivative_mappings": {"type": "array", "items": {"$ref": "#/$defs/partition_derivative_mapping"}},
+    "partition_derivative_mappings_sha256": {"$ref": "#/$defs/sha256"},
+    "owner_routes": {"type": "array", "items": {"$ref": "#/$defs/owner_route"}},
+    "act_row_details": {"type": "array", "items": {"$ref": "#/$defs/act_row_detail"}},
+    "owner_execution_dispositions": {"type": "array", "items": {"$ref": "#/$defs/owner_execution_disposition"}},
+    "owner_obligation_state": {"$ref": "#/$defs/owner_obligation_state"},
+    "operation_capsules": {"type": "array", "items": {"$ref": "#/$defs/operation_capsule"}},
+    "operation_body_artifacts": {"type": "object", "additionalProperties": {"$ref": "#/$defs/body_artifact"}},
+    "topology_mass_accounting": {"type": "object"},
+    "topology_mass_evidence_authority": {"$ref": "#/$defs/topology_mass_evidence_authority"},
+    "topology_mass_evidence_authority_sha256": {"$ref": "#/$defs/sha256"},
+    "burden_cycles": {"type": "array", "items": {"$ref": "#/$defs/burden_cycle"}},
+    "reread_signature_history": {"type": "array", "items": {"$ref": "#/$defs/reread_signature"}},
+    "reread_signature_history_sha256": {"$ref": "#/$defs/sha256"},
+    "current_live_burdens": {"$ref": "#/$defs/burden_id_array"},
+    "held": {"type": "array", "items": {"$ref": "#/$defs/held_item"}},
+    "resource_policy": {"$ref": "#/$defs/resource_policy"},
+    "projection": {"$ref": "#/$defs/projection"},
+    "runtime_call_context_refs": {"type": "array", "items": {"$ref": "#/$defs/hash_ref"}},
+    "closure_authority": {"$ref": "#/$defs/closure_authority"},
+    "closure_state": {"$ref": "#/$defs/closure_state"},
+    "non_claims": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullable_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "id_array": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "id_set": {"type":"array","minItems":1,"uniqueItems":true,"items":{"type":"string","minLength":1}},
+    "burden_id_array": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^B[1-9][0-9]*$"}},
+    "hash_ref": {
+      "type": "object", "additionalProperties": false, "required": ["id", "sha256"],
+      "properties": {"id": {"$ref": "#/$defs/id"}, "sha256": {"$ref": "#/$defs/sha256"}}
+    },
+    "observation_unit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["unit_id", "source_start", "source_end", "source_sha256", "surface_kind", "parent_unit_id"],
+      "properties": {
+        "unit_id": {"$ref": "#/$defs/id"}, "source_start": {"type": "integer", "minimum": 0},
+        "source_end": {"type": "integer", "minimum": 1}, "source_sha256": {"$ref": "#/$defs/sha256"},
+        "surface_kind": {"enum": ["claim", "question", "contrast", "narrative-context", "conclusion", "instruction", "quote"]},
+        "parent_unit_id": {"type": ["string", "null"]}
+      }
+    },
+    "candidate_state": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state_id", "frame", "frame_token", "observation_unit_ids", "pressure_ids",
+        "live_registers", "read_status", "confidence", "status", "partition_ids", "merged_into",
+        "decisive_missing_differentiator", "hold_gate", "next_review_point", "basis"],
+      "properties": {
+        "state_id": {"$ref": "#/$defs/id"}, "frame": {"$ref": "#/$defs/id"},
+        "frame_token": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+        "observation_unit_ids": {"$ref": "#/$defs/id_array"}, "pressure_ids": {"$ref": "#/$defs/id_array"},
+        "live_registers": {"$ref": "#/$defs/id_array"},
+        "read_status": {"enum": ["dominant", "distributed", "underdetermined"]},
+        "confidence": {"enum": ["strong", "provisional", "low"]},
+        "status": {"enum": ["selected", "held", "underdetermined", "merged", "rejected"]},
+        "partition_ids": {"$ref": "#/$defs/id_array"}, "merged_into": {"type": ["string", "null"]},
+        "decisive_missing_differentiator": {"type": ["string", "null"]},
+        "hold_gate": {"type": ["string", "null"]}, "next_review_point": {"type": ["string", "null"]},
+        "basis": {"$ref": "#/$defs/id"}
+      }
+    },
+    "input_pressure": {
+      "type": "object", "additionalProperties": false,
+      "required": ["pressure_id", "observation_unit_ids", "candidate_state_ids", "pressure_function",
+        "register_axes", "status", "burden_id", "decision_id", "basis"],
+      "properties": {
+        "pressure_id": {"$ref": "#/$defs/id"}, "observation_unit_ids": {"$ref": "#/$defs/id_array"},
+        "candidate_state_ids": {"$ref": "#/$defs/id_array"}, "pressure_function": {"$ref": "#/$defs/id"},
+        "register_axes": {"$ref": "#/$defs/id_array"},
+        "status": {"enum": ["routed", "merged", "held", "non_load_bearing", "unresolved"]},
+        "burden_id": {"type": ["string", "null"]}, "decision_id": {"type": ["string", "null"]},
+        "basis": {"$ref": "#/$defs/id"}
+      }
+    },
+    "candidate_comparison": {
+      "type": "object", "additionalProperties": false,
+      "required": ["pressure_set_relation", "register_relation", "owner_eligibility_relation", "held_route_relation", "closure_consequence_relation"],
+      "properties": {
+        "pressure_set_relation": {"enum": ["same", "overlapping", "distinct", "unresolved"]},
+        "register_relation": {"enum": ["same", "compatible", "distinct", "unresolved"]},
+        "owner_eligibility_relation": {"enum": ["same", "compatible", "distinct", "unresolved"]},
+        "held_route_relation": {"enum": ["same", "distinct", "unresolved"]},
+        "closure_consequence_relation": {"enum": ["same", "distinct", "unresolved"]}
+      }
+    },
+    "candidate_partition": {
+      "type": "object", "additionalProperties": false,
+      "required": ["partition_id", "member_state_ids", "shared_observation_unit_ids", "decision",
+        "selected_state_id", "held_state_ids", "merged_state_ids", "rejected_state_ids", "comparison",
+        "decisive_differentiator", "basis_unit_ids", "basis"],
+      "properties": {
+        "partition_id": {"$ref": "#/$defs/id"}, "member_state_ids": {"$ref": "#/$defs/id_array"},
+        "shared_observation_unit_ids": {"$ref": "#/$defs/id_array"},
+        "decision": {"enum": ["select_single", "select_and_hold", "keep_distinct", "merge_equivalent", "reject_nonfit"]},
+        "selected_state_id": {"type": ["string", "null"]}, "held_state_ids": {"$ref": "#/$defs/id_array"},
+        "merged_state_ids": {"$ref": "#/$defs/id_array"}, "rejected_state_ids": {"$ref": "#/$defs/id_array"},
+        "comparison": {"$ref": "#/$defs/candidate_comparison"}, "decisive_differentiator": {"$ref": "#/$defs/id"},
+        "basis_unit_ids": {"$ref": "#/$defs/id_array"}, "basis": {"$ref": "#/$defs/id"}
+      }
+    },
+    "same_function_proof": {
+      "type": "object", "additionalProperties": false,
+      "required": ["tau_relation", "source_frame_relation", "claim_cluster_relation", "register_transition_relation",
+        "owner_operation_relation", "restoration_vector_relation", "collapse_dependency_relation"],
+      "properties": {
+        "tau_relation": {"enum": ["same", "distinct", "unresolved"]},
+        "source_frame_relation": {"enum": ["same", "distinct", "unresolved"]},
+        "claim_cluster_relation": {"enum": ["same", "distinct", "unresolved"]},
+        "register_transition_relation": {"enum": ["compatible", "distinct", "unresolved"]},
+        "owner_operation_relation": {"enum": ["compatible", "distinct", "unresolved"]},
+        "restoration_vector_relation": {"enum": ["same", "distinct", "unresolved"]},
+        "collapse_dependency_relation": {"enum": ["same", "distinct", "unresolved"]}
+      }
+    },
+    "pressure_to_burden": {
+      "type": "object", "additionalProperties": false, "required": ["pressure_id", "burden_id"],
+      "properties": {"pressure_id": {"$ref": "#/$defs/id"}, "burden_id": {"type": "string", "pattern": "^B[1-9][0-9]*$"}}
+    },
+    "burden_partition": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision_id", "candidate_state_ids", "observation_unit_ids", "pressure_ids", "decision",
+        "pressure_to_burden", "same_function_proof", "residual_pressure_ids", "held_pressure_ids", "basis"],
+      "properties": {
+        "decision_id": {"$ref": "#/$defs/id"}, "candidate_state_ids": {"$ref": "#/$defs/id_array"},
+        "observation_unit_ids": {"$ref": "#/$defs/id_array"}, "pressure_ids": {"$ref": "#/$defs/id_array"},
+        "decision": {"enum": ["one_to_one", "split_distinct_functions", "keep_distinct", "merge_same_function", "hold_unresolved"]},
+        "pressure_to_burden": {"type": "array", "items": {"$ref": "#/$defs/pressure_to_burden"}},
+        "same_function_proof": {"$ref": "#/$defs/same_function_proof"},
+        "residual_pressure_ids": {"$ref": "#/$defs/id_array"}, "held_pressure_ids": {"$ref": "#/$defs/id_array"},
+        "basis": {"$ref": "#/$defs/id"}
+      }
+    },
+    "input_coverage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["all_observation_unit_ids", "pressure_bearing_unit_ids", "explicitly_disposed_unit_ids", "unaccounted_unit_ids"],
+      "properties": {
+        "all_observation_unit_ids": {"$ref": "#/$defs/id_array"}, "pressure_bearing_unit_ids": {"$ref": "#/$defs/id_array"},
+        "explicitly_disposed_unit_ids": {"$ref": "#/$defs/id_array"}, "unaccounted_unit_ids": {"$ref": "#/$defs/id_array"}
+      }
+    },
+    "stage02_freeze": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contract", "record_id", "record_sha256", "event_index", "observation_unit_ids", "observation_unit_set_sha256",
+        "candidate_state_ids", "candidate_state_set_sha256", "input_pressure_ids", "input_pressure_set_sha256",
+        "candidate_partition_ids", "candidate_partition_set_sha256", "burden_partition_decision_ids", "burden_partition_decision_set_sha256",
+        "B_LA", "B_LA_sequence_sha256", "topology_state_sha256"],
+      "properties": {
+        "contract": {"const": "stage02-baseline-freeze-v1"}, "record_id": {"$ref": "#/$defs/id"},
+        "record_sha256": {"$ref": "#/$defs/sha256"}, "event_index": {"type": "integer", "minimum": 0},
+        "observation_unit_ids": {"$ref": "#/$defs/id_array"}, "observation_unit_set_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_state_ids": {"$ref": "#/$defs/id_array"}, "candidate_state_set_sha256": {"$ref": "#/$defs/sha256"},
+        "input_pressure_ids": {"$ref": "#/$defs/id_array"}, "input_pressure_set_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_partition_ids": {"$ref": "#/$defs/id_array"}, "candidate_partition_set_sha256": {"$ref": "#/$defs/sha256"},
+        "burden_partition_decision_ids": {"$ref": "#/$defs/id_array"}, "burden_partition_decision_set_sha256": {"$ref": "#/$defs/sha256"},
+        "B_LA": {"$ref": "#/$defs/burden_id_array"}, "B_LA_sequence_sha256": {"$ref": "#/$defs/sha256"},
+        "topology_state_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "same_burden_cohesion": {
+      "type": "object", "additionalProperties": false,
+      "required": ["target_family_relation", "tau_relation", "source_frame_relation", "claim_cluster_relation", "restoration_vector_relation", "already_handled"],
+      "properties": {
+        "target_family_relation": {"enum": ["same", "distinct", "unresolved"]},
+        "tau_relation": {"enum": ["same", "distinct", "unresolved"]},
+        "source_frame_relation": {"enum": ["same", "distinct", "unresolved"]},
+        "claim_cluster_relation": {"enum": ["same", "distinct", "unresolved"]},
+        "restoration_vector_relation": {"enum": ["same", "distinct", "unresolved"]},
+        "already_handled": {"type": "boolean"}
+      }
+    },
+    "owner_route": {
+      "type": "object", "additionalProperties": true,
+      "required": ["obligation_id", "burden_id", "pressure_ids", "partition_decision_id", "owner_id", "operation", "register_axis", "execution_class", "route_status", "trigger", "owner_body_status", "same_burden_cohesion", "basis"],
+      "properties": {
+        "obligation_id": {"$ref": "#/$defs/id"}, "burden_id": {"type": "string", "pattern": "^B[1-9][0-9]*$"},
+        "pressure_ids": {"$ref": "#/$defs/id_set"}, "partition_decision_id": {"$ref": "#/$defs/id"},
+        "owner_id": {"$ref": "#/$defs/id"}, "operation": {"$ref": "#/$defs/id"}, "register_axis": {"$ref": "#/$defs/id"},
+        "execution_class": {"enum": ["required", "contingent", "optional_non_load_bearing", "hold_partial"]},
+        "route_status": {"enum": ["executable", "held", "partial"]}, "trigger": {"type": ["string", "null"]},
+        "owner_body_status": {"enum": ["loaded", "not_loaded", "vocabulary_gap"]},
+        "same_burden_cohesion": {"$ref": "#/$defs/same_burden_cohesion"}, "basis": {"$ref": "#/$defs/id"}
+      }
+    },
+    "act_row_detail": {
+      "type": "object", "additionalProperties": false,
+      "required": ["obligation_id", "burden_id", "pressure_ids", "owner_id", "operation", "register_axis", "body_ref"],
+      "properties": {"obligation_id":{"$ref":"#/$defs/id"},"burden_id":{"type":"string","pattern":"^B[1-9][0-9]*$"},"pressure_ids":{"$ref":"#/$defs/id_set"},"owner_id":{"$ref":"#/$defs/id"},"operation":{"$ref":"#/$defs/id"},"register_axis":{"$ref":"#/$defs/id"},"body_ref":{"$ref":"#/$defs/id"}}
+    },
+    "owner_execution_disposition": {
+      "type": "object", "additionalProperties": true,
+      "required": ["obligation_id", "burden_id", "disposition", "body_ref", "satisfied_by_obligation_id", "trigger_evidence", "basis", "gate", "next_action"],
+      "properties": {"obligation_id":{"$ref":"#/$defs/id"},"burden_id":{"type":"string","pattern":"^B[1-9][0-9]*$"},"disposition":{"enum":["executed","integrated_duplicate","contingent_not_triggered","optional_not_selected","held","partial"]},"body_ref":{"type":["string","null"]},"satisfied_by_obligation_id":{"type":["string","null"]},"trigger_evidence":{"type":["string","null"]},"basis":{"$ref":"#/$defs/id"},"gate":{"type":["string","null"]},"next_action":{"type":["string","null"]}}
+    },
+    "owner_obligation_state": {
+      "type": "object", "additionalProperties": false,
+      "required": ["declared_ids", "executed_ids", "held_ids", "partial_ids", "terminal_disposition_sha256"],
+      "properties": {"declared_ids":{"$ref":"#/$defs/id_array"},"executed_ids":{"$ref":"#/$defs/id_array"},"held_ids":{"$ref":"#/$defs/id_array"},"partial_ids":{"$ref":"#/$defs/id_array"},"terminal_disposition_sha256":{"$ref":"#/$defs/sha256"}}
+    },
+    "partition_derivative_mapping": {
+      "type": "object", "additionalProperties": false,
+      "required": ["decision_id", "decision", "source_obligation_ids", "receiving_obligation_id", "source_pressure_ids", "receiving_pressure_ids", "same_function_proof"],
+      "properties": {
+        "decision_id": {"$ref": "#/$defs/id"},
+        "decision": {"enum": ["merge_equivalent", "merge_same_function", "shared_operation"]},
+        "source_obligation_ids": {"$ref": "#/$defs/id_set"},
+        "receiving_obligation_id": {"$ref": "#/$defs/id"},
+        "source_pressure_ids": {"$ref": "#/$defs/id_set"},
+        "receiving_pressure_ids": {"$ref": "#/$defs/id_set"},
+        "same_function_proof": {
+          "type": "object", "additionalProperties": false,
+          "required": ["register_transition_relation", "owner_operation_relation", "restoration_vector_relation"],
+          "properties": {
+            "register_transition_relation": {"const": "same"},
+            "owner_operation_relation": {"const": "same"},
+            "restoration_vector_relation": {"const": "same"}
+          }
+        }
+      }
+    },
+    "body_artifact": {
+      "type": "object", "additionalProperties": false, "required": ["content", "sha256"],
+      "properties": {"content": {"type": "string"}, "sha256": {"$ref": "#/$defs/sha256"}}
+    },
+    "topology_mass_evidence_authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_ids", "artifacts", "validator_receipts"],
+      "properties": {
+        "source_ids": {"$ref": "#/$defs/id_array"},
+        "artifacts": {"type": "array", "items": {"type": "object"}},
+        "validator_receipts": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "operation_capsule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema","canonicalization","capsule_id","cycle_id","body_ref","body_sha256","burden_id","obligation_ids","pressure_ids","owner_id","operation","register_axis","before_state","performed_operation","after_state","delta","residual","land_contribution","source_contract_refs","operation_capsule_sha256"],
+      "properties": {
+        "schema": {"const":"daee-operation-capsule-v1"},
+        "canonicalization": {"const":"daee-canonical-json-v1"},
+        "capsule_id": {"type":"string","minLength":1},
+        "cycle_id": {"type":"string","minLength":1},
+        "body_ref": {"type":"string","minLength":1},
+        "body_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+        "burden_id": {"type":"string","pattern":"^B[1-9][0-9]*$"},
+        "obligation_ids": {"type":"array","minItems":1,"maxItems":1,"uniqueItems":true,"items":{"type":"string","minLength":1}},
+        "pressure_ids": {"$ref":"#/$defs/id_set"},
+        "owner_id": {"type":"string","minLength":1},
+        "operation": {"type":"string","minLength":1},
+        "register_axis": {"type":"string","minLength":1},
+        "before_state": {"type":"object","required":["source_pressure_ids"],"properties":{"source_pressure_ids":{"$ref":"#/$defs/id_set"}}},
+        "performed_operation": {"type":"object","additionalProperties":false,"required":["mechanism","application"],"properties":{"mechanism":{"type":"string","minLength":1},"application":{"type":"string","minLength":1}}},
+        "after_state": {"type":"object"},
+        "delta": {"type":"object","additionalProperties":false,"required":["delta_id","carrier","result","recoverability_evidence"],"properties":{"delta_id":{"type":"string","minLength":1},"carrier":{"type":"string","minLength":1},"result":{"type":"string","minLength":1},"recoverability_evidence":{"type":"array","minItems":1,"items":{"type":"object","additionalProperties":false,"required":["after_state_path","value"],"properties":{"after_state_path":{"type":"string","minLength":1},"value":{}}}}}},
+        "residual": {"type":"object","additionalProperties":false,"required":["status","pressure_ids","basis"],"properties":{"status":{"enum":["none","live","held"]},"pressure_ids":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},"basis":{"type":"string","minLength":1}}},
+        "land_contribution": {"type":"object","additionalProperties":false,"required":["decision","delta_ref","basis"],"properties":{"decision":{"enum":["contributes","does_not_contribute"]},"delta_ref":{"type":"string","minLength":1},"basis":{"type":"string","minLength":1}}},
+        "source_contract_refs": {"$ref":"#/$defs/id_set"},
+        "operation_capsule_sha256": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "route_event": {
+      "type": "object", "additionalProperties": false,
+      "required": ["event_id", "event_index", "record_id", "record_sha256", "target_burden_id", "source_refs", "basis_refs", "event_sha256"],
+      "properties": {
+        "event_id": {"$ref": "#/$defs/id"}, "event_index": {"type": "integer", "minimum": 0},
+        "record_id": {"$ref": "#/$defs/id"}, "record_sha256": {"$ref": "#/$defs/sha256"},
+        "target_burden_id": {"type": "string", "pattern": "^B[1-9][0-9]*$"},
+        "source_refs": {"$ref": "#/$defs/id_array"}, "basis_refs": {"$ref": "#/$defs/id_array"},
+        "event_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "operation_event": {
+      "type": "object", "additionalProperties": false,
+      "required": ["event_id", "event_index", "operation_capsule_id", "sequence", "kind", "ref", "event_sha256"],
+      "properties": {
+        "event_id": {"$ref": "#/$defs/id"}, "event_index": {"type": "integer", "minimum": 0},
+        "operation_capsule_id": {"$ref": "#/$defs/id"}, "sequence": {"type": "integer", "minimum": 1},
+        "kind": {"enum": ["before_state", "owner.operation", "performed_evidence", "local_delta", "residual", "land_contribution"]},
+        "ref": {"$ref": "#/$defs/id"}, "event_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "land_event": {
+      "type": "object", "additionalProperties": false,
+      "required": ["event_id", "event_index", "record_id", "record_sha256", "status", "operation_capsule_ids", "contribution_refs", "event_sha256"],
+      "properties": {
+        "event_id": {"$ref": "#/$defs/id"}, "event_index": {"type": "integer", "minimum": 0}, "record_id": {"$ref": "#/$defs/id"},
+        "record_sha256": {"$ref": "#/$defs/sha256"}, "status": {"const": "landed"},
+        "operation_capsule_ids": {"$ref": "#/$defs/id_array"}, "contribution_refs": {"$ref": "#/$defs/id_array"},
+        "event_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "delta_event": {
+      "type": "object", "additionalProperties": false,
+      "required": ["event_id", "event_index", "delta_id", "delta_sha256", "source_land_event_id", "source_operation_capsule_ids", "basis_refs", "event_sha256"],
+      "properties": {
+        "event_id": {"$ref": "#/$defs/id"}, "event_index": {"type": "integer", "minimum": 0}, "delta_id": {"$ref": "#/$defs/id"},
+        "delta_sha256": {"$ref": "#/$defs/sha256"}, "source_land_event_id": {"$ref": "#/$defs/id"},
+        "source_operation_capsule_ids": {"$ref": "#/$defs/id_array"}, "basis_refs": {"$ref": "#/$defs/id_array"},
+        "event_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "diagnostic_event": {
+      "type": "object", "additionalProperties": false,
+      "required": ["diagnostic_id", "event_index", "operator", "target", "status", "basis_refs", "delta_ref", "event_sha256"],
+      "properties": {
+        "diagnostic_id": {"$ref": "#/$defs/id"}, "event_index": {"type": "integer", "minimum": 0},
+        "operator": {"$ref": "#/$defs/id"}, "target": {"$ref": "#/$defs/id"}, "status": {"$ref": "#/$defs/id"},
+        "basis_refs": {"$ref": "#/$defs/id_array"}, "delta_ref": {"$ref": "#/$defs/id"}, "event_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "graph_edge": {
+      "type": "object", "additionalProperties": false, "required": ["from", "to"],
+      "properties": {"from": {"$ref": "#/$defs/id"}, "to": {"$ref": "#/$defs/id"}}
+    },
+    "graph": {
+      "type": "object", "additionalProperties": false, "required": ["graph_id", "nodes", "edges", "graph_sha256"],
+      "properties": {"graph_id": {"$ref": "#/$defs/id"}, "nodes": {"$ref": "#/$defs/id_array"},
+        "edges": {"type": "array", "items": {"$ref": "#/$defs/graph_edge"}}, "graph_sha256": {"$ref": "#/$defs/sha256"}}
+    },
+    "candidate_event": {
+      "type": "object", "additionalProperties": false,
+      "required": ["candidate_event_id", "candidate_id", "previous_candidate_event_id", "event_index", "kind", "disposition",
+        "target_burden_id", "next_cycle_id", "basis_refs", "gate", "next_action", "candidate_event_sha256"],
+      "properties": {
+        "candidate_event_id": {"$ref": "#/$defs/id"}, "candidate_id": {"$ref": "#/$defs/id"},
+        "previous_candidate_event_id": {"type": ["string", "null"]}, "event_index": {"type": "integer", "minimum": 0},
+        "kind": {"$ref": "#/$defs/id"},
+        "disposition": {"enum": ["activate_held", "instantiate_generated", "defer_preempted", "non_load_bearing", "hold_partial"]},
+        "target_burden_id": {"type": ["string", "null"]}, "next_cycle_id": {"type": ["string", "null"]},
+        "basis_refs": {"$ref": "#/$defs/id_array"}, "gate": {"type": ["string", "null"]},
+        "next_action": {"type": ["string", "null"]}, "candidate_event_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "no_new_resultant": {
+      "type": "object", "additionalProperties": false,
+      "required": ["observed", "stop_licensed", "live_obligation_ids", "unresolved_candidate_ids", "basis_refs", "sha256"],
+      "properties": {"observed": {"type": "boolean"}, "stop_licensed": {"type": "boolean"},
+        "live_obligation_ids": {"$ref": "#/$defs/id_array"}, "unresolved_candidate_ids": {"$ref": "#/$defs/id_array"},
+        "basis_refs": {"$ref": "#/$defs/id_array"}, "sha256": {"$ref": "#/$defs/sha256"}}
+    },
+    "post_break_reread": {
+      "type": "object", "additionalProperties": false,
+      "required": ["record_id", "record_sha256", "event_index", "field_diagnostics"],
+      "properties": {"record_id": {"$ref": "#/$defs/id"}, "record_sha256": {"$ref": "#/$defs/sha256"},
+        "event_index": {"type": "integer", "minimum": 0}, "field_diagnostics": {"type": "array", "items": {"$ref": "#/$defs/diagnostic_event"}}}
+    },
+    "loopbreak": {
+      "type": "object", "additionalProperties": false,
+      "required": ["loopbreak_id", "observed_loop", "observed_loop_event_index", "pre_break_graph", "owner_ground_ref",
+        "performed_operation_ref", "local_delta_ref", "interruption_event_index", "post_break_graph", "post_break_reread", "loopbreak_sha256"],
+      "properties": {
+        "loopbreak_id": {"$ref": "#/$defs/id"}, "observed_loop": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/id"}},
+        "observed_loop_event_index": {"type": "integer", "minimum": 0}, "pre_break_graph": {"$ref": "#/$defs/graph"},
+        "owner_ground_ref": {"$ref": "#/$defs/hash_ref"}, "performed_operation_ref": {"$ref": "#/$defs/hash_ref"},
+        "local_delta_ref": {"type": "object", "additionalProperties": false, "required": ["delta_id", "sha256"],
+          "properties": {"delta_id": {"$ref": "#/$defs/id"}, "sha256": {"$ref": "#/$defs/sha256"}}},
+        "interruption_event_index": {"type": "integer", "minimum": 0}, "post_break_graph": {"$ref": "#/$defs/graph"},
+        "post_break_reread": {"$ref": "#/$defs/post_break_reread"}, "loopbreak_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "raw_exit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["event_id", "event_index", "raw_exit_sha256", "exit_disposition", "candidate_events", "field_diagnostics",
+        "noetic_dependency_graph", "no_new_resultant", "loopbreak", "resource_exhaustion"],
+      "properties": {
+        "event_id": {"$ref": "#/$defs/id"}, "event_index": {"type": "integer", "minimum": 0},
+        "raw_exit_sha256": {"$ref": "#/$defs/sha256"}, "exit_disposition": {"enum": ["STOP", "RECURSE", "HOLD", "PARTIAL", "HANDOFF"]},
+        "candidate_events": {"type": "array", "items": {"$ref": "#/$defs/candidate_event"}},
+        "field_diagnostics": {"type": "array", "items": {"$ref": "#/$defs/diagnostic_event"}},
+        "noetic_dependency_graph": {"$ref": "#/$defs/graph"},
+        "no_new_resultant": {"anyOf": [{"$ref": "#/$defs/no_new_resultant"}, {"type": "null"}]},
+        "loopbreak": {"anyOf": [{"$ref": "#/$defs/loopbreak"}, {"type": "null"}]},
+        "resource_exhaustion": {"type": ["object", "null"]}
+      }
+    },
+    "reread": {
+      "type": "object", "additionalProperties": false,
+      "required": ["record_id", "record_sha256", "target_burden_id", "source_land_event_id", "source_delta_event_id", "raw_exit", "a07_reducer_signature_sha256", "reread_signature_sha256"],
+      "properties": {"record_id": {"$ref": "#/$defs/id"}, "record_sha256": {"$ref": "#/$defs/sha256"},
+        "target_burden_id": {"type": "string", "pattern": "^B[1-9][0-9]*$"}, "source_land_event_id": {"$ref": "#/$defs/id"},
+        "source_delta_event_id": {"$ref": "#/$defs/id"}, "raw_exit": {"$ref": "#/$defs/raw_exit"},
+        "a07_reducer_signature_sha256": {"$ref": "#/$defs/sha256"},
+        "reread_signature_sha256": {"$ref": "#/$defs/sha256"}}
+    },
+    "reread_signature": {
+      "type": "object", "additionalProperties": false,
+      "required": ["cycle_id", "raw_exit_event_id", "a07_reducer_signature_sha256", "reread_signature_sha256"],
+      "properties": {"cycle_id":{"$ref":"#/$defs/id"},"raw_exit_event_id":{"$ref":"#/$defs/id"},"a07_reducer_signature_sha256":{"$ref":"#/$defs/sha256"},"reread_signature_sha256":{"$ref":"#/$defs/sha256"}}
+    },
+    "burden_cycle": {
+      "type": "object", "additionalProperties": false,
+      "required": ["cycle_id", "burden_id", "origin", "generation_depth", "parent_cycle_id", "phase", "obligation_ids",
+        "obligation_set_sha256", "operation_capsule_ids", "lifecycle_status", "terminal_state", "cycle_sha256"],
+      "properties": {
+        "cycle_id": {"$ref": "#/$defs/id"}, "burden_id": {"type": "string", "pattern": "^B[1-9][0-9]*$"},
+        "origin": {"enum": ["B_LA", "B_MRP"]}, "generation_depth": {"type": "integer", "minimum": 0},
+        "parent_cycle_id": {"type": ["string", "null"]}, "phase": {"enum": ["ROUTED", "EXECUTED", "LANDED", "REREAD_EVALUATED"]},
+        "route_gradient": {"$ref": "#/$defs/route_event"}, "obligation_ids": {"$ref": "#/$defs/id_array"},
+        "obligation_set_sha256": {"$ref": "#/$defs/sha256"}, "operation_capsule_ids": {"$ref": "#/$defs/id_array"},
+        "operation_events": {"type": "array", "items": {"$ref": "#/$defs/operation_event"}}, "land": {"$ref": "#/$defs/land_event"},
+        "post_land_delta": {"$ref": "#/$defs/delta_event"}, "reread": {"$ref": "#/$defs/reread"},
+        "lifecycle_status": {"enum": ["candidate", "held", "preempted", "active", "landed", "generated", "partial", "recurse"]},
+        "terminal_state": {"enum": ["open", "held", "partial", "landed", "preempted", "recurse"]},
+        "cycle_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "held_item": {
+      "type": "object", "additionalProperties": false, "required": ["item_id", "kind", "gate", "next_action", "basis"],
+      "properties": {"item_id": {"$ref": "#/$defs/id"}, "kind": {"enum": ["candidate", "pressure", "burden", "obligation", "route"]},
+        "gate": {"$ref": "#/$defs/id"}, "next_action": {"$ref": "#/$defs/id"}, "basis": {"$ref": "#/$defs/id"}}
+    },
+    "resource_policy": {
+      "type": "object", "additionalProperties": false, "required": ["policy_id", "policy_sha256", "semantic_depth_cap", "on_exhaustion", "limits"],
+      "properties": {"policy_id": {"$ref": "#/$defs/id"}, "policy_sha256": {"$ref": "#/$defs/sha256"},
+        "semantic_depth_cap": {"const": null}, "on_exhaustion": {"enum": ["PARTIAL", "HANDOFF"]}, "limits": {"type": "object"}}
+    },
+    "closure_authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["burden_ids", "candidate_state_ids", "owner_obligation_ids", "inventory_sha256"],
+      "properties": {"burden_ids":{"$ref":"#/$defs/burden_id_array"},"candidate_state_ids":{"$ref":"#/$defs/id_array"},"owner_obligation_ids":{"$ref":"#/$defs/id_array"},"inventory_sha256":{"$ref":"#/$defs/sha256"}}
+    },
+    "projection": {
+      "type": "object", "additionalProperties": false,
+      "required": ["stage04_activation_projection_sha256", "stage05_lifecycle_projection_sha256", "reducer_state_sha256",
+        "event_dag_sha256", "activation_lifecycle_fingerprint_sha256", "stage06_projection_sha256", "stage07_projection_sha256",
+        "public_field_witness_sha256", "field_witness_envelope_sha256"],
+      "properties": {
+        "stage04_activation_projection_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "stage05_lifecycle_projection_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "reducer_state_sha256": {"$ref": "#/$defs/nullable_sha256"}, "event_dag_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "activation_lifecycle_fingerprint_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "stage06_projection_sha256": {"$ref": "#/$defs/nullable_sha256"}, "stage07_projection_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "public_field_witness_sha256": {"$ref": "#/$defs/nullable_sha256"},
+        "field_witness_envelope_sha256": {"$ref": "#/$defs/nullable_sha256"}
+      }
+    },
+    "closure_state": {
+      "type": "object", "additionalProperties": false,
+      "required": ["opening_state", "opening_closure_claim", "derived_decision", "initial_coverage_complete",
+        "lifecycle_accounting_complete", "collapse_positive", "closure_confirmed", "remaining_open_ids", "divergence", "curl", "loopbreak"],
+      "properties": {
+        "opening_state": {"const": "OPEN"}, "opening_closure_claim": {"const": "PENDING"},
+        "derived_decision": {"enum": ["HOLD", "PARTIAL", "RECURSE", "CLOSURE_CANDIDATE", "COMPLETE"]},
+        "initial_coverage_complete": {"type": "boolean"}, "lifecycle_accounting_complete": {"type": "boolean"},
+        "collapse_positive": {"type": "boolean"}, "closure_confirmed": {"type": "boolean"},
+        "remaining_open_ids": {"$ref": "#/$defs/id_array"}, "divergence": {"enum": ["unknown", "non-neutral", "bounded", "neutral"]},
+        "curl": {"enum": ["unknown", "non-null", "held", "resolved", "null"]}, "loopbreak": {"type": ["object", "null"]}
+      }
+    }
+  }
+}

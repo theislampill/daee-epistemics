@@ -1,0 +1,3000 @@
+{
+  "schema": "daee-andon-closure-ledger-v1",
+  "ledger_id": "daee-v0.4.6.0-wip-branch10-closure",
+  "source_head": "6987c9ebf1de45af700b1fa74b1ed25ec0beeb7c",
+  "branch": "codex/v0.4.6.0-runtime-footprint-b10",
+  "regression_status": "unproven",
+  "required_andon_ids": [
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "A07",
+    "A08",
+    "A09",
+    "A10",
+    "A11",
+    "A12",
+    "A13",
+    "A14",
+    "A15",
+    "A16"
+  ],
+  "overall_status": "OPEN",
+  "owner_decision_controls": [
+    {
+      "control_id": "D01",
+      "status": "ACCEPTED",
+      "decision": "One fully reviewed five-smoke GPT cycle is sufficient for scoped WIP completion.",
+      "binding_adr_id": "DAEE-ADR-046-006",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D02",
+      "status": "ACCEPTED",
+      "decision": "Every material ANDON requires GEMBA, Five Whys, Hansei, owner-source countermeasure, canaries, Smoke A/B, and deterministic verification.",
+      "binding_adr_id": "DAEE-ADR-046-007",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D03",
+      "status": "ACCEPTED",
+      "decision": "Structural failure blocks canonical cold-review spend while all raw outputs still receive GEMBA.",
+      "binding_adr_id": "DAEE-ADR-046-010",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D04",
+      "status": "ACCEPTED",
+      "decision": "After authorized push and exact-SHA CI the coordinator may mint candidate/producer/review children under the standing campaign, with listed exceptions.",
+      "binding_adr_id": "DAEE-ADR-046-018",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D05",
+      "status": "ACCEPTED",
+      "decision": "Cold review is five isolated GPT-5.6 calls with no cross-case context and no sixth synthesis call.",
+      "binding_adr_id": "DAEE-ADR-046-010",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D06",
+      "status": "ACCEPTED",
+      "decision": "One human may review all five; a second is required only for patch-owner/material reversal or unresolved challenge.",
+      "binding_adr_id": "DAEE-ADR-046-013",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D07",
+      "status": "ACCEPTED",
+      "decision": "The human hash-claims the full assessment cohort before any cold-review disclosure.",
+      "binding_adr_id": "DAEE-ADR-046-013",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D08",
+      "status": "ACCEPTED",
+      "decision": "Refusal has three typed outcomes and origin is evidence-derived.",
+      "binding_adr_id": "DAEE-ADR-046-021",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D09",
+      "status": "ACCEPTED",
+      "decision": "External refusal evidence remains external; executable fixtures are minimized and topic-neutral.",
+      "binding_adr_id": "DAEE-ADR-046-019",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D10",
+      "status": "ACCEPTED",
+      "decision": "Opus evaluation is optional, post-completion, and separately authorized.",
+      "binding_adr_id": "DAEE-ADR-046-009",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D11",
+      "status": "ACCEPTED",
+      "decision": "Accepted Opus changes to candidate/verdict-bearing state require paired reconvergence.",
+      "binding_adr_id": "DAEE-ADR-046-009",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D12",
+      "status": "ACCEPTED",
+      "decision": "The exact external evidence root and create-if-absent child layout are binding.",
+      "binding_adr_id": "DAEE-ADR-046-012",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D13",
+      "status": "ACCEPTED",
+      "decision": "Raw cycles are retained indefinitely by hash; pruning requires owner authorization and permanent residue.",
+      "binding_adr_id": "DAEE-ADR-046-012",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D14",
+      "status": "ACCEPTED",
+      "decision": "Cross-cycle pattern analysis follows every failure; recurrence gets deep analysis; final green gets terminal Hansei.",
+      "binding_adr_id": "DAEE-ADR-046-022",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D15",
+      "status": "ACCEPTED",
+      "decision": "Same-root recurrence stops paid execution until the required deterministic or adjudicated NO path closes.",
+      "binding_adr_id": "DAEE-ADR-046-007",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D16",
+      "status": "ACCEPTED",
+      "decision": "The convergence objective has no arbitrary cycle/call ceiling.",
+      "binding_adr_id": "DAEE-ADR-046-008",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D17",
+      "status": "ACCEPTED",
+      "decision": "Infrastructure-only repair needs no fake commit but always a fresh candidate/cycle.",
+      "binding_adr_id": "DAEE-ADR-046-025",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D18",
+      "status": "ACCEPTED",
+      "decision": "Not every semantic defect is a deterministic checker; strongest topic-neutral observability and human review govern.",
+      "binding_adr_id": "DAEE-ADR-046-022",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D19",
+      "status": "ACCEPTED",
+      "decision": "Detectability NO is scoped/revisitable and raw triggers emit REASSESSMENT_DUE only.",
+      "binding_adr_id": "DAEE-ADR-046-022",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D20",
+      "status": "ACCEPTED",
+      "decision": "A legitimate NO permits another cycle only after countermeasure, observability, deterministic green, and independent concurrence.",
+      "binding_adr_id": "DAEE-ADR-046-022",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D21",
+      "status": "ACCEPTED",
+      "decision": "Candidate consumption is claim-history-sensitive and post-claim states are terminal.",
+      "binding_adr_id": "DAEE-ADR-046-020",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D22",
+      "status": "ACCEPTED",
+      "decision": "CI green is derived fresh for the exact pushed SHA, remote OID, and required check set.",
+      "binding_adr_id": "DAEE-ADR-046-026",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D23",
+      "status": "ACCEPTED",
+      "decision": "Review retry preserves producer identity; packet lineage/scope controls one-case versus cohort replay.",
+      "binding_adr_id": "DAEE-ADR-046-023",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D24",
+      "status": "ACCEPTED",
+      "decision": "Final reviewed green freezes evidence and pauses for owner WIP_COMPLETE acceptance without release authority.",
+      "binding_adr_id": "DAEE-ADR-046-012",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    },
+    {
+      "control_id": "D25",
+      "status": "ACCEPTED",
+      "decision": "Owner feedback is classified as review plumbing or product feedback before it changes the campaign.",
+      "binding_adr_id": "DAEE-ADR-046-025",
+      "owner_source": "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+    }
+  ],
+  "rows": [
+    {
+      "andon_id": "A01",
+      "title": "evidence custody and causal attribution are incomplete",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "captured input/output -> Stage01",
+        "T_lang boundary",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [],
+      "milestone_dependencies": [
+        "A16.bootstrap"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A01.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A16.bootstrap"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/01_evidence_custody_and_causal_attribution_plan.md",
+        "schema/captured-output-manifest.schema.json",
+        "schema/captured-output-comparison.schema.json",
+        "schema/topology-initial-assessment.schema.json",
+        "schema/topology-review.schema.json",
+        "schema/cold-comprehensiveness-review.schema.json",
+        "schema/review-incident-report.schema.json",
+        "tools/check_topology_review.py",
+        "tools/check_review_incident_report.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-006",
+        "DAEE-ADR-046-010",
+        "DAEE-ADR-046-012",
+        "DAEE-ADR-046-013",
+        "DAEE-ADR-046-019",
+        "DAEE-ADR-046-021",
+        "DAEE-ADR-046-023"
+      ],
+      "abnormality_evidence": [
+        "outputs/Sol/00_solution_packet_index_and_plain_language_andon_register.md:A01",
+        "current captures lack an admissible controlled v45/v46 pair"
+      ],
+      "five_whys": [
+        "Why 1: evidence custody and causal attribution are incomplete.",
+        "Why 2: capture, comparison, review-attempt, and incident identity are not joined by immutable hashes and cohort chronology.",
+        "Why 3: the current owner surfaces (outputs/Sol/01_evidence_custody_and_causal_attribution_plan.md and schema/captured-output-manifest.schema.json) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/01_evidence_custody_and_causal_attribution_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/01_evidence_custody_and_causal_attribution_plan.md",
+      "root_cause_id": "RC-CUSTODY-CAUSALITY-GAP",
+      "primary_andon_id": "A01",
+      "affected_andon_ids": [
+        "A01"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-010",
+      "hansei": {
+        "gap": "evidence custody and causal attribution are incomplete",
+        "cause": "capture, comparison, review-attempt, and incident identity are not joined by immutable hashes and cohort chronology",
+        "countermeasure": "implement exact capture/comparison manifests, review cohort commitment, attempt CAS lineage, immutable finding hashes, and incident pause",
+        "follow_up_control": "replay historical captures plus review-shopping/early-disclosure/causal-origin negative fixtures"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_captured_output_manifest.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class missing_identity",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/check_topology_review.py --self-test",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/captured-output-custody/invalid/manifest-missing-invocation-identity.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A01-missing_identity",
+          "negative_fixture": "tests/captured-output-custody/invalid/manifest-missing-invocation-identity.json",
+          "expected_stage": "custody",
+          "expected_failure_class": "missing_identity",
+          "neighbor_valid_fixture": "tests/captured-output-custody/valid/exact-input-package-model-output-binding.json",
+          "mutation_operator": "drop-custody-identity",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A01 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "semantic causality remains unproven without a controlled paired comparison"
+      ],
+      "next_action": "Implement A01 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A02",
+      "title": "input pressures can disappear before the burden floor is checked",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "D0 -> PsiN",
+        "PsiN -> IR",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A01"
+      ],
+      "milestone_dependencies": [
+        "A01.terminal"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A02.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A01.terminal"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/02_input_pressure_inventory_and_dynamic_burden_topology_plan.md",
+        "atomics/skill/references/diagnostics/diagnostic-ir.md",
+        "tools/input_observation_units.py",
+        "tools/check_input_pressure_coverage.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-003",
+        "DAEE-ADR-046-014"
+      ],
+      "abnormality_evidence": [
+        "current Stage02 validates declared burden_floor but not source-to-pressure completeness"
+      ],
+      "five_whys": [
+        "Why 1: input pressures can disappear before the burden floor is checked.",
+        "Why 2: the pipeline begins verification after the producer has already declared a possibly incomplete pressure set.",
+        "Why 3: the current owner surfaces (outputs/Sol/02_input_pressure_inventory_and_dynamic_burden_topology_plan.md and atomics/skill/references/diagnostics/diagnostic-ir.md) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/02_input_pressure_inventory_and_dynamic_burden_topology_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/02_input_pressure_inventory_and_dynamic_burden_topology_plan.md",
+      "root_cause_id": "RC-FORMAL-TRAJECTORY-LOSS",
+      "primary_andon_id": "A02",
+      "affected_andon_ids": [
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-003",
+      "hansei": {
+        "gap": "input pressures can disappear before the burden floor is checked",
+        "cause": "the pipeline begins verification after the producer has already declared a possibly incomplete pressure set",
+        "countermeasure": "add source observation units and an exhaustive content-neutral pressure disposition relation",
+        "follow_up_control": "delete/merge/hold pressure mutations plus neighboring valid observation sets"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_input_pressure_coverage.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class missing_pressure_disposition",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/check_staged_runtime_handshake.py --explain-stage-failure-self-test",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/input-pressure-coverage/invalid/source-observation-disappears.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A02-missing_pressure_disposition",
+          "negative_fixture": "tests/input-pressure-coverage/invalid/source-observation-disappears.json",
+          "expected_stage": "stage-02",
+          "expected_failure_class": "missing_pressure_disposition",
+          "neighbor_valid_fixture": "tests/input-pressure-coverage/valid/all-observations-dispositioned.json",
+          "mutation_operator": "delete-pressure-disposition",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A02 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "a structural pressure inventory does not prove semantic truth"
+      ],
+      "next_action": "Implement A02 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A03",
+      "title": "distinct candidate states can merge without reconstructible basis",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "PsiN candidate field -> IR",
+        "partition -> burden topology",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A02"
+      ],
+      "milestone_dependencies": [
+        "A02.terminal"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A03.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A02.terminal"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/03_candidate_state_partition_and_split_merge_plan.md",
+        "schema/state-capsule-v2.schema.json",
+        "tools/topology_partition.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-014"
+      ],
+      "abnormality_evidence": [
+        "current selected_n_frame aliases held and underdetermined candidates"
+      ],
+      "five_whys": [
+        "Why 1: distinct candidate states can merge without reconstructible basis.",
+        "Why 2: candidate-state and split/merge history have no canonical typed owner.",
+        "Why 3: the current owner surfaces (outputs/Sol/03_candidate_state_partition_and_split_merge_plan.md and schema/state-capsule-v2.schema.json) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/03_candidate_state_partition_and_split_merge_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/03_candidate_state_partition_and_split_merge_plan.md",
+      "root_cause_id": "RC-FORMAL-TRAJECTORY-LOSS",
+      "primary_andon_id": "A02",
+      "affected_andon_ids": [
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-004",
+      "hansei": {
+        "gap": "distinct candidate states can merge without reconstructible basis",
+        "cause": "candidate-state and split/merge history have no canonical typed owner",
+        "countermeasure": "preserve selected, held, underdetermined, merged, and rejected candidates with falsifiable partition decisions",
+        "follow_up_control": "split-after-merge and merge-after-split metamorphic reconstruction tests"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_input_pressure_coverage.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class unreconstructible_merge",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/check_topology_capacity_properties.py --self-test",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/candidate-state-partition/invalid/merge-without-compatibility-proof.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A03-unreconstructible_merge",
+          "negative_fixture": "tests/candidate-state-partition/invalid/merge-without-compatibility-proof.json",
+          "expected_stage": "stage-02",
+          "expected_failure_class": "unreconstructible_merge",
+          "neighbor_valid_fixture": "tests/candidate-state-partition/valid/held-alternative-preserved.json",
+          "mutation_operator": "drop-merge-basis",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A03 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "candidate models remain diagnostic hypotheses, not soul-state claims"
+      ],
+      "next_action": "Implement A03 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A04",
+      "title": "routed burdens do not all acquire execution obligations",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "IR -> route gradient -> B",
+        "B -> OP obligations",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A03"
+      ],
+      "milestone_dependencies": [
+        "A03.terminal"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A04.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A03.terminal"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/04_dynamic_submove_cardinality_and_owner_coverage_plan.md",
+        "tools/owner_obligation_coverage.py",
+        "tools/check_staged_runtime_handshake.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-003",
+        "DAEE-ADR-046-015"
+      ],
+      "abnormality_evidence": [
+        "Stage04 checks emitted owners are eligible but not the inverse relation"
+      ],
+      "five_whys": [
+        "Why 1: routed burdens do not all acquire execution obligations.",
+        "Why 2: route eligibility and executable/disposed obligation sets are not joined bijectively.",
+        "Why 3: the current owner surfaces (outputs/Sol/04_dynamic_submove_cardinality_and_owner_coverage_plan.md and tools/owner_obligation_coverage.py) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/04_dynamic_submove_cardinality_and_owner_coverage_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/04_dynamic_submove_cardinality_and_owner_coverage_plan.md",
+      "root_cause_id": "RC-FORMAL-TRAJECTORY-LOSS",
+      "primary_andon_id": "A02",
+      "affected_andon_ids": [
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-003",
+      "hansei": {
+        "gap": "routed burdens do not all acquire execution obligations",
+        "cause": "route eligibility and executable/disposed obligation sets are not joined bijectively",
+        "countermeasure": "derive stable obligation IDs and require each executable route exactly once in execution or explicit disposition",
+        "follow_up_control": "missing, duplicate, contingent, optional, HOLD, and PARTIAL obligation fixtures"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_staged_runtime_handshake.py --records tests/owner-obligation-coverage/invalid/eligible-owner-never-executed-or-disposed.json",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class unpaid_owner_obligation",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/check_staged_runtime_handshake.py",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/owner-obligation-coverage/invalid/eligible-owner-never-executed-or-disposed.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A04-unpaid_owner_obligation",
+          "negative_fixture": "tests/owner-obligation-coverage/invalid/eligible-owner-never-executed-or-disposed.json",
+          "expected_stage": "stage-04",
+          "expected_failure_class": "unpaid_owner_obligation",
+          "neighbor_valid_fixture": "tests/owner-obligation-coverage/valid/every-obligation-accounted.json",
+          "mutation_operator": "delete-obligation-capsule",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A04 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "owner eligibility alone remains non-execution"
+      ],
+      "next_action": "Implement A04 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A05",
+      "title": "syntactically present submoves can be too thin to license Land",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "OP -> local delta -> Land contribution",
+        "Land(B)",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A04"
+      ],
+      "milestone_dependencies": [
+        "A04.terminal"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A05.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A04.terminal"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/05_submove_body_depth_and_land_license_plan.md",
+        "schema/operation-capsule.schema.json",
+        "tools/operation_capsule_contract.py",
+        "tools/build_staged_governed_output.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-015"
+      ],
+      "abnormality_evidence": [
+        "current ACT/body_ref presence can be hydrated or rewritten after execution"
+      ],
+      "five_whys": [
+        "Why 1: syntactically present submoves can be too thin to license Land.",
+        "Why 2: performed body evidence and Land licensing lack one canonical immutable operation capsule.",
+        "Why 3: the current owner surfaces (outputs/Sol/05_submove_body_depth_and_land_license_plan.md and schema/operation-capsule.schema.json) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/05_submove_body_depth_and_land_license_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/05_submove_body_depth_and_land_license_plan.md",
+      "root_cause_id": "RC-FORMAL-TRAJECTORY-LOSS",
+      "primary_andon_id": "A02",
+      "affected_andon_ids": [
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-015",
+      "hansei": {
+        "gap": "syntactically present submoves can be too thin to license Land",
+        "cause": "performed body evidence and Land licensing lack one canonical immutable operation capsule",
+        "countermeasure": "bind before-state, owner operation, performed evidence, local delta, residual, Land contribution, body ref, and body hash",
+        "follow_up_control": "pointer-only, conclusion-shaped, post-Land backfill, and body-hash mismatch fixtures"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+          "command": "python tools/operation_capsule_contract.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class land_without_performed_operation",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/check_staged_runtime_handshake.py",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/operation-capsule/invalid/land-before-local-delta.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A05-land_without_performed_operation",
+          "negative_fixture": "tests/operation-capsule/invalid/land-before-local-delta.json",
+          "expected_stage": "stage-04",
+          "expected_failure_class": "land_without_performed_operation",
+          "neighbor_valid_fixture": "tests/operation-capsule/valid/performed-body-before-land.json",
+          "mutation_operator": "replace-body-with-conclusion",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A05 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "structural performed-evidence checks cannot fully grade theological sufficiency"
+      ],
+      "next_action": "Implement A05 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A06",
+      "title": "whole-output mass can be inadequate or padded",
+      "priority": "P1",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "all pressures/OP/rereads -> governed release",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A05",
+        "A07",
+        "A09",
+        "A10"
+      ],
+      "milestone_dependencies": [
+        "A02.terminal",
+        "A03.terminal",
+        "A04.terminal",
+        "A05.terminal",
+        "A07.terminal",
+        "A09.terminal",
+        "A10.terminal"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A06.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A02.terminal",
+            "A03.terminal",
+            "A04.terminal",
+            "A05.terminal",
+            "A07.terminal",
+            "A09.terminal",
+            "A10.terminal"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/06_topology_derived_output_mass_and_anti_slimming_plan.md",
+        "schema/topology-mass-accounting.schema.json",
+        "tools/topology_mass_accounting.py",
+        "tools/check_topology_mass_accounting.py",
+        "atomics/skill/references/rubrics/output-release.md"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-003"
+      ],
+      "abnormality_evidence": [
+        "current count/byte floors can hard-fail while padding can satisfy mass"
+      ],
+      "five_whys": [
+        "Why 1: whole-output mass can be inadequate or padded.",
+        "Why 2: surface size is used as a proxy for unpaid semantic obligations.",
+        "Why 3: the current owner surfaces (outputs/Sol/06_topology_derived_output_mass_and_anti_slimming_plan.md and schema/topology-mass-accounting.schema.json) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/06_topology_derived_output_mass_and_anti_slimming_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/06_topology_derived_output_mass_and_anti_slimming_plan.md",
+      "root_cause_id": "RC-FORMAL-TRAJECTORY-LOSS",
+      "primary_andon_id": "A02",
+      "affected_andon_ids": [
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-003",
+      "hansei": {
+        "gap": "whole-output mass can be inadequate or padded",
+        "cause": "surface size is used as a proxy for unpaid semantic obligations",
+        "countermeasure": "derive mass from terminal pressure, obligation, lifecycle, residual, restoration, and witness accounting; treat bytes/counts as telemetry only",
+        "follow_up_control": "padding-preserving mutation and compact-complete versus long-incomplete controls"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_topology_mass_accounting.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class unpaid_mass_obligation",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/check_topology_capacity_properties.py --self-test",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/topology-mass-accounting/invalid/padded-but-unpaid-obligation.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A06-unpaid_mass_obligation",
+          "negative_fixture": "tests/topology-mass-accounting/invalid/padded-but-unpaid-obligation.json",
+          "expected_stage": "release-mass",
+          "expected_failure_class": "unpaid_mass_obligation",
+          "neighbor_valid_fixture": "tests/topology-mass-accounting/valid/compact-small-topology-complete.json",
+          "mutation_operator": "add-padding-without-operation",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A06 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "mass adequacy may still require independent semantic review"
+      ],
+      "next_action": "Implement A06 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A07",
+      "title": "generated, held, and pre-empted burdens can be conflated or unexecuted",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "Land -> MRP -> R -> B_MRP return",
+        "recursive OP/Land/reread",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A05"
+      ],
+      "milestone_dependencies": [
+        "A02.terminal",
+        "A03.terminal",
+        "A04.terminal",
+        "A05.terminal",
+        "A08.opening"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A07.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A02.terminal",
+            "A03.terminal",
+            "A04.terminal",
+            "A05.terminal",
+            "A08.opening"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/07_mrp_recursion_generated_held_preempted_plan.md",
+        "atomics/skill/references/diagnostics/recursive-state-transitions.md",
+        "atomics/skill/references/tactics/TTP-MRP-mid-reread-pressure.md",
+        "tools/mrp_recursion_lib.py",
+        "tools/run_staged_current_skill_smoke.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-001",
+        "DAEE-ADR-046-002",
+        "DAEE-ADR-046-003",
+        "DAEE-ADR-046-004"
+      ],
+      "abnormality_evidence": [
+        "current runner executes one Stage03/04 pass and normalizes Stage05 semantics before checking"
+      ],
+      "five_whys": [
+        "Why 1: generated, held, and pre-empted burdens can be conflated or unexecuted.",
+        "Why 2: MRP outcomes are descriptive records rather than scheduler-executed lifecycle transitions.",
+        "Why 3: the current owner surfaces (outputs/Sol/07_mrp_recursion_generated_held_preempted_plan.md and atomics/skill/references/diagnostics/recursive-state-transitions.md) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/07_mrp_recursion_generated_held_preempted_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/07_mrp_recursion_generated_held_preempted_plan.md",
+      "root_cause_id": "RC-FORMAL-TRAJECTORY-LOSS",
+      "primary_andon_id": "A02",
+      "affected_andon_ids": [
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-001",
+      "hansei": {
+        "gap": "generated, held, and pre-empted burdens can be conflated or unexecuted",
+        "cause": "MRP outcomes are descriptive records rather than scheduler-executed lifecycle transitions",
+        "countermeasure": "use a pure reducer plus runner-owned Stage05-to-Stage03/04/05 return edge with mutually exclusive lifecycle events",
+        "follow_up_control": "depth-two generated recursion, held activation, pre-emption, no-new, and unknown-parent fixtures"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_mrp_recursion_lifecycle.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class generated_burden_unexecuted",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/run_staged_current_skill_smoke.py --self-test",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/mrp-recursion-lifecycle/invalid/generated-burden-never-executed.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A07-generated_burden_unexecuted",
+          "negative_fixture": "tests/mrp-recursion-lifecycle/invalid/generated-burden-never-executed.json",
+          "expected_stage": "stage-05",
+          "expected_failure_class": "generated_burden_unexecuted",
+          "neighbor_valid_fixture": "tests/mrp-recursion-lifecycle/valid/depth-two-generated-return.json",
+          "mutation_operator": "drop-recursive-return-cycle",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A07 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "resource exhaustion must preserve live state as PARTIAL/HANDOFF"
+      ],
+      "next_action": "Implement A07 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A08",
+      "title": "opening and closure states can claim completion too early",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "R -> C(PsiN)",
+        "closure derived after lifecycle",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A05",
+        "A07"
+      ],
+      "milestone_dependencies": [
+        "A08.opening",
+        "A07.terminal",
+        "A09.witness-decision"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A08.opening",
+          "status": "OPEN",
+          "depends_on": [
+            "A02.terminal",
+            "A03.terminal",
+            "A04.terminal",
+            "A05.terminal"
+          ]
+        },
+        {
+          "milestone_id": "A08.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A08.opening",
+            "A07.terminal",
+            "A09.witness-decision"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/08_opening_closure_and_recursion_state_plan.md",
+        "tools/closure_state_lib.py",
+        "tools/check_opening_closure_state.py",
+        "atomics/skill/references/rubrics/diagnostic-render-contract.md"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-016"
+      ],
+      "abnormality_evidence": [
+        "opening contracts permit COMPLETE and runner hard-codes Stage07 complete"
+      ],
+      "five_whys": [
+        "Why 1: opening and closure states can claim completion too early.",
+        "Why 2: closure is producer-authored and missing terminal evidence can default optimistic.",
+        "Why 3: the current owner surfaces (outputs/Sol/08_opening_closure_and_recursion_state_plan.md and tools/closure_state_lib.py) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/08_opening_closure_and_recursion_state_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/08_opening_closure_and_recursion_state_plan.md",
+      "root_cause_id": "RC-FORMAL-TRAJECTORY-LOSS",
+      "primary_andon_id": "A02",
+      "affected_andon_ids": [
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-016",
+      "hansei": {
+        "gap": "opening and closure states can claim completion too early",
+        "cause": "closure is producer-authored and missing terminal evidence can default optimistic",
+        "countermeasure": "restrict opening to OPEN/PENDING and derive distinct initial coverage, lifecycle accounting, collapse, and closure booleans monotonically",
+        "follow_up_control": "opening COMPLETE, unresolved closure, missing-state-as-landed, and valid HOLD/PARTIAL/RECURSE fixtures"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_opening_closure_state.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class premature_closure",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/check_staged_runtime_handshake.py",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/opening-closure-state/invalid/opening-complete.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A08-premature_closure",
+          "negative_fixture": "tests/opening-closure-state/invalid/opening-complete.json",
+          "expected_stage": "opening-closure",
+          "expected_failure_class": "premature_closure",
+          "neighbor_valid_fixture": "tests/opening-closure-state/valid/open-until-lifecycle-closed.json",
+          "mutation_operator": "flip-opening-to-complete",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A08 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "closure is runtime-side only and never proves uptake"
+      ],
+      "next_action": "Implement A08 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A09",
+      "title": "witness names, shapes, and public order conflict",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "closure witness -> public field_witness",
+        "T_lang at tail",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A05",
+        "A08"
+      ],
+      "milestone_dependencies": [
+        "A09.witness-decision",
+        "A07.terminal",
+        "A08.terminal"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A09.witness-decision",
+          "status": "OPEN",
+          "depends_on": [
+            "A02.terminal",
+            "A03.terminal",
+            "A04.terminal",
+            "A05.terminal",
+            "A08.opening"
+          ]
+        },
+        {
+          "milestone_id": "A09.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A09.witness-decision",
+            "A07.terminal",
+            "A08.terminal"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/09_witness_dialect_reconstruction_and_public_order_plan.md",
+        "schema/field-witness.schema.json",
+        "schema/field-witness-envelope.schema.json",
+        "tools/witness_artifact_roles.py",
+        "tools/build_staged_governed_output.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-005",
+        "DAEE-ADR-046-016"
+      ],
+      "abnormality_evidence": [
+        "field-witness schema and envelope builder currently name incompatible shapes; docs conflict on EOF order"
+      ],
+      "five_whys": [
+        "Why 1: witness names, shapes, and public order conflict.",
+        "Why 2: public graph, audit envelope, and artifact binding share ambiguous labels and no single role registry.",
+        "Why 3: the current owner surfaces (outputs/Sol/09_witness_dialect_reconstruction_and_public_order_plan.md and schema/field-witness.schema.json) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/09_witness_dialect_reconstruction_and_public_order_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/09_witness_dialect_reconstruction_and_public_order_plan.md",
+      "root_cause_id": "RC-FORMAL-TRAJECTORY-LOSS",
+      "primary_andon_id": "A02",
+      "affected_andon_ids": [
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-005",
+      "hansei": {
+        "gap": "witness names, shapes, and public order conflict",
+        "cause": "public graph, audit envelope, and artifact binding share ambiguous labels and no single role registry",
+        "countermeasure": "separate schemas/roles and enforce Restorative -> Closing -> Witness -> field_witness -> EOF",
+        "follow_up_control": "dialect collision, reordered tail, extra-after-field-witness, and compatibility-wrapper fixtures"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_field_witness_convergence.py",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class witness_role_collision",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/check_stage_projection_parity.py --self-test",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/witness-artifact-roles/invalid/public-graph-uses-envelope-schema.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A09-witness_role_collision",
+          "negative_fixture": "tests/witness-artifact-roles/invalid/public-graph-uses-envelope-schema.json",
+          "expected_stage": "stage-07",
+          "expected_failure_class": "witness_role_collision",
+          "neighbor_valid_fixture": "tests/witness-artifact-roles/valid/distinct-public-and-audit-artifacts.json",
+          "mutation_operator": "swap-witness-schema",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A09 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "machine graph agreement is not truth or uptake proof"
+      ],
+      "next_action": "Implement A09 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A10",
+      "title": "Stage06 can disagree with Stage07 and still pass",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "executed lifecycle -> Stage06 -> Stage07",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A07",
+        "A08",
+        "A09"
+      ],
+      "milestone_dependencies": [
+        "A07.terminal",
+        "A08.terminal",
+        "A09.witness-decision"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A10.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A07.terminal",
+            "A08.terminal",
+            "A09.witness-decision"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/10_cross_stage_projection_parity_plan.md",
+        "schema/stage-projection.schema.json",
+        "tools/stage_projection_contract.py",
+        "tools/check_stage_projection_parity.py",
+        "tools/build_staged_governed_output.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-001",
+        "DAEE-ADR-046-004",
+        "DAEE-ADR-046-005",
+        "DAEE-ADR-046-015",
+        "DAEE-ADR-046-016"
+      ],
+      "abnormality_evidence": [
+        "existing fixture can pass one Stage04 row while Stage07 exposes two rows"
+      ],
+      "five_whys": [
+        "Why 1: Stage06 can disagree with Stage07 and still pass.",
+        "Why 2: Stage06 and Stage07 independently author semantic fields instead of projecting one activation/lifecycle fingerprint.",
+        "Why 3: the current owner surfaces (outputs/Sol/10_cross_stage_projection_parity_plan.md and schema/stage-projection.schema.json) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/10_cross_stage_projection_parity_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/10_cross_stage_projection_parity_plan.md",
+      "root_cause_id": "RC-FORMAL-TRAJECTORY-LOSS",
+      "primary_andon_id": "A02",
+      "affected_andon_ids": [
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-001",
+      "hansei": {
+        "gap": "Stage06 can disagree with Stage07 and still pass",
+        "cause": "Stage06 and Stage07 independently author semantic fields instead of projecting one activation/lifecycle fingerprint",
+        "countermeasure": "derive Stage06 and Stage07 from the same canonical records and reject any activation/body/NAR/lifecycle/terminal/graph mismatch",
+        "follow_up_control": "add/drop/reorder/change-owner projection mutations and valid formatting-only projection controls"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_stage_projection_parity.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class projection_mismatch",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/check_staged_runtime_handshake.py",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/stage-projection-parity/invalid/stage07-adds-owner-activation.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A10-projection_mismatch",
+          "negative_fixture": "tests/stage-projection-parity/invalid/stage07-adds-owner-activation.json",
+          "expected_stage": "stage-07",
+          "expected_failure_class": "projection_mismatch",
+          "neighbor_valid_fixture": "tests/stage-projection-parity/valid/exact-lifecycle-projection.json",
+          "mutation_operator": "add-stage07-row",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A10 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "presentation formatting may vary only outside canonical semantic fingerprints"
+      ],
+      "next_action": "Implement A10 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A11",
+      "title": "verification is post-hoc and fixtures can fail for the wrong reason",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "Stage08 validation -> promotion verdict",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A01",
+        "A05",
+        "A09"
+      ],
+      "milestone_dependencies": [
+        "A11.scaffold",
+        "A01.terminal",
+        "A06.terminal",
+        "A07.terminal",
+        "A08.terminal",
+        "A09.terminal",
+        "A10.terminal",
+        "A12.terminal",
+        "A13.terminal",
+        "A15.terminal"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A11.scaffold",
+          "status": "OPEN",
+          "depends_on": [
+            "A01.terminal",
+            "A05.terminal",
+            "A09.witness-decision"
+          ]
+        },
+        {
+          "milestone_id": "A11.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A11.scaffold",
+            "A01.terminal",
+            "A06.terminal",
+            "A07.terminal",
+            "A08.terminal",
+            "A09.terminal",
+            "A10.terminal",
+            "A12.terminal",
+            "A13.terminal",
+            "A15.terminal"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/11_checker_fixture_and_promotion_integrity_plan.md",
+        "schema/negative-fixture-expectation.schema.json",
+        "schema/checker-replay-verdict.schema.json",
+        "schema/model-smoke-escape.schema.json",
+        "tools/validation_registry.py",
+        "tools/check_validation_registry.py",
+        "tools/check_model_smoke_escape_registry.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-007",
+        "DAEE-ADR-046-022"
+      ],
+      "abnormality_evidence": [
+        "workbench sidecars are documentary and mutation sweep treats any nonzero as success"
+      ],
+      "five_whys": [
+        "Why 1: verification is post-hoc and fixtures can fail for the wrong reason.",
+        "Why 2: checker selection, expectation stage/class, promotion, quarantine, and escape state have no canonical registry/verdict.",
+        "Why 3: the current owner surfaces (outputs/Sol/11_checker_fixture_and_promotion_integrity_plan.md and schema/negative-fixture-expectation.schema.json) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/11_checker_fixture_and_promotion_integrity_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/11_checker_fixture_and_promotion_integrity_plan.md",
+      "root_cause_id": "RC-PROMOTION-DELIVERY-CAMPAIGN-GAP",
+      "primary_andon_id": "A11",
+      "affected_andon_ids": [
+        "A11",
+        "A12",
+        "A13",
+        "A14",
+        "A15"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-007",
+      "hansei": {
+        "gap": "verification is post-hoc and fixtures can fail for the wrong reason",
+        "cause": "checker selection, expectation stage/class, promotion, quarantine, and escape state have no canonical registry/verdict",
+        "countermeasure": "create one registry/profile, same-stem expectation helper, hash-bound replay verdict, quarantine, and append-only detectability events",
+        "follow_up_control": "wrong-stage/wrong-class, survivor, taint, promotion drift, NO/UNKNOWN/reassessment fixtures"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_validation_registry.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class wrong_reason_rejection",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/gen_fixture_mutations.py --self-test",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/validation-integrity/invalid/wrong-earliest-checker-counted-red.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A11-wrong_reason_rejection",
+          "negative_fixture": "tests/validation-integrity/invalid/wrong-earliest-checker-counted-red.json",
+          "expected_stage": "validation",
+          "expected_failure_class": "wrong_reason_rejection",
+          "neighbor_valid_fixture": "tests/validation-integrity/valid/expected-stage-and-class-match.json",
+          "mutation_operator": "substitute-earlier-failure",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A11 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "structural promotion never upgrades to semantic truth"
+      ],
+      "next_action": "Implement A11 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A12",
+      "title": "runtime-footprint compaction may hide live obligations",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "route -> call context -> owner body load",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A07",
+        "A10"
+      ],
+      "milestone_dependencies": [
+        "A16.bootstrap",
+        "A07.terminal",
+        "A10.terminal"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A12.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A16.bootstrap",
+            "A07.terminal",
+            "A10.terminal"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/12_runtime_footprint_salience_and_load_path_fidelity_plan.md",
+        "schema/runtime-call-context.schema.json",
+        "tools/runtime_context_resolver.py",
+        "tools/check_runtime_context_delivery.py",
+        "tools/measure_load_path_budget.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-003"
+      ],
+      "abnormality_evidence": [
+        "compiled root is smaller but no hash-bound per-call obligation/body delivery proof exists"
+      ],
+      "five_whys": [
+        "Why 1: runtime-footprint compaction may hide live obligations.",
+        "Why 2: availability in package/map is treated as equivalent to selected owner text in active model context.",
+        "Why 3: the current owner surfaces (outputs/Sol/12_runtime_footprint_salience_and_load_path_fidelity_plan.md and schema/runtime-call-context.schema.json) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/12_runtime_footprint_salience_and_load_path_fidelity_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/12_runtime_footprint_salience_and_load_path_fidelity_plan.md",
+      "root_cause_id": "RC-PROMOTION-DELIVERY-CAMPAIGN-GAP",
+      "primary_andon_id": "A11",
+      "affected_andon_ids": [
+        "A11",
+        "A12",
+        "A13",
+        "A14",
+        "A15"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-002",
+      "hansei": {
+        "gap": "runtime-footprint compaction may hide live obligations",
+        "cause": "availability in package/map is treated as equivalent to selected owner text in active model context",
+        "countermeasure": "resolve hash-bound runtime call context and prior capsule at each stage without re-inlining the manual",
+        "follow_up_control": "missing owner body, wrong shard, stale context hash, route change, and budget property fixtures"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_runtime_context_delivery.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class owner_body_not_delivered",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/measure_load_path_budget.py --enforce",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/runtime-context-delivery/invalid/live-owner-absent-from-call-context.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A12-owner_body_not_delivered",
+          "negative_fixture": "tests/runtime-context-delivery/invalid/live-owner-absent-from-call-context.json",
+          "expected_stage": "runtime-context",
+          "expected_failure_class": "owner_body_not_delivered",
+          "neighbor_valid_fixture": "tests/runtime-context-delivery/valid/route-selected-owner-bytes-delivered.json",
+          "mutation_operator": "drop-owner-context-ref",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A12 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "load-path proof is delivery evidence, not model comprehension proof"
+      ],
+      "next_action": "Implement A12 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A13",
+      "title": "producer and checker contracts have drifted apart",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "runtime context -> producer -> raw output -> checker",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A10",
+        "A12"
+      ],
+      "milestone_dependencies": [
+        "A10.terminal",
+        "A12.terminal"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A13.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A10.terminal",
+            "A12.terminal"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/13_producer_checker_contract_and_harness_parity_plan.md",
+        "schema/package-harness-parity.schema.json",
+        "tools/producer-contract-registry.json",
+        "tools/check_producer_checker_parity.py",
+        "tools/check_package_harness_parity.py",
+        "tools/run_staged_current_skill_smoke.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-002",
+        "DAEE-ADR-046-009",
+        "DAEE-ADR-046-017",
+        "DAEE-ADR-046-025"
+      ],
+      "abnormality_evidence": [
+        "runner contains harness-only teaching and semantic normalization before canonical checks"
+      ],
+      "five_whys": [
+        "Why 1: producer and checker contracts have drifted apart.",
+        "Why 2: canonical runtime law, transport adaptation, and forbidden semantic repair are not classified or compared.",
+        "Why 3: the current owner surfaces (outputs/Sol/13_producer_checker_contract_and_harness_parity_plan.md and schema/package-harness-parity.schema.json) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/13_producer_checker_contract_and_harness_parity_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/13_producer_checker_contract_and_harness_parity_plan.md",
+      "root_cause_id": "RC-PROMOTION-DELIVERY-CAMPAIGN-GAP",
+      "primary_andon_id": "A11",
+      "affected_andon_ids": [
+        "A11",
+        "A12",
+        "A13",
+        "A14",
+        "A15"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-002",
+      "hansei": {
+        "gap": "producer and checker contracts have drifted apart",
+        "cause": "canonical runtime law, transport adaptation, and forbidden semantic repair are not classified or compared",
+        "countermeasure": "registry every producer clause/normalization and prove package-faithful versus harness-assisted parity without raw semantic repair",
+        "follow_up_control": "teaching-only, repair-only, adapter-only, package-isolation, and raw-first fixtures"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_producer_checker_parity.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class forbidden_semantic_repair",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/check_package_harness_parity.py --self-test",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/package-harness-parity/invalid/harness-repairs-closure-before-check.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A13-forbidden_semantic_repair",
+          "negative_fixture": "tests/package-harness-parity/invalid/harness-repairs-closure-before-check.json",
+          "expected_stage": "producer-parity",
+          "expected_failure_class": "forbidden_semantic_repair",
+          "neighbor_valid_fixture": "tests/package-harness-parity/valid/transport-only-normalization.json",
+          "mutation_operator": "enable-harness-only-clause",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A13 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "deterministic parity does not replace the package-faithful behavioral matrix"
+      ],
+      "next_action": "Implement A13 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A14",
+      "title": "five-smoke matrix/candidate/campaign control plane is missing",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "candidate -> five isolated Stage01-08 rows -> reviews",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A01",
+        "A10",
+        "A11",
+        "A12",
+        "A13",
+        "A15"
+      ],
+      "milestone_dependencies": [
+        "A01.terminal",
+        "A10.terminal",
+        "A11.terminal",
+        "A12.terminal",
+        "A13.terminal",
+        "A15.terminal"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A14.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A01.terminal",
+            "A10.terminal",
+            "A11.terminal",
+            "A12.terminal",
+            "A13.terminal",
+            "A15.terminal"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/14_five_smoke_stage01_stage08_completion_matrix_plan.md",
+        "schema/smoke-matrix.schema.json",
+        "schema/cross-model-paired-cycle.schema.json",
+        "tools/smoke_matrix_registry.py",
+        "tools/campaign_usage_ledger.py",
+        "tools/build_candidate_package_record.py",
+        "tools/run_five_smoke_matrix.py",
+        "tools/run_paired_cross_model_matrix.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-006",
+        "DAEE-ADR-046-007",
+        "DAEE-ADR-046-008",
+        "DAEE-ADR-046-009",
+        "DAEE-ADR-046-010",
+        "DAEE-ADR-046-011",
+        "DAEE-ADR-046-012",
+        "DAEE-ADR-046-013",
+        "DAEE-ADR-046-017",
+        "DAEE-ADR-046-018",
+        "DAEE-ADR-046-019",
+        "DAEE-ADR-046-020",
+        "DAEE-ADR-046-021",
+        "DAEE-ADR-046-022",
+        "DAEE-ADR-046-023",
+        "DAEE-ADR-046-024",
+        "DAEE-ADR-046-025",
+        "DAEE-ADR-046-026"
+      ],
+      "abnormality_evidence": [
+        "current preflight is hard-coded four-smoke and all target matrix/candidate/usage tools are absent"
+      ],
+      "five_whys": [
+        "Why 1: five-smoke matrix/candidate/campaign control plane is missing.",
+        "Why 2: single-use candidate, exact registry, concurrent barrier, usage, refusal, custody, review, and parent/child state were never one executable protocol.",
+        "Why 3: the current owner surfaces (outputs/Sol/14_five_smoke_stage01_stage08_completion_matrix_plan.md and schema/smoke-matrix.schema.json) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/14_five_smoke_stage01_stage08_completion_matrix_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/14_five_smoke_stage01_stage08_completion_matrix_plan.md",
+      "root_cause_id": "RC-PROMOTION-DELIVERY-CAMPAIGN-GAP",
+      "primary_andon_id": "A11",
+      "affected_andon_ids": [
+        "A11",
+        "A12",
+        "A13",
+        "A14",
+        "A15"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-006",
+      "hansei": {
+        "gap": "five-smoke matrix/candidate/campaign control plane is missing",
+        "cause": "single-use candidate, exact registry, concurrent barrier, usage, refusal, custody, review, and parent/child state were never one executable protocol",
+        "countermeasure": "implement the exact five-case registry, candidate-global claim/finalizer, three refusal outcomes, five/ten fake barriers, usage journal, staged evidence, review joins, and no-carry-forward verdicts",
+        "follow_up_control": "all claim/dispatch/refusal/barrier/usage/evidence/review/paired transition fixtures with live-model paths unreachable in self-test"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_smoke_matrix_manifest.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class candidate_reuse",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/check_paired_cross_model_manifest.py --self-test",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/smoke-matrix/invalid/claimed-candidate-reused.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A14-candidate_reuse",
+          "negative_fixture": "tests/smoke-matrix/invalid/claimed-candidate-reused.json",
+          "expected_stage": "campaign",
+          "expected_failure_class": "candidate_reuse",
+          "neighbor_valid_fixture": "tests/smoke-matrix/valid/five-isolated-accepted-before-observation.json",
+          "mutation_operator": "reuse-consumed-candidate",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A14 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [
+        "all five cases and all producer/review/custody rows"
+      ],
+      "owner_gates": [
+        "separate one-use commit approval",
+        "separate one-use push approval",
+        "standing campaign child authorization",
+        "owner WIP acceptance"
+      ],
+      "artifact_gates": [
+        "exact-SHA CI",
+        "NO_MODEL_SOURCE_PREFLIGHT_GREEN",
+        "NO_MODEL_CANDIDATE_MATURE",
+        "fresh five-row cycle",
+        "five human initial assessments before five cold reviews"
+      ],
+      "remaining_risk": [
+        "no live producer or reviewer behavior is proven until separately authorized execution"
+      ],
+      "next_action": "Implement A14 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A15",
+      "title": "arbitrary topology capacity is asserted but not demonstrated",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "open topology across all stages",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A12",
+        "A13"
+      ],
+      "milestone_dependencies": [
+        "A02.terminal",
+        "A03.terminal",
+        "A04.terminal",
+        "A05.terminal",
+        "A06.terminal",
+        "A07.terminal",
+        "A08.terminal",
+        "A09.terminal",
+        "A10.terminal",
+        "A11.scaffold",
+        "A12.terminal",
+        "A13.terminal"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A15.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A02.terminal",
+            "A03.terminal",
+            "A04.terminal",
+            "A05.terminal",
+            "A06.terminal",
+            "A07.terminal",
+            "A08.terminal",
+            "A09.terminal",
+            "A10.terminal",
+            "A11.scaffold",
+            "A12.terminal",
+            "A13.terminal"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/15_arbitrary_topology_capacity_and_metamorphic_testing_plan.md",
+        "schema/topology-capacity-spec.schema.json",
+        "tools/topology_capacity_lib.py",
+        "tools/generate_topology_capacity_cases.py",
+        "tools/check_topology_capacity_properties.py"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-003",
+        "DAEE-ADR-046-007",
+        "DAEE-ADR-046-014"
+      ],
+      "abnormality_evidence": [
+        "existing workbench tops out at small structures and repeats mass around a small topology"
+      ],
+      "five_whys": [
+        "Why 1: arbitrary topology capacity is asserted but not demonstrated.",
+        "Why 2: no generated topic-neutral property suite traverses arbitrary cardinality/shape through every join.",
+        "Why 3: the current owner surfaces (outputs/Sol/15_arbitrary_topology_capacity_and_metamorphic_testing_plan.md and schema/topology-capacity-spec.schema.json) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/15_arbitrary_topology_capacity_and_metamorphic_testing_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/15_arbitrary_topology_capacity_and_metamorphic_testing_plan.md",
+      "root_cause_id": "RC-PROMOTION-DELIVERY-CAMPAIGN-GAP",
+      "primary_andon_id": "A11",
+      "affected_andon_ids": [
+        "A11",
+        "A12",
+        "A13",
+        "A14",
+        "A15"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-003",
+      "hansei": {
+        "gap": "arbitrary topology capacity is asserted but not demonstrated",
+        "cause": "no generated topic-neutral property suite traverses arbitrary cardinality/shape through every join",
+        "countermeasure": "generate low/high cardinality, split/merge, lifecycle, dependency, recursion, projection, and anti-padding metamorphics without expected answer registration",
+        "follow_up_control": "1/10/20 burden and 1/3/6/8 submove probes plus randomized deterministic seeds"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_topology_capacity_properties.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class fixed_topology_cap",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/check_no_fixed_topology_floors.py",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/topology-capacity/invalid/fixed-cap-rejects-valid-wide-topology.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A15-fixed_topology_cap",
+          "negative_fixture": "tests/topology-capacity/invalid/fixed-cap-rejects-valid-wide-topology.json",
+          "expected_stage": "topology-property",
+          "expected_failure_class": "fixed_topology_cap",
+          "neighbor_valid_fixture": "tests/topology-capacity/valid/twenty-burden-eight-submove-capacity.json",
+          "mutation_operator": "scale-topology",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A15 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "capacity probes do not prove every possible input or topology"
+      ],
+      "next_action": "Implement A15 via its negative canary, canonical owner, neighboring valid control, mutation/right-reason proof, and deterministic Smoke B.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    },
+    {
+      "andon_id": "A16",
+      "title": "closure and sustainment criteria are fragmented",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "confirmed",
+      "code_lineage": "cross-layer",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "all stages -> closure ledger -> WIP state machine",
+        "𝓝 ⊢ D₀",
+        "Ψᴺ⟨N∈𝓝,m,τ,σ,♥,ξ,Ω,μ,κ,H⟩",
+        "IR(N,m,τ,σ,♥,ξ,Ω,μ,κ)",
+        "∇_route",
+        "ⁿB",
+        "{ⁿBᵢ[OPᵢ]}",
+        "Land(ⁿB)",
+        "ΔⁿB{♥,ξ,Ω,σ,μ}/Δκ",
+        "∇·T/∇×T",
+        "LoopBreak(∇×T)",
+        "R(H,ΔⁿB,Δκ)",
+        "𝒞(Ψᴺ)",
+        "N_fiṭrī ∧ ʿaql ṣarīḥ",
+        "T_lang: Ψᴺ ⇢ Ψᴵ"
+      ],
+      "dependencies": [],
+      "milestone_dependencies": [],
+      "milestones": [
+        {
+          "milestone_id": "A16.bootstrap",
+          "status": "VERIFIED_STRUCTURAL",
+          "depends_on": []
+        },
+        {
+          "milestone_id": "A16.terminal",
+          "status": "OPEN",
+          "depends_on": [
+            "A01.terminal",
+            "A02.terminal",
+            "A03.terminal",
+            "A04.terminal",
+            "A05.terminal",
+            "A06.terminal",
+            "A07.terminal",
+            "A08.terminal",
+            "A09.terminal",
+            "A10.terminal",
+            "A11.terminal",
+            "A12.terminal",
+            "A13.terminal",
+            "A14.terminal",
+            "A15.terminal"
+          ]
+        }
+      ],
+      "owner_sources": [
+        "outputs/Sol/17_sustainment_hansei_and_release_completion_plan.md",
+        "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md",
+        "schema/andon-closure-ledger.schema.json",
+        "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
+        "tools/check_andon_closure_ledger.py",
+        "tools/check_andon_contract_registry.py",
+        "schema/no-model-candidate-maturity.schema.json",
+        "schema/vcs-action-authorization.schema.json",
+        "schema/ci-readback.schema.json"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-001",
+        "DAEE-ADR-046-004",
+        "DAEE-ADR-046-006",
+        "DAEE-ADR-046-007",
+        "DAEE-ADR-046-008",
+        "DAEE-ADR-046-009",
+        "DAEE-ADR-046-010",
+        "DAEE-ADR-046-011",
+        "DAEE-ADR-046-012",
+        "DAEE-ADR-046-017",
+        "DAEE-ADR-046-018",
+        "DAEE-ADR-046-019",
+        "DAEE-ADR-046-020",
+        "DAEE-ADR-046-022",
+        "DAEE-ADR-046-024",
+        "DAEE-ADR-046-025",
+        "DAEE-ADR-046-026"
+      ],
+      "abnormality_evidence": [
+        "planned, implemented, owner-gated, artifact-gated, and release states are mixed across historical docs"
+      ],
+      "five_whys": [
+        "Why 1: closure and sustainment criteria are fragmented.",
+        "Why 2: no canonical dependency-aware closure ledger and state vocabulary joined all A01-A16 controls and authorization boundaries.",
+        "Why 3: the current owner surfaces (outputs/Sol/17_sustainment_hansei_and_release_completion_plan.md and outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md) do not yet enforce the required end-to-end relation.",
+        "Why 4: earlier checks concentrated on producer-declared shape or local markers rather than source-to-terminal trajectory conservation.",
+        "Why 5: the canonical countermeasure and sustained control described in outputs/Sol/17_sustainment_hansei_and_release_completion_plan.md had not been implemented at baseline HEAD."
+      ],
+      "root_owner": "outputs/Sol/17_sustainment_hansei_and_release_completion_plan.md",
+      "root_cause_id": "RC-FRAGMENTED-CLOSURE-STATE",
+      "primary_andon_id": "A16",
+      "affected_andon_ids": [
+        "A16"
+      ],
+      "shared_countermeasure_ref": "docs/audits/v0.4.6.0-wip-architecture-decisions.json#DAEE-ADR-046-004",
+      "hansei": {
+        "gap": "closure and sustainment criteria are fragmented",
+        "cause": "no canonical dependency-aware closure ledger and state vocabulary joined all A01-A16 controls and authorization boundaries",
+        "countermeasure": "bootstrap and continuously update canonical ledgers/schemas/checkers, maturity/VCS/CI/evidence controls, generated view, and terminal WIP non-claims",
+        "follow_up_control": "open-dependency, handoff+complete, stale evidence, self-cycle, wrong-SHA, auth replay, and incomplete publish fixtures"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [
+          "schema/andon-closure-ledger.schema.json",
+          "schema/architecture-decision-ledger.schema.json",
+          "schema/state-capsule-v2.schema.json",
+          "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
+          "docs/audits/v0.4.6.0-wip-andon-contract-registry.json",
+          "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
+          "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json",
+          "tools/check_andon_closure_ledger.py",
+          "tools/render_andon_closure_ledger.py",
+          "tools/check_architecture_decision_ledger.py",
+          "tools/check_andon_contract_registry.py",
+          "tools/check_state_capsule.py"
+        ],
+        "generated_files": [
+          "docs/audits/v0.4.6.0-wip-andon-closure-ledger.md"
+        ]
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "python tools/check_andon_closure_ledger.py --self-test",
+            "expected": "pre-fix boundary rejects or tool is absent; intended class open_dependency",
+            "exit_code": 0,
+            "evidence_sha256": "2dbd8f1ba4dbc44af33cb43c4930277aad3fc5238c4bc3f87b812f25cc3d8d8f"
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "python tools/run_local_ci.py --strict-pwsh",
+            "expected": "exit 0 with valid/invalid and neighboring controls passing",
+            "exit_code": null,
+            "evidence_sha256": null
+          }
+        ],
+        "right_reason_negatives": [
+          "tests/andon-closure-ledger/invalid/complete-with-open-dependency.json.expectation.json"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "ANDON-A16-open_dependency",
+          "negative_fixture": "tests/andon-closure-ledger/invalid/complete-with-open-dependency.json",
+          "expected_stage": "control-plane",
+          "expected_failure_class": "open_dependency",
+          "neighbor_valid_fixture": "tests/andon-closure-ledger/valid/a16-bootstrap-terminal-milestones.json",
+          "mutation_operator": "close-dependent-row-early",
+          "status": "VERIFIED_STRUCTURAL"
+        }
+      ],
+      "rollback": {
+        "strategy": "Revert A16 canonical-owner code/schema/fixture wiring as one coherent patch; never rewrite preserved historical evidence.",
+        "preserve": [
+          "starting dirty documentation",
+          "historical retained outputs",
+          "external evidence root"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [
+        "separate one-use commit approval",
+        "separate one-use push approval",
+        "standing campaign child authorization",
+        "owner WIP acceptance"
+      ],
+      "artifact_gates": [
+        "exact-SHA CI",
+        "NO_MODEL_SOURCE_PREFLIGHT_GREEN",
+        "NO_MODEL_CANDIDATE_MATURE",
+        "fresh five-row cycle",
+        "five human initial assessments before five cold reviews"
+      ],
+      "remaining_risk": [
+        "deterministic closure is not model, WIP, merge, release, or regression proof"
+      ],
+      "next_action": "Keep A16 terminal OPEN while A01-A15, full deterministic Smoke B, exact-SHA CI, candidate maturity, reviewed five-smoke evidence, and owner acceptance remain unsatisfied.",
+      "terminal_status": {
+        "required_status": "CLOSED_OWNER_ACCEPTED",
+        "owner_acceptance_required": true,
+        "evidence_required": [
+          "implemented owner/source at an exact commit",
+          "Smoke A red boundary",
+          "Smoke B green boundary",
+          "right-reason mutation evidence",
+          "all mandatory dependencies terminal",
+          "Hansei and follow-up control",
+          "owner acceptance"
+        ]
+      }
+    }
+  ],
+  "non_claims": [
+    "this ledger records planned/open controls and is not implementation evidence",
+    "deterministic structural verification is not semantic truth",
+    "no model PASS, WIP completion, regression causality, merge, release, or Opus claim is made"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "opaque-host-receipt.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "runtime-context-delivery",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "03",
+  "expected_failure_class": "unverifiable-host-receipt",
+  "expected_failure_subcode": "opaque-host-receipt",
+  "expected_downstream_invalidated": [
+    "04",
+    "05",
+    "06",
+    "07",
+    "08"
+  ],
+  "required_diagnostic_markers": [
+    "unverifiable-host-receipt"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "plan-12-opaque-host-receipt"
+}

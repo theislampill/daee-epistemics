@@ -1,0 +1,12 @@
+{
+    "execution_contract": "operation-capsule-v1",
+    "operation_capsules": [
+      {
+        "body_ref": "B1_1",
+        "burden_id": "B1",
+        "owner_id": "owner-a",
+        "operation": "operate-a"
+      }
+    ],
+    "hydration_policy": "projection-only"
+}

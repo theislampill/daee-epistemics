@@ -1,0 +1,23 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "nonconforming-context-prompt.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "package-harness-parity",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "preflight",
+  "expected_failure_class": "runtime-context-invalid",
+  "expected_failure_subcode": "nonconforming-context-prompt",
+  "expected_downstream_invalidated": [
+    "model-call",
+    "promotion"
+  ],
+  "required_diagnostic_markers": [
+    "nonconforming-context-prompt"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "review-repair-nonconforming-context-prompt"
+}

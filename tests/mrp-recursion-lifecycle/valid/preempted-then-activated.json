@@ -1,0 +1,218 @@
+{
+  "schema": "daee-mrp-recursion-lifecycle-fixture-v1",
+  "fixture_id": "preempted-then-activated",
+  "resource_policy": {
+    "policy_id": "runtime-budget-v1",
+    "policy_sha256": "63fbafb34c6be06aa92c2c24f7472e617e44b3697de5e41e2f0d1807270444c6",
+    "semantic_depth_cap": null,
+    "on_exhaustion": "PARTIAL"
+  },
+  "burden_cycles": [
+    {
+      "cycle_id": "C1",
+      "burden_id": "B1",
+      "origin": "B_LA",
+      "generation_depth": 0,
+      "parent_cycle_id": null,
+      "route": {
+        "record_id": "S03-C1",
+        "sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "target_burden_id": "B1"
+      },
+      "operation": {
+        "record_id": "S04-C1",
+        "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "performed": true,
+        "local_delta": {
+          "state": "B1-landable"
+        }
+      },
+      "land": {
+        "status": "landed",
+        "event_index": 40
+      },
+      "reread": {
+        "record_id": "S05-C1",
+        "sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "raw_exit": {
+          "event_id": "E1",
+          "event_index": 90,
+          "exit_disposition": "RECURSE",
+          "candidate_events": [
+            {
+              "candidate_event_id": "CE-C1-K-next-1",
+              "candidate_id": "K-next",
+              "previous_candidate_event_id": null,
+              "event_index": 50,
+              "kind": "held_activation",
+              "disposition": "activate_held",
+              "target_burden_id": "B2",
+              "next_cycle_id": "C2",
+              "basis_refs": [
+                "B2 becomes the next eligible baseline burden."
+              ],
+              "gate": null,
+              "next_action": "Execute C2."
+            },
+            {
+              "candidate_event_id": "CE-C1-K-pre-1",
+              "candidate_id": "K-pre",
+              "previous_candidate_event_id": null,
+              "event_index": 51,
+              "kind": "escape_route",
+              "disposition": "defer_preempted",
+              "target_burden_id": "B3",
+              "next_cycle_id": null,
+              "basis_refs": [
+                "B3 remains live but is pre-empted by B2."
+              ],
+              "gate": null,
+              "next_action": null
+            }
+          ],
+          "field_diagnostics": [],
+          "noetic_dependency_graph": {
+            "nodes": [],
+            "edges": [],
+            "graph_sha256": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7"
+          },
+          "no_new_resultant": null,
+          "loopbreak": null,
+          "resource_exhaustion": null,
+          "raw_exit_sha256": "22a2af34c2bb123e3891564db43794d9da752211aed2b44654dbe5660f8ce67a"
+        }
+      },
+      "lifecycle_status": "landed",
+      "terminal_state": "landed"
+    },
+    {
+      "cycle_id": "C2",
+      "burden_id": "B2",
+      "origin": "B_LA",
+      "generation_depth": 0,
+      "parent_cycle_id": null,
+      "route": {
+        "record_id": "S03-C2",
+        "sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+        "target_burden_id": "B2"
+      },
+      "operation": {
+        "record_id": "S04-C2",
+        "sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+        "performed": true,
+        "local_delta": {
+          "state": "B2-landable"
+        }
+      },
+      "land": {
+        "status": "landed",
+        "event_index": 140
+      },
+      "reread": {
+        "record_id": "S05-C2",
+        "sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+        "raw_exit": {
+          "event_id": "E2",
+          "event_index": 190,
+          "exit_disposition": "RECURSE",
+          "candidate_events": [
+            {
+              "candidate_event_id": "CE-C2-K-pre-2",
+              "candidate_id": "K-pre",
+              "previous_candidate_event_id": "CE-C1-K-pre-1",
+              "event_index": 150,
+              "kind": "held_activation",
+              "disposition": "activate_held",
+              "target_burden_id": "B3",
+              "next_cycle_id": "C3",
+              "basis_refs": [
+                "The retained pre-empted candidate is now active."
+              ],
+              "gate": null,
+              "next_action": "Execute C3."
+            }
+          ],
+          "field_diagnostics": [],
+          "noetic_dependency_graph": {
+            "nodes": [],
+            "edges": [],
+            "graph_sha256": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7"
+          },
+          "no_new_resultant": null,
+          "loopbreak": null,
+          "resource_exhaustion": null,
+          "raw_exit_sha256": "ed7b567ec4c4a2c0028693bab60888eef3cbd584073f6ba543b80fcd555629cd"
+        }
+      },
+      "lifecycle_status": "landed",
+      "terminal_state": "landed"
+    },
+    {
+      "cycle_id": "C3",
+      "burden_id": "B3",
+      "origin": "B_LA",
+      "generation_depth": 0,
+      "parent_cycle_id": null,
+      "route": {
+        "record_id": "S03-C3",
+        "sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "target_burden_id": "B3"
+      },
+      "operation": {
+        "record_id": "S04-C3",
+        "sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+        "performed": true,
+        "local_delta": {
+          "state": "B3-landable"
+        }
+      },
+      "land": {
+        "status": "landed",
+        "event_index": 240
+      },
+      "reread": {
+        "record_id": "S05-C3",
+        "sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+        "raw_exit": {
+          "event_id": "E3",
+          "event_index": 290,
+          "exit_disposition": "STOP",
+          "candidate_events": [],
+          "field_diagnostics": [],
+          "noetic_dependency_graph": {
+            "nodes": [],
+            "edges": [],
+            "graph_sha256": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7"
+          },
+          "no_new_resultant": {
+            "observed": true,
+            "live_obligation_ids": [],
+            "unresolved_candidate_ids": []
+          },
+          "loopbreak": null,
+          "resource_exhaustion": null,
+          "raw_exit_sha256": "9808db41fce072c6d11b474a5a66b47b0ead26d7a5609e6067f6b0bc11b1f3af"
+        }
+      },
+      "lifecycle_status": "landed",
+      "terminal_state": "landed"
+    }
+  ],
+  "non_claims": [
+    "Pre-emption remains distinct from rejection and activation."
+  ],
+  "validation_profile": "current-a07-v2",
+  "promotion_eligible": true,
+  "trace_id": "TRACE-preempted-then-activated",
+  "predecessor_trace_id": null,
+  "event_dag_edges": [
+    [
+      "C1",
+      "C2"
+    ],
+    [
+      "C2",
+      "C3"
+    ]
+  ]
+}

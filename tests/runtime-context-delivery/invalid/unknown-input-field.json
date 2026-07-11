@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "unknown-input-field",
+  "expected_valid": false,
+  "mutation": "schema-invalid",
+  "stage": "01"
+}

@@ -1,0 +1,6 @@
+{
+  "schema": "daee-package-harness-scenario-v1",
+  "scenario": "harness-supplement-not-enumerated",
+  "expected_valid": false,
+  "mutation": "harness-supplement-unbound"
+}

@@ -1,0 +1,6 @@
+{
+  "schema": "daee-producer-checker-scenario-v1",
+  "scenario": "prompt-projection-drift",
+  "expected_valid": false,
+  "mutation": "prompt-projection-hash-mismatch"
+}

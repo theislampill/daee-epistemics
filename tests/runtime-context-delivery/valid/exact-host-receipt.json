@@ -1,0 +1,6 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "exact-host-receipt",
+  "expected_valid": true,
+  "kind": "host-receipt"
+}

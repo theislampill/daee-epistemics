@@ -1,0 +1,6 @@
+{
+  "schema": "daee-package-harness-scenario-v1",
+  "scenario": "supplement-relabeled-package-bound",
+  "expected_valid": false,
+  "mutation": "lane-mislabel"
+}

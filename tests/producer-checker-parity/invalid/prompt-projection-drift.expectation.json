@@ -1,0 +1,23 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "prompt-projection-drift.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "producer-checker-parity",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "preflight",
+  "expected_failure_class": "prompt-projection-hash-mismatch",
+  "expected_failure_subcode": "prompt-projection-drift",
+  "expected_downstream_invalidated": [
+    "model-call",
+    "promotion"
+  ],
+  "required_diagnostic_markers": [
+    "prompt-projection-hash-mismatch"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "plan-13-prompt-projection-drift"
+}

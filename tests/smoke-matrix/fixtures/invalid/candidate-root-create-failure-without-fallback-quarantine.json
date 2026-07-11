@@ -1,0 +1,1 @@
+{"schema":"daee-smoke-matrix-v1","kind":"candidate-package-record","candidate_id":"c1","status":"QUARANTINED","authorization_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","claim_receipt_sha256":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","root_creation":"FAILED","fallback_quarantine_path":null,"promotion_eligible":false}

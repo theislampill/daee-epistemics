@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/operation-capsule.schema.json",
+  "title": "DAEE Plan05 operation-capsule-v1",
+  "$ref": "#/$defs/operation_capsule",
+  "$defs": {
+    "id_set": {"type":"array","minItems":1,"uniqueItems":true,"items":{"type":"string","minLength":1}},
+    "operation_capsule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema","canonicalization","capsule_id","cycle_id","body_ref","body_sha256","burden_id","obligation_ids","pressure_ids","owner_id","operation","register_axis","before_state","performed_operation","after_state","delta","residual","land_contribution","source_contract_refs","operation_capsule_sha256"],
+      "properties": {
+        "schema": {"const":"daee-operation-capsule-v1"},
+        "canonicalization": {"const":"daee-canonical-json-v1"},
+        "capsule_id": {"type":"string","minLength":1},
+        "cycle_id": {"type":"string","minLength":1},
+        "body_ref": {"type":"string","minLength":1},
+        "body_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+        "burden_id": {"type":"string","pattern":"^B[1-9][0-9]*$"},
+        "obligation_ids": {"type":"array","minItems":1,"maxItems":1,"uniqueItems":true,"items":{"type":"string","minLength":1}},
+        "pressure_ids": {"$ref":"#/$defs/id_set"},
+        "owner_id": {"type":"string","minLength":1},
+        "operation": {"type":"string","minLength":1},
+        "register_axis": {"type":"string","minLength":1},
+        "before_state": {"type":"object","required":["source_pressure_ids"],"properties":{"source_pressure_ids":{"$ref":"#/$defs/id_set"}}},
+        "performed_operation": {"type":"object","additionalProperties":false,"required":["mechanism","application"],"properties":{"mechanism":{"type":"string","minLength":1},"application":{"type":"string","minLength":1}}},
+        "after_state": {"type":"object"},
+        "delta": {"type":"object","additionalProperties":false,"required":["delta_id","carrier","result","recoverability_evidence"],"properties":{"delta_id":{"type":"string","minLength":1},"carrier":{"type":"string","minLength":1},"result":{"type":"string","minLength":1},"recoverability_evidence":{"type":"array","minItems":1,"items":{"type":"object","additionalProperties":false,"required":["after_state_path","value"],"properties":{"after_state_path":{"type":"string","minLength":1},"value":{}}}}}},
+        "residual": {"type":"object","additionalProperties":false,"required":["status","pressure_ids","basis"],"properties":{"status":{"enum":["none","live","held"]},"pressure_ids":{"type":"array","uniqueItems":true,"items":{"type":"string","minLength":1}},"basis":{"type":"string","minLength":1}}},
+        "land_contribution": {"type":"object","additionalProperties":false,"required":["decision","delta_ref","basis"],"properties":{"decision":{"enum":["contributes","does_not_contribute"]},"delta_ref":{"type":"string","minLength":1},"basis":{"type":"string","minLength":1}}},
+        "source_contract_refs": {"$ref":"#/$defs/id_set"},
+        "operation_capsule_sha256": {"type":"string","pattern":"^sha256:[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

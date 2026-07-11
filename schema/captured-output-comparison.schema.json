@@ -1,0 +1,10 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema","title":"DAEE captured output comparison","type":"object","additionalProperties":false,
+  "required":["schema","comparison_id","attribution_target","cells","pairings","regression_status","basis","non_claims"],
+  "properties":{"schema":{"const":"daee-captured-output-comparison-v1"},"comparison_id":{"type":"string","minLength":1},"attribution_target":{"enum":["pr9","release-line"]},"cells":{"type":"array","minItems":4,"maxItems":4,"items":{"$ref":"#/$defs/cell"}},"pairings":{"type":"array","items":{"$ref":"#/$defs/pair"}},"regression_status":{"enum":["unproven","not-comparable","confounded","candidate-observed","replicated-candidate","not-observed"]},"basis":{"type":"string","minLength":1},"non_claims":{"type":"array","minItems":2,"uniqueItems":true,"items":{"type":"string","minLength":1}}},
+  "$defs":{
+    "artifact":{"type":"object","additionalProperties":false,"required":["path","sha256","byte_count"],"properties":{"path":{"type":"string","minLength":1},"sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"},"byte_count":{"type":"integer","minimum":0}}},
+    "cell":{"type":"object","additionalProperties":false,"required":["cell_id","status","source_layer","expected_source_commit","expected_package_sha256","captures"],"properties":{"cell_id":{"enum":["v45","inherited-main","pr9-base","pr9-head"]},"status":{"enum":["run","not-run"]},"source_layer":{"enum":["v45","inherited-main","pr9-base","pr9-head"]},"expected_source_commit":{"type":"string","pattern":"^[a-f0-9]{40}$"},"expected_package_sha256":{"type":["string","null"],"pattern":"^[a-f0-9]{64}$"},"captures":{"type":"array","items":{"$ref":"#/$defs/artifact"}}}},
+    "pair":{"type":"object","additionalProperties":false,"required":["pair_id","base_capture_id","head_capture_id","capture_order"],"properties":{"pair_id":{"type":"string","minLength":1},"base_capture_id":{"type":"string","minLength":1},"head_capture_id":{"type":"string","minLength":1},"capture_order":{"type":"array","minItems":2,"maxItems":2,"items":{"type":"string","minLength":1}}}}
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "fixture_schema": "daee-mrp-recursion-lifecycle-mutation-v1",
+  "base": "tests/state-capsule-v2/valid/generated-child-of-generated-parent.json",
+  "operations": [
+    {"op": "set", "path": "/resource_policy/policy_sha256", "value": "bd97499d7e08d3429c6eee0dde6a9c050ee766e0ff41e28a357ca04ad49f5920"},
+    {"op": "set", "path": "/burden_cycles/0/reread/raw_exit/candidate_events/0/disposition", "value": "hold"}
+  ]
+}

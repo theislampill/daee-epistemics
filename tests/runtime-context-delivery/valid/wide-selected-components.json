@@ -1,0 +1,6 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "wide-selected-components",
+  "expected_valid": true,
+  "kind": "wide-capacity"
+}

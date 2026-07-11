@@ -1,0 +1,17 @@
+{
+  "schema":"daee-topology-mass-accounting-v1",
+  "case_id":"neutral-proved-duplicate",
+  "input_sha256":"1111111111111111111111111111111111111111111111111111111111111111",
+  "staged_handoff_sha256":"24bde7177dc686fb22a71dd4c6ddffe910f9823c9b7e3bc4367a03659d0366db",
+  "output_sha256":"3333333333333333333333333333333333333333333333333333333333333333",
+  "obligations":[
+    {"obligation_id":"O1","kind":"owner_operation","origin_stage":"03","source_ids":["P1","B1"],"allowed_dispositions":["satisfied"],"disposition":"satisfied","evidence_refs":["E1"],"basis":"The validated operation capsule pays the receiving obligation."},
+    {"obligation_id":"O2","kind":"owner_operation","origin_stage":"03","source_ids":["P2","B1"],"allowed_dispositions":["discharged_duplicate"],"disposition":"discharged_duplicate","evidence_refs":[],"receiving_obligation_id":"O1","decision_id":"D1","basis":"The exact merge decision discharges this derivative into O1."}
+  ],
+  "evidence_inventory":[{"evidence_id":"E1","evidence_type":"operation_capsule","artifact_id":"OC1","artifact_sha256":"6e05ec2b58e0392d3f5102d167363391c99e7358cbf30deacb6c854bdb635216","validator_receipt_id":"VR1"}],
+  "partition_decisions":[{"decision_id":"D1","decision_type":"merge","source_obligation_ids":["O2"],"receiving_obligation_id":"O1","basis":"The receiving obligation performs the shared transition."}],
+  "unaccounted_obligation_ids":[],"unreconstructible_obligation_ids":[],"open_obligation_ids":[],"orphan_evidence_refs":[],"duplicate_evidence_groups":[],
+  "initial_coverage_complete":true,"lifecycle_accounting_complete":true,"collapse_positive":true,
+  "advisory_metrics":{"output_bytes":1,"burden_count":1,"operation_capsule_count":1,"mrp_event_count":0,"generated_burden_count":0,"held_or_partial_count":0},
+  "non_claims":["counts and bytes do not determine PASS","structural accounting is not semantic truth","one run is not broad model behavior"]
+}

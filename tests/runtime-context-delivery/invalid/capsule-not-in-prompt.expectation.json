@@ -1,0 +1,27 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "capsule-not-in-prompt.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "runtime-context-delivery",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "02",
+  "expected_failure_class": "prior-capsule-not-delivered",
+  "expected_failure_subcode": "capsule-not-in-prompt",
+  "expected_downstream_invalidated": [
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08"
+  ],
+  "required_diagnostic_markers": [
+    "prior-capsule-not-delivered"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "plan-12-capsule-not-in-prompt"
+}

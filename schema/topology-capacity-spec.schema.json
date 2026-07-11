@@ -1,0 +1,243 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dawah.wiki/schema/topology-capacity-spec.schema.json",
+  "title": "DAEE topic-neutral topology capacity probe specification",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "seed",
+    "dimensions",
+    "dependency_shape",
+    "closure_policy"
+  ],
+  "properties": {
+    "schema": {"const": "daee-topology-capacity-spec-v1"},
+    "seed": {"type": "integer", "minimum": 0},
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_observations",
+        "input_pressures",
+        "candidate_states",
+        "candidate_hyperedges",
+        "baseline_burdens",
+        "submoves_per_burden",
+        "held_baseline_burdens",
+        "generated_burdens",
+        "generation_depth",
+        "preempted_candidates",
+        "route_candidate_kinds"
+      ],
+      "properties": {
+        "input_observations": {"type": "integer", "minimum": 1},
+        "input_pressures": {"type": "integer", "minimum": 1},
+        "candidate_states": {"type": "integer", "minimum": 1},
+        "candidate_hyperedges": {"type": "integer", "minimum": 1},
+        "baseline_burdens": {"type": "integer", "minimum": 1},
+        "submoves_per_burden": {"type": "integer", "minimum": 1},
+        "held_baseline_burdens": {"type": "integer", "minimum": 0},
+        "generated_burdens": {"type": "integer", "minimum": 0},
+        "generation_depth": {"type": "integer", "minimum": 0},
+        "preempted_candidates": {"type": "integer", "minimum": 0},
+        "route_candidate_kinds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "dependency_shape": {
+      "enum": [
+        "independent",
+        "chain",
+        "fan-out",
+        "fan-in",
+        "diamond",
+        "mixed",
+        "held-activation",
+        "generated-chain",
+        "generated-fan-out",
+        "pre-emption",
+        "event-dag-cycle",
+        "noetic-cycle-loopbreak"
+      ]
+    },
+    "closure_policy": {
+      "enum": ["complete-when-no-live-obligations", "partial-with-live-obligations"]
+    },
+    "baseline_declaration_order": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "integer", "minimum": 1}
+    },
+    "partition_authorizations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "authorization_key",
+          "relation_type",
+          "pressure_ordinals",
+          "receiving_burden_ordinals",
+          "owner_ordinal",
+          "operation",
+          "register_ordinal",
+          "evidence_identity",
+          "same_function_proof",
+          "authorization_sha256"
+        ],
+        "properties": {
+          "authorization_key": {"type": "string", "minLength": 1},
+          "relation_type": {
+            "enum": [
+              "one_to_one",
+              "split_distinct_functions",
+              "keep_distinct",
+              "merge_same_function",
+              "hold_unresolved"
+            ]
+          },
+          "pressure_ordinals": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "integer", "minimum": 1}
+          },
+          "receiving_burden_ordinals": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "integer", "minimum": 1}
+          },
+          "owner_ordinal": {"type": "integer", "minimum": 1},
+          "operation": {"type": "string", "minLength": 1},
+          "register_ordinal": {"type": "integer", "minimum": 1},
+          "evidence_identity": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "same_function_proof": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tau_relation",
+              "source_frame_relation",
+              "claim_cluster_relation",
+              "register_transition_relation",
+              "owner_operation_relation",
+              "restoration_vector_relation",
+              "collapse_dependency_relation"
+            ],
+            "properties": {
+              "tau_relation": {"enum": ["same", "distinct", "unresolved"]},
+              "source_frame_relation": {"enum": ["same", "distinct", "unresolved"]},
+              "claim_cluster_relation": {"enum": ["same", "distinct", "unresolved"]},
+              "register_transition_relation": {"enum": ["compatible", "distinct", "unresolved"]},
+              "owner_operation_relation": {"enum": ["compatible", "distinct", "unresolved"]},
+              "restoration_vector_relation": {"enum": ["same", "distinct", "unresolved"]},
+              "collapse_dependency_relation": {"enum": ["same", "distinct", "unresolved"]}
+            }
+          },
+          "authorization_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "shared_operation_authorizations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "authorization_key",
+          "upstream_partition_keys",
+          "pressure_ordinals",
+          "receiving_burden_ordinals",
+          "owner_ordinal",
+          "operation",
+          "register_ordinal",
+          "evidence_identity",
+          "same_function_proof",
+          "authorization_sha256"
+        ],
+        "properties": {
+          "authorization_key": {"type": "string", "minLength": 1},
+          "upstream_partition_keys": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "pressure_ordinals": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {"type": "integer", "minimum": 1}
+          },
+          "receiving_burden_ordinals": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "integer", "minimum": 1}
+          },
+          "owner_ordinal": {"type": "integer", "minimum": 1},
+          "operation": {"type": "string", "minLength": 1},
+          "register_ordinal": {"type": "integer", "minimum": 1},
+          "evidence_identity": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "same_function_proof": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tau_relation",
+              "source_frame_relation",
+              "claim_cluster_relation",
+              "register_transition_relation",
+              "owner_operation_relation",
+              "restoration_vector_relation",
+              "collapse_dependency_relation"
+            ],
+            "properties": {
+              "tau_relation": {"const": "same"},
+              "source_frame_relation": {"const": "same"},
+              "claim_cluster_relation": {"const": "same"},
+              "register_transition_relation": {"const": "compatible"},
+              "owner_operation_relation": {"const": "compatible"},
+              "restoration_vector_relation": {"const": "same"},
+              "collapse_dependency_relation": {"const": "same"}
+            }
+          },
+          "authorization_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "mutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation", "target"],
+      "properties": {
+        "operation": {
+          "enum": [
+            "delete-owner",
+            "delete-act",
+            "delete-reread",
+            "delete-nar",
+            "delete-projection-join",
+            "add-event-cycle",
+            "add-filler"
+          ]
+        },
+        "target": {"type": "string", "minLength": 1}
+      }
+    },
+    "taint": {
+      "type": "object",
+      "description": "Quarantined labels ignored by topology derivation and verdict logic.",
+      "additionalProperties": false,
+      "properties": {
+        "case_id": {"type": "string"},
+        "topic_words": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

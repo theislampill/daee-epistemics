@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-checker-fixture-v1","base":"docs/audits/v0.4.6.0-wip-andon-closure-ledger.json","operations":[{"op":"set","path":"rows.A01.status","value":"BLOCKED"},{"op":"set","path":"rows.A01.milestones.0.status","value":"BLOCKED"},{"op":"set","path":"rows.A01.next_action","value":"Preserve evidence and request the named owner decision."}]}

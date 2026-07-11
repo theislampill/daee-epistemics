@@ -1,0 +1,22 @@
+{
+  "schema": "daee-topology-capacity-probe-set-v1",
+  "specs": [
+    "specs/valid/independent-b1-s1.json",
+    "specs/valid/chain-b10-s3.json",
+    "specs/valid/fan-out-b20-s8.json",
+    "specs/valid/fan-in-b21-s6.json",
+    "specs/valid/diamond-b4-s3.json",
+    "specs/valid/mixed-b10-s6.json",
+    "specs/valid/held-activation.json",
+    "specs/valid/generated-chain.json",
+    "specs/valid/generated-fan-out.json",
+    "specs/valid/pre-emption.json",
+    "specs/valid/unknown-route-hold.json",
+    "specs/valid/noetic-cycle-loopbreak.json"
+  ],
+  "invalid_specs": [
+    "specs/invalid/generated-child-missing-reread.json",
+    "specs/invalid/event-dag-cycle.json"
+  ],
+  "non_claim": "Finite probes are capacity canaries, not runtime cardinality law."
+}

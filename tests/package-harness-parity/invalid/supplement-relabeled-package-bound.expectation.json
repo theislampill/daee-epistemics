@@ -1,0 +1,23 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "supplement-relabeled-package-bound.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "package-harness-parity",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "preflight",
+  "expected_failure_class": "lane-mislabel",
+  "expected_failure_subcode": "supplement-relabeled-package-bound",
+  "expected_downstream_invalidated": [
+    "model-call",
+    "promotion"
+  ],
+  "required_diagnostic_markers": [
+    "lane-mislabel"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "plan-13-supplement-relabeled-package-bound"
+}

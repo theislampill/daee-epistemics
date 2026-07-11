@@ -1,0 +1,23 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "case-topic-dependent-clause.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "producer-checker-parity",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "preflight",
+  "expected_failure_class": "tainted-clause-selection",
+  "expected_failure_subcode": "case-topic-dependent-clause",
+  "expected_downstream_invalidated": [
+    "model-call",
+    "promotion"
+  ],
+  "required_diagnostic_markers": [
+    "tainted-clause-selection"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "plan-13-case-topic-dependent-clause"
+}

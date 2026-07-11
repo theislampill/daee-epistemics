@@ -1,0 +1,23 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "section-vs-bundle-hash.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "producer-checker-parity",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "preflight",
+  "expected_failure_class": "projection-section-hash-mismatch",
+  "expected_failure_subcode": "section-vs-bundle-hash",
+  "expected_downstream_invalidated": [
+    "model-call",
+    "promotion"
+  ],
+  "required_diagnostic_markers": [
+    "section-vs-bundle-hash"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "review-repair-section-vs-bundle-hash"
+}

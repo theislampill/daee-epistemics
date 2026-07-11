@@ -1,0 +1,1 @@
+{"schema":"daee-witness-artifact-triplet-mutation-v1","base":"tests/witness-artifact-roles/valid/current-triplet","target":"artifact-binding.json","mutation":{"op":"replace","path":"/non_claims","value":["nonempty"]}}

@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "component-hash-drift",
+  "expected_valid": false,
+  "mutation": "component-hash-mismatch",
+  "stage": "03"
+}

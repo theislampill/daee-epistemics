@@ -1,0 +1,1 @@
+{"schema":"daee-stage-projection-mutation-v1","base":"tests/stage-projection-parity/valid/lossless-stage06-stage07.json","mutation":{"op":"add","path":"/stage07/semantic_body_text","value":"Stage07-authored proof-bearing body text"}}

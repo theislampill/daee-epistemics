@@ -1,0 +1,22 @@
+{
+  "schema": "daee-validation-integrity-inventory-v1",
+  "valid": [
+    "right-reason-stage04",
+    "right-reason-stage07"
+  ],
+  "invalid": [
+    "wrong-earliest-stage",
+    "wrong-failure-class",
+    "wrong-failure-subcode",
+    "exit-1-usage-error",
+    "exit-1-crash",
+    "timeout",
+    "malformed-diagnostic",
+    "unregistered-checker",
+    "required-not-run",
+    "verdict-output-hash-drift",
+    "checker-source-hash-drift",
+    "forbidden-artifact-exists",
+    "private-scorecard-list"
+  ]
+}

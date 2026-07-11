@@ -1,0 +1,1 @@
+{"schema":"daee-smoke-matrix-v1","kind":"structural-cycle","case_ids":["gate88-secularism","gate88-khaybar","gate88-trinitarian-j173","gate88-tst-lillard","gate88-torah-quran-source-authentication"],"stage_counts":[7,8,8,8,8],"semantic_repair_events":[],"topology_review_statuses":["PASS","PASS","PASS","PASS","PASS"],"source_maturity_used_as_candidate":false}

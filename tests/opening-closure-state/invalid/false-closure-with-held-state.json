@@ -1,0 +1,13 @@
+{
+  "opening":{"opening_state_contract":"opening-state-v2","phase":"ENTRY","state":"OPEN","closure_claim":"PENDING","trace_id":"T1","resume_from_capsule":null},
+  "transitions":["INTAKE","OPEN","ROUTED","EXECUTING","LOCAL_LANDED","REREAD_PENDING","REREAD_EVALUATED","CLOSURE_CANDIDATE","CLOSURE_CONFIRMED"],
+  "burdens":[{"burden_id":"B1","origin":"B_LA","load_bearing":true,"terminal_state":"held","gate":"owner-gate","custody_owner":"owner-a","next_action":"resume later"}],
+  "candidate_states":[{"candidate_id":"N1","status":"held","basis":"Still live."}],
+  "owner_obligations":[{"obligation_id":"O1","disposition":"held","basis":"Still blocked."}],
+  "lands":[{"burden_id":"B1","body_refs":["B1_1"],"delta_ref":"D1","reread_id":"R1"}],
+  "rereads":[{"reread_id":"R1","burden_id":"B1","status":"evaluated","next_target":null}],
+  "diagnostics":[{"operator":"divergence","target":"B1","status":"non-neutral","basis_refs":["R1"],"delta_ref":"D1"},{"operator":"curl","target":"B1","status":"null","basis_refs":["R1"],"delta_ref":"D1","dependency_refs":[],"loopbreak_ref":null}],
+  "no_new_resultant":{"stop_licensed":true,"candidate_ids":[]},"loopbreak":null,"continuation_capsule":null,
+  "coverage":{"initial_coverage_complete":true,"lifecycle_accounting_complete":true,"collapse_positive":true,"closure_confirmed":true},
+  "render_order":["restorative_response","closing_formulation","closure_reconstruction_witness","field_witness"],"witness":{"body_refs":["B1_1"],"decision":"COMPLETE"},"proposed_closure_claim":"COMPLETE"
+}

@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "missing-both-stage07-shards",
+  "expected_valid": false,
+  "mutation": "mandatory-stage-component-missing",
+  "stage": "07"
+}

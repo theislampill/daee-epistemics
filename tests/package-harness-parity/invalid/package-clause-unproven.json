@@ -1,0 +1,6 @@
+{
+  "schema": "daee-package-harness-scenario-v1",
+  "scenario": "package-clause-unproven",
+  "expected_valid": false,
+  "mutation": "package-clause-unproven"
+}

@@ -1,0 +1,66 @@
+{
+  "schema": "daee-mrp-recursion-lifecycle-fixture-v1",
+  "fixture_id": "resumable-hold",
+  "resource_policy": {
+    "policy_id": "runtime-budget-v1",
+    "policy_sha256": "63fbafb34c6be06aa92c2c24f7472e617e44b3697de5e41e2f0d1807270444c6",
+    "semantic_depth_cap": null,
+    "on_exhaustion": "PARTIAL"
+  },
+  "burden_cycles": [
+    {
+      "cycle_id": "C1",
+      "burden_id": "B1",
+      "origin": "B_LA",
+      "generation_depth": 0,
+      "parent_cycle_id": null,
+      "route": {
+        "record_id": "S03-C1",
+        "sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "target_burden_id": "B1"
+      },
+      "operation": {
+        "record_id": "S04-C1",
+        "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "performed": true,
+        "local_delta": {
+          "state": "B1-landable"
+        }
+      },
+      "land": {
+        "status": "landed",
+        "event_index": 40
+      },
+      "reread": {
+        "record_id": "S05-C1",
+        "sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "raw_exit": {
+          "event_id": "E1",
+          "event_index": 90,
+          "exit_disposition": "HOLD",
+          "candidate_events": [],
+          "field_diagnostics": [],
+          "noetic_dependency_graph": {
+            "nodes": [],
+            "edges": [],
+            "graph_sha256": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7"
+          },
+          "no_new_resultant": null,
+          "loopbreak": null,
+          "resource_exhaustion": null,
+          "raw_exit_sha256": "42bf38cf0b3aad5bfe0926eb6457699938b71efa6096ae191f0b6adb29eb580f"
+        }
+      },
+      "lifecycle_status": "held",
+      "terminal_state": "held"
+    }
+  ],
+  "non_claims": [
+    "HOLD is a terminal lane outcome with resumable custody."
+  ],
+  "validation_profile": "current-a07-v2",
+  "promotion_eligible": true,
+  "trace_id": "TRACE-resumable-hold",
+  "predecessor_trace_id": null,
+  "event_dag_edges": []
+}

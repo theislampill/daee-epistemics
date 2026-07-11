@@ -1,0 +1,1350 @@
+{
+  "act_row_details": [
+    {
+      "body_ref": "B1_1",
+      "burden_id": "B1",
+      "obligation_id": "O-c9744bc6b47b3895ed3b5984",
+      "operation": "repair-b1",
+      "owner_id": "owner-b1",
+      "pressure_ids": [
+        "P1"
+      ],
+      "register_axis": "Omega"
+    },
+    {
+      "body_ref": "B2_1",
+      "burden_id": "B2",
+      "obligation_id": "O-2a1f63013d639bba5af709d2",
+      "operation": "repair-b2",
+      "owner_id": "owner-b2",
+      "pressure_ids": [
+        "P1"
+      ],
+      "register_axis": "Omega"
+    },
+    {
+      "body_ref": "B3_1",
+      "burden_id": "B3",
+      "obligation_id": "O-04117a124ecb0ebcf9e8762b",
+      "operation": "repair-b3",
+      "owner_id": "owner-b3",
+      "pressure_ids": [
+        "P1"
+      ],
+      "register_axis": "Omega"
+    }
+  ],
+  "burden_cycles": [
+    {
+      "burden_id": "B1",
+      "cycle_id": "C1",
+      "cycle_sha256": "653a3fc32c7854e9d60f3f9eb3a0b522a977a61158176c6e31788373bcc9eec8",
+      "generation_depth": 0,
+      "land": {
+        "contribution_refs": [
+          "capsule:OC-B1-1#land_contribution"
+        ],
+        "event_id": "EV-C1-LAND",
+        "event_index": 8,
+        "event_sha256": "e650f3f538d78612c466b6f31f30e5a6c9c8267199b89f9876d917004b10bab1",
+        "operation_capsule_ids": [
+          "OC-B1-1"
+        ],
+        "record_id": "L-C1",
+        "record_sha256": "c2a116825e1ec4811db470a10f803fc9e5bcc908d90e71ebcf588bf5263b7cee",
+        "status": "landed"
+      },
+      "lifecycle_status": "landed",
+      "obligation_ids": [
+        "O-c9744bc6b47b3895ed3b5984"
+      ],
+      "obligation_set_sha256": "a3e804c58e099c6583228bbe3b2a1bdbb5ba1fed46b7b6fe439c0c0c33ee99a1",
+      "operation_capsule_ids": [
+        "OC-B1-1"
+      ],
+      "operation_events": [
+        {
+          "event_id": "EV-OC-B1-1-1",
+          "event_index": 2,
+          "event_sha256": "0de21438e42b8218aa00588310c1528099e0dc74682214bc4d9361dd8e876311",
+          "kind": "before_state",
+          "operation_capsule_id": "OC-B1-1",
+          "ref": "capsule:OC-B1-1#before_state",
+          "sequence": 1
+        },
+        {
+          "event_id": "EV-OC-B1-1-2",
+          "event_index": 3,
+          "event_sha256": "234085aa5a42bbb722b2290c878deaafc0ade4d05d3bf5092ea076a48807a3fd",
+          "kind": "owner.operation",
+          "operation_capsule_id": "OC-B1-1",
+          "ref": "route:O-c9744bc6b47b3895ed3b5984#owner.operation",
+          "sequence": 2
+        },
+        {
+          "event_id": "EV-OC-B1-1-3",
+          "event_index": 4,
+          "event_sha256": "acc0b09bcb3b34278b2eeafd1e0b674159bf71f0020a5f30ce9fe20bae1eb2d6",
+          "kind": "performed_evidence",
+          "operation_capsule_id": "OC-B1-1",
+          "ref": "capsule:OC-B1-1#performed_operation",
+          "sequence": 3
+        },
+        {
+          "event_id": "EV-OC-B1-1-4",
+          "event_index": 5,
+          "event_sha256": "1d541b5678caa73b7725d35beb34c9b75663b923d4e62d9f7ef76fc99315c9b3",
+          "kind": "local_delta",
+          "operation_capsule_id": "OC-B1-1",
+          "ref": "capsule:OC-B1-1#delta",
+          "sequence": 4
+        },
+        {
+          "event_id": "EV-OC-B1-1-5",
+          "event_index": 6,
+          "event_sha256": "238966a7fb1d5a7a737959394380563967aded7e287a2a9fbb3cfd4c790b81fa",
+          "kind": "residual",
+          "operation_capsule_id": "OC-B1-1",
+          "ref": "capsule:OC-B1-1#residual",
+          "sequence": 5
+        },
+        {
+          "event_id": "EV-OC-B1-1-6",
+          "event_index": 7,
+          "event_sha256": "6f788966f4835c85ef04e4d75d8794d34815a3258849ea4d381423a75d6a5ea5",
+          "kind": "land_contribution",
+          "operation_capsule_id": "OC-B1-1",
+          "ref": "capsule:OC-B1-1#land_contribution",
+          "sequence": 6
+        }
+      ],
+      "origin": "B_LA",
+      "parent_cycle_id": null,
+      "phase": "REREAD_EVALUATED",
+      "post_land_delta": {
+        "basis_refs": [
+          "basis:C1:delta"
+        ],
+        "delta_id": "D-C1",
+        "delta_sha256": "5b9315cab68b8b399cd64f479fc70e1503fe6344254e40cc6f53f1b84826d7ef",
+        "event_id": "EV-C1-DELTA",
+        "event_index": 9,
+        "event_sha256": "a6c1e658ef56bfe3d4b92a43c167b848040fbed01362ba1b8f76b977eb223a4e",
+        "source_land_event_id": "EV-C1-LAND",
+        "source_operation_capsule_ids": [
+          "OC-B1-1"
+        ]
+      },
+      "reread": {
+        "a07_reducer_signature_sha256": "6e2f526137dee38d1460749d7f0dc56591bc0b9803ff3aa1418f1e4a9275a3af",
+        "raw_exit": {
+          "candidate_events": [
+            {
+              "basis_refs": [
+                "basis:CE1"
+              ],
+              "candidate_event_id": "CE1",
+              "candidate_event_sha256": "f28c2c9736426c094147d6c518ed98895a7c31b9cb4db05c06bbcdc034c92d89",
+              "candidate_id": "runtime-candidate-1",
+              "disposition": "instantiate_generated",
+              "event_index": 10,
+              "gate": null,
+              "kind": "generated_instantiation",
+              "next_action": null,
+              "next_cycle_id": "C2",
+              "previous_candidate_event_id": null,
+              "target_burden_id": "B2"
+            }
+          ],
+          "event_id": "EV-C1-EXIT",
+          "event_index": 13,
+          "exit_disposition": "RECURSE",
+          "field_diagnostics": [
+            {
+              "basis_refs": [
+                "basis:FD-C1-DIV"
+              ],
+              "delta_ref": "D-C1",
+              "diagnostic_id": "FD-C1-DIV",
+              "event_index": 11,
+              "event_sha256": "4f6a45df4a0f0a2005b2bd749b0e976fa2a6c3b30c57cf87e8925153dfd27fc1",
+              "operator": "divergence",
+              "status": "neutral",
+              "target": "B1"
+            },
+            {
+              "basis_refs": [
+                "basis:FD-C1-CURL"
+              ],
+              "delta_ref": "D-C1",
+              "diagnostic_id": "FD-C1-CURL",
+              "event_index": 12,
+              "event_sha256": "6854e02203a84ca2f2808e5ef120c6865180aae7ba30e812baaa1257f7d7b527",
+              "operator": "curl",
+              "status": "null",
+              "target": "B1"
+            }
+          ],
+          "loopbreak": null,
+          "no_new_resultant": null,
+          "noetic_dependency_graph": {
+            "edges": [],
+            "graph_id": "G-C1",
+            "graph_sha256": "cbe2548b2151b9cab8cf046783ffb881b23565dc58af62f87d3c8ed1bce65090",
+            "nodes": [
+              "B1"
+            ]
+          },
+          "raw_exit_sha256": "66da7956b9ffcef22f16dd461a931705b2df0bbb52ab0c54e7eac2505b4f00fe",
+          "resource_exhaustion": null
+        },
+        "record_id": "RR-C1",
+        "record_sha256": "b6b81c7c4a73a32c1498afb136bc7798c1b4f1b6b90d95ee5378e64ad4828174",
+        "reread_signature_sha256": "2c5e746c0edc0d4d27be42e51ea9125bfdad3ba72b1214d70dcf55ae0a575928",
+        "source_delta_event_id": "EV-C1-DELTA",
+        "source_land_event_id": "EV-C1-LAND",
+        "target_burden_id": "B1"
+      },
+      "route_gradient": {
+        "basis_refs": [
+          "basis:C1:route"
+        ],
+        "event_id": "EV-C1-ROUTE",
+        "event_index": 1,
+        "event_sha256": "4db6304992c5f5daa90431fe625400312475de1bdce2f36c3ce8b4a410eb1103",
+        "record_id": "R-C1",
+        "record_sha256": "c2b2beb2c0171a9ab3c8565efebf33ea21d5a5489655cde7130897c3efb5d0ac",
+        "source_refs": [
+          "source:B1"
+        ],
+        "target_burden_id": "B1"
+      },
+      "terminal_state": "landed"
+    },
+    {
+      "burden_id": "B2",
+      "cycle_id": "C2",
+      "cycle_sha256": "cfa9398119d93c50b37088d9183b50332de7fb6f2f8b421a7587594a94dd248b",
+      "generation_depth": 1,
+      "land": {
+        "contribution_refs": [
+          "capsule:OC-B2-1#land_contribution"
+        ],
+        "event_id": "EV-C2-LAND",
+        "event_index": 21,
+        "event_sha256": "19f63027a1ffc43088fe8be4a8e21d5c695b447472cae5dc6373914b9eee4538",
+        "operation_capsule_ids": [
+          "OC-B2-1"
+        ],
+        "record_id": "L-C2",
+        "record_sha256": "4828dba7be3885a7835b467019e1467382a896f90b103230314d6496ed8b5149",
+        "status": "landed"
+      },
+      "lifecycle_status": "landed",
+      "obligation_ids": [
+        "O-2a1f63013d639bba5af709d2"
+      ],
+      "obligation_set_sha256": "5690ecf13c6e23bc9cfc2f89c5f7a9b78e76a19dfecdd16d56b4d2dd72259392",
+      "operation_capsule_ids": [
+        "OC-B2-1"
+      ],
+      "operation_events": [
+        {
+          "event_id": "EV-OC-B2-1-1",
+          "event_index": 15,
+          "event_sha256": "61a8bd42c40d72e2db3dc6d13306fe81e5ba40bc608b20a324653f79149b4441",
+          "kind": "before_state",
+          "operation_capsule_id": "OC-B2-1",
+          "ref": "capsule:OC-B2-1#before_state",
+          "sequence": 1
+        },
+        {
+          "event_id": "EV-OC-B2-1-2",
+          "event_index": 16,
+          "event_sha256": "5466cfe778a5952b3c874805630745e75f04d1b41657c468e671373306634d9d",
+          "kind": "owner.operation",
+          "operation_capsule_id": "OC-B2-1",
+          "ref": "route:O-2a1f63013d639bba5af709d2#owner.operation",
+          "sequence": 2
+        },
+        {
+          "event_id": "EV-OC-B2-1-3",
+          "event_index": 17,
+          "event_sha256": "f104c18f8ed9f2c96d4fbd214ea5f4606772675fefef27c7114020e8f8f8fc6a",
+          "kind": "performed_evidence",
+          "operation_capsule_id": "OC-B2-1",
+          "ref": "capsule:OC-B2-1#performed_operation",
+          "sequence": 3
+        },
+        {
+          "event_id": "EV-OC-B2-1-4",
+          "event_index": 18,
+          "event_sha256": "ab2a304fd3fec039266e10d82f643cb1c3c6516d1709a947cb3a9fc66c31da45",
+          "kind": "local_delta",
+          "operation_capsule_id": "OC-B2-1",
+          "ref": "capsule:OC-B2-1#delta",
+          "sequence": 4
+        },
+        {
+          "event_id": "EV-OC-B2-1-5",
+          "event_index": 19,
+          "event_sha256": "ddf7bbd9d11919557d2588357e1ba6881d7341a3e8552c860e1172bddd93930f",
+          "kind": "residual",
+          "operation_capsule_id": "OC-B2-1",
+          "ref": "capsule:OC-B2-1#residual",
+          "sequence": 5
+        },
+        {
+          "event_id": "EV-OC-B2-1-6",
+          "event_index": 20,
+          "event_sha256": "a73951ce3061b1c92230053d1a9e3bf3ea00bf1013ac6baea26fe8eef9c46379",
+          "kind": "land_contribution",
+          "operation_capsule_id": "OC-B2-1",
+          "ref": "capsule:OC-B2-1#land_contribution",
+          "sequence": 6
+        }
+      ],
+      "origin": "B_MRP",
+      "parent_cycle_id": "C1",
+      "phase": "REREAD_EVALUATED",
+      "post_land_delta": {
+        "basis_refs": [
+          "basis:C2:delta"
+        ],
+        "delta_id": "D-C2",
+        "delta_sha256": "8e7c035ed1392a79931bd28c4b9f777d002e91c6788b0b1b2db6b19cdd491c00",
+        "event_id": "EV-C2-DELTA",
+        "event_index": 22,
+        "event_sha256": "4d6c93990ff7322097186500af251d1d34066cccd1877f5b1a8621615a4fee03",
+        "source_land_event_id": "EV-C2-LAND",
+        "source_operation_capsule_ids": [
+          "OC-B2-1"
+        ]
+      },
+      "reread": {
+        "a07_reducer_signature_sha256": "5cb07f335a5ad92823d434cd68ab08faa36b19f200d5a2a20ee4b4ebb2b47ebe",
+        "raw_exit": {
+          "candidate_events": [
+            {
+              "basis_refs": [
+                "basis:CE2"
+              ],
+              "candidate_event_id": "CE2",
+              "candidate_event_sha256": "bf1033244450c4db621c538c7cfb9108844752f4d2f5d6b1cabaf3fe6cd16a30",
+              "candidate_id": "runtime-candidate-2",
+              "disposition": "instantiate_generated",
+              "event_index": 23,
+              "gate": null,
+              "kind": "generated_instantiation",
+              "next_action": null,
+              "next_cycle_id": "C3",
+              "previous_candidate_event_id": null,
+              "target_burden_id": "B3"
+            }
+          ],
+          "event_id": "EV-C2-EXIT",
+          "event_index": 26,
+          "exit_disposition": "RECURSE",
+          "field_diagnostics": [
+            {
+              "basis_refs": [
+                "basis:FD-C2-DIV"
+              ],
+              "delta_ref": "D-C2",
+              "diagnostic_id": "FD-C2-DIV",
+              "event_index": 24,
+              "event_sha256": "5f198138828ea30b1a4d86a9de45bbd186f19780f1db1faeec95c1ae91a0ad39",
+              "operator": "divergence",
+              "status": "neutral",
+              "target": "B2"
+            },
+            {
+              "basis_refs": [
+                "basis:FD-C2-CURL"
+              ],
+              "delta_ref": "D-C2",
+              "diagnostic_id": "FD-C2-CURL",
+              "event_index": 25,
+              "event_sha256": "04ca0e4c716b61d1154ffccd0a7e289310d6a49de8de9d990fdd7ca01409d506",
+              "operator": "curl",
+              "status": "null",
+              "target": "B2"
+            }
+          ],
+          "loopbreak": null,
+          "no_new_resultant": null,
+          "noetic_dependency_graph": {
+            "edges": [],
+            "graph_id": "G-C2",
+            "graph_sha256": "fd6b0de1efc575d6a33a8151d918ffc82adf7f2560bbfe322d3ae1861616b351",
+            "nodes": [
+              "B2"
+            ]
+          },
+          "raw_exit_sha256": "48c53a91e0a9787aa4bc51ce80802ee45e5632ead15310be59e06a5a9a2d310c",
+          "resource_exhaustion": null
+        },
+        "record_id": "RR-C2",
+        "record_sha256": "57e39ee019d9f5e9b1909dc478d5d6769638311d9527f57bb46b5fcdada0aeaf",
+        "reread_signature_sha256": "cdfbae103ef35ab0842fdc5798889bfe89ca41a1669a6071c5de1f07931e29ac",
+        "source_delta_event_id": "EV-C2-DELTA",
+        "source_land_event_id": "EV-C2-LAND",
+        "target_burden_id": "B2"
+      },
+      "route_gradient": {
+        "basis_refs": [
+          "basis:C2:route"
+        ],
+        "event_id": "EV-C2-ROUTE",
+        "event_index": 14,
+        "event_sha256": "13912d8f785370e287ae3bc92b35caf041b70ceefe15197c102e911db238dd0b",
+        "record_id": "R-C2",
+        "record_sha256": "a05d0499be1401718055d31ec76dc2686322abd1427df31f1ee7a4f6c0e0ab78",
+        "source_refs": [
+          "source:B2"
+        ],
+        "target_burden_id": "B2"
+      },
+      "terminal_state": "landed"
+    },
+    {
+      "burden_id": "B3",
+      "cycle_id": "C3",
+      "cycle_sha256": "3656a9958a2cf0ad366be443ea6011696c52a8f669a28caa456cd471c0b5776a",
+      "generation_depth": 2,
+      "land": {
+        "contribution_refs": [
+          "capsule:OC-B3-1#land_contribution"
+        ],
+        "event_id": "EV-C3-LAND",
+        "event_index": 34,
+        "event_sha256": "e125014f156743a6da8c0e319f4a64b15420f4ccb03e536dd47f60d45ba98fcc",
+        "operation_capsule_ids": [
+          "OC-B3-1"
+        ],
+        "record_id": "L-C3",
+        "record_sha256": "e2883287ed72ac4f320593cda9601a76cc355bb737e2fd8005efbb4a6f4c3264",
+        "status": "landed"
+      },
+      "lifecycle_status": "landed",
+      "obligation_ids": [
+        "O-04117a124ecb0ebcf9e8762b"
+      ],
+      "obligation_set_sha256": "0fc3ec5857a85137f9ae75a8b88baccdfc03ee8edd811c14cdc2ba0aa26fc6e4",
+      "operation_capsule_ids": [
+        "OC-B3-1"
+      ],
+      "operation_events": [
+        {
+          "event_id": "EV-OC-B3-1-1",
+          "event_index": 28,
+          "event_sha256": "31487fe42001e915eb68f4ac2dbcd3bc9a6d9c16674916f5755b107142f58b8c",
+          "kind": "before_state",
+          "operation_capsule_id": "OC-B3-1",
+          "ref": "capsule:OC-B3-1#before_state",
+          "sequence": 1
+        },
+        {
+          "event_id": "EV-OC-B3-1-2",
+          "event_index": 29,
+          "event_sha256": "277b762e399c51cc78582dea17ab35e356cdfbc3be6b26edda230fac673f7bb6",
+          "kind": "owner.operation",
+          "operation_capsule_id": "OC-B3-1",
+          "ref": "route:O-04117a124ecb0ebcf9e8762b#owner.operation",
+          "sequence": 2
+        },
+        {
+          "event_id": "EV-OC-B3-1-3",
+          "event_index": 30,
+          "event_sha256": "e990af67cd97af7ba1b81877cbaf9669c97c5e12c0fb02bd32ac46aecb705dbb",
+          "kind": "performed_evidence",
+          "operation_capsule_id": "OC-B3-1",
+          "ref": "capsule:OC-B3-1#performed_operation",
+          "sequence": 3
+        },
+        {
+          "event_id": "EV-OC-B3-1-4",
+          "event_index": 31,
+          "event_sha256": "c875d26d499faac331c74819ab1ecc6a0f374c461d111a9ef8899678ae75474b",
+          "kind": "local_delta",
+          "operation_capsule_id": "OC-B3-1",
+          "ref": "capsule:OC-B3-1#delta",
+          "sequence": 4
+        },
+        {
+          "event_id": "EV-OC-B3-1-5",
+          "event_index": 32,
+          "event_sha256": "32b0a4f7a7274c6e6dd6582bb37d90adeef32d8a50fd48cc5cf48f20b1c34d1d",
+          "kind": "residual",
+          "operation_capsule_id": "OC-B3-1",
+          "ref": "capsule:OC-B3-1#residual",
+          "sequence": 5
+        },
+        {
+          "event_id": "EV-OC-B3-1-6",
+          "event_index": 33,
+          "event_sha256": "f34c821b9ee7e5e5d1bff150fefc2597a865897f93a437500e72113261fe961d",
+          "kind": "land_contribution",
+          "operation_capsule_id": "OC-B3-1",
+          "ref": "capsule:OC-B3-1#land_contribution",
+          "sequence": 6
+        }
+      ],
+      "origin": "B_MRP",
+      "parent_cycle_id": "C2",
+      "phase": "REREAD_EVALUATED",
+      "post_land_delta": {
+        "basis_refs": [
+          "basis:C3:delta"
+        ],
+        "delta_id": "D-C3",
+        "delta_sha256": "d1c04623f0e16b4aacc5aa43d57b310bbb7b701fc972e09480fd39810c68b790",
+        "event_id": "EV-C3-DELTA",
+        "event_index": 35,
+        "event_sha256": "2882df0c82e8960637f76467b040fd1ade79b3a8904ac2e53621727bc32cb7a1",
+        "source_land_event_id": "EV-C3-LAND",
+        "source_operation_capsule_ids": [
+          "OC-B3-1"
+        ]
+      },
+      "reread": {
+        "a07_reducer_signature_sha256": "9418406353cac9f807e20bb0d7e6a5a6018ee8fcb7d76106c09bb9a623852956",
+        "raw_exit": {
+          "candidate_events": [],
+          "event_id": "EV-C3-EXIT",
+          "event_index": 38,
+          "exit_disposition": "STOP",
+          "field_diagnostics": [
+            {
+              "basis_refs": [
+                "basis:FD-C3-DIV"
+              ],
+              "delta_ref": "D-C3",
+              "diagnostic_id": "FD-C3-DIV",
+              "event_index": 36,
+              "event_sha256": "383059d3917ddb39e02233e4da8ee4ea09bec569fbe7284835610cf9914da252",
+              "operator": "divergence",
+              "status": "neutral",
+              "target": "B3"
+            },
+            {
+              "basis_refs": [
+                "basis:FD-C3-CURL"
+              ],
+              "delta_ref": "D-C3",
+              "diagnostic_id": "FD-C3-CURL",
+              "event_index": 37,
+              "event_sha256": "933d8dea1cb83644720af314141ec734d137cc89194a1786384d5fcb62b48443",
+              "operator": "curl",
+              "status": "null",
+              "target": "B3"
+            }
+          ],
+          "loopbreak": null,
+          "no_new_resultant": {
+            "basis_refs": [
+              "basis:C3:no-new"
+            ],
+            "live_obligation_ids": [],
+            "observed": true,
+            "sha256": "a144d3cc113e8585acf4cac2c444046c06e5acbd6e3f0be0ab828a1c132cf03a",
+            "stop_licensed": true,
+            "unresolved_candidate_ids": []
+          },
+          "noetic_dependency_graph": {
+            "edges": [],
+            "graph_id": "G-C3",
+            "graph_sha256": "cd72170dc369aceab2fe479859d8340c820b9a17ddc2355da28ca89edae8ea8d",
+            "nodes": [
+              "B3"
+            ]
+          },
+          "raw_exit_sha256": "c2f4f30ec140b82e9351ffe15fd8c748152b5d3679238a38bbaa6d157b0485dc",
+          "resource_exhaustion": null
+        },
+        "record_id": "RR-C3",
+        "record_sha256": "a5e5f8da68c29e249d2eb94143dbdaa697ca987a69e9254be4274c8b0d41b2fd",
+        "reread_signature_sha256": "025849d86dbcd0875f5817f668d1967599491f5721a0c521776800e4346dbc4b",
+        "source_delta_event_id": "EV-C3-DELTA",
+        "source_land_event_id": "EV-C3-LAND",
+        "target_burden_id": "B3"
+      },
+      "route_gradient": {
+        "basis_refs": [
+          "basis:C3:route"
+        ],
+        "event_id": "EV-C3-ROUTE",
+        "event_index": 27,
+        "event_sha256": "09a5d4e00b3c381472a31c18aa84e20da77b40059ee6488f28f971a2ac5cf37f",
+        "record_id": "R-C3",
+        "record_sha256": "7936349f7c16e1c5c7e69f4f006c25dbe4e359fc23dce4debc0cfb45a44de9de",
+        "source_refs": [
+          "source:B3"
+        ],
+        "target_burden_id": "B3"
+      },
+      "terminal_state": "landed"
+    }
+  ],
+  "burden_floor": [
+    "B1"
+  ],
+  "burden_partition_decisions": [
+    {
+      "basis": "source-bound one-pressure one-burden partition",
+      "candidate_state_ids": [
+        "N1"
+      ],
+      "decision": "one_to_one",
+      "decision_id": "BP1",
+      "held_pressure_ids": [],
+      "observation_unit_ids": [
+        "U1"
+      ],
+      "pressure_ids": [
+        "P1"
+      ],
+      "pressure_to_burden": [
+        {
+          "burden_id": "B1",
+          "pressure_id": "P1"
+        }
+      ],
+      "residual_pressure_ids": [],
+      "same_function_proof": {
+        "claim_cluster_relation": "same",
+        "collapse_dependency_relation": "same",
+        "owner_operation_relation": "compatible",
+        "register_transition_relation": "compatible",
+        "restoration_vector_relation": "same",
+        "source_frame_relation": "same",
+        "tau_relation": "same"
+      }
+    }
+  ],
+  "candidate_state_partitions": [
+    {
+      "basis": "source-bounded single-candidate decision",
+      "basis_unit_ids": [
+        "U1"
+      ],
+      "comparison": {
+        "closure_consequence_relation": "same",
+        "held_route_relation": "same",
+        "owner_eligibility_relation": "same",
+        "pressure_set_relation": "same",
+        "register_relation": "same"
+      },
+      "decision": "select_single",
+      "decisive_differentiator": "none needed for a licensed single candidate",
+      "held_state_ids": [],
+      "member_state_ids": [
+        "N1"
+      ],
+      "merged_state_ids": [],
+      "partition_id": "NP1",
+      "rejected_state_ids": [],
+      "selected_state_id": "N1",
+      "shared_observation_unit_ids": [
+        "U1"
+      ]
+    }
+  ],
+  "candidate_states": [
+    {
+      "basis": "bounded source-anchored observation basis",
+      "confidence": "strong",
+      "decisive_missing_differentiator": null,
+      "frame": "authority order",
+      "frame_token": "authority-order",
+      "hold_gate": null,
+      "live_registers": [
+        "kappa",
+        "Omega"
+      ],
+      "merged_into": null,
+      "next_review_point": null,
+      "observation_unit_ids": [
+        "U1"
+      ],
+      "partition_ids": [
+        "NP1"
+      ],
+      "pressure_ids": [
+        "P1"
+      ],
+      "read_status": "dominant",
+      "state_id": "N1",
+      "status": "selected"
+    }
+  ],
+  "canonicalization": "daee-canonical-json-v1",
+  "capsule_id": "capsule-v2-001",
+  "closure_authority": {
+    "burden_ids": [
+      "B1",
+      "B2",
+      "B3"
+    ],
+    "candidate_state_ids": [
+      "N1"
+    ],
+    "inventory_sha256": "82da56ee35fe03d1e588afaebeb5b894f4938d5a7872206d4f6689ae59f2b390",
+    "owner_obligation_ids": [
+      "O-c9744bc6b47b3895ed3b5984",
+      "O-2a1f63013d639bba5af709d2",
+      "O-04117a124ecb0ebcf9e8762b"
+    ]
+  },
+  "closure_state": {
+    "closure_confirmed": true,
+    "collapse_positive": true,
+    "curl": "null",
+    "derived_decision": "COMPLETE",
+    "divergence": "neutral",
+    "initial_coverage_complete": true,
+    "lifecycle_accounting_complete": true,
+    "loopbreak": null,
+    "opening_closure_claim": "PENDING",
+    "opening_state": "OPEN",
+    "remaining_open_ids": []
+  },
+  "current_live_burdens": [],
+  "held": [],
+  "input_coverage": {
+    "all_observation_unit_ids": [
+      "U1"
+    ],
+    "explicitly_disposed_unit_ids": [],
+    "pressure_bearing_unit_ids": [
+      "U1"
+    ],
+    "unaccounted_unit_ids": []
+  },
+  "input_pressures": [
+    {
+      "basis": "source-anchored load-bearing pressure",
+      "burden_id": "B1",
+      "candidate_state_ids": [
+        "N1"
+      ],
+      "decision_id": "BP1",
+      "observation_unit_ids": [
+        "U1"
+      ],
+      "pressure_function": "restore the source-bounded authority relation",
+      "pressure_id": "P1",
+      "register_axes": [
+        "Omega"
+      ],
+      "status": "routed"
+    }
+  ],
+  "non_claims": [
+    "Structural validity does not establish semantic truth."
+  ],
+  "observation_units": [
+    {
+      "parent_unit_id": null,
+      "source_end": 24,
+      "source_sha256": "250333b1d5f8270c31c996cd542b79e38df3edbbfacab2ac8835f4c07c53be92",
+      "source_start": 0,
+      "surface_kind": "claim",
+      "unit_id": "U1"
+    }
+  ],
+  "operation_body_artifacts": {
+    "B1_1": {
+      "content": "body:B1:1",
+      "sha256": "db64a72661789ec3abcd00e9c2604ffefd77df988879aaf762e1c6d6914af069"
+    },
+    "B2_1": {
+      "content": "body:B2:1",
+      "sha256": "1c237435274ac97ed701101180b9737c221e2ebcd3b2509a10ab67b7c11c1381"
+    },
+    "B3_1": {
+      "content": "body:B3:1",
+      "sha256": "2f1568130c35d796dc9fde7bf7e28cd96574e7851b464ddc7085f01459bf21a3"
+    }
+  },
+  "operation_capsules": [
+    {
+      "after_state": {
+        "state": "after-B1-1",
+        "state_id": "S-AFTER-B1-1"
+      },
+      "before_state": {
+        "source_pressure_ids": [
+          "P1"
+        ],
+        "state": "before-B1-1",
+        "state_id": "S-BEFORE-B1-1"
+      },
+      "body_ref": "B1_1",
+      "body_sha256": "db64a72661789ec3abcd00e9c2604ffefd77df988879aaf762e1c6d6914af069",
+      "burden_id": "B1",
+      "canonicalization": "daee-canonical-json-v1",
+      "capsule_id": "OC-B1-1",
+      "cycle_id": "C1",
+      "delta": {
+        "carrier": "B1",
+        "delta_id": "OD-B1-1",
+        "recoverability_evidence": [
+          {
+            "after_state_path": "state",
+            "value": "after-B1-1"
+          }
+        ],
+        "result": "after-B1-1"
+      },
+      "land_contribution": {
+        "basis": "delta supports Land(B1)",
+        "decision": "contributes",
+        "delta_ref": "OD-B1-1"
+      },
+      "obligation_ids": [
+        "O-c9744bc6b47b3895ed3b5984"
+      ],
+      "operation": "repair-b1",
+      "operation_capsule_sha256": "sha256:e8e8f1d7cd24aacccdc7674e83cfd1f507c26eb2d8f7f81e2428dfcaae1f8be5",
+      "owner_id": "owner-b1",
+      "performed_operation": {
+        "application": "apply repair-b1 to B1 under pressure P1",
+        "mechanism": "repair-b1"
+      },
+      "pressure_ids": [
+        "P1"
+      ],
+      "register_axis": "Omega",
+      "residual": {
+        "basis": "no residual after repair-b1",
+        "pressure_ids": [],
+        "status": "none"
+      },
+      "schema": "daee-operation-capsule-v1",
+      "source_contract_refs": [
+        "plan04-owner-route",
+        "plan05-operation-capsule"
+      ]
+    },
+    {
+      "after_state": {
+        "state": "after-B2-1",
+        "state_id": "S-AFTER-B2-1"
+      },
+      "before_state": {
+        "source_pressure_ids": [
+          "P1"
+        ],
+        "state": "before-B2-1",
+        "state_id": "S-BEFORE-B2-1"
+      },
+      "body_ref": "B2_1",
+      "body_sha256": "1c237435274ac97ed701101180b9737c221e2ebcd3b2509a10ab67b7c11c1381",
+      "burden_id": "B2",
+      "canonicalization": "daee-canonical-json-v1",
+      "capsule_id": "OC-B2-1",
+      "cycle_id": "C2",
+      "delta": {
+        "carrier": "B2",
+        "delta_id": "OD-B2-1",
+        "recoverability_evidence": [
+          {
+            "after_state_path": "state",
+            "value": "after-B2-1"
+          }
+        ],
+        "result": "after-B2-1"
+      },
+      "land_contribution": {
+        "basis": "delta supports Land(B2)",
+        "decision": "contributes",
+        "delta_ref": "OD-B2-1"
+      },
+      "obligation_ids": [
+        "O-2a1f63013d639bba5af709d2"
+      ],
+      "operation": "repair-b2",
+      "operation_capsule_sha256": "sha256:9c52a59484be00126b665d861ecac45cc0d3982587c41c1e40188aa972d319c4",
+      "owner_id": "owner-b2",
+      "performed_operation": {
+        "application": "apply repair-b2 to B2 under pressure P1",
+        "mechanism": "repair-b2"
+      },
+      "pressure_ids": [
+        "P1"
+      ],
+      "register_axis": "Omega",
+      "residual": {
+        "basis": "no residual after repair-b2",
+        "pressure_ids": [],
+        "status": "none"
+      },
+      "schema": "daee-operation-capsule-v1",
+      "source_contract_refs": [
+        "plan04-owner-route",
+        "plan05-operation-capsule"
+      ]
+    },
+    {
+      "after_state": {
+        "state": "after-B3-1",
+        "state_id": "S-AFTER-B3-1"
+      },
+      "before_state": {
+        "source_pressure_ids": [
+          "P1"
+        ],
+        "state": "before-B3-1",
+        "state_id": "S-BEFORE-B3-1"
+      },
+      "body_ref": "B3_1",
+      "body_sha256": "2f1568130c35d796dc9fde7bf7e28cd96574e7851b464ddc7085f01459bf21a3",
+      "burden_id": "B3",
+      "canonicalization": "daee-canonical-json-v1",
+      "capsule_id": "OC-B3-1",
+      "cycle_id": "C3",
+      "delta": {
+        "carrier": "B3",
+        "delta_id": "OD-B3-1",
+        "recoverability_evidence": [
+          {
+            "after_state_path": "state",
+            "value": "after-B3-1"
+          }
+        ],
+        "result": "after-B3-1"
+      },
+      "land_contribution": {
+        "basis": "delta supports Land(B3)",
+        "decision": "contributes",
+        "delta_ref": "OD-B3-1"
+      },
+      "obligation_ids": [
+        "O-04117a124ecb0ebcf9e8762b"
+      ],
+      "operation": "repair-b3",
+      "operation_capsule_sha256": "sha256:08ac099624c6b90e9dce7a705205563758356bd92ecb65f635a3912c9df9abd7",
+      "owner_id": "owner-b3",
+      "performed_operation": {
+        "application": "apply repair-b3 to B3 under pressure P1",
+        "mechanism": "repair-b3"
+      },
+      "pressure_ids": [
+        "P1"
+      ],
+      "register_axis": "Omega",
+      "residual": {
+        "basis": "no residual after repair-b3",
+        "pressure_ids": [],
+        "status": "none"
+      },
+      "schema": "daee-operation-capsule-v1",
+      "source_contract_refs": [
+        "plan04-owner-route",
+        "plan05-operation-capsule"
+      ]
+    }
+  ],
+  "owner_execution_dispositions": [
+    {
+      "basis": "executed in C1",
+      "body_ref": "B1_1",
+      "burden_id": "B1",
+      "disposition": "executed",
+      "gate": null,
+      "next_action": null,
+      "obligation_id": "O-c9744bc6b47b3895ed3b5984",
+      "satisfied_by_obligation_id": null,
+      "trigger_evidence": null
+    },
+    {
+      "basis": "executed in C2",
+      "body_ref": "B2_1",
+      "burden_id": "B2",
+      "disposition": "executed",
+      "gate": null,
+      "next_action": null,
+      "obligation_id": "O-2a1f63013d639bba5af709d2",
+      "satisfied_by_obligation_id": null,
+      "trigger_evidence": null
+    },
+    {
+      "basis": "executed in C3",
+      "body_ref": "B3_1",
+      "burden_id": "B3",
+      "disposition": "executed",
+      "gate": null,
+      "next_action": null,
+      "obligation_id": "O-04117a124ecb0ebcf9e8762b",
+      "satisfied_by_obligation_id": null,
+      "trigger_evidence": null
+    }
+  ],
+  "owner_obligation_state": {
+    "declared_ids": [
+      "O-c9744bc6b47b3895ed3b5984",
+      "O-2a1f63013d639bba5af709d2",
+      "O-04117a124ecb0ebcf9e8762b"
+    ],
+    "executed_ids": [
+      "O-c9744bc6b47b3895ed3b5984",
+      "O-2a1f63013d639bba5af709d2",
+      "O-04117a124ecb0ebcf9e8762b"
+    ],
+    "held_ids": [],
+    "partial_ids": [],
+    "terminal_disposition_sha256": "7c4b99af833fb7858cc241497658e6f60ccc6eedb2721581f3cdde7d9b9df88d"
+  },
+  "owner_routes": [
+    {
+      "basis": "routed in C1",
+      "burden_id": "B1",
+      "execution_class": "required",
+      "obligation_id": "O-c9744bc6b47b3895ed3b5984",
+      "operation": "repair-b1",
+      "owner_body_status": "loaded",
+      "owner_id": "owner-b1",
+      "partition_decision_id": "BP1",
+      "pressure_ids": [
+        "P1"
+      ],
+      "register_axis": "Omega",
+      "route_status": "executable",
+      "same_burden_cohesion": {
+        "already_handled": false,
+        "claim_cluster_relation": "same",
+        "restoration_vector_relation": "same",
+        "source_frame_relation": "same",
+        "target_family_relation": "same",
+        "tau_relation": "same"
+      },
+      "trigger": null
+    },
+    {
+      "basis": "routed in C2",
+      "burden_id": "B2",
+      "execution_class": "required",
+      "obligation_id": "O-2a1f63013d639bba5af709d2",
+      "operation": "repair-b2",
+      "owner_body_status": "loaded",
+      "owner_id": "owner-b2",
+      "partition_decision_id": "BP1",
+      "pressure_ids": [
+        "P1"
+      ],
+      "register_axis": "Omega",
+      "route_status": "executable",
+      "same_burden_cohesion": {
+        "already_handled": false,
+        "claim_cluster_relation": "same",
+        "restoration_vector_relation": "same",
+        "source_frame_relation": "same",
+        "target_family_relation": "same",
+        "tau_relation": "same"
+      },
+      "trigger": null
+    },
+    {
+      "basis": "routed in C3",
+      "burden_id": "B3",
+      "execution_class": "required",
+      "obligation_id": "O-04117a124ecb0ebcf9e8762b",
+      "operation": "repair-b3",
+      "owner_body_status": "loaded",
+      "owner_id": "owner-b3",
+      "partition_decision_id": "BP1",
+      "pressure_ids": [
+        "P1"
+      ],
+      "register_axis": "Omega",
+      "route_status": "executable",
+      "same_burden_cohesion": {
+        "already_handled": false,
+        "claim_cluster_relation": "same",
+        "restoration_vector_relation": "same",
+        "source_frame_relation": "same",
+        "target_family_relation": "same",
+        "tau_relation": "same"
+      },
+      "trigger": null
+    }
+  ],
+  "partition_derivative_mappings": [],
+  "partition_derivative_mappings_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "previous_capsule_sha256": null,
+  "projection": {
+    "activation_lifecycle_fingerprint_sha256": "d77df2717617afe6aff27b561c30d168b54d485884a602a14c1f28533e21570e",
+    "event_dag_sha256": "3d956435fd25e45e963fbfc3ce3ae09b78ea0e1dad1bd47a6dbf0ad8704d2447",
+    "field_witness_envelope_sha256": "0f9649f889d2f48d28a60b055422c6f4e65260118c75f84569e901b9a76e755e",
+    "public_field_witness_sha256": "af55bcbc54f53712677991a876c7731a26c338f374ce95b02ac66e0420f741a9",
+    "reducer_state_sha256": "236e97877e99085aa236b0beef25ccaaee78f1d20ca3a9686693c73e8abfa024",
+    "stage04_activation_projection_sha256": "36cd0d3c333d3e2c342469caa1a4586163463928e0a9c41e6a70f19355fe37f9",
+    "stage05_lifecycle_projection_sha256": "777a977588cee702711726d69108cbc68138547d711c53f87c24319ac30d5def",
+    "stage06_projection_sha256": "2115665277d5a8be5692a3caa6c721c0eb733ac69c42d9d2feae94aa59df4b66",
+    "stage07_projection_sha256": "2115665277d5a8be5692a3caa6c721c0eb733ac69c42d9d2feae94aa59df4b66"
+  },
+  "reread_signature_history": [
+    {
+      "a07_reducer_signature_sha256": "6e2f526137dee38d1460749d7f0dc56591bc0b9803ff3aa1418f1e4a9275a3af",
+      "cycle_id": "C1",
+      "raw_exit_event_id": "EV-C1-EXIT",
+      "reread_signature_sha256": "2c5e746c0edc0d4d27be42e51ea9125bfdad3ba72b1214d70dcf55ae0a575928"
+    },
+    {
+      "a07_reducer_signature_sha256": "5cb07f335a5ad92823d434cd68ab08faa36b19f200d5a2a20ee4b4ebb2b47ebe",
+      "cycle_id": "C2",
+      "raw_exit_event_id": "EV-C2-EXIT",
+      "reread_signature_sha256": "cdfbae103ef35ab0842fdc5798889bfe89ca41a1669a6071c5de1f07931e29ac"
+    },
+    {
+      "a07_reducer_signature_sha256": "9418406353cac9f807e20bb0d7e6a5a6018ee8fcb7d76106c09bb9a623852956",
+      "cycle_id": "C3",
+      "raw_exit_event_id": "EV-C3-EXIT",
+      "reread_signature_sha256": "025849d86dbcd0875f5817f668d1967599491f5721a0c521776800e4346dbc4b"
+    }
+  ],
+  "reread_signature_history_sha256": "9499a65ccd91dadda585ce1acce3fae1825cfcb7e8e601cf4d79d4a7579cf139",
+  "resource_policy": {
+    "limits": {
+      "wall_clock_seconds": 600
+    },
+    "on_exhaustion": "PARTIAL",
+    "policy_id": "uncapped-semantic-depth-v1",
+    "policy_sha256": "bd97499d7e08d3429c6eee0dde6a9c050ee766e0ff41e28a357ca04ad49f5920",
+    "semantic_depth_cap": null
+  },
+  "runtime_call_context_refs": [
+    {
+      "id": "context-stage",
+      "sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+    },
+    {
+      "id": "public-field-witness",
+      "sha256": "af55bcbc54f53712677991a876c7731a26c338f374ce95b02ac66e0420f741a9"
+    },
+    {
+      "id": "field-witness-envelope",
+      "sha256": "0f9649f889d2f48d28a60b055422c6f4e65260118c75f84569e901b9a76e755e"
+    }
+  ],
+  "schema": "daee-state-capsule-v2",
+  "selected_n_frame": "authority-order",
+  "selection_status": "licensed",
+  "source_commit": "6987c9ebf1de45af700b1fa74b1ed25ec0beeb7c",
+  "stage": "stage-08-verifier-sidecars",
+  "stage02_freeze": {
+    "B_LA": [
+      "B1"
+    ],
+    "B_LA_sequence_sha256": "e6b0d5781db025e9f118f798551a863f03de0b19e24a7cec4522a7a4626297ff",
+    "burden_partition_decision_ids": [
+      "BP1"
+    ],
+    "burden_partition_decision_set_sha256": "2631df695b86190360184f1c7af75137ce3c2edbb3f518f1f07c79664167e32e",
+    "candidate_partition_ids": [
+      "NP1"
+    ],
+    "candidate_partition_set_sha256": "f0bdb3e8fe3c95a20c3a002b1f01f3e070b6425d17c2a6a83b9d138200c7f470",
+    "candidate_state_ids": [
+      "N1"
+    ],
+    "candidate_state_set_sha256": "8df4e9192a705469c44305ab6f3d34bc14eb18411f791384516e6fd9cbfba227",
+    "contract": "stage02-baseline-freeze-v1",
+    "event_index": 0,
+    "input_pressure_ids": [
+      "P1"
+    ],
+    "input_pressure_set_sha256": "1ea012f63ce7253d3af8dbb22c0dc71079d087575b56223cac612bf9df0e1d93",
+    "observation_unit_ids": [
+      "U1"
+    ],
+    "observation_unit_set_sha256": "0e4c04c23102f939fe8f36ba87cca7a2e93869b57e0a1e1c36675e794fb2b416",
+    "record_id": "S02-FREEZE",
+    "record_sha256": "a031972c694d307f5f0e49d3afffff3f432b512a7261c202cdda8279dd9313ae",
+    "topology_state_sha256": "7008d744edbbf14be2b281fffab770c179f8ce49f4f3afd04a75d67991d3f85d"
+  },
+  "topology_contract": "input-pressure-v1",
+  "topology_mass_accounting": {
+    "advisory_metrics": {
+      "burden_count": 3,
+      "generated_burden_count": 2,
+      "held_or_partial_count": 0,
+      "mrp_event_count": 18,
+      "operation_capsule_count": 3,
+      "output_bytes": 0
+    },
+    "case_id": "trace-v2-001",
+    "collapse_positive": true,
+    "duplicate_evidence_groups": [],
+    "evidence_inventory": [
+      {
+        "artifact_id": "OC-B1-1",
+        "artifact_sha256": "abe799d685399c811e11f08b0d047d5604d5a03e8d17f6db011fcbdfd7890ffb",
+        "evidence_id": "E-O-c9744bc6b47b3895ed3b5984",
+        "evidence_type": "operation_capsule",
+        "validator_receipt_id": "VR-O-c9744bc6b47b3895ed3b5984"
+      },
+      {
+        "artifact_id": "OC-B2-1",
+        "artifact_sha256": "9c293fee2ea51b5258ad5df4a65430db9c0814e53fb6f613420747dbf1cee97c",
+        "evidence_id": "E-O-2a1f63013d639bba5af709d2",
+        "evidence_type": "operation_capsule",
+        "validator_receipt_id": "VR-O-2a1f63013d639bba5af709d2"
+      },
+      {
+        "artifact_id": "OC-B3-1",
+        "artifact_sha256": "4048bd360ebcd3321e540cc82f297e7062554e1611e969e99e8c6e969dbeeb3f",
+        "evidence_id": "E-O-04117a124ecb0ebcf9e8762b",
+        "evidence_type": "operation_capsule",
+        "validator_receipt_id": "VR-O-04117a124ecb0ebcf9e8762b"
+      }
+    ],
+    "initial_coverage_complete": true,
+    "input_sha256": "7008d744edbbf14be2b281fffab770c179f8ce49f4f3afd04a75d67991d3f85d",
+    "lifecycle_accounting_complete": true,
+    "non_claims": [
+      "counts and bytes do not determine PASS",
+      "structural accounting is not semantic truth",
+      "one run is not broad model behavior"
+    ],
+    "obligations": [
+      {
+        "allowed_dispositions": [
+          "satisfied"
+        ],
+        "basis": "validated Plan05 operation capsule",
+        "disposition": "satisfied",
+        "evidence_refs": [
+          "E-O-c9744bc6b47b3895ed3b5984"
+        ],
+        "kind": "owner_operation",
+        "obligation_id": "O-c9744bc6b47b3895ed3b5984",
+        "origin_stage": "04",
+        "source_ids": [
+          "O-c9744bc6b47b3895ed3b5984",
+          "B1",
+          "P1"
+        ]
+      },
+      {
+        "allowed_dispositions": [
+          "satisfied"
+        ],
+        "basis": "validated Plan05 operation capsule",
+        "disposition": "satisfied",
+        "evidence_refs": [
+          "E-O-2a1f63013d639bba5af709d2"
+        ],
+        "kind": "owner_operation",
+        "obligation_id": "O-2a1f63013d639bba5af709d2",
+        "origin_stage": "04",
+        "source_ids": [
+          "O-2a1f63013d639bba5af709d2",
+          "B2",
+          "P1"
+        ]
+      },
+      {
+        "allowed_dispositions": [
+          "satisfied"
+        ],
+        "basis": "validated Plan05 operation capsule",
+        "disposition": "satisfied",
+        "evidence_refs": [
+          "E-O-04117a124ecb0ebcf9e8762b"
+        ],
+        "kind": "owner_operation",
+        "obligation_id": "O-04117a124ecb0ebcf9e8762b",
+        "origin_stage": "04",
+        "source_ids": [
+          "O-04117a124ecb0ebcf9e8762b",
+          "B3",
+          "P1"
+        ]
+      }
+    ],
+    "open_obligation_ids": [],
+    "orphan_evidence_refs": [],
+    "output_sha256": "740868a9b2c2951a02579804560f65c5f45cb14a48d00a1983b93ccc1a01eeee",
+    "partition_decisions": [],
+    "schema": "daee-topology-mass-accounting-v1",
+    "staged_handoff_sha256": "a118a26bfa5ee7453770d26298038fae8c8e4e89b676cd3e7435b2e93b99f927",
+    "unaccounted_obligation_ids": [],
+    "unreconstructible_obligation_ids": []
+  },
+  "topology_mass_evidence_authority": {
+    "artifacts": [
+      {
+        "artifact_id": "OC-B1-1",
+        "artifact_sha256": "abe799d685399c811e11f08b0d047d5604d5a03e8d17f6db011fcbdfd7890ffb",
+        "content": "{\"after_state\":{\"state\":\"after-B1-1\",\"state_id\":\"S-AFTER-B1-1\"},\"before_state\":{\"source_pressure_ids\":[\"P1\"],\"state\":\"before-B1-1\",\"state_id\":\"S-BEFORE-B1-1\"},\"body_ref\":\"B1_1\",\"body_sha256\":\"db64a72661789ec3abcd00e9c2604ffefd77df988879aaf762e1c6d6914af069\",\"burden_id\":\"B1\",\"canonicalization\":\"daee-canonical-json-v1\",\"capsule_id\":\"OC-B1-1\",\"cycle_id\":\"C1\",\"delta\":{\"carrier\":\"B1\",\"delta_id\":\"OD-B1-1\",\"recoverability_evidence\":[{\"after_state_path\":\"state\",\"value\":\"after-B1-1\"}],\"result\":\"after-B1-1\"},\"land_contribution\":{\"basis\":\"delta supports Land(B1)\",\"decision\":\"contributes\",\"delta_ref\":\"OD-B1-1\"},\"obligation_ids\":[\"O-c9744bc6b47b3895ed3b5984\"],\"operation\":\"repair-b1\",\"operation_capsule_sha256\":\"sha256:e8e8f1d7cd24aacccdc7674e83cfd1f507c26eb2d8f7f81e2428dfcaae1f8be5\",\"owner_id\":\"owner-b1\",\"performed_operation\":{\"application\":\"apply repair-b1 to B1 under pressure P1\",\"mechanism\":\"repair-b1\"},\"pressure_ids\":[\"P1\"],\"register_axis\":\"Omega\",\"residual\":{\"basis\":\"no residual after repair-b1\",\"pressure_ids\":[],\"status\":\"none\"},\"schema\":\"daee-operation-capsule-v1\",\"source_contract_refs\":[\"plan04-owner-route\",\"plan05-operation-capsule\"]}"
+      },
+      {
+        "artifact_id": "OC-B2-1",
+        "artifact_sha256": "9c293fee2ea51b5258ad5df4a65430db9c0814e53fb6f613420747dbf1cee97c",
+        "content": "{\"after_state\":{\"state\":\"after-B2-1\",\"state_id\":\"S-AFTER-B2-1\"},\"before_state\":{\"source_pressure_ids\":[\"P1\"],\"state\":\"before-B2-1\",\"state_id\":\"S-BEFORE-B2-1\"},\"body_ref\":\"B2_1\",\"body_sha256\":\"1c237435274ac97ed701101180b9737c221e2ebcd3b2509a10ab67b7c11c1381\",\"burden_id\":\"B2\",\"canonicalization\":\"daee-canonical-json-v1\",\"capsule_id\":\"OC-B2-1\",\"cycle_id\":\"C2\",\"delta\":{\"carrier\":\"B2\",\"delta_id\":\"OD-B2-1\",\"recoverability_evidence\":[{\"after_state_path\":\"state\",\"value\":\"after-B2-1\"}],\"result\":\"after-B2-1\"},\"land_contribution\":{\"basis\":\"delta supports Land(B2)\",\"decision\":\"contributes\",\"delta_ref\":\"OD-B2-1\"},\"obligation_ids\":[\"O-2a1f63013d639bba5af709d2\"],\"operation\":\"repair-b2\",\"operation_capsule_sha256\":\"sha256:9c52a59484be00126b665d861ecac45cc0d3982587c41c1e40188aa972d319c4\",\"owner_id\":\"owner-b2\",\"performed_operation\":{\"application\":\"apply repair-b2 to B2 under pressure P1\",\"mechanism\":\"repair-b2\"},\"pressure_ids\":[\"P1\"],\"register_axis\":\"Omega\",\"residual\":{\"basis\":\"no residual after repair-b2\",\"pressure_ids\":[],\"status\":\"none\"},\"schema\":\"daee-operation-capsule-v1\",\"source_contract_refs\":[\"plan04-owner-route\",\"plan05-operation-capsule\"]}"
+      },
+      {
+        "artifact_id": "OC-B3-1",
+        "artifact_sha256": "4048bd360ebcd3321e540cc82f297e7062554e1611e969e99e8c6e969dbeeb3f",
+        "content": "{\"after_state\":{\"state\":\"after-B3-1\",\"state_id\":\"S-AFTER-B3-1\"},\"before_state\":{\"source_pressure_ids\":[\"P1\"],\"state\":\"before-B3-1\",\"state_id\":\"S-BEFORE-B3-1\"},\"body_ref\":\"B3_1\",\"body_sha256\":\"2f1568130c35d796dc9fde7bf7e28cd96574e7851b464ddc7085f01459bf21a3\",\"burden_id\":\"B3\",\"canonicalization\":\"daee-canonical-json-v1\",\"capsule_id\":\"OC-B3-1\",\"cycle_id\":\"C3\",\"delta\":{\"carrier\":\"B3\",\"delta_id\":\"OD-B3-1\",\"recoverability_evidence\":[{\"after_state_path\":\"state\",\"value\":\"after-B3-1\"}],\"result\":\"after-B3-1\"},\"land_contribution\":{\"basis\":\"delta supports Land(B3)\",\"decision\":\"contributes\",\"delta_ref\":\"OD-B3-1\"},\"obligation_ids\":[\"O-04117a124ecb0ebcf9e8762b\"],\"operation\":\"repair-b3\",\"operation_capsule_sha256\":\"sha256:08ac099624c6b90e9dce7a705205563758356bd92ecb65f635a3912c9df9abd7\",\"owner_id\":\"owner-b3\",\"performed_operation\":{\"application\":\"apply repair-b3 to B3 under pressure P1\",\"mechanism\":\"repair-b3\"},\"pressure_ids\":[\"P1\"],\"register_axis\":\"Omega\",\"residual\":{\"basis\":\"no residual after repair-b3\",\"pressure_ids\":[],\"status\":\"none\"},\"schema\":\"daee-operation-capsule-v1\",\"source_contract_refs\":[\"plan04-owner-route\",\"plan05-operation-capsule\"]}"
+      }
+    ],
+    "source_ids": [
+      "P1",
+      "B1",
+      "B2",
+      "B3",
+      "O-c9744bc6b47b3895ed3b5984",
+      "O-2a1f63013d639bba5af709d2",
+      "O-04117a124ecb0ebcf9e8762b"
+    ],
+    "validator_receipts": [
+      {
+        "artifact_id": "OC-B1-1",
+        "artifact_sha256": "abe799d685399c811e11f08b0d047d5604d5a03e8d17f6db011fcbdfd7890ffb",
+        "evidence_id": "E-O-c9744bc6b47b3895ed3b5984",
+        "evidence_type": "operation_capsule",
+        "receipt_id": "VR-O-c9744bc6b47b3895ed3b5984",
+        "receipt_sha256": "9b60a74ffd1c88fa0e25d591cc7100a84d42f086650deb9699d2ecdcad46716d",
+        "validator_id": "operation-capsule-contract",
+        "verdict": "PASS"
+      },
+      {
+        "artifact_id": "OC-B2-1",
+        "artifact_sha256": "9c293fee2ea51b5258ad5df4a65430db9c0814e53fb6f613420747dbf1cee97c",
+        "evidence_id": "E-O-2a1f63013d639bba5af709d2",
+        "evidence_type": "operation_capsule",
+        "receipt_id": "VR-O-2a1f63013d639bba5af709d2",
+        "receipt_sha256": "17f5514f4caf6348422fe48525996bf2c754cce3784b16c05c15f10c94533bc6",
+        "validator_id": "operation-capsule-contract",
+        "verdict": "PASS"
+      },
+      {
+        "artifact_id": "OC-B3-1",
+        "artifact_sha256": "4048bd360ebcd3321e540cc82f297e7062554e1611e969e99e8c6e969dbeeb3f",
+        "evidence_id": "E-O-04117a124ecb0ebcf9e8762b",
+        "evidence_type": "operation_capsule",
+        "receipt_id": "VR-O-04117a124ecb0ebcf9e8762b",
+        "receipt_sha256": "0c3f1776299d480b8b68b954367f0d58789dc5ccbe1fdce351dd8d8a19e25f01",
+        "validator_id": "operation-capsule-contract",
+        "verdict": "PASS"
+      }
+    ]
+  },
+  "topology_mass_evidence_authority_sha256": "0083158b1f278bd8448f6598822e2eb5396b0fa244351221bf787e1f618c6e6d",
+  "trace_id": "trace-v2-001",
+  "upstream_obligation_ids": [
+    "O-c9744bc6b47b3895ed3b5984",
+    "O-2a1f63013d639bba5af709d2",
+    "O-04117a124ecb0ebcf9e8762b"
+  ],
+  "upstream_obligation_set_sha256": "a118a26bfa5ee7453770d26298038fae8c8e4e89b676cd3e7435b2e93b99f927",
+  "upstream_partition_decision_ids": [
+    "BP1"
+  ],
+  "upstream_pressure_ids": [
+    "P1"
+  ]
+}

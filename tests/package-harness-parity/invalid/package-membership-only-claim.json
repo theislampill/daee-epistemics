@@ -1,0 +1,6 @@
+{
+  "schema": "daee-package-harness-scenario-v1",
+  "scenario": "package-membership-only-claim",
+  "expected_valid": false,
+  "mutation": "membership-is-not-delivery"
+}

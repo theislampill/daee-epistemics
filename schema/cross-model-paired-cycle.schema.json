@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/cross-model-paired-cycle.schema.json",
+  "title": "Separately authorized post-completion GPT/Opus paired cycle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "kind", "parent_cycle_id", "post_completion_opus_authorization", "gpt_candidate", "opus_candidate", "gpt_rows", "opus_rows", "pass_carry_forward", "root_recurrences", "dispatch_manifest"],
+  "properties": {
+    "schema": {"const": "daee-cross-model-paired-cycle-v1"},
+    "kind": {"const": "paired-cycle-manifest"},
+    "parent_cycle_id": {"type": "string", "minLength": 1},
+    "post_completion_opus_authorization": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "gpt_candidate": {"$ref": "#/$defs/candidate"},
+    "opus_candidate": {"$ref": "#/$defs/candidate"},
+    "gpt_rows": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"$ref": "#/$defs/row"}},
+    "opus_rows": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"$ref": "#/$defs/row"}},
+    "pass_carry_forward": {"type": "boolean"},
+    "root_recurrences": {"type": "array", "items": {"$ref": "#/$defs/recurrence"}},
+    "dispatch_manifest": {"$ref": "#/$defs/dispatch"}
+  },
+  "$defs": {
+    "candidate": {"type": "object", "additionalProperties": false, "required": ["candidate_id", "source_commit", "package_sha256", "archive_sha256", "extracted_tree_sha256", "build_manifest_sha256", "registry_sha256"], "properties": {"candidate_id": {"type": "string", "minLength": 1}, "source_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"}, "package_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "archive_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "extracted_tree_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "build_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "registry_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}},
+    "row": {"type": "object", "additionalProperties": false, "required": ["row_id", "model_family", "case_id", "worker", "candidate_id"], "properties": {"row_id": {"type": "string", "minLength": 1}, "model_family": {"enum": ["GPT", "OPUS"]}, "case_id": {"type": "string", "minLength": 1}, "worker": {"type": "string", "minLength": 1}, "candidate_id": {"type": "string", "minLength": 1}}},
+    "recurrence": {"type": "object", "additionalProperties": false, "required": ["model_family", "root_cause_id", "circuit_breaker"], "properties": {"model_family": {"enum": ["GPT", "OPUS"]}, "root_cause_id": {"type": "string", "minLength": 1}, "circuit_breaker": {"enum": ["OPEN", "CLOSED"]}}},
+    "worker": {"type": "object", "additionalProperties": false, "required": ["worker", "case_id", "model_family", "home", "cache", "run_root"], "properties": {"worker": {"type": "string", "minLength": 1}, "case_id": {"type": "string", "minLength": 1}, "model_family": {"enum": ["GPT", "OPUS"]}, "home": {"type": "string", "minLength": 1}, "cache": {"type": "string", "minLength": 1}, "run_root": {"type": "string", "minLength": 1}}},
+    "event": {"type": "object", "additionalProperties": false, "required": ["event", "sequence", "predecessor_event_sha256", "event_sha256"], "properties": {"event": {"enum": ["worker_ready", "barrier_release", "request_submit_started", "request_accepted", "call_entered_in_flight", "all_ten_in_flight", "first_result_awaited", "terminal_result_observed", "provider_auth_failure"]}, "worker": {"type": "string"}, "case_id": {"type": "string"}, "model_family": {"enum": ["GPT", "OPUS"]}, "sequence": {"type": "integer", "minimum": 1}, "predecessor_event_sha256": {"type": ["string", "null"]}, "event_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}},
+    "dispatch": {"type": "object", "additionalProperties": false, "required": ["protocol", "expected_workers", "workers", "events"], "properties": {"protocol": {"const": "barrier-ten-submit-before-await-v1"}, "expected_workers": {"const": 10}, "workers": {"type": "array", "minItems": 10, "maxItems": 10, "items": {"$ref": "#/$defs/worker"}}, "events": {"type": "array", "items": {"$ref": "#/$defs/event"}}}}
+  }
+}

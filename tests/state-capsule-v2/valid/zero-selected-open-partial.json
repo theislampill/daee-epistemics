@@ -1,0 +1,307 @@
+{
+  "act_row_details": [],
+  "burden_cycles": [],
+  "burden_floor": [],
+  "burden_partition_decisions": [
+    {
+      "basis": "not licensed",
+      "candidate_state_ids": [
+        "N0"
+      ],
+      "decision": "hold_unresolved",
+      "decision_id": "BP0",
+      "held_pressure_ids": [
+        "P0"
+      ],
+      "observation_unit_ids": [
+        "U1"
+      ],
+      "pressure_ids": [
+        "P0"
+      ],
+      "pressure_to_burden": [],
+      "residual_pressure_ids": [],
+      "same_function_proof": {
+        "claim_cluster_relation": "unresolved",
+        "collapse_dependency_relation": "unresolved",
+        "owner_operation_relation": "unresolved",
+        "register_transition_relation": "unresolved",
+        "restoration_vector_relation": "unresolved",
+        "source_frame_relation": "unresolved",
+        "tau_relation": "unresolved"
+      }
+    }
+  ],
+  "candidate_state_partitions": [
+    {
+      "basis": "preserved",
+      "basis_unit_ids": [
+        "U1"
+      ],
+      "comparison": {
+        "closure_consequence_relation": "unresolved",
+        "held_route_relation": "unresolved",
+        "owner_eligibility_relation": "unresolved",
+        "pressure_set_relation": "unresolved",
+        "register_relation": "unresolved"
+      },
+      "decision": "keep_distinct",
+      "decisive_differentiator": "new source evidence",
+      "held_state_ids": [
+        "N0"
+      ],
+      "member_state_ids": [
+        "N0"
+      ],
+      "merged_state_ids": [],
+      "partition_id": "NP0",
+      "rejected_state_ids": [],
+      "selected_state_id": null,
+      "shared_observation_unit_ids": [
+        "U1"
+      ]
+    }
+  ],
+  "candidate_states": [
+    {
+      "basis": "source-anchored underdetermination",
+      "confidence": "low",
+      "decisive_missing_differentiator": "new source evidence",
+      "frame": "underdetermined frame",
+      "frame_token": "underdetermined-frame",
+      "hold_gate": "evidence",
+      "live_registers": [
+        "Omega"
+      ],
+      "merged_into": null,
+      "next_review_point": "after evidence",
+      "observation_unit_ids": [
+        "U1"
+      ],
+      "partition_ids": [
+        "NP0"
+      ],
+      "pressure_ids": [
+        "P0"
+      ],
+      "read_status": "underdetermined",
+      "state_id": "N0",
+      "status": "underdetermined"
+    }
+  ],
+  "canonicalization": "daee-canonical-json-v1",
+  "capsule_id": "capsule-v2-001",
+  "closure_authority": {
+    "burden_ids": [],
+    "candidate_state_ids": [
+      "N0"
+    ],
+    "inventory_sha256": "6804caafc5aef523dd94371263a11c118053f8f2d7439d3b723698cab496498d",
+    "owner_obligation_ids": []
+  },
+  "closure_state": {
+    "closure_confirmed": false,
+    "collapse_positive": false,
+    "curl": "unknown",
+    "derived_decision": "HOLD",
+    "divergence": "unknown",
+    "initial_coverage_complete": true,
+    "lifecycle_accounting_complete": true,
+    "loopbreak": null,
+    "opening_closure_claim": "PENDING",
+    "opening_state": "OPEN",
+    "remaining_open_ids": [
+      "N0",
+      "P0"
+    ]
+  },
+  "current_live_burdens": [],
+  "held": [
+    {
+      "basis": "underdetermined",
+      "gate": "evidence",
+      "item_id": "N0",
+      "kind": "candidate",
+      "next_action": "reassess"
+    },
+    {
+      "basis": "awaiting evidence",
+      "gate": "evidence",
+      "item_id": "P0",
+      "kind": "pressure",
+      "next_action": "reassess"
+    }
+  ],
+  "input_coverage": {
+    "all_observation_unit_ids": [
+      "U1"
+    ],
+    "explicitly_disposed_unit_ids": [],
+    "pressure_bearing_unit_ids": [
+      "U1"
+    ],
+    "unaccounted_unit_ids": []
+  },
+  "input_pressures": [
+    {
+      "basis": "awaiting evidence",
+      "burden_id": null,
+      "candidate_state_ids": [
+        "N0"
+      ],
+      "decision_id": "BP0",
+      "observation_unit_ids": [
+        "U1"
+      ],
+      "pressure_function": "bound the unresolved relation",
+      "pressure_id": "P0",
+      "register_axes": [
+        "Omega"
+      ],
+      "status": "held"
+    }
+  ],
+  "non_claims": [
+    "Structural validity does not establish semantic truth."
+  ],
+  "observation_units": [
+    {
+      "parent_unit_id": null,
+      "source_end": 24,
+      "source_sha256": "250333b1d5f8270c31c996cd542b79e38df3edbbfacab2ac8835f4c07c53be92",
+      "source_start": 0,
+      "surface_kind": "claim",
+      "unit_id": "U1"
+    }
+  ],
+  "operation_body_artifacts": {},
+  "operation_capsules": [],
+  "owner_execution_dispositions": [],
+  "owner_obligation_state": {
+    "declared_ids": [],
+    "executed_ids": [],
+    "held_ids": [],
+    "partial_ids": [],
+    "terminal_disposition_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  "owner_routes": [],
+  "partition_derivative_mappings": [],
+  "partition_derivative_mappings_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "previous_capsule_sha256": null,
+  "projection": {
+    "activation_lifecycle_fingerprint_sha256": null,
+    "event_dag_sha256": null,
+    "field_witness_envelope_sha256": null,
+    "public_field_witness_sha256": null,
+    "reducer_state_sha256": null,
+    "stage04_activation_projection_sha256": null,
+    "stage05_lifecycle_projection_sha256": null,
+    "stage06_projection_sha256": null,
+    "stage07_projection_sha256": null
+  },
+  "reread_signature_history": [],
+  "reread_signature_history_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "resource_policy": {
+    "limits": {
+      "wall_clock_seconds": 600
+    },
+    "on_exhaustion": "PARTIAL",
+    "policy_id": "uncapped-semantic-depth-v1",
+    "policy_sha256": "bd97499d7e08d3429c6eee0dde6a9c050ee766e0ff41e28a357ca04ad49f5920",
+    "semantic_depth_cap": null
+  },
+  "runtime_call_context_refs": [
+    {
+      "id": "context-stage",
+      "sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+    }
+  ],
+  "schema": "daee-state-capsule-v2",
+  "selected_n_frame": null,
+  "selection_status": "not_licensed",
+  "source_commit": "6987c9ebf1de45af700b1fa74b1ed25ec0beeb7c",
+  "stage": "stage-02-layer-a-diagnostic-ir",
+  "stage02_freeze": {
+    "B_LA": [],
+    "B_LA_sequence_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "burden_partition_decision_ids": [
+      "BP0"
+    ],
+    "burden_partition_decision_set_sha256": "d016be0ee310c2d598ef2200917560fecacb916fa396b74f0961d44ceae2ea0e",
+    "candidate_partition_ids": [
+      "NP0"
+    ],
+    "candidate_partition_set_sha256": "d32224a778d572a9020f6fb723a2e339efc42026b197513c8b78c96867949a22",
+    "candidate_state_ids": [
+      "N0"
+    ],
+    "candidate_state_set_sha256": "9c13a2ed99d8eaac539e5b7aa10d0662d8bd00e1cb1ba80d6130eb01a32b8e7b",
+    "contract": "stage02-baseline-freeze-v1",
+    "event_index": 0,
+    "input_pressure_ids": [
+      "P0"
+    ],
+    "input_pressure_set_sha256": "ed5dabe251b8968e294dffde4993f50a93e33e3604c0be5c5b497e4d15b3e250",
+    "observation_unit_ids": [
+      "U1"
+    ],
+    "observation_unit_set_sha256": "0e4c04c23102f939fe8f36ba87cca7a2e93869b57e0a1e1c36675e794fb2b416",
+    "record_id": "S02-FREEZE",
+    "record_sha256": "ad43fd0feec2ccc08a22765cf4c8d67cf5c539c131373f555879ee6bb239506c",
+    "topology_state_sha256": "120d339323756e149754f96b0aa456e551f3f962bd9366b309e7ba539dbf427f"
+  },
+  "topology_contract": "input-pressure-v1",
+  "topology_mass_accounting": {
+    "advisory_metrics": {
+      "burden_count": 0,
+      "generated_burden_count": 0,
+      "held_or_partial_count": 2,
+      "mrp_event_count": 0,
+      "operation_capsule_count": 0,
+      "output_bytes": 0
+    },
+    "authoritative_empty_universe": {
+      "basis": "independent Plan04 owner-obligation inventory is empty",
+      "source_count": 0,
+      "source_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "case_id": "trace-v2-001",
+    "collapse_positive": true,
+    "duplicate_evidence_groups": [],
+    "evidence_inventory": [],
+    "initial_coverage_complete": true,
+    "input_sha256": "120d339323756e149754f96b0aa456e551f3f962bd9366b309e7ba539dbf427f",
+    "lifecycle_accounting_complete": true,
+    "non_claims": [
+      "counts and bytes do not determine PASS",
+      "structural accounting is not semantic truth",
+      "one run is not broad model behavior"
+    ],
+    "obligations": [],
+    "open_obligation_ids": [],
+    "orphan_evidence_refs": [],
+    "output_sha256": "72508e9967cff6516cfd89990e1474d5dd43e23fed3663fcba2c7a1cfbacda9c",
+    "partition_decisions": [],
+    "schema": "daee-topology-mass-accounting-v1",
+    "staged_handoff_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "unaccounted_obligation_ids": [],
+    "unreconstructible_obligation_ids": []
+  },
+  "topology_mass_evidence_authority": {
+    "artifacts": [],
+    "source_ids": [
+      "P0"
+    ],
+    "validator_receipts": []
+  },
+  "topology_mass_evidence_authority_sha256": "a092aecd11afc6fde6cc6a359f196477e9670a72672232983530b4c3cda69e67",
+  "trace_id": "trace-v2-001",
+  "upstream_obligation_ids": [],
+  "upstream_obligation_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "upstream_partition_decision_ids": [
+    "BP0"
+  ],
+  "upstream_pressure_ids": [
+    "P0"
+  ]
+}

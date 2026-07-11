@@ -1,0 +1,6 @@
+{
+  "schema": "daee-producer-checker-scenario-v1",
+  "scenario": "lossless-answer-normalizer",
+  "expected_valid": true,
+  "kind": "lossless-normalizer"
+}

@@ -95,6 +95,46 @@ mixed evidence, proposal, and release claims.
 
 ## Active
 
+### [MUST][smoke][decision][docs] v0.4.6.0-wip Five-Smoke ANDON Convergence Control
+
+- Problem: the repository has historical all-at-once four-smoke repair evidence and
+  general IMPLEMENTAUDIT failure discipline, but no current version-controlled owner
+  stating that every Stage01-Stage08 or review ANDON fails the whole five-case cycle,
+  requires audited countermeasures/canaries, and forces a fresh candidate plus a full
+  five-case rerun.
+- Decision owner: `docs/audits/v0.4.6.0-wip-five-smoke-andon-convergence-north-star-addendum.md`.
+- Historical basis: `docs/audits/v0.4.5.0-release-repair-replacement.md`.
+- Planned implementation owners: A01 review custody, A11 validation registry, A13
+  package/harness parity, A14 five-case registry/matrix runner, and A16 closure ledger.
+- Required proof before completion: deterministic right-reason fixtures, fresh
+  neutral candidate custody, and five isolated package-faithful `gpt-5.5/high`
+  runs in one cycle through `tools/run_five_smoke_matrix.py --model-runner
+  codex`, with exact resolved versions retained, Stage01-Stage08 replay, cold
+  GPT-5.6 reviews, human reviews/adjudication, and one hash-bound all-five PASS
+  verdict.
+- Cost/escape control: the full model matrix is not the debugger. Every defect
+  first found by a model smoke receives a `MODEL_SMOKE_ESCAPE` classification;
+  deterministically reproducible escapes require retained red-old/green-new
+  canaries and mutation/right-reason coverage before another paid cycle.
+- Launch control: source preflight precedes candidate build; package-bound
+  candidate maturity precedes spending; producer/reviewer usage shares one
+  CAS-governed campaign head; a barrier proves five accepted/in-flight workers
+  before first-result observation; every claimed cycle has an external claim and
+  neutral observation finalizer; evidence is staged, hash-verified, atomically
+  published, and read back outside the ignored working tree.
+- Accepted owner decisions: the objective has no arbitrary cycle/cumulative-call
+  ceiling; each GPT cycle reserves exactly five producer calls and records
+  factual cost. Pre-claim failure may preserve `READY_UNUSED`; every post-claim
+  candidate is terminal, including `CONSUMED_DISPATCH_UNKNOWN`. One human
+  hash-claims all five initial assessments before cold-review disclosure; failed
+  or ambiguous cold review pauses with an owner incident and complete retry
+  lineage. Proved infrastructure-only repair does not require a fake commit.
+- Boundary: this tracked control document does not create the planned schema/tools,
+  authorize model calls, authorize commit/push without separate one-use VCS
+  authorizations, or imply package/tag/release/provenance/publication.
+- Status: active implementation target; documentation owner added, implementation and
+  behavioral proof still open.
+
 ### [MUST][checker][source] Current Canon Checker Anchors
 
 - Problem: current-canon metacompliance intentionally verifies that TODO still

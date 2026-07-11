@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/checker-replay-verdict.schema.json",
+  "title": "DAEE hash-bound checker replay verdict",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "verdict_id", "source_commit", "selected_profile", "registry_path", "registry_sha256", "launch", "completion", "artifacts", "checker_results", "aggregate_status", "mutation_fault_id", "structural_non_claims"],
+  "properties": {
+    "schema": {"const": "daee-checker-replay-verdict-v1"},
+    "verdict_id": {"type": "string", "minLength": 1},
+    "source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "selected_profile": {"type": "string", "minLength": 1},
+    "registry_path": {"type": "string", "minLength": 1},
+    "registry_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "launch": {"type": "object", "additionalProperties": false, "required": ["started_at", "argv_sha256", "record_sha256"], "properties": {"started_at": {"type": "string", "minLength": 1}, "argv_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "record_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}},
+    "completion": {"type": "object", "additionalProperties": false, "required": ["finished_at", "duration_ms", "record_sha256"], "properties": {"finished_at": {"type": "string", "minLength": 1}, "duration_ms": {"type": "integer", "minimum": 0}, "record_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}},
+    "artifacts": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["role", "artifact_type", "path", "sha256"], "properties": {"role": {"type": "string"}, "artifact_type": {"type": "string"}, "path": {"type": "string"}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}}},
+    "checker_results": {"type": "array", "items": {"$ref": "#/$defs/checkerResult"}},
+    "aggregate_status": {"enum": ["PASS_STRUCTURAL", "FAIL_STRUCTURAL", "QUARANTINED_INCOMPLETE_EVIDENCE", "INFRASTRUCTURE_ERROR", "NOT_RUN"]},
+    "mutation_fault_id": {"type": ["string", "null"]},
+    "structural_non_claims": {"type": "array", "minItems": 3, "items": {"type": "string"}}
+  },
+  "$defs": {
+    "checkerResult": {
+      "type": "object", "additionalProperties": false,
+      "required": ["checker_id", "tool_path", "tool_sha256", "artifact_type", "artifact_sha256", "execution_status", "exit_category", "exit_code", "timeout", "crash", "usage_error", "malformed_diagnostic", "diagnostic", "stdout_sha256", "stderr_sha256", "downstream_invalidated", "forbidden_artifact_readback", "expectation_status"],
+      "properties": {
+        "checker_id": {"type": "string"}, "tool_path": {"type": "string"}, "tool_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "artifact_type": {"type": "string"}, "artifact_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "execution_status": {"enum": ["completed", "not-run", "timeout", "crashed", "unavailable"]},
+        "exit_category": {"enum": ["accepted", "structural-rejection", "usage-error", "timeout", "crash", "malformed-diagnostic", "unavailable", "not-run"]},
+        "exit_code": {"type": ["integer", "null"]}, "timeout": {"type": "boolean"}, "crash": {"type": "boolean"}, "usage_error": {"type": "boolean"}, "malformed_diagnostic": {"type": "boolean"},
+        "diagnostic": {"type": ["object", "null"], "additionalProperties": false, "properties": {"diagnostic_id": {"type": "string", "minLength": 1}, "earliest_stage": {"type": "string", "minLength": 1}, "failure_class": {"type": "string", "minLength": 1}, "failure_subcode": {"type": "string", "minLength": 1}, "message": {"type": "string", "minLength": 1}}, "required": ["diagnostic_id", "earliest_stage", "failure_class", "failure_subcode", "message"]},
+        "stdout_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "stderr_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "downstream_invalidated": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "forbidden_artifact_readback": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["path", "exists"], "properties": {"path": {"type": "string"}, "exists": {"type": "boolean"}}}},
+        "expectation_status": {"enum": ["ACCEPTED", "REJECTED_EXPECTED", "REJECTED_WRONG_REASON", "INDETERMINATE"]}
+      }
+    }
+  }
+}

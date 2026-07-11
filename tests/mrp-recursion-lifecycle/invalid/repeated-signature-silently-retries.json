@@ -1,0 +1,15 @@
+{
+  "fixture_schema": "daee-mrp-recursion-lifecycle-mutation-v1",
+  "base": "tests/mrp-recursion-lifecycle/valid/held-baseline-activation.json",
+  "operations": [
+    {"op": "set", "path": "/burden_cycles/0/reread/raw_exit/candidate_events/0/target_burden_id", "value": "B1"},
+    {"op": "set", "path": "/burden_cycles/1/burden_id", "value": "B1"},
+    {"op": "set", "path": "/burden_cycles/1/route/target_burden_id", "value": "B1"},
+    {"op": "set", "path": "/burden_cycles/1/operation/local_delta/state", "value": "B1-landable"},
+    {"op": "set", "path": "/burden_cycles/1/reread/raw_exit/exit_disposition", "value": "RECURSE"},
+    {"op": "set", "path": "/burden_cycles/1/reread/raw_exit/no_new_resultant", "value": null},
+    {"op": "append", "path": "/burden_cycles/1/reread/raw_exit/candidate_events", "value": {"candidate_event_id":"CE-C2-K-reread-2","candidate_id":"K-reread-2","previous_candidate_event_id":null,"event_index":150,"kind":"held_activation","disposition":"activate_held","target_burden_id":"B1","next_cycle_id":"C3","basis_refs":["The unchanged governed state schedules the same burden again."],"gate":null,"next_action":"Execute C3."}},
+    {"op": "append", "path": "/burden_cycles", "value": {"cycle_id":"C3","burden_id":"B1","origin":"B_LA","generation_depth":0,"parent_cycle_id":null,"route":{"record_id":"S03-C3","sha256":"7777777777777777777777777777777777777777777777777777777777777777","target_burden_id":"B1"},"operation":{"record_id":"S04-C3","sha256":"8888888888888888888888888888888888888888888888888888888888888888","performed":true,"local_delta":{"state":"B1-final-landable"}},"land":{"status":"landed","event_index":240},"reread":{"record_id":"S05-C3","sha256":"9999999999999999999999999999999999999999999999999999999999999999","raw_exit":{"event_id":"E3","event_index":290,"exit_disposition":"STOP","candidate_events":[],"field_diagnostics":[],"noetic_dependency_graph":{"nodes":[],"edges":[],"graph_sha256":"57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7"},"no_new_resultant":{"observed":true,"live_obligation_ids":[],"unresolved_candidate_ids":[]},"loopbreak":null,"resource_exhaustion":null,"raw_exit_sha256":"0000000000000000000000000000000000000000000000000000000000000000"}},"lifecycle_status":"landed","terminal_state":"landed"}},
+    {"op": "append", "path": "/event_dag_edges", "value": ["C2", "C3"]}
+  ]
+}

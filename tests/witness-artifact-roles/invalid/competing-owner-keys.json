@@ -1,0 +1,1 @@
+{"schema":"daee-witness-artifact-mutation-v1","base":"tests/witness-artifact-roles/valid/current-triplet/public-graph.json","expected_role":"public_graph","mutation":{"op":"add","path":"/route_gradient","value":{"eligible_routes":[],"selected":null,"reason":"competing audit owner"}}}

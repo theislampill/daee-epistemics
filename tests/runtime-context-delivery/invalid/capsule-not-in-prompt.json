@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "capsule-not-in-prompt",
+  "expected_valid": false,
+  "mutation": "prior-capsule-not-delivered",
+  "stage": "02"
+}

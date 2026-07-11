@@ -1,0 +1,22 @@
+{
+  "expected_checker_id": "state-capsule",
+  "expected_downstream_invalidated": [
+    "candidate-package"
+  ],
+  "expected_earliest_stage": "preflight",
+  "expected_exit_category": "validation-failure",
+  "expected_exit_code": 1,
+  "expected_failure_class": "release-bearing-v1",
+  "expected_failure_subcode": "release-bearing-v1",
+  "fixture": "release-bearing-v1.json",
+  "forbidden_artifacts": [
+    "candidate-package-record.json"
+  ],
+  "kind": "invalid-single-signature",
+  "provenance": "xhigh frozen additive state-capsule-v2 interface TDD",
+  "required_diagnostic_markers": [
+    "daee-state-capsule-v1",
+    "daee-state-capsule-v2"
+  ],
+  "schema": "daee-negative-fixture-expectation-v1"
+}

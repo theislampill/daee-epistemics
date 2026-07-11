@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "ambiguous-over-cap-without-hold",
+  "expected_valid": false,
+  "mutation": "ambiguity-cap-without-hold",
+  "stage": "03"
+}

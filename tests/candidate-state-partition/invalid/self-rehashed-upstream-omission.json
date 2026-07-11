@@ -1,0 +1,27 @@
+{
+    "topology_contract": "input-pressure-v1",
+    "upstream_candidate_ids": [
+        "N1"
+    ],
+    "upstream_candidate_set_sha256": "8df4e9192a705469c44305ab6f3d34bc14eb18411f791384516e6fd9cbfba227",
+    "upstream_pressure_ids": [
+        "P1"
+    ],
+    "upstream_pressure_set_sha256": "1ea012f63ce7253d3af8dbb22c0dc71079d087575b56223cac612bf9df0e1d93",
+    "candidate_states": [
+        {
+            "state_id": "N1",
+            "status": "selected",
+            "merged_into": null
+        }
+    ],
+    "input_pressures": [
+        {
+            "pressure_id": "P1",
+            "status": "routed"
+        }
+    ],
+    "candidate_state_partitions": [],
+    "burden_partition_decisions": [],
+    "burden_floor": []
+}

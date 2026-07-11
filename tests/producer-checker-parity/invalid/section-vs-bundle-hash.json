@@ -1,0 +1,6 @@
+{
+  "schema": "daee-producer-checker-scenario-v1",
+  "scenario": "section-vs-bundle-hash",
+  "expected_valid": false,
+  "mutation": "projection-section-hash-mismatch"
+}

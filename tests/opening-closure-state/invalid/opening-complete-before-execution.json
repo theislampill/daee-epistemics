@@ -1,0 +1,4 @@
+{
+  "opening":{"opening_state_contract":"opening-state-v2","phase":"ENTRY","state":"COMPLETE","closure_claim":"PENDING","trace_id":"T1","resume_from_capsule":null},
+  "transitions":["INTAKE","OPEN"],"burdens":[],"candidate_states":[],"owner_obligations":[],"lands":[],"rereads":[],"diagnostics":[],"no_new_resultant":{"stop_licensed":false,"candidate_ids":[]},"loopbreak":null,"continuation_capsule":null,"coverage":{"initial_coverage_complete":false,"lifecycle_accounting_complete":false,"collapse_positive":false,"closure_confirmed":false},"render_order":[],"witness":null,"proposed_closure_claim":"OPEN"
+}

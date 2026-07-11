@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "usage-status-declaration-mismatch",
+  "expected_valid": false,
+  "mutation": "usage-evidence-mismatch",
+  "stage": "04"
+}

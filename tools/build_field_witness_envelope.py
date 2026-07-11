@@ -42,6 +42,7 @@ import json
 import re
 import subprocess
 import sys
+import warnings
 from pathlib import Path
 from typing import Any
 
@@ -50,6 +51,7 @@ from check_retained_proof_corpus import sha256_artifact_bytes
 from closure_witness_lib import extract_embedded_field_witness
 from check_mrp_generated_burden import ActRecord, parse_act_records
 from check_nla_decode_semantic_faithfulness import public_execution_text
+from witness_artifact_roles import canonical_json_sha256
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -61,6 +63,57 @@ NON_CLAIMS = ["hash binding does not prove semantic correctness or fresh generat
 # The 8 semantic ActRecord fields; the raw `record` line is excluded so the projection
 # does not couple to incidental whitespace.
 ACT_PROJECTION_FIELDS = ("submove_ref", "owner", "operation", "pi", "body_ref", "delta", "delta_result", "land")
+
+
+def build_artifact_binding(
+    public_graph: dict[str, Any],
+    audit_envelope_projection: dict[str, Any],
+    *,
+    source_commit: str,
+    output_sha256: str,
+    stage04_projection_sha256: str,
+    stage06_projection_sha256: str,
+    stage07_projection_sha256: str,
+    act_rows_hash: str,
+    nar_hash: str,
+    owner_activation_ordering_hash: str,
+    binding_status: str,
+) -> dict[str, Any]:
+    """Build the subordinate canonical binding record from validated objects."""
+    if binding_status not in BINDING_STATUS_VALUES:
+        raise ValueError(f"binding_status must be one of {BINDING_STATUS_VALUES}, got {binding_status!r}")
+    fingerprint = public_graph.get("activation_lifecycle_fingerprint_sha256")
+    if not isinstance(fingerprint, str):
+        raise ValueError("current public graph requires activation_lifecycle_fingerprint_sha256")
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "canonicalization": "daee-canonical-json-v1",
+        "source_commit": source_commit,
+        "output_sha256": output_sha256,
+        "public_field_witness_sha256": canonical_json_sha256(public_graph),
+        "audit_envelope_projection_sha256": canonical_json_sha256(audit_envelope_projection),
+        "activation_lifecycle_fingerprint_sha256": fingerprint,
+        "stage04_projection_sha256": stage04_projection_sha256,
+        "stage06_projection_sha256": stage06_projection_sha256,
+        "stage07_projection_sha256": stage07_projection_sha256,
+        "act_rows_hash": act_rows_hash,
+        "nar_hash": nar_hash,
+        "owner_activation_ordering_hash": owner_activation_ordering_hash,
+        "proof_class": "stage08-structural-audit" if binding_status == "current_bound" else "historical-structural-binding",
+        "binding_status": binding_status,
+        "non_claims": ["Hash binding does not establish semantic truth or fresh generation."],
+    }
+
+
+def attach_artifact_binding(audit_envelope_projection: dict[str, Any], binding: dict[str, Any]) -> dict[str, Any]:
+    """Return a new audit envelope with the subordinate binding attached."""
+    if audit_envelope_projection.get("schema_version") != "field-witness-envelope-v1":
+        raise ValueError("audit envelope projection must use field-witness-envelope-v1")
+    if "artifact_binding" in audit_envelope_projection:
+        raise ValueError("audit envelope projection must not already contain artifact_binding")
+    envelope = json.loads(json.dumps(audit_envelope_projection, ensure_ascii=False))
+    envelope["artifact_binding"] = json.loads(json.dumps(binding, ensure_ascii=False))
+    return envelope
 
 
 def projection_hash(obj: Any) -> str:
@@ -81,9 +134,19 @@ def canonical_sidecar_bytes(field_witness: dict[str, Any]) -> bytes:
 
 
 def build_envelope(output_md_path: Path, *, source_commit: str, binding_status: str) -> dict[str, Any]:
-    """Compute the envelope for one retained case from its public output.md. Read-only."""
+    """Deprecated compatibility wrapper: compute a historical binding record.
+
+    The filename/function name predates ADR-046-005. It now resolves to the
+    subordinate ``artifact_binding`` role and never claims to build the current
+    Stage08 audit envelope.
+    """
     if binding_status not in BINDING_STATUS_VALUES:
         raise ValueError(f"binding_status must be one of {BINDING_STATUS_VALUES}, got {binding_status!r}")
+    warnings.warn(
+        "build_envelope() is a compatibility wrapper for artifact_binding; use build_artifact_binding() for current triplets",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     output_bytes = output_md_path.read_bytes()
     text = output_bytes.decode("utf-8")
     field_witness = extract_embedded_field_witness(text)
@@ -93,19 +156,28 @@ def build_envelope(output_md_path: Path, *, source_commit: str, binding_status: 
     if act_errors:
         raise ValueError(f"ACT parse errors in {output_md_path}: {act_errors}")
     owner_ordering = field_witness.get("owner_activation_ordering")
+    act_hash = canonical_json_sha256(act_rows_projection(records))
+    nar_hash = canonical_json_sha256(field_witness.get("normalized_activation_record"))
+    ordering_hash = canonical_json_sha256(owner_ordering)
+    graph_hash = canonical_json_sha256(field_witness)
+    fingerprint = canonical_json_sha256({"owner_activations": field_witness.get("owner_activations"), "normalized_activation_record": field_witness.get("normalized_activation_record"), "B_total": field_witness.get("B_total")})
     return {
         "schema_version": SCHEMA_VERSION,
-        "canonicalization": CANONICALIZATION,
+        "canonicalization": "daee-canonical-json-v1",
         "source_commit": source_commit,
-        "output_sha256": sha256_artifact_bytes(output_bytes),
-        "sidecar_sha256": sha256_artifact_bytes(canonical_sidecar_bytes(field_witness)),
-        "origin_sha256": None,
-        "act_rows_hash": projection_hash(act_rows_projection(records)),
-        "nar_hash": projection_hash(field_witness.get("normalized_activation_record")),
-        "owner_activation_ordering_hash": projection_hash(owner_ordering) if isinstance(owner_ordering, dict) else None,
-        "proof_class": PROOF_CLASS,
+        "output_sha256": sha256_artifact_bytes(output_bytes).lower(),
+        "public_field_witness_sha256": graph_hash,
+        "audit_envelope_projection_sha256": canonical_json_sha256(None),
+        "activation_lifecycle_fingerprint_sha256": fingerprint,
+        "stage04_projection_sha256": act_hash,
+        "stage06_projection_sha256": nar_hash,
+        "stage07_projection_sha256": graph_hash,
+        "act_rows_hash": act_hash,
+        "nar_hash": nar_hash,
+        "owner_activation_ordering_hash": ordering_hash,
+        "proof_class": "historical-public-only-binding",
         "binding_status": binding_status,
-        "non_claims": NON_CLAIMS,
+        "non_claims": ["Hash binding does not establish semantic truth or fresh generation.", "Historical wrapper has no current Stage08 audit envelope projection."],
     }
 
 
@@ -133,6 +205,23 @@ def self_test() -> int:
     checks.append(("ACT projection is order-preserving (sequence is content)", forward != reverse))
     projected = act_rows_projection(rows[:1])[0]
     checks.append(("ACT projection excludes raw record field", "record" not in projected and set(projected) == set(ACT_PROJECTION_FIELDS)))
+    current_root = ROOT / "tests" / "witness-artifact-roles" / "valid" / "current-triplet"
+    graph = json.loads((current_root / "public-graph.json").read_text(encoding="utf-8"))
+    envelope = json.loads((current_root / "audit-envelope.json").read_text(encoding="utf-8"))
+    expected_binding = json.loads((current_root / "artifact-binding.json").read_text(encoding="utf-8"))
+    projection = dict(envelope)
+    projection.pop("artifact_binding")
+    built = build_artifact_binding(
+        graph, projection,
+        source_commit=expected_binding["source_commit"], output_sha256=expected_binding["output_sha256"],
+        stage04_projection_sha256=expected_binding["stage04_projection_sha256"],
+        stage06_projection_sha256=expected_binding["stage06_projection_sha256"],
+        stage07_projection_sha256=expected_binding["stage07_projection_sha256"],
+        act_rows_hash=expected_binding["act_rows_hash"], nar_hash=expected_binding["nar_hash"],
+        owner_activation_ordering_hash=expected_binding["owner_activation_ordering_hash"], binding_status="current_bound",
+    )
+    checks.append(("current binding builder matches canonical triplet", built == expected_binding))
+    checks.append(("binding attaches without changing projection", attach_artifact_binding(projection, built) == envelope))
     try:
         build_envelope(Path("__field_witness_envelope_selftest_nonexistent__"), source_commit="0" * 40, binding_status="bogus")
         checks.append(("build_envelope validates binding_status before reading", False))
@@ -162,6 +251,7 @@ def main() -> int:
         return self_test()
     if args.output is None:
         parser.error("--output <case output.md> is required (or use --self-test)")
+    print("DEPRECATION witness-role: build_field_witness_envelope --output builds artifact_binding compatibility output, not audit_envelope", file=sys.stderr)
     envelope = build_envelope(args.output, source_commit=args.source_commit or git_head(), binding_status=args.binding_status)
     rendered = json.dumps(envelope, indent=2, ensure_ascii=False)
     if args.out is not None:

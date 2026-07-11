@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/architecture-decision-ledger.schema.json",
+  "title": "DAEE v0.4.6 architecture decision ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "ledger_id",
+    "source_head",
+    "decision_owner",
+    "acceptance_evidence",
+    "decisions",
+    "non_claims"
+  ],
+  "properties": {
+    "schema": {
+      "const": "daee-architecture-decision-ledger-v1"
+    },
+    "ledger_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_head": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "decision_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acceptance_evidence": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    },
+    "non_claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "status",
+        "title",
+        "decision",
+        "rationale",
+        "affected_andon_ids",
+        "affected_plans",
+        "owner_files",
+        "superseded_alternatives",
+        "decision_owner",
+        "accepted_at",
+        "accepted_at_precision",
+        "acceptance_evidence",
+        "reopen_condition",
+        "non_claims"
+      ],
+      "properties": {
+        "decision_id": {
+          "type": "string",
+          "pattern": "^DAEE-ADR-046-[0-9]{3}$"
+        },
+        "status": {
+          "enum": [
+            "ACCEPTED",
+            "SUPERSEDED",
+            "REJECTED"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "affected_andon_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^A(0[1-9]|1[0-6])$"
+          },
+          "uniqueItems": true
+        },
+        "affected_plans": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "owner_files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "superseded_alternatives": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "decision_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "accepted_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "accepted_at_precision": {
+          "enum": [
+            "date",
+            "timestamp"
+          ]
+        },
+        "acceptance_evidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reopen_condition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "non_claims": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

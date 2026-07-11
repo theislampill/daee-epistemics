@@ -1,0 +1,6 @@
+{
+  "schema": "daee-producer-checker-scenario-v1",
+  "scenario": "checker-obligation-not-visible",
+  "expected_valid": false,
+  "mutation": "producer-obligation-not-visible"
+}

@@ -1,0 +1,1 @@
+{"schema":"daee-witness-artifact-role-case-v1","operation":"validate-role","base":"tests/witness-artifact-roles/valid/current-triplet/audit-envelope.json","expected_role":"public_graph","compatibility":"current"}

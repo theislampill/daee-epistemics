@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-mrp-recursion-lifecycle-mutation-v1","base":"tests/mrp-recursion-lifecycle/valid/current-stop-closure-candidate.json","operations":[{"op":"remove","path":"/trace_id"}]}

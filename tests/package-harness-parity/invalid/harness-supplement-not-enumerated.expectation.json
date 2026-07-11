@@ -1,0 +1,23 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "harness-supplement-not-enumerated.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "package-harness-parity",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "preflight",
+  "expected_failure_class": "harness-supplement-unbound",
+  "expected_failure_subcode": "harness-supplement-not-enumerated",
+  "expected_downstream_invalidated": [
+    "model-call",
+    "promotion"
+  ],
+  "required_diagnostic_markers": [
+    "harness-supplement-unbound"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "plan-13-harness-supplement-not-enumerated"
+}

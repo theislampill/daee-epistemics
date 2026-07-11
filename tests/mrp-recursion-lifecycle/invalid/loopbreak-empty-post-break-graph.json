@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-mrp-recursion-lifecycle-mutation-v1","base":"tests/mrp-recursion-lifecycle/valid/loopbreak-post-reread-no-new.json","operations":[{"op":"set","path":"/burden_cycles/0/reread/raw_exit/loopbreak/post_break_graph","value":{}}]}

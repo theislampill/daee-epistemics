@@ -1,0 +1,23 @@
+{
+  "schema": "daee-topology-capacity-spec-v1",
+  "seed": 104603,
+  "dimensions": {
+    "input_observations": 2,
+    "input_pressures": 2,
+    "candidate_states": 2,
+    "candidate_hyperedges": 1,
+    "baseline_burdens": 1,
+    "submoves_per_burden": 1,
+    "held_baseline_burdens": 0,
+    "generated_burdens": 1,
+    "generation_depth": 1,
+    "preempted_candidates": 0,
+    "route_candidate_kinds": ["generated"]
+  },
+  "dependency_shape": "generated-chain",
+  "closure_policy": "complete-when-no-live-obligations",
+  "mutation": {
+    "operation": "delete-reread",
+    "target": "generated:1"
+  }
+}

@@ -1,0 +1,276 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/smoke-matrix.schema.json",
+  "title": "DAEE five-smoke campaign control records",
+  "oneOf": [
+    {"$ref": "#/$defs/inputRegistry"},
+    {"$ref": "#/$defs/candidateTransition"},
+    {"$ref": "#/$defs/usageReservation"},
+    {"$ref": "#/$defs/usageReceipt"},
+    {"$ref": "#/$defs/usageRecovery"},
+    {"$ref": "#/$defs/candidateRecord"},
+    {"$ref": "#/$defs/cycleAttempt"},
+    {"$ref": "#/$defs/authorizationCheck"},
+    {"$ref": "#/$defs/usageHeadAudit"},
+    {"$ref": "#/$defs/taintAudit"},
+    {"$ref": "#/$defs/reviewGate"},
+    {"$ref": "#/$defs/structuralCycle"},
+    {"$ref": "#/$defs/producerOutcome"},
+    {"$ref": "#/$defs/campaignControl"},
+    {"$ref": "#/$defs/dispatchManifest"},
+    {"$ref": "#/$defs/cycleObservation"},
+    {"$ref": "#/$defs/cycleObservationFinalizer"},
+    {"$ref": "#/$defs/evidenceExport"},
+    {"$ref": "#/$defs/structuralVerdict"},
+    {"$ref": "#/$defs/reviewedVerdict"}
+  ],
+  "$defs": {
+    "artifactRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "directoryRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "tree_sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "tree_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "measuredCost": {
+      "type": "object", "additionalProperties": false,
+      "required": ["unit", "value"],
+      "properties": {
+        "unit": {"const": "usd"},
+        "value": {"type": "string", "pattern": "^(?:unknown|0|[1-9][0-9]*(?:\\.[0-9]+)?)$"}
+      }
+    },
+    "structuralCaseRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["case_id", "input_sha256", "handoff_record", "prompt_manifest", "state_capsules", "output", "capture_manifest", "promotion_verdict"],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "input_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "handoff_record": {"$ref": "#/$defs/artifactRef"},
+        "prompt_manifest": {"$ref": "#/$defs/artifactRef"},
+        "state_capsules": {"$ref": "#/$defs/directoryRef"},
+        "output": {"$ref": "#/$defs/artifactRef"},
+        "capture_manifest": {"$ref": "#/$defs/artifactRef"},
+        "promotion_verdict": {"$ref": "#/$defs/artifactRef"}
+      }
+    },
+    "base": {
+      "type": "object",
+      "required": ["schema", "kind"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"},
+        "kind": {"type": "string"}
+      }
+    },
+    "inputRegistry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "kind", "matrix_id", "cases", "forbidden_case_fields"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"},
+        "kind": {"const": "input-registry"},
+        "matrix_id": {"type": "string", "minLength": 1},
+        "cases": {
+          "type": "array", "minItems": 5, "maxItems": 5,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["case_id", "input_path", "raw_bytes", "raw_sha256"],
+            "properties": {
+              "case_id": {"type": "string", "minLength": 1},
+              "input_path": {"type": "string", "minLength": 1},
+              "raw_bytes": {"type": "integer", "minimum": 1},
+              "raw_sha256": {"type": "string", "pattern": "^[A-F0-9]{64}$"}
+            }
+          }
+        },
+        "forbidden_case_fields": {
+          "const": ["expected_burdens", "expected_submoves", "expected_route", "expected_citations", "expected_answer", "expected_output_bytes"]
+        }
+      }
+    },
+    "candidateTransition": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "candidate_id", "from_status", "claimed", "dispatch_count", "to_status"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "candidate-transition"},
+        "candidate_id": {"type": "string", "minLength": 1},
+        "from_status": {"enum": ["READY_UNUSED", "CONSUMED_NO_DISPATCH", "CONSUMED_OBSERVED", "CONSUMED_DISPATCH_UNKNOWN", "QUARANTINED"]},
+        "claimed": {"type": "boolean"}, "dispatch_count": {"type": ["integer", "null"], "minimum": 0},
+        "to_status": {"enum": ["READY_UNUSED", "CONSUMED_NO_DISPATCH", "CONSUMED_OBSERVED", "CONSUMED_DISPATCH_UNKNOWN"]},
+        "unresolved_usage": {"type": "boolean"}
+      }
+    },
+    "usageReservation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "cohort", "reserved_calls", "unresolved_usage"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "campaign-usage-reservation"},
+        "cohort": {"enum": ["gpt-producer", "gpt-review", "paired-producer", "paired-review"]},
+        "reserved_calls": {"type": "integer", "minimum": 1}, "unresolved_usage": {"type": "boolean"}
+      }
+    },
+    "usageReceipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "lane", "reserved_invocations", "completed", "failed_after_dispatch", "cancelled_after_dispatch", "not_dispatched", "unknown", "reservation_status", "predecessor_usage_sequence", "resulting_usage_sequence", "predecessor_usage_head_sha256", "resulting_usage_head_sha256", "provider_metadata_status", "measured_cost"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "campaign-usage-receipt"},
+        "lane": {"enum": ["producer", "cold-review"]}, "reserved_invocations": {"enum": [5, 10]},
+        "completed": {"type": "integer", "minimum": 0}, "failed_after_dispatch": {"type": "integer", "minimum": 0},
+        "cancelled_after_dispatch": {"type": "integer", "minimum": 0}, "not_dispatched": {"type": "integer", "minimum": 0},
+        "unknown": {"type": "integer", "minimum": 0}, "reservation_status": {"enum": ["SETTLED", "RESERVED", "ORPHANED"]},
+        "predecessor_usage_sequence": {"type": "integer", "minimum": 0}, "resulting_usage_sequence": {"type": "integer", "minimum": 0},
+        "predecessor_usage_head_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "resulting_usage_head_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "provider_metadata_status": {"enum": ["RECORDED", "UNAVAILABLE"]}, "measured_cost": {"$ref": "#/$defs/measuredCost"},
+        "producer_invocations_delta": {"type": "integer", "minimum": 0}, "cold_review_invocations_delta": {"type": "integer", "minimum": 0}
+      }
+    },
+    "usageRecovery": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "reservation_sha256", "recovery_authorization_sha256", "claimed_candidate_status", "unknown", "resulting_usage_head_sha256", "reservation_reused"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "campaign-usage-recovery"}, "reservation_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "recovery_authorization_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "claimed_candidate_status": {"enum": ["CONSUMED_NO_DISPATCH", "CONSUMED_OBSERVED", "CONSUMED_DISPATCH_UNKNOWN"]}, "unknown": {"type": "integer", "minimum": 0}, "resulting_usage_head_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "reservation_reused": {"const": false}}
+    },
+    "candidateRecord": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "candidate_id", "status"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "candidate-package-record"}, "candidate_id": {"type": "string", "minLength": 1}, "status": {"enum": ["READY_UNUSED", "QUARANTINED", "CONSUMED_NO_DISPATCH", "CONSUMED_OBSERVED", "CONSUMED_DISPATCH_UNKNOWN"]}, "authorization_sha256": {"anyOf": [{"type": "string", "pattern": "^[a-f0-9]{64}$"}, {"type": "null"}]}, "claim_receipt_sha256": {"anyOf": [{"type": "string", "pattern": "^[a-f0-9]{64}$"}, {"type": "null"}]}, "archive_sha256": {"anyOf": [{"type": "string", "pattern": "^[a-f0-9]{64}$"}, {"type": "null"}]}, "extracted_tree_sha256": {"anyOf": [{"type": "string", "pattern": "^[a-f0-9]{64}$"}, {"type": "null"}]}, "predecessor_record_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "record_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "root_creation": {"enum": ["CREATED", "FAILED"]}, "fallback_quarantine_path": {"type": ["string", "null"]}, "promotion_eligible": {"type": "boolean"}}
+    },
+    "cycleAttempt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "cycle_id", "claimed", "failed", "observation_finalizer_sha256", "usage_status"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "cycle-completion-attempt"}, "cycle_id": {"type": "string"}, "claimed": {"type": "boolean"}, "failed": {"type": "boolean"}, "observation_finalizer_sha256": {"type": ["string", "null"]}, "usage_status": {"enum": ["SETTLED", "UNSETTLED"]}}
+    },
+    "authorizationCheck": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "authorization_id"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "authorization-check"}, "authorization_id": {"type": "string", "minLength": 1}, "authorization_replayed": {"type": "boolean"}, "claim_receipt_reused": {"type": "boolean"}, "branch_match": {"type": "boolean"}, "model_settings_match": {"type": "boolean"}, "provider_contract_match": {"type": "boolean"}, "package_hash_match": {"type": "boolean"}}
+    },
+    "usageHeadAudit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "canonical_rewritten", "forked", "conflicting_predecessor", "producer_review_conflict"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "usage-head-audit"}, "canonical_rewritten": {"type": "boolean"}, "forked": {"type": "boolean"}, "conflicting_predecessor": {"type": "boolean"}, "producer_review_conflict": {"type": "boolean"}}
+    },
+    "taintAudit": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "case_identity_reaches_routing"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "taint-audit"}, "case_identity_reaches_routing": {"type": "boolean"}}
+    },
+    "reviewGate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "review-gate"}, "patch_owner_overturn": {"type": "boolean"}, "second_independent_review": {"type": "boolean"}, "reviewer_andon": {"type": "boolean"}, "reviewer_andon_reentered": {"type": "boolean"}}
+    },
+    "structuralCycle": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "case_ids", "stage_counts", "semantic_repair_events", "source_maturity_used_as_candidate"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "structural-cycle"}, "case_ids": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"type": "string"}}, "stage_counts": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"type": "integer", "minimum": 0, "maximum": 8}}, "semantic_repair_events": {"type": "array"}, "source_maturity_used_as_candidate": {"type": "boolean"}, "topology_review_statuses": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"enum": ["PASS", "FAIL", "PARTIAL"]}}, "candidate_custody_claim": {"type": ["string", "null"]}, "pass_carry_forward": {"type": "boolean"}, "completion_status": {"enum": ["PASS", "FAIL", "PARTIAL"]}}
+    },
+    "producerOutcome": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "outcome", "control_layer_proof", "model_authored", "stage01_entered", "claimed", "dispatch_count"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "producer-outcome"},
+        "outcome": {"enum": ["NOT_RUN_POLICY_INCOMPATIBILITY", "PRODUCT_REFUSAL", "REFUSAL_ORIGIN_UNPROVEN"]},
+        "control_layer_proof": {"type": "boolean"}, "model_authored": {"type": ["boolean", "null"]},
+        "stage01_entered": {"type": "boolean"}, "claimed": {"type": "boolean"},
+        "dispatch_count": {"type": ["integer", "null"], "minimum": 0}, "dispatch_evidence": {"enum": ["PROVED_ZERO", "OBSERVED", "UNKNOWN"]}, "candidate_status": {"enum": ["CONSUMED_NO_DISPATCH", "CONSUMED_OBSERVED", "CONSUMED_DISPATCH_UNKNOWN"]}
+      }
+    },
+    "campaignControl": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "root_cause_id", "root_cause_recurrence", "circuit_breaker", "causal_basis_changed", "unresolved_usage"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "campaign-control"},
+        "root_cause_id": {"type": ["string", "null"]}, "root_cause_recurrence": {"type": "boolean"},
+        "circuit_breaker": {"enum": ["OPEN", "CLOSED"]}, "causal_basis_changed": {"type": "boolean"},
+        "unresolved_usage": {"type": "boolean"}, "maximum_cycles": {"type": "integer", "minimum": 1}, "maximum_invocations": {"type": "integer", "minimum": 1}, "cumulative_call_ceiling": {"type": "integer", "minimum": 1}, "calls_avoided": {"type": "integer", "minimum": 0}, "calls_avoided_evidence_sha256": {"type": ["string", "null"]}
+      }
+    },
+    "event": {
+      "type": "object", "additionalProperties": false, "required": ["event", "sequence", "predecessor_event_sha256", "event_sha256"],
+      "properties": {"event": {"enum": ["worker_ready", "barrier_release", "request_submit_started", "request_accepted", "call_entered_in_flight", "all_five_in_flight", "first_result_awaited", "terminal_result_observed", "provider_auth_failure"]}, "worker": {"type": "string"}, "case_id": {"type": "string"}, "sequence": {"type": "integer", "minimum": 1}, "predecessor_event_sha256": {"type": ["string", "null"]}, "event_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+    },
+    "worker": {
+      "type": "object", "additionalProperties": false, "required": ["worker", "case_id", "home", "cache", "run_root"],
+      "properties": {"worker": {"type": "string", "minLength": 1}, "case_id": {"type": "string", "minLength": 1}, "home": {"type": "string", "minLength": 1}, "cache": {"type": "string", "minLength": 1}, "run_root": {"type": "string", "minLength": 1}}
+    },
+    "dispatchManifest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "protocol", "expected_workers", "events"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "dispatch-manifest"},
+        "protocol": {"const": "barrier-five-submit-before-await-v1"}, "expected_workers": {"const": 5},
+        "events": {"type": "array", "items": {"$ref": "#/$defs/event"}},
+        "workers": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"$ref": "#/$defs/worker"}},
+        "rows": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"type": "object"}},
+        "cold_review_calls": {"const": 0},
+        "observation_finalizer": {"type": "object"}
+      }
+    },
+    "cycleObservation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "matrix_id", "observation_status", "candidate_status"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "cycle-observation"}, "matrix_id": {"type": "string"}, "observation_status": {"enum": ["FINALIZED", "FALLBACK_FINALIZED"]}, "candidate_status": {"enum": ["CONSUMED_NO_DISPATCH", "CONSUMED_OBSERVED", "CONSUMED_DISPATCH_UNKNOWN"]}, "producer_dispatch_count": {"type": "integer", "minimum": 0}, "review_outcome": {"enum": ["PASS", "FAIL", "PARTIAL", "NOT_REVIEWED"]}}
+    },
+    "cycleObservationFinalizer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "cycle_id", "cycle_claim_sha256", "status", "root_creation", "dispatch_count", "usage_status", "candidate_status"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "cycle-observation-finalizer"}, "cycle_id": {"type": "string"}, "cycle_claim_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "status": {"enum": ["FINALIZED", "FALLBACK_FINALIZED"]}, "root_creation": {"enum": ["CREATED", "FAILED"]}, "dispatch_count": {"type": ["integer", "null"], "minimum": 0}, "usage_status": {"enum": ["SETTLED", "UNRESOLVED"]}, "candidate_status": {"enum": ["CONSUMED_NO_DISPATCH", "CONSUMED_OBSERVED", "CONSUMED_DISPATCH_UNKNOWN"]}, "dispatch_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "usage_receipt_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "candidate_consumption_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "fallback_path": {"type": ["string", "null"]}, "completion_status": {"enum": ["PASS", "FAIL", "PARTIAL"]}}
+    },
+    "evidenceExport": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "cycle_id", "phase", "staging_verified", "resume_mode", "resume_hash_equal", "final_readback", "final_path_unused_before_publish"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "evidence-export"}, "cycle_id": {"type": "string"}, "phase": {"enum": ["STAGING", "FINAL_PUBLISHED"]}, "staging_verified": {"type": "boolean"}, "resume_mode": {"const": "HASH_EQUAL_ONLY"}, "resume_hash_equal": {"type": "boolean"}, "final_readback": {"type": "boolean"}, "final_path_unused_before_publish": {"type": "boolean"}, "completion_evidence": {"type": "boolean"}}
+    },
+    "structuralVerdict": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "matrix_id", "structural_matrix_status", "completion_status", "source_commit", "candidate_id", "package_sha256", "package_tree_sha256", "package_root", "campaign_authorization_sha256", "matrix_authorization_sha256", "registry", "evidence_custody_root", "cycle_root", "cycle_manifest", "matrix_authorization", "ci_readback", "candidate_maturity", "dispatch_manifest", "candidate_record", "cycle_claim", "candidate_consumption", "usage_ledger", "usage_receipt", "observation_finalizer", "evidence_export", "package_harness_parity", "cases", "non_claims"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"},
+        "kind": {"const": "structural-pre-review-verdict"},
+        "matrix_id": {"type": "string", "minLength": 1},
+        "structural_matrix_status": {"const": "PASS"},
+        "completion_status": {"const": "PARTIAL"},
+        "source_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "candidate_id": {"type": "string", "minLength": 1},
+        "package_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "package_tree_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "package_root": {"type": "string", "minLength": 1},
+        "campaign_authorization_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "matrix_authorization_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "registry": {"$ref": "#/$defs/artifactRef"},
+        "evidence_custody_root": {"type": "string", "minLength": 1},
+        "cycle_root": {"type": "string", "minLength": 1},
+        "cycle_manifest": {"$ref": "#/$defs/artifactRef"},
+        "matrix_authorization": {"$ref": "#/$defs/artifactRef"},
+        "ci_readback": {"$ref": "#/$defs/artifactRef"},
+        "candidate_maturity": {"$ref": "#/$defs/artifactRef"},
+        "dispatch_manifest": {"$ref": "#/$defs/artifactRef"},
+        "candidate_record": {"$ref": "#/$defs/artifactRef"},
+        "cycle_claim": {"$ref": "#/$defs/artifactRef"},
+        "candidate_consumption": {"$ref": "#/$defs/artifactRef"},
+        "usage_ledger": {"$ref": "#/$defs/directoryRef"},
+        "usage_receipt": {"$ref": "#/$defs/artifactRef"},
+        "observation_finalizer": {"$ref": "#/$defs/artifactRef"},
+        "evidence_export": {"$ref": "#/$defs/artifactRef"},
+        "package_harness_parity": {"$ref": "#/$defs/artifactRef"},
+        "cases": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"$ref": "#/$defs/structuralCaseRef"}},
+        "semantic_truth": {"type": "boolean"},
+        "non_claims": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "reviewedVerdict": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "matrix_id", "structural_matrix_status", "completion_status", "reviews", "non_claims"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "cycle-verdict"}, "matrix_id": {"type": "string"}, "structural_matrix_status": {"enum": ["PASS", "FAIL", "PARTIAL"]}, "completion_status": {"enum": ["PASS", "FAIL", "PARTIAL"]}, "reviews": {"type": "array", "minItems": 5, "maxItems": 5}, "non_claims": {"type": "array", "items": {"type": "string"}}}
+    }
+  }
+}

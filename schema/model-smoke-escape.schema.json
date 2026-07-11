@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/model-smoke-escape.schema.json",
+  "title": "DAEE append-only model-smoke escape registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "registry_id", "append_only", "candidate_maturity_status", "escapes", "events", "structural_non_claims"],
+  "properties": {
+    "schema": {"const": "daee-model-smoke-escape-v1"},
+    "registry_id": {"type": "string", "minLength": 1},
+    "append_only": {"const": true},
+    "candidate_maturity_status": {"enum": ["BLOCKED", "MATURE"]},
+    "escapes": {"type": "array", "items": {"$ref": "#/$defs/escape"}},
+    "events": {"type": "array", "items": {"$ref": "#/$defs/event"}},
+    "structural_non_claims": {"type": "array", "minItems": 3, "items": {"type": "string"}}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "escape": {
+      "type": "object", "additionalProperties": false,
+      "required": ["escape_id", "deterministic_detectability", "status", "scope", "detectability_basis", "canary", "causal_control", "paid_cycle_eligible", "estimated_model_invocations_avoided", "recurrence_of_escape_id"],
+      "properties": {
+        "escape_id": {"type": "string", "minLength": 1},
+        "deterministic_detectability": {"enum": ["YES", "NO", "UNKNOWN"]},
+        "status": {"enum": ["OPEN", "CLOSED", "SCOPED_NO"]},
+        "scope": {"type": "object", "additionalProperties": false, "required": ["source_sha256", "schema_sha256", "checker_sha256", "model_protocol_sha256", "defect_signature", "ir_artifact_boundary"], "properties": {"source_sha256": {"$ref": "#/$defs/sha256"}, "schema_sha256": {"$ref": "#/$defs/sha256"}, "checker_sha256": {"$ref": "#/$defs/sha256"}, "model_protocol_sha256": {"$ref": "#/$defs/sha256"}, "defect_signature": {"type": "string"}, "ir_artifact_boundary": {"type": "string"}}},
+        "detectability_basis": {"type": "object", "additionalProperties": false, "required": ["missing_topic_neutral_observable", "anti_answer_bank_basis", "strongest_topic_neutral_observability", "recheck_predicates"], "properties": {"missing_topic_neutral_observable": {"type": "string"}, "anti_answer_bank_basis": {"type": "string"}, "strongest_topic_neutral_observability": {"type": "array", "items": {"type": "string"}}, "recheck_predicates": {"type": "array", "items": {"type": "string"}}}},
+        "canary": {"type": "object", "additionalProperties": false, "required": ["topic_neutral", "taint_tokens", "red_boundary", "green_boundary", "neighboring_valid", "mutation_right_reason"], "properties": {"topic_neutral": {"const": true}, "taint_tokens": {"type": "array", "items": {"type": "string"}}, "red_boundary": {"type": "array", "items": {"type": "string"}}, "green_boundary": {"type": "array", "items": {"type": "string"}}, "neighboring_valid": {"type": "array", "items": {"type": "string"}}, "mutation_right_reason": {"type": "array", "items": {"type": "object"}}, "ci_registry_evidence": {"type": "array", "items": {"type": "string"}}}},
+        "causal_control": {"type": "object", "additionalProperties": false, "required": ["five_whys", "hansei", "owner_source_countermeasure", "deterministic_green", "independent_concurrence", "usage_drift_resolved", "authorization_drift_resolved"], "properties": {"five_whys": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"type": "string"}}, "hansei": {"type": "object"}, "owner_source_countermeasure": {"type": "object"}, "deterministic_green": {"type": "array", "items": {"type": "string"}}, "independent_concurrence": {"type": "object"}, "usage_drift_resolved": {"type": "boolean"}, "authorization_drift_resolved": {"type": "boolean"}}},
+        "paid_cycle_eligible": {"type": "boolean"},
+        "estimated_model_invocations_avoided": {"oneOf": [{"const": "unknown"}, {"type": "integer", "minimum": 0}]},
+        "blocked_invocation_receipt": {"type": "string"},
+        "recurrence_of_escape_id": {"type": ["string", "null"]},
+        "deep_recurrence_analysis": {"type": "string"}
+      }
+    },
+    "event": {
+      "type": "object", "additionalProperties": false,
+      "required": ["event_id", "event_type", "escape_id", "from_state", "to_state", "state_mutated", "sequence", "previous_event_hash", "event_hash"],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1},
+        "event_type": {"enum": ["REASSESSMENT_DUE", "NO_TO_UNKNOWN", "UNKNOWN_TO_NO_RENEWED"]},
+        "escape_id": {"type": "string"}, "from_state": {"enum": ["YES", "NO", "UNKNOWN"]}, "to_state": {"enum": ["YES", "NO", "UNKNOWN"]}, "state_mutated": {"type": "boolean"},
+        "sequence": {"type": "integer", "minimum": 1}, "previous_event_hash": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]}, "event_hash": {"$ref": "#/$defs/sha256"},
+        "trigger": {"type": "string"}, "automatic": {"type": "boolean"}, "accountable_owner": {"type": ["string", "null"]}, "independent_reviewer": {"type": ["string", "null"]},
+        "materially_new_evidence": {"type": "string"}, "named_question": {"type": "string"}, "resolution_deadline": {"type": ["string", "null"]}, "speculative": {"type": "boolean"},
+        "updated_evidence": {"type": "string"}, "updated_compensating_control": {"type": "string"}
+      }
+    }
+  }
+}

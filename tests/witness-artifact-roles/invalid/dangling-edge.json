@@ -1,0 +1,1 @@
+{"schema":"daee-witness-artifact-mutation-v1","base":"tests/witness-artifact-roles/valid/current-triplet/public-graph.json","expected_role":"public_graph","mutation":{"op":"replace","path":"/edges/0/to","value":"B9"}}

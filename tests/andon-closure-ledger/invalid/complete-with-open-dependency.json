@@ -1,0 +1,260 @@
+{
+  "schema": "daee-andon-closure-ledger-v1",
+  "ledger_id": "invalid-complete-with-open-dependency",
+  "source_head": "6987c9ebf1de45af700b1fa74b1ed25ec0beeb7c",
+  "branch": "fixture",
+  "regression_status": "unproven",
+  "required_andon_ids": [
+    "A01",
+    "A02"
+  ],
+  "overall_status": "OPEN",
+  "owner_decision_controls": [],
+  "rows": [
+    {
+      "andon_id": "A01",
+      "title": "evidence custody and causal attribution",
+      "priority": "P0",
+      "status": "CLOSED_OWNER_ACCEPTED",
+      "evidence_class": "unproven",
+      "code_lineage": "unproven",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "D0->PsiN->IR"
+      ],
+      "dependencies": [
+        "A02"
+      ],
+      "milestone_dependencies": [
+        "A16.bootstrap"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A01.terminal",
+          "status": "CLOSED_OWNER_ACCEPTED",
+          "depends_on": []
+        }
+      ],
+      "owner_sources": [
+        "planned-owner"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-010"
+      ],
+      "abnormality_evidence": [
+        "fixture evidence"
+      ],
+      "five_whys": [
+        "Why 1: the observed state lacks a required proof.",
+        "Why 2: the producer and checker contract do not join that proof.",
+        "Why 3: no canonical owner enforced the join.",
+        "Why 4: historical checks accepted declared structure.",
+        "Why 5: the control-plane contract had not been implemented."
+      ],
+      "root_owner": "fixture owner",
+      "root_cause_id": "RC-A01-fixture",
+      "primary_andon_id": "A01",
+      "affected_andon_ids": [
+        "A01"
+      ],
+      "shared_countermeasure_ref": null,
+      "hansei": {
+        "gap": "fixture gap",
+        "cause": "missing enforced join",
+        "countermeasure": "enforce the owner-backed relation",
+        "follow_up_control": "same-stem negative and neighboring valid fixture"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "fixture red",
+            "expected": "rejected"
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "fixture green",
+            "expected": "accepted"
+          }
+        ],
+        "right_reason_negatives": [
+          "same-stem expectation"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "CANARY-A01",
+          "negative_fixture": "self",
+          "expected_stage": "control-plane",
+          "expected_failure_class": "open_dependency",
+          "neighbor_valid_fixture": "neighbor",
+          "mutation_operator": "dependency-status",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "remove fixture-only patch",
+        "preserve": [
+          "baseline evidence"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "fixture-only"
+      ],
+      "next_action": "run checker",
+      "terminal_status": {
+        "required_status": "VERIFIED_STRUCTURAL",
+        "owner_acceptance_required": false,
+        "evidence_required": [
+          "Smoke A",
+          "Smoke B",
+          "right-reason negative"
+        ]
+      }
+    },
+    {
+      "andon_id": "A02",
+      "title": "input-pressure completeness",
+      "priority": "P0",
+      "status": "OPEN",
+      "evidence_class": "unproven",
+      "code_lineage": "unproven",
+      "regression_status": "unproven",
+      "formal_chain_locations": [
+        "D0->PsiN->IR"
+      ],
+      "dependencies": [],
+      "milestone_dependencies": [
+        "A16.bootstrap"
+      ],
+      "milestones": [
+        {
+          "milestone_id": "A02.terminal",
+          "status": "OPEN",
+          "depends_on": []
+        }
+      ],
+      "owner_sources": [
+        "planned-owner"
+      ],
+      "binding_adr_ids": [
+        "DAEE-ADR-046-014"
+      ],
+      "abnormality_evidence": [
+        "fixture evidence"
+      ],
+      "five_whys": [
+        "Why 1: the observed state lacks a required proof.",
+        "Why 2: the producer and checker contract do not join that proof.",
+        "Why 3: no canonical owner enforced the join.",
+        "Why 4: historical checks accepted declared structure.",
+        "Why 5: the control-plane contract had not been implemented."
+      ],
+      "root_owner": "fixture owner",
+      "root_cause_id": "RC-A02-fixture",
+      "primary_andon_id": "A02",
+      "affected_andon_ids": [
+        "A02"
+      ],
+      "shared_countermeasure_ref": null,
+      "hansei": {
+        "gap": "fixture gap",
+        "cause": "missing enforced join",
+        "countermeasure": "enforce the owner-backed relation",
+        "follow_up_control": "same-stem negative and neighboring valid fixture"
+      },
+      "implementation": {
+        "commit": null,
+        "files": [],
+        "generated_files": []
+      },
+      "verification": {
+        "smoke_a": [
+          {
+            "command": "fixture red",
+            "expected": "rejected"
+          }
+        ],
+        "smoke_b": [
+          {
+            "command": "fixture green",
+            "expected": "accepted"
+          }
+        ],
+        "right_reason_negatives": [
+          "same-stem expectation"
+        ],
+        "structural_only": true
+      },
+      "canaries": [
+        {
+          "canary_id": "CANARY-A02",
+          "negative_fixture": "self",
+          "expected_stage": "control-plane",
+          "expected_failure_class": "open_dependency",
+          "neighbor_valid_fixture": "neighbor",
+          "mutation_operator": "dependency-status",
+          "status": "PLANNED"
+        }
+      ],
+      "rollback": {
+        "strategy": "remove fixture-only patch",
+        "preserve": [
+          "baseline evidence"
+        ],
+        "command": null
+      },
+      "model_smoke_escape": {
+        "escape_id": null,
+        "deterministic_detectability": "NOT_APPLICABLE",
+        "red_boundary_evidence": [],
+        "green_boundary_evidence": [],
+        "mutation_right_reason_evidence": [],
+        "next_model_cycle_eligible": false,
+        "recurrence_of_escape_id": null,
+        "model_invocations_spent_before_detection": 0,
+        "estimated_model_invocations_avoided_by_canary": "unknown"
+      },
+      "five_smoke_impact": [],
+      "owner_gates": [],
+      "artifact_gates": [],
+      "remaining_risk": [
+        "fixture-only"
+      ],
+      "next_action": "run checker",
+      "terminal_status": {
+        "required_status": "VERIFIED_STRUCTURAL",
+        "owner_acceptance_required": false,
+        "evidence_required": [
+          "Smoke A",
+          "Smoke B",
+          "right-reason negative"
+        ]
+      }
+    }
+  ],
+  "non_claims": [
+    "structural fixture only"
+  ]
+}

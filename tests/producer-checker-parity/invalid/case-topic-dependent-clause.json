@@ -1,0 +1,6 @@
+{
+  "schema": "daee-producer-checker-scenario-v1",
+  "scenario": "case-topic-dependent-clause",
+  "expected_valid": false,
+  "mutation": "tainted-clause-selection"
+}

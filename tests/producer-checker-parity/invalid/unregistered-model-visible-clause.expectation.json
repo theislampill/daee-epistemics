@@ -1,0 +1,23 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "unregistered-model-visible-clause.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "producer-checker-parity",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "preflight",
+  "expected_failure_class": "unregistered-model-visible-clause",
+  "expected_failure_subcode": "unregistered-model-visible-clause",
+  "expected_downstream_invalidated": [
+    "model-call",
+    "promotion"
+  ],
+  "required_diagnostic_markers": [
+    "unregistered-model-visible-clause"
+  ],
+  "forbidden_artifacts": [
+    "model-invocation.json",
+    "promotion-verdict.json"
+  ],
+  "provenance": "review-repair-unregistered-model-visible-clause"
+}

@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-checker-fixture-v1","base":"docs/audits/v0.4.6.0-wip-andon-contract-registry.json","operations":[{"op":"set","path":"required_case_registry.bootstrap_state","value":"materialized"},{"op":"set-materialized-cases","value":["gate88-secularism"]}]}

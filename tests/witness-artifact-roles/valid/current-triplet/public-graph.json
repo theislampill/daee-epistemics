@@ -1,0 +1,83 @@
+{
+  "schema_version": "public-field-witness-v1",
+  "B_LA": ["B1"],
+  "B_MRP": ["B2"],
+  "B_total": ["B1", "B2"],
+  "nodes": [
+    {"id": "B1", "type": "burden", "origin": "B_LA", "generation_depth": 0, "lifecycle_status": "complete"},
+    {"id": "B2", "type": "generated_burden", "origin": "B_MRP", "generation_depth": 1, "parent_id": "B1", "lifecycle_status": "complete"}
+  ],
+  "edges": [
+    {"from": "B1", "to": "B2", "relation_class": "noetic_dependency", "kind": "generated-resultant"}
+  ],
+  "generated_burdens": [
+    {"id": "B2", "source": "B1", "generation_depth": 1, "event_id": "E2"}
+  ],
+  "mrp_resultants": [
+    {"source": "B1", "target": "B2", "type": "generated_burden_instantiation", "route": "RECURSE"}
+  ],
+  "reread_records": [
+    {"burden_id": "B1", "cycle_id": "C1", "route_result_type": "generated_burden_instantiation", "terminal_state": "complete"},
+    {"burden_id": "B2", "cycle_id": "C2", "route_result_type": "no_new_resultant", "terminal_state": "complete"}
+  ],
+  "formal_reread_states": [
+    {"burden_id": "B1", "status": "evaluated", "resultant_ids": ["B2"]},
+    {"burden_id": "B2", "status": "evaluated", "resultant_ids": []}
+  ],
+  "field_diagnostics": {
+    "divergence": {"operator": "div", "target": "field", "status": "neutral", "basis_refs": ["C2"], "delta_ref": "D2"},
+    "curl": {"operator": "curl", "target": "dependency", "status": "null", "basis_refs": ["C2"], "delta_ref": "D2", "cycle_refs": [], "loopbreak_ref": null}
+  },
+  "terminal_states": {
+    "B1": {"state": "complete", "cycle_id": "C1"},
+    "B2": {"state": "complete", "cycle_id": "C2"}
+  },
+  "closure": {
+    "opening_state": "OPEN",
+    "derived_decision": "COMPLETE",
+    "initial_coverage_complete": true,
+    "lifecycle_accounting_complete": true,
+    "collapse_positive": true,
+    "closure_confirmed": true,
+    "remaining_open_ids": [],
+    "divergence": "neutral",
+    "curl": "null",
+    "loopbreak": null
+  },
+  "T_lang": {
+    "projection": "partial_coupling",
+    "uptake_guaranteed": false,
+    "boundary": "The public projection cannot guarantee uptake."
+  },
+  "non_claims": [
+    "Structural validity does not establish semantic truth.",
+    "T_lang is partial coupling and does not guarantee uptake."
+  ],
+  "owner_activations": [
+    {"ordinal": 0, "body_ref": "B1_1", "burden_id": "B1", "owner_id": "owner-alpha", "operation": "operation-alpha", "resultant_sha256": "1111111111111111111111111111111111111111111111111111111111111111", "semantic_body_sha256": "2222222222222222222222222222222222222222222222222222222222222222"},
+    {"ordinal": 1, "body_ref": "B2_1", "burden_id": "B2", "owner_id": "owner-beta", "operation": "operation-beta", "resultant_sha256": "3333333333333333333333333333333333333333333333333333333333333333", "semantic_body_sha256": "4444444444444444444444444444444444444444444444444444444444444444"}
+  ],
+  "owner_activation_ordering": {
+    "rows": [
+      {"ordinal": 0, "body_ref": "B1_1", "ordering_role": "required", "ordering_group": null},
+      {"ordinal": 1, "body_ref": "B2_1", "ordering_role": "required", "ordering_group": null}
+    ]
+  },
+  "normalized_activation_record": {
+    "schema_version": "daee-nar-v2",
+    "per_burden": [
+      {"burden_id": "B1", "activation_ordinals": [0], "cycle_id": "C1"},
+      {"burden_id": "B2", "activation_ordinals": [1], "cycle_id": "C2"}
+    ]
+  },
+  "coverage_proof": {
+    "initial_burden_set": ["B1"],
+    "terminal_states": {"B1": "complete", "B2": "complete"},
+    "dependency_graph": {"nodes": ["B1", "B2"], "edges": [{"from": "B1", "to": "B2"}], "roots": ["B1"]},
+    "provenance_event_dag": {"nodes": ["E1", "E2"], "edges": [{"from": "E1", "to": "E2"}], "roots": ["E1"]},
+    "divergence_check": "neutral",
+    "curl_check": "null",
+    "coverage_complete": true
+  },
+  "activation_lifecycle_fingerprint_sha256": "9c371ad35380fcb3920b8a7edcdf01ce7e72c2c2c7a22b5c3751507b0ebb3a13"
+}

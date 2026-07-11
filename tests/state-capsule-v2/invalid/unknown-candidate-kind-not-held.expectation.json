@@ -1,0 +1,24 @@
+{
+  "expected_checker_id": "state-capsule",
+  "expected_downstream_invalidated": [
+    "06",
+    "07",
+    "08"
+  ],
+  "expected_earliest_stage": "05",
+  "expected_exit_category": "validation-failure",
+  "expected_exit_code": 1,
+  "expected_failure_class": "mrp",
+  "expected_failure_subcode": "state_v2_candidate_kind_delta",
+  "fixture": "unknown-candidate-kind-not-held.json",
+  "forbidden_artifacts": [
+    "completion-verdict.json"
+  ],
+  "kind": "invalid-single-signature",
+  "provenance": "xhigh frozen additive state-capsule-v2 interface TDD",
+  "required_diagnostic_markers": [
+    "unknown candidate kind",
+    "explicitly held"
+  ],
+  "schema": "daee-negative-fixture-expectation-v1"
+}

@@ -1,0 +1,6 @@
+{
+  "schema": "daee-package-harness-scenario-v1",
+  "scenario": "nonconforming-context-prompt",
+  "expected_valid": false,
+  "mutation": "runtime-context-invalid"
+}

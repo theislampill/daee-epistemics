@@ -1,0 +1,18 @@
+{
+  "schema_version": "field-witness-artifact-binding-v1",
+  "canonicalization": "daee-canonical-json-v1",
+  "source_commit": "6987c9ebf1de45af700b1fa74b1ed25ec0beeb7c",
+  "output_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+  "public_field_witness_sha256": "b05ab912712ee73306951629c74ab4c175493763619bea301be6fe9802d6e470",
+  "audit_envelope_projection_sha256": "3af07fb15e47f404d67dda4c2bf70568d9e8057b52953c456e808fed360fe3b0",
+  "activation_lifecycle_fingerprint_sha256": "9c371ad35380fcb3920b8a7edcdf01ce7e72c2c2c7a22b5c3751507b0ebb3a13",
+  "stage04_projection_sha256": "b5fa26172a50279f2172df230b9cf3eac8d1be1c8da853831807ee08c15ca5ab",
+  "stage06_projection_sha256": "60c31bd381af4b291353a8455ef843961948c0c8cfcfb4f65f9f9b86887a1fbd",
+  "stage07_projection_sha256": "60c31bd381af4b291353a8455ef843961948c0c8cfcfb4f65f9f9b86887a1fbd",
+  "act_rows_hash": "9999999999999999999999999999999999999999999999999999999999999999",
+  "nar_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "owner_activation_ordering_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "proof_class": "stage08-structural-audit",
+  "binding_status": "current_bound",
+  "non_claims": ["Hash binding does not establish semantic truth or fresh generation."]
+}

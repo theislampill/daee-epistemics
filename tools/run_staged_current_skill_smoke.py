@@ -8106,9 +8106,9 @@ artifact; it does not ask you to hide or suppress your reasoning):
   in emphasis (`**...**`, `_..._`), block-quote (`> `), or list markers
   (`- `, `* `). The checkers anchor these with line-start regexes that do not
   tolerate a leading `**`, `_`, `>`, `-`, or `*` -- e.g. `LAND_GATE_LINE_RE`
-  = `(?m)^Land\((?P<burden>[¹²³⁴⁵⁶⁷⁸⁹]B)\):` and
+  = `(?m)^Land\\((?P<burden>[¹²³⁴⁵⁶⁷⁸⁹]B)\\):` and
   `check_field_witness_convergence.extract_layer_a`'s anchor
-  `^\s*#{0,6}\s*Layer A\b`; a wrapped token is INVISIBLE to the checker, not
+  `^\\s*#{{0,6}}\\s*Layer A\\b`; a wrapped token is INVISIBLE to the checker, not
   merely reformatted. Wrong: `**Layer A / Diagnostic IR**`, `**Land(⁴B):**`.
   Right: `## Layer A Compact DSL / Diagnostic IR`, `Land(⁴B): landed. ...`.
 

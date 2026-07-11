@@ -1,0 +1,59 @@
+{
+  "B_LA": [
+    "B1"
+  ],
+  "B_MRP": [],
+  "B_total": [
+    "B1"
+  ],
+  "case_id": "historical-v1",
+  "cold_law_refs_used": [],
+  "completed_acts": [],
+  "coverage_complete": false,
+  "current_burden": "B1",
+  "current_owner_route": {
+    "burden": "B1",
+    "owner_id": "M3",
+    "shards": []
+  },
+  "field_diagnostics": {
+    "curl_state": "null-state",
+    "divergence_state": "neutral"
+  },
+  "held_set_H": [],
+  "input_fingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "last_delta": null,
+  "last_mrp_resultant": {
+    "route_result_type": "none",
+    "source": null
+  },
+  "last_terminal": {
+    "burden": null,
+    "state": null
+  },
+  "live_registers": [
+    "N",
+    "m",
+    "tau",
+    "sigma"
+  ],
+  "n_frame": {
+    "held_candidates": [],
+    "selected": "authority-order"
+  },
+  "next_burden": null,
+  "next_required_action": "activate B1",
+  "output_artifact_path": null,
+  "output_offset_bytes": 0,
+  "output_sha256": null,
+  "register_state": {
+    "sigma": "live",
+    "tau": "live"
+  },
+  "route_result_type": "none",
+  "schema": "daee-state-capsule-v1",
+  "shards_loaded": [],
+  "stage": "04",
+  "terminal_states": {},
+  "transport": "chat"
+}

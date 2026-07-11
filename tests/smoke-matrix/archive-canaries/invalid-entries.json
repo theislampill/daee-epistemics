@@ -1,0 +1,14 @@
+[
+  {"failure_class":"archive_absolute_path","name":"/absolute.txt"},
+  {"failure_class":"archive_drive_path","name":"C:/drive.txt"},
+  {"failure_class":"archive_unc_path","name":"//server/share.txt"},
+  {"failure_class":"archive_traversal","name":"../escape.txt"},
+  {"failure_class":"archive_ads_name","name":"file.txt:stream"},
+  {"failure_class":"archive_device_name","name":"CON"},
+  {"failure_class":"archive_trailing_alias","name":"alias. "},
+  {"failure_class":"archive_casefold_collision","name":"Case.txt","second_name":"case.TXT"},
+  {"failure_class":"archive_duplicate_entry","name":"same.txt","second_name":"same.txt"},
+  {"failure_class":"archive_link_entry","name":"link","symlink":true},
+  {"failure_class":"archive_link_entry","name":"device","unix_mode":"020666"},
+  {"failure_class":"archive_link_entry","name":"reparse","reparse":true}
+]

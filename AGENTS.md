@@ -111,6 +111,41 @@ and, when explicitly authorized, in an ignored ActiveGraph sidecar before
 moving to commit, push, release-gate, or next-lane work. Treat skipping that
 failure-discipline record as its own process Andon.
 
+For the v0.4.6.0-wip five-smoke campaign, the matrix cycle is indivisible. Any
+Stage01-Stage08 or required-review ANDON fails the cycle. Preserve all five
+rows, patch only after Gemba/5 Whys/Hansei and neutral red/green canaries, then
+use a new pushed-green commit, fresh immutable candidate, and full five-case
+rerun. Never carry an earlier passing row forward, repair a raw output, or
+resample the same candidate until it happens to pass. The current process owner
+is `docs/audits/v0.4.6.0-wip-five-smoke-andon-convergence-north-star-addendum.md`.
+Treat a defect first discovered by a paid/model smoke as a
+`MODEL_SMOKE_ESCAPE` process ANDON until deterministic detectability is
+classified. When reproducible, add a red-old/green-new no-model canary and
+right-reason mutation coverage before authorizing another full matrix. Model
+smokes are behavioral integration evidence, not the primary debugger.
+Require `NO_MODEL_SOURCE_PREFLIGHT_GREEN`, then one immutable package, then
+package-bound `NO_MODEL_CANDIDATE_MATURE`. The canonical producer lane is
+package-faithful `tools/run_five_smoke_matrix.py --model-runner codex` with
+`gpt-5.5`/`high`; retain exact resolved model/adapter/app versions. Launch under
+the five-ready/five-in-flight-before-first-result barrier with isolated state;
+queued/sequential work or a bare parallelism flag is blocked, not equivalent.
+Producer/reviewer reservations share one CAS-governed campaign usage head. A
+claimed cycle consumes the candidate neutrally, has a root-failure fallback
+observation finalizer, and publishes evidence only after staging/hash
+readback/atomic finalization. Campaign authorization never authorizes commit or
+push, which require separate one-use VCS decisions.
+
+The standing convergence objective has no fixed cycle or cumulative-call
+ceiling. Reserve exactly five producer calls per GPT cycle and record factual
+usage/cost. A pre-claim failure may preserve `READY_UNUSED`; after claim use
+only terminal `CONSUMED_NO_DISPATCH`, `CONSUMED_OBSERVED`, or
+`CONSUMED_DISPATCH_UNKNOWN`, derived from dispatch evidence. After structural
+green, one human hash-claims all five initial assessments before any cold-review
+disclosure. Every failed or ambiguous cold review pauses with an owner incident
+report; packet and attempt lineage must prevent favorable retry selection. A
+proved infrastructure-only repair needs no fake commit, but it still requires a
+fresh candidate/cycle after no-model health is re-established.
+
 Release/provenance remains frozen unless the orchestrator explicitly opens a
 release gate. Do not package, tag, upload, edit release notes, or move release
 assets from ordinary IMPLEMENTAUDIT lanes.

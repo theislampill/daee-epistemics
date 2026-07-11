@@ -1,0 +1,6 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "bootstrap-stage01",
+  "expected_valid": true,
+  "kind": "bootstrap"
+}

@@ -1,0 +1,6 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "ambiguous-route-hold",
+  "expected_valid": true,
+  "kind": "ambiguous-hold"
+}

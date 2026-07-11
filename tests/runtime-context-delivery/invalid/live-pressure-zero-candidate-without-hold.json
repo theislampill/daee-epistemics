@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "live-pressure-zero-candidate-without-hold",
+  "expected_valid": false,
+  "mutation": "unresolved-context-without-hold",
+  "stage": "03"
+}

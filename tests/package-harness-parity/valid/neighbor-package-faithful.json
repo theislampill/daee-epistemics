@@ -1,0 +1,6 @@
+{
+  "schema": "daee-package-harness-scenario-v1",
+  "scenario": "neighbor-package-faithful",
+  "expected_valid": true,
+  "kind": "package-faithful"
+}

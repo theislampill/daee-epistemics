@@ -1,0 +1,89 @@
+{
+    "topology_contract": "input-pressure-v1",
+    "upstream_candidate_ids": [
+        "N1",
+        "N2"
+    ],
+    "upstream_candidate_set_sha256": "79e6265574d54cb695aab3ce35d33825a6a2fca3e426bbab83b478d4e838f140",
+    "upstream_pressure_ids": [
+        "P1"
+    ],
+    "upstream_pressure_set_sha256": "1ea012f63ce7253d3af8dbb22c0dc71079d087575b56223cac612bf9df0e1d93",
+    "selection_status": "licensed",
+    "selected_n_frame": "frame-one",
+    "candidate_states": [
+        {
+            "state_id": "N1", "frame_token": "frame-one", "observation_unit_ids": ["U1", "U2"], "pressure_ids": ["P1"], "live_registers": ["axis-a"], "read_status": "dominant", "confidence": "strong", "status": "selected", "partition_ids": ["NP1", "NP2"], "merged_into": null, "decisive_missing_differentiator": null, "hold_gate": null, "next_review_point": null, "basis": "The source anchors license the operative frame."
+        },
+        {
+            "state_id": "N2", "frame_token": "frame-two", "observation_unit_ids": ["U1", "U2"], "pressure_ids": ["P1"], "live_registers": ["axis-a"], "read_status": "underdetermined", "confidence": "provisional", "status": "held", "partition_ids": ["NP1", "NP2"], "merged_into": null, "decisive_missing_differentiator": "additional source evidence", "hold_gate": "observe the differentiator", "next_review_point": "next routed read", "basis": "The alternative remains live."
+        }
+    ],
+    "input_pressures": [
+        {
+            "pressure_id": "P1", "observation_unit_ids": ["U1", "U2"], "candidate_state_ids": ["N1", "N2"], "pressure_function": "Bound the atomic transition.", "register_axes": ["axis-a"], "status": "routed", "burden_id": "B1", "decision_id": "BP1", "basis": "The observations carry this function."
+        }
+    ],
+    "candidate_state_partitions": [
+        {
+            "partition_id": "NP1",
+            "member_state_ids": [
+                "N1",
+                "N2"
+            ],
+            "shared_observation_unit_ids": [
+                "U1"
+            ],
+            "decision": "select_and_hold",
+            "selected_state_id": "N1",
+            "held_state_ids": [
+                "N2"
+            ],
+            "merged_state_ids": [],
+            "rejected_state_ids": [],
+            "comparison": {
+                "pressure_set_relation": "overlapping",
+                "register_relation": "compatible",
+                "owner_eligibility_relation": "compatible",
+                "held_route_relation": "distinct",
+                "closure_consequence_relation": "distinct"
+            },
+            "decisive_differentiator": "first locus",
+            "basis_unit_ids": [
+                "U1"
+            ],
+            "basis": "First locus."
+        },
+        {
+            "partition_id": "NP2",
+            "member_state_ids": [
+                "N1",
+                "N2"
+            ],
+            "shared_observation_unit_ids": [
+                "U2"
+            ],
+            "decision": "select_and_hold",
+            "selected_state_id": "N2",
+            "held_state_ids": [
+                "N1"
+            ],
+            "merged_state_ids": [],
+            "rejected_state_ids": [],
+            "comparison": {
+                "pressure_set_relation": "overlapping",
+                "register_relation": "compatible",
+                "owner_eligibility_relation": "compatible",
+                "held_route_relation": "distinct",
+                "closure_consequence_relation": "distinct"
+            },
+            "decisive_differentiator": "second locus",
+            "basis_unit_ids": [
+                "U2"
+            ],
+            "basis": "Second locus contradicts the global status."
+        }
+    ],
+    "burden_partition_decisions": [],
+    "burden_floor": []
+}

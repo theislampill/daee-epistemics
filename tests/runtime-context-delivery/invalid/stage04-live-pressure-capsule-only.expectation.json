@@ -1,0 +1,15 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "stage04-live-pressure-capsule-only.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "runtime-context-delivery",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "04",
+  "expected_failure_class": "unresolved-context-without-hold",
+  "expected_failure_subcode": "live-pressure-semantic-context-without-hold",
+  "expected_downstream_invalidated": ["05", "06", "07", "08"],
+  "required_diagnostic_markers": ["unresolved-context-without-hold"],
+  "forbidden_artifacts": ["model-invocation.json", "promotion-verdict.json"],
+  "provenance": "second-review-live-pressure-semantic-context"
+}

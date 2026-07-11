@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "stage04-live-pressure-capsule-only",
+  "expected_valid": false,
+  "mutation": "unresolved-context-without-hold",
+  "stage": "04"
+}

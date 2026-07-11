@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-checker-fixture-v1","base":"docs/audits/v0.4.6.0-wip-andon-contract-registry.json","operations":[{"op":"set","path":"contracts.A02.milestones.0.milestone_id","value":"A01.terminal"}]}

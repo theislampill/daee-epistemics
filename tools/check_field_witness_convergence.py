@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import glob
+import json
 import re
 import sys
 from pathlib import Path
@@ -29,9 +30,12 @@ from closure_witness_lib import (
     field_witness_mrp_resultants,
     normalize_burden_id,
     parse_closure_witness,
+    public_graph_integrity_diagnostics,
     status_head,
+    terminal_public_order_diagnostics,
     unique,
 )
+from witness_artifact_roles import validate_role
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -991,7 +995,16 @@ def root_burden_node_ids(field_witness: dict[str, Any]) -> list[str]:
     return unique(ids)
 
 
-def convergence_errors(path: Path, text: str) -> list[str]:
+def public_graph_contract_diagnostics(field_witness: Any, *, compatibility: str) -> list[dict[str, Any]]:
+    """Dispatch current graphs to the public schema and legacy graphs to a labeled adapter."""
+    role_diagnostics = [item.to_dict() for item in validate_role(field_witness, "public_graph", compatibility)]
+    blocking = [item for item in role_diagnostics if not item.get("failure_subcode", "").startswith("witness-role-historical-")]
+    if blocking:
+        return blocking
+    return public_graph_integrity_diagnostics(field_witness, compatibility=compatibility)
+
+
+def convergence_errors(path: Path, text: str, *, compatibility: str = "historical") -> list[str]:
     errors: list[str] = []
     payload = extract_embedded_field_witness(text)
     if payload is None:
@@ -1001,6 +1014,12 @@ def convergence_errors(path: Path, text: str) -> list[str]:
     field_witness = extract_field_witness(payload)
     if field_witness is None:
         return errors + [f"{rel(path)}: field_witness object missing"]
+
+    for diagnostic in public_graph_contract_diagnostics(field_witness, compatibility=compatibility):
+        errors.append(f"{rel(path)}: {diagnostic['failure_subcode']}: {diagnostic['message']}")
+    if compatibility == "current":
+        for diagnostic in terminal_public_order_diagnostics(text):
+            errors.append(f"{rel(path)}: {diagnostic['failure_subcode']}: {diagnostic['message']}")
 
     prefix = f"{rel(path)}: "
     errors.extend(prefix + error for error in field_witness_graph_errors(field_witness))
@@ -1161,7 +1180,24 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=FIXTURE_ROOT)
     parser.add_argument("--outputs", nargs="*", type=Path, default=[])
+    parser.add_argument("--compatibility", choices=["current", "historical"], default="current", help="dialect for explicitly supplied --outputs; built-in fixtures remain labeled historical")
+    parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--explain", action="store_true")
     args = parser.parse_args()
+
+    if args.self_test:
+        current = json.loads((ROOT / "tests" / "witness-artifact-roles" / "valid" / "current-triplet" / "public-graph.json").read_text(encoding="utf-8"))
+        historical = json.loads((ROOT / "tests" / "witness-artifact-roles" / "valid" / "historical-compatibility" / "legacy-public-graph.json").read_text(encoding="utf-8"))
+        checks = [
+            ("current public graph", public_graph_contract_diagnostics(current, compatibility="current") == []),
+            ("historical adapter", public_graph_contract_diagnostics(historical, compatibility="historical") == []),
+            ("historical graph rejected as current", bool(public_graph_contract_diagnostics(historical, compatibility="current"))),
+        ]
+        for name, passed in checks:
+            print(f"  self-test {'PASS' if passed else 'FAIL'}: {name}")
+        ok = all(passed for _, passed in checks)
+        print(f"field_witness convergence self-test: {'PASS' if ok else 'FAIL'}")
+        return 0 if ok else 1
 
     errors: list[str] = []
     valid, invalid = iter_fixtures(args.root)
@@ -1170,19 +1206,19 @@ def main() -> int:
     output_checked = 0
 
     for path in valid:
-        found = convergence_errors(path, read_text(path))
+        found = convergence_errors(path, read_text(path), compatibility="historical")
         if found:
             errors.extend(found)
         else:
             valid_checked += 1
     for path in invalid:
-        found = convergence_errors(path, read_text(path))
+        found = convergence_errors(path, read_text(path), compatibility="historical")
         if not found:
             errors.append(f"{rel(path)}: expected-invalid convergence fixture unexpectedly passed")
         else:
             invalid_checked += 1
     for path in sorted(FORMALISM_NEUTRAL_INVALID_DIR.glob("field-*.md")):
-        found = convergence_errors(path, read_text(path))
+        found = convergence_errors(path, read_text(path), compatibility="historical")
         if not found:
             errors.append(f"{rel(path)}: expected-invalid neutral convergence fixture unexpectedly passed")
         else:
@@ -1191,23 +1227,30 @@ def main() -> int:
         if not path.exists():
             errors.append(f"{path}: output path not found")
             continue
-        found = convergence_errors(path, read_text(path))
+        found = convergence_errors(path, read_text(path), compatibility=args.compatibility)
         if found:
             errors.extend(found)
         else:
             output_checked += 1
 
     if errors:
+        if args.explain:
+            print(json.dumps({"status": "fail", "checker_id": "field-witness-convergence", "compatibility": args.compatibility, "errors": errors}, sort_keys=True, ensure_ascii=False))
+            return 1
         print("field_witness convergence check: FAIL")
         for error in errors:
             print(f"- {error}")
         return 1
 
+    if args.explain:
+        print(json.dumps({"status": "pass", "checker_id": "field-witness-convergence", "compatibility": args.compatibility, "valid_checked": valid_checked, "invalid_checked": invalid_checked, "output_checked": output_checked}, sort_keys=True))
+        return 0
     print("field_witness convergence check: PASS")
     print(f"Valid fixtures checked: {valid_checked}")
     print(f"Invalid fixtures checked: {invalid_checked}")
     if args.outputs:
         print(f"Hosted/live outputs checked: {output_checked}")
+    print("Built-in field-witness-convergence fixtures use the labeled historical compatibility adapter.")
     return 0
 
 

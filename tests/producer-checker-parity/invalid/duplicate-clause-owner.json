@@ -1,0 +1,6 @@
+{
+  "schema": "daee-producer-checker-scenario-v1",
+  "scenario": "duplicate-clause-owner",
+  "expected_valid": false,
+  "mutation": "ambiguous-clause-ownership"
+}

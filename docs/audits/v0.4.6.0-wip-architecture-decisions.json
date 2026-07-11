@@ -1,0 +1,863 @@
+{
+  "schema": "daee-architecture-decision-ledger-v1",
+  "ledger_id": "daee-v0.4.6.0-wip-branch10-decisions",
+  "source_head": "6987c9ebf1de45af700b1fa74b1ed25ec0beeb7c",
+  "decision_owner": "repository owner via current task",
+  "acceptance_evidence": "Owner supplied Plan 21 overrides and approved continuation on 2026-07-10.",
+  "decisions": [
+    {
+      "decision_id": "DAEE-ADR-046-001",
+      "status": "ACCEPTED",
+      "title": "Canonical recursive reducer",
+      "decision": "burden_cycles[] is the only canonical v2 recursive reducer input; retained Stage03/04/05 records are referenced by cycle id and hash.",
+      "rationale": "A07 requires one lossless ordered lifecycle instead of competing stage-array reducers.",
+      "affected_andon_ids": [
+        "A07",
+        "A10",
+        "A16"
+      ],
+      "affected_plans": [
+        "07_mrp_recursion_generated_held_preempted_plan.md",
+        "10_cross_stage_projection_parity_plan.md",
+        "17_sustainment_hansei_and_release_completion_plan.md"
+      ],
+      "owner_files": [
+        "schema/state-capsule-v2.schema.json",
+        "tools/mrp_recursion_lib.py"
+      ],
+      "superseded_alternatives": [
+        "parallel canonical recursive arrays"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only a demonstrated non-lossless projection or schema impossibility with an owner-approved migration.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-002",
+      "status": "ACCEPTED",
+      "title": "Scheduler and pure reducer ownership",
+      "decision": "tools/run_staged_current_skill_smoke.py alone schedules/invokes; tools/mrp_recursion_lib.py is pure transition logic.",
+      "rationale": "Deterministic tests can exercise recursion without hidden model or filesystem effects.",
+      "affected_andon_ids": [
+        "A07",
+        "A13"
+      ],
+      "affected_plans": [
+        "07_mrp_recursion_generated_held_preempted_plan.md",
+        "13_producer_checker_contract_and_harness_parity_plan.md"
+      ],
+      "owner_files": [
+        "tools/run_staged_current_skill_smoke.py",
+        "tools/mrp_recursion_lib.py"
+      ],
+      "superseded_alternatives": [
+        "a second scheduler inside the reducer"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only an explicit scheduler migration proving one invocation owner.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-003",
+      "status": "ACCEPTED",
+      "title": "No semantic cardinality cap",
+      "decision": "Resource limits are hash-bound policy; there is no semantic recursion, burden, submove, byte, route, source, citation, or conclusion quota.",
+      "rationale": "Topology comes from diagnosed pressure; exhaustion yields resumable PARTIAL or HANDOFF.",
+      "affected_andon_ids": [
+        "A02",
+        "A04",
+        "A06",
+        "A07",
+        "A12",
+        "A15"
+      ],
+      "affected_plans": [
+        "02_input_pressure_inventory_and_dynamic_burden_topology_plan.md",
+        "06_topology_derived_output_mass_and_anti_slimming_plan.md",
+        "15_arbitrary_topology_capacity_and_metamorphic_testing_plan.md"
+      ],
+      "owner_files": [
+        "schema/state-capsule-v2.schema.json",
+        "tools/topology_capacity_lib.py"
+      ],
+      "superseded_alternatives": [
+        "fixed semantic floors and ceilings"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only an owner-approved resource-policy revision; never a case-specific expected count.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-004",
+      "status": "ACCEPTED",
+      "title": "Historical v1 compatibility boundary",
+      "decision": "Handshake/state-capsule v1 remains readable for historical replay; new release-bearing execution uses composed v2.",
+      "rationale": "Historical evidence stays readable without allowing v1 to satisfy new closure claims.",
+      "affected_andon_ids": [
+        "A07",
+        "A10",
+        "A16"
+      ],
+      "affected_plans": [
+        "17_sustainment_hansei_and_release_completion_plan.md"
+      ],
+      "owner_files": [
+        "schema/state-capsule.schema.json",
+        "schema/state-capsule-v2.schema.json",
+        "tools/check_state_capsule.py"
+      ],
+      "superseded_alternatives": [
+        "redefining v1 in place"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "A separate deprecation ADR with retained-artifact migration proof.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-005",
+      "status": "ACCEPTED",
+      "title": "Witness namespace separation",
+      "decision": "schema/field-witness.schema.json owns the public graph; schema/field-witness-envelope.schema.json owns the Stage08 audit envelope; artifact bindings are subordinate.",
+      "rationale": "The same label cannot carry incompatible public and audit dialects.",
+      "affected_andon_ids": [
+        "A09",
+        "A10"
+      ],
+      "affected_plans": [
+        "09_witness_dialect_reconstruction_and_public_order_plan.md"
+      ],
+      "owner_files": [
+        "schema/field-witness.schema.json",
+        "schema/field-witness-envelope.schema.json",
+        "tools/witness_artifact_roles.py"
+      ],
+      "superseded_alternatives": [
+        "one field_witness name for graph, envelope, and binding"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "A versioned public-schema migration with compatibility fixtures and owner approval.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-006",
+      "status": "ACCEPTED",
+      "title": "Indivisible single-use five-smoke cycle",
+      "decision": "A GPT cycle is five concurrent isolated observations over one claimed candidate with no pass carry-forward, raw-output repair, or candidate reuse.",
+      "rationale": "Candidate custody records dispatch independently from quality verdicts.",
+      "affected_andon_ids": [
+        "A01",
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "14_five_smoke_stage01_stage08_completion_matrix_plan.md",
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "schema/smoke-matrix.schema.json",
+        "tools/run_five_smoke_matrix.py"
+      ],
+      "superseded_alternatives": [
+        "queued/sequential substitute",
+        "selective row reuse",
+        "candidate PASS/FAIL states"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only an owner-approved matrix-protocol migration with deterministic isolation proof.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-007",
+      "status": "ACCEPTED",
+      "title": "Model smoke is final integration, not debugger",
+      "decision": "NO_MODEL_SOURCE_PREFLIGHT_GREEN, candidate maturity, and terminal escape accounting precede every paid cycle.",
+      "rationale": "Deterministic canaries absorb reproducible defects before model spend.",
+      "affected_andon_ids": [
+        "A11",
+        "A14",
+        "A15",
+        "A16"
+      ],
+      "affected_plans": [
+        "11_checker_fixture_and_promotion_integrity_plan.md",
+        "14_five_smoke_stage01_stage08_completion_matrix_plan.md"
+      ],
+      "owner_files": [
+        "schema/model-smoke-escape.schema.json",
+        "schema/no-model-candidate-maturity.schema.json"
+      ],
+      "superseded_alternatives": [
+        "using paid cycles as first-line debugging"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "A scoped owner-reviewed deterministic_detectability=NO with compensating controls.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-008",
+      "status": "ACCEPTED",
+      "title": "Uncapped convergence objective",
+      "decision": "There is no fixed campaign cycle or cumulative call ceiling; each child reserves exactly its declared calls and every cycle records usage/cost.",
+      "rationale": "Epistemic closure is not forced by an arbitrary numeric give-up rule.",
+      "affected_andon_ids": [
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "tools/campaign_usage_ledger.py",
+        "schema/smoke-matrix.schema.json"
+      ],
+      "superseded_alternatives": [
+        "fixed total-cycle exhaustion"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Explicit owner revocation or later protocol decision; never stop-after-N as epistemic proof.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-009",
+      "status": "ACCEPTED",
+      "title": "Optional paired reconvergence boundary",
+      "decision": "An accepted Opus countermeasure changing candidate- or verdict-bearing state requires fresh sibling GPT/Opus candidates with identical package identity and a reviewed all-ten parent.",
+      "rationale": "Historical GPT completion cannot prove the changed head.",
+      "affected_andon_ids": [
+        "A13",
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "schema/cross-model-paired-cycle.schema.json",
+        "tools/run_paired_cross_model_matrix.py"
+      ],
+      "superseded_alternatives": [
+        "cross-model pass carry-forward"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Separate owner rejection of the countermeasure or proved external-only correction.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-010",
+      "status": "ACCEPTED",
+      "title": "Cold and human review separation",
+      "decision": "Final GPT WIP completion requires five isolated cold GPT-5.6 reviews plus one human five-assessment cohort and exact adjudication; structural PASS is not semantic truth.",
+      "rationale": "Independent comprehension/challenge evidence remains separate from producer/checker output.",
+      "affected_andon_ids": [
+        "A01",
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "01_evidence_custody_and_causal_attribution_plan.md",
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "schema/cold-comprehensiveness-review.schema.json",
+        "schema/topology-review.schema.json"
+      ],
+      "superseded_alternatives": [
+        "verdict averaging",
+        "self-authored review"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only an owner-approved review protocol retaining old-review replay.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-011",
+      "status": "ACCEPTED",
+      "title": "Canonical usage journal and head",
+      "decision": "Producer and cold-review calls share one append-only campaign transaction journal; the mutable head is a derived CAS cache under one lock.",
+      "rationale": "Conflicts spend zero; unknown dispatch cannot mint capacity.",
+      "affected_andon_ids": [
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "14_five_smoke_stage01_stage08_completion_matrix_plan.md",
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "tools/campaign_usage_ledger.py"
+      ],
+      "superseded_alternatives": [
+        "multiple usage heads",
+        "unlocked worker appends"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only a replacement protocol proving equivalent cross-process linearizability and crash recovery.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-012",
+      "status": "ACCEPTED",
+      "title": "External claim and phase-bundled retained evidence",
+      "decision": "Cycle identity is claimed outside the working root; immutable observation, structural, human, cold, and adjudication bundles are joined by one final create-once manifest/pointer under the owner-selected create-if-absent evidence root, and raw cycles are retained indefinitely by hash unless separately authorized pruning leaves permanent residue.",
+      "rationale": "Evidence cannot be called final before later review artifacts exist.",
+      "affected_andon_ids": [
+        "A01",
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "17_sustainment_hansei_and_release_completion_plan.md",
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "tools/export_cycle_evidence_bundle.py",
+        "schema/evidence-retention-manifest.schema.json"
+      ],
+      "superseded_alternatives": [
+        "publishing one incomplete directory as final",
+        "mutable pointer called immutable"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only a storage protocol with equivalent no-overwrite, resume, join, and readback proof.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-013",
+      "status": "ACCEPTED",
+      "title": "Cohort review commitment and immutable findings",
+      "decision": "One human commits all five or ten initial assessment hashes before any cold disclosure; final adjudication binds canonical finding hashes and every attempt/incident.",
+      "rationale": "Per-case timestamps and finding IDs alone allow shopping or mutation.",
+      "affected_andon_ids": [
+        "A01",
+        "A14"
+      ],
+      "affected_plans": [
+        "01_evidence_custody_and_causal_attribution_plan.md",
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "schema/topology-initial-assessment.schema.json",
+        "schema/topology-review.schema.json",
+        "schema/review-incident-report.schema.json"
+      ],
+      "superseded_alternatives": [
+        "assess-disclose-assess interleaving",
+        "finding-ID-only equality"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only an owner-approved review migration preserving cohort independence and dissent custody.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-014",
+      "status": "ACCEPTED",
+      "title": "Open-world input-pressure topology",
+      "decision": "Stage02 preserves candidate states, observations, pressure dispositions, and split/merge decisions; zero selected candidates is a truthful OPEN/PARTIAL state.",
+      "rationale": "A single mandatory selected frame aliases underdetermination and alternate candidates.",
+      "affected_andon_ids": [
+        "A02",
+        "A03",
+        "A15"
+      ],
+      "affected_plans": [
+        "02_input_pressure_inventory_and_dynamic_burden_topology_plan.md",
+        "03_candidate_state_partition_and_split_merge_plan.md"
+      ],
+      "owner_files": [
+        "schema/state-capsule-v2.schema.json",
+        "tools/input_observation_units.py",
+        "tools/topology_partition.py"
+      ],
+      "superseded_alternatives": [
+        "one mandatory selected_n_frame",
+        "topic-keyword burden bank"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only a lossless alternative proved against arbitrary-topology and reconstruction fixtures.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-015",
+      "status": "ACCEPTED",
+      "title": "Operation capsule chronology and inverse obligations",
+      "decision": "Every executable Stage03 obligation maps exactly once to an executed or explicit disposition; execution records before-state, performed evidence, local delta, residual, and Land contribution before Land.",
+      "rationale": "Pointers or later hydration cannot manufacture performed history.",
+      "affected_andon_ids": [
+        "A04",
+        "A05",
+        "A10"
+      ],
+      "affected_plans": [
+        "04_dynamic_submove_cardinality_and_owner_coverage_plan.md",
+        "05_submove_body_depth_and_land_license_plan.md"
+      ],
+      "owner_files": [
+        "schema/operation-capsule.schema.json",
+        "tools/owner_obligation_coverage.py",
+        "tools/operation_capsule_contract.py"
+      ],
+      "superseded_alternatives": [
+        "pointer-only ACT",
+        "Stage07 semantic backfill"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only a contract with equal or stronger bijective and chronology proof.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-016",
+      "status": "ACCEPTED",
+      "title": "Monotonic closure and projection oracle",
+      "decision": "Opening state is OPEN/PENDING; closure derives monotonically from lifecycle. Stage04-07 share one activation/lifecycle fingerprint and public order is Restorative, Closing, Witness, field_witness, EOF.",
+      "rationale": "Producer-authored closure and missing-state-as-landed are false evidence.",
+      "affected_andon_ids": [
+        "A08",
+        "A09",
+        "A10"
+      ],
+      "affected_plans": [
+        "08_opening_closure_and_recursion_state_plan.md",
+        "09_witness_dialect_reconstruction_and_public_order_plan.md",
+        "10_cross_stage_projection_parity_plan.md"
+      ],
+      "owner_files": [
+        "tools/closure_state_lib.py",
+        "tools/stage_projection_contract.py",
+        "tools/build_staged_governed_output.py"
+      ],
+      "superseded_alternatives": [
+        "opening COMPLETE",
+        "closure_claim ORed into derived state",
+        "Closing at EOF"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only a proven lossless projection/order migration with checker and historical replay.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-017",
+      "status": "ACCEPTED",
+      "title": "Safe candidate extraction and custody paths",
+      "decision": "Candidate archives use safe regular-file extraction into an exclusive fresh directory; reject traversal, reparse/link metadata, devices, ADS, collisions, duplicates, and size bombs; publish without replacement.",
+      "rationale": "Live package helpers are overwrite-prone and not custody-safe.",
+      "affected_andon_ids": [
+        "A13",
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "14_five_smoke_stage01_stage08_completion_matrix_plan.md",
+        "17_sustainment_hansei_and_release_completion_plan.md"
+      ],
+      "owner_files": [
+        "tools/custody_fs.py",
+        "tools/build_candidate_package_record.py"
+      ],
+      "superseded_alternatives": [
+        "extractall",
+        "exists-then-write",
+        "os.replace final publish"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only a platform protocol proving equal containment, no-overwrite, crash, and readback properties.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-018",
+      "status": "ACCEPTED",
+      "title": "Authorization trust boundary",
+      "decision": "Owner grants and coordinator children must be authenticated by an owner-protected writer boundary or signatures and use one ISSUED-CLAIMED-terminal consumption protocol.",
+      "rationale": "A self-hashed writable JSON file is intent, not security authorization.",
+      "affected_andon_ids": [
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "14_five_smoke_stage01_stage08_completion_matrix_plan.md",
+        "17_sustainment_hansei_and_release_completion_plan.md"
+      ],
+      "owner_files": [
+        "schema/release-action-authorization.schema.json",
+        "schema/vcs-action-authorization.schema.json",
+        "schema/smoke-matrix.schema.json"
+      ],
+      "superseded_alternatives": [
+        "free-text issued_by as authority",
+        "reusable booleans"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "An owner-approved equivalent trust mechanism with replay and delegation proof.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-019",
+      "status": "ACCEPTED",
+      "title": "Raw versus sanitized evidence",
+      "decision": "Exact raw model/provider artifacts are restricted custody; reviewer/incident projections are sanitized, hash-bound untrusted data; public manifests contain classifications and fingerprints only.",
+      "rationale": "Indefinite retention must not leak secrets or turn output instructions into reviewer commands.",
+      "affected_andon_ids": [
+        "A01",
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "01_evidence_custody_and_causal_attribution_plan.md",
+        "17_sustainment_hansei_and_release_completion_plan.md"
+      ],
+      "owner_files": [
+        "schema/evidence-retention-manifest.schema.json",
+        "tools/build_cold_review_packet.py"
+      ],
+      "superseded_alternatives": [
+        "raw log concatenation into instructions",
+        "public secret-bearing manifests"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only a reviewed data-classification migration preserving exact restricted evidence.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-020",
+      "status": "ACCEPTED",
+      "title": "Candidate-global use claim",
+      "decision": "READY_UNUSED is effective only while the candidate-global claim is absent; claim creates CLAIMED_PENDING_FINALIZATION and dispatch evidence derives one CONSUMED terminal state.",
+      "rationale": "Cycle-local paths alone permit two cycles to claim one candidate.",
+      "affected_andon_ids": [
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "14_five_smoke_stage01_stage08_completion_matrix_plan.md",
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "tools/build_candidate_package_record.py",
+        "schema/smoke-matrix.schema.json"
+      ],
+      "superseded_alternatives": [
+        "multiple cycle-local candidate claims",
+        "post-claim return to ready"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only an equivalent candidate-global linearization proof.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-021",
+      "status": "ACCEPTED",
+      "title": "Three-state refusal with independent consumption",
+      "decision": "Refusal is NOT_RUN_POLICY_INCOMPATIBILITY, PRODUCT_REFUSAL, or REFUSAL_ORIGIN_UNPROVEN; candidate consumption is independently evidence-derived.",
+      "rationale": "JSON syntax or refusal keywords cannot establish causal origin.",
+      "affected_andon_ids": [
+        "A01",
+        "A14"
+      ],
+      "affected_plans": [
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "schema/smoke-matrix.schema.json",
+        "tools/run_five_smoke_matrix.py"
+      ],
+      "superseded_alternatives": [
+        "two-state refusal",
+        "non-JSON transport laundering"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only a protocol with at least equivalent origin and dispatch provenance.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-022",
+      "status": "ACCEPTED",
+      "title": "Scoped detectability reassessment",
+      "decision": "deterministic_detectability=NO is scoped; triggers append REASSESSMENT_DUE and only owner plus independent reviewer may append NO-to-UNKNOWN; UNKNOWN blocks.",
+      "rationale": "Recurrence alone cannot mutate adjudicated state.",
+      "affected_andon_ids": [
+        "A11",
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "schema/model-smoke-escape.schema.json",
+        "tools/check_model_smoke_escape_registry.py"
+      ],
+      "superseded_alternatives": [
+        "automatic recurrence reclassification",
+        "indefinite speculative UNKNOWN"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only an owner-approved detectability protocol with equivalent scoped controls.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-023",
+      "status": "ACCEPTED",
+      "title": "Review incident and retry lineage",
+      "decision": "Every invalid or ambiguous cold attempt pauses with an incident/notification. Same-packet transport retries preserve hashes; packet repair preserves input/output and records predecessor/delta/red-green/anti-bank; shared contract changes replay the cohort.",
+      "rationale": "Attempt forks and selected favorable files are not final evidence.",
+      "affected_andon_ids": [
+        "A01",
+        "A14"
+      ],
+      "affected_plans": [
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "schema/review-incident-report.schema.json",
+        "tools/check_review_incident_report.py",
+        "tools/check_topology_review.py"
+      ],
+      "superseded_alternatives": [
+        "identical-packet-only retry",
+        "reviewer shopping"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only a review protocol preserving append-only attempts, full cohort head, and causal evidence.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-024",
+      "status": "ACCEPTED",
+      "title": "Paired parent owns ten-way coordination",
+      "decision": "The paired parent atomically owns the ten-call reservation, candidate sibling identity, barrier, finalizer, evidence bundle, and verdict; children do not reserve or claim independently.",
+      "rationale": "Two standalone five-runs cannot prove a ten-worker barrier.",
+      "affected_andon_ids": [
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "schema/cross-model-paired-cycle.schema.json",
+        "tools/run_paired_cross_model_matrix.py"
+      ],
+      "superseded_alternatives": [
+        "sequential 5+5 cohorts",
+        "child-owned reservations"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only an owner-approved paired protocol with one causal ten-event chain.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-025",
+      "status": "ACCEPTED",
+      "title": "Hash-bound change-boundary events",
+      "decision": "Candidate-, producer-, checker-, registry-, adapter-, or review-verdict-bearing changes append before/after hashes and trigger the applicable fresh cycle/reconvergence; docs/storage-only changes do not when proven.",
+      "rationale": "Prose classification can hide a verdict-bearing repair.",
+      "affected_andon_ids": [
+        "A13",
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "schema/smoke-matrix.schema.json",
+        "schema/cross-model-paired-cycle.schema.json"
+      ],
+      "superseded_alternatives": [
+        "unrecorded shared-protocol change",
+        "one-case replay after shared change"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only a reviewed classification protocol with equivalent hashes and concurrence.",
+      "non_claims": [
+        "decision custody is not implementation evidence",
+        "decision custody is not model or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-026",
+      "status": "ACCEPTED",
+      "title": "Separate VCS gates and exact-SHA CI",
+      "decision": "Commit and push use separate exact one-use authorizations; the pushed remote OID and owner-designated required checks are derived fresh for that exact SHA before candidate construction.",
+      "rationale": "Local green, stale checks, ambiguous branch protection, or CI for another SHA cannot establish the candidate source boundary.",
+      "affected_andon_ids": [
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        "17_sustainment_hansei_and_release_completion_plan.md",
+        "21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md"
+      ],
+      "owner_files": [
+        "schema/vcs-action-authorization.schema.json",
+        "schema/ci-readback.schema.json",
+        "tools/check_vcs_action_authorization.py",
+        "tools/check_ci_readback.py"
+      ],
+      "superseded_alternatives": [
+        "campaign authorization implies Git authority",
+        "read then unleased push as remote CAS",
+        "any green workflow counts as required"
+      ],
+      "decision_owner": "repository owner via the 2026-07-10 Branch 10 execution prompt",
+      "accepted_at": "2026-07-10",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Latest owner decisions in the current task, reconciled by exact-model Phase 2 review.",
+      "reopen_condition": "Only a separately owner-approved VCS/CI protocol with equivalent one-use scope, exact-SHA identity, and server-side conflict protection.",
+      "non_claims": [
+        "decision custody is not commit or push authorization",
+        "CI green is not WIP or release proof"
+      ]
+    }
+  ],
+  "non_claims": [
+    "all implementation remains unverified until deterministic evidence exists",
+    "no commit, push, model, WIP, release, or Opus authorization is implied"
+  ]
+}
