@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import glob
+import hashlib
 import json
 import re
 import sys
@@ -49,6 +50,7 @@ from delta_result_vocabulary import (
     DELTA_RESULT_OWNER_ALIASES,
     family_alias_as_executable_owner_errors,
 )
+from stage_projection_contract import canonical_json_sha256
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -1431,6 +1433,7 @@ def activation_mirror_errors(
     record: ActRecord,
     target: str,
     mirror: dict[str, Any] | None,
+    field_witness: dict[str, Any],
 ) -> list[str]:
     label = f"{rel(path)}: ACT {record.submove_ref}"
     if mirror is None:
@@ -1443,6 +1446,47 @@ def activation_mirror_errors(
             f"{label}: model-authored activation verification fields are not proof: "
             + ", ".join(self_claims)
         )
+
+    if field_witness.get("schema_version") == "public-field-witness-v1":
+        record_family = nla_owner_family(record.owner)
+        mirror_family = nla_owner_family(str(mirror.get("owner_id") or ""))
+        errors.extend(family_alias_as_executable_owner_errors(label, record.owner, record.operation))
+        errors.extend(
+            family_alias_as_executable_owner_errors(
+                label,
+                str(mirror.get("owner_id") or ""),
+                str(mirror.get("operation") or ""),
+            )
+        )
+        if record_family != mirror_family:
+            errors.append(f"{label}: current field_witness owner_id does not decode to ACT owner family")
+        if str(mirror.get("operation") or "").strip() != record.operation:
+            errors.append(f"{label}: current field_witness operation does not match ACT operation")
+        if graph_burden_id(mirror.get("burden_id")) != target:
+            errors.append(f"{label}: current field_witness burden_id does not match ACT Land target")
+        if graph_submove_id(mirror.get("body_ref")) != graph_submove_id(record.body_ref):
+            errors.append(f"{label}: current field_witness body_ref does not match ACT body_ref")
+
+        expected_semantic_hash = hashlib.sha256(record.record.encode("utf-8")).hexdigest()
+        if mirror.get("semantic_body_sha256") != expected_semantic_hash:
+            errors.append(f"{label}: current field_witness semantic_body_sha256 does not match visible ACT row")
+        terminal_payload = field_witness.get("terminal_states", {}).get(target)
+        terminal_state = (
+            str(terminal_payload.get("state") or "")
+            if isinstance(terminal_payload, dict)
+            else str(terminal_payload or "")
+        )
+        expected_resultant_hash = canonical_json_sha256(
+            {
+                "delta": record.delta,
+                "delta_result": record.delta_result,
+                "land": record.land,
+                "terminal_state": terminal_state,
+            }
+        )
+        if mirror.get("resultant_sha256") != expected_resultant_hash:
+            errors.append(f"{label}: current field_witness resultant_sha256 does not match ACT/terminal result")
+        return errors
 
     record_family = nla_owner_family(record.owner)
     mirror_family = nla_owner_family(str(mirror.get("owner") or ""))
@@ -1774,7 +1818,7 @@ def nla_decode_errors(
             mirror = mirror_items[0]
         else:
             mirror = mirror_items[0] if mirror_items else None
-        errors.extend(activation_mirror_errors(path, record, target, mirror))
+        errors.extend(activation_mirror_errors(path, record, target, mirror, field_witness))
         if facets is not None:
             errors.extend(semantic_faithfulness_errors(path, record, facets))
         errors.extend(reconstructed_submove_errors(path, record, reconstructed_submoves))

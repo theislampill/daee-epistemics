@@ -30,7 +30,12 @@ import build_staged_governed_output as staged_output
 import check_staged_runtime_handshake as staged_handshake_check
 from checker_execution_snapshot import create_execution_snapshot
 from check_field_witness_convergence import registers_in_text as checker_field_witness_registers_in_text
-from closure_witness_lib import extract_embedded_field_witness, extract_field_witness, parse_closure_witness, status_head
+from closure_witness_lib import (
+    extract_embedded_field_witness,
+    extract_field_witness,
+    parse_closure_witness,
+    status_head,
+)
 from delta_result_vocabulary import (
     DELTA_RESULT_VOCABULARY,
     FAMILY_EXECUTION_OWNER_IDS,
@@ -46,6 +51,11 @@ from delta_result_vocabulary import (
     source_formal_delta_operation_errors,
     source_pressure_delta_errors,
 )
+from staged_current_witness import (
+    CurrentWitnessError,
+    build_current_projection,
+    build_current_public_field_witness,
+)
 from register_axis_contract import (
     OWNER_OPERATION_REGISTER_AXIS_FLOORS,
     OWNER_REGISTER_AXIS_FLOORS,
@@ -56,6 +66,16 @@ from stage05_basis_contract import normalize_terminal_detail_basis
 from validation_registry import load_registry as load_validation_registry
 from validation_registry import profile_invocations
 from validation_registry import snapshot_registry as snapshot_validation_registry
+from runtime_call_context_adapter import (
+    PreparedRuntimeCall,
+    RuntimeCallPreparationError,
+    materialize_execution_mini_package,
+    prepare_runtime_call,
+)
+from check_prompt_pack_budget import (
+    BudgetViolation as PromptPackBudgetViolation,
+    emit_prompt_pack_manifest_v2,
+)
 from check_mrp_generated_burden import (
     BODY_SUPPORTED_GENERIC_DELTA_RESULTS,
     FORMAL_OWNER_CONTRACT_OPERATIONS,
@@ -5561,6 +5581,72 @@ def stage07_mrp_reread_section_scaffold(previous_stages: list[dict[str, Any]]) -
     return "\n".join(lines).rstrip() + "\n"
 
 
+def stage07_historical_field_witness_payload(
+    previous_stages: list[dict[str, Any]],
+) -> dict[str, Any]:
+    contract = stage07_field_witness_contract_guidance(previous_stages)
+    scaffold_tail = contract.split("Required field_witness scaffold", 1)[-1]
+    payload = first_json_object_from_text(scaffold_tail)
+    if payload is None:
+        raise HarnessError("Stage 07 historical witness scaffold is missing its machine payload")
+    return payload
+
+
+def stage07_historical_field_witness_section_scaffold(
+    previous_stages: list[dict[str, Any]],
+) -> str:
+    contract = stage07_field_witness_contract_guidance(previous_stages)
+    visible_lines = contract_scaffold_lines(
+        contract,
+        "print the visible Closure/Reconstruction Witness ledger",
+    )
+    if not visible_lines:
+        return ""
+    payload = stage07_historical_field_witness_payload(previous_stages)
+    return (
+        "Closure/Reconstruction Witness\n"
+        + "\n".join(visible_lines).rstrip()
+        + "\n\nfield_witness\n"
+        + json.dumps(payload, ensure_ascii=False, indent=2)
+        + "\n"
+    )
+
+
+def stage07_current_projection(previous_stages: list[dict[str, Any]]) -> dict[str, Any]:
+    historical = stage07_historical_field_witness_payload(previous_stages)
+    stage04 = stage_by_id(previous_stages, "stage-04-burden-execution-act")
+    stage05 = stage_by_id(previous_stages, "stage-05-mrp-reread-terminal-state")
+    stage06 = stage_by_id(previous_stages, "stage-06-field-witness-nar")
+    if not isinstance(stage04, dict) or not isinstance(stage05, dict) or not isinstance(stage06, dict):
+        raise HarnessError("Current Stage 07 witness projection requires Stage 04, Stage 05, and Stage 06")
+    try:
+        return build_current_projection(
+            historical=historical,
+            stage04=stage04,
+            stage05=stage05,
+            stage06=stage06,
+            act_details=stage04_act_details_by_ref(stage04),
+            entries=stage05_per_burden_entries(stage05),
+            field_witness_body_refs=list_field(stage06, "field_witness_body_refs"),
+            owner_activation_refs=list_field(stage06, "owner_activations"),
+            owner_details=stage06_owner_activation_details_by_ref(stage06),
+        )
+    except CurrentWitnessError as exc:
+        raise HarnessError(str(exc)) from exc
+
+
+def stage07_current_public_field_witness(
+    previous_stages: list[dict[str, Any]],
+) -> dict[str, Any]:
+    historical = stage07_historical_field_witness_payload(previous_stages)
+    try:
+        return build_current_public_field_witness(
+            historical,
+            stage07_current_projection(previous_stages),
+        )
+    except CurrentWitnessError as exc:
+        raise HarnessError(str(exc)) from exc
+
 def stage07_field_witness_section_scaffold(previous_stages: list[dict[str, Any]]) -> str:
     contract = stage07_field_witness_contract_guidance(previous_stages)
     visible_lines = contract_scaffold_lines(
@@ -5569,10 +5655,7 @@ def stage07_field_witness_section_scaffold(previous_stages: list[dict[str, Any]]
     )
     if not visible_lines:
         return ""
-    scaffold_tail = contract.split("Required field_witness scaffold", 1)[-1]
-    payload = first_json_object_from_text(scaffold_tail)
-    if payload is None:
-        return ""
+    payload = stage07_current_public_field_witness(previous_stages)
     return (
         "Closure/Reconstruction Witness\n"
         + "\n".join(visible_lines).rstrip()
@@ -8705,8 +8788,26 @@ def run_compiled_release_self_test(
     mrp_ledger_section = stage07_mrp_reread_section_scaffold(replay["stages"])
     if not mrp_ledger_section.strip():
         raise HarnessError("Compiled-mode self-test could not derive the ledger-only MRP terminal section")
+    field_witness_section = stage07_field_witness_section_scaffold(replay["stages"])
+    if not field_witness_section.strip():
+        raise HarnessError("Compiled-mode self-test could not derive the current field witness section")
+    field_witness_payload = extract_embedded_field_witness(field_witness_section)
+    if (
+        not isinstance(field_witness_payload, dict)
+        or "field_witness" in field_witness_payload
+        or field_witness_payload.get("schema_version") != "public-field-witness-v1"
+    ):
+        raise HarnessError("Compiled-mode self-test current field witness boundary is not direct and typed")
     section_specs = [
-        (section_id, role, mrp_ledger_section if role == "mrp_reread_terminal" else text)
+        (
+            section_id,
+            role,
+            mrp_ledger_section
+            if role == "mrp_reread_terminal"
+            else field_witness_section
+            if role == "field_witness_nar"
+            else text,
+        )
         for section_id, role, text in split_text_for_compiled_self_test(source_text)
     ]
     manifest_path = staged_output.manifest_for_sections(
@@ -16556,7 +16657,7 @@ def run_self_test(root: Path) -> int:
     )
     aggregate_heart_payload = extract_field_witness(
         extract_embedded_field_witness(
-            stage07_field_witness_section_scaffold(
+            stage07_historical_field_witness_section_scaffold(
                 [aggregate_heart_stage02, aggregate_heart_stage04, aggregate_heart_stage05, aggregate_heart_stage06]
             )
         )
@@ -16721,7 +16822,7 @@ def run_self_test(root: Path) -> int:
     )
     stage06_delta_heart_payload = extract_field_witness(
         extract_embedded_field_witness(
-            stage07_field_witness_section_scaffold(
+            stage07_historical_field_witness_section_scaffold(
                 [
                     stage06_delta_heart_stage02,
                     stage06_delta_heart_stage04,
@@ -17203,7 +17304,7 @@ def run_self_test(root: Path) -> int:
         normalized_stage06,
     ]
     baseline_held_mrp_text = stage07_mrp_reread_section_scaffold(baseline_held_stages)
-    baseline_held_witness_text = stage07_field_witness_section_scaffold(baseline_held_stages)
+    baseline_held_witness_text = stage07_historical_field_witness_section_scaffold(baseline_held_stages)
     baseline_held_payload = first_json_object_from_text(
         baseline_held_witness_text.split("\nfield_witness\n", 1)[-1]
     )
@@ -17344,7 +17445,7 @@ def run_self_test(root: Path) -> int:
         stage05 = synthetic_generated_stage05(parent, generated, executed=executed)
         stages_for_case = [generated_topology_stage02, stage04, stage05, normalized_stage06]
         mrp_text = stage07_mrp_reread_section_scaffold(stages_for_case)
-        witness_text = stage07_field_witness_section_scaffold(stages_for_case)
+        witness_text = stage07_historical_field_witness_section_scaffold(stages_for_case)
         payload = first_json_object_from_text(witness_text)
         if payload is None:
             raise HarnessError(f"Self-test {label} generated topology did not emit field_witness JSON")
@@ -17421,7 +17522,7 @@ def run_self_test(root: Path) -> int:
             stage05,
             normalized_stage06,
         ]
-        payload = first_json_object_from_text(stage07_field_witness_section_scaffold(stages_for_case))
+        payload = first_json_object_from_text(stage07_historical_field_witness_section_scaffold(stages_for_case))
         if payload is None:
             raise HarnessError(f"Self-test {label} did not emit field_witness JSON")
         resultants = [
@@ -17463,7 +17564,7 @@ def run_self_test(root: Path) -> int:
         normalized_stage06,
     ]
     false_closed_mrp_text = stage07_mrp_reread_section_scaffold(false_closed_stages)
-    false_closed_witness_text = stage07_field_witness_section_scaffold(false_closed_stages)
+    false_closed_witness_text = stage07_historical_field_witness_section_scaffold(false_closed_stages)
     false_closed_payload = first_json_object_from_text(false_closed_witness_text)
     if false_closed_payload is None:
         raise HarnessError("Self-test generated false-closed canary did not emit field_witness JSON")
@@ -17525,26 +17626,56 @@ def run_self_test(root: Path) -> int:
         '  "coverage_proof": {"coverage_complete": true, "diagnostic_completeness": {"coverage": {"xi": ["B6"]}}}\n'
         "}\n"
     )
+    current_wide_stage06 = copy.deepcopy(normalized_stage06)
+    current_wide_stage06["field_witness_body_refs"] = ["¹B₁"]
+    current_wide_stage06["owner_activations"] = ["¹B₁"]
+    current_wide_stage06["owner_activation_details"] = [
+        {
+            "body_ref": "¹B₁",
+            "burden_id": "B1",
+            "owner_id": "source-status-repair",
+            "operation": "source-order",
+            "delta_result": "science-source-bounded",
+            "terminal_state": "landed",
+        }
+    ]
+    current_wide_stage06["normalized_activation_record"] = {
+        "n_frame": "science-only-source-order-warrant",
+        "live_registers": ["xi", "kappa"],
+        "burden_floor": ["B1"],
+        "per_burden": [
+            {
+                "burden_id": "B1",
+                "owner_id": "source-status-repair",
+                "operation": "source-order",
+                "delta_result": "science-source-bounded",
+                "mrp_route_result_type": "no_new_resultant",
+                "terminal_state": "landed",
+                "generation_depth": 0,
+            }
+        ],
+    }
     canonical_witness_text, canonical_witness_event = canonical_compiled_structural_section(
         "field_witness_nar",
         drifted_field_witness,
-        [wide_stage02, normalized_stage04, wide_stage05, normalized_stage06],
+        [wide_stage02, normalized_stage04, wide_stage05, current_wide_stage06],
     )
     if not canonical_witness_event:
         raise HarnessError("Self-test Stage 07 structural field_witness canonicalization did not record an event")
     for required in (
+        '"schema_version": "public-field-witness-v1"',
         '"B_MRP": [\n    "B6"\n  ]',
-        '"generated_by": "MRP(B5)"',
-        '"source_burden": "B6"',
+        '"source": "B5"',
+        '"burden_id": "B6"',
         '"route_result_type": "hold_partial"',
-        '"divergence_state": "non-neutral"',
-        '"curl_state": "held"',
+        '"status": "non-neutral"',
+        '"status": "held"',
         '"coverage_complete": false',
-        '"owner_route": [\n        "source-status-repair.source-order",\n        "P7.scope-boundary"\n      ]',
+        '"activation_lifecycle_fingerprint_sha256"',
     ):
         if required not in canonical_witness_text:
             raise HarnessError(f"Self-test Stage 07 structural field_witness canonicalization omitted scaffold: {required}")
-    if '"coverage_complete": true' in canonical_witness_text or '"curl_state": null' in canonical_witness_text:
+    if '"coverage_complete": true' in canonical_witness_text or '"schema_version": "field-witness-envelope-v1"' in canonical_witness_text:
         raise HarnessError("Self-test Stage 07 structural field_witness canonicalization retained drifted proof values")
     public_alias_probe = (
         "This definition-anchored state is the final local repair for B2.\n"
@@ -19092,6 +19223,70 @@ def preflight_smoke_inputs(args: argparse.Namespace, root: Path, *, emit: bool =
     return 0
 
 
+RUNTIME_CONTEXT_STAGE_IDS = {
+    "stage-01-intake": "01",
+    "stage-02-layer-a-diagnostic-ir": "02",
+}
+
+
+def source_commit_for_runtime_context(root: Path) -> str:
+    result = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    value = result.stdout.strip().lower()
+    if result.returncode != 0 or re.fullmatch(r"[0-9a-f]{40}", value) is None:
+        detail = result.stderr.strip() or result.stdout.strip() or f"exit {result.returncode}"
+        raise HarnessError(f"Could not bind runtime context to repository HEAD: {detail}")
+    return value
+
+
+def prepare_stage_runtime_call(
+    *,
+    root: Path,
+    run_dir: Path,
+    package_root: Path,
+    source_commit: str,
+    case_name: str,
+    raw_input_path: Path,
+    stage_id: str,
+    call_index: int,
+    previous_capsule_path: Path | None,
+    harness_prompt: str,
+    effective_context_limit: int,
+) -> PreparedRuntimeCall:
+    """Validate one supported runtime-context call before model dispatch."""
+    stage = RUNTIME_CONTEXT_STAGE_IDS.get(stage_id)
+    if stage is None:
+        raise HarnessError(f"Runtime-context adapter does not support staged call: {stage_id}")
+    try:
+        return prepare_runtime_call(
+            package_root=package_root,
+            repo_root=root,
+            run_dir=run_dir,
+            call_index=call_index,
+            case_id=case_name,
+            stage=stage,
+            raw_input_path=raw_input_path,
+            previous_capsule_path=previous_capsule_path,
+            harness_prompt=harness_prompt,
+            validated_state={
+                "route_shards": [],
+                "owner_module_ids": [],
+                "cold_clause_ids": [],
+                "live_pressure": False,
+                "ambiguous": False,
+            },
+            source_commit=source_commit,
+            effective_context_limit=effective_context_limit,
+        )
+    except RuntimeCallPreparationError as exc:
+        raise HarnessError(f"Runtime-context pre-dispatch validation blocked {stage_id}: {exc}") from exc
+
+
 def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
     files = validate_required_files(root)
     run_dir = resolve_under_root(root, args.run_dir, "Run directory")
@@ -19143,8 +19338,26 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
     )
 
     prompt_pack_call_index = 0
+    runtime_context_limit = getattr(args, "runtime_context_limit_bytes", None)
+    if runtime_context_limit is None:
+        raise HarnessError(
+            "--runtime-context-limit-bytes is required for a model run; "
+            "the harness has no guessed production context limit"
+        )
+    if runtime_context_limit < 1:
+        raise HarnessError("--runtime-context-limit-bytes must be a positive integer")
+    runtime_context_source_commit = source_commit_for_runtime_context(root)
+    previous_capsule_path: Path | None = None
+    runtime_package_root: Path | None = None
     try:
         if resume_context is None:
+            try:
+                runtime_package_root = materialize_execution_mini_package(
+                    root,
+                    run_dir / "runtime-package" / "execution-mini",
+                )
+            except RuntimeCallPreparationError as exc:
+                raise HarnessError(f"Runtime package materialization blocked model dispatch: {exc}") from exc
             stage_ids_to_run = stage_order_for_stop(args.stop_after_stage)
             if args.stop_after_stage is None or args.stop_after_stage == "stage-07-release-output":
                 stage_ids_to_run = STAGE_ORDER[:6]
@@ -19159,26 +19372,73 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                     skill_hash=skill_hash,
                     previous_stages=stages,
                 )
+                harness_prompt = prompt
                 prompt_pack_call_index += 1
-                emit_prompt_pack_manifest(
-                    run_dir=run_dir,
-                    prompt=prompt,
-                    known_parts={
-                        "raw_input_text": input_text,
-                        "previous_stages_json": json.dumps(compact_state(stages), ensure_ascii=False, indent=2),
-                        "instructions": STAGE_SPECS[stage_id]["instructions"],
-                        "extra_guidance": (
-                            stage03_owner_operation_guidance()
-                            if stage_id == "stage-03-routing-owner-gate"
-                            else stage04_delta_vocabulary_guidance(stages)
-                            if stage_id == "stage-04-burden-execution-act"
-                            else ""
-                        ),
-                    },
-                    case_id=args.case_name,
-                    stage=stage_id,
-                    call_index=prompt_pack_call_index,
-                )
+                prepared_runtime_call: PreparedRuntimeCall | None = None
+                if stage_id in RUNTIME_CONTEXT_STAGE_IDS:
+                    prepared_runtime_call = prepare_stage_runtime_call(
+                        root=root,
+                        run_dir=run_dir,
+                        package_root=runtime_package_root,
+                        source_commit=runtime_context_source_commit,
+                        case_name=args.case_name,
+                        raw_input_path=raw_input,
+                        stage_id=stage_id,
+                        call_index=prompt_pack_call_index,
+                        previous_capsule_path=previous_capsule_path,
+                        harness_prompt=prompt,
+                        effective_context_limit=runtime_context_limit,
+                    )
+                    prompt = prepared_runtime_call.prompt
+                    stage_files.extend(
+                        [
+                            prepared_runtime_call.context_path,
+                            prepared_runtime_call.parity_path,
+                            prepared_runtime_call.prompt_path,
+                            prepared_runtime_call.call_root / "harness-stage-prompt.md",
+                            prepared_runtime_call.call_root / "raw-input.bin",
+                        ]
+                    )
+                    if previous_capsule_path is not None:
+                        stage_files.append(prepared_runtime_call.call_root / "previous-capsule.json")
+                if prepared_runtime_call is not None:
+                    try:
+                        emit_prompt_pack_manifest_v2(
+                            manifest_path=run_dir / "prompt-pack-manifest.jsonl",
+                            artifact_root=run_dir,
+                            runtime_context_manifest_path=prepared_runtime_call.context_path,
+                            prompt_path=prepared_runtime_call.prompt_path,
+                            harness_frame_parts={"harness:stage-prompt": harness_prompt},
+                            includes_full_runtime=False,
+                            includes_prior_full_output=False,
+                        )
+                    except PromptPackBudgetViolation as exc:
+                        raise HarnessError(
+                            f"Prompt-pack-v2 pre-dispatch validation blocked {stage_id}: {exc}"
+                        ) from exc
+                    prompt_pack_path = run_dir / "prompt-pack-manifest.jsonl"
+                    if prompt_pack_path not in stage_files:
+                        stage_files.append(prompt_pack_path)
+                else:
+                    emit_prompt_pack_manifest(
+                        run_dir=run_dir,
+                        prompt=prompt,
+                        known_parts={
+                            "raw_input_text": input_text,
+                            "previous_stages_json": json.dumps(compact_state(stages), ensure_ascii=False, indent=2),
+                            "instructions": STAGE_SPECS[stage_id]["instructions"],
+                            "extra_guidance": (
+                                stage03_owner_operation_guidance()
+                                if stage_id == "stage-03-routing-owner-gate"
+                                else stage04_delta_vocabulary_guidance(stages)
+                                if stage_id == "stage-04-burden-execution-act"
+                                else ""
+                            ),
+                        },
+                        case_id=args.case_name,
+                        stage=stage_id,
+                        call_index=prompt_pack_call_index,
+                    )
                 prompt_path = prompts_dir / f"{stage_id}.prompt.md"
                 response_path = responses_dir / f"{stage_id}.response.txt"
                 log_path = responses_dir / f"{stage_id}.codex-log.txt"
@@ -19210,7 +19470,7 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                     emit_explain_stage_failure(stage_id, str(handoff_exc))
                     raise
                 write_json(records_dir / f"{stage_id}.stage.json", stage)
-                write_state_capsule(
+                written_capsule_path = write_state_capsule(
                     case_id=args.case_name,
                     input_digest=input_digest,
                     stage_id=stage_id,
@@ -19221,6 +19481,11 @@ def run_model_smoke(args: argparse.Namespace, root: Path) -> int:
                     capsule_index=capsule_index,
                     root=root,
                 )
+                if stage_id == "stage-01-intake" and written_capsule_path is None:
+                    raise HarnessError(
+                        "Stage01 state capsule did not validate; Stage02 runtime context cannot be prepared"
+                    )
+                previous_capsule_path = written_capsule_path
                 capsule_index += 1
                 if args.stop_after_stage == stage_id:
                     record["stages"] = stages
@@ -19778,6 +20043,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--target-output-kb", type=int, default=0)
     parser.add_argument("--section-expansion-rounds", type=int, default=0)
     parser.add_argument("--transport-retry-rounds", type=int, default=0)
+    parser.add_argument(
+        "--runtime-context-limit-bytes",
+        type=int,
+        default=None,
+        help="Required explicit effective-context byte limit for pre-dispatch A12 validation.",
+    )
     parser.add_argument("--resume-run-dir", type=Path, default=None)
     parser.add_argument("--model-runner", choices=("codex", "claude"), default="codex")
     return parser.parse_args()

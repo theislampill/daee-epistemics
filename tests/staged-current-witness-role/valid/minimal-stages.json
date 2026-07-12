@@ -1,0 +1,76 @@
+[
+  {
+    "id": "stage-02-layer-a-diagnostic-ir",
+    "status": "pass",
+    "selected_n_frame": "minimal-current-witness",
+    "live_registers": [],
+    "burden_floor": ["B1"],
+    "burden_floor_details": [{"id": "B1", "label": "definition_scope"}]
+  },
+  {
+    "id": "stage-04-burden-execution-act",
+    "status": "pass",
+    "act_targets": ["B1"],
+    "act_burdens": ["B1"],
+    "act_body_refs": ["¹B₁"],
+    "act_rows": [
+      "⟦ACT ¹B₁[M7.definition-anchor] :: π=definition_scope :: body_ref=¹B₁ :: Δ=Δ¹B:definition-anchored :: Land(¹B)+⟧"
+    ]
+  },
+  {
+    "id": "stage-05-mrp-reread-terminal-state",
+    "status": "pass",
+    "terminal_states": {"B1": "landed"},
+    "dependency_graph_edges": [],
+    "no_new_resultant_proof": true,
+    "per_burden_reread": [
+      {
+        "burden_id": "B1",
+        "reread": "R(H,Δ): held routes rechecked; no live remainder; release to closure",
+        "landed_delta": "Δ¹B:definition-anchored",
+        "divergence": "neutral",
+        "curl": "null",
+        "route_result_type": "no_new_resultant",
+        "mrp_resultant": "stable -> no new graph edge; STOP",
+        "graph_delta": "none",
+        "preemption_basis": "none",
+        "loopbreak": "not needed",
+        "route": "STOP",
+        "boundary": "T_lang does not imply guaranteed uptake"
+      }
+    ]
+  },
+  {
+    "id": "stage-06-field-witness-nar",
+    "status": "pass",
+    "field_witness_body_refs": ["¹B₁"],
+    "nar_burdens": ["B1"],
+    "owner_activations": ["¹B₁"],
+    "owner_activation_details": [
+      {
+        "body_ref": "¹B₁",
+        "burden_id": "B1",
+        "terminal_state": "landed",
+        "owner_id": "M7",
+        "operation": "definition-anchor"
+      }
+    ],
+    "register_deltas": {},
+    "normalized_activation_record": {
+      "n_frame": "minimal-current-witness",
+      "live_registers": [],
+      "burden_floor": ["B1"],
+      "per_burden": [
+        {
+          "burden_id": "B1",
+          "owner_id": "M7",
+          "operation": "definition-anchor",
+          "delta_result": "definition-anchored",
+          "mrp_route_result_type": "no_new_resultant",
+          "terminal_state": "landed",
+          "generation_depth": 0
+        }
+      ]
+    }
+  }
+]

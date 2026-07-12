@@ -2,7 +2,7 @@
   "schema": "daee-producer-contract-registry-v1",
   "harness_source": {
     "path": "tools/run_staged_current_skill_smoke.py",
-    "sha256": "b90d1b964d066438b32da98820fc58b2e6406ab5e37137075e01c7536b5d14a5"
+    "sha256": "f1712d7e5b1f454d422e09fa2ea8baf22170694c883db1c1cc927d9c4ab99b70"
   },
   "forbidden_selection_inputs": ["case_id", "case_name", "topic", "smoke_id", "expected_answer", "expected_topology"],
   "prompt_surfaces": [
@@ -21,7 +21,7 @@
       "harness_anchor": "Stage 02",
       "visible_surfaces": ["release_prompt", "release_section_prompt", "stage_prompt"],
       "delivery_projection": {"component_id": "package:references/runtime-core-ir.md", "component_sha256": "806b009f891ac9794e064c5bfb91cd65339ba45e441be5cc9d1ccfcd4287dc9e", "delivery": "prompt-bound", "visible_before_call": true},
-      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_staged_runtime_handshake.py", "sha256": "1a6c1733da191829d2c9acc3b5037f93aa13c330d68d71f8fc1ecd7f39640cb8"},
+      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_staged_runtime_handshake.py", "sha256": "4f5fb5644d03933ffa62f5911729c4ea678019a4bad9853c9d9e3a846c4d1ed2"},
       "normalizer": {"class": "none", "semantic_fields": []},
       "selection_inputs": ["validated_stage01_state", "stage_policy"],
       "resolver_selection": {"stage": "02", "validated_state": {"route_shards": [], "owner_module_ids": [], "cold_clause_ids": [], "live_pressure": false, "ambiguous": false}},
@@ -36,7 +36,7 @@
       "harness_anchor": "route_targets",
       "visible_surfaces": ["stage_prompt"],
       "delivery_projection": {"component_id": "package:references/runtime-core-routing.md", "component_sha256": "fd4173e016084740def242afeea89821b3ab5f2af49df35a08772d253a22b044", "delivery": "prompt-bound", "visible_before_call": true},
-      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_staged_runtime_handshake.py", "sha256": "1a6c1733da191829d2c9acc3b5037f93aa13c330d68d71f8fc1ecd7f39640cb8"},
+      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_staged_runtime_handshake.py", "sha256": "4f5fb5644d03933ffa62f5911729c4ea678019a4bad9853c9d9e3a846c4d1ed2"},
       "normalizer": {"class": "lossless-alias", "semantic_fields": []},
       "selection_inputs": ["validated_stage02_state", "route_state"],
       "resolver_selection": {"stage": "03", "validated_state": {"route_shards": [], "owner_module_ids": [], "cold_clause_ids": [], "live_pressure": false, "ambiguous": false}},
@@ -51,7 +51,17 @@
       "harness_anchor": "ACT",
       "visible_surfaces": ["release_prompt", "release_section_expansion_prompt", "release_section_prompt", "stage_prompt"],
       "delivery_projection": {"component_id": "package:references/runtime-shard-output-release.md", "component_sha256": "cdb6deefb409853556a1bccf898988e20f0ee9600c085caa87b719d428dfb334", "delivery": "prompt-bound", "visible_before_call": true},
-      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_manual_smoke_render_contract.py", "sha256": "ae2ba117c5d2836e263889016e6f37a248acbda9c01c48987a4e4b8f2f1f1cc4"},
+      "alternate_delivery_projections": [
+        {
+          "component_id": "package:SKILL.md",
+          "component_sha256": "b576746656078b4d0a4cde410eee7cbf5f17e8578cc995c65dd52f35f7a8377b",
+          "delivery": "prompt-bound",
+          "visible_before_call": true,
+          "anchor": "Matched owner/TTP route",
+          "resolver_selection": {"stage": "01", "validated_state": {"route_shards": [], "owner_module_ids": [], "cold_clause_ids": [], "live_pressure": false, "ambiguous": false}}
+        }
+      ],
+      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_manual_smoke_render_contract.py", "sha256": "953e62bafcb821f0ac45fa373c17ad67f20ecd20ec3cb7f0ef5e942653cb99f5"},
       "normalizer": {"class": "lossless-alias", "semantic_fields": []},
       "selection_inputs": ["owner_ids", "operations", "validated_route_state"],
       "resolver_selection": {"stage": "04", "validated_state": {"route_shards": ["references/runtime-shard-output-release.md"], "owner_module_ids": [], "cold_clause_ids": [], "live_pressure": false, "ambiguous": false}},
@@ -81,7 +91,7 @@
       "harness_anchor": "held_burden_activation",
       "visible_surfaces": ["release_prompt", "release_section_prompt", "stage_prompt"],
       "delivery_projection": {"component_id": "package:references/runtime-core-recursion.md", "component_sha256": "b001617be7984656cfccf55a48f9b7d45404f255fd104a32dd12260dbbd7666d", "delivery": "prompt-bound", "visible_before_call": true},
-      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_staged_runtime_handshake.py", "sha256": "1a6c1733da191829d2c9acc3b5037f93aa13c330d68d71f8fc1ecd7f39640cb8"},
+      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_staged_runtime_handshake.py", "sha256": "4f5fb5644d03933ffa62f5911729c4ea678019a4bad9853c9d9e3a846c4d1ed2"},
       "normalizer": {"class": "none", "semantic_fields": []},
       "selection_inputs": ["validated_mrp_state", "terminal_states", "dependency_edges"],
       "resolver_selection": {"stage": "05", "validated_state": {"route_shards": [], "owner_module_ids": [], "cold_clause_ids": [], "live_pressure": false, "ambiguous": false}},
@@ -96,7 +106,7 @@
       "harness_anchor": "normalized_activation_record",
       "visible_surfaces": ["release_prompt", "release_section_prompt", "stage_prompt"],
       "delivery_projection": {"component_id": "package:references/runtime-shard-render-contract.md", "component_sha256": "ed2cb663ea9fa87b3c60bd771e3562b4e0363ca93c190cc790afd811e036be56", "delivery": "prompt-bound", "visible_before_call": true},
-      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_field_witness_convergence.py", "sha256": "b26c476bc79305f05060e43413d33eb8ddb5d0d236d03ec8258c9deff16e21d9"},
+      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_field_witness_convergence.py", "sha256": "afce2c0679dd9735107f3ceafaf43c515a416047b0b4feaa268ed1de5ae31f29"},
       "normalizer": {"class": "lossless-mirror", "semantic_fields": []},
       "selection_inputs": ["validated_trajectory", "owner_operations", "terminal_states"],
       "resolver_selection": {"stage": "06", "validated_state": {"route_shards": ["references/runtime-shard-render-contract.md"], "owner_module_ids": [], "cold_clause_ids": [], "live_pressure": false, "ambiguous": false}},
@@ -111,7 +121,7 @@
       "harness_anchor": "release_prompt",
       "visible_surfaces": ["release_prompt"],
       "delivery_projection": {"component_id": "package:references/runtime-shard-output-release.md", "component_sha256": "cdb6deefb409853556a1bccf898988e20f0ee9600c085caa87b719d428dfb334", "delivery": "prompt-bound", "visible_before_call": true},
-      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_manual_smoke_render_contract.py", "sha256": "ae2ba117c5d2836e263889016e6f37a248acbda9c01c48987a4e4b8f2f1f1cc4"},
+      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_manual_smoke_render_contract.py", "sha256": "953e62bafcb821f0ac45fa373c17ad67f20ecd20ec3cb7f0ef5e942653cb99f5"},
       "normalizer": {"class": "none", "semantic_fields": []},
       "selection_inputs": ["mandatory_release_stage", "validated_segment_ledger"],
       "resolver_selection": {"stage": "07", "validated_state": {"route_shards": [], "owner_module_ids": [], "cold_clause_ids": [], "live_pressure": false, "ambiguous": false}},
@@ -126,7 +136,7 @@
       "harness_anchor": "field_witness",
       "visible_surfaces": ["release_prompt", "release_section_expansion_prompt", "release_section_prompt", "stage_prompt"],
       "delivery_projection": {"component_id": "package:references/runtime-shard-render-contract.md", "component_sha256": "ed2cb663ea9fa87b3c60bd771e3562b4e0363ca93c190cc790afd811e036be56", "delivery": "prompt-bound", "visible_before_call": true},
-      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_manual_smoke_render_contract.py", "sha256": "ae2ba117c5d2836e263889016e6f37a248acbda9c01c48987a4e4b8f2f1f1cc4"},
+      "checker": {"obligation": "pre-producer-semantic", "path": "tools/check_manual_smoke_render_contract.py", "sha256": "953e62bafcb821f0ac45fa373c17ad67f20ecd20ec3cb7f0ef5e942653cb99f5"},
       "normalizer": {"class": "none", "semantic_fields": []},
       "selection_inputs": ["mandatory_release_stage", "validated_trajectory"],
       "resolver_selection": {"stage": "07", "validated_state": {"route_shards": [], "owner_module_ids": [], "cold_clause_ids": [], "live_pressure": false, "ambiguous": false}},
@@ -140,8 +150,8 @@
       "generated_owner": null,
       "harness_anchor": "Return exactly one JSON object",
       "visible_surfaces": ["stage_prompt"],
-      "delivery_projection": {"component_id": "harness:transport-json-only", "component_sha256": "b90d1b964d066438b32da98820fc58b2e6406ab5e37137075e01c7536b5d14a5", "delivery": "prompt-bound", "visible_before_call": true},
-      "checker": {"obligation": "post-producer-non-semantic", "path": "tools/check_staged_runtime_handshake.py", "sha256": "1a6c1733da191829d2c9acc3b5037f93aa13c330d68d71f8fc1ecd7f39640cb8"},
+      "delivery_projection": {"component_id": "harness:transport-json-only", "component_sha256": "f1712d7e5b1f454d422e09fa2ea8baf22170694c883db1c1cc927d9c4ab99b70", "delivery": "prompt-bound", "visible_before_call": true},
+      "checker": {"obligation": "post-producer-non-semantic", "path": "tools/check_staged_runtime_handshake.py", "sha256": "4f5fb5644d03933ffa62f5911729c4ea678019a4bad9853c9d9e3a846c4d1ed2"},
       "normalizer": {"class": "transport-only", "semantic_fields": []},
       "selection_inputs": ["stage_policy"],
       "proof_class": "harness-assisted"
@@ -153,8 +163,8 @@
       "canonical_owner": null,
       "generated_owner": null,
       "harness_anchor": "raw response text",
-      "delivery_projection": {"component_id": "none", "component_sha256": "b90d1b964d066438b32da98820fc58b2e6406ab5e37137075e01c7536b5d14a5", "delivery": "not-model-visible", "visible_before_call": false},
-      "checker": {"obligation": "post-producer-custody", "path": "tools/check_staged_runtime_handshake.py", "sha256": "1a6c1733da191829d2c9acc3b5037f93aa13c330d68d71f8fc1ecd7f39640cb8"},
+      "delivery_projection": {"component_id": "none", "component_sha256": "f1712d7e5b1f454d422e09fa2ea8baf22170694c883db1c1cc927d9c4ab99b70", "delivery": "not-model-visible", "visible_before_call": false},
+      "checker": {"obligation": "post-producer-custody", "path": "tools/check_staged_runtime_handshake.py", "sha256": "4f5fb5644d03933ffa62f5911729c4ea678019a4bad9853c9d9e3a846c4d1ed2"},
       "normalizer": {"class": "none", "semantic_fields": []},
       "selection_inputs": [],
       "proof_class": "custody-only"

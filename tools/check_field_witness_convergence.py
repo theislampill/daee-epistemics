@@ -1004,6 +1004,276 @@ def public_graph_contract_diagnostics(field_witness: Any, *, compatibility: str)
     return public_graph_integrity_diagnostics(field_witness, compatibility=compatibility)
 
 
+def current_public_convergence_errors(
+    path: Path,
+    text: str,
+    field_witness: dict[str, Any],
+) -> list[str]:
+    """Check current public-graph convergence without applying historical shape rules."""
+
+    prefix = f"{rel(path)}: "
+    errors: list[str] = []
+    ledgers = field_witness_ledger(field_witness)
+    b_total = ledgers["B_total"]
+    b_total_set = set(b_total)
+    coverage_payload = coverage(field_witness)
+    dependency_graph = coverage_payload.get("dependency_graph")
+    if not isinstance(dependency_graph, dict):
+        return [prefix + "current public graph is missing coverage dependency graph"]
+    raw_dependency_nodes = dependency_graph.get("nodes")
+    if raw_dependency_nodes != b_total:
+        errors.append(prefix + "current coverage dependency_graph.nodes must exactly equal B_total in order")
+    raw_dependency_roots = dependency_graph.get("roots")
+    if not isinstance(raw_dependency_roots, list) or any(
+        not isinstance(root, str)
+        or not BURDEN_ID_RE.fullmatch(root)
+        or root not in b_total_set
+        for root in raw_dependency_roots
+    ):
+        errors.append(prefix + "current coverage dependency_graph.roots must contain only B_total burden IDs")
+    raw_dependency_edges = dependency_graph.get("edges")
+    if not isinstance(raw_dependency_edges, list):
+        errors.append(prefix + "current coverage dependency_graph.edges must be a list")
+    else:
+        for index, edge in enumerate(raw_dependency_edges):
+            source = edge.get("from") if isinstance(edge, dict) else None
+            target = edge.get("to") if isinstance(edge, dict) else None
+            if (
+                not isinstance(source, str)
+                or not BURDEN_ID_RE.fullmatch(source)
+                or source not in b_total_set
+                or not isinstance(target, str)
+                or not BURDEN_ID_RE.fullmatch(target)
+                or target not in b_total_set
+            ):
+                errors.append(
+                    prefix
+                    + f"current coverage dependency_graph.edges[{index}] endpoints must be B_total burden IDs"
+                )
+    terminals = terminal_payloads(field_witness)
+    nodes = set(graph_nodes(field_witness))
+    raw_reread_records = field_witness.get("reread_records")
+    reread_records = (
+        [row for row in raw_reread_records if isinstance(row, dict)]
+        if isinstance(raw_reread_records, list)
+        else []
+    )
+    reread_burdens = [str(row.get("burden_id") or "") for row in reread_records]
+    if reread_burdens != b_total:
+        errors.append(prefix + "current reread_records burden order must exactly equal B_total")
+    reread_cycles = [str(row.get("cycle_id") or "") for row in reread_records]
+    if len(reread_cycles) != len(set(reread_cycles)):
+        errors.append(prefix + "current reread_records cycle_id identities must be unique")
+    raw_current_resultants = field_witness.get("mrp_resultants")
+    current_resultants = (
+        [row for row in raw_current_resultants if isinstance(row, dict)]
+        if isinstance(raw_current_resultants, list)
+        else []
+    )
+    resultant_pairs = [
+        (str(row.get("source") or ""), str(row.get("target") or ""))
+        for row in current_resultants
+    ]
+    if len(resultant_pairs) != len(set(resultant_pairs)):
+        errors.append(prefix + "current mrp_resultants source/target identities must be unique")
+
+    witness = parse_closure_witness(text)
+    if witness is None:
+        errors.append(prefix + "missing Closure/Reconstruction Witness block")
+    else:
+        block = extract_closure_witness_block(text) or ""
+        if not B_TOTAL_LEDGER_RE.search(block):
+            errors.append(prefix + "Closure/Reconstruction Witness must explicitly print B_total ledger line")
+        errors.extend(prefix + error for error in closure_witness_errors(witness))
+        if witness.ledger_la and witness.ledger_la != ledgers["B_LA"]:
+            errors.append(prefix + "visible witness B_LA does not match current public graph B_LA")
+        if witness.ledger_mrp != ledgers["B_MRP"]:
+            errors.append(prefix + "visible witness B_MRP does not match current public graph B_MRP")
+        if witness.ledger_total != ledgers["B_total"]:
+            errors.append(prefix + "visible witness B_total does not match current public graph B_total")
+        if coverage_payload.get("initial_burden_set") != witness.initial_burdens:
+            errors.append(prefix + "visible initial burden set does not match current coverage initial_burden_set")
+        for burden, visible_terminal in witness.terminal_states.items():
+            current_terminal = terminals.get(burden)
+            if current_terminal is None:
+                errors.append(prefix + f"current public graph lacks visible terminal state {burden}")
+            elif current_terminal.get("state") != visible_terminal.get("state"):
+                errors.append(
+                    prefix
+                    + f"terminal state mismatch for {burden}: visible {visible_terminal.get('state')!r} "
+                    + f"vs current {current_terminal.get('state')!r}"
+                )
+        current_edges = normalize_edges(dependency_graph.get("edges"))
+        if set(current_edges) != set(witness.edges):
+            errors.append(prefix + "visible dependency edges do not match current coverage dependency graph")
+        if set(dependency_graph.get("roots", [])) != set(witness.roots):
+            errors.append(prefix + "visible dependency roots do not match current coverage dependency graph")
+        visible_divergence = status_head(witness.divergence)
+        visible_curl = status_head(witness.curl)
+        if status_head(str(coverage_payload.get("divergence_check") or "")) != visible_divergence:
+            errors.append(prefix + "visible divergence status does not match current coverage")
+        if status_head(str(coverage_payload.get("curl_check") or "")) != visible_curl:
+            errors.append(prefix + "visible curl status does not match current coverage")
+
+        visible_rereads = {
+            (str(row.get("source") or ""), str(row.get("type") or ""))
+            for row in witness.mrp_resultants
+        }
+        current_rereads = {
+            (str(row.get("burden_id") or ""), str(row.get("route_result_type") or ""))
+            for row in reread_records
+        }
+        if visible_rereads != current_rereads:
+            errors.append(prefix + "visible MRP/reread rows do not match current reread_records")
+        for row in current_resultants:
+            identity = (
+                str(row.get("source") or ""),
+                str(row.get("type") or ""),
+                str(row.get("route") or ""),
+            )
+            if not any(
+                (
+                    str(visible.get("source") or ""),
+                    str(visible.get("type") or ""),
+                    str(visible.get("route") or ""),
+                )
+                == identity
+                for visible in witness.mrp_resultants
+            ):
+                errors.append(prefix + f"current edge-producing resultant {identity!r} lacks a visible MRP row")
+            if (str(row.get("source") or ""), str(row.get("target") or "")) not in set(current_edges):
+                errors.append(prefix + "current edge-producing resultant target is absent from dependency graph")
+
+    layer = layer_a_obligations(text)
+    if not layer["initial"]:
+        errors.append(prefix + "Layer A Initial burden set missing or unparsable")
+    if layer["B_LA"] and layer["B_LA"] != ledgers["B_LA"]:
+        errors.append(prefix + "Layer A B_LA does not match current public graph B_LA")
+    if layer["initial"] and layer["initial"] != ledgers["B_LA"]:
+        errors.append(prefix + "Layer A Initial burden set must equal current public graph B_LA")
+    for burden in layer["mentioned"]:
+        if burden not in b_total_set:
+            errors.append(prefix + f"Layer A obligation {burden} is omitted from current B_total")
+        if burden not in nodes:
+            errors.append(prefix + f"Layer A obligation {burden} is omitted from current dependency nodes")
+        if burden not in terminals:
+            errors.append(prefix + f"Layer A obligation {burden} lacks a current terminal state")
+
+    root_edges = normalize_edges(field_witness.get("edges"))
+    coverage_edges = normalize_edges(dependency_graph.get("edges"))
+    if root_edges != coverage_edges:
+        errors.append(prefix + "current public graph edges do not exactly project coverage dependency edges")
+
+    generated_rows = [
+        row for row in field_witness.get("generated_burdens", []) if isinstance(row, dict)
+    ]
+    generated_by_id = {str(row.get("id") or ""): row for row in generated_rows}
+    for burden in ledgers["B_MRP"]:
+        row = generated_by_id.get(burden)
+        if row is None:
+            errors.append(prefix + f"current generated burden {burden} lacks source/event identity")
+            continue
+        source = str(row.get("source") or "")
+        if (source, burden) not in set(coverage_edges):
+            errors.append(prefix + f"current generated burden {burden} source {source} lacks dependency edge")
+
+    activations = [
+        row for row in field_witness.get("owner_activations", []) if isinstance(row, dict)
+    ]
+    ordinals = [row.get("ordinal") for row in activations]
+    if ordinals != list(range(len(activations))):
+        errors.append(prefix + "current owner activation ordinals must be contiguous and ordered")
+    body_refs = [str(row.get("body_ref") or "") for row in activations]
+    if len(body_refs) != len(set(body_refs)):
+        errors.append(prefix + "current owner activation body_ref identities must be unique")
+    if any(str(row.get("burden_id") or "") not in b_total_set for row in activations):
+        errors.append(prefix + "current owner activation references a burden outside B_total")
+
+    ordering = field_witness.get("owner_activation_ordering")
+    ordering_rows = ordering.get("rows") if isinstance(ordering, dict) else None
+    ordering_identity = [
+        (row.get("ordinal"), str(row.get("body_ref") or ""))
+        for row in ordering_rows
+        if isinstance(row, dict)
+    ] if isinstance(ordering_rows, list) else []
+    activation_identity = [(row.get("ordinal"), str(row.get("body_ref") or "")) for row in activations]
+    if ordering_identity != activation_identity:
+        errors.append(prefix + "current owner activation ordering rows must exactly project activations")
+
+    nar = field_witness.get("normalized_activation_record")
+    nar_rows = nar.get("per_burden") if isinstance(nar, dict) else None
+    if not isinstance(nar_rows, list):
+        errors.append(prefix + "current NAR per_burden rows missing")
+    else:
+        nar_burdens = [
+            str(row.get("burden_id") or "") if isinstance(row, dict) else ""
+            for row in nar_rows
+        ]
+        if nar_burdens != b_total:
+            errors.append(prefix + "current NAR burden order must exactly equal B_total")
+        nar_by_burden = {
+            str(row.get("burden_id") or ""): row for row in nar_rows if isinstance(row, dict)
+        }
+        referenced_ordinals: list[int] = []
+        terminal_objects = field_witness.get("terminal_states")
+        reread_by_burden = {
+            str(row.get("burden_id") or ""): row
+            for row in field_witness.get("reread_records", [])
+            if isinstance(row, dict)
+        }
+        for burden in b_total:
+            row = nar_by_burden.get(burden)
+            terminal = terminal_objects.get(burden) if isinstance(terminal_objects, dict) else None
+            reread = reread_by_burden.get(burden)
+            if row is None or not isinstance(terminal, dict) or reread is None:
+                errors.append(prefix + f"current cycle/NAR join is incomplete for {burden}")
+                continue
+            cycle_id = str(row.get("cycle_id") or "")
+            if cycle_id != terminal.get("cycle_id") or cycle_id != reread.get("cycle_id"):
+                errors.append(prefix + f"current cycle identity drifts across NAR/terminal/reread for {burden}")
+            raw_ordinals = row.get("activation_ordinals")
+            if isinstance(raw_ordinals, list):
+                for ordinal in raw_ordinals:
+                    if not isinstance(ordinal, int) or ordinal < 0 or ordinal >= len(activations):
+                        errors.append(prefix + f"current NAR {burden} references invalid activation ordinal {ordinal!r}")
+                        continue
+                    if activations[ordinal].get("burden_id") != burden:
+                        errors.append(prefix + f"current NAR {burden} references another burden's activation")
+                    referenced_ordinals.append(ordinal)
+        if sorted(referenced_ordinals) != list(range(len(activations))):
+            errors.append(prefix + "current NAR activation ordinals must partition all owner activations exactly once")
+
+    closure = field_witness.get("closure")
+    if isinstance(closure, dict):
+        complete = coverage_payload.get("coverage_complete") is True
+        if closure.get("closure_confirmed") is not complete:
+            errors.append(prefix + "current closure_confirmed must equal coverage_complete")
+        if closure.get("divergence") != coverage_payload.get("divergence_check"):
+            errors.append(prefix + "current closure divergence must equal coverage divergence")
+        if closure.get("curl") != coverage_payload.get("curl_check"):
+            errors.append(prefix + "current closure curl must equal coverage curl")
+        if complete:
+            if closure.get("derived_decision") != "COMPLETE" or closure.get("remaining_open_ids"):
+                errors.append(prefix + "current complete coverage requires COMPLETE with no remaining open ids")
+            for burden, terminal in terminals.items():
+                if terminal.get("state") not in {
+                    "complete",
+                    "landed",
+                    "cleared",
+                    "discharged-as-derivative",
+                }:
+                    errors.append(prefix + f"current complete coverage has open terminal {burden}")
+    diagnostics = field_witness.get("field_diagnostics")
+    if isinstance(diagnostics, dict):
+        divergence = diagnostics.get("divergence")
+        curl = diagnostics.get("curl")
+        if not isinstance(divergence, dict) or divergence.get("status") != coverage_payload.get("divergence_check"):
+            errors.append(prefix + "current structured divergence diagnostic must equal coverage")
+        if not isinstance(curl, dict) or curl.get("status") != coverage_payload.get("curl_check"):
+            errors.append(prefix + "current structured curl diagnostic must equal coverage")
+    return errors
+
+
 def convergence_errors(path: Path, text: str, *, compatibility: str = "historical") -> list[str]:
     errors: list[str] = []
     payload = extract_embedded_field_witness(text)
@@ -1020,6 +1290,8 @@ def convergence_errors(path: Path, text: str, *, compatibility: str = "historica
     if compatibility == "current":
         for diagnostic in terminal_public_order_diagnostics(text):
             errors.append(f"{rel(path)}: {diagnostic['failure_subcode']}: {diagnostic['message']}")
+        errors.extend(current_public_convergence_errors(path, text, field_witness))
+        return errors
 
     prefix = f"{rel(path)}: "
     errors.extend(prefix + error for error in field_witness_graph_errors(field_witness))

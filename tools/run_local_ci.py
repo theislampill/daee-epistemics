@@ -101,6 +101,7 @@ COMMANDS = [
     "python tools/check_producer_checker_parity.py --self-test",
     "python tools/check_review_incident_report.py --self-test",
     "python tools/check_runtime_context_delivery.py --self-test",
+    "python tools/run_no_model_preflight.py --self-test",
     "python tools/check_smoke_matrix_manifest.py --self-test",
     "python tools/check_stage_projection_parity.py --self-test",
     "python tools/check_topology_capacity_properties.py --self-test",
@@ -115,6 +116,7 @@ COMMANDS = [
     "python tools/check_no_fixed_topology_floors.py",
     "python tools/check_producer_checker_parity.py --registry tools/producer-contract-registry.json",
     "python tools/check_runtime_context_delivery.py --fixtures tests/runtime-context-delivery",
+    "python tests/runtime-call-context-adapter/test_contract.py",
     "python tools/check_smoke_matrix_manifest.py --manifest tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json --inputs-only",
     "python tools/check_stage_projection_parity.py",
     "python tools/check_topology_capacity_properties.py --probe-set tests/topology-capacity/probe-set.json --through-stage stage-04-burden-execution-act",
@@ -153,7 +155,7 @@ COMMANDS = [
     "python tools/check_spec_authoring_pack.py",
     "python tools/check_docs_index_interactions.py",
     "python tools/check_field_operator_architecture.py",
-    "python tools/check_live_default_witness_contract.py tests/live-witness-fixtures/valid/closure-witness-dependency-graph.md",
+    "python tools/check_live_default_witness_contract.py tests/live-witness-fixtures/valid/current-public-graph.md",
     "python tools/check_reproducibility.py",
     "python tools/check_smoke_artifacts.py",
     "python tools/check_ir_instance_integrity.py",
@@ -173,6 +175,18 @@ def parse_args() -> argparse.Namespace:
         "--strict-pwsh",
         action="store_true",
         help="fail if pwsh is unavailable instead of skipping the PowerShell smoke step",
+    )
+    parser.add_argument(
+        "--command-timeout-seconds",
+        type=int,
+        default=0,
+        help="Bound each child command; zero preserves the historical unbounded default.",
+    )
+    parser.add_argument(
+        "--start-at-command",
+        type=int,
+        default=1,
+        help="Resume at this 1-based command index without replaying earlier green commands.",
     )
     return parser.parse_args()
 
@@ -194,9 +208,17 @@ def argv_for(command: str) -> list[str]:
 
 def main() -> int:
     args = parse_args()
+    if args.command_timeout_seconds < 0:
+        print("--command-timeout-seconds must be zero or a positive integer", file=sys.stderr)
+        return 2
+    if not 1 <= args.start_at_command <= len(COMMANDS):
+        print(f"--start-at-command must be between 1 and {len(COMMANDS)}", file=sys.stderr)
+        return 2
     failures: list[tuple[str, int]] = []
 
     for index, command in enumerate(COMMANDS, start=1):
+        if index < args.start_at_command:
+            continue
         if args.list:
             print(command)
             continue
@@ -210,7 +232,18 @@ def main() -> int:
             continue
 
         print(f"[{index}/{len(COMMANDS)}] {command}", flush=True)
-        result = subprocess.run(argv_for(command))
+        try:
+            result = subprocess.run(
+                argv_for(command),
+                timeout=args.command_timeout_seconds or None,
+            )
+        except subprocess.TimeoutExpired:
+            print(
+                f"TIMEOUT ({args.command_timeout_seconds}s): {command}",
+                file=sys.stderr,
+            )
+            failures.append((command, 124))
+            break
         if result.returncode != 0:
             failures.append((command, result.returncode))
             break
@@ -223,7 +256,8 @@ def main() -> int:
             print(f"FAILED ({code}): {command}", file=sys.stderr)
         return failures[0][1]
 
-    print(f"run_local_ci: PASS ({len(COMMANDS)} commands)")
+    executed = len(COMMANDS) - args.start_at_command + 1
+    print(f"run_local_ci: PASS ({executed} command(s), indices {args.start_at_command}-{len(COMMANDS)})")
     return 0
 
 

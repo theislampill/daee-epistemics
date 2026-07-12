@@ -760,6 +760,8 @@ def canonicalize_field_witness_ordering(
     field_witness = field_witness_payload_ref(payload)
     if field_witness is None:
         return text, None
+    if field_witness.get("schema_version") == "public-field-witness-v1":
+        return text, None
     roles_inserted = canonicalize_owner_activation_ordering_roles(field_witness)
     null_curl_states = canonicalize_formal_reread_curl_states(field_witness)
     per_burden_mirrors = canonicalize_field_witness_per_burden_mirrors(

@@ -27,6 +27,7 @@ from closure_witness_lib import (
     field_witness_mrp_resultants,
     normalize_burden_id,
     normalize_graph_value,
+    public_graph_integrity_diagnostics,
     unique,
 )
 from check_mrp_generated_burden import (
@@ -35,6 +36,7 @@ from check_mrp_generated_burden import (
     graph_normalized_text,
     transition_values_agree,
 )
+from witness_artifact_roles import validate_role
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -252,7 +254,11 @@ def generated_burden_sources(field_witness: dict[str, Any]) -> dict[str, str]:
             burden = normalize_burden_id(graph_burden_id(item.get("id") or item.get("burden") or item.get("target")))
             if not BURDEN_ID_RE.fullmatch(burden):
                 continue
-            source = generated_source(item.get("generated_by"))
+            source = (
+                normalize_burden_id(graph_burden_id(item.get("source")))
+                if field_witness.get("schema_version") == "public-field-witness-v1"
+                else generated_source(item.get("generated_by"))
+            )
             if source:
                 sources[burden] = source
     return sources
@@ -260,7 +266,14 @@ def generated_burden_sources(field_witness: dict[str, Any]) -> dict[str, str]:
 
 def resultants_by_source(field_witness: dict[str, Any]) -> dict[str, dict[str, str]]:
     result: dict[str, dict[str, str]] = {}
-    for item in field_witness_mrp_resultants(field_witness):
+    current = field_witness.get("schema_version") == "public-field-witness-v1"
+    raw = field_witness.get("mrp_resultants")
+    resultants = (
+        [item for item in raw if isinstance(item, dict)]
+        if current and isinstance(raw, list)
+        else field_witness_mrp_resultants(field_witness)
+    )
+    for item in resultants:
         source = normalize_burden_id(graph_burden_id(item.get("source")))
         if source:
             result[source] = item
@@ -275,7 +288,13 @@ def reread_records_by_source(field_witness: dict[str, Any]) -> dict[str, dict[st
     for item in raw:
         if not isinstance(item, dict):
             continue
-        source = normalize_burden_id(graph_burden_id(item.get("source") or item.get("source_burden")))
+        source = normalize_burden_id(
+            graph_burden_id(
+                item.get("burden_id")
+                if field_witness.get("schema_version") == "public-field-witness-v1"
+                else item.get("source") or item.get("source_burden")
+            )
+        )
         if source:
             records[source] = item
     return records
@@ -388,14 +407,62 @@ def check_loopbreak_state(path: Path, index: int, state: dict[str, Any], b_total
 def state_semantics_errors(path: Path, field_witness: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     prefix = f"{rel(path)}: "
-    errors.extend(prefix + error for error in field_witness_graph_errors(field_witness))
+    current = field_witness.get("schema_version") == "public-field-witness-v1"
+    if current:
+        role_diagnostics = validate_role(field_witness, "public_graph", "current")
+        if role_diagnostics:
+            return [
+                prefix + f"{item.failure_subcode}: {item.message}"
+                for item in role_diagnostics
+            ]
+        graph_diagnostics = public_graph_integrity_diagnostics(
+            field_witness, compatibility="current"
+        )
+        if graph_diagnostics:
+            return [
+                prefix + f"{item['failure_subcode']}: {item['message']}"
+                for item in graph_diagnostics
+            ]
+    else:
+        errors.extend(prefix + error for error in field_witness_graph_errors(field_witness))
 
     ledgers = field_witness_ledger(field_witness)
     b_la = set(ledgers["B_LA"])
     b_mrp = set(ledgers["B_MRP"])
     b_total = set(ledgers["B_total"])
+    if current:
+        raw_records = field_witness.get("reread_records")
+        record_rows = (
+            [item for item in raw_records if isinstance(item, dict)]
+            if isinstance(raw_records, list)
+            else []
+        )
+        record_burdens = [str(item.get("burden_id") or "") for item in record_rows]
+        if record_burdens != ledgers["B_total"]:
+            errors.append(prefix + "current reread_records burden order must exactly equal B_total")
+        record_cycles = [str(item.get("cycle_id") or "") for item in record_rows]
+        if len(record_cycles) != len(set(record_cycles)):
+            errors.append(prefix + "current reread_records cycle_id identities must be unique")
+        raw_resultants = field_witness.get("mrp_resultants")
+        resultant_rows = (
+            [item for item in raw_resultants if isinstance(item, dict)]
+            if isinstance(raw_resultants, list)
+            else []
+        )
+        resultant_pairs = [
+            (str(item.get("source") or ""), str(item.get("target") or ""))
+            for item in resultant_rows
+        ]
+        if len(resultant_pairs) != len(set(resultant_pairs)):
+            errors.append(prefix + "current mrp_resultants source/target identities must be unique")
     generated_sources = generated_burden_sources(field_witness)
     resultants = resultants_by_source(field_witness)
+    current_resultants_by_source: dict[str, list[dict[str, Any]]] = {}
+    if current:
+        for row in resultant_rows:
+            source = normalize_burden_id(graph_burden_id(row.get("source")))
+            if source:
+                current_resultants_by_source.setdefault(source, []).append(row)
     records = reread_records_by_source(field_witness)
     edges = set(coverage_edges(field_witness))
     terminals = terminal_state_map(field_witness)
@@ -436,7 +503,38 @@ def state_semantics_errors(path: Path, field_witness: dict[str, Any]) -> list[st
         curl = canonical_text(item.get("curl_state"))
         graph_edges = graph_edges_from_value(item.get("graph_delta"))
         resultant = resultants.get(source)
-        if resultant is None:
+        current_resultants = current_resultants_by_source.get(source, [])
+        record = records.get(source)
+        if current:
+            if record is None:
+                errors.append(f"{label}: no field_witness.reread_records entry for {source}")
+            else:
+                if route_type != str(record.get("route_result_type") or ""):
+                    errors.append(
+                        f"{label}: route_result_type does not match reread_records[{source}]"
+                    )
+                if terminals.get(source, "") != str(record.get("terminal_state") or ""):
+                    errors.append(
+                        f"{label}: terminal state does not match reread_records[{source}]"
+                    )
+        if current and not current_resultants:
+            if route_type in OWNER_ROUTED_TYPES:
+                errors.append(f"{label}: no field_witness.mrp_resultants entry for {source}")
+        elif current:
+            if any(route_type != row.get("type") for row in current_resultants):
+                errors.append(f"{label}: route_result_type does not match mrp_resultants[{source}].type")
+            if any(route != str(row.get("route") or "").upper() for row in current_resultants):
+                errors.append(f"{label}: route does not match mrp_resultants[{source}].route")
+            resultant_edges = {
+                (source, normalize_burden_id(graph_burden_id(row.get("target"))))
+                for row in current_resultants
+                if normalize_burden_id(graph_burden_id(row.get("target")))
+            }
+            if set(graph_edges) != resultant_edges:
+                errors.append(
+                    f"{label}: graph_delta does not match current mrp_resultants[{source}] targets"
+                )
+        elif resultant is None:
             errors.append(f"{label}: no field_witness.mrp_resultants entry for {source}")
         else:
             if route_type != resultant.get("type"):
@@ -447,7 +545,6 @@ def state_semantics_errors(path: Path, field_witness: dict[str, Any]) -> list[st
                 errors.append(f"{label}: graph_delta does not match mrp_resultants[{source}].graph")
 
         release = expected_release(item)
-        record = records.get(source)
         if record is not None and "release_next" in record:
             record_release = graph_burden_id(record.get("release_next"))
             if not record_release:
@@ -538,12 +635,19 @@ def state_semantics_errors(path: Path, field_witness: dict[str, Any]) -> list[st
     duplicate_sources = sorted({source for source in seen_sources if seen_sources.count(source) > 1})
     if duplicate_sources:
         errors.append(f"{rel(path)}: duplicate formal_reread_states source_burden values: {', '.join(duplicate_sources)}")
-    missing_sources = sorted(set(resultants) - set(seen_sources))
+    expected_sources = set(records) if current else set(resultants)
+    missing_sources = sorted(expected_sources - set(seen_sources))
     if missing_sources:
-        errors.append(f"{rel(path)}: formal_reread_states missing mrp_resultants sources: {', '.join(missing_sources)}")
-    extra_sources = sorted(set(seen_sources) - set(resultants))
+        owner = "reread_records" if current else "mrp_resultants"
+        errors.append(
+            f"{rel(path)}: formal_reread_states missing {owner} sources: {', '.join(missing_sources)}"
+        )
+    extra_sources = sorted(set(seen_sources) - expected_sources)
     if extra_sources:
-        errors.append(f"{rel(path)}: formal_reread_states name sources absent from mrp_resultants: {', '.join(extra_sources)}")
+        owner = "reread_records" if current else "mrp_resultants"
+        errors.append(
+            f"{rel(path)}: formal_reread_states name sources absent from {owner}: {', '.join(extra_sources)}"
+        )
 
     if complete_claimed(field_witness):
         if not stop_seen:

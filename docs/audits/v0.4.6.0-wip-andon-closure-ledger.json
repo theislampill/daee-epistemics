@@ -1,7 +1,7 @@
 {
   "schema": "daee-andon-closure-ledger-v2",
   "ledger_id": "daee-v0.4.6.0-wip-branch10-closure",
-  "source_head": "6987c9ebf1de45af700b1fa74b1ed25ec0beeb7c",
+  "source_head": "484e61c9c2af30ed3f9e3c5c98551a7973a9417f",
   "branch": "codex/v0.4.6.0-runtime-footprint-b10",
   "regression_status": "unproven",
   "required_andon_ids": [
@@ -2877,11 +2877,11 @@
       ],
       "evidence_refs": [
         {
-          "kind": "source_blob",
-          "source_ref": "tools/check_package_harness_parity.py at the immutable Branch 10 checkpoint",
-          "commit_sha1": "43d1d98bf52bd61367496f527047c3dc00f089ae",
-          "blob_sha1": "1a8db4e448283b51b7d59377fcfb748bfb01e4bc",
-          "sha256": "eb99f61da3605e968e782337992c41bba59f7d4bcc40c7f050bd98ab36d2dd25",
+          "kind": "file_sha256",
+          "source_ref": "tools/check_package_harness_parity.py current shared-integration bytes",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "cc5a718849f584d2b514dddc75962d575b2046437278ada03a45ab77ab007f0a",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/check_package_harness_parity.py",

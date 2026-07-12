@@ -131,10 +131,28 @@ def validate(record: dict[str, Any], package_root: Path, run_root: Path, repo_ro
         clause = clause_rows.get(clause_id)
         if not clause or clause.get("class") != "canonical_semantic_law":
             raise Failure("package-clause-unproven", "package-clause-unproven", f"model-visible DAEE clause is not canonical package law: {clause_id}")
-        projection = clause["delivery_projection"]; component = context_components.get(projection["component_id"])
-        if component is None or component.get("sha256") != projection["component_sha256"] or component.get("delivery") == "not-delivered":
+        projections = [clause["delivery_projection"], *clause.get("alternate_delivery_projections", [])]
+        component = next(
+            (
+                context_components.get(projection["component_id"])
+                for projection in projections
+                if context_components.get(projection["component_id"]) is not None
+                and context_components[projection["component_id"]].get("sha256") == projection["component_sha256"]
+                and context_components[projection["component_id"]].get("delivery") != "not-delivered"
+            ),
+            None,
+        )
+        if component is None:
             raise Failure("package-clause-unproven", "package-clause-unproven", f"clause projection is not delivered from bound package: {clause_id}")
-    projected_live = {row["clause_id"] for row in registry["clauses"] if row.get("class") == "canonical_semantic_law" and row.get("delivery_projection", {}).get("component_id") in context_components}
+    projected_live = {
+        row["clause_id"]
+        for row in registry["clauses"]
+        if row.get("class") == "canonical_semantic_law"
+        and any(
+            projection.get("component_id") in context_components
+            for projection in [row.get("delivery_projection", {}), *row.get("alternate_delivery_projections", [])]
+        )
+    }
     if projected_live != set(visible_ids):
         raise Failure("package-clause-unproven", "model-visible-clause-inventory-mismatch", "record does not exhaustively inventory package clause projections visible in context")
 
@@ -314,6 +332,8 @@ def self_test() -> int:
         faithful = build_record(ROOT / "skill", faithful_run, False); assisted = build_record(ROOT / "skill", assisted_run, True)
         checks.append(("neighbor package-faithful record", validate(faithful, ROOT / "skill", faithful_run)["classification"] == "package-faithful"))
         checks.append(("neighbor harness-assisted record", validate(assisted, ROOT / "skill", assisted_run)["classification"] == "harness-assisted"))
+        empty_visible = copy.deepcopy(faithful); empty_visible["model_visible_clause_ids"] = []
+        checks.append(("schema rejects an empty model-visible inventory", bool(schema_errors(empty_visible))))
         drift = copy.deepcopy(faithful); next(x for x in drift["artifacts"] if x["kind"] == "prompt")["sha256"] = "f" * 64
         try: validate(drift, ROOT / "skill", faithful_run); caught = False
         except Failure as exc: caught = exc.cls == "prompt-projection-hash-mismatch"

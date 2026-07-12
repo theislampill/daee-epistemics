@@ -671,6 +671,96 @@ def public_graph_integrity_diagnostics(field_witness: Any, *, compatibility: str
         return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-burden-identity", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "B_LA and B_MRP must be disjoint"}]
     if isinstance(b_la, list) and isinstance(b_mrp, list) and isinstance(b_total, list) and b_total != list(dict.fromkeys(b_la + b_mrp)):
         return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-burden-identity", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "B_total must equal B_LA plus B_MRP in order"}]
+    coverage = field_witness.get("coverage_proof", {})
+    if compatibility == "current":
+        burden_ids = {str(burden) for burden in b_total} if isinstance(b_total, list) else set()
+        root_terminals = field_witness.get("terminal_states")
+        coverage_terminals = coverage.get("terminal_states") if isinstance(coverage, dict) else None
+        root_terminal_ids = (
+            {str(burden) for burden in root_terminals}
+            if isinstance(root_terminals, dict)
+            else set()
+        )
+        coverage_terminal_ids = (
+            {str(burden) for burden in coverage_terminals}
+            if isinstance(coverage_terminals, dict)
+            else set()
+        )
+        if root_terminal_ids != burden_ids or coverage_terminal_ids != burden_ids:
+            return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-terminal-identity", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "root and coverage terminal identities must each equal B_total"}]
+        reread_records = field_witness.get("reread_records")
+        nar = field_witness.get("normalized_activation_record")
+        nar_rows = nar.get("per_burden") if isinstance(nar, dict) else None
+        reread_by_burden = {
+            str(row.get("burden_id")): row
+            for row in (reread_records if isinstance(reread_records, list) else [])
+            if isinstance(row, dict) and row.get("burden_id")
+        }
+        nar_by_burden = {
+            str(row.get("burden_id")): row
+            for row in (nar_rows if isinstance(nar_rows, list) else [])
+            if isinstance(row, dict) and row.get("burden_id")
+        }
+        for burden in b_total:
+            root_terminal = root_terminals.get(burden)
+            if not isinstance(root_terminal, dict) or root_terminal.get("state") != coverage_terminals.get(burden):
+                return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-terminal-state", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"root terminal state for {burden} must equal coverage terminal state"}]
+            cycle_id = root_terminal.get("cycle_id")
+            reread = reread_by_burden.get(str(burden), {})
+            nar_row = nar_by_burden.get(str(burden), {})
+            if (
+                not isinstance(cycle_id, str)
+                or not cycle_id
+                or reread.get("cycle_id") != cycle_id
+                or nar_row.get("cycle_id") != cycle_id
+                or reread.get("terminal_state") != root_terminal.get("state")
+            ):
+                return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-terminal-cycle", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"terminal cycle identity for {burden} must agree across root, reread, and NAR records"}]
+        root_edges = field_witness.get("edges")
+        dependency_graph = coverage.get("dependency_graph") if isinstance(coverage, dict) else None
+        coverage_edges = (
+            dependency_graph.get("edges")
+            if isinstance(dependency_graph, dict)
+            else None
+        )
+        root_edge_ids = [
+            (str(edge.get("from")), str(edge.get("to")))
+            for edge in root_edges
+            if isinstance(root_edges, list) and isinstance(edge, dict)
+        ]
+        coverage_edge_ids = [
+            (str(edge.get("from")), str(edge.get("to")))
+            for edge in coverage_edges
+            if isinstance(coverage_edges, list) and isinstance(edge, dict)
+        ]
+        for label, edge_ids in (("root", root_edge_ids), ("coverage", coverage_edge_ids)):
+            if len(edge_ids) != len(set(edge_ids)):
+                duplicate = next(edge for edge in edge_ids if edge_ids.count(edge) > 1)
+                return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-duplicate-edge", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"dependency_graph {label} contains duplicate dependency edge {duplicate[0]}->{duplicate[1]}"}]
+        root_edge_endpoints_are_burdens = all(
+            source in burden_ids and target in burden_ids
+            for source, target in root_edge_ids
+        )
+        if root_edge_endpoints_are_burdens and root_edge_ids != coverage_edge_ids:
+            return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-edge-parity", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "dependency_graph root and coverage edge identities must match exactly in order"}]
+        resultants_by_pair = {
+            (str(row.get("source")), str(row.get("target"))): row
+            for row in field_witness.get("mrp_resultants", [])
+            if isinstance(row, dict) and row.get("source") and row.get("target")
+        }
+        for edge in root_edges if isinstance(root_edges, list) and root_edge_endpoints_are_burdens else []:
+            if not isinstance(edge, dict):
+                continue
+            pair = (str(edge.get("from")), str(edge.get("to")))
+            resultant = resultants_by_pair.get(pair)
+            edge_kind = str(edge.get("kind") or "").strip().lower().replace("-", "_")
+            resultant_kind = str(resultant.get("type") or "").strip().lower().replace("-", "_") if resultant is not None else ""
+            if edge_kind == "generated_resultant":
+                edge_kind = "generated_burden_instantiation"
+            if resultant_kind == "generated_resultant":
+                resultant_kind = "generated_burden_instantiation"
+            if resultant is not None and edge_kind != resultant_kind:
+                return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-edge-resultant-kind", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"dependency_graph edge kind for {pair[0]}->{pair[1]} must equal its MRP resultant type"}]
     nodes = field_witness.get("nodes", [])
     node_id_list = [str(row.get("id")) for row in nodes if isinstance(row, dict) and row.get("id")]
     if len(node_id_list) != len(set(node_id_list)):
@@ -679,6 +769,46 @@ def public_graph_integrity_diagnostics(field_witness: Any, *, compatibility: str
     node_ids = set(node_id_list)
     if compatibility == "current" and isinstance(b_total, list) and node_ids != set(b_total):
         return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-dangling-node", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"graph node identities {sorted(node_ids)} must equal B_total {sorted(set(b_total))}"}]
+    if compatibility == "current":
+        node_by_id = {
+            str(row.get("id")): row
+            for row in nodes
+            if isinstance(row, dict) and row.get("id")
+        }
+        current_edges = field_witness.get("edges", [])
+        current_edge_endpoints_are_nodes = all(
+            isinstance(edge, dict)
+            and edge.get("from") in node_ids
+            and edge.get("to") in node_ids
+            for edge in current_edges
+        ) if isinstance(current_edges, list) else False
+        incoming_by_target: dict[str, list[str]] = {}
+        for edge in current_edges if isinstance(current_edges, list) else []:
+            if isinstance(edge, dict) and edge.get("from") and edge.get("to"):
+                incoming_by_target.setdefault(str(edge["to"]), []).append(str(edge["from"]))
+        for burden in b_total if isinstance(b_total, list) and current_edge_endpoints_are_nodes else []:
+            incoming = incoming_by_target.get(str(burden), [])
+            if len(incoming) > 1:
+                return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-node-parent-ambiguous", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"node {burden} has multiple incoming dependency parents but current parent_id is singular"}]
+            expected_parent = incoming[0] if incoming else None
+            if node_by_id.get(str(burden), {}).get("parent_id") != expected_parent:
+                return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-node-parent", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"node {burden} dependency parent_id must equal its unique incoming source"}]
+        for burden in b_la if isinstance(b_la, list) else []:
+            node = node_by_id.get(str(burden), {})
+            if node.get("origin") != "B_LA" or node.get("type") != "burden":
+                return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-node-origin", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"node {burden} origin/type must be B_LA/burden"}]
+        generated_by_id = {
+            str(row.get("id")): row
+            for row in field_witness.get("generated_burdens", [])
+            if isinstance(row, dict) and row.get("id")
+        }
+        for burden in b_mrp if isinstance(b_mrp, list) else []:
+            node = node_by_id.get(str(burden), {})
+            if node.get("origin") != "B_MRP" or node.get("type") != "generated_burden":
+                return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-node-origin", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"node {burden} origin/type must be B_MRP/generated_burden"}]
+            generated = generated_by_id.get(str(burden), {})
+            if not generated or node.get("parent_id") != generated.get("source"):
+                return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-node-parent", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"generated node {burden} parent_id must equal generated_burdens source"}]
     for edge in field_witness.get("edges", []) if isinstance(field_witness.get("edges"), list) else []:
         if isinstance(edge, dict) and (edge.get("from") not in node_ids or edge.get("to") not in node_ids):
             return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-dangling-edge", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"edge {edge.get('from')}->{edge.get('to')} references missing node"}]
@@ -689,11 +819,44 @@ def public_graph_integrity_diagnostics(field_witness: Any, *, compatibility: str
     generated = set(generated_list)
     if compatibility == "current" and generated != set(b_mrp):
         return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-generated-identity", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "generated_burdens identities must equal B_MRP"}]
-    coverage = field_witness.get("coverage_proof", {})
     event_graph = coverage.get("provenance_event_dag", {}) if isinstance(coverage, dict) else {}
     if isinstance(event_graph, dict):
-        event_nodes = {str(node) for node in event_graph.get("nodes", [])}
-        event_edges = [(str(edge.get("from")), str(edge.get("to"))) for edge in event_graph.get("edges", []) if isinstance(edge, dict)]
+        raw_event_nodes = event_graph.get("nodes", [])
+        raw_event_roots = event_graph.get("roots", [])
+        raw_event_edges = event_graph.get("edges", [])
+        event_node_list = [str(node) for node in raw_event_nodes] if isinstance(raw_event_nodes, list) else []
+        event_root_list = [str(node) for node in raw_event_roots] if isinstance(raw_event_roots, list) else []
+        event_edges = [
+            (str(edge.get("from")), str(edge.get("to")))
+            for edge in (raw_event_edges if isinstance(raw_event_edges, list) else [])
+            if isinstance(edge, dict)
+        ]
+        event_nodes = set(event_node_list)
+        if compatibility == "current":
+            dependency_graph = coverage.get("dependency_graph", {}) if isinstance(coverage, dict) else {}
+            dependency_roots = dependency_graph.get("roots", []) if isinstance(dependency_graph, dict) else []
+            dependency_edges = dependency_graph.get("edges", []) if isinstance(dependency_graph, dict) else []
+            if len(event_node_list) != len(set(event_node_list)) or len(event_node_list) != len(b_total):
+                return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-event-identity", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "provenance event identities must be unique with B_total cardinality"}]
+            if (
+                len(event_root_list) != len(set(event_root_list))
+                or len(event_root_list) != len(dependency_roots if isinstance(dependency_roots, list) else [])
+                or any(root not in event_nodes for root in event_root_list)
+            ):
+                return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-event-root-cardinality", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "provenance event root identities must be unique members with dependency-root cardinality"}]
+            if (
+                len(event_edges) != len(set(event_edges))
+                or len(event_edges) != len(dependency_edges if isinstance(dependency_edges, list) else [])
+            ):
+                return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-event-edge-cardinality", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "provenance event edges must be unique with dependency-edge cardinality"}]
+            for generated_row in field_witness.get("generated_burdens", []):
+                if not isinstance(generated_row, dict):
+                    continue
+                burden = str(generated_row.get("id") or "")
+                if burden in b_total:
+                    expected_event = event_node_list[b_total.index(burden)]
+                    if generated_row.get("event_id") != expected_event:
+                        return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-generated-event", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": f"generated burden {burden} event_id must match its terminal cycle event"}]
         if any(source not in event_nodes or target not in event_nodes for source, target in event_edges):
             return [{"failure_class": "witness-graph", "failure_subcode": "witness-graph-dangling-event", "earliest_stage": "07", "downstream_invalidated": ["08"], "message": "provenance event edge references a missing event node"}]
         if _directed_cycle(event_nodes, event_edges):

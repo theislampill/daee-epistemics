@@ -26,6 +26,7 @@ from closure_witness_lib import (
     field_witness_mrp_resultants,
     normalize_burden_id,
     parse_closure_witness,
+    public_graph_integrity_diagnostics,
     status_head,
 )
 from check_field_witness_convergence import (
@@ -382,7 +383,20 @@ def dependency_roots(field_witness: dict[str, Any]) -> list[str]:
 
 def resultant_edges(field_witness: dict[str, Any]) -> list[str]:
     edges: list[str] = []
-    for resultant in field_witness_mrp_resultants(field_witness):
+    current = field_witness.get("schema_version") == "public-field-witness-v1"
+    raw_resultants = field_witness.get("mrp_resultants")
+    resultants = (
+        [item for item in raw_resultants if isinstance(item, dict)]
+        if current and isinstance(raw_resultants, list)
+        else field_witness_mrp_resultants(field_witness)
+    )
+    for resultant in resultants:
+        if current:
+            source = normalize_burden_id(str(resultant.get("source") or ""))
+            target = normalize_burden_id(str(resultant.get("target") or ""))
+            if BURDEN_ID_RE.fullmatch(source) and BURDEN_ID_RE.fullmatch(target):
+                edges.append(f"{source}->{target}")
+            continue
         graph = str(resultant.get("graph") or "").replace("→", "->")
         for match in re.finditer(r"\b(B\d+)\b\s*->\s*\b(B\d+)\b", graph):
             source = normalize_burden_id(match.group(1))
@@ -644,6 +658,62 @@ def max_generation_depth(field_witness: dict[str, Any]) -> int:
     return max(depths)
 
 
+def current_generation_depth_errors(path: Path, field_witness: dict[str, Any]) -> list[str]:
+    """Validate the current public graph depth contract without legacy coverage fields."""
+    prefix = f"{rel(path)}: "
+    errors: list[str] = []
+    ledgers = field_witness_ledger(field_witness)
+    nodes = {
+        normalize_burden_id(str(item.get("id") or "")): item
+        for item in field_witness.get("nodes", [])
+        if isinstance(item, dict)
+        and BURDEN_ID_RE.fullmatch(normalize_burden_id(str(item.get("id") or "")))
+    }
+    generated = {
+        normalize_burden_id(str(item.get("id") or "")): item
+        for item in field_witness.get("generated_burdens", [])
+        if isinstance(item, dict)
+        and BURDEN_ID_RE.fullmatch(normalize_burden_id(str(item.get("id") or "")))
+    }
+
+    if set(generated) != set(ledgers["B_MRP"]):
+        errors.append(prefix + "current generated_burdens identities must equal B_MRP")
+
+    for burden in ledgers["B_LA"]:
+        node = nodes.get(burden)
+        depth = node.get("generation_depth") if node else None
+        if type(depth) is not int or depth != 0:
+            errors.append(prefix + f"current B_LA burden {burden} must have generation_depth 0")
+
+    for burden in ledgers["B_MRP"]:
+        node = nodes.get(burden)
+        row = generated.get(burden)
+        if node is None or row is None:
+            continue
+        node_depth = node.get("generation_depth")
+        row_depth = row.get("generation_depth")
+        if type(node_depth) is not int or node_depth < 0:
+            errors.append(prefix + f"current B_MRP node {burden} must have a non-negative generation_depth")
+            continue
+        if type(row_depth) is not int or row_depth < 0:
+            errors.append(prefix + f"current generated burden {burden} must have a non-negative generation_depth")
+            continue
+        if row_depth != node_depth:
+            errors.append(prefix + f"current generated burden {burden} depth must match its graph node")
+        source = normalize_burden_id(str(row.get("source") or ""))
+        source_node = nodes.get(source)
+        source_depth = source_node.get("generation_depth") if source_node else None
+        if type(source_depth) is not int or source_depth < 0:
+            errors.append(prefix + f"current generated burden {burden} source {source or '<missing>'} lacks a valid node depth")
+        elif node_depth <= source_depth:
+            errors.append(
+                prefix
+                + f"current generated burden {burden} generation_depth {node_depth} "
+                + f"must be greater than source {source} depth {source_depth}"
+            )
+    return errors
+
+
 def verified_activation_targets(field_witness: dict[str, Any]) -> list[str]:
     targets: list[str] = []
     raw = field_witness.get("owner_activations")
@@ -667,14 +737,26 @@ def owner_activation_payloads(field_witness: dict[str, Any], target: str) -> lis
     for item in raw:
         if not isinstance(item, dict):
             continue
-        item_target = normalize_burden_id(str(item.get("target") or item.get("source") or ""))
+        item_target = normalize_burden_id(
+            str(
+                item.get("burden_id")
+                if field_witness.get("schema_version") == "public-field-witness-v1"
+                else item.get("target") or item.get("source") or ""
+            )
+        )
         if item_target == target:
             payloads.append(item)
     return payloads
 
 
-def activation_has_required_fields(item: dict[str, Any]) -> bool:
-    required = ("owner", "operation", "pressure", "body_ref", "delta", "land")
+def activation_has_required_fields(item: dict[str, Any], *, current: bool = False) -> bool:
+    required = (
+        ("ordinal", "body_ref", "burden_id", "owner_id", "operation", "resultant_sha256", "semantic_body_sha256")
+        if current
+        else ("owner", "operation", "pressure", "body_ref", "delta", "land")
+    )
+    if current and item.get("ordinal") == 0:
+        return all(str(item.get(key) or "").strip() for key in required if key != "ordinal")
     return all(str(item.get(key) or "").strip() for key in required)
 
 
@@ -765,12 +847,26 @@ def model_claims_positive(field_witness: dict[str, Any], text: str) -> bool:
 
 def root_activation_semantic_errors(text: str, primary: str, item: dict[str, Any]) -> list[str]:
     errors: list[str] = []
-    if not activation_has_required_fields(item):
-        return ["root owner activation lacks required owner/operation/pressure/body_ref/delta/land fields"]
+    current = all(
+        key in item
+        for key in (
+            "ordinal",
+            "burden_id",
+            "owner_id",
+            "resultant_sha256",
+            "semantic_body_sha256",
+        )
+    )
+    if not activation_has_required_fields(item, current=current):
+        return [
+            "root owner activation lacks required current identity/hash fields"
+            if current
+            else "root owner activation lacks required owner/operation/pressure/body_ref/delta/land fields"
+        ]
 
-    source = graph_burden_id(item.get("source"))
-    target = graph_burden_id(item.get("target"))
-    if source and source != primary:
+    source = graph_burden_id(item.get("source")) if not current else primary
+    target = graph_burden_id(item.get("burden_id") if current else item.get("target"))
+    if not current and source and source != primary:
         errors.append(f"source {source} does not name primary root {primary}")
     if target != primary:
         errors.append(f"target {target or '<missing>'} does not name primary root {primary}")
@@ -791,7 +887,9 @@ def root_activation_semantic_errors(text: str, primary: str, item: dict[str, Any
 
     record = matching_records[0]
     record_family = strict_owner_family(record.owner)
-    item_family = strict_owner_family(str(item.get("owner") or ""))
+    item_family = strict_owner_family(
+        str(item.get("owner_id") if current else item.get("owner") or "")
+    )
     if not item_family:
         errors.append("field_witness owner is not catalogue-backed")
     elif record_family and item_family != record_family:
@@ -799,14 +897,19 @@ def root_activation_semantic_errors(text: str, primary: str, item: dict[str, Any
     operation = str(item.get("operation") or "").strip()
     if GENERIC_ACT_VALUE_RE.fullmatch(operation) or operation != record.operation:
         errors.append("field_witness operation does not match visible ACT operation")
-    if not activation_pressure_matches(record.pi, item.get("pressure")):
-        errors.append("field_witness pressure does not match visible ACT pressure")
-    delta_text = graph_normalized_text(item.get("delta")).lower()
-    if graph_normalized_text(record.delta_result).lower() not in delta_text:
-        errors.append("field_witness delta does not include visible ACT delta result")
-    item_land_target = graph_burden_id(activation_land_target(item.get("land")))
-    if item_land_target != primary:
-        errors.append(f"field_witness land targets {item_land_target or '<missing>'}, not Land({primary})")
+    if current:
+        expected_semantic_hash = hashlib.sha256(record.record.encode("utf-8")).hexdigest()
+        if item.get("semantic_body_sha256") != expected_semantic_hash:
+            errors.append("field_witness semantic_body_sha256 does not match visible ACT row")
+    else:
+        if not activation_pressure_matches(record.pi, item.get("pressure")):
+            errors.append("field_witness pressure does not match visible ACT pressure")
+        delta_text = graph_normalized_text(item.get("delta")).lower()
+        if graph_normalized_text(record.delta_result).lower() not in delta_text:
+            errors.append("field_witness delta does not include visible ACT delta result")
+        item_land_target = graph_burden_id(activation_land_target(item.get("land")))
+        if item_land_target != primary:
+            errors.append(f"field_witness land targets {item_land_target or '<missing>'}, not Land({primary})")
     record_land_targets = [graph_burden_id(value) for value in re.findall(r"(?:[⁰¹²³⁴⁵⁶⁷⁸⁹]+B|B\d+)", record.land)]
     if primary not in record_land_targets:
         errors.append(f"visible ACT Land clause does not target Land({primary})")
@@ -856,7 +959,10 @@ def primary_root_verification(
     edges = graph_edges(field_witness)
     incoming = [edge for edge in edges if edge.endswith(f"->{primary}")]
     activations = owner_activation_payloads(field_witness, primary)
-    complete_activation = any(activation_has_required_fields(item) for item in activations)
+    current = field_witness.get("schema_version") == "public-field-witness-v1"
+    complete_activation = any(
+        activation_has_required_fields(item, current=current) for item in activations
+    )
     semantic_activation_errors: list[str] = []
     semantic_activation = False
     for item in activations:
@@ -1607,13 +1713,23 @@ def formalism_emergent_escape_route_errors(field_witness: dict[str, Any]) -> lis
 
 
 def condition_rows(path: Path, text: str, field_witness: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    current = field_witness.get("schema_version") == "public-field-witness-v1"
     ledgers = field_witness_ledger(field_witness)
     b_total = ledgers["B_total"]
     b_total_set = set(b_total)
     initials = initial_burdens(field_witness)
     terminals = terminal_state_map(field_witness)
     cov = coverage(field_witness)
-    convergence = convergence_errors(path, text)
+    convergence = convergence_errors(
+        path,
+        text,
+        compatibility="current" if current else "historical",
+    )
+    graph_identity_diagnostics = (
+        public_graph_integrity_diagnostics(field_witness, compatibility="current")
+        if current
+        else []
+    )
     mrp_errors = mrp_generated_errors(path, text, enforce_public_notation=False)
     formal_errors = formal_semantics_errors(path, text)
     graph_edge_set = set(graph_edges(field_witness))
@@ -1628,7 +1744,12 @@ def condition_rows(path: Path, text: str, field_witness: dict[str, Any]) -> dict
     divergence_head = status_head(divergence)
     curl = diagnostic_status(field_witness, "curl_check", "del_cross_kappa", "del-cross kappa")
     curl_head = status_head(curl)
-    generated_depth = not generation_depth_errors(path, field_witness, strict=True)
+    depth_errors = (
+        current_generation_depth_errors(path, field_witness)
+        if current
+        else generation_depth_errors(path, field_witness, strict=True)
+    )
+    generated_depth = not depth_errors
     primary_root_pass, primary_root_basis = primary_root_verification(
         text,
         field_witness,
@@ -1728,7 +1849,8 @@ def condition_rows(path: Path, text: str, field_witness: dict[str, Any]) -> dict
         },
         "graph_structure": {
             "pass": (
-                not any("dependency_graph" in error or "orphan" in error for error in convergence)
+                not graph_identity_diagnostics
+                and not any("dependency_graph" in error or "orphan" in error for error in convergence)
                 and graph_edge_set.issubset(resultant_edge_set)
                 and set(graph_nodes(field_witness)).issubset(b_total_set)
                 and generated_depth

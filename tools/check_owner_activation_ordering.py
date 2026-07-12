@@ -28,6 +28,7 @@ from check_mrp_generated_burden import (
     strict_owner_family,
 )
 from delta_result_vocabulary import DELTA_RESULT_VOCABULARY, source_pressure_delta_errors
+from witness_artifact_roles import validate_role
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -546,12 +547,147 @@ def ordering_plan_fingerprint(field_witness: dict[str, Any]) -> str:
     )
 
 
+def current_activation_report(
+    path: Path,
+    field_witness: dict[str, Any],
+    errors: list[str],
+) -> ActivationReport:
+    """Validate the current ordinal/body-ref plan without legacy mirror fields."""
+    for diagnostic in validate_role(field_witness, "public_graph", "current"):
+        errors.append(f"{rel(path)}: {diagnostic.message}")
+
+    raw = field_witness.get("owner_activations")
+    ordering = field_witness.get("owner_activation_ordering")
+    ordering_rows = ordering.get("rows") if isinstance(ordering, dict) else None
+    if not isinstance(raw, list):
+        raw = []
+        errors.append(f"{rel(path)}: field_witness.owner_activations must be a list")
+    if not isinstance(ordering_rows, list):
+        ordering_rows = []
+        errors.append(f"{rel(path)}: current owner_activation_ordering.rows must be a list")
+
+    activation_identity = [
+        (item.get("ordinal"), str(item.get("body_ref") or ""))
+        for item in raw
+        if isinstance(item, dict)
+    ]
+    ordering_identity = [
+        (item.get("ordinal"), str(item.get("body_ref") or ""))
+        for item in ordering_rows
+        if isinstance(item, dict)
+    ]
+    if ordering_identity != activation_identity:
+        errors.append(
+            f"{rel(path)}: current owner_activation_ordering.rows must exactly project activation ordinals/body_refs"
+        )
+    ordinals = [identity[0] for identity in activation_identity]
+    if ordinals != list(range(len(raw))):
+        errors.append(f"{rel(path)}: current owner activation ordinals must be contiguous and ordered")
+    body_refs = [identity[1] for identity in activation_identity]
+    if len(body_refs) != len(set(body_refs)):
+        errors.append(f"{rel(path)}: current owner activation body_ref identities must be unique")
+
+    activations: list[Activation] = []
+    canonical_rows: list[dict[str, Any]] = []
+    required_keys = (
+        "ordinal",
+        "body_ref",
+        "burden_id",
+        "owner_id",
+        "operation",
+        "resultant_sha256",
+        "semantic_body_sha256",
+    )
+    for index, item in enumerate(raw, start=1):
+        if not isinstance(item, dict):
+            errors.append(f"{rel(path)}: owner_activations[{index}] must be a JSON object")
+            continue
+        missing = [
+            key
+            for key in required_keys
+            if key not in item or (key != "ordinal" and not str(item.get(key) or "").strip())
+        ]
+        if type(item.get("ordinal")) is not int:
+            missing.append("ordinal")
+        if missing:
+            errors.append(
+                f"{rel(path)}: owner_activations[{index}] missing required current fields: "
+                + ", ".join(sorted(set(missing)))
+            )
+            continue
+        burden = graph_burden_id(item.get("burden_id"))
+        body_ref = graph_submove_id(item.get("body_ref"))
+        owner_raw = str(item.get("owner_id") or "").strip()
+        owner = strict_owner_family(owner_raw)
+        if not owner:
+            errors.append(f"{rel(path)}: owner_activations[{index}]: owner_id {owner_raw!r} is not catalogue-backed")
+            owner = owner_raw.upper()
+        if burden and body_ref and not body_ref.startswith(f"{burden}_"):
+            errors.append(
+                f"{rel(path)}: owner_activations[{index}]: body_ref {body_ref!r} does not belong to burden {burden}"
+            )
+        ordering_row = ordering_rows[index - 1] if index <= len(ordering_rows) else {}
+        role = canonical_role(ordering_row.get("ordering_role")) if isinstance(ordering_row, dict) else ""
+        group = (
+            canonical_text(ordering_row.get("ordering_group") or "")
+            if isinstance(ordering_row, dict)
+            else ""
+        )
+        if role not in ORDERING_ROLES:
+            errors.append(f"{rel(path)}: owner_activation_ordering.rows[{index}] has invalid ordering_role")
+        if role in {"parallel", "optional_non_load_bearing"} and not group:
+            errors.append(
+                f"{rel(path)}: owner_activation_ordering.rows[{index}] {role} requires ordering_group"
+            )
+        activation = Activation(
+            source=burden,
+            target=burden,
+            owner=owner,
+            operation=canonical_text(item.get("operation")),
+            pressure=str(item.get("resultant_sha256") or ""),
+            body_ref=body_ref,
+            delta=str(item.get("semantic_body_sha256") or ""),
+            land=str(item.get("ordinal")),
+            role=role,
+            group=group,
+            order_index=int(item["ordinal"]),
+        )
+        activations.append(activation)
+        canonical_rows.append(
+            {
+                "ordinal": item["ordinal"],
+                "body_ref": body_ref,
+                "burden_id": burden,
+                "owner_id": owner,
+                "operation": activation.operation,
+                "resultant_sha256": activation.pressure,
+                "semantic_body_sha256": activation.delta,
+                "ordering_role": role,
+                "ordering_group": group or None,
+            }
+        )
+
+    required = [activation for activation in activations if activation.role not in NON_REQUIRED_ROLES]
+    return ActivationReport(
+        path=path,
+        activations=activations,
+        required=required,
+        raw_fingerprint=digest(raw) if raw else "",
+        canonical_fingerprint=digest(canonical_rows) if canonical_rows else "",
+        topology_fingerprint=topology_fingerprint(field_witness),
+        plan_fingerprint=digest(ordering_rows) if ordering_rows else "",
+        errors=errors,
+    )
+
+
 def activation_report(path: Path, *, require_plan: bool = False) -> ActivationReport:
     text = read_text(path)
     field_witness, errors = parse_field_witness(path, text)
     activations: list[Activation] = []
     if field_witness is None:
         return ActivationReport(path, [], [], "", "", "", "", errors)
+    if field_witness.get("schema_version") == "public-field-witness-v1":
+        return current_activation_report(path, field_witness, errors)
     raw = field_witness.get("owner_activations")
     if not isinstance(raw, list):
         return ActivationReport(

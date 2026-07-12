@@ -17,12 +17,13 @@ import sys
 from pathlib import Path
 
 from closure_witness_lib import closure_witness_errors, parse_burden_list, parse_closure_witness
+from check_field_witness_convergence import current_public_convergence_errors
 from closure_witness_lib import (
-    compare_visible_to_field_witness,
     extract_embedded_field_witness,
     extract_field_witness,
-    field_witness_graph_errors,
+    public_graph_integrity_diagnostics,
 )
+from witness_artifact_roles import validate_role
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -258,13 +259,21 @@ def check_field_witness_consistency(path: Path, text: str, errors: list[str]) ->
     if field_witness is None:
         errors.append(f"{path}: field_witness / graphable reconstruction payload required for normal governed output")
         return
-    errors.extend(f"{path}: {error}" for error in field_witness_graph_errors(field_witness))
-    witness = parse_closure_witness(text)
-    if witness is not None:
+    role_diagnostics = validate_role(field_witness, "public_graph", "current")
+    if role_diagnostics:
         errors.extend(
-            f"{path}: {error}"
-            for error in compare_visible_to_field_witness(witness, field_witness)
+            f"{path}: {diagnostic.failure_subcode}: {diagnostic.message}"
+            for diagnostic in role_diagnostics
         )
+        return
+    integrity = public_graph_integrity_diagnostics(field_witness, compatibility="current")
+    if integrity:
+        errors.extend(
+            f"{path}: {diagnostic['failure_subcode']}: {diagnostic['message']}"
+            for diagnostic in integrity
+        )
+        return
+    errors.extend(current_public_convergence_errors(path, text, field_witness))
 
 
 def check(path: Path) -> list[str]:

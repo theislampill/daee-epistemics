@@ -539,6 +539,23 @@ def gate_first_failed_checker_reporting() -> tuple[bool, list[StepResult], str]:
     return True, [step], ""
 
 
+def gate_runtime_context_and_producer_parity() -> tuple[bool, list[StepResult], str]:
+    commands = [
+        "python tools/check_runtime_context_delivery.py --self-test",
+        "python tools/check_runtime_context_delivery.py --fixtures tests/runtime-context-delivery",
+        "python tools/check_producer_checker_parity.py --self-test",
+        "python tools/check_producer_checker_parity.py --registry tools/producer-contract-registry.json",
+        "python tools/check_package_harness_parity.py --self-test",
+        "python tests/runtime-call-context-adapter/test_contract.py",
+    ]
+    ok, steps = steps_all_pass(commands)
+    return ok, steps, (
+        "reconcile exact runtime-context delivery, immediate prior-capsule lineage, "
+        "execution-mini package shape, producer/checker custody, and package parity hashes; "
+        "do not relabel harness assistance as package-faithful execution"
+    )
+
+
 @dataclass
 class Gate:
     number: int
@@ -563,6 +580,7 @@ GATES: list[Gate] = [
     Gate(14, "five-smoke input-path preflight", gate_five_smoke_input_preflight),
     Gate(15, "prompt-pack manifest discipline", gate_prompt_pack_manifest_discipline),
     Gate(16, "first-failed-checker reporting", gate_first_failed_checker_reporting),
+    Gate(17, "runtime-context + producer/package parity", gate_runtime_context_and_producer_parity),
 ]
 
 
@@ -599,8 +617,15 @@ def run_self_test() -> int:
     if table_errors:
         failures.extend(table_errors)
 
-    if len(GATES) != 16:
-        failures.append(f"expected exactly 16 gates, found {len(GATES)}")
+    if len(GATES) != 17:
+        failures.append(f"expected exactly 17 gates, found {len(GATES)}")
+    parity_gate_present = any(
+        gate.number == 17
+        and gate.name == "runtime-context + producer/package parity"
+        for gate in GATES
+    )
+    if not parity_gate_present:
+        failures.append("Gate 17 runtime-context + producer/package parity is missing")
 
     for gate in GATES:
         if not gate.name.strip():
@@ -744,7 +769,8 @@ def run_self_test() -> int:
 
     for name, ok in (
         ("gate table well-formed", not table_errors),
-        ("16 gates present", len(GATES) == 16),
+        ("17 gates present", len(GATES) == 17),
+        ("Gate 17 runtime-context + producer/package parity present", parity_gate_present),
         ("aggregate authorizes only when all pass", aggregate_decision(all_pass) == AUTHORIZED_TOKEN),
         ("aggregate rejects on any single failure", all(
             aggregate_decision(

@@ -23,6 +23,10 @@ from closure_witness_lib import (
     field_witness_graph_errors,
     parse_closure_witness,
 )
+from check_field_witness_convergence import (
+    current_public_convergence_errors,
+    public_graph_contract_diagnostics,
+)
 from delta_result_vocabulary import (
     delta_result_vocabulary_errors,
     owner_operation_vocabulary_errors,
@@ -2632,6 +2636,16 @@ def check_field_witness_contract(path: Path, text: str, require_field_witness: b
         return errors
     if isinstance(field_witness, dict) and "__invalid_json__" in field_witness:
         errors.append(f"{path}: field_witness sidecar JSON is invalid: {field_witness['__invalid_json__']}")
+        return errors
+    if field_witness.get("schema_version") == "public-field-witness-v1":
+        errors.extend(
+            f"{path}: {diagnostic['message']}"
+            for diagnostic in public_graph_contract_diagnostics(
+                field_witness,
+                compatibility="current",
+            )
+        )
+        errors.extend(current_public_convergence_errors(path, text, field_witness))
         return errors
     errors.extend(f"{path}: {error}" for error in field_witness_graph_errors(field_witness))
     witness = parse_closure_witness(text)

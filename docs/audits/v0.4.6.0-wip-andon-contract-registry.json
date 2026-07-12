@@ -1,7 +1,7 @@
 {
   "schema": "daee-andon-contract-registry-v1",
   "registry_id": "v0.4.6.0-wip-andon-contracts",
-  "source_head": "6987c9ebf1de45af700b1fa74b1ed25ec0beeb7c",
+  "source_head": "484e61c9c2af30ed3f9e3c5c98551a7973a9417f",
   "architecture_decision_ledger": "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
   "required_andon_ids": ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10", "A11", "A12", "A13", "A14", "A15", "A16"],
   "required_case_registry": {

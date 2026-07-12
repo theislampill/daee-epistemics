@@ -20,6 +20,7 @@ if str(TOOLS) not in sys.path:
     sys.path.insert(0, str(TOOLS))
 
 import run_no_model_preflight as preflight  # noqa: E402
+import run_local_ci as local_ci  # noqa: E402
 import smoke_matrix_registry as registry_owner  # noqa: E402
 
 
@@ -155,6 +156,31 @@ class Gate14RegistryContractTests(unittest.TestCase):
         self.assertIn("Gate 14 derives exactly five ordered registry rows", text)
         self.assertIn("Gate 14 rejects registry identity drift", text)
         self.assertIn("Gate 14 rejects input hash drift", text)
+
+    def test_gate17_composes_exact_runtime_and_parity_commands(self) -> None:
+        expected = [
+            "python tools/check_runtime_context_delivery.py --self-test",
+            "python tools/check_runtime_context_delivery.py --fixtures tests/runtime-context-delivery",
+            "python tools/check_producer_checker_parity.py --self-test",
+            "python tools/check_producer_checker_parity.py --registry tools/producer-contract-registry.json",
+            "python tools/check_package_harness_parity.py --self-test",
+            "python tests/runtime-call-context-adapter/test_contract.py",
+        ]
+        with mock.patch.object(
+            preflight,
+            "steps_all_pass",
+            return_value=(True, []),
+        ) as composed:
+            passed, _steps, repair = preflight.gate_runtime_context_and_producer_parity()
+        self.assertTrue(passed)
+        self.assertTrue(repair)
+        composed.assert_called_once_with(expected)
+
+    def test_preflight_contract_self_test_is_wired_into_local_ci(self) -> None:
+        self.assertIn(
+            "python tools/run_no_model_preflight.py --self-test",
+            local_ci.COMMANDS,
+        )
 
 
 if __name__ == "__main__":

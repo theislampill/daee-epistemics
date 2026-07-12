@@ -1061,6 +1061,110 @@ def field_witness_mrp_resultant_errors(path: Path, text: str, blocks: list[MrpBl
     if parse_error:
         return [f"{path}: {parse_error}"]
     assert payload is not None
+    if payload.get("schema_version") == "public-field-witness-v1":
+        errors: list[str] = []
+        expected_by_source = {
+            graph_burden_id(block_target(block)): block
+            for block in blocks
+            if block_target(block)
+        }
+        raw_rereads = payload.get("reread_records")
+        if not isinstance(raw_rereads, list):
+            return [f"{path}: current field_witness.reread_records must be a list of objects"]
+        rereads = [item for item in raw_rereads if isinstance(item, dict)]
+        if len(rereads) != len(raw_rereads):
+            errors.append(f"{path}: current field_witness.reread_records entries must be JSON objects")
+        reread_ids = [graph_burden_id(item.get("burden_id")) for item in rereads]
+        if len(reread_ids) != len(set(reread_ids)):
+            errors.append(f"{path}: current field_witness.reread_records has duplicate burden_id")
+        rereads_by_source = {
+            graph_burden_id(item.get("burden_id")): item for item in rereads
+        }
+        for source, block in expected_by_source.items():
+            record = rereads_by_source.get(source)
+            if record is None:
+                errors.append(
+                    f"{path}: current field_witness.reread_records missing visible MRP source {source}"
+                )
+            elif record.get("route_result_type") != block.route_result_type:
+                errors.append(
+                    f"{path}: current field_witness.reread_records[{source}] route_result_type "
+                    "does not agree with visible MRP route result type"
+                )
+        missing_rereads = sorted(set(expected_by_source) - set(rereads_by_source))
+        extra_rereads = sorted(set(rereads_by_source) - set(expected_by_source))
+        if missing_rereads:
+            errors.append(
+                f"{path}: current field_witness.reread_records missing visible MRP sources: "
+                f"{', '.join(missing_rereads)}"
+            )
+        if extra_rereads:
+            errors.append(
+                f"{path}: current field_witness.reread_records names non-visible MRP sources: "
+                f"{', '.join(extra_rereads)}"
+            )
+
+        raw_resultants = payload.get("mrp_resultants")
+        if not isinstance(raw_resultants, list):
+            return errors + [f"{path}: current field_witness.mrp_resultants must be a list of objects"]
+        resultants = [item for item in raw_resultants if isinstance(item, dict)]
+        if len(resultants) != len(raw_resultants):
+            errors.append(f"{path}: current field_witness.mrp_resultants entries must be JSON objects")
+        resultant_pairs = [
+            (
+                graph_burden_id(item.get("source")),
+                graph_burden_id(item.get("target")),
+            )
+            for item in resultants
+        ]
+        if len(resultant_pairs) != len(set(resultant_pairs)):
+            errors.append(
+                f"{path}: current field_witness.mrp_resultants has duplicate source/target identity"
+            )
+        resultants_by_source: dict[str, list[dict[str, Any]]] = {}
+        for item in resultants:
+            resultants_by_source.setdefault(
+                graph_burden_id(item.get("source")), []
+            ).append(item)
+        edge_blocks = {
+            source: block
+            for source, block in expected_by_source.items()
+            if block.route_result_type
+            in {"held_burden_activation", "generated_burden_instantiation"}
+        }
+        for source, block in edge_blocks.items():
+            items = resultants_by_source.get(source, [])
+            label = f"{path}: current field_witness.mrp_resultants MRP({source})"
+            if not items:
+                errors.append(f"{label}: missing edge-producing machine resultant")
+                continue
+            expected_targets = {
+                graph_burden_id(target)
+                for _source, target in block_edges(block)
+                if graph_burden_id(target)
+            }
+            actual_targets = {
+                graph_burden_id(item.get("target")) for item in items
+            }
+            if not expected_targets or actual_targets != expected_targets:
+                errors.append(f"{label}: targets do not agree with visible Graph delta")
+            if any(item.get("type") != block.route_result_type for item in items):
+                errors.append(f"{label}: type does not agree with visible MRP route result type")
+            if any(item.get("route") != block.route for item in items):
+                errors.append(f"{label}: route does not agree with visible Route")
+        missing_resultants = sorted(set(edge_blocks) - set(resultants_by_source))
+        extra_resultants = sorted(set(resultants_by_source) - set(edge_blocks))
+        if missing_resultants:
+            errors.append(
+                f"{path}: current field_witness.mrp_resultants missing edge-producing sources: "
+                f"{', '.join(missing_resultants)}"
+            )
+        if extra_resultants:
+            errors.append(
+                f"{path}: current field_witness.mrp_resultants names non-edge-producing sources: "
+                f"{', '.join(extra_resultants)}"
+            )
+        return errors
     raw_resultants = payload.get("mrp_resultants")
     if not isinstance(raw_resultants, list):
         return [f"{path}: field_witness.mrp_resultants must be a list of objects"]

@@ -1,7 +1,7 @@
 {
   "schema": "daee-architecture-decision-ledger-v1",
   "ledger_id": "daee-v0.4.6.0-wip-branch10-decisions",
-  "source_head": "6987c9ebf1de45af700b1fa74b1ed25ec0beeb7c",
+  "source_head": "484e61c9c2af30ed3f9e3c5c98551a7973a9417f",
   "decision_owner": "repository owner via current task",
   "acceptance_evidence": "Owner supplied Plan 21 overrides and approved continuation on 2026-07-10.",
   "decisions": [

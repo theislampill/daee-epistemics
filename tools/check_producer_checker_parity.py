@@ -203,6 +203,49 @@ def validate_registry(registry: dict[str, Any]) -> dict[str, Any]:
             if resolved.get("status") != "selected" or component is None or component.get("sha256") != projection.get("component_sha256") or projection.get("delivery") != "prompt-bound":
                 mismatch_class = "projection-section-hash-mismatch" if str(projection.get("component_id", "")).startswith("owner:") else "prompt-projection-hash-mismatch"
                 raise ParityFailure(mismatch_class, clause, "prompt projection does not match exact resolver component bytes")
+            alternate_projections = row.get("alternate_delivery_projections", [])
+            if not isinstance(alternate_projections, list):
+                raise ParityFailure("schema-invalid", clause, "alternate delivery projections must be an array")
+            alternate_ids: set[str] = set()
+            for alternate in alternate_projections:
+                required = {
+                    "component_id", "component_sha256", "delivery", "visible_before_call",
+                    "anchor", "resolver_selection",
+                }
+                if not isinstance(alternate, dict) or set(alternate) != required:
+                    raise ParityFailure("schema-invalid", clause, "alternate delivery projection shape is not closed")
+                alternate_id = alternate.get("component_id")
+                if not isinstance(alternate_id, str) or alternate_id in alternate_ids or alternate_id == projection.get("component_id"):
+                    raise ParityFailure("ambiguous-clause-ownership", clause, "alternate delivery component is absent or duplicated")
+                alternate_ids.add(alternate_id)
+                alternate_selection = alternate["resolver_selection"]
+                if not isinstance(alternate_selection, dict) or set(alternate_selection) != {"stage", "validated_state"} or not isinstance(alternate_selection.get("validated_state"), dict):
+                    raise ParityFailure("schema-invalid", clause, "alternate resolver selection shape is invalid")
+                alternate_stage = str(alternate_selection.get("stage", ""))
+                try:
+                    alternate_resolved = resolve_context(
+                        ROOT / "skill",
+                        alternate_stage,
+                        alternate_selection["validated_state"],
+                        None if alternate_stage == "01" else b"{}",
+                        raw_input=b"registry-owned-stage01-input" if alternate_stage == "01" else None,
+                    )
+                except (OSError, ResolutionError) as exc:
+                    raise ParityFailure("prompt-projection-hash-mismatch", clause, f"alternate resolver projection failed: {exc}") from exc
+                alternate_component = next(
+                    (item for item in alternate_resolved.get("components", []) if item.get("component_id") == alternate_id),
+                    None,
+                )
+                if (
+                    alternate_resolved.get("status") != "selected"
+                    or alternate_component is None
+                    or alternate_component.get("sha256") != alternate.get("component_sha256")
+                    or alternate.get("delivery") != "prompt-bound"
+                    or alternate.get("visible_before_call") is not True
+                    or not isinstance(alternate.get("anchor"), str)
+                    or alternate["anchor"].encode("utf-8") not in alternate_component.get("bytes", b"")
+                ):
+                    raise ParityFailure("prompt-projection-hash-mismatch", clause, "alternate prompt projection does not match exact resolver component bytes")
             if checker.get("obligation") == "pre-producer-semantic" and projection.get("visible_before_call") is not True:
                 raise ParityFailure("producer-obligation-not-visible", clause, "checker semantic obligation was not visible before call")
             if row.get("proof_class") != "package-faithful":
@@ -295,6 +338,10 @@ def self_test() -> int:
     registry = json.loads(DEFAULT_REGISTRY.read_text(encoding="utf-8")); checks: list[tuple[str, bool]] = []
     try: live = validate_registry(registry); checks.append(("live registry binds current source/package/checkers", live["clauses"] >= 8))
     except ParityFailure as exc: print(json.dumps(exc.diagnostic(), sort_keys=True)); checks.append(("live registry binds current source/package/checkers", False))
+    def drift_stage01_kernel_projection(candidate: dict[str, Any]) -> None:
+        clause = next(row for row in candidate["clauses"] if row.get("clause_id") == "stage04.owner-act-execution")
+        clause["alternate_delivery_projections"][0]["component_sha256"] = "f" * 64
+
     mutations = [
         ("harness clause absent from package", lambda r: r["clauses"][0]["generated_owner"].update(package_member=False), "canonical-package-clause-missing"),
         ("checker-only secret law", lambda r: r["clauses"][0]["delivery_projection"].update(visible_before_call=False), "producer-obligation-not-visible"),
@@ -303,6 +350,7 @@ def self_test() -> int:
         ("named case routing taint", lambda r: r["clauses"][0]["selection_inputs"].append("case_id"), "tainted-clause-selection"),
         ("unregistered prompt surface", lambda r: r["prompt_surfaces"].pop(), "unregistered-model-visible-clause"),
         ("owner section uses bundle hash", lambda r: r["clauses"][3]["delivery_projection"].update(component_sha256=r["clauses"][3]["generated_owner"]["sha256"]), "projection-section-hash-mismatch"),
+        ("Stage01 kernel alternate projection drift", drift_stage01_kernel_projection, "prompt-projection-hash-mismatch"),
     ]
     for name, mutate, expected in mutations:
         candidate = copy.deepcopy(registry); mutate(candidate)
