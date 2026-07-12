@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/source-binding.schema.json",
+  "title": "DAEE tracked predecessor source binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "binding_id",
+    "intent",
+    "repository",
+    "checkpoint",
+    "carrier_paths",
+    "workflow",
+    "external_receipt",
+    "non_claims",
+    "terminal_claim"
+  ],
+  "properties": {
+    "schema": {
+      "const": "daee-source-binding-v1"
+    },
+    "binding_id": {
+      "const": "daee-v0.4.6.0-branch10-predecessor-binding"
+    },
+    "intent": {
+      "const": "tracked-predecessor-intent"
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slug", "remote_url", "branch", "remote_name", "remote_ref"],
+      "properties": {
+        "slug": {
+          "const": "theislampill/daee-epistemics"
+        },
+        "remote_url": {
+          "const": "https://github.com/theislampill/daee-epistemics.git"
+        },
+        "branch": {
+          "const": "codex/v0.4.6.0-runtime-footprint-b10"
+        },
+        "remote_name": {
+          "const": "origin"
+        },
+        "remote_ref": {
+          "const": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10"
+        }
+      }
+    },
+    "checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commit", "tree"],
+      "properties": {
+        "commit": {
+          "const": "bcccb4e34c75e1f8e363ef020e2deeaabae60435"
+        },
+        "tree": {
+          "const": "7238bb567209003adb9b07cb0ec2d1629780cc2e"
+        }
+      }
+    },
+    "carrier_paths": {
+      "const": [
+        "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
+        "docs/audits/v0.4.6.0-wip-andon-contract-registry.json",
+        "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
+        "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json"
+      ]
+    },
+    "workflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "name", "job"],
+      "properties": {
+        "path": {
+          "const": ".github/workflows/ci.yml"
+        },
+        "name": {
+          "const": "CI"
+        },
+        "job": {
+          "const": "runtime-checks"
+        }
+      }
+    },
+    "external_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "schema_path", "checker_path", "locator_template"],
+      "properties": {
+        "schema": {
+          "const": "daee-source-commit-receipt-v1"
+        },
+        "schema_path": {
+          "const": "schema/ci-readback.schema.json"
+        },
+        "checker_path": {
+          "const": "tools/check_ci_readback.py"
+        },
+        "locator_template": {
+          "const": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/receipts/source-commit/{commit_sha}.json"
+        }
+      }
+    },
+    "non_claims": {
+      "const": [
+        "This tracked binding records predecessor intent only and is not proof of the current commit.",
+        "This tracked binding is not proof of local, upstream, or live-remote equality.",
+        "This tracked binding is not proof of GitHub CI or any required check result.",
+        "This tracked binding is not proof of candidate construction or candidate maturity.",
+        "This tracked binding is not proof of A01-A16 terminal closure, campaign readiness, release readiness, or publication.",
+        "Strict successor ancestry and the realized exact commit require the external receipt."
+      ]
+    },
+    "terminal_claim": {
+      "const": false
+    }
+  }
+}

@@ -18,6 +18,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
+from source_provenance import SOURCE_BINDING_SCHEMA_PATH, validate_carrier_document
+
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -154,6 +156,8 @@ def _type_matches(value: Any, kind: str) -> bool:
 
 
 def _resolve_ref(root_schema: dict[str, Any], ref_value: str) -> dict[str, Any]:
+    if ref_value == "source-binding.schema.json":
+        return read_json(SOURCE_BINDING_SCHEMA_PATH)
     if not ref_value.startswith("#/"):
         raise ValueError(f"unsupported external schema reference: {ref_value}")
     current: Any = root_schema
@@ -226,13 +230,6 @@ def schema_findings(
             if key in value and isinstance(child_schema, dict):
                 errors.extend(schema_findings(value[key], child_schema, root_schema, f"{location}.{key}"))
     return errors
-
-
-def git_head() -> str:
-    result = subprocess.run(
-        ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True, capture_output=True, check=False
-    )
-    return result.stdout.strip() if result.returncode == 0 else ""
 
 
 def _duplicates(values: Iterable[str]) -> list[str]:
@@ -344,7 +341,7 @@ def _retained_file_sha256(path: str) -> tuple[str | None, str | None]:
     return result
 
 
-def semantic_findings(document: Any, *, expected_head: str | None) -> list[Finding]:
+def semantic_findings(document: Any) -> list[Finding]:
     if not isinstance(document, dict) or not isinstance(document.get("rows"), list):
         return []
     rows = [row for row in document["rows"] if isinstance(row, dict)]
@@ -357,10 +354,6 @@ def semantic_findings(document: Any, *, expected_head: str | None) -> list[Findi
     a16 = by_id.get("A16")
     if a16 and "A16" in a16.get("dependencies", []):
         return [Finding("plan_self_cycle", "A16 depends on itself at plan level; use A16.bootstrap and A16.terminal milestones")]
-
-    actual_head = document.get("source_head")
-    if expected_head and actual_head != expected_head:
-        return [Finding("stale_evidence_head", f"source_head {actual_head} does not match repository HEAD {expected_head}")]
 
     for row in rows:
         row_id = str(row.get("andon_id"))
@@ -562,12 +555,16 @@ def semantic_findings(document: Any, *, expected_head: str | None) -> list[Findi
     return []
 
 
-def validate_ledger(document: Any, *, expected_head: str | None = None) -> list[Finding]:
+def validate_ledger(document: Any) -> list[Finding]:
+    binding_findings = validate_carrier_document(document, carrier_path=rel(LIVE_LEDGER))
+    if binding_findings:
+        first = binding_findings[0]
+        return [Finding(first.failure_class, first.message)]
     schema = read_json(SCHEMA_PATH)
     errors = schema_findings(document, schema, schema)
     if errors:
         return [Finding("schema_contract", message) for message in errors]
-    return semantic_findings(document, expected_head=expected_head)
+    return semantic_findings(document)
 
 
 def diagnostic(path: Path, finding: Finding) -> dict[str, Any]:
@@ -585,10 +582,10 @@ def diagnostic(path: Path, finding: Finding) -> dict[str, Any]:
     }
 
 
-def run_one(path: Path, *, explain: bool, expected_head: str | None = None) -> int:
+def run_one(path: Path, *, explain: bool) -> int:
     try:
         document = materialize_fixture(path, LIVE_LEDGER)
-        findings = validate_ledger(document, expected_head=expected_head)
+        findings = validate_ledger(document)
     except (KeyError, IndexError, TypeError, ValueError) as exc:
         findings = [Finding("fixture_or_json", str(exc))]
     if findings:
@@ -662,18 +659,13 @@ def expectation_problems(
 
 def self_test() -> int:
     problems: list[str] = []
-    # Fixture semantics are pinned to the canonical ledger's declared source
-    # boundary so a later repository commit does not turn every focused fixture
-    # into the same stale-head failure.  The live CLI and renderer continue to
-    # compare the canonical ledger to git HEAD without an allow-stale path.
-    head = str(read_json(LIVE_LEDGER).get("source_head", ""))
     valid_files = sorted((FIXTURE_ROOT / "valid").glob("*.json"))
     invalid_files = sorted(
         path for path in (FIXTURE_ROOT / "invalid").glob("*.json") if not path.name.endswith(".expectation.json")
     )
     for fixture in valid_files:
         try:
-            findings = validate_ledger(materialize_fixture(fixture, LIVE_LEDGER), expected_head=head)
+            findings = validate_ledger(materialize_fixture(fixture, LIVE_LEDGER))
         except (KeyError, IndexError, TypeError, ValueError) as exc:
             problems.append(f"{rel(fixture)}: {exc}")
             continue
@@ -681,7 +673,7 @@ def self_test() -> int:
             problems.append(f"{rel(fixture)}: valid fixture rejected [{findings[0].failure_class}] {findings[0].message}")
     for fixture in invalid_files:
         try:
-            findings = validate_ledger(materialize_fixture(fixture, LIVE_LEDGER), expected_head=head)
+            findings = validate_ledger(materialize_fixture(fixture, LIVE_LEDGER))
         except (KeyError, IndexError, TypeError, ValueError) as exc:
             findings = [Finding("fixture_or_json", str(exc))]
         if not findings:
@@ -711,7 +703,7 @@ def main(argv: Iterable[str] | None = None) -> int:
     selected = args.ledger or args.artifact
     if not selected:
         selected = rel(LIVE_LEDGER)
-    return run_one((ROOT / selected).resolve() if not Path(selected).is_absolute() else Path(selected), explain=args.explain, expected_head=git_head())
+    return run_one((ROOT / selected).resolve() if not Path(selected).is_absolute() else Path(selected), explain=args.explain)
 
 
 if __name__ == "__main__":

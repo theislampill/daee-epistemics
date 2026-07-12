@@ -1,0 +1,54 @@
+{
+  "schema": "vcs-action-authorization-v1",
+  "repository": "theislampill/daee-epistemics",
+  "remote_name": "origin",
+  "target_branch": "different",
+  "target_ref": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10",
+  "scoped_paths": [
+    {
+      "path": "docs/audits/example-countermeasure.md",
+      "sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+    },
+    {
+      "path": "tools/example_countermeasure.py",
+      "sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+    }
+  ],
+  "staged_diff_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+  "commit_message_path": "tests/vcs-action-authorization/support/commit-message.txt",
+  "commit_message_sha256": "4a1e1242bc5ac6d794b949a6e66e64c7472361b74ec41bb196515657c03a9919",
+  "verification_verdict_path": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/whole-branch-review.md",
+  "verification_verdict_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+  "owner_identity": "theis-owner",
+  "writer_boundary_identity": "codex-branch10-writer",
+  "issued_at": "2026-07-12T10:00:00Z",
+  "valid_not_before": "2026-07-12T11:00:00Z",
+  "valid_not_after": "2026-07-12T13:00:00Z",
+  "revoked": false,
+  "expected_claim_predecessor_sha256": null,
+  "terminal_claim": false,
+  "non_claims": [
+    "does-not-authorize-model-or-provider-use",
+    "does-not-authorize-tag-release-or-publication",
+    "structural-authorization-is-not-action-success"
+  ],
+  "kind": "commit-authorization",
+  "authorization_id": "plan17-countermeasure-commit",
+  "action": "commit-countermeasure",
+  "parent_commit": "1111111111111111111111111111111111111111",
+  "parent_tree": "2222222222222222222222222222222222222222",
+  "staged_tree": "4444444444444444444444444444444444444444",
+  "allowed_actions": [
+    "commit-countermeasure"
+  ],
+  "denied_actions": [
+    "force-push",
+    "publish",
+    "push",
+    "release",
+    "tag"
+  ],
+  "nonce": "nonce-plan17-countermeasure-commit-0001",
+  "claim_locator": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/vcs-action/claims/plan17-countermeasure-commit.claim.json",
+  "action_receipt_locator": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/vcs-action/receipts/plan17-countermeasure-commit.receipt.json"
+}

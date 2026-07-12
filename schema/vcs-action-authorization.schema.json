@@ -1,0 +1,863 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/vcs-action-authorization.schema.json",
+  "title": "DAEE immutable VCS action authorization, claim, and terminal receipt",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "authorization_id",
+        "repository",
+        "remote_name",
+        "target_branch",
+        "target_ref",
+        "scoped_paths",
+        "staged_diff_sha256",
+        "commit_message_path",
+        "commit_message_sha256",
+        "verification_verdict_path",
+        "verification_verdict_sha256",
+        "owner_identity",
+        "writer_boundary_identity",
+        "issued_at",
+        "valid_not_before",
+        "valid_not_after",
+        "revoked",
+        "nonce",
+        "claim_locator",
+        "action_receipt_locator",
+        "expected_claim_predecessor_sha256",
+        "terminal_claim",
+        "non_claims",
+        "kind",
+        "action",
+        "parent_commit",
+        "parent_tree",
+        "staged_tree",
+        "allowed_actions",
+        "denied_actions"
+      ],
+      "properties": {
+        "schema": {
+          "const": "vcs-action-authorization-v1"
+        },
+        "authorization_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+        },
+        "repository": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "remote_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+        },
+        "target_branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_ref": {
+          "type": "string",
+          "pattern": "^refs/heads/.+"
+        },
+        "scoped_paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "sha256"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        },
+        "staged_diff_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "commit_message_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "commit_message_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verification_verdict_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verification_verdict_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "owner_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "writer_boundary_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "issued_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "valid_not_before": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "valid_not_after": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "revoked": {
+          "const": false
+        },
+        "nonce": {
+          "type": "string",
+          "minLength": 16
+        },
+        "claim_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action_receipt_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_claim_predecessor_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "terminal_claim": {
+          "const": false
+        },
+        "non_claims": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "kind": {
+          "const": "commit-authorization"
+        },
+        "action": {
+          "const": "commit-countermeasure"
+        },
+        "parent_commit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "parent_tree": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "staged_tree": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "allowed_actions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "const": "commit-countermeasure"
+          }
+        },
+        "denied_actions": {
+          "type": "array",
+          "minItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "force-push",
+              "publish",
+              "push",
+              "release",
+              "tag"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "authorization_id",
+        "repository",
+        "remote_name",
+        "target_branch",
+        "target_ref",
+        "scoped_paths",
+        "staged_diff_sha256",
+        "commit_message_sha256",
+        "verification_verdict_path",
+        "verification_verdict_sha256",
+        "owner_identity",
+        "writer_boundary_identity",
+        "issued_at",
+        "valid_not_before",
+        "valid_not_after",
+        "revoked",
+        "nonce",
+        "claim_locator",
+        "action_receipt_locator",
+        "expected_claim_predecessor_sha256",
+        "terminal_claim",
+        "non_claims",
+        "kind",
+        "action",
+        "local_commit",
+        "local_tree",
+        "expected_old_remote_oid",
+        "remote_update_mode",
+        "commit_receipt",
+        "workflow_check_snapshot",
+        "force",
+        "allowed_actions",
+        "denied_actions"
+      ],
+      "properties": {
+        "schema": {
+          "const": "vcs-action-authorization-v1"
+        },
+        "authorization_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+        },
+        "repository": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "remote_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+        },
+        "target_branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_ref": {
+          "type": "string",
+          "pattern": "^refs/heads/.+"
+        },
+        "scoped_paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "sha256"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        },
+        "staged_diff_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "commit_message_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "verification_verdict_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verification_verdict_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "owner_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "writer_boundary_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "issued_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "valid_not_before": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "valid_not_after": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "revoked": {
+          "const": false
+        },
+        "nonce": {
+          "type": "string",
+          "minLength": 16
+        },
+        "claim_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action_receipt_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_claim_predecessor_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "terminal_claim": {
+          "const": false
+        },
+        "non_claims": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "kind": {
+          "const": "push-authorization"
+        },
+        "action": {
+          "const": "push-countermeasure"
+        },
+        "local_commit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "local_tree": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "expected_old_remote_oid": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "remote_update_mode": {
+          "const": "exact-old-lease-fast-forward"
+        },
+        "commit_receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "workflow_check_snapshot": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "provider",
+            "workflow_path",
+            "workflow_name",
+            "job_name",
+            "workflow_blob_oid",
+            "workflow_sha256",
+            "required_checks",
+            "derivation_source",
+            "observed_at"
+          ],
+          "properties": {
+            "provider": {
+              "const": "github-actions"
+            },
+            "workflow_path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "workflow_name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "job_name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "workflow_blob_oid": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "workflow_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "required_checks": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "derivation_source": {
+              "enum": [
+                "owner-decision",
+                "branch-protection-readback"
+              ]
+            },
+            "observed_at": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+            }
+          }
+        },
+        "force": {
+          "const": false
+        },
+        "allowed_actions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "const": "push-countermeasure"
+          }
+        },
+        "denied_actions": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "force-push",
+              "publish",
+              "release",
+              "tag"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "kind",
+        "claim_id",
+        "authorization_sha256",
+        "authorization_id",
+        "nonce",
+        "action",
+        "claim_locator",
+        "action_receipt_locator",
+        "writer_boundary_identity",
+        "claimed_at",
+        "predecessor_record_sha256",
+        "status",
+        "terminal_claim"
+      ],
+      "properties": {
+        "schema": {
+          "const": "vcs-action-claim-v1"
+        },
+        "kind": {
+          "const": "vcs-action-claim"
+        },
+        "claim_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorization_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorization_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+        },
+        "nonce": {
+          "type": "string",
+          "minLength": 16
+        },
+        "action": {
+          "enum": [
+            "commit-countermeasure",
+            "push-countermeasure"
+          ]
+        },
+        "claim_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action_receipt_locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "writer_boundary_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "claimed_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "predecessor_record_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "const": "CLAIMED"
+        },
+        "terminal_claim": {
+          "const": false
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "kind",
+        "receipt_id",
+        "claim_sha256",
+        "authorization_sha256",
+        "authorization_id",
+        "nonce",
+        "action",
+        "result",
+        "writer_boundary_identity",
+        "finalized_at",
+        "observed_commit_oid",
+        "observed_tree_oid",
+        "observed_remote_oid",
+        "scoped_paths",
+        "staged_diff_sha256",
+        "commit_message_sha256",
+        "verification_verdict_sha256",
+        "terminal",
+        "terminal_claim"
+      ],
+      "properties": {
+        "schema": {
+          "const": "vcs-action-receipt-v1"
+        },
+        "kind": {
+          "const": "vcs-action-receipt"
+        },
+        "receipt_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "claim_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorization_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorization_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+        },
+        "nonce": {
+          "type": "string",
+          "minLength": 16
+        },
+        "action": {
+          "enum": [
+            "commit-countermeasure",
+            "push-countermeasure"
+          ]
+        },
+        "result": {
+          "enum": [
+            "PASS",
+            "FAILED",
+            "UNKNOWN"
+          ]
+        },
+        "writer_boundary_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "finalized_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "observed_commit_oid": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "observed_tree_oid": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "observed_remote_oid": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "scoped_paths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "sha256"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        },
+        "staged_diff_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "commit_message_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "verification_verdict_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "terminal": {
+          "const": true
+        },
+        "terminal_claim": {
+          "const": false
+        }
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "action",
+            "result",
+            "observed_commit_oid",
+            "observed_tree_oid",
+            "observed_remote_oid",
+            "scoped_paths",
+            "staged_diff_sha256",
+            "commit_message_sha256",
+            "verification_verdict_sha256"
+          ],
+          "properties": {
+            "action": {
+              "const": "commit-countermeasure"
+            },
+            "result": {
+              "const": "PASS"
+            },
+            "observed_commit_oid": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "observed_tree_oid": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "observed_remote_oid": {
+              "type": "null"
+            },
+            "scoped_paths": {
+              "type": "array",
+              "minItems": 1
+            },
+            "staged_diff_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "commit_message_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "verification_verdict_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "action",
+            "result",
+            "observed_commit_oid",
+            "observed_tree_oid",
+            "observed_remote_oid",
+            "scoped_paths",
+            "staged_diff_sha256",
+            "commit_message_sha256",
+            "verification_verdict_sha256"
+          ],
+          "properties": {
+            "action": {
+              "const": "push-countermeasure"
+            },
+            "result": {
+              "const": "PASS"
+            },
+            "observed_commit_oid": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "observed_tree_oid": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "observed_remote_oid": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "scoped_paths": {
+              "type": "array",
+              "minItems": 1
+            },
+            "staged_diff_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "commit_message_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "verification_verdict_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "result",
+            "observed_commit_oid",
+            "observed_tree_oid",
+            "observed_remote_oid"
+          ],
+          "properties": {
+            "result": {
+              "enum": [
+                "FAILED",
+                "UNKNOWN"
+              ]
+            },
+            "observed_commit_oid": {
+              "type": "null"
+            },
+            "observed_tree_oid": {
+              "type": "null"
+            },
+            "observed_remote_oid": {
+              "type": "null"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

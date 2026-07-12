@@ -1,0 +1,6 @@
+{
+  "schema": "daee-smoke-matrix-v1",
+  "kind": "matrix-authorization",
+  "authorization_id": "matrix-substitution",
+  "action": "push-countermeasure"
+}

@@ -242,6 +242,9 @@
     "check_register_formalism_bridge.py": {
       "class": "required"
     },
+    "check_release_action_authorization.py": {
+      "class": "required"
+    },
     "check_release_provenance.py": {
       "class": "required"
     },
@@ -287,6 +290,9 @@
       "class": "required"
     },
     "check_smoke_matrix_manifest.py": {
+      "class": "required"
+    },
+    "check_source_provenance.py": {
       "class": "required"
     },
     "check_spec_authoring_pack.py": {
@@ -337,6 +343,9 @@
       "owner_adjudication": "pending"
     },
     "check_validation_registry.py": {
+      "class": "required"
+    },
+    "check_vcs_action_authorization.py": {
       "class": "required"
     }
   }

@@ -1,0 +1,31 @@
+{
+  "schema": "vcs-action-receipt-v1",
+  "kind": "vcs-action-receipt",
+  "receipt_id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "claim_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "authorization_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "authorization_id": "plan17-countermeasure-commit",
+  "nonce": "nonce-plan17-countermeasure-commit-0001",
+  "action": "commit-countermeasure",
+  "result": "PASS",
+  "writer_boundary_identity": "codex-branch10-writer",
+  "finalized_at": "2026-07-12T12:05:00Z",
+  "observed_commit_oid": "3333333333333333333333333333333333333333",
+  "observed_tree_oid": "4444444444444444444444444444444444444444",
+  "observed_remote_oid": null,
+  "scoped_paths": [
+    {
+      "path": "docs/audits/example-countermeasure.md",
+      "sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+    },
+    {
+      "path": "tools/example_countermeasure.py",
+      "sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+    }
+  ],
+  "staged_diff_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+  "commit_message_sha256": "4a1e1242bc5ac6d794b949a6e66e64c7472361b74ec41bb196515657c03a9919",
+  "verification_verdict_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+  "terminal": true,
+  "terminal_claim": false
+}

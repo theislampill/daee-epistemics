@@ -1,0 +1,24 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "claim-collision.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "vcs-action-authorization",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "control-plane",
+  "expected_failure_class": "claim_collision",
+  "expected_failure_subcode": "claim-collision",
+  "expected_downstream_invalidated": [
+    "commit",
+    "push",
+    "exact-sha-ci",
+    "candidate-package",
+    "release-action"
+  ],
+  "required_diagnostic_markers": [
+    "claim",
+    "different bytes"
+  ],
+  "forbidden_artifacts": [],
+  "provenance": "Plan 17 Task 3a VCS authorization TDD"
+}

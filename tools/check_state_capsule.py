@@ -47,6 +47,7 @@ from closure_state_lib import (
     validate_trace as validate_closure_trace,
 )
 from mrp_recursion_lib import validate_lifecycle_record
+from source_provenance import strict_json_load, validate_tracked_only
 from topology_mass_accounting import validate_accounting as validate_topology_mass_accounting
 
 
@@ -68,6 +69,7 @@ V2_MIGRATION_LEDGER_PATH = ROOT / "docs" / "audits" / "v0.4.6.0-wip-state-capsul
 SCHEMA_CONST = "daee-state-capsule-v1"
 SCHEMA_V2_CONST = "daee-state-capsule-v2"
 V2_SCHEMA_OWNER = "A16"
+_V2_SOURCE_PROVENANCE_CACHE: tuple[dict[str, Any] | None, list[Any]] | None = None
 
 V2_STAGE_ORDER = [
     "stage-01-intake",
@@ -350,15 +352,22 @@ def json_schema_errors(
 
 
 def v2_schema_owner_errors(label: str, payload: dict[str, Any]) -> list[str]:
+    global _V2_SOURCE_PROVENANCE_CACHE
     if "schema_owner" in payload:
         return [
             f"{label}: competing-schema-owner: {V2_SCHEMA_OWNER} is the sole state-capsule-v2 schema owner; "
             f"payload proposed {payload.get('schema_owner')!r}"
         ]
+    if _V2_SOURCE_PROVENANCE_CACHE is None:
+        _V2_SOURCE_PROVENANCE_CACHE = validate_tracked_only(root=ROOT)
+    _verdict, provenance_findings = _V2_SOURCE_PROVENANCE_CACHE
+    if provenance_findings:
+        first = provenance_findings[0]
+        return [f"{label}: source-provenance: {first.failure_class}: {first.message}"]
     try:
-        registry = json.loads(CONTRACT_REGISTRY_PATH.read_text(encoding="utf-8"))
-        migration = json.loads(V2_MIGRATION_LEDGER_PATH.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
+        registry = strict_json_load(CONTRACT_REGISTRY_PATH, root=ROOT)
+        migration = strict_json_load(V2_MIGRATION_LEDGER_PATH, root=ROOT)
+    except (OSError, ValueError) as exc:
         return [f"{label}: competing-schema-owner: cannot read frozen A16 ownership evidence: {exc}"]
     registry_v2 = registry.get("state_capsule_v2", {})
     release_contract = migration.get("release_bearing_contract", {})

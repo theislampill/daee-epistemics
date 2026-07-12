@@ -1,7 +1,48 @@
 {
   "schema": "daee-architecture-decision-ledger-v1",
   "ledger_id": "daee-v0.4.6.0-wip-branch10-decisions",
-  "source_head": "484e61c9c2af30ed3f9e3c5c98551a7973a9417f",
+  "source_binding": {
+    "schema": "daee-source-binding-v1",
+    "binding_id": "daee-v0.4.6.0-branch10-predecessor-binding",
+    "intent": "tracked-predecessor-intent",
+    "repository": {
+      "slug": "theislampill/daee-epistemics",
+      "remote_url": "https://github.com/theislampill/daee-epistemics.git",
+      "branch": "codex/v0.4.6.0-runtime-footprint-b10",
+      "remote_name": "origin",
+      "remote_ref": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10"
+    },
+    "checkpoint": {
+      "commit": "bcccb4e34c75e1f8e363ef020e2deeaabae60435",
+      "tree": "7238bb567209003adb9b07cb0ec2d1629780cc2e"
+    },
+    "carrier_paths": [
+      "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
+      "docs/audits/v0.4.6.0-wip-andon-contract-registry.json",
+      "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
+      "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json"
+    ],
+    "workflow": {
+      "path": ".github/workflows/ci.yml",
+      "name": "CI",
+      "job": "runtime-checks"
+    },
+    "external_receipt": {
+      "schema": "daee-source-commit-receipt-v1",
+      "schema_path": "schema/ci-readback.schema.json",
+      "checker_path": "tools/check_ci_readback.py",
+      "locator_template": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/receipts/source-commit/{commit_sha}.json"
+    },
+    "non_claims": [
+      "This tracked binding records predecessor intent only and is not proof of the current commit.",
+      "This tracked binding is not proof of local, upstream, or live-remote equality.",
+      "This tracked binding is not proof of GitHub CI or any required check result.",
+      "This tracked binding is not proof of candidate construction or candidate maturity.",
+      "This tracked binding is not proof of A01-A16 terminal closure, campaign readiness, release readiness, or publication.",
+      "Strict successor ancestry and the realized exact commit require the external receipt."
+    ],
+    "terminal_claim": false
+  },
   "decision_owner": "repository owner via current task",
   "acceptance_evidence": "Owner supplied Plan 21 overrides and approved continuation on 2026-07-10.",
   "decisions": [
@@ -581,7 +622,10 @@
       "owner_files": [
         "schema/release-action-authorization.schema.json",
         "schema/vcs-action-authorization.schema.json",
-        "schema/smoke-matrix.schema.json"
+        "schema/smoke-matrix.schema.json",
+        "tools/a16_immutable_custody.py",
+        "tools/check_release_action_authorization.py",
+        "tools/check_vcs_action_authorization.py"
       ],
       "superseded_alternatives": [
         "free-text issued_by as authority",
@@ -853,6 +897,44 @@
       "non_claims": [
         "decision custody is not commit or push authorization",
         "CI green is not WIP or release proof"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-027",
+      "status": "ACCEPTED",
+      "title": "Tracked predecessor intent and external exact-commit receipt split",
+      "decision": "All four active A16 tracked carriers embed one byte-identical daee-source-binding-v1 object that binds the Branch 10 predecessor checkpoint, exact carrier set, workflow identity, and future receipt locator without binding current HEAD. The realized exact commit, strict successor ancestry, remote equality, CI, and candidate eligibility are proved only by the external create-once daee-source-commit-receipt-v1 owned by the future CI-readback contract.",
+      "rationale": "A tracked file cannot certify the identity of the commit that contains its own bytes. Stable predecessor intent removes that fixed point, while the mandatory external receipt prevents baseline-only or rewritten-lineage laundering into current-source, CI, candidate, or terminal claims.",
+      "affected_andon_ids": [
+        "A16"
+      ],
+      "affected_plans": [
+        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/A16-PRE-SMOKE-READINESS-PLAN.md"
+      ],
+      "owner_files": [
+        "schema/source-binding.schema.json",
+        "tools/source_provenance.py",
+        "tools/check_source_provenance.py",
+        "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
+        "docs/audits/v0.4.6.0-wip-andon-contract-registry.json",
+        "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
+        "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json",
+        "schema/ci-readback.schema.json",
+        "tools/check_ci_readback.py"
+      ],
+      "superseded_alternatives": [
+        "tracked current-commit self-equality inside the commit being certified",
+        "tracked binding chases a future receipt hash",
+        "predecessor ancestry alone authorizes candidate or terminal claims"
+      ],
+      "decision_owner": "repository owner via the 2026-07-12 A16 pre-smoke readiness plan",
+      "accepted_at": "2026-07-12",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "A16-PRE-SMOKE-READINESS-PLAN.md plus STATE.md ANDONs 67, 75, and 78.",
+      "reopen_condition": "Only a separately reviewed provenance design that remains non-self-referential and preserves an external exact-commit, strict-ancestry, remote, and CI join.",
+      "non_claims": [
+        "tracked predecessor intent is not proof of the current commit, remote equality, CI, candidate maturity, or terminal closure",
+        "the future receipt owner path is not evidence that a receipt exists or has been validated"
       ]
     }
   ],

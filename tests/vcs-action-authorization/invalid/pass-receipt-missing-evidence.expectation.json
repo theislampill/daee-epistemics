@@ -1,0 +1,24 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "pass-receipt-missing-evidence.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "vcs-action-authorization",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "control-plane",
+  "expected_failure_class": "receipt_schema",
+  "expected_failure_subcode": "schema-oneof",
+  "expected_downstream_invalidated": [
+    "commit",
+    "push",
+    "exact-sha-ci",
+    "candidate-package",
+    "release-action"
+  ],
+  "required_diagnostic_markers": [
+    "terminal PASS receipt",
+    "oneOf"
+  ],
+  "forbidden_artifacts": [],
+  "provenance": "Task 3a independent-review countermeasure for evidence-empty PASS"
+}

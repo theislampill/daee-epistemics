@@ -16,12 +16,12 @@ from check_andon_closure_ledger import (
     Finding,
     ROOT,
     apply_common_operation,
-    git_head,
     expectation_problems,
     read_json,
     rel,
     schema_findings,
 )
+from source_provenance import validate_carrier_document
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -60,7 +60,11 @@ def materialize(path: Path) -> Any:
     return document
 
 
-def validate(document: Any, *, expected_head: str | None, require_status: str | None) -> list[Finding]:
+def validate(document: Any, *, require_status: str | None) -> list[Finding]:
+    binding_findings = validate_carrier_document(document, carrier_path=rel(LIVE_LEDGER))
+    if binding_findings:
+        first = binding_findings[0]
+        return [Finding(first.failure_class, first.message)]
     schema = read_json(SCHEMA_PATH)
     errors = schema_findings(document, schema, schema)
     if errors:
@@ -70,9 +74,6 @@ def validate(document: Any, *, expected_head: str | None, require_status: str | 
     if len(ids) != len(set(ids)):
         duplicate = next(value for value in ids if ids.count(value) > 1)
         return [Finding("duplicate_decision_id", f"duplicate architecture decision {duplicate}")]
-    if expected_head and document.get("source_head") != expected_head:
-        return [Finding("stale_evidence_head", f"source_head {document.get('source_head')} does not match repository HEAD {expected_head}")]
-
     required_ids = {
         decision_id
         for contract in read_json(CONTRACT_REGISTRY).get("contracts", [])
@@ -108,7 +109,7 @@ def diag(path: Path, finding: Finding) -> dict[str, Any]:
 
 def run_one(path: Path, *, explain: bool, require_status: str | None = None) -> int:
     try:
-        findings = validate(materialize(path), expected_head=git_head(), require_status=require_status)
+        findings = validate(materialize(path), require_status=require_status)
     except (KeyError, IndexError, TypeError, ValueError) as exc:
         findings = [Finding("fixture_or_json", str(exc))]
     if findings:
@@ -121,15 +122,14 @@ def run_one(path: Path, *, explain: bool, require_status: str | None = None) -> 
 
 def self_test() -> int:
     problems: list[str] = []
-    head = git_head()
     valid = sorted((FIXTURE_ROOT / "valid").glob("*.json"))
     invalid = sorted(p for p in (FIXTURE_ROOT / "invalid").glob("*.json") if not p.name.endswith(".expectation.json"))
     for path in valid:
-        findings = validate(materialize(path), expected_head=head, require_status="ACCEPTED")
+        findings = validate(materialize(path), require_status="ACCEPTED")
         if findings:
             problems.append(f"{rel(path)}: [{findings[0].failure_class}] {findings[0].message}")
     for path in invalid:
-        findings = validate(materialize(path), expected_head=head, require_status="ACCEPTED")
+        findings = validate(materialize(path), require_status="ACCEPTED")
         if not findings:
             problems.append(f"{rel(path)}: invalid fixture survived")
         else:

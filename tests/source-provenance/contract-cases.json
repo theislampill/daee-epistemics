@@ -1,0 +1,201 @@
+{
+  "schema": "daee-source-provenance-test-cases-v1",
+  "valid_cases": [
+    {
+      "case_id": "tracked-predecessor-head-without-receipt",
+      "operations": [],
+      "simulated_current_head": "bcccb4e34c75e1f8e363ef020e2deeaabae60435",
+      "expected_status": "TRACKED_SOURCE_BINDING_VALID",
+      "expected_nonclaims": {
+        "current_head_compared": false,
+        "current_head_ancestry_checked": false,
+        "external_receipt_validated": false,
+        "strict_successor_proven": false,
+        "terminal_claim": false
+      }
+    }
+  ],
+  "invalid_cases": [
+    {
+      "case_id": "legacy-source-head-present",
+      "operations": [
+        {
+          "op": "set",
+          "carrier": "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
+          "path": "source_head",
+          "value": "bcccb4e34c75e1f8e363ef020e2deeaabae60435"
+        }
+      ],
+      "expected_failure_class": "legacy_source_head_present",
+      "required_markers": ["source_head", "v0.4.6.0-wip-andon-closure-ledger.json"]
+    },
+    {
+      "case_id": "missing-source-binding",
+      "operations": [
+        {
+          "op": "delete",
+          "carrier": "docs/audits/v0.4.6.0-wip-andon-contract-registry.json",
+          "path": "source_binding"
+        }
+      ],
+      "expected_failure_class": "missing_source_binding",
+      "required_markers": ["source_binding", "v0.4.6.0-wip-andon-contract-registry.json"]
+    },
+    {
+      "case_id": "divergent-source-binding",
+      "operations": [
+        {
+          "op": "set",
+          "carrier": "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
+          "path": "source_binding.binding_id",
+          "value": "daee-v0.4.6.0-branch10-divergent-binding"
+        }
+      ],
+      "expected_failure_class": "source_binding_divergence",
+      "required_markers": ["v0.4.6.0-wip-architecture-decisions.json", "byte-identical"]
+    },
+    {
+      "case_id": "migration-only-binding-drift",
+      "operations": [
+        {
+          "op": "set",
+          "carrier": "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json",
+          "path": "source_binding.workflow.job",
+          "value": "migration-only-drift"
+        }
+      ],
+      "expected_failure_class": "source_binding_divergence",
+      "required_markers": ["v0.4.6.0-wip-state-capsule-v2-migration-ledger.json", "byte-identical"]
+    },
+    {
+      "case_id": "carrier-set-omission",
+      "operations": [
+        {
+          "op": "delete-index",
+          "carrier": "*",
+          "path": "source_binding.carrier_paths",
+          "index": 3
+        }
+      ],
+      "expected_failure_class": "carrier_set_mismatch",
+      "required_markers": ["carrier_paths", "omits"]
+    },
+    {
+      "case_id": "carrier-set-duplication",
+      "operations": [
+        {
+          "op": "append",
+          "carrier": "*",
+          "path": "source_binding.carrier_paths",
+          "value": "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json"
+        }
+      ],
+      "expected_failure_class": "carrier_set_duplicate",
+      "required_markers": ["carrier_paths", "duplicate"]
+    },
+    {
+      "case_id": "wrong-checkpoint-commit",
+      "operations": [
+        {
+          "op": "set",
+          "carrier": "*",
+          "path": "source_binding.checkpoint.commit",
+          "value": "484e61c9c2af30ed3f9e3c5c98551a7973a9417f"
+        }
+      ],
+      "expected_failure_class": "checkpoint_identity_mismatch",
+      "required_markers": ["484e61c9c2af30ed3f9e3c5c98551a7973a9417f", "bcccb4e34c75e1f8e363ef020e2deeaabae60435"]
+    },
+    {
+      "case_id": "missing-checkpoint-object",
+      "operations": [
+        {
+          "op": "set",
+          "carrier": "*",
+          "path": "source_binding.checkpoint.commit",
+          "value": "0000000000000000000000000000000000000000"
+        }
+      ],
+      "expected_failure_class": "checkpoint_missing",
+      "required_markers": ["0000000000000000000000000000000000000000", "missing"]
+    },
+    {
+      "case_id": "checkpoint-object-is-not-commit",
+      "operations": [
+        {
+          "op": "set",
+          "carrier": "*",
+          "path": "source_binding.checkpoint.commit",
+          "value": "7238bb567209003adb9b07cb0ec2d1629780cc2e"
+        }
+      ],
+      "expected_failure_class": "checkpoint_not_commit",
+      "required_markers": ["7238bb567209003adb9b07cb0ec2d1629780cc2e", "tree"]
+    },
+    {
+      "case_id": "wrong-checkpoint-tree",
+      "operations": [
+        {
+          "op": "set",
+          "carrier": "*",
+          "path": "source_binding.checkpoint.tree",
+          "value": "f9f9e4806832fa9bab13ff255d37eee554d032e8"
+        }
+      ],
+      "expected_failure_class": "checkpoint_tree_mismatch",
+      "required_markers": ["f9f9e4806832fa9bab13ff255d37eee554d032e8", "7238bb567209003adb9b07cb0ec2d1629780cc2e"]
+    },
+    {
+      "case_id": "workflow-identity-drift",
+      "operations": [
+        {
+          "op": "set",
+          "carrier": "*",
+          "path": "source_binding.workflow.job",
+          "value": "not-runtime-checks"
+        }
+      ],
+      "expected_failure_class": "workflow_identity_mismatch",
+      "required_markers": ["not-runtime-checks", "runtime-checks"]
+    },
+    {
+      "case_id": "duplicate-json-key",
+      "operations": [
+        {
+          "op": "inject-duplicate-key",
+          "carrier": "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
+          "key": "ledger_id",
+          "value": "duplicate-key-laundering"
+        }
+      ],
+      "expected_failure_class": "duplicate_json_key",
+      "required_markers": ["ledger_id", "duplicate"]
+    },
+    {
+      "case_id": "current-head-laundering",
+      "operations": [
+        {
+          "op": "set",
+          "carrier": "*",
+          "path": "source_binding.current_head",
+          "value": "bcccb4e34c75e1f8e363ef020e2deeaabae60435"
+        }
+      ],
+      "expected_failure_class": "current_head_laundering",
+      "required_markers": ["current_head", "forbidden"]
+    },
+    {
+      "case_id": "top-level-binding-byte-drift-hidden-by-preceding-decoy",
+      "operations": [
+        {
+          "op": "inject-preceding-decoy-and-reformat-top-level",
+          "carrier": "*",
+          "decoy_property": "review_decoy",
+          "drift_carrier": "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json"
+        }
+      ],
+      "expected_failure_class": "source_binding_divergence",
+      "required_markers": ["v0.4.6.0-wip-state-capsule-v2-migration-ledger.json", "byte-identical"]
+    }
+  ]
+}

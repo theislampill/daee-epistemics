@@ -94,7 +94,7 @@
   "required": [
     "schema",
     "ledger_id",
-    "source_head",
+    "source_binding",
     "branch",
     "regression_status",
     "required_andon_ids",
@@ -111,9 +111,8 @@
       "type": "string",
       "minLength": 1
     },
-    "source_head": {
-      "type": "string",
-      "pattern": "^[0-9a-f]{40}$"
+    "source_binding": {
+      "$ref": "source-binding.schema.json"
     },
     "branch": {
       "type": "string",

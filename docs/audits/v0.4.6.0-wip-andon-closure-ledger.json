@@ -1,7 +1,48 @@
 {
   "schema": "daee-andon-closure-ledger-v2",
   "ledger_id": "daee-v0.4.6.0-wip-branch10-closure",
-  "source_head": "484e61c9c2af30ed3f9e3c5c98551a7973a9417f",
+  "source_binding": {
+    "schema": "daee-source-binding-v1",
+    "binding_id": "daee-v0.4.6.0-branch10-predecessor-binding",
+    "intent": "tracked-predecessor-intent",
+    "repository": {
+      "slug": "theislampill/daee-epistemics",
+      "remote_url": "https://github.com/theislampill/daee-epistemics.git",
+      "branch": "codex/v0.4.6.0-runtime-footprint-b10",
+      "remote_name": "origin",
+      "remote_ref": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10"
+    },
+    "checkpoint": {
+      "commit": "bcccb4e34c75e1f8e363ef020e2deeaabae60435",
+      "tree": "7238bb567209003adb9b07cb0ec2d1629780cc2e"
+    },
+    "carrier_paths": [
+      "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
+      "docs/audits/v0.4.6.0-wip-andon-contract-registry.json",
+      "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
+      "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json"
+    ],
+    "workflow": {
+      "path": ".github/workflows/ci.yml",
+      "name": "CI",
+      "job": "runtime-checks"
+    },
+    "external_receipt": {
+      "schema": "daee-source-commit-receipt-v1",
+      "schema_path": "schema/ci-readback.schema.json",
+      "checker_path": "tools/check_ci_readback.py",
+      "locator_template": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/receipts/source-commit/{commit_sha}.json"
+    },
+    "non_claims": [
+      "This tracked binding records predecessor intent only and is not proof of the current commit.",
+      "This tracked binding is not proof of local, upstream, or live-remote equality.",
+      "This tracked binding is not proof of GitHub CI or any required check result.",
+      "This tracked binding is not proof of candidate construction or candidate maturity.",
+      "This tracked binding is not proof of A01-A16 terminal closure, campaign readiness, release readiness, or publication.",
+      "Strict successor ancestry and the realized exact commit require the external receipt."
+    ],
+    "terminal_claim": false
+  },
   "branch": "codex/v0.4.6.0-runtime-footprint-b10",
   "regression_status": "unproven",
   "required_andon_ids": [
@@ -3579,7 +3620,6 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "versioned non-self-referential binding across all four tracked carriers",
         "external create-once exact-commit receipt with rewritten-lineage protection",
         "clean-tree, remote-OID, checkpoint-ancestry, authorization, workflow, check-set, and result joins",
         "release-v2 production, retention, release authorization, and maturity tranches",
@@ -3675,9 +3715,12 @@
         "outputs/Sol/17_sustainment_hansei_and_release_completion_plan.md",
         "outputs/Sol/21_owner_decision_reconciliation_and_cross_model_reconvergence_plan.md",
         "schema/andon-closure-ledger.schema.json",
+        "schema/source-binding.schema.json",
         "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
         "tools/check_andon_closure_ledger.py",
         "tools/check_andon_contract_registry.py",
+        "tools/source_provenance.py",
+        "tools/check_source_provenance.py",
         "schema/no-model-candidate-maturity.schema.json",
         "schema/vcs-action-authorization.schema.json",
         "schema/ci-readback.schema.json"
@@ -3699,7 +3742,8 @@
         "DAEE-ADR-046-022",
         "DAEE-ADR-046-024",
         "DAEE-ADR-046-025",
-        "DAEE-ADR-046-026"
+        "DAEE-ADR-046-026",
+        "DAEE-ADR-046-027"
       ],
       "abnormality_evidence": [
         "planned, implemented, owner-gated, artifact-gated, and release states are mixed across historical docs"
@@ -3729,6 +3773,7 @@
         "files": [
           "schema/andon-closure-ledger.schema.json",
           "schema/architecture-decision-ledger.schema.json",
+          "schema/source-binding.schema.json",
           "schema/state-capsule-v2.schema.json",
           "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
           "docs/audits/v0.4.6.0-wip-andon-contract-registry.json",
@@ -3738,6 +3783,8 @@
           "tools/render_andon_closure_ledger.py",
           "tools/check_architecture_decision_ledger.py",
           "tools/check_andon_contract_registry.py",
+          "tools/source_provenance.py",
+          "tools/check_source_provenance.py",
           "tools/check_state_capsule.py"
         ],
         "generated_files": [
@@ -3762,7 +3809,7 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/andon-closure-ledger/invalid/complete-with-open-dependency.json.expectation.json"
+          "tests/andon-closure-ledger/invalid/complete-with-open-dependency.expectation.json"
         ],
         "structural_only": true
       },
@@ -3814,7 +3861,7 @@
       "remaining_risk": [
         "deterministic closure is not model, WIP, merge, release, or regression proof"
       ],
-      "next_action": "Keep A16 terminal OPEN; replace the tracked-head fixed point with the separately reviewed four-carrier binding plus external create-once exact-commit receipt before any generated-view or closure claim.",
+      "next_action": "Keep A16 terminal OPEN; the four-carrier tracked predecessor binding is structurally verified, but Task 3 must implement and validate the external create-once exact-commit receipt before any exact-current, CI, candidate, or closure claim.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -3833,7 +3880,7 @@
   "non_claims": [
     "bounded verification is independent of integration, owner, artifact, and terminal closure",
     "every A01-A16 row remains integration-open and terminal-open in this reconciliation snapshot",
-    "the stale tracked source_head is not exact-current provenance and baseline evidence alone cannot mature a candidate",
+    "the tracked predecessor binding is not exact-current provenance and cannot mature a candidate without the external exact-commit receipt",
     "deterministic structural verification is not semantic truth",
     "no model PASS, WIP completion, regression causality, merge, tag, release, release-package, or optional Opus claim is made",
     "no prior candidate or evidence is reusable for a later five-smoke campaign"

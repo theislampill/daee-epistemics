@@ -1,0 +1,43 @@
+{
+  "schema": "release-action-authorization-v1",
+  "kind": "release-action-authorization",
+  "authorization_id": "plan17-release-package-build",
+  "action": "build-release-package",
+  "repository": "theislampill/daee-epistemics",
+  "target_branch": "codex/v0.4.6.0-runtime-footprint-b10",
+  "target_ref": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10",
+  "source_commit": "3333333333333333333333333333333333333333",
+  "clean_tree_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "version": "v0.4.6.0",
+  "profile": "execution-mini",
+  "output_directory": "build/release-authorized/plan17-release-package-build",
+  "allowed_actions": [
+    "build-release-package"
+  ],
+  "denied_actions": [
+    "commit",
+    "force",
+    "publish",
+    "push",
+    "release",
+    "tag",
+    "upload"
+  ],
+  "reusable": false,
+  "owner_identity": "theis-owner",
+  "writer_boundary_identity": "codex-branch10-writer",
+  "issued_at": "2026-07-12T10:00:00Z",
+  "valid_not_before": "2026-07-12T13:30:00Z",
+  "valid_not_after": "2026-07-12T14:00:00Z",
+  "nonce": "nonce-plan17-release-package-build-0001",
+  "revoked": false,
+  "claim_locator": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/release-action/claims/plan17-release-package-build.claim.json",
+  "action_receipt_locator": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/release-action/receipts/plan17-release-package-build.receipt.json",
+  "expected_claim_predecessor_sha256": null,
+  "terminal_claim": false,
+  "non_claims": [
+    "does-not-authorize-candidate-model-or-provider-use",
+    "does-not-authorize-commit-push-tag-upload-publish-or-release",
+    "package-shape-is-not-release-readiness"
+  ]
+}

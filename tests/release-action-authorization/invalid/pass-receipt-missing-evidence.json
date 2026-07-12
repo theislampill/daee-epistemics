@@ -1,0 +1,19 @@
+{
+  "schema": "release-action-receipt-v1",
+  "kind": "release-action-receipt",
+  "receipt_id": "1111111111111111111111111111111111111111111111111111111111111111",
+  "claim_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+  "authorization_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+  "authorization_id": "plan17-evidence-empty-pass",
+  "nonce": "nonce-pass-missing-proof-0001",
+  "action": "build-release-package",
+  "result": "PASS",
+  "writer_boundary_identity": "codex-branch10-writer",
+  "finalized_at": "2026-07-12T12:00:00Z",
+  "output_directory": "build/release-authorized/plan17-evidence-empty-pass",
+  "package_path": null,
+  "package_sha256": null,
+  "package_bytes": null,
+  "terminal": true,
+  "terminal_claim": false
+}

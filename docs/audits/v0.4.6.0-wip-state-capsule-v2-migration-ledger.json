@@ -1,14 +1,56 @@
 {
   "schema": "daee-state-capsule-v2-migration-ledger-v1",
   "ledger_id": "v0.4.6.0-wip-state-capsule-v2-migration",
-  "source_head": "6987c9ebf1de45af700b1fa74b1ed25ec0beeb7c",
+  "source_binding": {
+    "schema": "daee-source-binding-v1",
+    "binding_id": "daee-v0.4.6.0-branch10-predecessor-binding",
+    "intent": "tracked-predecessor-intent",
+    "repository": {
+      "slug": "theislampill/daee-epistemics",
+      "remote_url": "https://github.com/theislampill/daee-epistemics.git",
+      "branch": "codex/v0.4.6.0-runtime-footprint-b10",
+      "remote_name": "origin",
+      "remote_ref": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10"
+    },
+    "checkpoint": {
+      "commit": "bcccb4e34c75e1f8e363ef020e2deeaabae60435",
+      "tree": "7238bb567209003adb9b07cb0ec2d1629780cc2e"
+    },
+    "carrier_paths": [
+      "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
+      "docs/audits/v0.4.6.0-wip-andon-contract-registry.json",
+      "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
+      "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json"
+    ],
+    "workflow": {
+      "path": ".github/workflows/ci.yml",
+      "name": "CI",
+      "job": "runtime-checks"
+    },
+    "external_receipt": {
+      "schema": "daee-source-commit-receipt-v1",
+      "schema_path": "schema/ci-readback.schema.json",
+      "checker_path": "tools/check_ci_readback.py",
+      "locator_template": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/receipts/source-commit/{commit_sha}.json"
+    },
+    "non_claims": [
+      "This tracked binding records predecessor intent only and is not proof of the current commit.",
+      "This tracked binding is not proof of local, upstream, or live-remote equality.",
+      "This tracked binding is not proof of GitHub CI or any required check result.",
+      "This tracked binding is not proof of candidate construction or candidate maturity.",
+      "This tracked binding is not proof of A01-A16 terminal closure, campaign readiness, release readiness, or publication.",
+      "Strict successor ancestry and the realized exact commit require the external receipt."
+    ],
+    "terminal_claim": false
+  },
   "regression_status": "unproven",
   "integration_owner": "A16",
   "binding_adr_ids": [
     "DAEE-ADR-046-001",
     "DAEE-ADR-046-014",
     "DAEE-ADR-046-015",
-    "DAEE-ADR-046-016"
+    "DAEE-ADR-046-016",
+    "DAEE-ADR-046-027"
   ],
   "legacy_contract": {
     "schema_id": "daee-state-capsule-v1",
@@ -114,6 +156,7 @@
   "shared_integration_status": "PARTIAL_SHARED_INTERFACE_ANDON",
   "non_claims": [
     "This ledger records migration custody and deterministic checker evidence; it does not prove that a release-bearing runtime producer has emitted a live v2 capsule.",
-    "No v1 artifact is promoted to release-bearing v2 evidence by declaration."
+    "No v1 artifact is promoted to release-bearing v2 evidence by declaration.",
+    "The tracked predecessor binding is not proof of the realized commit, strict ancestry, remote equality, CI, candidate maturity, or terminal closure."
   ]
 }

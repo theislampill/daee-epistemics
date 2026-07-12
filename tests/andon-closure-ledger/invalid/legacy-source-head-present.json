@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-checker-fixture-v1","base":"docs/audits/v0.4.6.0-wip-andon-closure-ledger.json","operations":[{"op":"set","path":"source_head","value":"bcccb4e34c75e1f8e363ef020e2deeaabae60435"}]}

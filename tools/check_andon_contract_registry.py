@@ -19,10 +19,10 @@ from check_andon_closure_ledger import (
     _duplicates,
     apply_common_operation,
     expectation_problems,
-    git_head,
     read_json,
     rel,
 )
+from source_provenance import validate_carrier_document
 
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -39,6 +39,14 @@ LIVE_CLOSURE = ROOT / "docs" / "audits" / "v0.4.6.0-wip-andon-closure-ledger.jso
 MIGRATION_LEDGER = ROOT / "docs" / "audits" / "v0.4.6.0-wip-state-capsule-v2-migration-ledger.json"
 PLAN_ROOT = ROOT.parents[1] / "outputs" / "Sol"
 FIXTURE_ROOT = ROOT / "tests" / "andon-contract-registry"
+SOURCE_BINDING_OWNER_PATHS = {
+    "owned_schema_paths": ("schema/source-binding.schema.json",),
+    "owned_tool_paths": ("tools/source_provenance.py", "tools/check_source_provenance.py"),
+    "owned_test_paths": (
+        "tests/source-provenance/contract-cases.json",
+        "tests/source-provenance/test_contract.py",
+    ),
+}
 
 
 def materialize(path: Path, decision_path: Path) -> tuple[Any, Any, dict[str, Any]]:
@@ -62,6 +70,10 @@ def materialize(path: Path, decision_path: Path) -> tuple[Any, Any, dict[str, An
             decision["status"] = operation.get("value")
         elif op == "set-materialized-cases":
             context["materialized_cases"] = copy.deepcopy(operation.get("value"))
+        elif op == "remove-owned-path":
+            contract = next(c for c in registry["contracts"] if c.get("andon_id") == operation.get("id"))
+            field = str(operation.get("field", ""))
+            contract[field] = [value for value in contract.get(field, []) if value != operation.get("value")]
         else:
             raise ValueError(f"{rel(path)}: unsupported fixture operation: {operation!r}")
     return registry, decisions, context
@@ -92,7 +104,11 @@ def _case_ids_from_file(path: Path) -> list[str] | None:
     return [case.get("case_id") for case in cases if isinstance(case, dict)]
 
 
-def validate(registry: Any, decisions: Any, context: dict[str, Any], *, expected_head: str | None) -> list[Finding]:
+def validate(registry: Any, decisions: Any, context: dict[str, Any]) -> list[Finding]:
+    binding_findings = validate_carrier_document(registry, carrier_path=rel(LIVE_REGISTRY))
+    if binding_findings:
+        first = binding_findings[0]
+        return [Finding(first.failure_class, first.message)]
     if not isinstance(registry, dict) or not isinstance(registry.get("contracts"), list):
         return [Finding("registry_contract", "contracts array is required")]
     contracts = [c for c in registry["contracts"] if isinstance(c, dict)]
@@ -102,9 +118,6 @@ def validate(registry: Any, decisions: Any, context: dict[str, Any], *, expected
         return [Finding("duplicate_andon_id", f"duplicate ANDON ownership row {duplicates[0]}")]
     if set(ids) != set(registry.get("required_andon_ids", [])):
         return [Finding("andon_set_mismatch", "contract ANDON IDs do not equal required_andon_ids")]
-    if expected_head and registry.get("source_head") != expected_head:
-        return [Finding("stale_evidence_head", f"source_head {registry.get('source_head')} does not match repository HEAD {expected_head}")]
-
     milestones: dict[str, list[str]] = {}
     all_milestone_ids: list[str] = []
     for contract in contracts:
@@ -116,7 +129,11 @@ def validate(registry: Any, decisions: Any, context: dict[str, Any], *, expected
     if duplicate_milestones:
         return [Finding("duplicate_milestone_id", f"duplicate milestone ownership {duplicate_milestones[0]}")]
 
-    for field, failure_class in (("owned_schema_paths", "duplicate_schema_owner"), ("owned_tool_paths", "duplicate_tool_owner")):
+    for field, failure_class in (
+        ("owned_schema_paths", "duplicate_schema_owner"),
+        ("owned_tool_paths", "duplicate_tool_owner"),
+        ("owned_test_paths", "duplicate_test_owner"),
+    ):
         duplicate = _owned_duplicates(contracts, field)
         if duplicate:
             owned, owners = duplicate
@@ -133,6 +150,35 @@ def validate(registry: Any, decisions: Any, context: dict[str, Any], *, expected
     a16 = next((c for c in contracts if c.get("andon_id") == "A16"), None)
     if not a16:
         return [Finding("missing_a16_owner", "A16 contract is required")]
+    for field, required_paths in SOURCE_BINDING_OWNER_PATHS.items():
+        registered = a16.get(field, [])
+        for required_path in required_paths:
+            if required_path not in registered:
+                return [
+                    Finding(
+                        "source_binding_owner_registration",
+                        f"A16 {field} must register tracked-binding owner {required_path}",
+                    )
+                ]
+            if not (ROOT / required_path).is_file():
+                return [
+                    Finding(
+                        "source_binding_owner_path_missing",
+                        f"A16 registered tracked-binding owner path does not exist: {required_path}",
+                    )
+                ]
+    rules = registry.get("rules", {})
+    if rules.get("source_binding_owner_paths_must_exist") is not True:
+        return [Finding("source_binding_owner_registration", "source-binding owner-path existence gate must be active")]
+    if rules.get("global_missing_owner_path_rejection") is not False or not str(
+        rules.get("global_missing_owner_path_rejection_deferred_reason", "")
+    ).strip():
+        return [
+            Finding(
+                "global_owner_path_gate_boundary",
+                "global missing-owner-path rejection must remain explicitly deferred until planned A16 Tasks 3-5 materialize",
+            )
+        ]
     a16_milestones = {m.get("milestone_id"): m for m in a16.get("milestones", [])}
     if a16_milestones.get("A16.bootstrap", {}).get("dependencies") != []:
         return [Finding("a16_bootstrap_contract", "A16.bootstrap must have no dependencies")]
@@ -227,15 +273,14 @@ def diag(path: Path, finding: Finding) -> dict[str, Any]:
 
 def self_test() -> int:
     problems: list[str] = []
-    head = git_head()
     valid = sorted((FIXTURE_ROOT / "valid").glob("*.json"))
     invalid = sorted(p for p in (FIXTURE_ROOT / "invalid").glob("*.json") if not p.name.endswith(".expectation.json"))
     for path in valid:
-        findings = validate(*materialize(path, LIVE_ADR), expected_head=head)
+        findings = validate(*materialize(path, LIVE_ADR))
         if findings:
             problems.append(f"{rel(path)}: [{findings[0].failure_class}] {findings[0].message}")
     for path in invalid:
-        findings = validate(*materialize(path, LIVE_ADR), expected_head=head)
+        findings = validate(*materialize(path, LIVE_ADR))
         if not findings:
             problems.append(f"{rel(path)}: invalid fixture survived")
         else:
@@ -251,7 +296,7 @@ def self_test() -> int:
 
 def run_one(path: Path, decision_path: Path, *, explain: bool) -> int:
     try:
-        findings = validate(*materialize(path, decision_path), expected_head=git_head())
+        findings = validate(*materialize(path, decision_path))
     except (KeyError, IndexError, TypeError, ValueError) as exc:
         findings = [Finding("fixture_or_json", str(exc))]
     if findings:

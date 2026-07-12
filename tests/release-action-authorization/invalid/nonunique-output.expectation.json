@@ -1,0 +1,24 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "nonunique-output.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "release-action-authorization",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "release-action",
+  "expected_failure_class": "output_collision",
+  "expected_failure_subcode": "output-exists",
+  "expected_downstream_invalidated": [
+    "release-package",
+    "tag",
+    "upload",
+    "publish",
+    "release"
+  ],
+  "required_diagnostic_markers": [
+    "output_directory",
+    "unused"
+  ],
+  "forbidden_artifacts": [],
+  "provenance": "Plan 17 Task 3a locked release authorization TDD"
+}
