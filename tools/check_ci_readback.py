@@ -2301,6 +2301,7 @@ def _predecessor() -> tuple[str | None, dict[str, Any], int]:
 def build_receipt(observation: Mapping[str, Any], *, out: Path) -> dict[str, Any]:
     source_sha = observation["source"]["commit_sha"]
     expected = (RECEIPT_REL / f"{source_sha}.json").as_posix()
+    RECEIPT_ROOT.mkdir(parents=True, exist_ok=True)
     requested = out if out.is_absolute() else ROOT / out
     resolved = resolve_contained_path(RECEIPT_ROOT, requested)
     expected_path = (ROOT / expected).resolve()

@@ -486,6 +486,30 @@ class CiReadbackContract(unittest.TestCase):
         accepted = checker._strict_predecessor_source("2" * 40, current, is_ancestor=lambda _old, _new: True)
         self.assertIsNone(accepted)
 
+    def test_genesis_receipt_build_creates_absent_custody_root(self) -> None:
+        self.require_checker()
+        checker = importlib.import_module("check_ci_readback")
+        source_sha = "1" * 40
+        observation = {
+            "source": {"commit_sha": source_sha},
+            "run": {"id": 1, "attempt": 1},
+        }
+        with tempfile.TemporaryDirectory(prefix="daee-ci-receipt-genesis-") as temporary:
+            root = Path(temporary)
+            receipt_rel = Path("receipts/source-commit")
+            receipt_root = root / receipt_rel
+            out = receipt_rel / f"{source_sha}.json"
+            self.assertFalse(receipt_root.exists())
+            with mock.patch.object(checker, "ROOT", root), mock.patch.object(
+                checker, "RECEIPT_REL", receipt_rel
+            ), mock.patch.object(checker, "RECEIPT_ROOT", receipt_root), mock.patch.object(
+                checker, "validate_receipt", return_value=[]
+            ):
+                value = checker.build_receipt(observation, out=out)
+            self.assertTrue((root / out).is_file())
+            self.assertEqual(value["custody_sequence"], 1)
+            self.assertEqual(value["predecessor_receipt"]["kind"], "genesis")
+
     def test_live_workflow_contract_rejects_writer_and_upload_substitution(self) -> None:
         self.require_checker()
         checker = importlib.import_module("check_ci_readback")
