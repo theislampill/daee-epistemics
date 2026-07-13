@@ -4,15 +4,15 @@
   "title": "DAEE append-only model-smoke escape registry",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "registry_id", "append_only", "candidate_maturity_status", "escapes", "events", "structural_non_claims"],
+  "required": ["schema", "registry_id", "append_only", "registry_role", "escapes", "events", "structural_non_claims"],
   "properties": {
     "schema": {"const": "daee-model-smoke-escape-v1"},
     "registry_id": {"type": "string", "minLength": 1},
     "append_only": {"const": true},
-    "candidate_maturity_status": {"enum": ["BLOCKED", "MATURE"]},
+    "registry_role": {"enum": ["ILLUSTRATIVE_FIXTURE", "LIVE_EVIDENCE"]},
     "escapes": {"type": "array", "items": {"$ref": "#/$defs/escape"}},
     "events": {"type": "array", "items": {"$ref": "#/$defs/event"}},
-    "structural_non_claims": {"type": "array", "minItems": 3, "items": {"type": "string"}}
+    "structural_non_claims": {"const": ["detectability status is scoped", "maturity is not model authorization", "structural controls are not semantic truth"]}
   },
   "$defs": {
     "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},

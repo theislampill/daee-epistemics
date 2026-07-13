@@ -14,6 +14,8 @@ from check_andon_closure_ledger import LIVE_LEDGER, ROOT, materialize_fixture, r
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
+DEFAULT_MARKDOWN = ROOT / "docs/audits/v0.4.6.0-wip-andon-closure-ledger.md"
+
 
 def _cell(value: Any) -> str:
     if isinstance(value, list):
@@ -130,7 +132,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ledger", default=rel(LIVE_LEDGER), help="canonical ledger JSON")
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--out", help="write generated Markdown")
-    group.add_argument("--check", help="fail if this generated Markdown is stale")
+    group.add_argument(
+        "--check",
+        nargs="?",
+        const=rel(DEFAULT_MARKDOWN),
+        help="fail if generated Markdown is stale (defaults to the canonical Markdown view)",
+    )
     group.add_argument("--self-test", action="store_true", help="run deterministic in-memory checks")
     return parser
 

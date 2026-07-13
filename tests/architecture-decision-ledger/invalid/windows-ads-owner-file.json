@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-checker-fixture-v1","base":"docs/audits/v0.4.6.0-wip-architecture-decisions.json","operations":[{"op":"append-owner","id":"DAEE-ADR-046-017","value":"tools/check_architecture_decision_ledger.py:review"}]}

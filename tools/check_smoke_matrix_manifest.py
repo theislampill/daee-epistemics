@@ -22,6 +22,7 @@ from check_state_capsule import replay_errors_dispatch
 import campaign_usage_ledger
 from smoke_matrix_registry import ROOT, load_registry, validate_registry
 from validation_registry import load_registry as load_validation_registry, validate_verdict as validate_registry_verdict
+from artifact_tree import TREE_DIGEST_ALGORITHM, tree_sha256 as _shared_tree_digest
 
 FIXTURES = ROOT / "tests" / "smoke-matrix" / "fixtures"
 EXPECTATION_SCHEMA_PATH = ROOT / "schema" / "negative-fixture-expectation.schema.json"
@@ -30,6 +31,9 @@ PAIRED_SCHEMA_PATH = ROOT / "schema" / "cross-model-paired-cycle.schema.json"
 KIND_DEFS = {
     "input-registry":"inputRegistry","candidate-transition":"candidateTransition","campaign-usage-reservation":"usageReservation",
     "campaign-usage-receipt":"usageReceipt","campaign-usage-recovery":"usageRecovery","candidate-package-record":"candidateRecord",
+    "candidate-build-authorization":"candidateBuildAuthorization","candidate-build-claim":"candidateBuildClaim",
+    "candidate-package-record-bound":"candidateRecordBound","candidate-readiness-marker":"candidateReadinessMarker","matrix-authorization":"matrixAuthorization",
+    "matrix-authorization-claim":"matrixAuthorizationClaim","review-protocol":"reviewProtocol",
     "cycle-completion-attempt":"cycleAttempt","authorization-check":"authorizationCheck","usage-head-audit":"usageHeadAudit",
     "taint-audit":"taintAudit","review-gate":"reviewGate","structural-cycle":"structuralCycle","producer-outcome":"producerOutcome",
     "campaign-control":"campaignControl","dispatch-manifest":"dispatchManifest","cycle-observation":"cycleObservation",
@@ -100,11 +104,10 @@ def _read_bytes_ref(base: Path, reference: object) -> tuple[Path,bytes]:
 
 
 def _tree_digest(directory: Path) -> str:
-    digest=hashlib.sha256()
-    for path in sorted((item for item in directory.rglob("*") if item.is_file()),key=lambda item:item.relative_to(directory).as_posix()):
-        if _has_reparse(path):raise ValueError("structural_path: state capsule tree contains symlink/reparse content")
-        relative=path.relative_to(directory).as_posix().encode();digest.update(len(relative).to_bytes(4,"big"));digest.update(relative);digest.update(hashlib.sha256(path.read_bytes()).digest())
-    return digest.hexdigest()
+    try:
+        return _shared_tree_digest(directory)
+    except ValueError as exc:
+        raise ValueError(f"structural_path: {exc}") from exc
 
 
 def _identity(data: dict) -> dict:
@@ -322,6 +325,41 @@ def validate_manifest(data: object, *, root: Path = ROOT) -> list[dict[str,str]]
     if data.get("schema")!="daee-smoke-matrix-v1": return [_err("manifest_schema","unknown smoke-matrix schema")]
     kind=data.get("kind")
     if kind=="input-registry": return validate_registry(data,root)
+    if kind=="review-protocol":
+        registry_path=root/data["input_registry"]["path"]
+        if registry_path.resolve()!= (root/"tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json").resolve():
+            return [_err("review_protocol_registry","review protocol must bind the canonical five-case registry path")]
+        try: raw=registry_path.read_bytes();registry=load_registry(registry_path,root)
+        except (OSError,ValueError,json.JSONDecodeError) as exc:return [_err("review_protocol_registry",str(exc))]
+        if hashlib.sha256(raw).hexdigest()!=data["input_registry"]["sha256"]:
+            return [_err("review_protocol_registry","review protocol registry raw hash drift")]
+        if data["case_ids"]!=[row["case_id"] for row in registry["cases"]]:
+            return [_err("review_protocol_cases","review protocol must bind the exact ordered canonical five cases")]
+        return []
+    if kind in {"candidate-build-authorization","matrix-authorization"}:
+        expected=hashlib.sha256((json.dumps({key:value for key,value in data.items() if key!="authorization_sha256"},sort_keys=True,separators=(",",":"))+"\n").encode()).hexdigest()
+        if data["authorization_sha256"]!=expected:return [_err("authorization_content_hash","authorization content hash mismatch")]
+        if data.get("ref") is not None and data.get("ref")!=f"refs/heads/{data.get('branch')}":return [_err("authorization_branch_ref","authorization branch/ref mismatch")]
+        if kind=="candidate-build-authorization":
+            custody=Path(data["custody_root"]);candidate=Path(data["candidate_root"]);claim=Path(data["claim_path"])
+            try:candidate.relative_to(custody);claim.relative_to(custody/"claims")
+            except ValueError:return [_err("candidate_custody_path","candidate root must be beneath its authorized custody root")]
+            if claim.name!=f"{data['authorization_id']}.claim.json":return [_err("candidate_claim_path","candidate claim path must be derived from the authorization ID")]
+        return []
+    if kind in {"candidate-build-claim","matrix-authorization-claim"}:
+        expected=hashlib.sha256((json.dumps({key:value for key,value in data.items() if key!="claim_sha256"},sort_keys=True,separators=(",",":"))+"\n").encode()).hexdigest()
+        if data["claim_sha256"]!=expected:return [_err("authorization_claim_hash","authorization claim content hash mismatch")]
+        return []
+    if kind=="candidate-package-record-bound":
+        expected=hashlib.sha256((json.dumps({key:value for key,value in data.items() if key!="record_sha256"},sort_keys=True,separators=(",",":"))+"\n").encode()).hexdigest()
+        if data["record_sha256"]!=expected:return [_err("candidate_record_hash","bound candidate record content hash mismatch")]
+        if data["status"]=="READY_UNUSED" and data["claim_status"]!="UNCLAIMED":return [_err("candidate_claim_state","READY_UNUSED candidate must be unclaimed")]
+        if data["tree_digest_algorithm"]!=TREE_DIGEST_ALGORITHM:return [_err("candidate_tree_algorithm","candidate uses an unsupported tree digest algorithm")]
+        return []
+    if kind=="candidate-readiness-marker":
+        expected=hashlib.sha256((json.dumps({key:value for key,value in data.items() if key!="marker_sha256"},sort_keys=True,separators=(",",":"))+"\n").encode()).hexdigest()
+        if data["marker_sha256"]!=expected:return [_err("candidate_readiness_hash","candidate readiness marker content hash mismatch")]
+        return []
     if kind=="candidate-transition":
         try: expected=derive_transition({"status":data.get("from_status")},claimed=data.get("claimed") is True,dispatch_count=data.get("dispatch_count"))
         except ValueError as exc:

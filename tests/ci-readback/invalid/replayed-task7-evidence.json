@@ -1,0 +1,21 @@
+{
+  "fixture_schema": "daee-checker-fixture-v1",
+  "base": "tests/ci-readback/valid/required-checks-bound-to-pushed-sha.json",
+  "operations": [
+    {
+      "op": "set",
+      "path": "deterministic_verdicts.full_local_ci.path",
+      "value": "tests/ci-readback/support/task7-no-model-preflight.json"
+    },
+    {
+      "op": "set",
+      "path": "deterministic_verdicts.full_local_ci.byte_count",
+      "value": 2435
+    },
+    {
+      "op": "set",
+      "path": "deterministic_verdicts.full_local_ci.sha256",
+      "value": "ae0634eaf3a2a50d4afce5a1b7f7c8066be7b70eb4dfd1425f2192cc895f7d88"
+    }
+  ]
+}

@@ -19,7 +19,12 @@ class ModelSmokeEscapeContractTests(unittest.TestCase):
         inventory = json.loads((Path(__file__).parent / "inventory.json").read_text(encoding="utf-8"))
         problems, counts = run_fixture_inventory(Path(__file__).parent, inventory)
         self.assertEqual([], problems)
-        self.assertEqual((5, 10), counts)
+        self.assertEqual((5, 12), counts)
+
+    def test_tracked_registry_is_illustrative_and_cannot_self_declare_maturity(self) -> None:
+        registry = json.loads((Path(__file__).parent / "registry.json").read_text(encoding="utf-8"))
+        self.assertEqual("ILLUSTRATIVE_FIXTURE", registry.get("registry_role"))
+        self.assertNotIn("candidate_maturity_status", registry)
 
 
 if __name__ == "__main__":

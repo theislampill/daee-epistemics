@@ -18,6 +18,9 @@ smokes, readiness, or release already passed.
 | Path | Status | Note |
 |---|---|---|
 | `docs/audits/v0.4.6.0-wip-five-smoke-andon-convergence-north-star-addendum.md` | ACTIVE CURRENT TRUTH | Five-smoke matrix-level PDCA/ANDON law: canonical package-faithful Codex runner lane, neutral immutable candidate custody, usage-head CAS, provable five-way barrier, recoverable claim/finalizer, transactional evidence publish, full-cycle reruns, and cold GPT-5.6 plus human review. It is process truth, not evidence that implementation or a model matrix has run. |
+| `docs/audits/v0.4.6.0-wip-andon-closure-ledger.json` | OPEN NON-TERMINAL CONTROL | Canonical dimensional A01-A16 owner. Bounded evidence is structural only; every terminal row remains open until all artifact, campaign, and owner-acceptance gates are satisfied. |
+| `docs/audits/v0.4.6.0-wip-andon-contract-registry.json` | OPEN STRUCTURAL CONTROL | Current implementation-owner registration and join contract. A passing registry check is not deterministic closure, exact-SHA CI, candidate maturity, or model evidence. |
+| `docs/audits/v0.4.6.0-wip-architecture-decisions.json` | OPEN STRUCTURAL CONTROL | Current A16 architecture/ownership decision carrier. Accepted decision structure does not close A16 or authorize campaign, release, or publication. |
 | `docs/audits/v0.4.3.0-implementaudit-orchestrator.md` | ACTIVE OPEN-WORK LEDGER | Repository-designated IMPLEMENTAUDIT proof ledger; historical sections remain evidence-scoped and current claims require live readback. |
 | `docs/audits/release-gate-ledger.md` | ACTIVE CURRENT TRUTH | Release authorization and custody boundary; the five-smoke addendum does not open it. |
 | `docs/audits/retained-corpus-requalification-ledger.md` | ACTIVE CURRENT TRUTH | Retained-proof eligibility boundary; a fresh smoke PASS does not automatically promote a case. |

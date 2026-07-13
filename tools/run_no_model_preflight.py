@@ -23,9 +23,10 @@ process). No `--model` value is ever passed by this tool.
 Each gate is: a name, one or more shell-style commands (run via subprocess,
 argv-split, no shell=True), a pass/fail rule (exit code 0 == pass unless
 noted), and a minimal no-model repair lane string shown only when the gate
-fails. Gates run sequentially; a failing gate does not stop the sweep --
-every gate is attempted so the ledger reports ALL red gates at once. Only
-the final decision line depends on the aggregate.
+fails. Gates run sequentially; a non-timeout failure does not stop the sweep,
+so the ledger reports all ordinary red gates at once. A timeout is a custody
+stop: descendant teardown completes first, then no later command in that gate
+or any later gate starts. Only the final decision line depends on the aggregate.
 
 Per-gate stdout/stderr is captured and suppressed unless the gate fails, to
 keep the ledger readable; on failure the captured output is included in the
@@ -36,8 +37,9 @@ Usage:
     python tools/run_no_model_preflight.py --json out.json   also write a report
     python tools/run_no_model_preflight.py --self-test    validate gate-table,
                                                            decision aggregation,
-                                                           and Gate 14 registry
-                                                           custody (no subprocesses)
+                                                           Gate 14 registry custody,
+                                                           and A16 join ownership
+                                                           (no subprocesses)
 """
 
 from __future__ import annotations
@@ -45,6 +47,8 @@ from __future__ import annotations
 import argparse
 import glob
 import json
+import os
+import re
 import shlex
 import subprocess
 import sys
@@ -53,6 +57,17 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
+
+from run_local_ci import (
+    PYTHON_EXECUTION_PROFILE_ID,
+    TIMEOUT_EXIT_CODE,
+    command_list_sha256,
+    execution_argv_for,
+    execution_environment_for,
+    execution_plan_sha256,
+    execution_profile_for,
+    run_owned_command,
+)
 
 import smoke_matrix_registry
 
@@ -68,6 +83,9 @@ NOT_AUTHORIZED_TOKEN = "MATRIX_NOT_AUTHORIZED"
 
 DEFAULT_TIMEOUT_SEC = 300
 LONG_TIMEOUT_SEC = 900
+EXPECTED_GATE_COUNT = 25
+# Every gate step expects exit 0 unless its gate is listed here.
+EXPECTED_GATE_RETURN_CODES: dict[int, int] = {16: 1}
 
 RETAINED_CASES_ROOT = (
     "tests/retained-proof-corpus/v0.4.3.0-schema-light/valid/sidecar-backed/cases"
@@ -75,26 +93,53 @@ RETAINED_CASES_ROOT = (
 RETAINED_OUTPUTS_GLOB = f"{RETAINED_CASES_ROOT}/*/output.md"
 
 STABLE_EXPLAIN_FIXTURE = "tests/staged-runtime-handshake/invalid/absolute-output-path.json"
+OWNED_TIMEOUT_TEARDOWN_FAILURE = re.compile(
+    r"timed-out owned process (?:tree root|group) \d+ is still running"
+)
+
+A16_GATE_COMMANDS: dict[str, tuple[str, ...]] = {
+    "tracked-source + checkpoint contracts": (
+        "python tools/check_source_provenance.py --self-test",
+        "python tests/source-provenance/test_contract.py",
+        "python tools/check_source_provenance.py --tracked-only",
+    ),
+    "exact-SHA CI/readback contracts": (
+        "python tools/check_ci_readback.py --self-test",
+        "python -B tests/ci-readback/test_contract.py",
+    ),
+    "VCS action-authorization contracts": (
+        "python tools/check_vcs_action_authorization.py --self-test",
+        "python tests/vcs-action-authorization/test_contract.py",
+    ),
+    "release action-authorization contracts": (
+        "python tools/check_release_action_authorization.py --self-test",
+        "python tests/release-action-authorization/test_contract.py",
+    ),
+    "candidate package custody": (
+        "python tools/build_candidate_package_record.py --self-test",
+        "python tests/artifact-tree/test_contract.py",
+        "python tests/candidate-build/test_contract.py",
+    ),
+    "source + candidate maturity": (
+        "python tools/check_no_model_candidate_maturity.py --self-test",
+        "python tests/no-model-candidate-maturity/test_contract.py",
+        "python tests/no-model-candidate-maturity/test_candidate_maturity.py",
+    ),
+    "evidence retention + export": (
+        "python tools/check_evidence_retention_manifest.py --self-test",
+        "python tools/export_cycle_evidence_bundle.py --self-test",
+        "python tests/evidence-retention/test_contract.py",
+    ),
+    "reviewed-campaign no-dispatch orchestration": (
+        "python tools/reviewed_campaign_orchestrator.py --self-test",
+        "python tests/reviewed-campaign-orchestration/test_contract.py",
+    ),
+}
 
 
 def argv_for(command: str) -> list[str]:
-    """Split a command string into argv, substituting the current interpreter
-    for a bare "python" token and expanding shell-style globs the way the
-    caller's own shell would. Mirrors tools/run_local_ci.py's argv_for so the
-    two runners resolve identical command strings identically (in particular
-    on Windows, where the shell does not expand globs itself)."""
-    parts = shlex.split(command)
-    if parts and parts[0] == "python":
-        parts[0] = sys.executable
-
-    expanded: list[str] = []
-    for part in parts:
-        if any(marker in part for marker in "*?["):
-            matches = sorted(glob.glob(part))
-            expanded.extend(matches if matches else [part])
-        else:
-            expanded.append(part)
-    return expanded
+    """Resolve one logical command through the shared exact execution profile."""
+    return execution_argv_for(command, expand_globs=True)
 
 
 @dataclass
@@ -106,6 +151,7 @@ class StepResult:
     stderr: str
     duration_sec: float
     timed_out: bool = False
+    execution_profile: dict[str, object] = field(default_factory=dict)
 
 
 @dataclass
@@ -119,36 +165,30 @@ class GateResult:
 
 def run_step(command: str, *, timeout: int = DEFAULT_TIMEOUT_SEC, cwd: Path = ROOT) -> StepResult:
     argv = argv_for(command)
+    profile = execution_profile_for(command)
     start = time.monotonic()
     try:
-        proc = subprocess.run(
+        proc = run_owned_command(
             argv,
             cwd=cwd,
             capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=timeout,
+            timeout_seconds=timeout,
+            env=execution_environment_for(command),
         )
         duration = time.monotonic() - start
+        stdout = (proc.stdout or b"").decode("utf-8", errors="replace")
+        stderr = (proc.stderr or b"").decode("utf-8", errors="replace")
+        if proc.timed_out and not stderr:
+            stderr = f"TIMEOUT after {timeout}s"
         return StepResult(
             command=command,
             argv=argv,
             returncode=proc.returncode,
-            stdout=proc.stdout,
-            stderr=proc.stderr,
+            stdout=stdout,
+            stderr=stderr,
             duration_sec=duration,
-        )
-    except subprocess.TimeoutExpired as exc:
-        duration = time.monotonic() - start
-        return StepResult(
-            command=command,
-            argv=argv,
-            returncode=124,
-            stdout=(exc.stdout or "") if isinstance(exc.stdout, str) else "",
-            stderr=(exc.stderr or "") if isinstance(exc.stderr, str) else f"TIMEOUT after {timeout}s",
-            duration_sec=duration,
-            timed_out=True,
+            timed_out=proc.timed_out,
+            execution_profile=profile,
         )
     except FileNotFoundError as exc:
         duration = time.monotonic() - start
@@ -159,6 +199,21 @@ def run_step(command: str, *, timeout: int = DEFAULT_TIMEOUT_SEC, cwd: Path = RO
             stdout="",
             stderr=str(exc),
             duration_sec=duration,
+            execution_profile=profile,
+        )
+    except RuntimeError as exc:
+        if OWNED_TIMEOUT_TEARDOWN_FAILURE.fullmatch(str(exc)) is None:
+            raise
+        duration = time.monotonic() - start
+        return StepResult(
+            command=command,
+            argv=argv,
+            returncode=TIMEOUT_EXIT_CODE,
+            stdout="",
+            stderr=f"TIMEOUT after {timeout}s; owned process-tree teardown failed: {exc}",
+            duration_sec=duration,
+            timed_out=True,
+            execution_profile=profile,
         )
 
 
@@ -170,6 +225,8 @@ def steps_all_pass(commands: list[str], *, timeout: int = DEFAULT_TIMEOUT_SEC) -
         steps.append(result)
         if result.returncode != 0:
             ok = False
+        if result.timed_out:
+            break
     return ok, steps
 
 
@@ -457,6 +514,8 @@ def gate_five_smoke_input_preflight(
         steps.append(result)
         if result.returncode != 0:
             ok = False
+        if result.timed_out:
+            break
     return ok, steps, (
         "confirm each registry-owned input exists with its canonical bytes/hash and that the run-dir did not already exist; "
         "this mode never invokes a model (verified by reading run_staged_current_skill_smoke.py: "
@@ -482,29 +541,18 @@ def gate_prompt_pack_manifest_discipline() -> tuple[bool, list[StepResult], str]
 
 
 def gate_first_failed_checker_reporting() -> tuple[bool, list[StepResult], str]:
-    start = time.monotonic()
     fixture_path = ROOT / STABLE_EXPLAIN_FIXTURE
     sidecar_path = fixture_path.parent / f"{fixture_path.stem}.expected-explain.json"
     command = f"python tools/check_staged_runtime_handshake.py --explain-stage-failure --records {STABLE_EXPLAIN_FIXTURE}"
-    argv = argv_for(command)
-    proc = subprocess.run(
-        argv,
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=DEFAULT_TIMEOUT_SEC,
-    )
-    duration = time.monotonic() - start
-    step = StepResult(
-        command=command,
-        argv=argv,
-        returncode=proc.returncode,
-        stdout=proc.stdout,
-        stderr=proc.stderr,
-        duration_sec=duration,
-    )
+    step = run_step(command)
+
+    expected_returncode = EXPECTED_GATE_RETURN_CODES[16]
+    if step.returncode != expected_returncode:
+        step.stderr += (
+            f"\nstable invalid fixture exit mismatch: expected {expected_returncode}, "
+            f"got {step.returncode}"
+        )
+        return False, [step], "restore the stable invalid fixture's exact failure-exit contract"
 
     if not sidecar_path.exists():
         step.stderr += f"\nmissing expected sidecar: {sidecar_path}"
@@ -516,7 +564,7 @@ def gate_first_failed_checker_reporting() -> tuple[bool, list[StepResult], str]:
         step.stderr += f"\nsidecar is not valid JSON: {exc}"
         return False, [step], "repair the malformed .expected-explain.json sidecar"
 
-    stdout_lines = [line for line in proc.stdout.splitlines() if line.strip()]
+    stdout_lines = [line for line in step.stdout.splitlines() if line.strip()]
     if len(stdout_lines) != 1:
         step.stderr += f"\nexpected exactly one JSON line on stdout, got {len(stdout_lines)}"
         return False, [step], "the checker's --explain-stage-failure output shape regressed for a single-record call"
@@ -556,6 +604,72 @@ def gate_runtime_context_and_producer_parity() -> tuple[bool, list[StepResult], 
     )
 
 
+def gate_tracked_source_and_checkpoint_contracts() -> tuple[bool, list[StepResult], str]:
+    commands = list(A16_GATE_COMMANDS["tracked-source + checkpoint contracts"])
+    ok, steps = steps_all_pass(commands)
+    return ok, steps, (
+        "repair the tracked non-self-referential source binding or checkpoint ancestry contract; "
+        "this gate does not issue an external exact-commit receipt"
+    )
+
+
+def gate_exact_sha_ci_readback_contracts() -> tuple[bool, list[StepResult], str]:
+    commands = list(A16_GATE_COMMANDS["exact-SHA CI/readback contracts"])
+    ok, steps = steps_all_pass(commands)
+    return ok, steps, (
+        "repair exact-workflow, Linux A01, Task 7 verdict, receipt-lineage, or command-timeout custody; "
+        "this gate is offline contract proof, not a live GitHub CI result"
+    )
+
+
+def gate_vcs_action_authorization_contracts() -> tuple[bool, list[StepResult], str]:
+    commands = list(A16_GATE_COMMANDS["VCS action-authorization contracts"])
+    ok, steps = steps_all_pass(commands)
+    return ok, steps, "repair one-use commit/push authorization, claim, receipt, or remote-CAS custody"
+
+
+def gate_release_action_authorization_contracts() -> tuple[bool, list[StepResult], str]:
+    commands = list(A16_GATE_COMMANDS["release action-authorization contracts"])
+    ok, steps = steps_all_pass(commands)
+    return ok, steps, "repair one-use package/tag/release authorization and receipt custody; no release action is executed here"
+
+
+def gate_candidate_package_custody() -> tuple[bool, list[StepResult], str]:
+    commands = list(A16_GATE_COMMANDS["candidate package custody"])
+    ok, steps = steps_all_pass(commands)
+    return ok, steps, (
+        "repair shared tree identity, private extraction, candidate authorization/claim, or package-byte custody; "
+        "this gate builds only temporary no-dispatch fixtures"
+    )
+
+
+def gate_source_and_candidate_maturity() -> tuple[bool, list[StepResult], str]:
+    commands = list(A16_GATE_COMMANDS["source + candidate maturity"])
+    ok, steps = steps_all_pass(commands)
+    return ok, steps, (
+        "repair exact source-preflight/live-review binding or immutable candidate-maturity derivation; "
+        "unit fixtures do not create a live mature candidate"
+    )
+
+
+def gate_evidence_retention_and_export() -> tuple[bool, list[StepResult], str]:
+    commands = list(A16_GATE_COMMANDS["evidence retention + export"])
+    ok, steps = steps_all_pass(commands)
+    return ok, steps, (
+        "repair complete immutable export, receipt-chain, resume, latest-pointer, or reparse custody; "
+        "this gate uses private temporary fixtures only"
+    )
+
+
+def gate_reviewed_campaign_no_dispatch() -> tuple[bool, list[StepResult], str]:
+    commands = list(A16_GATE_COMMANDS["reviewed-campaign no-dispatch orchestration"])
+    ok, steps = steps_all_pass(commands)
+    return ok, steps, (
+        "repair no-dispatch orchestration, exact adapter-envelope custody, usage/finalizer state, or retry lineage; "
+        "this gate never authorizes or performs a provider call"
+    )
+
+
 @dataclass
 class Gate:
     number: int
@@ -581,6 +695,14 @@ GATES: list[Gate] = [
     Gate(15, "prompt-pack manifest discipline", gate_prompt_pack_manifest_discipline),
     Gate(16, "first-failed-checker reporting", gate_first_failed_checker_reporting),
     Gate(17, "runtime-context + producer/package parity", gate_runtime_context_and_producer_parity),
+    Gate(18, "tracked-source + checkpoint contracts", gate_tracked_source_and_checkpoint_contracts),
+    Gate(19, "exact-SHA CI/readback contracts", gate_exact_sha_ci_readback_contracts),
+    Gate(20, "VCS action-authorization contracts", gate_vcs_action_authorization_contracts),
+    Gate(21, "release action-authorization contracts", gate_release_action_authorization_contracts),
+    Gate(22, "candidate package custody", gate_candidate_package_custody),
+    Gate(23, "source + candidate maturity", gate_source_and_candidate_maturity),
+    Gate(24, "evidence retention + export", gate_evidence_retention_and_export),
+    Gate(25, "reviewed-campaign no-dispatch orchestration", gate_reviewed_campaign_no_dispatch),
 ]
 
 
@@ -597,6 +719,8 @@ def gate_table_is_well_formed(gates: list[Gate]) -> list[str]:
             errors.append(f"gate {gate.number} ({gate.name}): run is not callable")
     if [g.number for g in gates] != sorted(g.number for g in gates):
         errors.append("gate numbers are not in ascending order")
+    if [g.number for g in gates] != list(range(1, len(gates) + 1)):
+        errors.append("gate numbers are not contiguous from 1")
     return errors
 
 
@@ -605,9 +729,72 @@ def aggregate_decision(gate_results: list[GateResult]) -> str:
     least one gate (an empty gate list must never authorize)."""
     if not gate_results:
         return NOT_AUTHORIZED_TOKEN
+    if any(step.timed_out for result in gate_results for step in result.steps):
+        return NOT_AUTHORIZED_TOKEN
     if all(result.passed for result in gate_results):
         return AUTHORIZED_TOKEN
     return NOT_AUTHORIZED_TOKEN
+
+
+def build_native_report(gate_results: list[GateResult]) -> dict[str, object]:
+    commands = [step.command for result in gate_results for step in result.steps]
+    complete = (
+        len(gate_results) == EXPECTED_GATE_COUNT
+        and aggregate_decision(gate_results) == AUTHORIZED_TOKEN
+        and all(result.steps for result in gate_results)
+        and all(not step.timed_out for result in gate_results for step in result.steps)
+    )
+    return {
+        "schema": "daee-no-model-preflight-report-v2",
+        "decision": aggregate_decision(gate_results),
+        "complete": complete,
+        "gate_count": len(gate_results),
+        "command_count": len(commands),
+        "command_set_sha256": command_list_sha256(commands),
+        "execution_plan_sha256": execution_plan_sha256(commands),
+        "python_execution_profile_id": PYTHON_EXECUTION_PROFILE_ID,
+        "gates": [
+            {
+                "number": gate.number,
+                "name": result.name,
+                "passed": result.passed,
+                "repair_lane": result.repair_lane,
+                "steps": [
+                    {
+                        "command": step.command,
+                        "execution_profile": step.execution_profile or execution_profile_for(step.command),
+                        "returncode": step.returncode,
+                        "duration_sec": round(step.duration_sec, 3),
+                        "timed_out": step.timed_out,
+                        "stdout_tail": step_tail(step) if not result.passed else "",
+                    }
+                    for step in result.steps
+                ],
+            }
+            for gate, result in zip(GATES, gate_results)
+        ],
+    }
+
+
+def publish_native_report(path: Path, report: dict[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    raw = (json.dumps(report, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            dir=path.parent, prefix=f".{path.name}.", suffix=".tmp", delete=False
+        ) as handle:
+            temporary = Path(handle.name)
+            handle.write(raw)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+        temporary = None
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+    if path.read_bytes() != raw:
+        raise OSError(f"native preflight report readback drifted: {path}")
 
 
 def run_self_test() -> int:
@@ -617,8 +804,8 @@ def run_self_test() -> int:
     if table_errors:
         failures.extend(table_errors)
 
-    if len(GATES) != 17:
-        failures.append(f"expected exactly 17 gates, found {len(GATES)}")
+    if len(GATES) != EXPECTED_GATE_COUNT:
+        failures.append(f"expected exactly {EXPECTED_GATE_COUNT} gates, found {len(GATES)}")
     parity_gate_present = any(
         gate.number == 17
         and gate.name == "runtime-context + producer/package parity"
@@ -626,6 +813,21 @@ def run_self_test() -> int:
     )
     if not parity_gate_present:
         failures.append("Gate 17 runtime-context + producer/package parity is missing")
+    expected_a16_gates = [
+        (18, "tracked-source + checkpoint contracts", gate_tracked_source_and_checkpoint_contracts),
+        (19, "exact-SHA CI/readback contracts", gate_exact_sha_ci_readback_contracts),
+        (20, "VCS action-authorization contracts", gate_vcs_action_authorization_contracts),
+        (21, "release action-authorization contracts", gate_release_action_authorization_contracts),
+        (22, "candidate package custody", gate_candidate_package_custody),
+        (23, "source + candidate maturity", gate_source_and_candidate_maturity),
+        (24, "evidence retention + export", gate_evidence_retention_and_export),
+        (25, "reviewed-campaign no-dispatch orchestration", gate_reviewed_campaign_no_dispatch),
+    ]
+    a16_gate_table_ok = [
+        (gate.number, gate.name, gate.run) for gate in GATES[17:]
+    ] == expected_a16_gates
+    if not a16_gate_table_ok:
+        failures.append("A16 no-model gate family is missing or drifted")
 
     for gate in GATES:
         if not gate.name.strip():
@@ -769,8 +971,9 @@ def run_self_test() -> int:
 
     for name, ok in (
         ("gate table well-formed", not table_errors),
-        ("17 gates present", len(GATES) == 17),
+        (f"{EXPECTED_GATE_COUNT} gates present", len(GATES) == EXPECTED_GATE_COUNT),
         ("Gate 17 runtime-context + producer/package parity present", parity_gate_present),
+        ("A16 no-model gate family exact", a16_gate_table_ok),
         ("aggregate authorizes only when all pass", aggregate_decision(all_pass) == AUTHORIZED_TOKEN),
         ("aggregate rejects on any single failure", all(
             aggregate_decision(
@@ -849,6 +1052,9 @@ def run_full_sweep(json_path: Path | None) -> int:
                     if tail:
                         for line in tail.splitlines()[-40:]:
                             print(f"    | {line}")
+        if any(step.timed_out for step in steps):
+            print("    timeout custody stop: no later preflight command will start")
+            break
 
     decision = aggregate_decision(gate_results)
 
@@ -865,31 +1071,7 @@ def run_full_sweep(json_path: Path | None) -> int:
         print(f"  {'PASS' if result.passed else 'FAIL'}  {result.name}")
 
     if json_path is not None:
-        report = {
-            "schema": "daee-no-model-preflight-report-v1",
-            "decision": decision,
-            "gates": [
-                {
-                    "number": gate.number,
-                    "name": result.name,
-                    "passed": result.passed,
-                    "repair_lane": result.repair_lane,
-                    "steps": [
-                        {
-                            "command": step.command,
-                            "returncode": step.returncode,
-                            "duration_sec": round(step.duration_sec, 3),
-                            "timed_out": step.timed_out,
-                            "stdout_tail": step_tail(step) if not result.passed else "",
-                        }
-                        for step in result.steps
-                    ],
-                }
-                for gate, result in zip(GATES, gate_results)
-            ],
-        }
-        json_path.parent.mkdir(parents=True, exist_ok=True)
-        json_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        publish_native_report(json_path, build_native_report(gate_results))
         print(f"json report written: {json_path}")
 
     print("")

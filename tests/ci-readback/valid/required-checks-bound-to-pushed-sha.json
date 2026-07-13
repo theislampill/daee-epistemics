@@ -1,0 +1,438 @@
+{
+  "schema": "daee-source-commit-receipt-v1",
+  "receipt_id": "19336787305122b08e0bd2632a6e55167094a9b200015836fa05683565570ba0",
+  "status": "EXACT_SHA_CI_GREEN",
+  "provider": "github-actions",
+  "repository": {
+    "full_name": "theislampill/daee-epistemics",
+    "remote_url": "https://github.com/theislampill/daee-epistemics.git",
+    "remote_name": "origin",
+    "branch": "codex/v0.4.6.0-runtime-footprint-b10",
+    "ref": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10"
+  },
+  "source": {
+    "commit_sha": "3333333333333333333333333333333333333333",
+    "tree_oid": "4444444444444444444444444444444444444444",
+    "raw_parent_lines": [
+      "parent 1111111111111111111111111111111111111111"
+    ],
+    "parent_oids": [
+      "1111111111111111111111111111111111111111"
+    ],
+    "clean_state": {
+      "index_clean": true,
+      "worktree_clean": true,
+      "untracked_source_paths": [],
+      "porcelain_v2_byte_count": 0,
+      "porcelain_v2_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "equality": {
+      "local_head": "3333333333333333333333333333333333333333",
+      "upstream_ref": "refs/remotes/origin/codex/v0.4.6.0-runtime-footprint-b10",
+      "upstream_oid": "3333333333333333333333333333333333333333",
+      "live_remote_ref": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10",
+      "live_remote_oid": "3333333333333333333333333333333333333333",
+      "expected_old_remote_oid": "1111111111111111111111111111111111111111",
+      "all_equal": true
+    },
+    "state_digest_sha256": "8268e5eb9a8a9ff65cf14178cba097af92acbaae7014e41ca92a248def614d17"
+  },
+  "lineage": {
+    "checkpoint_commit": "bcccb4e34c75e1f8e363ef020e2deeaabae60435",
+    "checkpoint_tree": "7238bb567209003adb9b07cb0ec2d1629780cc2e",
+    "strict_successor": true,
+    "commit_count_from_checkpoint": 2,
+    "full_history": true,
+    "shallow_repository": false,
+    "replace_objects_disabled": true,
+    "replace_ref_count": 0,
+    "grafts_present": false,
+    "source_commit_object_type": "commit",
+    "source_tree_object_type": "tree",
+    "checkpoint_object_type": "commit",
+    "parent_object_types": [
+      {
+        "oid": "1111111111111111111111111111111111111111",
+        "type": "commit"
+      }
+    ]
+  },
+  "source_binding": {
+    "schema": "daee-source-binding-v1",
+    "binding_id": "daee-v0.4.6.0-branch10-predecessor-binding",
+    "canonical_path": "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
+    "raw_sha256": "2cab65e72092209c48c15a2fdf5d31809964a77422cf5c160d1b32a517a56950"
+  },
+  "carriers": [
+    {
+      "path": "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
+      "schema": "daee-andon-closure-ledger-v2",
+      "blob_oid": "a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1",
+      "byte_count": 157321,
+      "raw_sha256": "0101010101010101010101010101010101010101010101010101010101010101",
+      "source_binding_raw_sha256": "2cab65e72092209c48c15a2fdf5d31809964a77422cf5c160d1b32a517a56950"
+    },
+    {
+      "path": "docs/audits/v0.4.6.0-wip-andon-contract-registry.json",
+      "schema": "daee-andon-contract-registry-v1",
+      "blob_oid": "a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2",
+      "byte_count": 21322,
+      "raw_sha256": "0202020202020202020202020202020202020202020202020202020202020202",
+      "source_binding_raw_sha256": "2cab65e72092209c48c15a2fdf5d31809964a77422cf5c160d1b32a517a56950"
+    },
+    {
+      "path": "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
+      "schema": "daee-architecture-decision-ledger-v1",
+      "blob_oid": "a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3",
+      "byte_count": 43357,
+      "raw_sha256": "0303030303030303030303030303030303030303030303030303030303030303",
+      "source_binding_raw_sha256": "2cab65e72092209c48c15a2fdf5d31809964a77422cf5c160d1b32a517a56950"
+    },
+    {
+      "path": "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json",
+      "schema": "daee-state-capsule-v2-migration-ledger-v1",
+      "blob_oid": "a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4",
+      "byte_count": 9126,
+      "raw_sha256": "0404040404040404040404040404040404040404040404040404040404040404",
+      "source_binding_raw_sha256": "2cab65e72092209c48c15a2fdf5d31809964a77422cf5c160d1b32a517a56950"
+    }
+  ],
+  "migration_carrier": {
+    "path": "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json",
+    "schema": "daee-state-capsule-v2-migration-ledger-v1",
+    "status": "CHECKER_VERIFIED_STRUCTURAL",
+    "shared_integration_status": "COMPLETE",
+    "blob_oid": "a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4",
+    "raw_sha256": "0404040404040404040404040404040404040404040404040404040404040404"
+  },
+  "carrier_binding_digest": {
+    "algorithm": "sha256-canonical-json-carrier-binding-v1",
+    "sha256": "d16a7658c5973d6597e35a8c334b247ee967b6ece7005003d6a7462baeab498d"
+  },
+  "deterministic_verdicts": {
+    "no_model_preflight": {
+      "path": "tests/ci-readback/support/task7-no-model-preflight.json",
+      "byte_count": 2435,
+      "sha256": "ae0634eaf3a2a50d4afce5a1b7f7c8066be7b70eb4dfd1425f2192cc895f7d88",
+      "artifact_schema": "daee-task7-deterministic-evidence-v1",
+      "kind": "no-model-preflight",
+      "status": "PASS"
+    },
+    "full_local_ci": {
+      "path": "tests/ci-readback/support/task7-full-local-ci.json",
+      "byte_count": 2410,
+      "sha256": "b204f7b960754fdf16741928abe4b758f1174e22c3e9c5992053bd05a5dc8b75",
+      "artifact_schema": "daee-task7-deterministic-evidence-v1",
+      "kind": "full-local-ci",
+      "status": "PASS"
+    },
+    "generated_freshness_package": {
+      "path": "tests/ci-readback/support/task7-generated-freshness-package.json",
+      "byte_count": 2480,
+      "sha256": "c5cb08e6e426cef4330f1aa822b46f95134dbd49e7b82178a156218aee63f03d",
+      "artifact_schema": "daee-task7-deterministic-evidence-v1",
+      "kind": "generated-freshness-package",
+      "status": "PASS"
+    },
+    "independent_whole_branch_review": {
+      "path": "tests/ci-readback/support/task7-independent-whole-branch-review.json",
+      "byte_count": 2501,
+      "sha256": "3fbfae89fad7803e51a3820653851d59e47f3d6ee407f2f6e35524a4d3b9d60b",
+      "artifact_schema": "daee-task7-deterministic-evidence-v1",
+      "kind": "independent-whole-branch-review",
+      "status": "ACCEPT"
+    }
+  },
+  "vcs": {
+    "commit": {
+      "authorization_id": "plan17-countermeasure-commit",
+      "nonce": "nonce-plan17-countermeasure-commit-0001",
+      "authorization": {
+        "path": "tests/vcs-action-authorization/valid/exact-countermeasure-commit.json",
+        "sha256": "5c96ce91f4bd5166663b47a2e0f53f0772a8947a2356004b6034d1f927c51bc5"
+      },
+      "claim": {
+        "path": "tests/ci-readback/support/commit-claim.json",
+        "sha256": "f4472245286d72be7d2cdc494b5825d6939574b32be12a1db3bdaf684c9e113f"
+      },
+      "action_receipt": {
+        "path": "tests/ci-readback/support/commit-receipt.json",
+        "sha256": "8502f41316d261f3254551584012699e842985379a57d39fe1dabfa0a92a7f8e"
+      },
+      "result": "PASS"
+    },
+    "push": {
+      "authorization_id": "plan17-ci-readback-push",
+      "nonce": "nonce-plan17-ci-readback-push-0001",
+      "authorization": {
+        "path": "tests/ci-readback/support/push-authorization.json",
+        "sha256": "c0297dab3d6adc5a7e6d8e69e49f068a8cd01c19157b57d24a7913b8b5d46d03"
+      },
+      "claim": {
+        "path": "tests/ci-readback/support/push-claim.json",
+        "sha256": "1ba96cc5500d7b57bda8e6b603110c5741ee56bb169810a2d416665e6a4e884c"
+      },
+      "action_receipt": {
+        "path": "tests/ci-readback/support/push-receipt.json",
+        "sha256": "efaebaba91efea058adf0b55bb4400222eda3f0fb2c82476509a594a1e8a1817"
+      },
+      "result": "PASS"
+    },
+    "expected_old_remote_oid": "1111111111111111111111111111111111111111"
+  },
+  "workflow": {
+    "id": 42,
+    "name": "CI",
+    "path": ".github/workflows/ci.yml",
+    "blob_oid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "raw_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "html_url": "https://github.com/theislampill/daee-epistemics/actions/workflows/ci.yml"
+  },
+  "run": {
+    "id": 1001,
+    "number": 77,
+    "attempt": 1,
+    "event": "push",
+    "head_branch": "codex/v0.4.6.0-runtime-footprint-b10",
+    "head_sha": "3333333333333333333333333333333333333333",
+    "check_suite_id": 4001,
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-07-12T12:08:00Z",
+    "updated_at": "2026-07-12T12:21:00Z",
+    "html_url": "https://github.com/theislampill/daee-epistemics/actions/runs/1001",
+    "api_url": "https://api.github.com/repos/theislampill/daee-epistemics/actions/runs/1001"
+  },
+  "required_checks": {
+    "derivation_source": "consumed-push-authorization",
+    "owner_required_set": [
+      "CI / runtime-checks"
+    ],
+    "branch_protection": {
+      "endpoint": "repos/theislampill/daee-epistemics/branches/codex%2Fv0.4.6.0-runtime-footprint-b10/protection/required_status_checks",
+      "http_status": 404,
+      "protected": false,
+      "strict": null,
+      "contexts": [],
+      "checks": [],
+      "matches_owner_required_set": null
+    },
+    "results": [
+      {
+        "name": "CI / runtime-checks",
+        "raw_check_run_name": "runtime-checks",
+        "check_run_id": 3001,
+        "check_suite_id": 4001,
+        "app": {
+          "id": 15368,
+          "slug": "github-actions",
+          "name": "GitHub Actions"
+        },
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-07-12T12:09:00Z",
+        "completed_at": "2026-07-12T12:20:00Z",
+        "details_url": "https://github.com/theislampill/daee-epistemics/actions/runs/1001/job/2001",
+        "api_url": "https://api.github.com/repos/theislampill/daee-epistemics/check-runs/3001"
+      }
+    ]
+  },
+  "job": {
+    "id": 2001,
+    "name": "runtime-checks",
+    "check_name": "CI / runtime-checks",
+    "raw_check_run_name": "runtime-checks",
+    "check_run_id": 3001,
+    "check_suite_id": 4001,
+    "app": {
+      "id": 15368,
+      "slug": "github-actions",
+      "name": "GitHub Actions"
+    },
+    "runner": {
+      "name": "GitHub Actions 1",
+      "group_name": "GitHub Actions",
+      "labels": [
+        "ubuntu-latest"
+      ]
+    },
+    "status": "completed",
+    "conclusion": "success",
+    "started_at": "2026-07-12T12:09:00Z",
+    "completed_at": "2026-07-12T12:20:00Z",
+    "html_url": "https://github.com/theislampill/daee-epistemics/actions/runs/1001/job/2001",
+    "api_url": "https://api.github.com/repos/theislampill/daee-epistemics/actions/jobs/2001",
+    "check_run_url": "https://api.github.com/repos/theislampill/daee-epistemics/check-runs/3001",
+    "steps": [
+      {
+        "number": 1,
+        "name": "Checkout",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-07-12T12:09:01Z",
+        "completed_at": "2026-07-12T12:09:10Z"
+      },
+      {
+        "number": 2,
+        "name": "Setup Python",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-07-12T12:09:11Z",
+        "completed_at": "2026-07-12T12:09:20Z"
+      },
+      {
+        "number": 3,
+        "name": "Install checker dependencies",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-07-12T12:09:21Z",
+        "completed_at": "2026-07-12T12:09:59Z"
+      },
+      {
+        "number": 4,
+        "name": "Verify tracked source binding and checkpoint",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-07-12T12:10:00Z",
+        "completed_at": "2026-07-12T12:10:00Z"
+      },
+      {
+        "number": 5,
+        "name": "Linux A01 custody self-test",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-07-12T12:10:00Z",
+        "completed_at": "2026-07-12T12:10:01Z"
+      },
+      {
+        "number": 6,
+        "name": "Build and verify runtime",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-07-12T12:11:00Z",
+        "completed_at": "2026-07-12T12:20:00Z"
+      }
+    ]
+  },
+  "job_log": {
+    "download_endpoint": "repos/theislampill/daee-epistemics/actions/jobs/2001/logs",
+    "byte_count": 812,
+    "sha256": "9aec91b8fc314cc776b150b6b05ec008bd8814f82311c82f78125dba927d9fc8"
+  },
+  "artifact_inventory": [
+    {
+      "name": "linux-a01-evidence",
+      "id": 5001,
+      "size_in_bytes": 2048,
+      "expired": false,
+      "created_at": "2026-07-12T12:11:00Z",
+      "expires_at": "2026-10-10T12:11:00Z",
+      "api_url": "https://api.github.com/repos/theislampill/daee-epistemics/actions/artifacts/5001",
+      "archive_download_url": "https://api.github.com/repos/theislampill/daee-epistemics/actions/artifacts/5001/zip",
+      "zip_sha256": "d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3",
+      "entry_path": "linux-a01.json",
+      "entry_byte_count": 1288,
+      "entry_sha256": "1a31284dd1310ce72fa0608acb274db28b019d065951ebbd62cb88aa7de9f1e6"
+    }
+  ],
+  "linux_a01": {
+    "source_sha": "3333333333333333333333333333333333333333",
+    "run_id": 1001,
+    "job_id": 2001,
+    "check_run_id": 3001,
+    "runner_label": "ubuntu-latest",
+    "step": {
+      "number": 5,
+      "name": "Linux A01 custody self-test",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-07-12T12:10:00Z",
+      "completed_at": "2026-07-12T12:10:01Z"
+    },
+    "command": "python tools/check_captured_output_manifest.py --self-test",
+    "checker": {
+      "path": "tools/check_captured_output_manifest.py",
+      "blob_oid": "b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1",
+      "raw_sha256": "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1"
+    },
+    "contract_test": {
+      "path": "tests/captured-output-custody/test_contract.py",
+      "blob_oid": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+      "raw_sha256": "c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2"
+    },
+    "suite_marker": "tests/captured-output-custody/test_contract.py",
+    "suite_test_count": 23,
+    "suite_status": "OK",
+    "skipped_count": 0,
+    "substituted": false,
+    "artifact": {
+      "name": "linux-a01-evidence",
+      "id": 5001,
+      "size_in_bytes": 2048,
+      "expired": false,
+      "created_at": "2026-07-12T12:11:00Z",
+      "expires_at": "2026-10-10T12:11:00Z",
+      "api_url": "https://api.github.com/repos/theislampill/daee-epistemics/actions/artifacts/5001",
+      "archive_download_url": "https://api.github.com/repos/theislampill/daee-epistemics/actions/artifacts/5001/zip",
+      "zip_sha256": "d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3",
+      "entry_path": "linux-a01.json",
+      "entry_byte_count": 1288,
+      "entry_sha256": "1a31284dd1310ce72fa0608acb274db28b019d065951ebbd62cb88aa7de9f1e6"
+    },
+    "evidence": {
+      "schema": "daee-linux-a01-ci-evidence-v1",
+      "evidence_id": "bc91ac2289e38f83ede77734f592a31e2668f76f5a4177da7ee2a2f6a06cbf42",
+      "source_sha": "3333333333333333333333333333333333333333",
+      "run_id": 1001,
+      "run_number": 77,
+      "run_attempt": 1,
+      "job_name": "runtime-checks",
+      "runner_os": "Linux",
+      "runner_arch": "X64",
+      "runner_name": "GitHub Actions 1",
+      "runner_environment": "github-hosted",
+      "runner_label": "ubuntu-latest",
+      "step_name": "Linux A01 custody self-test",
+      "command": "python tools/check_captured_output_manifest.py --self-test",
+      "checker": {
+        "path": "tools/check_captured_output_manifest.py",
+        "blob_oid": "b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1",
+        "raw_sha256": "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1"
+      },
+      "contract_test": {
+        "path": "tests/captured-output-custody/test_contract.py",
+        "blob_oid": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2",
+        "raw_sha256": "c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2"
+      },
+      "suite_marker": "tests/captured-output-custody/test_contract.py",
+      "suite_test_count": 23,
+      "suite_status": "OK",
+      "skipped_count": 0,
+      "substituted": false,
+      "stdout_sha256": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native_linux": true,
+      "candidate_claim": false,
+      "terminal_claim": false
+    },
+    "job_log_sha256": "9aec91b8fc314cc776b150b6b05ec008bd8814f82311c82f78125dba927d9fc8",
+    "log_segment_sha256": "a7d78acea5ef713388836edbaef71b86ef25f3bb40e2a8d6f7eedeb0df0ccf79"
+  },
+  "predecessor_record_sha256": null,
+  "predecessor_receipt": {
+    "kind": "genesis",
+    "receipt_path": null,
+    "receipt_sha256": null
+  },
+  "custody_sequence": 1,
+  "receipt_locator": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/receipts/source-commit/3333333333333333333333333333333333333333.json",
+  "observed_at": "2026-07-12T12:22:00Z",
+  "candidate_boundary": "exact-source-and-ci-proof-only-not-candidate-maturity",
+  "non_claims": [
+    "does-not-claim-deterministic-whole-branch-closure",
+    "does-not-claim-candidate-maturity",
+    "does-not-authorize-or-execute-model-provider-use",
+    "does-not-record-owner-acceptance"
+  ],
+  "terminal_claim": false
+}

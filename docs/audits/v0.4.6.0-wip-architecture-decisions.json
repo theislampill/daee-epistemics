@@ -587,7 +587,7 @@
         "17_sustainment_hansei_and_release_completion_plan.md"
       ],
       "owner_files": [
-        "tools/custody_fs.py",
+        "tools/artifact_tree.py",
         "tools/build_candidate_package_record.py"
       ],
       "superseded_alternatives": [
@@ -882,7 +882,11 @@
         "schema/vcs-action-authorization.schema.json",
         "schema/ci-readback.schema.json",
         "tools/check_vcs_action_authorization.py",
-        "tools/check_ci_readback.py"
+        "tools/check_ci_readback.py",
+        "tools/write_linux_a01_evidence.py",
+        "tools/write_task7_deterministic_evidence.py",
+        "tests/ci-readback/test_contract.py",
+        ".github/workflows/ci.yml"
       ],
       "superseded_alternatives": [
         "campaign authorization implies Git authority",
@@ -920,7 +924,11 @@
         "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
         "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json",
         "schema/ci-readback.schema.json",
-        "tools/check_ci_readback.py"
+        "tools/check_ci_readback.py",
+        "tools/write_linux_a01_evidence.py",
+        "tools/write_task7_deterministic_evidence.py",
+        "tests/ci-readback/test_contract.py",
+        ".github/workflows/ci.yml"
       ],
       "superseded_alternatives": [
         "tracked current-commit self-equality inside the commit being certified",
@@ -935,6 +943,47 @@
       "non_claims": [
         "tracked predecessor intent is not proof of the current commit, remote equality, CI, candidate maturity, or terminal closure",
         "the future receipt owner path is not evidence that a receipt exists or has been validated"
+      ]
+    },
+    {
+      "decision_id": "DAEE-ADR-046-028",
+      "status": "ACCEPTED",
+      "title": "Shared candidate tree identity and create-once readiness custody",
+      "decision": "Candidate extraction, package parity, runtime-context delivery, and smoke structural verification share the framed daee-tree-sha256-v1 identity. Candidate archive, extraction, bound record, and readiness marker publish under private create-once custody and every downstream consumer revalidates the exact READY_UNUSED bytes before proceeding.",
+      "rationale": "One framed tree identity removes cross-consumer digest ambiguity, while create-once publication plus full readback prevents a partially published or later-mutated package from being presented as an unused mature candidate.",
+      "affected_andon_ids": [
+        "A14",
+        "A16"
+      ],
+      "affected_plans": [
+        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/A16-PRE-SMOKE-READINESS-PLAN.md"
+      ],
+      "owner_files": [
+        "tools/artifact_tree.py",
+        "tools/build_candidate_package_record.py",
+        "schema/smoke-matrix.schema.json",
+        "tools/check_smoke_matrix_manifest.py",
+        "tools/check_package_harness_parity.py",
+        "tools/check_runtime_context_delivery.py",
+        "tools/producer-contract-registry.json",
+        "tests/artifact-tree/test_contract.py",
+        "tests/candidate-build/test_contract.py",
+        "tests/smoke-matrix/reviewed-five-smoke-protocol.json",
+        "tests/smoke-matrix/test_protocol.py"
+      ],
+      "superseded_alternatives": [
+        "consumer-specific incompatible tree digests",
+        "candidate readiness inferred from archive existence",
+        "mutable or replaceable final candidate publication"
+      ],
+      "decision_owner": "repository owner via the 2026-07-12 A16 pre-smoke readiness plan",
+      "accepted_at": "2026-07-12",
+      "accepted_at_precision": "date",
+      "acceptance_evidence": "Task 4 owner report and four-round independent candidate-custody review ending in bounded ACCEPT.",
+      "reopen_condition": "Only an independently reviewed custody design with equivalent cross-consumer tree identity, no-replace publication, and full downstream byte revalidation.",
+      "non_claims": [
+        "READY_UNUSED is not candidate maturity or model authorization",
+        "bounded candidate-custody acceptance is not A14, A16, deterministic closure, exact-SHA CI, or campaign readiness"
       ]
     }
   ],

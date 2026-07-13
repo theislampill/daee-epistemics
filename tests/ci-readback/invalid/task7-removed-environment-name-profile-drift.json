@@ -1,0 +1,21 @@
+{
+  "fixture_schema": "daee-checker-fixture-v1",
+  "base": "tests/ci-readback/valid/required-checks-bound-to-pushed-sha.json",
+  "operations": [
+    {
+      "op": "set",
+      "path": "deterministic_verdicts.no_model_preflight.path",
+      "value": "tests/ci-readback/support/task7-removed-environment-name-profile-drift.json"
+    },
+    {
+      "op": "set",
+      "path": "deterministic_verdicts.no_model_preflight.byte_count",
+      "value": 2475
+    },
+    {
+      "op": "set",
+      "path": "deterministic_verdicts.no_model_preflight.sha256",
+      "value": "c2cf46f7a31b85c50ea0767369f6df17f67a51bc769bde4edd293a2fc8c3ac13"
+    }
+  ]
+}

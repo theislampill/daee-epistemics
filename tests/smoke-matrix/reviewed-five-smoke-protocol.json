@@ -1,0 +1,53 @@
+{
+  "schema": "daee-smoke-matrix-v1",
+  "kind": "review-protocol",
+  "protocol_id": "reviewed-five-smoke-v1",
+  "input_registry": {
+    "path": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
+    "sha256": "2eb64374a48493bb08a5e08ad39895239a6feb7cced61077012bb84d49b5d4d2"
+  },
+  "case_ids": [
+    "gate88-secularism",
+    "gate88-khaybar",
+    "gate88-trinitarian-j173",
+    "gate88-tst-lillard",
+    "gate88-torah-quran-source-authentication"
+  ],
+  "producer": {
+    "cohort_size": 5,
+    "model": "gpt-5.5",
+    "reasoning_effort": "high",
+    "protocol": "barrier-five-submit-before-await-v1",
+    "isolated_roots": true,
+    "paid_execution_authorized": false
+  },
+  "human_initial_assessment": {
+    "required_count": 5,
+    "all_hash_claimed_before_cold_review": true,
+    "cold_review_disclosure_forbidden_before_claim": true
+  },
+  "cold_review": {
+    "cohort_size": 5,
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "xhigh",
+    "protocol": "independent-cold-review-v1",
+    "isolated_roots": true,
+    "conversation_history_supplied": false,
+    "paid_execution_authorized": false
+  },
+  "final_adjudication": {
+    "human_required": true,
+    "owner_acceptance_required": true,
+    "structural_pass_is_not_acceptance": true
+  },
+  "optional_opus": {
+    "authorized": false,
+    "required": false,
+    "separate_authorization_required": true
+  },
+  "non_claims": [
+    "this tracked protocol does not authorize any model call",
+    "candidate maturity does not constitute smoke success",
+    "final owner acceptance remains open"
+  ]
+}

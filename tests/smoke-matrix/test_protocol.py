@@ -234,6 +234,59 @@ class FixtureProtocolTests(unittest.TestCase):
             "non_claims":["structural PASS is not semantic truth","structural pre-review PASS cannot authorize cold review or final completion by itself"],
         }
         representatives["cycle-verdict"] = {"schema":"daee-smoke-matrix-v1","kind":"cycle-verdict","matrix_id":"m","structural_matrix_status":"PARTIAL","completion_status":"PARTIAL","reviews":[{} for _ in range(5)],"non_claims":["matrix PASS is not release or provenance proof"]}
+        representatives["review-protocol"] = load(ROOT / "tests/smoke-matrix/reviewed-five-smoke-protocol.json")
+        build_auth = {
+            "schema":"daee-smoke-matrix-v1","kind":"candidate-build-authorization","authorization_id":"build-a",
+            "action":"BUILD_EXECUTION_MINI_CANDIDATE","one_use":True,"issued_at":"2026-07-12T00:00:00Z","expires_at":"2026-07-13T00:00:00Z",
+            "branch":"branch","ref":"refs/heads/branch","source_commit":"a"*40,"source_commit_receipt":ref,"ci_readback":ref,"source_preflight":ref,
+            "package_profile":"execution-mini","candidate_id":"candidate","custody_root":"custody","candidate_root":"custody/candidates/candidate",
+            "claim_path":"custody/claims/build-a.claim.json","archive_name":"candidate.skill.zip","max_archive_bytes":1048576,
+            "max_extracted_bytes":1048576,"max_archive_entries":100,"input_registry":ref,"validation_registry":ref,
+            "producer_registry":ref,"escape_registry":ref,"usage_writer":ref,"review_protocol":ref,"model_execution_authorized":False,
+            "terminal_claim":False,"non_claims":["not mature","not model authorized","not accepted"],
+        }
+        build_auth["authorization_sha256"] = canonical_sha256(build_auth)
+        representatives["candidate-build-authorization"] = build_auth
+        build_claim = {"schema":"daee-smoke-matrix-v1","kind":"candidate-build-claim","claim_id":"build-a-claim","authorization_id":"build-a",
+                       "authorization_sha256":build_auth["authorization_sha256"],"candidate_id":"candidate","claimed_at":"2026-07-12T00:01:00Z",
+                       "one_use":True,"terminal_claim":False}
+        build_claim["claim_sha256"] = canonical_sha256(build_claim)
+        representatives["candidate-build-claim"] = build_claim
+        bound_record = {
+            "schema":"daee-smoke-matrix-v1","kind":"candidate-package-record-bound","candidate_id":"candidate","status":"READY_UNUSED",
+            "branch":"branch","ref":"refs/heads/branch","source_commit":"a"*40,"source_commit_receipt":ref,"ci_readback":ref,"source_preflight":ref,
+            "package_profile":"execution-mini","archive":{"path":"candidate.skill.zip","sha256":"a"*64,"byte_count":1},"extraction_receipt":ref,
+            "extracted_root":"extracted","tree_digest_algorithm":"daee-tree-sha256-v1","extracted_tree_sha256":"b"*64,"extracted_file_count":4,
+            "build_manifest":ref,"skill_root":ref,"compiled_module_map":ref,"cold_law_manifest":ref,"input_registry":ref,"validation_registry":ref,
+            "producer_registry":ref,"escape_registry":ref,"usage_writer":ref,"review_protocol":ref,"custody_root":"custody",
+            "candidate_root":"custody/candidates/candidate","readiness_marker_path":"candidate-readiness.json","build_authorization":ref,"build_claim":ref,
+            "build_authorization_sha256":build_auth["authorization_sha256"],"build_claim_sha256":build_claim["claim_sha256"],
+            "claim_status":"UNCLAIMED","promotion_eligible":False,"model_execution_authorized":False,
+            "invalidation_conditions":["source drift","candidate drift","protocol drift"],"non_claims":["not mature","not model authorized","not accepted"],
+        }
+        bound_record["record_sha256"] = canonical_sha256(bound_record)
+        representatives["candidate-package-record-bound"] = bound_record
+        readiness = {"schema":"daee-smoke-matrix-v1","kind":"candidate-readiness-marker","candidate_id":"candidate",
+                     "candidate_root":"custody/candidates/candidate","status":"READY_UNUSED","record_sha256":bound_record["record_sha256"],
+                     "archive_sha256":"a"*64,"tree_digest_algorithm":"daee-tree-sha256-v1","extracted_tree_sha256":"b"*64,
+                     "readback_status":"VERIFIED","promotion_eligible":False,"model_execution_authorized":False,"terminal_claim":False,
+                     "non_claims":["not mature","not model authorized","not accepted"]}
+        readiness["marker_sha256"] = canonical_sha256(readiness)
+        representatives["candidate-readiness-marker"] = readiness
+        matrix_auth = {
+            "schema":"daee-smoke-matrix-v1","kind":"matrix-authorization","authorization_id":"matrix-a","action":"RUN_REVIEWED_FIVE_SMOKE",
+            "one_use":True,"candidate_id":"candidate","candidate_record":ref,"candidate_readiness":ref,"candidate_maturity":ref,"source_commit_receipt":ref,
+            "package_sha256":"a"*64,"package_tree_sha256":"b"*64,"tree_digest_algorithm":"daee-tree-sha256-v1","input_registry":ref,
+            "review_protocol":ref,"producer_model":"gpt-5.5","producer_reasoning_effort":"high","cold_review_model":"gpt-5.6-sol",
+            "cold_review_reasoning_effort":"xhigh","optional_opus_authorized":False,"paid_execution_authorized":False,
+        }
+        matrix_auth["authorization_sha256"] = canonical_sha256(matrix_auth)
+        representatives["matrix-authorization"] = matrix_auth
+        matrix_claim = {"schema":"daee-smoke-matrix-v1","kind":"matrix-authorization-claim","claim_id":"matrix-a-claim",
+                        "authorization_id":"matrix-a","authorization_sha256":matrix_auth["authorization_sha256"],"candidate_id":"candidate",
+                        "claimed_at":"2026-07-12T00:02:00Z","one_use":True}
+        matrix_claim["claim_sha256"] = canonical_sha256(matrix_claim)
+        representatives["matrix-authorization-claim"] = matrix_claim
         self.assertEqual(set(matrix.KIND_DEFS), set(representatives))
         for kind, data in representatives.items():
             with self.subTest(kind=kind):

@@ -373,7 +373,27 @@
       },
       "implementation": {
         "commit": null,
-        "files": [],
+        "files": [
+          "schema/captured-output-manifest.schema.json",
+          "schema/captured-output-comparison.schema.json",
+          "schema/checker-replay-verdict.schema.json",
+          "schema/topology-initial-assessment.schema.json",
+          "schema/topology-review.schema.json",
+          "schema/cold-comprehensiveness-review.schema.json",
+          "schema/review-incident-report.schema.json",
+          "tools/check_captured_output_manifest.py",
+          "tools/build_captured_output_verdict.py",
+          "tools/build_cold_review_packet.py",
+          "tools/check_cold_comprehensiveness_review.py",
+          "tools/check_topology_review.py",
+          "tools/check_review_incident_report.py",
+          "tests/captured-output-custody/_support.py",
+          "tests/captured-output-custody/run_scenarios.py",
+          "tests/captured-output-custody/test_contract.py",
+          "tests/captured-output-custody/valid/complete-single-capture/scenario.json",
+          "tests/captured-output-custody/invalid/missing-input-hash/scenario.json",
+          "tests/captured-output-custody/invalid/missing-input-hash/scenario.expectation.json"
+        ],
         "generated_files": []
       },
       "verification": {
@@ -394,18 +414,18 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/captured-output-custody/invalid/manifest-missing-invocation-identity.json.expectation.json"
+          "tests/captured-output-custody/invalid/missing-input-hash/scenario.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A01-missing_identity",
-          "negative_fixture": "tests/captured-output-custody/invalid/manifest-missing-invocation-identity.json",
-          "expected_stage": "custody",
-          "expected_failure_class": "missing_identity",
-          "neighbor_valid_fixture": "tests/captured-output-custody/valid/exact-input-package-model-output-binding.json",
-          "mutation_operator": "drop-custody-identity",
+          "canary_id": "ANDON-A01-missing_input_hash",
+          "negative_fixture": "tests/captured-output-custody/invalid/missing-input-hash/scenario.json",
+          "expected_stage": "preflight",
+          "expected_failure_class": "evidence_custody",
+          "neighbor_valid_fixture": "tests/captured-output-custody/valid/complete-single-capture/scenario.json",
+          "mutation_operator": "delete-input-hash",
           "status": "PREDECESSOR_VERIFIED_CURRENT_DRIFTED"
         }
       ],
@@ -587,7 +607,14 @@
       },
       "implementation": {
         "commit": null,
-        "files": [],
+        "files": [
+          "tools/input_observation_units.py",
+          "tools/check_input_pressure_coverage.py",
+          "tests/input-pressure-coverage/test_contract.py",
+          "tests/input-pressure-coverage/valid/preserved-pressure.json",
+          "tests/input-pressure-coverage/invalid/source-observation-disappears.json",
+          "tests/input-pressure-coverage/invalid/source-observation-disappears.expectation.json"
+        ],
         "generated_files": []
       },
       "verification": {
@@ -608,17 +635,17 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/input-pressure-coverage/invalid/source-observation-disappears.json.expectation.json"
+          "tests/input-pressure-coverage/invalid/source-observation-disappears.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A02-missing_pressure_disposition",
-          "negative_fixture": "tests/input-pressure-coverage/invalid/source-observation-disappears.json",
-          "expected_stage": "stage-02",
-          "expected_failure_class": "missing_pressure_disposition",
-          "neighbor_valid_fixture": "tests/input-pressure-coverage/valid/all-observations-dispositioned.json",
+        "canary_id": "ANDON-A02-source_observation_disappears",
+        "negative_fixture": "tests/input-pressure-coverage/invalid/source-observation-disappears.json",
+        "expected_stage": "02",
+        "expected_failure_class": "stage02-input-pressure-coverage",
+        "neighbor_valid_fixture": "tests/input-pressure-coverage/valid/preserved-pressure.json",
           "mutation_operator": "delete-pressure-disposition",
           "status": "VERIFIED_STRUCTURAL"
         }
@@ -799,7 +826,13 @@
       },
       "implementation": {
         "commit": null,
-        "files": [],
+        "files": [
+          "tools/topology_partition.py",
+          "tests/candidate-state-partition/test_contract.py",
+          "tests/candidate-state-partition/valid/overlapping-ambiguity-loci.json",
+          "tests/candidate-state-partition/invalid/unreconstructible-merge.json",
+          "tests/candidate-state-partition/invalid/unreconstructible-merge.expectation.json"
+        ],
         "generated_files": []
       },
       "verification": {
@@ -820,17 +853,17 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/candidate-state-partition/invalid/merge-without-compatibility-proof.json.expectation.json"
+        "tests/candidate-state-partition/invalid/unreconstructible-merge.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
           "canary_id": "ANDON-A03-unreconstructible_merge",
-          "negative_fixture": "tests/candidate-state-partition/invalid/merge-without-compatibility-proof.json",
-          "expected_stage": "stage-02",
-          "expected_failure_class": "unreconstructible_merge",
-          "neighbor_valid_fixture": "tests/candidate-state-partition/valid/held-alternative-preserved.json",
+        "negative_fixture": "tests/candidate-state-partition/invalid/unreconstructible-merge.json",
+        "expected_stage": "02",
+        "expected_failure_class": "split-merge-proof",
+        "neighbor_valid_fixture": "tests/candidate-state-partition/valid/overlapping-ambiguity-loci.json",
           "mutation_operator": "drop-merge-basis",
           "status": "VERIFIED_STRUCTURAL"
         }
@@ -1012,7 +1045,13 @@
       },
       "implementation": {
         "commit": null,
-        "files": [],
+        "files": [
+          "tools/owner_obligation_coverage.py",
+          "tests/owner-obligation-coverage/test_contract.py",
+          "tests/owner-obligation-coverage/valid/executed-exactly-once.json",
+          "tests/owner-obligation-coverage/invalid/eligible-owner-never-executed-or-disposed.json",
+          "tests/owner-obligation-coverage/invalid/eligible-owner-never-executed-or-disposed.expectation.json"
+        ],
         "generated_files": []
       },
       "verification": {
@@ -1033,17 +1072,17 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/owner-obligation-coverage/invalid/eligible-owner-never-executed-or-disposed.json.expectation.json"
+          "tests/owner-obligation-coverage/invalid/eligible-owner-never-executed-or-disposed.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A04-unpaid_owner_obligation",
-          "negative_fixture": "tests/owner-obligation-coverage/invalid/eligible-owner-never-executed-or-disposed.json",
-          "expected_stage": "stage-04",
-          "expected_failure_class": "unpaid_owner_obligation",
-          "neighbor_valid_fixture": "tests/owner-obligation-coverage/valid/every-obligation-accounted.json",
+        "canary_id": "ANDON-A04-eligible_obligation_unpaid",
+        "negative_fixture": "tests/owner-obligation-coverage/invalid/eligible-owner-never-executed-or-disposed.json",
+        "expected_stage": "04",
+        "expected_failure_class": "owner-obligation-coverage",
+        "neighbor_valid_fixture": "tests/owner-obligation-coverage/valid/executed-exactly-once.json",
           "mutation_operator": "delete-obligation-capsule",
           "status": "VERIFIED_STRUCTURAL"
         }
@@ -1225,7 +1264,14 @@
       },
       "implementation": {
         "commit": null,
-        "files": [],
+        "files": [
+          "schema/operation-capsule.schema.json",
+          "tools/operation_capsule_contract.py",
+          "tests/operation-capsule/test_contract.py",
+          "tests/operation-capsule/valid/fully-evidenced-operation.json",
+          "tests/operation-capsule/invalid/pointer-only-operation.json",
+          "tests/operation-capsule/invalid/pointer-only-operation.expectation.json"
+        ],
         "generated_files": []
       },
       "verification": {
@@ -1246,18 +1292,18 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/operation-capsule/invalid/land-before-local-delta.json.expectation.json"
+        "tests/operation-capsule/invalid/pointer-only-operation.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A05-land_without_performed_operation",
-          "negative_fixture": "tests/operation-capsule/invalid/land-before-local-delta.json",
-          "expected_stage": "stage-04",
-          "expected_failure_class": "land_without_performed_operation",
-          "neighbor_valid_fixture": "tests/operation-capsule/valid/performed-body-before-land.json",
-          "mutation_operator": "replace-body-with-conclusion",
+        "canary_id": "ANDON-A05-pointer_only_operation",
+        "negative_fixture": "tests/operation-capsule/invalid/pointer-only-operation.json",
+        "expected_stage": "04",
+        "expected_failure_class": "act_body_evidence",
+        "neighbor_valid_fixture": "tests/operation-capsule/valid/fully-evidenced-operation.json",
+        "mutation_operator": "replace-body-with-pointer",
           "status": "VERIFIED_STRUCTURAL"
         }
       ],
@@ -1453,7 +1499,16 @@
       },
       "implementation": {
         "commit": null,
-        "files": [],
+        "files": [
+          "schema/topology-mass-accounting.schema.json",
+          "tools/topology_mass_accounting.py",
+          "tools/build_topology_mass_accounting.py",
+          "tools/check_topology_mass_accounting.py",
+          "tests/topology-mass-accounting/test_contract.py",
+          "tests/topology-mass-accounting/valid/compact-fully-paid.json",
+          "tests/topology-mass-accounting/invalid/large-padded-unpaid-owner-operation.json",
+          "tests/topology-mass-accounting/invalid/large-padded-unpaid-owner-operation.expectation.json"
+        ],
         "generated_files": []
       },
       "verification": {
@@ -1474,17 +1529,17 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/topology-mass-accounting/invalid/padded-but-unpaid-obligation.json.expectation.json"
+        "tests/topology-mass-accounting/invalid/large-padded-unpaid-owner-operation.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A06-unpaid_mass_obligation",
-          "negative_fixture": "tests/topology-mass-accounting/invalid/padded-but-unpaid-obligation.json",
-          "expected_stage": "release-mass",
-          "expected_failure_class": "unpaid_mass_obligation",
-          "neighbor_valid_fixture": "tests/topology-mass-accounting/valid/compact-small-topology-complete.json",
+        "canary_id": "ANDON-A06-unpaid_owner_operation_mass",
+        "negative_fixture": "tests/topology-mass-accounting/invalid/large-padded-unpaid-owner-operation.json",
+        "expected_stage": "04",
+        "expected_failure_class": "topology_mass_unpaid_obligation",
+        "neighbor_valid_fixture": "tests/topology-mass-accounting/valid/compact-fully-paid.json",
           "mutation_operator": "add-padding-without-operation",
           "status": "VERIFIED_STRUCTURAL"
         }
@@ -1678,7 +1733,14 @@
       },
       "implementation": {
         "commit": null,
-        "files": [],
+        "files": [
+          "tools/mrp_recursion_lib.py",
+          "tools/check_mrp_recursion_lifecycle.py",
+          "tests/mrp-recursion-lifecycle/test_checker.py",
+          "tests/mrp-recursion-lifecycle/valid/generated-depth-two-executed.json",
+          "tests/mrp-recursion-lifecycle/invalid/generated-never-executed.json",
+          "tests/mrp-recursion-lifecycle/invalid/generated-never-executed.expectation.json"
+        ],
         "generated_files": []
       },
       "verification": {
@@ -1699,17 +1761,17 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/mrp-recursion-lifecycle/invalid/generated-burden-never-executed.json.expectation.json"
+        "tests/mrp-recursion-lifecycle/invalid/generated-never-executed.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A07-generated_burden_unexecuted",
-          "negative_fixture": "tests/mrp-recursion-lifecycle/invalid/generated-burden-never-executed.json",
-          "expected_stage": "stage-05",
-          "expected_failure_class": "generated_burden_unexecuted",
-          "neighbor_valid_fixture": "tests/mrp-recursion-lifecycle/valid/depth-two-generated-return.json",
+        "canary_id": "ANDON-A07-generated_not_executed",
+        "negative_fixture": "tests/mrp-recursion-lifecycle/invalid/generated-never-executed.json",
+        "expected_stage": "05",
+        "expected_failure_class": "mrp",
+        "neighbor_valid_fixture": "tests/mrp-recursion-lifecycle/valid/generated-depth-two-executed.json",
           "mutation_operator": "drop-recursive-return-cycle",
           "status": "VERIFIED_STRUCTURAL"
         }
@@ -1906,7 +1968,14 @@
       },
       "implementation": {
         "commit": null,
-        "files": [],
+        "files": [
+          "tools/closure_state_lib.py",
+          "tools/check_opening_closure_state.py",
+          "tests/opening-closure-state/test_contract.py",
+          "tests/opening-closure-state/valid/truthful-final-closure.json",
+          "tests/opening-closure-state/invalid/opening-complete-before-execution.json",
+          "tests/opening-closure-state/invalid/opening-complete-before-execution.expectation.json"
+        ],
         "generated_files": []
       },
       "verification": {
@@ -1927,17 +1996,17 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/opening-closure-state/invalid/opening-complete.json.expectation.json"
+        "tests/opening-closure-state/invalid/opening-complete-before-execution.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A08-premature_closure",
-          "negative_fixture": "tests/opening-closure-state/invalid/opening-complete.json",
-          "expected_stage": "opening-closure",
-          "expected_failure_class": "premature_closure",
-          "neighbor_valid_fixture": "tests/opening-closure-state/valid/open-until-lifecycle-closed.json",
+        "canary_id": "ANDON-A08-opening_complete_before_execution",
+        "negative_fixture": "tests/opening-closure-state/invalid/opening-complete-before-execution.json",
+        "expected_stage": "01",
+        "expected_failure_class": "opening-state",
+        "neighbor_valid_fixture": "tests/opening-closure-state/valid/truthful-final-closure.json",
           "mutation_operator": "flip-opening-to-complete",
           "status": "VERIFIED_STRUCTURAL"
         }
@@ -2137,7 +2206,20 @@
       },
       "implementation": {
         "commit": null,
-        "files": [],
+        "files": [
+          "schema/field-witness.schema.json",
+          "schema/field-witness-envelope.schema.json",
+          "tools/witness_artifact_roles.py",
+          "tests/witness-artifact-roles/test_contract.py",
+          "tests/witness-artifact-roles/valid/exact-inline-order.md",
+          "tests/witness-artifact-roles/valid/current-triplet/artifact-binding.json",
+          "tests/witness-artifact-roles/valid/current-triplet/audit-envelope.json",
+          "tests/witness-artifact-roles/valid/current-triplet/projection-ref.json",
+          "tests/witness-artifact-roles/valid/current-triplet/public-graph.json",
+          "tests/witness-artifact-roles/valid/historical-compatibility/legacy-public-graph.json",
+          "tests/witness-artifact-roles/invalid/field-before-human-witness.md",
+          "tests/witness-artifact-roles/invalid/field-before-human-witness.expectation.json"
+        ],
         "generated_files": []
       },
       "verification": {
@@ -2158,18 +2240,18 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/witness-artifact-roles/invalid/public-graph-uses-envelope-schema.json.expectation.json"
+        "tests/witness-artifact-roles/invalid/field-before-human-witness.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A09-witness_role_collision",
-          "negative_fixture": "tests/witness-artifact-roles/invalid/public-graph-uses-envelope-schema.json",
-          "expected_stage": "stage-07",
-          "expected_failure_class": "witness_role_collision",
-          "neighbor_valid_fixture": "tests/witness-artifact-roles/valid/distinct-public-and-audit-artifacts.json",
-          "mutation_operator": "swap-witness-schema",
+        "canary_id": "ANDON-A09-field_before_human_witness",
+        "negative_fixture": "tests/witness-artifact-roles/invalid/field-before-human-witness.md",
+        "expected_stage": "07",
+        "expected_failure_class": "witness-order",
+        "neighbor_valid_fixture": "tests/witness-artifact-roles/valid/exact-inline-order.md",
+        "mutation_operator": "move-field-witness-before-human-witness",
           "status": "VERIFIED_STRUCTURAL"
         }
       ],
@@ -2360,7 +2442,15 @@
       },
       "implementation": {
         "commit": null,
-        "files": [],
+        "files": [
+          "schema/stage-projection.schema.json",
+          "tools/stage_projection_contract.py",
+          "tools/check_stage_projection_parity.py",
+          "tests/stage-projection-parity/test_contract.py",
+          "tests/stage-projection-parity/valid/lossless-stage06-stage07.json",
+          "tests/stage-projection-parity/invalid/stage07-structured-cardinality-loss.json",
+          "tests/stage-projection-parity/invalid/stage07-structured-cardinality-loss.expectation.json"
+        ],
         "generated_files": []
       },
       "verification": {
@@ -2381,18 +2471,18 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/stage-projection-parity/invalid/stage07-adds-owner-activation.json.expectation.json"
+        "tests/stage-projection-parity/invalid/stage07-structured-cardinality-loss.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A10-projection_mismatch",
-          "negative_fixture": "tests/stage-projection-parity/invalid/stage07-adds-owner-activation.json",
-          "expected_stage": "stage-07",
-          "expected_failure_class": "projection_mismatch",
-          "neighbor_valid_fixture": "tests/stage-projection-parity/valid/exact-lifecycle-projection.json",
-          "mutation_operator": "add-stage07-row",
+        "canary_id": "ANDON-A10-stage07_structured_cardinality_loss",
+        "negative_fixture": "tests/stage-projection-parity/invalid/stage07-structured-cardinality-loss.json",
+        "expected_stage": "07",
+        "expected_failure_class": "projection-parity",
+        "neighbor_valid_fixture": "tests/stage-projection-parity/valid/lossless-stage06-stage07.json",
+        "mutation_operator": "drop-stage07-structured-cardinality",
           "status": "VERIFIED_STRUCTURAL"
         }
       ],
@@ -2449,16 +2539,15 @@
       "title": "verification is post-hoc and fixtures can fail for the wrong reason",
       "priority": "P0",
       "status": "OPEN",
-      "bounded_verified": "UNVERIFIED",
+      "bounded_verified": "CURRENT",
       "integration_open": true,
       "owner_gated": true,
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "same-reviewer final no-finding disposition on the current parser bytes",
-        "registration or terminal deferral of 23 missing CI checkers",
-        "migration or terminal deferral of three private validation consumers",
-        "shared integration acceptance and full CI"
+        "fresh deterministic source freeze, complete no-model preflight, full local CI, and zero-finding whole-branch review on the post-repair tree",
+        "ordinary successor commit followed by exact-SHA GitHub CI on that pushed commit",
+        "mandatory terminal dependencies and final owner acceptance"
       ],
       "scope_exclusions": [
         "no push to main",
@@ -2474,14 +2563,14 @@
       ],
       "evidence_refs": [
         {
-          "kind": "source_blob",
-          "source_ref": "tools/validation_registry.py at the immutable WIP checkpoint; this is baseline custody, not acceptance of current dirty bytes",
-          "commit_sha1": "43d1d98bf52bd61367496f527047c3dc00f089ae",
-          "blob_sha1": "565f95d8896f9481dcbb2bbe43439a6dd2f27421",
-          "sha256": "4e3d4b8cb91bc8863ee206fb157e424eaedab6b7f8ea47f1c5d7362aa1032cff",
+          "kind": "file_sha256",
+          "source_ref": "bounded A11 independent-review record covering the accepted three-consumer registry/parser boundary; not terminal closure",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "32968927937cfef6490cbbfe33e220c2a3ff224f0444bc58ec1fc88a7b506855",
           "command": null,
           "exit_code": null,
-          "retained_artifact": "tools/validation_registry.py",
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/a11-task-review.md",
           "unretained_reason": null
         }
       ],
@@ -2590,41 +2679,56 @@
         "follow_up_control": "wrong-stage/wrong-class, survivor, taint, promotion drift, NO/UNKNOWN/reassessment fixtures"
       },
       "implementation": {
-        "commit": null,
-        "files": [],
+        "commit": "484e61c9c2af30ed3f9e3c5c98551a7973a9417f",
+        "files": [
+          "docs/model-compliance-scorecard.md",
+          "docs/validation-registry-and-promotion.md",
+          "schema/checker-replay-verdict.schema.json",
+          "schema/validation-registry.schema.json",
+          "tests/validation-integrity/test_hardening.py",
+          "tests/validation-integrity/test_candidate_hardening.py",
+          "tests/validation-integrity/test_consumer_migration.py",
+          "tests/validation-integrity/test_scorecard_hardening.py",
+          "tools/build_model_compliance_scorecard.py",
+          "tools/check_validation_registry.py",
+          "tools/checker_execution_snapshot.py",
+          "tools/validation-registry.json",
+          "tools/validation_registry.py",
+          "tools/verify_candidate_output.py"
+        ],
         "generated_files": []
       },
       "verification": {
         "smoke_a": [
           {
-            "command": "python tools/check_validation_registry.py --self-test",
-            "expected": "pre-fix boundary rejects or tool is absent; intended class wrong_reason_rejection",
-            "exit_code": null,
-            "evidence_sha256": null
+            "command": "python -B tools/check_validation_registry.py --self-test",
+            "expected": "exit 0 with 2 valid / 13 invalid registry controls",
+            "exit_code": 0,
+            "evidence_sha256": "32968927937cfef6490cbbfe33e220c2a3ff224f0444bc58ec1fc88a7b506855"
           }
         ],
         "smoke_b": [
           {
-            "command": "python tools/gen_fixture_mutations.py --self-test",
-            "expected": "exit 0 with valid/invalid and neighboring controls passing",
-            "exit_code": null,
-            "evidence_sha256": null
+            "command": "python -B tests/validation-integrity/test_consumer_migration.py",
+            "expected": "exit 0 with exact three-consumer identity/source/profile custody and migration negatives passing",
+            "exit_code": 0,
+            "evidence_sha256": "32968927937cfef6490cbbfe33e220c2a3ff224f0444bc58ec1fc88a7b506855"
           }
         ],
         "right_reason_negatives": [
-          "tests/validation-integrity/invalid/wrong-earliest-checker-counted-red.json.expectation.json"
+          "tests/validation-integrity/invalid/required-not-run.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A11-wrong_reason_rejection",
-          "negative_fixture": "tests/validation-integrity/invalid/wrong-earliest-checker-counted-red.json",
-          "expected_stage": "validation",
-          "expected_failure_class": "wrong_reason_rejection",
-          "neighbor_valid_fixture": "tests/validation-integrity/valid/expected-stage-and-class-match.json",
-          "mutation_operator": "substitute-earlier-failure",
-          "status": "PLANNED"
+          "canary_id": "ANDON-A11-profile_required_not_run",
+          "negative_fixture": "tests/validation-integrity/invalid/required-not-run.json",
+          "expected_stage": "control-plane",
+          "expected_failure_class": "profile_required_not_run",
+          "neighbor_valid_fixture": "tests/validation-integrity/valid/right-reason-stage07.json",
+          "mutation_operator": "drop-required-check-result",
+          "status": "VERIFIED_STRUCTURAL"
         }
       ],
       "rollback": {
@@ -2660,7 +2764,7 @@
       "remaining_risk": [
         "structural promotion never upgrades to semantic truth"
       ],
-      "next_action": "Do not accept A11 until current parser bytes receive the required no-finding review and every missing checker/private consumer is registered or terminally deferred.",
+      "next_action": "Preserve bounded A11 acceptance while the independently accepted R3 repair set is frozen as a new exact tree and receives fresh deterministic/whole-branch review evidence; then require successor exact-SHA CI, terminal dependencies, and owner acceptance; keep A11 terminal OPEN.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -2686,9 +2790,9 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "runtime-context adoption in the staged runner",
-        "package-faithful per-call delivery",
-        "full local CI and later exact-SHA CI"
+        "fresh deterministic source freeze, complete no-model preflight, full local CI, and zero-finding whole-branch review on the post-repair tree",
+        "ordinary successor commit followed by exact-SHA GitHub CI on that pushed commit",
+        "mandatory terminal dependencies and final owner acceptance"
       ],
       "scope_exclusions": [
         "no push to main",
@@ -2724,6 +2828,17 @@
           "exit_code": 0,
           "retained_artifact": null,
           "unretained_reason": "raw stdout and stderr were not retained in the repository; the exact command result is summarized in the durable bounded-review record"
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "independently accepted A12/A13 staged current/historical witness and runtime-context shared-integration review; not terminal closure",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "35319558403ab82bf8ba883c34299608694bb5fa77e5f66dc0e8712288bd51ed",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/a12-a13-shared-integration-review.md",
+          "unretained_reason": null
         }
       ],
       "evidence_class": "confirmed",
@@ -2804,39 +2919,48 @@
         "follow_up_control": "missing owner body, wrong shard, stale context hash, route change, and budget property fixtures"
       },
       "implementation": {
-        "commit": null,
-        "files": [],
+        "commit": "bcccb4e34c75e1f8e363ef020e2deeaabae60435",
+        "files": [
+          "schema/runtime-call-context.schema.json",
+          "tools/runtime_context_resolver.py",
+          "tools/check_runtime_context_delivery.py",
+          "tools/run_staged_current_skill_smoke.py",
+          "tests/runtime-call-context-adapter/test_contract.py",
+          "tests/runtime-context-delivery/valid/stage04-owner-module-section.json",
+          "tests/runtime-context-delivery/invalid/declared-used-not-delivered.json",
+          "tests/runtime-context-delivery/invalid/declared-used-not-delivered.expectation.json"
+        ],
         "generated_files": []
       },
       "verification": {
         "smoke_a": [
           {
             "command": "python tools/check_runtime_context_delivery.py --self-test",
-            "expected": "pre-fix boundary rejects or tool is absent; intended class owner_body_not_delivered",
-            "exit_code": null,
-            "evidence_sha256": null
+            "expected": "exit 0 with runtime-context delivery self-test controls passing",
+            "exit_code": 0,
+            "evidence_sha256": "35319558403ab82bf8ba883c34299608694bb5fa77e5f66dc0e8712288bd51ed"
           }
         ],
         "smoke_b": [
           {
-            "command": "python tools/measure_load_path_budget.py --enforce",
-            "expected": "exit 0 with valid/invalid and neighboring controls passing",
-            "exit_code": null,
-            "evidence_sha256": null
+            "command": "python -B tests/runtime-call-context-adapter/test_contract.py",
+            "expected": "exit 0 with package-faithful per-call adapter joins passing",
+            "exit_code": 0,
+            "evidence_sha256": "35319558403ab82bf8ba883c34299608694bb5fa77e5f66dc0e8712288bd51ed"
           }
         ],
         "right_reason_negatives": [
-          "tests/runtime-context-delivery/invalid/live-owner-absent-from-call-context.json.expectation.json"
+          "tests/runtime-context-delivery/invalid/declared-used-not-delivered.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A12-owner_body_not_delivered",
-          "negative_fixture": "tests/runtime-context-delivery/invalid/live-owner-absent-from-call-context.json",
-          "expected_stage": "runtime-context",
-          "expected_failure_class": "owner_body_not_delivered",
-          "neighbor_valid_fixture": "tests/runtime-context-delivery/valid/route-selected-owner-bytes-delivered.json",
+          "canary_id": "ANDON-A12-declared_use_not_delivered",
+          "negative_fixture": "tests/runtime-context-delivery/invalid/declared-used-not-delivered.json",
+          "expected_stage": "04",
+          "expected_failure_class": "declared-use-not-delivered",
+          "neighbor_valid_fixture": "tests/runtime-context-delivery/valid/stage04-owner-module-section.json",
           "mutation_operator": "drop-owner-context-ref",
           "status": "VERIFIED_STRUCTURAL"
         }
@@ -2874,7 +2998,7 @@
       "remaining_risk": [
         "load-path proof is delivery evidence, not model comprehension proof"
       ],
-      "next_action": "Preserve the current bounded A12 owner while closing staged-runner, package-faithful delivery, and CI joins.",
+      "next_action": "Preserve the independently accepted A12 shared integration while the independently accepted R3 repair set is frozen as a new exact tree and receives fresh deterministic/whole-branch review evidence; then require successor exact-SHA CI, terminal dependencies, and owner acceptance; keep A12 terminal OPEN.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -2900,9 +3024,9 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "producer and consumer registry integration",
-        "package-faithful staged-runner parity",
-        "full local CI and later exact-SHA CI"
+        "fresh deterministic source freeze, complete no-model preflight, full local CI, and zero-finding whole-branch review on the post-repair tree",
+        "ordinary successor commit followed by exact-SHA GitHub CI on that pushed commit",
+        "mandatory terminal dependencies and final owner acceptance"
       ],
       "scope_exclusions": [
         "no push to main",
@@ -2922,7 +3046,7 @@
           "source_ref": "tools/check_package_harness_parity.py current shared-integration bytes",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "cc5a718849f584d2b514dddc75962d575b2046437278ada03a45ab77ab007f0a",
+          "sha256": "675502a6bc514d99d21c3d5e7c02036069e38ab11c0a4332572681c05a0bae1c",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/check_package_harness_parity.py",
@@ -2938,6 +3062,17 @@
           "exit_code": 0,
           "retained_artifact": null,
           "unretained_reason": "raw stdout and stderr were not retained in the repository; the exact command result is summarized in the durable bounded-review record"
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "independently accepted A12/A13 package-faithful parity and shared-integration review; not terminal closure",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "35319558403ab82bf8ba883c34299608694bb5fa77e5f66dc0e8712288bd51ed",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/a12-a13-shared-integration-review.md",
+          "unretained_reason": null
         }
       ],
       "evidence_class": "confirmed",
@@ -3020,40 +3155,49 @@
         "follow_up_control": "teaching-only, repair-only, adapter-only, package-isolation, and raw-first fixtures"
       },
       "implementation": {
-        "commit": null,
-        "files": [],
+        "commit": "bcccb4e34c75e1f8e363ef020e2deeaabae60435",
+        "files": [
+          "schema/package-harness-parity.schema.json",
+          "tools/producer-contract-registry.json",
+          "tools/check_producer_checker_parity.py",
+          "tools/check_package_harness_parity.py",
+          "tools/run_staged_current_skill_smoke.py",
+          "tests/package-harness-parity/valid/neighbor-package-faithful.json",
+          "tests/package-harness-parity/invalid/package-membership-only-claim.json",
+          "tests/package-harness-parity/invalid/package-membership-only-claim.expectation.json"
+        ],
         "generated_files": []
       },
       "verification": {
         "smoke_a": [
           {
             "command": "python tools/check_producer_checker_parity.py --self-test",
-            "expected": "pre-fix boundary rejects or tool is absent; intended class forbidden_semantic_repair",
-            "exit_code": null,
-            "evidence_sha256": null
+            "expected": "exit 0 with producer/checker registry and semantic-repair negatives passing",
+            "exit_code": 0,
+            "evidence_sha256": "35319558403ab82bf8ba883c34299608694bb5fa77e5f66dc0e8712288bd51ed"
           }
         ],
         "smoke_b": [
           {
             "command": "python tools/check_package_harness_parity.py --self-test",
             "expected": "exit 0 with valid/invalid and neighboring controls passing",
-            "exit_code": null,
-            "evidence_sha256": null
+            "exit_code": 0,
+            "evidence_sha256": "35319558403ab82bf8ba883c34299608694bb5fa77e5f66dc0e8712288bd51ed"
           }
         ],
         "right_reason_negatives": [
-          "tests/package-harness-parity/invalid/harness-repairs-closure-before-check.json.expectation.json"
+          "tests/package-harness-parity/invalid/package-membership-only-claim.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A13-forbidden_semantic_repair",
-          "negative_fixture": "tests/package-harness-parity/invalid/harness-repairs-closure-before-check.json",
-          "expected_stage": "producer-parity",
-          "expected_failure_class": "forbidden_semantic_repair",
-          "neighbor_valid_fixture": "tests/package-harness-parity/valid/transport-only-normalization.json",
-          "mutation_operator": "enable-harness-only-clause",
+          "canary_id": "ANDON-A13-membership_is_not_delivery",
+          "negative_fixture": "tests/package-harness-parity/invalid/package-membership-only-claim.json",
+          "expected_stage": "preflight",
+          "expected_failure_class": "membership-is-not-delivery",
+          "neighbor_valid_fixture": "tests/package-harness-parity/valid/neighbor-package-faithful.json",
+          "mutation_operator": "replace-delivery-proof-with-membership",
           "status": "VERIFIED_STRUCTURAL"
         }
       ],
@@ -3090,7 +3234,7 @@
       "remaining_risk": [
         "deterministic parity does not replace the package-faithful behavioral matrix"
       ],
-      "next_action": "Preserve the current bounded A13 owner while closing producer-consumer registry and package-faithful runner joins.",
+      "next_action": "Preserve the independently accepted A13 shared integration while the independently accepted R3 repair set is frozen as a new exact tree and receives fresh deterministic/whole-branch review evidence; then require successor exact-SHA CI, terminal dependencies, and owner acceptance; keep A13 terminal OPEN.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -3116,10 +3260,10 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "shared runtime, preflight, and CI integration",
-        "A16 exact-commit provenance repair",
-        "later exact-SHA CI and fresh candidate maturity",
-        "separately authorized complete five-smoke campaign"
+        "fresh deterministic source freeze, complete no-model preflight, full local CI, and zero-finding whole-branch review on the post-repair tree",
+        "final successor commit, external exact-commit receipt, and exact-SHA GitHub CI",
+        "fresh immutable candidate construction and package-faithful maturity proof",
+        "separately authorized reviewed five-smoke campaign and final owner acceptance"
       ],
       "scope_exclusions": [
         "no push to main",
@@ -3146,11 +3290,11 @@
           "unretained_reason": null
         },
         {
-          "kind": "source_blob",
-          "source_ref": "tests/smoke-matrix/test_protocol.py frozen for the no-finding bounded A14 review",
-          "commit_sha1": "43d1d98bf52bd61367496f527047c3dc00f089ae",
-          "blob_sha1": "9568066248a71d85506c0e8375a07a9285f8628a",
-          "sha256": "1d6608572407bcbc86ab419cdce146778c205443d80c59b06fab2d02b9f5508f",
+          "kind": "file_sha256",
+          "source_ref": "tests/smoke-matrix/test_protocol.py current bounded Task 4 candidate-custody bytes",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "c5d37990fc3f32d548cc9404f7a05cd3c1a356354f5204aed492121edd4cbd8d",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tests/smoke-matrix/test_protocol.py",
@@ -3158,14 +3302,25 @@
         },
         {
           "kind": "command_result",
-          "source_ref": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/a14-task-review.md final bounded no-finding review evidence",
+          "source_ref": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task4-candidate-custody-independent-review.md bounded candidate-custody acceptance",
           "commit_sha1": null,
           "blob_sha1": null,
           "sha256": null,
           "command": "python -B tests/smoke-matrix/test_protocol.py",
           "exit_code": 0,
           "retained_artifact": null,
-          "unretained_reason": "raw stdout and stderr were not retained in the repository; the exact command result and frozen hashes are summarized in the durable A14 review"
+          "unretained_reason": "raw stdout and stderr were not retained in the repository; exact focused results and frozen hashes are summarized in the durable Task 4 independent review"
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "bounded Task 4 candidate-custody independent acceptance; no live candidate or terminal A14 claim",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "6ef1a9e01aacd07646808bee6f0103bcdfc14e831f87f4213657c2da579d4d73",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task4-candidate-custody-independent-review.md",
+          "unretained_reason": null
         }
       ],
       "evidence_class": "confirmed",
@@ -3246,10 +3401,11 @@
         "DAEE-ADR-046-023",
         "DAEE-ADR-046-024",
         "DAEE-ADR-046-025",
-        "DAEE-ADR-046-026"
+        "DAEE-ADR-046-026",
+        "DAEE-ADR-046-028"
       ],
       "abnormality_evidence": [
-        "current preflight is hard-coded four-smoke and all target matrix/candidate/usage tools are absent"
+        "baseline lacked the five-case candidate/campaign control plane; bounded A14, Task 4 custody, and Task 6 no-dispatch engineering are now independently accepted while live candidate/model execution remains open"
       ],
       "five_whys": [
         "Why 1: five-smoke matrix/candidate/campaign control plane is missing.",
@@ -3277,38 +3433,61 @@
       },
       "implementation": {
         "commit": null,
-        "files": [],
+        "files": [
+          "schema/smoke-matrix.schema.json",
+          "schema/cross-model-paired-cycle.schema.json",
+          "tools/smoke_matrix_registry.py",
+          "tools/campaign_usage_ledger.py",
+          "tools/artifact_tree.py",
+          "tools/build_candidate_package_record.py",
+          "tools/check_smoke_matrix_manifest.py",
+          "tools/check_parallel_dispatch_manifest.py",
+          "tools/build_smoke_matrix_verdict.py",
+          "tools/run_five_smoke_matrix.py",
+          "tools/run_paired_cross_model_matrix.py",
+          "tools/check_paired_cross_model_manifest.py",
+          "tests/artifact-tree/test_contract.py",
+          "tests/candidate-build/test_contract.py",
+          "tests/smoke-matrix/reviewed-five-smoke-protocol.json",
+          "tests/smoke-matrix/test_protocol.py"
+        ],
         "generated_files": []
       },
       "verification": {
         "smoke_a": [
           {
             "command": "python tools/check_smoke_matrix_manifest.py --self-test",
-            "expected": "pre-fix boundary rejects or tool is absent; intended class candidate_reuse",
-            "exit_code": null,
-            "evidence_sha256": null
+            "expected": "exit 0 with the five-case lifecycle/custody negative cohort passing",
+            "exit_code": 0,
+            "evidence_sha256": "44a6fbdbbf5b28e9ed58236b4ba4530a05e60af14e81552e52998c2deac31017"
           }
         ],
         "smoke_b": [
           {
             "command": "python tools/check_paired_cross_model_manifest.py --self-test",
             "expected": "exit 0 with valid/invalid and neighboring controls passing",
-            "exit_code": null,
-            "evidence_sha256": null
+            "exit_code": 0,
+            "evidence_sha256": "44a6fbdbbf5b28e9ed58236b4ba4530a05e60af14e81552e52998c2deac31017"
+          },
+          {
+            "command": "python tests/smoke-matrix/test_protocol.py",
+            "expected": "exit 0 with Task 4 candidate-custody and reviewed protocol contract passing",
+            "exit_code": 0,
+            "evidence_sha256": "6ef1a9e01aacd07646808bee6f0103bcdfc14e831f87f4213657c2da579d4d73"
           }
         ],
         "right_reason_negatives": [
-          "tests/smoke-matrix/invalid/claimed-candidate-reused.json.expectation.json"
+          "tests/smoke-matrix/fixtures/invalid/candidate-terminal-reuse.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A14-candidate_reuse",
-          "negative_fixture": "tests/smoke-matrix/invalid/claimed-candidate-reused.json",
-          "expected_stage": "campaign",
-          "expected_failure_class": "candidate_reuse",
-          "neighbor_valid_fixture": "tests/smoke-matrix/valid/five-isolated-accepted-before-observation.json",
+          "canary_id": "ANDON-A14-terminal_candidate_reuse",
+          "negative_fixture": "tests/smoke-matrix/fixtures/invalid/candidate-terminal-reuse.json",
+          "expected_stage": "candidate-package",
+          "expected_failure_class": "terminal_candidate_reuse",
+          "neighbor_valid_fixture": "tests/smoke-matrix/fixtures/valid/candidate-claimed-observed.json",
           "mutation_operator": "reuse-consumed-candidate",
           "status": "VERIFIED_STRUCTURAL"
         }
@@ -3352,7 +3531,7 @@
       "remaining_risk": [
         "no live producer or reviewer behavior is proven until separately authorized execution"
       ],
-      "next_action": "Preserve the exact accepted A14 hashes while closing shared integration, A16, exact-SHA CI, candidate-maturity, and campaign gates.",
+      "next_action": "Preserve bounded A14 and Task 4 custody acceptance while the independently accepted R3 repair set is frozen as a new exact tree and receives fresh deterministic/whole-branch review evidence; then require successor exact-SHA CI, a fresh mature candidate, the reviewed campaign, and owner acceptance; keep A14 terminal OPEN.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -3378,9 +3557,9 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "shared A14, package, runtime, and preflight integration",
-        "full local CI and later exact-SHA CI",
-        "deterministic whole-branch closure"
+        "fresh deterministic source freeze, complete no-model preflight, full local CI, and zero-finding whole-branch review on the post-repair tree",
+        "ordinary successor commit followed by exact-SHA GitHub CI on that pushed commit",
+        "mandatory terminal dependencies and final owner acceptance"
       ],
       "scope_exclusions": [
         "no push to main",
@@ -3416,6 +3595,17 @@
           "exit_code": 0,
           "retained_artifact": null,
           "unretained_reason": "raw stdout and stderr were not retained in the repository; the exact command result is summarized in the durable bounded-review record"
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "bounded A15 no-floor/topology independent acceptance; not terminal closure",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "44e92238a38cf73d4cff274b9ea29c05820fbe0a9601a57c87383112d2441da5",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/a15-task-review.md",
+          "unretained_reason": null
         }
       ],
       "evidence_class": "confirmed",
@@ -3524,40 +3714,68 @@
         "follow_up_control": "1/10/20 burden and 1/3/6/8 submove probes plus randomized deterministic seeds"
       },
       "implementation": {
-        "commit": null,
-        "files": [],
+        "commit": "43d1d98bf52bd61367496f527047c3dc00f089ae",
+        "files": [
+          "schema/topology-capacity-spec.schema.json",
+          "tools/topology_capacity_lib.py",
+          "tools/generate_topology_capacity_cases.py",
+          "tools/check_topology_capacity_properties.py",
+          "tools/check_no_fixed_topology_floors.py",
+          "tools/check_case_registry_taint.py",
+          "tests/topology-capacity/test_topology_capacity.py",
+          "tests/topology-capacity/probe-set.json",
+          "tests/topology-capacity/current-false-pass/eligible-owner-unexecuted.json",
+          "tests/topology-capacity/current-false-pass/eligible-owner-unexecuted.expectation.json",
+          "tests/topology-capacity/specs/valid/unknown-route-hold.json",
+          "tests/topology-capacity/specs/valid/pre-emption.json",
+          "tests/topology-capacity/specs/valid/noetic-cycle-loopbreak.json",
+          "tests/topology-capacity/specs/valid/mixed-b10-s6.json",
+          "tests/topology-capacity/specs/valid/independent-b1-s1.json",
+          "tests/topology-capacity/specs/valid/held-activation.json",
+          "tests/topology-capacity/specs/valid/generated-fan-out.json",
+          "tests/topology-capacity/specs/valid/generated-chain.json",
+          "tests/topology-capacity/specs/valid/fan-out-b20-s8.json",
+          "tests/topology-capacity/specs/valid/fan-in-b21-s6.json",
+          "tests/topology-capacity/specs/valid/diamond-b4-s3.json",
+          "tests/topology-capacity/specs/valid/chain-b10-s3.json",
+          "tests/topology-capacity/specs/invalid/event-dag-cycle.json",
+          "tests/topology-capacity/specs/invalid/event-dag-cycle.expectation.json",
+          "tests/topology-capacity/specs/invalid/generated-child-missing-reread.json",
+          "tests/topology-capacity/specs/invalid/generated-child-missing-reread.expectation.json",
+          "docs/topology-capacity-property-suite.md"
+        ],
         "generated_files": []
       },
       "verification": {
         "smoke_a": [
           {
-            "command": "python tools/check_topology_capacity_properties.py --self-test",
-            "expected": "pre-fix boundary rejects or tool is absent; intended class fixed_topology_cap",
-            "exit_code": null,
-            "evidence_sha256": null
+            "command": "python -B tests/topology-capacity/test_topology_capacity.py",
+            "expected": "exit 0 with the bounded A15 deterministic topology suite passing",
+            "exit_code": 0,
+            "evidence_sha256": "44e92238a38cf73d4cff274b9ea29c05820fbe0a9601a57c87383112d2441da5"
           }
         ],
         "smoke_b": [
           {
-            "command": "python tools/check_no_fixed_topology_floors.py",
-            "expected": "exit 0 with valid/invalid and neighboring controls passing",
-            "exit_code": null,
-            "evidence_sha256": null
+            "command": "python -B tools/check_no_fixed_topology_floors.py",
+            "expected": "exit 0 with no fixed topology floor and current valid/invalid neighbors passing",
+            "exit_code": 0,
+            "evidence_sha256": "44e92238a38cf73d4cff274b9ea29c05820fbe0a9601a57c87383112d2441da5"
           }
         ],
         "right_reason_negatives": [
-          "tests/topology-capacity/invalid/fixed-cap-rejects-valid-wide-topology.json.expectation.json"
+          "tests/topology-capacity/specs/invalid/event-dag-cycle.expectation.json"
         ],
         "structural_only": true
       },
       "canaries": [
         {
-          "canary_id": "ANDON-A15-fixed_topology_cap",
-          "negative_fixture": "tests/topology-capacity/invalid/fixed-cap-rejects-valid-wide-topology.json",
-          "expected_stage": "topology-property",
-          "expected_failure_class": "fixed_topology_cap",
-          "neighbor_valid_fixture": "tests/topology-capacity/valid/twenty-burden-eight-submove-capacity.json",
-          "mutation_operator": "scale-topology",
+          "canary_id": "ANDON-A15-event_dag_cycle",
+          "negative_fixture": "tests/topology-capacity/specs/invalid/event-dag-cycle.json",
+          "expected_stage": "05",
+          "expected_failure_class": "dependency-event-dag-integrity",
+          "neighbor_valid_fixture": "tests/topology-capacity/specs/valid/fan-out-b20-s8.json",
+          "mutation_operator": "introduce-event-dag-cycle",
           "status": "VERIFIED_STRUCTURAL"
         }
       ],
@@ -3594,7 +3812,7 @@
       "remaining_risk": [
         "capacity probes do not prove every possible input or topology"
       ],
-      "next_action": "Preserve the current bounded A15 core while closing package, runtime, preflight, CI, and whole-branch joins.",
+      "next_action": "Preserve bounded A15 acceptance while the independently accepted R3 repair set is frozen as a new exact tree and receives fresh deterministic/whole-branch review evidence; then require successor exact-SHA CI, terminal dependencies, and owner acceptance; keep A15 terminal OPEN.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -3620,10 +3838,11 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "external create-once exact-commit receipt with rewritten-lineage protection",
-        "clean-tree, remote-OID, checkpoint-ancestry, authorization, workflow, check-set, and result joins",
-        "release-v2 production, retention, release authorization, and maturity tranches",
-        "negative canaries and independent provenance review"
+        "freeze the independently accepted whole-branch R3 repair set as one new exact source tree",
+        "fresh post-repair source freeze, complete 25-gate no-model preflight, full local CI, and zero-finding independent whole-branch review",
+        "final successor commit, external exact-commit receipt, clean local/upstream/remote equality, and exact-SHA GitHub CI",
+        "fresh immutable candidate construction, retention, package-faithful maturity, and independent readiness review",
+        "separately authorized reviewed five-smoke campaign and final owner acceptance"
       ],
       "scope_exclusions": [
         "no push to main",
@@ -3659,6 +3878,182 @@
           "exit_code": 1,
           "retained_artifact": null,
           "unretained_reason": "raw stdout and stderr were not retained in the repository; the durable finding records stale_evidence_head and the tracked fixed-point blocker"
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "remotely preserved non-terminal A16 durability checkpoint; not A16 completion",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "0839d7ba38d1312f21a133ae78d6ae9039fa279e6b585598b250cd9715bca725",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/a16-durability-checkpoint.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Task 3b command-timeout and stale-log independent acceptance; no exact-SHA CI claim",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "b488cbf392942537ae8dbfd5a740da45bac7b3818e1b9d7c9e94cd79c8e9afb7",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task3b-command-timeout-repair-independent-rereview.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Task 4 candidate-custody independent acceptance; no live candidate claim",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "6ef1a9e01aacd07646808bee6f0103bcdfc14e831f87f4213657c2da579d4d73",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task4-candidate-custody-independent-review.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Task 4 shared registration independent acceptance; later Task 7 integration remains open",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "a4065ef74f80fe7af27e4ac9cff6ba04f165c2b85bfe6a68017c5cdc6e7bf390",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task4-shared-registration-independent-review.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Task 5 source/candidate maturity independent acceptance; no live maturity verdict",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "fd5f9c4c8e5905cbe14d99502754fbc0dc25bd6f56093396abc53d817946afd7",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task5-candidate-maturity-independent-rereview.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Task 5 evidence-retention independent acceptance; no live export or candidate claim",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "32818d3342e131b633ae85b9a8039b08035e7399f2721fd207e1ed3023879564",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task5-evidence-retention-independent-rereview.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Task 6 deterministic reviewed-campaign no-dispatch independent acceptance for aggregate 47f140ba1bfeae31b36dc750903d019079acd4f7c7fe9dc4faa80b5cd49d0bec; no model authorization",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "fb36500aa06d24a7a1057c07b183a2c718258fb49dc91681c99052216988e338",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task6-reviewed-campaign-orchestration-independent-rereview.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Whole-branch review R1 rejected prospective tree 10810336aae80320695962be7cf95c7c70d65b07 with 0 Critical, 5 Important, and 3 Minor findings; its earlier deterministic PASS cohort is historical and preserved under failed-attempts, not current closure evidence",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "04616a5939fdf65306548ee42b2d788b2a73caa3010dd8f36bd6efb07372dbf7",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-independent-whole-branch-review-r1.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Owner closeout of the eight concrete R1 repairs; no new deterministic whole-branch evidence or terminal claim",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "6db8cc0718d53ba82ec0c1e58a07d46da0bd37b227572cfd6780311daaae684e",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-whole-branch-r1-repair-owner-report.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Independent bounded acceptance of all eight R1 repairs; not a whole-branch review of the later final tree",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "7cce284796046e3314041e41b7d9c7c335b4272e54491575b0a989ef842f95bd",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-whole-branch-r1-repair-independent-closeout.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Whole-branch review R2 rejected prospective tree a5a6f885f3e3a08a361c5e73f520a0d23c89ba39 with 0 Critical, 3 Important, and 0 Minor findings; its complete deterministic PASS cohort is historical and preserved under failed attempts",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "f825c8b0dab683b1566ea6b42319b1b6338554f7c200182128ad03741d632a22",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-independent-whole-branch-review-r2.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Owner closeout of the three concrete R2 repairs; no new deterministic whole-branch evidence or terminal claim",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "5371bb8e28fd949ba100e309855f92a63cf99cdee462527c37594b6b893e63ff",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-whole-branch-r2-repair-owner-report.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Independent bounded acceptance of all three R2 repairs; not a whole-branch review of the later final tree",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "0c7645ec013bd33800c5b0e3efa774405054d9541670194d901abd505cd295e5",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-whole-branch-r2-repair-independent-closeout.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Whole-branch review R3 rejected prospective tree a683ab24a52cdc9af2ad7f6fb92b6ef470e8d88e with 0 Critical, 0 Important, and 2 Minor findings; its complete deterministic PASS cohort is historical and preserved under failed attempts",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "2ba7dc7c34d7bf275b0eb17e64e6f39ca31a383c9f18630501c5744158182e32",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-independent-whole-branch-review-r3.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Owner closeout of the two concrete R3 repairs; no new deterministic whole-branch evidence or terminal claim",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "c4ff5c1c68d6247c1116959a10462eee739b4c54769a8ea662e7230444ff4b1e",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-whole-branch-r3-repair-owner-report.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Independent bounded acceptance of both R3 repairs; not a whole-branch review of the later final tree",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "a9e0d6cc7a5a722519bf0c2286dcc9656df7832b382098d93969679c12b79bac",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-whole-branch-r3-repair-independent-closeout.md",
+          "unretained_reason": null
         }
       ],
       "evidence_class": "confirmed",
@@ -3721,9 +4116,17 @@
         "tools/check_andon_contract_registry.py",
         "tools/source_provenance.py",
         "tools/check_source_provenance.py",
+        "schema/release-action-authorization.schema.json",
+        "schema/ci-readback.schema.json",
+        "schema/smoke-matrix.schema.json",
         "schema/no-model-candidate-maturity.schema.json",
+        "schema/evidence-retention-manifest.schema.json",
         "schema/vcs-action-authorization.schema.json",
-        "schema/ci-readback.schema.json"
+        "tools/check_ci_readback.py",
+        "tools/build_candidate_package_record.py",
+        "tools/check_no_model_candidate_maturity.py",
+        "tools/check_evidence_retention_manifest.py",
+        "tools/reviewed_campaign_orchestrator.py"
       ],
       "binding_adr_ids": [
         "DAEE-ADR-046-001",
@@ -3743,7 +4146,8 @@
         "DAEE-ADR-046-024",
         "DAEE-ADR-046-025",
         "DAEE-ADR-046-026",
-        "DAEE-ADR-046-027"
+        "DAEE-ADR-046-027",
+        "DAEE-ADR-046-028"
       ],
       "abnormality_evidence": [
         "planned, implemented, owner-gated, artifact-gated, and release states are mixed across historical docs"
@@ -3785,6 +4189,18 @@
           "tools/check_andon_contract_registry.py",
           "tools/source_provenance.py",
           "tools/check_source_provenance.py",
+          "tools/check_ci_readback.py",
+          "tools/write_linux_a01_evidence.py",
+          "tools/write_task7_deterministic_evidence.py",
+          "tools/sanitized_python_bootstrap.py",
+          "tools/check_no_model_candidate_maturity.py",
+          "tools/check_evidence_retention_manifest.py",
+          "tools/export_cycle_evidence_bundle.py",
+          "tools/reviewed_campaign_orchestrator.py",
+          "tools/run_reviewed_producer_cohort.py",
+          "tools/run_reviewed_cold_review_cohort.py",
+          "tools/run_no_model_preflight.py",
+          "tools/run_local_ci.py",
           "tools/check_state_capsule.py"
         ],
         "generated_files": [
@@ -3861,7 +4277,7 @@
       "remaining_risk": [
         "deterministic closure is not model, WIP, merge, release, or regression proof"
       ],
-      "next_action": "Keep A16 terminal OPEN; the four-carrier tracked predecessor binding is structurally verified, but Task 3 must implement and validate the external create-once exact-commit receipt before any exact-current, CI, candidate, or closure claim.",
+      "next_action": "Keep A16 terminal OPEN; freeze the independently accepted R3 repair set as a new tree, rebuild source/generated/package/preflight/local-CI evidence, and require a zero-finding whole-branch review before a successor commit, exact-SHA CI/external receipt, or fresh mature candidate; no paid campaign may begin earlier.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -3883,6 +4299,8 @@
     "the tracked predecessor binding is not exact-current provenance and cannot mature a candidate without the external exact-commit receipt",
     "deterministic structural verification is not semantic truth",
     "no model PASS, WIP completion, regression causality, merge, tag, release, release-package, or optional Opus claim is made",
-    "no prior candidate or evidence is reusable for a later five-smoke campaign"
+    "no prior candidate or evidence is reusable for a later five-smoke campaign",
+    "no exact-SHA GitHub CI result, external current-commit receipt, mature candidate, model execution, release readiness, or owner acceptance is claimed",
+    "the reviewed five-smoke campaign remains unexecuted and separately authorized"
   ]
 }

@@ -24,6 +24,9 @@
     "check_case_registry_taint.py": {
       "class": "required"
     },
+    "check_ci_readback.py": {
+      "class": "required"
+    },
     "check_ci_registry_coverage.py": {
       "class": "required"
     },
@@ -79,6 +82,9 @@
       "owner_adjudication": "pending"
     },
     "check_encoding_hygiene.py": {
+      "class": "required"
+    },
+    "check_evidence_retention_manifest.py": {
       "class": "required"
     },
     "check_field_operator_architecture.py": {
@@ -172,6 +178,9 @@
       "class": "required"
     },
     "check_no_fixed_topology_floors.py": {
+      "class": "required"
+    },
+    "check_no_model_candidate_maturity.py": {
       "class": "required"
     },
     "check_noetic_field_banner_samples.py": {
@@ -348,5 +357,25 @@
     "check_vcs_action_authorization.py": {
       "class": "required"
     }
+  },
+  "required_integration_commands": {
+    "task2-source-provenance-contract": "python -B tests/source-provenance/test_contract.py",
+    "task3a-vcs-authorization-contract": "python -B tests/vcs-action-authorization/test_contract.py",
+    "task3a-release-authorization-contract": "python -B tests/release-action-authorization/test_contract.py",
+    "task3b-ci-readback-contract": "python -B tests/ci-readback/test_contract.py",
+    "task3b-linux-evidence-writer-self-test": "python tools/write_linux_a01_evidence.py --self-test",
+    "task3b-task7-evidence-writer-self-test": "python tools/write_task7_deterministic_evidence.py --self-test",
+    "task4-candidate-builder-self-test": "python tools/build_candidate_package_record.py --self-test",
+    "task4-artifact-tree-contract": "python tests/artifact-tree/test_contract.py",
+    "task4-candidate-build-contract": "python tests/candidate-build/test_contract.py",
+    "task4-smoke-protocol-contract": "python tests/smoke-matrix/test_protocol.py",
+    "task5-retention-exporter-self-test": "python tools/export_cycle_evidence_bundle.py --self-test",
+    "task5-retention-contract": "python tests/evidence-retention/test_contract.py",
+    "task5-source-preflight-contract": "python tests/no-model-candidate-maturity/test_contract.py",
+    "task5-candidate-maturity-contract": "python tests/no-model-candidate-maturity/test_candidate_maturity.py",
+    "task6-reviewed-campaign-self-test": "python tools/reviewed_campaign_orchestrator.py --self-test",
+    "task6-reviewed-campaign-contract": "python tests/reviewed-campaign-orchestration/test_contract.py",
+    "task7-no-model-preflight-self-test": "python tools/run_no_model_preflight.py --self-test",
+    "task7-closure-ledger-renderer-check": "python tools/render_andon_closure_ledger.py --check"
   }
 }

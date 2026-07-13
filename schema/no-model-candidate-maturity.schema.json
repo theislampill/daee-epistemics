@@ -1,0 +1,317 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/no-model-candidate-maturity.schema.json",
+  "title": "DAEE no-model source and candidate maturity verdicts",
+  "oneOf": [
+    {"$ref": "#/$defs/sourcePreflight"},
+    {"$ref": "#/$defs/candidateMaturity"}
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gitOid": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "timestamp": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+    "taskIdentity": {"type": "string", "pattern": "^/root(?:/[a-z0-9][a-z0-9_-]{0,63})*$"},
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "byte_count", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "byte_count": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "deterministicEvidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "byte_count", "sha256", "artifact_schema", "kind", "status"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "byte_count": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "artifact_schema": {"const": "daee-task7-deterministic-evidence-v1"},
+        "kind": {"enum": ["no-model-preflight", "full-local-ci", "generated-freshness-package", "independent-whole-branch-review"]},
+        "status": {"enum": ["PASS", "ACCEPT"]}
+      }
+    },
+    "sourceIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "remote_url", "branch", "ref", "commit_sha", "tree_oid"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1},
+        "remote_url": {"type": "string", "minLength": 1},
+        "branch": {"type": "string", "minLength": 1},
+        "ref": {"type": "string", "minLength": 1},
+        "commit_sha": {"$ref": "#/$defs/gitOid"},
+        "tree_oid": {"$ref": "#/$defs/gitOid"}
+      }
+    },
+    "sourceBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "binding_id", "canonical_path", "raw_sha256"],
+      "properties": {
+        "schema": {"const": "daee-source-binding-v1"},
+        "binding_id": {"type": "string", "minLength": 1},
+        "canonical_path": {"type": "string", "minLength": 1},
+        "raw_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "candidateReviewBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "package_tree_sha256"],
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9._-]+$"},
+        "package_tree_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "task5ReviewAuthorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "authorization_id", "issuer_identity", "implementation_owner_identity", "reviewer_identity", "scope", "review_id", "source", "candidate", "freeze_sha256", "consumption_claim_path", "issued_at", "one_use", "owner_acceptance", "model_execution_authorized", "terminal_claim"],
+      "properties": {
+        "schema": {"const": "daee-task5-independent-review-authorization-v1"},
+        "authorization_id": {"$ref": "#/$defs/sha256"},
+        "issuer_identity": {"const": "/root"},
+        "implementation_owner_identity": {"const": "/root/task5_retention"},
+        "reviewer_identity": {"$ref": "#/$defs/taskIdentity"},
+        "scope": {"enum": ["live-escape-review", "candidate-readiness-review"]},
+        "review_id": {"type": "string", "minLength": 1},
+        "source": {"$ref": "#/$defs/sourceIdentity"},
+        "candidate": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/candidateReviewBinding"}
+          ]
+        },
+        "freeze_sha256": {"$ref": "#/$defs/sha256"},
+        "consumption_claim_path": {"type": "string", "minLength": 1},
+        "issued_at": {"$ref": "#/$defs/timestamp"},
+        "one_use": {"const": true},
+        "owner_acceptance": {"const": false},
+        "model_execution_authorized": {"const": false},
+        "terminal_claim": {"const": false}
+      }
+    },
+    "task5ReviewConsumptionClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "claim_id", "scope", "authorization_id", "authorization", "review_id", "reviewer_identity", "review", "authorization_issued_at", "reviewed_at", "review_sha256", "one_use", "owner_acceptance", "model_execution_authorized", "terminal_claim"],
+      "properties": {
+        "schema": {"const": "daee-task5-review-authorization-consumption-v1"},
+        "claim_id": {"$ref": "#/$defs/sha256"},
+        "scope": {"enum": ["live-escape-review", "candidate-readiness-review"]},
+        "authorization_id": {"$ref": "#/$defs/sha256"},
+        "authorization": {"$ref": "#/$defs/artifactRef"},
+        "review_id": {"type": "string", "minLength": 1},
+        "reviewer_identity": {"$ref": "#/$defs/taskIdentity"},
+        "review": {"$ref": "#/$defs/artifactRef"},
+        "authorization_issued_at": {"$ref": "#/$defs/timestamp"},
+        "reviewed_at": {"$ref": "#/$defs/timestamp"},
+        "review_sha256": {"$ref": "#/$defs/sha256"},
+        "one_use": {"const": true},
+        "owner_acceptance": {"const": false},
+        "model_execution_authorized": {"const": false},
+        "terminal_claim": {"const": false}
+      }
+    },
+    "liveEscapeReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "kind", "review_id", "verdict", "accountable_owner", "independent_reviewer", "review_authorization_id", "review_authorization", "independent_from_owner", "source", "ci_receipt", "registry_template", "escape_schema", "escape_checker", "review_protocol", "reviewed_at", "terminal_claim", "model_execution_authorized", "non_claims", "review_sha256"],
+      "properties": {
+        "schema": {"const": "daee-no-model-candidate-maturity-v1"},
+        "kind": {"const": "live-escape-independent-review"},
+        "review_id": {"type": "string", "minLength": 1},
+        "verdict": {"const": "ACCEPT"},
+        "accountable_owner": {"const": "/root/task5_retention"},
+        "independent_reviewer": {"$ref": "#/$defs/taskIdentity"},
+        "review_authorization_id": {"$ref": "#/$defs/sha256"},
+        "review_authorization": {"$ref": "#/$defs/artifactRef"},
+        "independent_from_owner": {"const": true},
+        "source": {"$ref": "#/$defs/sourceIdentity"},
+        "ci_receipt": {"$ref": "#/$defs/artifactRef"},
+        "registry_template": {"$ref": "#/$defs/artifactRef"},
+        "escape_schema": {"$ref": "#/$defs/artifactRef"},
+        "escape_checker": {"$ref": "#/$defs/artifactRef"},
+        "review_protocol": {"$ref": "#/$defs/artifactRef"},
+        "reviewed_at": {"$ref": "#/$defs/timestamp"},
+        "terminal_claim": {"const": false},
+        "model_execution_authorized": {"const": false},
+        "non_claims": {"const": ["escape review is not candidate maturity", "escape review does not authorize model execution", "escape review is not owner acceptance"]},
+        "review_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "candidateIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "status", "claim_status", "candidate_root", "package_profile", "candidate_record", "candidate_readiness", "archive", "tree_digest_algorithm", "package_tree_sha256"],
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9._-]+$"},
+        "status": {"const": "READY_UNUSED"},
+        "claim_status": {"const": "UNCLAIMED"},
+        "candidate_root": {"type": "string", "minLength": 1},
+        "package_profile": {"const": "execution-mini"},
+        "candidate_record": {"$ref": "#/$defs/artifactRef"},
+        "candidate_readiness": {"$ref": "#/$defs/artifactRef"},
+        "archive": {"$ref": "#/$defs/artifactRef"},
+        "tree_digest_algorithm": {"const": "daee-tree-sha256-v1"},
+        "package_tree_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "packageEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_root", "runtime_context", "runtime_context_status", "runtime_context_proof_mode", "package_harness_parity", "package_harness_status", "package_harness_classification"],
+      "properties": {
+        "evidence_root": {"type": "string", "minLength": 1},
+        "runtime_context": {"$ref": "#/$defs/artifactRef"},
+        "runtime_context_status": {"const": "PASS"},
+        "runtime_context_proof_mode": {"const": "package-faithful"},
+        "package_harness_parity": {"$ref": "#/$defs/artifactRef"},
+        "package_harness_status": {"const": "PASS"},
+        "package_harness_classification": {"const": "package-faithful"}
+      }
+    },
+    "retentionEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["custody_root", "final_directory", "manifest", "receipt", "status", "completeness", "retained_tree_sha256"],
+      "properties": {
+        "custody_root": {"type": "string", "minLength": 1},
+        "final_directory": {"type": "string", "minLength": 1},
+        "manifest": {"$ref": "#/$defs/artifactRef"},
+        "receipt": {"$ref": "#/$defs/artifactRef"},
+        "status": {"const": "RETENTION_GREEN"},
+        "completeness": {"const": "COMPLETE"},
+        "retained_tree_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "candidateReadinessReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "kind", "review_id", "verdict", "accountable_owner", "independent_reviewer", "review_authorization_id", "review_authorization", "independent_from_owner", "source", "ci_receipt", "source_preflight", "candidate", "package_evidence", "evidence_manifest", "retention_receipt", "reviewed_at", "terminal_claim", "model_execution_authorized", "non_claims", "review_sha256"],
+      "properties": {
+        "schema": {"const": "daee-no-model-candidate-maturity-v1"},
+        "kind": {"const": "candidate-readiness-independent-review"},
+        "review_id": {"type": "string", "minLength": 1},
+        "verdict": {"const": "ACCEPT"},
+        "accountable_owner": {"const": "/root/task5_retention"},
+        "independent_reviewer": {"$ref": "#/$defs/taskIdentity"},
+        "review_authorization_id": {"$ref": "#/$defs/sha256"},
+        "review_authorization": {"$ref": "#/$defs/artifactRef"},
+        "independent_from_owner": {"const": true},
+        "source": {"$ref": "#/$defs/sourceIdentity"},
+        "ci_receipt": {"$ref": "#/$defs/artifactRef"},
+        "source_preflight": {"$ref": "#/$defs/artifactRef"},
+        "candidate": {"$ref": "#/$defs/candidateIdentity"},
+        "package_evidence": {"$ref": "#/$defs/packageEvidence"},
+        "evidence_manifest": {"$ref": "#/$defs/artifactRef"},
+        "retention_receipt": {"$ref": "#/$defs/artifactRef"},
+        "reviewed_at": {"$ref": "#/$defs/timestamp"},
+        "terminal_claim": {"const": false},
+        "model_execution_authorized": {"const": false},
+        "non_claims": {"const": ["candidate readiness review is not model execution authorization", "candidate readiness review is not reviewed smoke success", "candidate readiness review is not owner acceptance"]},
+        "review_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "sourcePreflight": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema", "kind", "status", "source", "source_binding", "ci_receipt", "tracked_source_binding",
+        "deterministic_evidence", "registries", "live_escape_review", "closure_evidence", "model_execution_authorized",
+        "terminal_claim", "non_claims", "verdict_sha256"
+      ],
+      "properties": {
+        "schema": {"const": "daee-no-model-candidate-maturity-v1"},
+        "kind": {"const": "source-preflight"},
+        "status": {"const": "NO_MODEL_SOURCE_PREFLIGHT_GREEN"},
+        "source": {"$ref": "#/$defs/sourceIdentity"},
+        "source_binding": {"$ref": "#/$defs/sourceBinding"},
+        "ci_receipt": {"$ref": "#/$defs/artifactRef"},
+        "tracked_source_binding": {"$ref": "#/$defs/artifactRef"},
+        "deterministic_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["no_model_preflight", "full_local_ci", "generated_freshness_package", "independent_whole_branch_review"],
+          "properties": {
+            "no_model_preflight": {"$ref": "#/$defs/deterministicEvidenceRef"},
+            "full_local_ci": {"$ref": "#/$defs/deterministicEvidenceRef"},
+            "generated_freshness_package": {"$ref": "#/$defs/deterministicEvidenceRef"},
+            "independent_whole_branch_review": {"$ref": "#/$defs/deterministicEvidenceRef"}
+          }
+        },
+        "registries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["input", "validation", "producer", "escape", "review_protocol"],
+          "properties": {
+            "input": {"$ref": "#/$defs/artifactRef"},
+            "validation": {"$ref": "#/$defs/artifactRef"},
+            "producer": {"$ref": "#/$defs/artifactRef"},
+            "escape": {"$ref": "#/$defs/artifactRef"},
+            "review_protocol": {"$ref": "#/$defs/artifactRef"}
+          }
+        },
+        "live_escape_review": {"$ref": "#/$defs/artifactRef"},
+        "closure_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["closure_ledger", "contract_registry", "architecture_ledger"],
+          "properties": {
+            "closure_ledger": {"$ref": "#/$defs/artifactRef"},
+            "contract_registry": {"$ref": "#/$defs/artifactRef"},
+            "architecture_ledger": {"$ref": "#/$defs/artifactRef"}
+          }
+        },
+        "model_execution_authorized": {"const": false},
+        "terminal_claim": {"const": false},
+        "non_claims": {
+          "const": [
+            "source preflight is not candidate maturity",
+            "source preflight does not authorize model execution",
+            "source preflight is not owner acceptance"
+          ]
+        },
+        "verdict_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "candidateMaturity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "kind", "status", "source", "source_binding", "ci_receipt", "source_preflight", "candidate", "registries", "package_evidence", "retention", "independent_review", "model_execution_authorized", "terminal_claim", "non_claims", "verdict_sha256"],
+      "properties": {
+        "schema": {"const": "daee-no-model-candidate-maturity-v1"},
+        "kind": {"const": "candidate-maturity"},
+        "status": {"const": "NO_MODEL_CANDIDATE_MATURE"},
+        "source": {"$ref": "#/$defs/sourceIdentity"},
+        "source_binding": {"$ref": "#/$defs/sourceBinding"},
+        "ci_receipt": {"$ref": "#/$defs/artifactRef"},
+        "source_preflight": {"$ref": "#/$defs/artifactRef"},
+        "candidate": {"$ref": "#/$defs/candidateIdentity"},
+        "registries": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["input", "validation", "producer", "escape", "review_protocol"],
+          "properties": {
+            "input": {"$ref": "#/$defs/artifactRef"},
+            "validation": {"$ref": "#/$defs/artifactRef"},
+            "producer": {"$ref": "#/$defs/artifactRef"},
+            "escape": {"$ref": "#/$defs/artifactRef"},
+            "review_protocol": {"$ref": "#/$defs/artifactRef"}
+          }
+        },
+        "package_evidence": {"$ref": "#/$defs/packageEvidence"},
+        "retention": {"$ref": "#/$defs/retentionEvidence"},
+        "independent_review": {"$ref": "#/$defs/artifactRef"},
+        "model_execution_authorized": {"const": false},
+        "terminal_claim": {"const": false},
+        "non_claims": {"const": ["no-model candidate maturity is not model execution authorization", "no-model candidate maturity is not reviewed smoke success", "no-model candidate maturity is not owner acceptance"]},
+        "verdict_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

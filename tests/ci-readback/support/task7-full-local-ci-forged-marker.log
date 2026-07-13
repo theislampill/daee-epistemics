@@ -1,0 +1,37 @@
+{
+  "schema": "daee-task7-command-log-v1",
+  "kind": "full-local-ci",
+  "entries": [
+    {
+      "sequence": 1,
+      "command": [
+        "python",
+        "tools/run_local_ci.py",
+        "--strict-pwsh",
+        "--command-timeout-seconds",
+        "900",
+        "--json",
+        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/native/full-local-ci.json"
+      ],
+      "execution_profile": {
+        "profile_id": "python-isolated-bootstrap-v2",
+        "launcher": "running-interpreter",
+        "python_flags": [
+          "-I",
+          "-S",
+          "-B"
+        ],
+        "bootstrap_path": "tools/sanitized_python_bootstrap.py",
+        "environment_policy": "isolated-startup-then-delete-python-prefixed-and-pyvenv-launcher-v2",
+        "import_roots_policy": "stdlib-plus-repo-tools-script-parent-direct-sysconfig-system-user-no-pth-v2",
+        "removed_environment_names": []
+      },
+      "exit_code": 0,
+      "stdout_base64": "cnVuX2xvY2FsX2NpOiBQQVNTICgxNzIgY29tbWFuZChzKSwgaW5kaWNlcyAxLTE3MikK",
+      "stderr_base64": ""
+    }
+  ],
+  "complete": true,
+  "model_calls": 0,
+  "terminal_claim": false
+}

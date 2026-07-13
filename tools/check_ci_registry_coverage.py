@@ -12,6 +12,8 @@ declared source of truth that MUST match reality:
   2. Every entry's `class` is in the fixed vocabulary.
   3. The required<->wired invariant holds: a checker is wired into
      `tools/run_local_ci.py` COMMANDS iff its registry class is `required`.
+  4. Named non-checker integration commands are present exactly once in
+     `tools/run_local_ci.py` and cannot alias one another.
 
 Wiring requires a direct checker execution command. Python launcher argv is
 classified without execution: value-taking options are consumed, terminal
@@ -96,10 +98,41 @@ def evaluate(checker_files: set[str], wired: set[str], entries: dict[str, dict])
     return errors
 
 
+def evaluate_required_integration_commands(commands: list[str], declared: object) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(declared, dict) or not declared:
+        return ["required_integration_commands must be a nonempty object"]
+    values: list[str] = []
+    for identity, command in declared.items():
+        if not isinstance(identity, str) or not re.fullmatch(r"[a-z0-9][a-z0-9-]*", identity):
+            errors.append(f"invalid integration command identity: {identity!r}")
+        if not isinstance(command, str) or not command.strip():
+            errors.append(f"integration command {identity!r} must be a nonempty string")
+            continue
+        values.append(command)
+        count = commands.count(command)
+        if count != 1:
+            errors.append(f"integration command {identity!r} must be wired exactly once, found {count}: {command}")
+    duplicates = sorted({command for command in values if values.count(command) > 1})
+    for command in duplicates:
+        errors.append(f"integration command is registered under multiple identities: {command}")
+    return errors
+
+
 def _load_commands() -> list[str]:
     spec = importlib.util.spec_from_file_location("_rlc", ROOT / "tools" / "run_local_ci.py")
+    if spec is None or spec.loader is None:
+        raise RuntimeError("cannot load tools/run_local_ci.py")
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)  # module guards real work behind __main__
+    previous = sys.modules.get(spec.name)
+    sys.modules[spec.name] = module
+    try:
+        spec.loader.exec_module(module)  # module guards real work behind __main__
+    finally:
+        if previous is None:
+            sys.modules.pop(spec.name, None)
+        else:
+            sys.modules[spec.name] = previous
     return list(module.COMMANDS)
 
 
@@ -328,6 +361,16 @@ def self_test() -> int:
         ("class breakdown groups by class",
          class_breakdown({"a.py": {"class": "required"}, "b.py": {"class": "advisory"},
                           "c.py": {"class": "required"}}) == {"required": ["a.py", "c.py"], "advisory": ["b.py"]}),
+        ("required integration commands are exact-once",
+         evaluate_required_integration_commands(
+             ["python tests/a.py", "python tools/b.py --self-test"],
+             {"a-contract": "python tests/a.py", "b-self-test": "python tools/b.py --self-test"},
+         ) == []),
+        ("missing and aliased integration commands fail closed",
+         len(evaluate_required_integration_commands(
+             ["python tests/a.py"],
+             {"a-contract": "python tests/a.py", "a-alias": "python tests/a.py", "missing-contract": "python tests/missing.py"},
+         )) == 2),
     ]
     ok = all(passed for _, passed in cases)
     for name, passed in cases:
@@ -358,8 +401,13 @@ def main() -> int:
             print(f"ci registry coverage: FAIL (missing {REGISTRY})")
             return 1
         checker_files, wired, entries = _disk_state()
+        data = json.loads(REGISTRY.read_text(encoding="utf-8"))
         groups = class_breakdown(entries)
-        print(f"ci registry: {len(entries)} checkers registered, {len(wired)} required/wired")
+        integrations = data.get("required_integration_commands", {})
+        print(
+            f"ci registry: {len(entries)} checkers registered, {len(wired)} required/wired, "
+            f"{len(integrations) if isinstance(integrations, dict) else 0} integration commands"
+        )
         for cls in sorted(groups):
             print(f"  {cls} ({len(groups[cls])}):")
             for n in groups[cls]:
@@ -370,7 +418,10 @@ def main() -> int:
         print(f"ci registry coverage: FAIL (missing {REGISTRY})")
         return 1
     checker_files, wired, entries = _disk_state()
+    data = json.loads(REGISTRY.read_text(encoding="utf-8"))
+    integrations = data.get("required_integration_commands")
     errors = evaluate(checker_files, wired, entries)
+    errors.extend(evaluate_required_integration_commands(_load_commands(), integrations))
     if errors:
         print(f"ci registry coverage: FAIL ({len(errors)} problem(s))")
         for e in errors:
@@ -378,7 +429,8 @@ def main() -> int:
         return 1
     print(
         f"ci registry coverage: PASS ({len(checker_files)} checkers registered; "
-        f"{len(wired)} required/wired, {len(checker_files) - len(wired)} non-required)"
+        f"{len(wired)} required/wired, {len(checker_files) - len(wired)} non-required; "
+        f"{len(integrations)} required integration commands)"
     )
     return 0
 

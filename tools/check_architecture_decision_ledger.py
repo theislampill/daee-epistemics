@@ -100,6 +100,39 @@ def validate(document: Any, *, require_status: str | None) -> list[Finding]:
         if owner_file not in by_id.get(owner_id, {}).get("owner_files", []):
             return [Finding("missing_owner", f"{owner_file} is missing canonical owner {owner_id}")]
 
+    root = ROOT.resolve()
+    for decision in decisions:
+        decision_id = decision.get("decision_id")
+        for owner_file in decision.get("owner_files", []):
+            owner_parts = owner_file.split("/") if isinstance(owner_file, str) else []
+            if (
+                not isinstance(owner_file, str)
+                or not owner_file
+                or "\\" in owner_file
+                or re.match(r"^[A-Za-z]:", owner_file)
+                or owner_file.startswith("/")
+                or any(part in {"", ".", ".."} or ":" in part for part in owner_parts)
+            ):
+                return [Finding("unsafe_owner_file_path", f"{decision_id} owner_files path is not safe repository-relative: {owner_file!r}")]
+            path = ROOT.joinpath(*owner_file.split("/"))
+            try:
+                resolved = path.resolve(strict=False)
+                resolved.relative_to(root)
+            except (OSError, RuntimeError, ValueError):
+                return [Finding("unsafe_owner_file_path", f"{decision_id} owner_files path escapes the repository: {owner_file}")]
+            current = ROOT
+            for part in owner_file.split("/"):
+                current = current / part
+                if current.exists():
+                    try:
+                        attributes = getattr(current.lstat(), "st_file_attributes", 0)
+                    except OSError:
+                        return [Finding("unsafe_owner_file_path", f"{decision_id} owner_files path cannot be inspected safely: {owner_file}")]
+                    if current.is_symlink() or bool(attributes & 0x400):
+                        return [Finding("unsafe_owner_file_path", f"{decision_id} owner_files path traverses symlink/reparse custody: {owner_file}")]
+            if not resolved.is_file():
+                return [Finding("missing_owner_file", f"{decision_id} owner_files path is not an existing regular file: {owner_file}")]
+
     return []
 
 

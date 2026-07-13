@@ -17,6 +17,8 @@
     "automatic-no-to-unknown",
     "speculative-unknown",
     "no-launch-waiver-lacking-controls",
-    "speculative-calls-avoided"
+    "speculative-calls-avoided",
+    "illustrative-offered-for-maturity",
+    "self-declared-candidate-maturity"
   ]
 }

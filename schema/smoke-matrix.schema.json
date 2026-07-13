@@ -9,6 +9,13 @@
     {"$ref": "#/$defs/usageReceipt"},
     {"$ref": "#/$defs/usageRecovery"},
     {"$ref": "#/$defs/candidateRecord"},
+    {"$ref": "#/$defs/candidateBuildAuthorization"},
+    {"$ref": "#/$defs/candidateBuildClaim"},
+    {"$ref": "#/$defs/candidateRecordBound"},
+    {"$ref": "#/$defs/candidateReadinessMarker"},
+    {"$ref": "#/$defs/matrixAuthorization"},
+    {"$ref": "#/$defs/matrixAuthorizationClaim"},
+    {"$ref": "#/$defs/reviewProtocol"},
     {"$ref": "#/$defs/cycleAttempt"},
     {"$ref": "#/$defs/authorizationCheck"},
     {"$ref": "#/$defs/usageHeadAudit"},
@@ -142,6 +149,78 @@
       "type": "object", "additionalProperties": false,
       "required": ["schema", "kind", "candidate_id", "status"],
       "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "candidate-package-record"}, "candidate_id": {"type": "string", "minLength": 1}, "status": {"enum": ["READY_UNUSED", "QUARANTINED", "CONSUMED_NO_DISPATCH", "CONSUMED_OBSERVED", "CONSUMED_DISPATCH_UNKNOWN"]}, "authorization_sha256": {"anyOf": [{"type": "string", "pattern": "^[a-f0-9]{64}$"}, {"type": "null"}]}, "claim_receipt_sha256": {"anyOf": [{"type": "string", "pattern": "^[a-f0-9]{64}$"}, {"type": "null"}]}, "archive_sha256": {"anyOf": [{"type": "string", "pattern": "^[a-f0-9]{64}$"}, {"type": "null"}]}, "extracted_tree_sha256": {"anyOf": [{"type": "string", "pattern": "^[a-f0-9]{64}$"}, {"type": "null"}]}, "predecessor_record_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "record_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "root_creation": {"enum": ["CREATED", "FAILED"]}, "fallback_quarantine_path": {"type": ["string", "null"]}, "promotion_eligible": {"type": "boolean"}}
+    },
+    "candidateBuildAuthorization": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "authorization_id", "action", "one_use", "issued_at", "expires_at", "branch", "ref", "source_commit", "source_commit_receipt", "ci_readback", "source_preflight", "package_profile", "candidate_id", "custody_root", "candidate_root", "claim_path", "archive_name", "max_archive_bytes", "max_extracted_bytes", "max_archive_entries", "input_registry", "validation_registry", "producer_registry", "escape_registry", "usage_writer", "review_protocol", "model_execution_authorized", "terminal_claim", "non_claims", "authorization_sha256"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "candidate-build-authorization"},
+        "authorization_id": {"type": "string", "minLength": 1}, "action": {"const": "BUILD_EXECUTION_MINI_CANDIDATE"}, "one_use": {"const": true},
+        "issued_at": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+        "expires_at": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+        "branch": {"type": "string", "minLength": 1}, "ref": {"type": "string", "pattern": "^refs/heads/.+"}, "source_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "source_commit_receipt": {"$ref": "#/$defs/artifactRef"}, "ci_readback": {"$ref": "#/$defs/artifactRef"}, "source_preflight": {"$ref": "#/$defs/artifactRef"},
+        "package_profile": {"const": "execution-mini"}, "candidate_id": {"type": "string", "minLength": 1}, "custody_root": {"type": "string", "minLength": 1}, "candidate_root": {"type": "string", "minLength": 1}, "claim_path": {"type": "string", "minLength": 1},
+        "archive_name": {"type": "string", "pattern": "^[^/\\\\]+\\.skill\\.zip$"}, "max_archive_bytes": {"type": "integer", "minimum": 1}, "max_extracted_bytes": {"type": "integer", "minimum": 1}, "max_archive_entries": {"type": "integer", "minimum": 1},
+        "input_registry": {"$ref": "#/$defs/artifactRef"}, "validation_registry": {"$ref": "#/$defs/artifactRef"}, "producer_registry": {"$ref": "#/$defs/artifactRef"}, "escape_registry": {"$ref": "#/$defs/artifactRef"}, "usage_writer": {"$ref": "#/$defs/artifactRef"}, "review_protocol": {"$ref": "#/$defs/artifactRef"},
+        "model_execution_authorized": {"const": false}, "terminal_claim": {"const": false},
+        "non_claims": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "authorization_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "candidateBuildClaim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "claim_id", "authorization_id", "authorization_sha256", "candidate_id", "claimed_at", "one_use", "terminal_claim", "claim_sha256"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "candidate-build-claim"}, "claim_id": {"type": "string", "minLength": 1},
+        "authorization_id": {"type": "string", "minLength": 1}, "authorization_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "candidate_id": {"type": "string", "minLength": 1},
+        "claimed_at": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"}, "one_use": {"const": true}, "terminal_claim": {"const": false}, "claim_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "candidateRecordBound": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "candidate_id", "status", "branch", "ref", "source_commit", "source_commit_receipt", "ci_readback", "source_preflight", "package_profile", "archive", "extraction_receipt", "extracted_root", "tree_digest_algorithm", "extracted_tree_sha256", "extracted_file_count", "build_manifest", "skill_root", "compiled_module_map", "cold_law_manifest", "input_registry", "validation_registry", "producer_registry", "escape_registry", "usage_writer", "review_protocol", "custody_root", "candidate_root", "readiness_marker_path", "build_authorization", "build_claim", "build_authorization_sha256", "build_claim_sha256", "claim_status", "promotion_eligible", "model_execution_authorized", "invalidation_conditions", "non_claims", "record_sha256"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "candidate-package-record-bound"}, "candidate_id": {"type": "string", "minLength": 1}, "status": {"enum": ["READY_UNUSED", "QUARANTINED", "CONSUMED_NO_DISPATCH", "CONSUMED_OBSERVED", "CONSUMED_DISPATCH_UNKNOWN"]},
+        "branch": {"type": "string", "minLength": 1}, "ref": {"type": "string", "pattern": "^refs/heads/.+"}, "source_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "source_commit_receipt": {"$ref": "#/$defs/artifactRef"}, "ci_readback": {"$ref": "#/$defs/artifactRef"}, "source_preflight": {"$ref": "#/$defs/artifactRef"}, "package_profile": {"const": "execution-mini"},
+        "archive": {"type": "object", "additionalProperties": false, "required": ["path", "sha256", "byte_count"], "properties": {"path": {"type": "string", "minLength": 1}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "byte_count": {"type": "integer", "minimum": 1}}},
+        "extraction_receipt": {"$ref": "#/$defs/artifactRef"}, "extracted_root": {"type": "string", "minLength": 1}, "tree_digest_algorithm": {"const": "daee-tree-sha256-v1"}, "extracted_tree_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "extracted_file_count": {"type": "integer", "minimum": 1},
+        "build_manifest": {"$ref": "#/$defs/artifactRef"}, "skill_root": {"$ref": "#/$defs/artifactRef"}, "compiled_module_map": {"$ref": "#/$defs/artifactRef"}, "cold_law_manifest": {"$ref": "#/$defs/artifactRef"},
+        "input_registry": {"$ref": "#/$defs/artifactRef"}, "validation_registry": {"$ref": "#/$defs/artifactRef"}, "producer_registry": {"$ref": "#/$defs/artifactRef"}, "escape_registry": {"$ref": "#/$defs/artifactRef"}, "usage_writer": {"$ref": "#/$defs/artifactRef"}, "review_protocol": {"$ref": "#/$defs/artifactRef"},
+        "custody_root": {"type": "string", "minLength": 1}, "candidate_root": {"type": "string", "minLength": 1}, "readiness_marker_path": {"const": "candidate-readiness.json"}, "build_authorization": {"$ref": "#/$defs/artifactRef"}, "build_claim": {"$ref": "#/$defs/artifactRef"}, "build_authorization_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "build_claim_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "claim_status": {"enum": ["UNCLAIMED", "CLAIMED"]}, "promotion_eligible": {"const": false}, "model_execution_authorized": {"const": false},
+        "invalidation_conditions": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}, "non_claims": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}, "record_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "candidateReadinessMarker": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "candidate_id", "candidate_root", "status", "record_sha256", "archive_sha256", "tree_digest_algorithm", "extracted_tree_sha256", "readback_status", "promotion_eligible", "model_execution_authorized", "terminal_claim", "non_claims", "marker_sha256"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "candidate-readiness-marker"}, "candidate_id": {"type": "string", "minLength": 1}, "candidate_root": {"type": "string", "minLength": 1}, "status": {"const": "READY_UNUSED"}, "record_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "archive_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "tree_digest_algorithm": {"const": "daee-tree-sha256-v1"}, "extracted_tree_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "readback_status": {"const": "VERIFIED"}, "promotion_eligible": {"const": false}, "model_execution_authorized": {"const": false}, "terminal_claim": {"const": false}, "non_claims": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}, "marker_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+    },
+    "matrixAuthorization": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "authorization_id", "action", "one_use", "candidate_id", "candidate_record", "candidate_readiness", "candidate_maturity", "source_commit_receipt", "package_sha256", "package_tree_sha256", "tree_digest_algorithm", "input_registry", "review_protocol", "producer_model", "producer_reasoning_effort", "cold_review_model", "cold_review_reasoning_effort", "optional_opus_authorized", "paid_execution_authorized", "authorization_sha256"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "matrix-authorization"}, "authorization_id": {"type": "string", "minLength": 1}, "action": {"const": "RUN_REVIEWED_FIVE_SMOKE"}, "one_use": {"const": true}, "candidate_id": {"type": "string", "minLength": 1}, "candidate_record": {"$ref": "#/$defs/artifactRef"}, "candidate_readiness": {"$ref": "#/$defs/artifactRef"}, "candidate_maturity": {"$ref": "#/$defs/artifactRef"}, "source_commit_receipt": {"$ref": "#/$defs/artifactRef"}, "package_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "package_tree_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "tree_digest_algorithm": {"const": "daee-tree-sha256-v1"}, "input_registry": {"$ref": "#/$defs/artifactRef"}, "review_protocol": {"$ref": "#/$defs/artifactRef"}, "producer_model": {"const": "gpt-5.5"}, "producer_reasoning_effort": {"const": "high"}, "cold_review_model": {"const": "gpt-5.6-sol"}, "cold_review_reasoning_effort": {"const": "xhigh"}, "optional_opus_authorized": {"const": false}, "paid_execution_authorized": {"type": "boolean"}, "authorization_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+    },
+    "matrixAuthorizationClaim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "claim_id", "authorization_id", "authorization_sha256", "candidate_id", "claimed_at", "one_use", "claim_sha256"],
+      "properties": {"schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "matrix-authorization-claim"}, "claim_id": {"type": "string", "minLength": 1}, "authorization_id": {"type": "string", "minLength": 1}, "authorization_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "candidate_id": {"type": "string", "minLength": 1}, "claimed_at": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"}, "one_use": {"const": true}, "claim_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+    },
+    "reviewProtocol": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "kind", "protocol_id", "input_registry", "case_ids", "producer", "human_initial_assessment", "cold_review", "final_adjudication", "optional_opus", "non_claims"],
+      "properties": {
+        "schema": {"const": "daee-smoke-matrix-v1"}, "kind": {"const": "review-protocol"}, "protocol_id": {"const": "reviewed-five-smoke-v1"}, "input_registry": {"$ref": "#/$defs/artifactRef"},
+        "case_ids": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "producer": {"type": "object", "additionalProperties": false, "required": ["cohort_size", "model", "reasoning_effort", "protocol", "isolated_roots", "paid_execution_authorized"], "properties": {"cohort_size": {"const": 5}, "model": {"const": "gpt-5.5"}, "reasoning_effort": {"const": "high"}, "protocol": {"const": "barrier-five-submit-before-await-v1"}, "isolated_roots": {"const": true}, "paid_execution_authorized": {"const": false}}},
+        "human_initial_assessment": {"type": "object", "additionalProperties": false, "required": ["required_count", "all_hash_claimed_before_cold_review", "cold_review_disclosure_forbidden_before_claim"], "properties": {"required_count": {"const": 5}, "all_hash_claimed_before_cold_review": {"const": true}, "cold_review_disclosure_forbidden_before_claim": {"const": true}}},
+        "cold_review": {"type": "object", "additionalProperties": false, "required": ["cohort_size", "model", "reasoning_effort", "protocol", "isolated_roots", "conversation_history_supplied", "paid_execution_authorized"], "properties": {"cohort_size": {"const": 5}, "model": {"const": "gpt-5.6-sol"}, "reasoning_effort": {"const": "xhigh"}, "protocol": {"const": "independent-cold-review-v1"}, "isolated_roots": {"const": true}, "conversation_history_supplied": {"const": false}, "paid_execution_authorized": {"const": false}}},
+        "final_adjudication": {"type": "object", "additionalProperties": false, "required": ["human_required", "owner_acceptance_required", "structural_pass_is_not_acceptance"], "properties": {"human_required": {"const": true}, "owner_acceptance_required": {"const": true}, "structural_pass_is_not_acceptance": {"const": true}}},
+        "optional_opus": {"type": "object", "additionalProperties": false, "required": ["authorized", "required", "separate_authorization_required"], "properties": {"authorized": {"const": false}, "required": {"const": false}, "separate_authorization_required": {"const": true}}},
+        "non_claims": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
     },
     "cycleAttempt": {
       "type": "object", "additionalProperties": false,

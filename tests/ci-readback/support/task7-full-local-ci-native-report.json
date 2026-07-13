@@ -1,0 +1,16 @@
+{
+  "schema": "daee-run-local-ci-completion-v1",
+  "completion_id": "6f27b3695ee922c8ea8db09d0799880b1977d4ac158fd18143e38acb18ad983a",
+  "status": "PASS",
+  "complete": true,
+  "command_count": 172,
+  "executed_count": 172,
+  "start_at_command": 1,
+  "end_at_command": 172,
+  "command_list_sha256": "070a8ba7d7693565a0091a22ee309c29e57c8adaa553d179c6be421c676221be",
+  "execution_plan_sha256": "45fe475728a429fcb909214738b0f6b8dc09353b950d05ca0b0702dc4c97d364",
+  "strict_pwsh": true,
+  "command_timeout_seconds": 900,
+  "timeout_count": 0,
+  "skip_count": 0
+}

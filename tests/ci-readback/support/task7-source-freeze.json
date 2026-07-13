@@ -1,0 +1,27 @@
+{
+  "schema": "daee-task7-precommit-source-freeze-v1",
+  "freeze_id": "361ce4b4bf753502e4ccf10734fe1320bdb85dd2a39aa887e728fccda52df150",
+  "branch": "codex/v0.4.6.0-runtime-footprint-b10",
+  "ref": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10",
+  "expected_final_tree_oid": "4444444444444444444444444444444444444444",
+  "manifest_algorithm": "sha256-canonical-json-source-files-v1",
+  "file_count": 2,
+  "files_sha256": "d6ab2eee33ba766b0c7932030e7c60195ba6c0f7323196ed3beb068a0c64c888",
+  "files": [
+    {
+      "path": "docs/.nojekyll",
+      "blob_oid": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "byte_count": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tools/write_task7_deterministic_evidence.py",
+      "blob_oid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "byte_count": 123,
+      "raw_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ],
+  "complete": true,
+  "model_calls": 0,
+  "terminal_claim": false
+}

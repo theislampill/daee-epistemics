@@ -1,0 +1,32 @@
+{
+  "schema": "daee-task7-whole-branch-review-v1",
+  "review_id": "ab76eebcf22a698180b20b56eec97680e6c3780c26fe5900fc6e65d8b9a5923b",
+  "reviewer": "/root/task3b_ci_receipt/task3b_requirements_audit",
+  "owner_identity": "/root/task3b_ci_receipt",
+  "review_authorization_id": "7a0855d02777ad0386630a9db9a3287ba4359f6810c0f5ec35d1e0d7d530e323",
+  "review_authorization": {
+    "path": "tests/ci-readback/support/task7-independent-review-authorization.json",
+    "byte_count": 735,
+    "sha256": "d5245327ed19a0511af390bea11ce937e30d1315324d6b3f78a218b158ee3c2a"
+  },
+  "independent_from_owner": true,
+  "reviewed_branch": "codex/v0.4.6.0-runtime-footprint-b10",
+  "reviewed_tree_oid": "4444444444444444444444444444444444444444",
+  "source_freeze_id": "361ce4b4bf753502e4ccf10734fe1320bdb85dd2a39aa887e728fccda52df150",
+  "manifest": {
+    "algorithm": "path-nul-byte-count-nul-sha256-lf-v1",
+    "path_count": 2,
+    "byte_count": 123,
+    "aggregate_sha256": "6530ec55b32028fcb9dd9d55f9347c15d54512eb6802cc681e94ef490736a35a"
+  },
+  "findings": {
+    "critical": 0,
+    "important": 0,
+    "minor": 0
+  },
+  "verdict": "ACCEPT",
+  "reviewed_at": "2026-07-12T12:00:00Z",
+  "owner_acceptance": false,
+  "candidate_claim": false,
+  "terminal_claim": false
+}

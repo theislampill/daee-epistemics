@@ -47,6 +47,57 @@ SOURCE_BINDING_OWNER_PATHS = {
         "tests/source-provenance/test_contract.py",
     ),
 }
+CI_READBACK_OWNER_PATHS = {
+    "owned_schema_paths": ("schema/ci-readback.schema.json",),
+    "owned_tool_paths": (
+        "tools/check_ci_readback.py",
+        "tools/write_linux_a01_evidence.py",
+        "tools/write_task7_deterministic_evidence.py",
+        "tools/sanitized_python_bootstrap.py",
+        "tools/run_no_model_preflight.py",
+        "tools/run_local_ci.py",
+    ),
+    "owned_test_paths": ("tests/ci-readback/test_contract.py",),
+}
+CANDIDATE_CUSTODY_OWNER_PATHS = {
+    "owned_schema_paths": ("schema/smoke-matrix.schema.json",),
+    "owned_tool_paths": (
+        "tools/artifact_tree.py",
+        "tools/build_candidate_package_record.py",
+        "tools/check_smoke_matrix_manifest.py",
+    ),
+    "owned_test_paths": (
+        "tests/artifact-tree/test_contract.py",
+        "tests/candidate-build/test_contract.py",
+        "tests/smoke-matrix/reviewed-five-smoke-protocol.json",
+        "tests/smoke-matrix/test_protocol.py",
+    ),
+}
+CANDIDATE_MATURITY_OWNER_PATHS = {
+    "owned_schema_paths": (
+        "schema/no-model-candidate-maturity.schema.json",
+        "schema/evidence-retention-manifest.schema.json",
+    ),
+    "owned_tool_paths": (
+        "tools/build_no_model_candidate_maturity_verdict.py",
+        "tools/check_no_model_candidate_maturity.py",
+        "tools/export_cycle_evidence_bundle.py",
+        "tools/check_evidence_retention_manifest.py",
+    ),
+    "owned_test_paths": (
+        "tests/no-model-candidate-maturity/test_contract.py",
+        "tests/no-model-candidate-maturity/test_candidate_maturity.py",
+        "tests/evidence-retention/test_contract.py",
+    ),
+}
+REVIEWED_CAMPAIGN_OWNER_PATHS = {
+    "owned_tool_paths": (
+        "tools/reviewed_campaign_orchestrator.py",
+        "tools/run_reviewed_producer_cohort.py",
+        "tools/run_reviewed_cold_review_cohort.py",
+    ),
+    "owned_test_paths": ("tests/reviewed-campaign-orchestration/test_contract.py",),
+}
 
 
 def materialize(path: Path, decision_path: Path) -> tuple[Any, Any, dict[str, Any]]:
@@ -150,6 +201,9 @@ def validate(registry: Any, decisions: Any, context: dict[str, Any]) -> list[Fin
     a16 = next((c for c in contracts if c.get("andon_id") == "A16"), None)
     if not a16:
         return [Finding("missing_a16_owner", "A16 contract is required")]
+    a14 = next((c for c in contracts if c.get("andon_id") == "A14"), None)
+    if not a14:
+        return [Finding("missing_a14_owner", "A14 contract is required")]
     for field, required_paths in SOURCE_BINDING_OWNER_PATHS.items():
         registered = a16.get(field, [])
         for required_path in required_paths:
@@ -167,18 +221,51 @@ def validate(registry: Any, decisions: Any, context: dict[str, Any]) -> list[Fin
                         f"A16 registered tracked-binding owner path does not exist: {required_path}",
                     )
                 ]
+    for field, required_paths in CI_READBACK_OWNER_PATHS.items():
+        registered = a16.get(field, [])
+        for required_path in required_paths:
+            if required_path not in registered:
+                return [
+                    Finding(
+                        "ci_readback_owner_registration",
+                        f"A16 {field} must register CI-readback owner {required_path}",
+                    )
+                ]
+    for owner, family, failure_class, label in (
+        (a14, CANDIDATE_CUSTODY_OWNER_PATHS, "candidate_custody_owner_registration", "candidate-custody"),
+        (a16, CANDIDATE_MATURITY_OWNER_PATHS, "candidate_maturity_owner_registration", "candidate-maturity"),
+        (a16, REVIEWED_CAMPAIGN_OWNER_PATHS, "reviewed_campaign_owner_registration", "reviewed-campaign"),
+    ):
+        for field, required_paths in family.items():
+            registered = owner.get(field, [])
+            for required_path in required_paths:
+                if required_path not in registered:
+                    return [Finding(failure_class, f"{owner['andon_id']} {field} must register {label} owner {required_path}")]
+                if not (ROOT / required_path).is_file():
+                    return [Finding(failure_class, f"{owner['andon_id']} registered {label} owner path does not exist: {required_path}")]
     rules = registry.get("rules", {})
     if rules.get("source_binding_owner_paths_must_exist") is not True:
         return [Finding("source_binding_owner_registration", "source-binding owner-path existence gate must be active")]
-    if rules.get("global_missing_owner_path_rejection") is not False or not str(
-        rules.get("global_missing_owner_path_rejection_deferred_reason", "")
-    ).strip():
+    if rules.get("ci_readback_owner_paths_must_exist") is not True:
+        return [Finding("ci_readback_owner_registration", "CI-readback owner-path existence gate must be active")]
+    if rules.get("candidate_custody_owner_paths_must_exist") is not True:
+        return [Finding("candidate_custody_owner_registration", "candidate-custody owner-path existence gate must be active")]
+    if rules.get("candidate_maturity_owner_paths_must_exist") is not True:
+        return [Finding("candidate_maturity_owner_registration", "candidate-maturity owner-path existence gate must be active")]
+    if rules.get("reviewed_campaign_owner_paths_must_exist") is not True:
+        return [Finding("reviewed_campaign_owner_registration", "reviewed-campaign owner-path existence gate must be active")]
+    if rules.get("global_missing_owner_path_rejection") is not True:
         return [
             Finding(
                 "global_owner_path_gate_boundary",
-                "global missing-owner-path rejection must remain explicitly deferred until planned A16 Tasks 3-5 materialize",
+                "global missing-owner-path rejection must be active after A16 Tasks 4-6 materialize",
             )
         ]
+    for contract in contracts:
+        for field in ("owned_schema_paths", "owned_tool_paths", "owned_test_paths"):
+            for owned_path in contract.get(field, []):
+                if not (ROOT / owned_path).is_file():
+                    return [Finding("missing_owned_path", f"{contract.get('andon_id')} registered missing {field} path {owned_path}")]
     a16_milestones = {m.get("milestone_id"): m for m in a16.get("milestones", [])}
     if a16_milestones.get("A16.bootstrap", {}).get("dependencies") != []:
         return [Finding("a16_bootstrap_contract", "A16.bootstrap must have no dependencies")]

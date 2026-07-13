@@ -1,0 +1,63 @@
+{
+  "schema": "daee-task7-deterministic-evidence-v1",
+  "evidence_id": "219bfa73dcafa785104e8267637b440525e1f1128566f034d89fbd6b1fbda722",
+  "kind": "no-model-preflight",
+  "status": "PASS",
+  "command": [
+    "python",
+    "tools/write_task7_deterministic_evidence.py",
+    "--build-verdict",
+    "--kind",
+    "no-model-preflight",
+    "--source-freeze",
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/source-freeze.json",
+    "--out",
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/no-model-preflight.json"
+  ],
+  "command_sha256": "8272e35a8fb84626f8096efffefdb6c0c3046a2acbf5ee75839d0f1f8fb8ef55",
+  "execution_profile": {
+    "profile_id": "python-isolated-bootstrap-v2",
+    "launcher": "running-interpreter",
+    "python_flags": [
+      "-I",
+      "-S",
+      "-B"
+    ],
+    "bootstrap_path": "tools/sanitized_python_bootstrap.py",
+    "environment_policy": "isolated-startup-then-delete-python-prefixed-and-pyvenv-launcher-v2",
+    "import_roots_policy": "stdlib-plus-repo-tools-script-parent-direct-sysconfig-system-user-no-pth-v2",
+    "removed_environment_names": []
+  },
+  "exit_code": 0,
+  "report": {
+    "path": "tests/ci-readback/support/task7-no-model-preflight-report.json",
+    "byte_count": 3303,
+    "sha256": "8575668f8474707b03e49d542981cbe4b5d64dd7f8047ba88e2db144ddfd59f4"
+  },
+  "log": {
+    "path": "tests/ci-readback/support/task7-no-model-preflight.log",
+    "byte_count": 1094,
+    "sha256": "14294f01d3b566fbe1835faba0d8a5d69f0b8ab91bac97a8942bf4b6a63da7c1"
+  },
+  "checker": {
+    "path": "tools/write_task7_deterministic_evidence.py",
+    "blob_oid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "raw_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "source_freeze": {
+    "path": "tests/ci-readback/support/task7-source-freeze.json",
+    "byte_count": 1043,
+    "sha256": "86b9a09e1fe0756d87081923df9258ae43ca4c14a51bced6f6ca5f1a735ce3d8"
+  },
+  "freeze_id": "361ce4b4bf753502e4ccf10734fe1320bdb85dd2a39aa887e728fccda52df150",
+  "expected_final_tree_oid": "4444444444444444444444444444444444444444",
+  "observed_at": "2026-07-12T12:00:00Z",
+  "model_calls": 0,
+  "candidate_claim": false,
+  "terminal_claim": false,
+  "non_claims": [
+    "does-not-claim-final-source-commit",
+    "does-not-claim-exact-sha-ci",
+    "does-not-authorize-model-or-candidate"
+  ]
+}

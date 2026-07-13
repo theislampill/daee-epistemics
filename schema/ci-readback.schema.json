@@ -1,0 +1,1376 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/ci-readback.schema.json",
+  "title": "DAEE combined exact source commit and CI receipt",
+  "description": "Sole schema owner for daee-source-commit-receipt-v1. This receipt joins one exact pushed source commit to its exact GitHub Actions CI run and retained Linux A01 log evidence without making a candidate or terminal closure claim.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "receipt_id",
+    "status",
+    "provider",
+    "repository",
+    "source",
+    "lineage",
+    "source_binding",
+    "carriers",
+    "migration_carrier",
+    "carrier_binding_digest",
+    "deterministic_verdicts",
+    "vcs",
+    "workflow",
+    "run",
+    "required_checks",
+    "job",
+    "job_log",
+    "artifact_inventory",
+    "linux_a01",
+    "predecessor_record_sha256",
+    "predecessor_receipt",
+    "custody_sequence",
+    "receipt_locator",
+    "observed_at",
+    "candidate_boundary",
+    "non_claims",
+    "terminal_claim"
+  ],
+  "properties": {
+    "schema": {"const": "daee-source-commit-receipt-v1"},
+    "receipt_id": {"$ref": "#/$defs/sha256"},
+    "status": {"const": "EXACT_SHA_CI_GREEN"},
+    "provider": {"const": "github-actions"},
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["full_name", "remote_url", "remote_name", "branch", "ref"],
+      "properties": {
+        "full_name": {"const": "theislampill/daee-epistemics"},
+        "remote_url": {"const": "https://github.com/theislampill/daee-epistemics.git"},
+        "remote_name": {"const": "origin"},
+        "branch": {"const": "codex/v0.4.6.0-runtime-footprint-b10"},
+        "ref": {"const": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commit_sha",
+        "tree_oid",
+        "raw_parent_lines",
+        "parent_oids",
+        "clean_state",
+        "equality",
+        "state_digest_sha256"
+      ],
+      "properties": {
+        "commit_sha": {"$ref": "#/$defs/oid"},
+        "tree_oid": {"$ref": "#/$defs/oid"},
+        "raw_parent_lines": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^parent [0-9a-f]{40}$"}
+        },
+        "parent_oids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/oid"}
+        },
+        "clean_state": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "index_clean",
+            "worktree_clean",
+            "untracked_source_paths",
+            "porcelain_v2_byte_count",
+            "porcelain_v2_sha256"
+          ],
+          "properties": {
+            "index_clean": {"const": true},
+            "worktree_clean": {"const": true},
+            "untracked_source_paths": {"type": "array", "maxItems": 0, "items": {"$ref": "#/$defs/path"}},
+            "porcelain_v2_byte_count": {"const": 0},
+            "porcelain_v2_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "equality": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "local_head",
+            "upstream_ref",
+            "upstream_oid",
+            "live_remote_ref",
+            "live_remote_oid",
+            "expected_old_remote_oid",
+            "all_equal"
+          ],
+          "properties": {
+            "local_head": {"$ref": "#/$defs/oid"},
+            "upstream_ref": {"const": "refs/remotes/origin/codex/v0.4.6.0-runtime-footprint-b10"},
+            "upstream_oid": {"$ref": "#/$defs/oid"},
+            "live_remote_ref": {"const": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10"},
+            "live_remote_oid": {"$ref": "#/$defs/oid"},
+            "expected_old_remote_oid": {"$ref": "#/$defs/oid"},
+            "all_equal": {"const": true}
+          }
+        },
+        "state_digest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checkpoint_commit",
+        "checkpoint_tree",
+        "strict_successor",
+        "commit_count_from_checkpoint",
+        "full_history",
+        "shallow_repository",
+        "replace_objects_disabled",
+        "replace_ref_count",
+        "grafts_present",
+        "source_commit_object_type",
+        "source_tree_object_type",
+        "checkpoint_object_type",
+        "parent_object_types"
+      ],
+      "properties": {
+        "checkpoint_commit": {"const": "bcccb4e34c75e1f8e363ef020e2deeaabae60435"},
+        "checkpoint_tree": {"const": "7238bb567209003adb9b07cb0ec2d1629780cc2e"},
+        "strict_successor": {"const": true},
+        "commit_count_from_checkpoint": {"type": "integer", "minimum": 1},
+        "full_history": {"const": true},
+        "shallow_repository": {"const": false},
+        "replace_objects_disabled": {"const": true},
+        "replace_ref_count": {"const": 0},
+        "grafts_present": {"const": false},
+        "source_commit_object_type": {"const": "commit"},
+        "source_tree_object_type": {"const": "tree"},
+        "checkpoint_object_type": {"const": "commit"},
+        "parent_object_types": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["oid", "type"],
+            "properties": {
+              "oid": {"$ref": "#/$defs/oid"},
+              "type": {"const": "commit"}
+            }
+          }
+        }
+      }
+    },
+    "source_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "binding_id", "canonical_path", "raw_sha256"],
+      "properties": {
+        "schema": {"const": "daee-source-binding-v1"},
+        "binding_id": {"const": "daee-v0.4.6.0-branch10-predecessor-binding"},
+        "canonical_path": {"const": "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "carriers": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "schema", "blob_oid", "byte_count", "raw_sha256", "source_binding_raw_sha256"],
+        "properties": {
+          "path": {"$ref": "#/$defs/path"},
+          "schema": {"type": "string", "minLength": 1},
+          "blob_oid": {"$ref": "#/$defs/oid"},
+          "byte_count": {"type": "integer", "minimum": 1},
+          "raw_sha256": {"$ref": "#/$defs/sha256"},
+          "source_binding_raw_sha256": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "migration_carrier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "schema", "status", "shared_integration_status", "blob_oid", "raw_sha256"],
+      "properties": {
+        "path": {"const": "docs/audits/v0.4.6.0-wip-state-capsule-v2-migration-ledger.json"},
+        "schema": {"const": "daee-state-capsule-v2-migration-ledger-v1"},
+        "status": {"type": "string", "minLength": 1},
+        "shared_integration_status": {"type": "string", "minLength": 1},
+        "blob_oid": {"$ref": "#/$defs/oid"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "carrier_binding_digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "sha256"],
+      "properties": {
+        "algorithm": {"const": "sha256-canonical-json-carrier-binding-v1"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "deterministic_verdicts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "no_model_preflight",
+        "full_local_ci",
+        "generated_freshness_package",
+        "independent_whole_branch_review"
+      ],
+      "properties": {
+        "no_model_preflight": {"$ref": "#/$defs/deterministic_verdict_ref"},
+        "full_local_ci": {"$ref": "#/$defs/deterministic_verdict_ref"},
+        "generated_freshness_package": {"$ref": "#/$defs/deterministic_verdict_ref"},
+        "independent_whole_branch_review": {"$ref": "#/$defs/deterministic_verdict_ref"}
+      }
+    },
+    "vcs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commit", "push", "expected_old_remote_oid"],
+      "properties": {
+        "commit": {"$ref": "#/$defs/action_chain"},
+        "push": {"$ref": "#/$defs/action_chain"},
+        "expected_old_remote_oid": {"$ref": "#/$defs/oid"}
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "path", "blob_oid", "raw_sha256", "html_url"],
+      "properties": {
+        "id": {"type": "integer", "minimum": 1},
+        "name": {"const": "CI"},
+        "path": {"const": ".github/workflows/ci.yml"},
+        "blob_oid": {"$ref": "#/$defs/oid"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "html_url": {"$ref": "#/$defs/url"}
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "number",
+        "attempt",
+        "event",
+        "head_branch",
+        "head_sha",
+        "check_suite_id",
+        "status",
+        "conclusion",
+        "created_at",
+        "updated_at",
+        "html_url",
+        "api_url"
+      ],
+      "properties": {
+        "id": {"type": "integer", "minimum": 1},
+        "number": {"type": "integer", "minimum": 1},
+        "attempt": {"type": "integer", "minimum": 1},
+        "event": {"const": "push"},
+        "head_branch": {"const": "codex/v0.4.6.0-runtime-footprint-b10"},
+        "head_sha": {"$ref": "#/$defs/oid"},
+        "check_suite_id": {"type": "integer", "minimum": 1},
+        "status": {"const": "completed"},
+        "conclusion": {"const": "success"},
+        "created_at": {"$ref": "#/$defs/timestamp"},
+        "updated_at": {"$ref": "#/$defs/timestamp"},
+        "html_url": {"$ref": "#/$defs/url"},
+        "api_url": {"$ref": "#/$defs/url"}
+      }
+    },
+    "required_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["derivation_source", "owner_required_set", "branch_protection", "results"],
+      "properties": {
+        "derivation_source": {"const": "consumed-push-authorization"},
+        "owner_required_set": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": {"const": "CI / runtime-checks"}
+        },
+        "branch_protection": {
+          "oneOf": [
+            {"$ref": "#/$defs/unprotected_readback"},
+            {"$ref": "#/$defs/protected_readback"}
+          ]
+        },
+        "results": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {"$ref": "#/$defs/check_result"}
+        }
+      }
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "check_name",
+        "raw_check_run_name",
+        "check_run_id",
+        "check_suite_id",
+        "app",
+        "runner",
+        "status",
+        "conclusion",
+        "started_at",
+        "completed_at",
+        "html_url",
+        "api_url",
+        "check_run_url",
+        "steps"
+      ],
+      "properties": {
+        "id": {"type": "integer", "minimum": 1},
+        "name": {"const": "runtime-checks"},
+        "check_name": {"const": "CI / runtime-checks"},
+        "raw_check_run_name": {"const": "runtime-checks"},
+        "check_run_id": {"type": "integer", "minimum": 1},
+        "check_suite_id": {"type": "integer", "minimum": 1},
+        "app": {"$ref": "#/$defs/app"},
+        "runner": {"$ref": "#/$defs/runner"},
+        "status": {"const": "completed"},
+        "conclusion": {"const": "success"},
+        "started_at": {"$ref": "#/$defs/timestamp"},
+        "completed_at": {"$ref": "#/$defs/timestamp"},
+        "html_url": {"$ref": "#/$defs/url"},
+        "api_url": {"$ref": "#/$defs/url"},
+        "check_run_url": {"$ref": "#/$defs/url"},
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/job_step"}
+        }
+      }
+    },
+    "job_log": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["download_endpoint", "byte_count", "sha256"],
+      "properties": {
+        "download_endpoint": {"type": "string", "pattern": "^repos/[^/]+/[^/]+/actions/jobs/[0-9]+/logs$"},
+        "byte_count": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "artifact_inventory": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {"type": "object"}
+    },
+    "linux_a01": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_sha",
+        "run_id",
+        "job_id",
+        "check_run_id",
+        "runner_label",
+        "step",
+        "command",
+        "checker",
+        "contract_test",
+        "suite_marker",
+        "suite_test_count",
+        "suite_status",
+        "skipped_count",
+        "substituted",
+        "artifact",
+        "evidence",
+        "job_log_sha256",
+        "log_segment_sha256"
+      ],
+      "properties": {
+        "source_sha": {"$ref": "#/$defs/oid"},
+        "run_id": {"type": "integer", "minimum": 1},
+        "job_id": {"type": "integer", "minimum": 1},
+        "check_run_id": {"type": "integer", "minimum": 1},
+        "runner_label": {"const": "ubuntu-latest"},
+        "step": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["number", "name", "status", "conclusion", "started_at", "completed_at"],
+          "properties": {
+            "number": {"type": "integer", "minimum": 1},
+            "name": {"const": "Linux A01 custody self-test"},
+            "status": {"const": "completed"},
+            "conclusion": {"const": "success"},
+            "started_at": {"$ref": "#/$defs/timestamp"},
+            "completed_at": {"$ref": "#/$defs/timestamp"}
+          }
+        },
+        "command": {"const": "python tools/check_captured_output_manifest.py --self-test"},
+        "checker": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "blob_oid", "raw_sha256"],
+          "properties": {
+            "path": {"const": "tools/check_captured_output_manifest.py"},
+            "blob_oid": {"$ref": "#/$defs/oid"},
+            "raw_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "contract_test": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "blob_oid", "raw_sha256"],
+          "properties": {
+            "path": {"const": "tests/captured-output-custody/test_contract.py"},
+            "blob_oid": {"$ref": "#/$defs/oid"},
+            "raw_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "suite_marker": {"const": "tests/captured-output-custody/test_contract.py"},
+        "suite_test_count": {"type": "integer", "minimum": 1},
+        "suite_status": {"const": "OK"},
+        "skipped_count": {"const": 0},
+        "substituted": {"const": false},
+        "artifact": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "id",
+            "size_in_bytes",
+            "expired",
+            "created_at",
+            "expires_at",
+            "api_url",
+            "archive_download_url",
+            "zip_sha256",
+            "entry_path",
+            "entry_byte_count",
+            "entry_sha256"
+          ],
+          "properties": {
+            "name": {"const": "linux-a01-evidence"},
+            "id": {"type": "integer", "minimum": 1},
+            "size_in_bytes": {"type": "integer", "minimum": 1},
+            "expired": {"const": false},
+            "created_at": {"$ref": "#/$defs/timestamp"},
+            "expires_at": {"$ref": "#/$defs/timestamp"},
+            "api_url": {"$ref": "#/$defs/url"},
+            "archive_download_url": {"$ref": "#/$defs/url"},
+            "zip_sha256": {"$ref": "#/$defs/sha256"},
+            "entry_path": {"const": "linux-a01.json"},
+            "entry_byte_count": {"type": "integer", "minimum": 1},
+            "entry_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "evidence": {"$ref": "#/$defs/linux_a01_evidence"},
+        "job_log_sha256": {"$ref": "#/$defs/sha256"},
+        "log_segment_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "predecessor_record_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "predecessor_receipt": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "receipt_path", "receipt_sha256"],
+          "properties": {
+            "kind": {"const": "genesis"},
+            "receipt_path": {"type": "null"},
+            "receipt_sha256": {"type": "null"}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "receipt_path", "receipt_sha256", "source_commit_sha"],
+          "properties": {
+            "kind": {"const": "receipt"},
+            "receipt_path": {"$ref": "#/$defs/path"},
+            "receipt_sha256": {"$ref": "#/$defs/sha256"},
+            "source_commit_sha": {"$ref": "#/$defs/oid"}
+          }
+        }
+      ]
+    },
+    "custody_sequence": {"type": "integer", "minimum": 1},
+    "receipt_locator": {"type": "string", "pattern": "^\\.IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/receipts/source-commit/[0-9a-f]{40}\\.json$"},
+    "observed_at": {"$ref": "#/$defs/timestamp"},
+    "candidate_boundary": {"const": "exact-source-and-ci-proof-only-not-candidate-maturity"},
+    "non_claims": {
+      "const": [
+        "does-not-claim-deterministic-whole-branch-closure",
+        "does-not-claim-candidate-maturity",
+        "does-not-authorize-or-execute-model-provider-use",
+        "does-not-record-owner-acceptance"
+      ]
+    },
+    "terminal_claim": {"const": false}
+  },
+  "$defs": {
+    "oid": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "path": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/|\\\\)\\.\\.(?:/|\\\\|$)).+$"},
+    "timestamp": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+    "url": {"type": "string", "pattern": "^https://"},
+    "artifact_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "deterministic_verdict_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "byte_count", "sha256", "artifact_schema", "kind", "status"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"},
+        "byte_count": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "artifact_schema": {"const": "daee-task7-deterministic-evidence-v1"},
+        "kind": {
+          "enum": [
+            "no-model-preflight",
+            "full-local-ci",
+            "generated-freshness-package",
+            "independent-whole-branch-review"
+          ]
+        },
+        "status": {"type": "string", "minLength": 1}
+      }
+    },
+    "byte_artifact_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "byte_count", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"},
+        "byte_count": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "source_file_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "blob_oid", "raw_sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"},
+        "blob_oid": {"$ref": "#/$defs/oid"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "task7_source_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "blob_oid", "byte_count", "raw_sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"},
+        "blob_oid": {"$ref": "#/$defs/oid"},
+        "byte_count": {"type": "integer", "minimum": 0},
+        "raw_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "task7_source_freeze": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "freeze_id",
+        "branch",
+        "ref",
+        "expected_final_tree_oid",
+        "manifest_algorithm",
+        "file_count",
+        "files_sha256",
+        "files",
+        "complete",
+        "model_calls",
+        "terminal_claim"
+      ],
+      "properties": {
+        "schema": {"const": "daee-task7-precommit-source-freeze-v1"},
+        "freeze_id": {"$ref": "#/$defs/sha256"},
+        "branch": {"const": "codex/v0.4.6.0-runtime-footprint-b10"},
+        "ref": {"const": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10"},
+        "expected_final_tree_oid": {"$ref": "#/$defs/oid"},
+        "manifest_algorithm": {"const": "sha256-canonical-json-source-files-v1"},
+        "file_count": {"type": "integer", "minimum": 1},
+        "files_sha256": {"$ref": "#/$defs/sha256"},
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/task7_source_file"}
+        },
+        "complete": {"const": true},
+        "model_calls": {"const": 0},
+        "terminal_claim": {"const": false}
+      }
+    },
+    "task7_execution_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile_id",
+        "launcher",
+        "python_flags",
+        "bootstrap_path",
+        "environment_policy",
+        "import_roots_policy",
+        "removed_environment_names"
+      ],
+      "properties": {
+        "profile_id": {"enum": ["python-isolated-bootstrap-v2", "native-inherited-environment-v1"]},
+        "launcher": {"enum": ["running-interpreter", "path"]},
+        "python_flags": {"type": "array", "items": {"type": "string"}},
+        "bootstrap_path": {"type": "string"},
+        "environment_policy": {"type": "string", "minLength": 1},
+        "import_roots_policy": {"type": "string", "minLength": 1},
+        "removed_environment_names": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "run_local_ci_completion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "completion_id",
+        "status",
+        "complete",
+        "command_count",
+        "executed_count",
+        "start_at_command",
+        "end_at_command",
+        "command_list_sha256",
+        "execution_plan_sha256",
+        "strict_pwsh",
+        "command_timeout_seconds",
+        "timeout_count",
+        "skip_count"
+      ],
+      "properties": {
+        "schema": {"const": "daee-run-local-ci-completion-v1"},
+        "completion_id": {"$ref": "#/$defs/sha256"},
+        "status": {"enum": ["PASS", "PARTIAL"]},
+        "complete": {"type": "boolean"},
+        "command_count": {"const": 172},
+        "executed_count": {"type": "integer", "minimum": 1, "maximum": 172},
+        "start_at_command": {"type": "integer", "minimum": 1, "maximum": 172},
+        "end_at_command": {"const": 172},
+        "command_list_sha256": {"const": "070a8ba7d7693565a0091a22ee309c29e57c8adaa553d179c6be421c676221be"},
+        "execution_plan_sha256": {"const": "45fe475728a429fcb909214738b0f6b8dc09353b950d05ca0b0702dc4c97d364"},
+        "strict_pwsh": {"type": "boolean"},
+        "command_timeout_seconds": {"type": "integer", "minimum": 0},
+        "timeout_count": {"const": 0},
+        "skip_count": {"type": "integer", "minimum": 0, "maximum": 171}
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "status": {"const": "PASS"},
+            "complete": {"const": true},
+            "start_at_command": {"const": 1},
+            "end_at_command": {"const": 172},
+            "executed_count": {"const": 172},
+            "skip_count": {"const": 0}
+          }
+        },
+        {
+          "properties": {
+            "status": {"const": "PARTIAL"},
+            "complete": {"const": false},
+            "start_at_command": {"type": "integer", "minimum": 2, "maximum": 172},
+            "executed_count": {"type": "integer", "minimum": 1, "maximum": 171},
+            "skip_count": {"type": "integer", "minimum": 1, "maximum": 171}
+          },
+          "oneOf": [
+          {"properties": {"start_at_command": {"const": 2}, "executed_count": {"const": 171}, "skip_count": {"const": 1}}},
+          {"properties": {"start_at_command": {"const": 3}, "executed_count": {"const": 170}, "skip_count": {"const": 2}}},
+          {"properties": {"start_at_command": {"const": 4}, "executed_count": {"const": 169}, "skip_count": {"const": 3}}},
+          {"properties": {"start_at_command": {"const": 5}, "executed_count": {"const": 168}, "skip_count": {"const": 4}}},
+          {"properties": {"start_at_command": {"const": 6}, "executed_count": {"const": 167}, "skip_count": {"const": 5}}},
+          {"properties": {"start_at_command": {"const": 7}, "executed_count": {"const": 166}, "skip_count": {"const": 6}}},
+          {"properties": {"start_at_command": {"const": 8}, "executed_count": {"const": 165}, "skip_count": {"const": 7}}},
+          {"properties": {"start_at_command": {"const": 9}, "executed_count": {"const": 164}, "skip_count": {"const": 8}}},
+          {"properties": {"start_at_command": {"const": 10}, "executed_count": {"const": 163}, "skip_count": {"const": 9}}},
+          {"properties": {"start_at_command": {"const": 11}, "executed_count": {"const": 162}, "skip_count": {"const": 10}}},
+          {"properties": {"start_at_command": {"const": 12}, "executed_count": {"const": 161}, "skip_count": {"const": 11}}},
+          {"properties": {"start_at_command": {"const": 13}, "executed_count": {"const": 160}, "skip_count": {"const": 12}}},
+          {"properties": {"start_at_command": {"const": 14}, "executed_count": {"const": 159}, "skip_count": {"const": 13}}},
+          {"properties": {"start_at_command": {"const": 15}, "executed_count": {"const": 158}, "skip_count": {"const": 14}}},
+          {"properties": {"start_at_command": {"const": 16}, "executed_count": {"const": 157}, "skip_count": {"const": 15}}},
+          {"properties": {"start_at_command": {"const": 17}, "executed_count": {"const": 156}, "skip_count": {"const": 16}}},
+          {"properties": {"start_at_command": {"const": 18}, "executed_count": {"const": 155}, "skip_count": {"const": 17}}},
+          {"properties": {"start_at_command": {"const": 19}, "executed_count": {"const": 154}, "skip_count": {"const": 18}}},
+          {"properties": {"start_at_command": {"const": 20}, "executed_count": {"const": 153}, "skip_count": {"const": 19}}},
+          {"properties": {"start_at_command": {"const": 21}, "executed_count": {"const": 152}, "skip_count": {"const": 20}}},
+          {"properties": {"start_at_command": {"const": 22}, "executed_count": {"const": 151}, "skip_count": {"const": 21}}},
+          {"properties": {"start_at_command": {"const": 23}, "executed_count": {"const": 150}, "skip_count": {"const": 22}}},
+          {"properties": {"start_at_command": {"const": 24}, "executed_count": {"const": 149}, "skip_count": {"const": 23}}},
+          {"properties": {"start_at_command": {"const": 25}, "executed_count": {"const": 148}, "skip_count": {"const": 24}}},
+          {"properties": {"start_at_command": {"const": 26}, "executed_count": {"const": 147}, "skip_count": {"const": 25}}},
+          {"properties": {"start_at_command": {"const": 27}, "executed_count": {"const": 146}, "skip_count": {"const": 26}}},
+          {"properties": {"start_at_command": {"const": 28}, "executed_count": {"const": 145}, "skip_count": {"const": 27}}},
+          {"properties": {"start_at_command": {"const": 29}, "executed_count": {"const": 144}, "skip_count": {"const": 28}}},
+          {"properties": {"start_at_command": {"const": 30}, "executed_count": {"const": 143}, "skip_count": {"const": 29}}},
+          {"properties": {"start_at_command": {"const": 31}, "executed_count": {"const": 142}, "skip_count": {"const": 30}}},
+          {"properties": {"start_at_command": {"const": 32}, "executed_count": {"const": 141}, "skip_count": {"const": 31}}},
+          {"properties": {"start_at_command": {"const": 33}, "executed_count": {"const": 140}, "skip_count": {"const": 32}}},
+          {"properties": {"start_at_command": {"const": 34}, "executed_count": {"const": 139}, "skip_count": {"const": 33}}},
+          {"properties": {"start_at_command": {"const": 35}, "executed_count": {"const": 138}, "skip_count": {"const": 34}}},
+          {"properties": {"start_at_command": {"const": 36}, "executed_count": {"const": 137}, "skip_count": {"const": 35}}},
+          {"properties": {"start_at_command": {"const": 37}, "executed_count": {"const": 136}, "skip_count": {"const": 36}}},
+          {"properties": {"start_at_command": {"const": 38}, "executed_count": {"const": 135}, "skip_count": {"const": 37}}},
+          {"properties": {"start_at_command": {"const": 39}, "executed_count": {"const": 134}, "skip_count": {"const": 38}}},
+          {"properties": {"start_at_command": {"const": 40}, "executed_count": {"const": 133}, "skip_count": {"const": 39}}},
+          {"properties": {"start_at_command": {"const": 41}, "executed_count": {"const": 132}, "skip_count": {"const": 40}}},
+          {"properties": {"start_at_command": {"const": 42}, "executed_count": {"const": 131}, "skip_count": {"const": 41}}},
+          {"properties": {"start_at_command": {"const": 43}, "executed_count": {"const": 130}, "skip_count": {"const": 42}}},
+          {"properties": {"start_at_command": {"const": 44}, "executed_count": {"const": 129}, "skip_count": {"const": 43}}},
+          {"properties": {"start_at_command": {"const": 45}, "executed_count": {"const": 128}, "skip_count": {"const": 44}}},
+          {"properties": {"start_at_command": {"const": 46}, "executed_count": {"const": 127}, "skip_count": {"const": 45}}},
+          {"properties": {"start_at_command": {"const": 47}, "executed_count": {"const": 126}, "skip_count": {"const": 46}}},
+          {"properties": {"start_at_command": {"const": 48}, "executed_count": {"const": 125}, "skip_count": {"const": 47}}},
+          {"properties": {"start_at_command": {"const": 49}, "executed_count": {"const": 124}, "skip_count": {"const": 48}}},
+          {"properties": {"start_at_command": {"const": 50}, "executed_count": {"const": 123}, "skip_count": {"const": 49}}},
+          {"properties": {"start_at_command": {"const": 51}, "executed_count": {"const": 122}, "skip_count": {"const": 50}}},
+          {"properties": {"start_at_command": {"const": 52}, "executed_count": {"const": 121}, "skip_count": {"const": 51}}},
+          {"properties": {"start_at_command": {"const": 53}, "executed_count": {"const": 120}, "skip_count": {"const": 52}}},
+          {"properties": {"start_at_command": {"const": 54}, "executed_count": {"const": 119}, "skip_count": {"const": 53}}},
+          {"properties": {"start_at_command": {"const": 55}, "executed_count": {"const": 118}, "skip_count": {"const": 54}}},
+          {"properties": {"start_at_command": {"const": 56}, "executed_count": {"const": 117}, "skip_count": {"const": 55}}},
+          {"properties": {"start_at_command": {"const": 57}, "executed_count": {"const": 116}, "skip_count": {"const": 56}}},
+          {"properties": {"start_at_command": {"const": 58}, "executed_count": {"const": 115}, "skip_count": {"const": 57}}},
+          {"properties": {"start_at_command": {"const": 59}, "executed_count": {"const": 114}, "skip_count": {"const": 58}}},
+          {"properties": {"start_at_command": {"const": 60}, "executed_count": {"const": 113}, "skip_count": {"const": 59}}},
+          {"properties": {"start_at_command": {"const": 61}, "executed_count": {"const": 112}, "skip_count": {"const": 60}}},
+          {"properties": {"start_at_command": {"const": 62}, "executed_count": {"const": 111}, "skip_count": {"const": 61}}},
+          {"properties": {"start_at_command": {"const": 63}, "executed_count": {"const": 110}, "skip_count": {"const": 62}}},
+          {"properties": {"start_at_command": {"const": 64}, "executed_count": {"const": 109}, "skip_count": {"const": 63}}},
+          {"properties": {"start_at_command": {"const": 65}, "executed_count": {"const": 108}, "skip_count": {"const": 64}}},
+          {"properties": {"start_at_command": {"const": 66}, "executed_count": {"const": 107}, "skip_count": {"const": 65}}},
+          {"properties": {"start_at_command": {"const": 67}, "executed_count": {"const": 106}, "skip_count": {"const": 66}}},
+          {"properties": {"start_at_command": {"const": 68}, "executed_count": {"const": 105}, "skip_count": {"const": 67}}},
+          {"properties": {"start_at_command": {"const": 69}, "executed_count": {"const": 104}, "skip_count": {"const": 68}}},
+          {"properties": {"start_at_command": {"const": 70}, "executed_count": {"const": 103}, "skip_count": {"const": 69}}},
+          {"properties": {"start_at_command": {"const": 71}, "executed_count": {"const": 102}, "skip_count": {"const": 70}}},
+          {"properties": {"start_at_command": {"const": 72}, "executed_count": {"const": 101}, "skip_count": {"const": 71}}},
+          {"properties": {"start_at_command": {"const": 73}, "executed_count": {"const": 100}, "skip_count": {"const": 72}}},
+          {"properties": {"start_at_command": {"const": 74}, "executed_count": {"const": 99}, "skip_count": {"const": 73}}},
+          {"properties": {"start_at_command": {"const": 75}, "executed_count": {"const": 98}, "skip_count": {"const": 74}}},
+          {"properties": {"start_at_command": {"const": 76}, "executed_count": {"const": 97}, "skip_count": {"const": 75}}},
+          {"properties": {"start_at_command": {"const": 77}, "executed_count": {"const": 96}, "skip_count": {"const": 76}}},
+          {"properties": {"start_at_command": {"const": 78}, "executed_count": {"const": 95}, "skip_count": {"const": 77}}},
+          {"properties": {"start_at_command": {"const": 79}, "executed_count": {"const": 94}, "skip_count": {"const": 78}}},
+          {"properties": {"start_at_command": {"const": 80}, "executed_count": {"const": 93}, "skip_count": {"const": 79}}},
+          {"properties": {"start_at_command": {"const": 81}, "executed_count": {"const": 92}, "skip_count": {"const": 80}}},
+          {"properties": {"start_at_command": {"const": 82}, "executed_count": {"const": 91}, "skip_count": {"const": 81}}},
+          {"properties": {"start_at_command": {"const": 83}, "executed_count": {"const": 90}, "skip_count": {"const": 82}}},
+          {"properties": {"start_at_command": {"const": 84}, "executed_count": {"const": 89}, "skip_count": {"const": 83}}},
+          {"properties": {"start_at_command": {"const": 85}, "executed_count": {"const": 88}, "skip_count": {"const": 84}}},
+          {"properties": {"start_at_command": {"const": 86}, "executed_count": {"const": 87}, "skip_count": {"const": 85}}},
+          {"properties": {"start_at_command": {"const": 87}, "executed_count": {"const": 86}, "skip_count": {"const": 86}}},
+          {"properties": {"start_at_command": {"const": 88}, "executed_count": {"const": 85}, "skip_count": {"const": 87}}},
+          {"properties": {"start_at_command": {"const": 89}, "executed_count": {"const": 84}, "skip_count": {"const": 88}}},
+          {"properties": {"start_at_command": {"const": 90}, "executed_count": {"const": 83}, "skip_count": {"const": 89}}},
+          {"properties": {"start_at_command": {"const": 91}, "executed_count": {"const": 82}, "skip_count": {"const": 90}}},
+          {"properties": {"start_at_command": {"const": 92}, "executed_count": {"const": 81}, "skip_count": {"const": 91}}},
+          {"properties": {"start_at_command": {"const": 93}, "executed_count": {"const": 80}, "skip_count": {"const": 92}}},
+          {"properties": {"start_at_command": {"const": 94}, "executed_count": {"const": 79}, "skip_count": {"const": 93}}},
+          {"properties": {"start_at_command": {"const": 95}, "executed_count": {"const": 78}, "skip_count": {"const": 94}}},
+          {"properties": {"start_at_command": {"const": 96}, "executed_count": {"const": 77}, "skip_count": {"const": 95}}},
+          {"properties": {"start_at_command": {"const": 97}, "executed_count": {"const": 76}, "skip_count": {"const": 96}}},
+          {"properties": {"start_at_command": {"const": 98}, "executed_count": {"const": 75}, "skip_count": {"const": 97}}},
+          {"properties": {"start_at_command": {"const": 99}, "executed_count": {"const": 74}, "skip_count": {"const": 98}}},
+          {"properties": {"start_at_command": {"const": 100}, "executed_count": {"const": 73}, "skip_count": {"const": 99}}},
+          {"properties": {"start_at_command": {"const": 101}, "executed_count": {"const": 72}, "skip_count": {"const": 100}}},
+          {"properties": {"start_at_command": {"const": 102}, "executed_count": {"const": 71}, "skip_count": {"const": 101}}},
+          {"properties": {"start_at_command": {"const": 103}, "executed_count": {"const": 70}, "skip_count": {"const": 102}}},
+          {"properties": {"start_at_command": {"const": 104}, "executed_count": {"const": 69}, "skip_count": {"const": 103}}},
+          {"properties": {"start_at_command": {"const": 105}, "executed_count": {"const": 68}, "skip_count": {"const": 104}}},
+          {"properties": {"start_at_command": {"const": 106}, "executed_count": {"const": 67}, "skip_count": {"const": 105}}},
+          {"properties": {"start_at_command": {"const": 107}, "executed_count": {"const": 66}, "skip_count": {"const": 106}}},
+          {"properties": {"start_at_command": {"const": 108}, "executed_count": {"const": 65}, "skip_count": {"const": 107}}},
+          {"properties": {"start_at_command": {"const": 109}, "executed_count": {"const": 64}, "skip_count": {"const": 108}}},
+          {"properties": {"start_at_command": {"const": 110}, "executed_count": {"const": 63}, "skip_count": {"const": 109}}},
+          {"properties": {"start_at_command": {"const": 111}, "executed_count": {"const": 62}, "skip_count": {"const": 110}}},
+          {"properties": {"start_at_command": {"const": 112}, "executed_count": {"const": 61}, "skip_count": {"const": 111}}},
+          {"properties": {"start_at_command": {"const": 113}, "executed_count": {"const": 60}, "skip_count": {"const": 112}}},
+          {"properties": {"start_at_command": {"const": 114}, "executed_count": {"const": 59}, "skip_count": {"const": 113}}},
+          {"properties": {"start_at_command": {"const": 115}, "executed_count": {"const": 58}, "skip_count": {"const": 114}}},
+          {"properties": {"start_at_command": {"const": 116}, "executed_count": {"const": 57}, "skip_count": {"const": 115}}},
+          {"properties": {"start_at_command": {"const": 117}, "executed_count": {"const": 56}, "skip_count": {"const": 116}}},
+          {"properties": {"start_at_command": {"const": 118}, "executed_count": {"const": 55}, "skip_count": {"const": 117}}},
+          {"properties": {"start_at_command": {"const": 119}, "executed_count": {"const": 54}, "skip_count": {"const": 118}}},
+          {"properties": {"start_at_command": {"const": 120}, "executed_count": {"const": 53}, "skip_count": {"const": 119}}},
+          {"properties": {"start_at_command": {"const": 121}, "executed_count": {"const": 52}, "skip_count": {"const": 120}}},
+          {"properties": {"start_at_command": {"const": 122}, "executed_count": {"const": 51}, "skip_count": {"const": 121}}},
+          {"properties": {"start_at_command": {"const": 123}, "executed_count": {"const": 50}, "skip_count": {"const": 122}}},
+          {"properties": {"start_at_command": {"const": 124}, "executed_count": {"const": 49}, "skip_count": {"const": 123}}},
+          {"properties": {"start_at_command": {"const": 125}, "executed_count": {"const": 48}, "skip_count": {"const": 124}}},
+          {"properties": {"start_at_command": {"const": 126}, "executed_count": {"const": 47}, "skip_count": {"const": 125}}},
+          {"properties": {"start_at_command": {"const": 127}, "executed_count": {"const": 46}, "skip_count": {"const": 126}}},
+          {"properties": {"start_at_command": {"const": 128}, "executed_count": {"const": 45}, "skip_count": {"const": 127}}},
+          {"properties": {"start_at_command": {"const": 129}, "executed_count": {"const": 44}, "skip_count": {"const": 128}}},
+          {"properties": {"start_at_command": {"const": 130}, "executed_count": {"const": 43}, "skip_count": {"const": 129}}},
+          {"properties": {"start_at_command": {"const": 131}, "executed_count": {"const": 42}, "skip_count": {"const": 130}}},
+          {"properties": {"start_at_command": {"const": 132}, "executed_count": {"const": 41}, "skip_count": {"const": 131}}},
+          {"properties": {"start_at_command": {"const": 133}, "executed_count": {"const": 40}, "skip_count": {"const": 132}}},
+          {"properties": {"start_at_command": {"const": 134}, "executed_count": {"const": 39}, "skip_count": {"const": 133}}},
+          {"properties": {"start_at_command": {"const": 135}, "executed_count": {"const": 38}, "skip_count": {"const": 134}}},
+          {"properties": {"start_at_command": {"const": 136}, "executed_count": {"const": 37}, "skip_count": {"const": 135}}},
+          {"properties": {"start_at_command": {"const": 137}, "executed_count": {"const": 36}, "skip_count": {"const": 136}}},
+          {"properties": {"start_at_command": {"const": 138}, "executed_count": {"const": 35}, "skip_count": {"const": 137}}},
+          {"properties": {"start_at_command": {"const": 139}, "executed_count": {"const": 34}, "skip_count": {"const": 138}}},
+          {"properties": {"start_at_command": {"const": 140}, "executed_count": {"const": 33}, "skip_count": {"const": 139}}},
+          {"properties": {"start_at_command": {"const": 141}, "executed_count": {"const": 32}, "skip_count": {"const": 140}}},
+          {"properties": {"start_at_command": {"const": 142}, "executed_count": {"const": 31}, "skip_count": {"const": 141}}},
+          {"properties": {"start_at_command": {"const": 143}, "executed_count": {"const": 30}, "skip_count": {"const": 142}}},
+          {"properties": {"start_at_command": {"const": 144}, "executed_count": {"const": 29}, "skip_count": {"const": 143}}},
+          {"properties": {"start_at_command": {"const": 145}, "executed_count": {"const": 28}, "skip_count": {"const": 144}}},
+          {"properties": {"start_at_command": {"const": 146}, "executed_count": {"const": 27}, "skip_count": {"const": 145}}},
+          {"properties": {"start_at_command": {"const": 147}, "executed_count": {"const": 26}, "skip_count": {"const": 146}}},
+          {"properties": {"start_at_command": {"const": 148}, "executed_count": {"const": 25}, "skip_count": {"const": 147}}},
+          {"properties": {"start_at_command": {"const": 149}, "executed_count": {"const": 24}, "skip_count": {"const": 148}}},
+          {"properties": {"start_at_command": {"const": 150}, "executed_count": {"const": 23}, "skip_count": {"const": 149}}},
+          {"properties": {"start_at_command": {"const": 151}, "executed_count": {"const": 22}, "skip_count": {"const": 150}}},
+          {"properties": {"start_at_command": {"const": 152}, "executed_count": {"const": 21}, "skip_count": {"const": 151}}},
+          {"properties": {"start_at_command": {"const": 153}, "executed_count": {"const": 20}, "skip_count": {"const": 152}}},
+          {"properties": {"start_at_command": {"const": 154}, "executed_count": {"const": 19}, "skip_count": {"const": 153}}},
+          {"properties": {"start_at_command": {"const": 155}, "executed_count": {"const": 18}, "skip_count": {"const": 154}}},
+          {"properties": {"start_at_command": {"const": 156}, "executed_count": {"const": 17}, "skip_count": {"const": 155}}},
+          {"properties": {"start_at_command": {"const": 157}, "executed_count": {"const": 16}, "skip_count": {"const": 156}}},
+          {"properties": {"start_at_command": {"const": 158}, "executed_count": {"const": 15}, "skip_count": {"const": 157}}},
+          {"properties": {"start_at_command": {"const": 159}, "executed_count": {"const": 14}, "skip_count": {"const": 158}}},
+          {"properties": {"start_at_command": {"const": 160}, "executed_count": {"const": 13}, "skip_count": {"const": 159}}},
+          {"properties": {"start_at_command": {"const": 161}, "executed_count": {"const": 12}, "skip_count": {"const": 160}}},
+          {"properties": {"start_at_command": {"const": 162}, "executed_count": {"const": 11}, "skip_count": {"const": 161}}},
+          {"properties": {"start_at_command": {"const": 163}, "executed_count": {"const": 10}, "skip_count": {"const": 162}}},
+          {"properties": {"start_at_command": {"const": 164}, "executed_count": {"const": 9}, "skip_count": {"const": 163}}},
+          {"properties": {"start_at_command": {"const": 165}, "executed_count": {"const": 8}, "skip_count": {"const": 164}}},
+          {"properties": {"start_at_command": {"const": 166}, "executed_count": {"const": 7}, "skip_count": {"const": 165}}},
+          {"properties": {"start_at_command": {"const": 167}, "executed_count": {"const": 6}, "skip_count": {"const": 166}}},
+          {"properties": {"start_at_command": {"const": 168}, "executed_count": {"const": 5}, "skip_count": {"const": 167}}},
+          {"properties": {"start_at_command": {"const": 169}, "executed_count": {"const": 4}, "skip_count": {"const": 168}}},
+          {"properties": {"start_at_command": {"const": 170}, "executed_count": {"const": 3}, "skip_count": {"const": 169}}},
+          {"properties": {"start_at_command": {"const": 171}, "executed_count": {"const": 2}, "skip_count": {"const": 170}}},
+          {"properties": {"start_at_command": {"const": 172}, "executed_count": {"const": 1}, "skip_count": {"const": 171}}}
+          ]
+        }
+      ]
+    },
+    "task7_command_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sequence",
+        "command",
+        "command_sha256",
+        "execution_profile",
+        "exit_code",
+        "stdout_byte_count",
+        "stdout_sha256",
+        "stderr_byte_count",
+        "stderr_sha256"
+      ],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 1},
+        "command": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "command_sha256": {"$ref": "#/$defs/sha256"},
+        "execution_profile": {"$ref": "#/$defs/task7_execution_profile"},
+        "completion": {"$ref": "#/$defs/run_local_ci_completion"},
+        "exit_code": {"const": 0},
+        "stdout_byte_count": {"type": "integer", "minimum": 0},
+        "stdout_sha256": {"$ref": "#/$defs/sha256"},
+        "stderr_byte_count": {"type": "integer", "minimum": 0},
+        "stderr_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "task7_result_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "report_id",
+        "kind",
+        "status",
+        "producer_command",
+        "producer_command_sha256",
+        "producer_execution_profile",
+        "producer",
+        "executed_checks",
+        "check_count",
+        "evidence_artifacts",
+        "source_freeze_id",
+        "expected_final_tree_oid",
+        "observed_at",
+        "model_calls",
+        "candidate_claim",
+        "terminal_claim",
+        "non_claims"
+      ],
+      "properties": {
+        "schema": {"const": "daee-task7-result-report-v2"},
+        "report_id": {"$ref": "#/$defs/sha256"},
+        "kind": {
+          "enum": [
+            "no-model-preflight",
+            "full-local-ci",
+            "generated-freshness-package",
+            "independent-whole-branch-review"
+          ]
+        },
+        "status": {"enum": ["PASS", "ACCEPT"]},
+        "producer_command": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "producer_command_sha256": {"$ref": "#/$defs/sha256"},
+        "producer_execution_profile": {"$ref": "#/$defs/task7_execution_profile"},
+        "producer": {"$ref": "#/$defs/source_file_identity"},
+        "executed_checks": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/task7_command_result"}
+        },
+        "check_count": {"type": "integer", "minimum": 0},
+        "evidence_artifacts": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/byte_artifact_ref"}
+        },
+        "source_freeze_id": {"$ref": "#/$defs/sha256"},
+        "expected_final_tree_oid": {"$ref": "#/$defs/oid"},
+        "observed_at": {"$ref": "#/$defs/timestamp"},
+        "model_calls": {"const": 0},
+        "candidate_claim": {"const": false},
+        "terminal_claim": {"const": false},
+        "non_claims": {
+          "const": [
+            "does-not-claim-final-source-commit",
+            "does-not-claim-exact-sha-ci",
+            "does-not-authorize-model-or-candidate"
+          ]
+        }
+      }
+    },
+    "task7_command_log": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "kind", "entries", "complete", "model_calls", "terminal_claim"],
+      "properties": {
+        "schema": {"const": "daee-task7-command-log-v1"},
+        "kind": {
+          "enum": [
+            "no-model-preflight",
+            "full-local-ci",
+            "generated-freshness-package",
+            "independent-whole-branch-review"
+          ]
+        },
+        "entries": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["sequence", "command", "execution_profile", "exit_code", "stdout_base64", "stderr_base64"],
+            "properties": {
+              "sequence": {"type": "integer", "minimum": 1},
+              "command": {
+                "type": "array",
+                "minItems": 1,
+                "items": {"type": "string", "minLength": 1}
+              },
+              "execution_profile": {"$ref": "#/$defs/task7_execution_profile"},
+              "exit_code": {"const": 0},
+              "stdout_base64": {"type": "string"},
+              "stderr_base64": {"type": "string"}
+            }
+          }
+        },
+        "complete": {"const": true},
+        "model_calls": {"const": 0},
+        "terminal_claim": {"const": false}
+      }
+    },
+    "task7_review_authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "authorization_id",
+        "issuer_identity",
+        "implementation_owner_identity",
+        "reviewer_identity",
+        "scope",
+        "reviewed_branch",
+        "expected_final_tree_oid",
+        "source_freeze_id",
+        "issued_at",
+        "one_use",
+        "owner_acceptance",
+        "candidate_claim",
+        "terminal_claim"
+      ],
+      "properties": {
+        "schema": {"const": "daee-task7-independent-review-authorization-v1"},
+        "authorization_id": {"$ref": "#/$defs/sha256"},
+        "issuer_identity": {"const": "/root"},
+        "implementation_owner_identity": {"const": "/root/task3b_ci_receipt"},
+        "reviewer_identity": {"type": "string", "pattern": "^/root(?:/[a-z0-9][a-z0-9_-]{0,63})*$"},
+        "scope": {"const": "independent-whole-branch-review"},
+        "reviewed_branch": {"const": "codex/v0.4.6.0-runtime-footprint-b10"},
+        "expected_final_tree_oid": {"$ref": "#/$defs/oid"},
+        "source_freeze_id": {"$ref": "#/$defs/sha256"},
+        "issued_at": {"$ref": "#/$defs/timestamp"},
+        "one_use": {"const": true},
+        "owner_acceptance": {"const": false},
+        "candidate_claim": {"const": false},
+        "terminal_claim": {"const": false}
+      }
+    },
+    "task7_whole_branch_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "review_id",
+        "reviewer",
+        "owner_identity",
+        "review_authorization_id",
+        "review_authorization",
+        "independent_from_owner",
+        "reviewed_branch",
+        "reviewed_tree_oid",
+        "source_freeze_id",
+        "manifest",
+        "findings",
+        "verdict",
+        "reviewed_at",
+        "owner_acceptance",
+        "candidate_claim",
+        "terminal_claim"
+      ],
+      "properties": {
+        "schema": {"const": "daee-task7-whole-branch-review-v1"},
+        "review_id": {"$ref": "#/$defs/sha256"},
+        "reviewer": {"type": "string", "pattern": "^/root(?:/[a-z0-9][a-z0-9_-]{0,63})*$"},
+        "owner_identity": {"const": "/root/task3b_ci_receipt"},
+        "review_authorization_id": {"$ref": "#/$defs/sha256"},
+        "review_authorization": {"$ref": "#/$defs/byte_artifact_ref"},
+        "independent_from_owner": {"const": true},
+        "reviewed_branch": {"const": "codex/v0.4.6.0-runtime-footprint-b10"},
+        "reviewed_tree_oid": {"$ref": "#/$defs/oid"},
+        "source_freeze_id": {"$ref": "#/$defs/sha256"},
+        "manifest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithm", "path_count", "byte_count", "aggregate_sha256"],
+          "properties": {
+            "algorithm": {"const": "path-nul-byte-count-nul-sha256-lf-v1"},
+            "path_count": {"type": "integer", "minimum": 1},
+            "byte_count": {"type": "integer", "minimum": 1},
+            "aggregate_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "findings": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["critical", "important", "minor"],
+          "properties": {
+            "critical": {"const": 0},
+            "important": {"const": 0},
+            "minor": {"const": 0}
+          }
+        },
+        "verdict": {"const": "ACCEPT"},
+        "reviewed_at": {"$ref": "#/$defs/timestamp"},
+        "owner_acceptance": {"const": false},
+        "candidate_claim": {"const": false},
+        "terminal_claim": {"const": false}
+      }
+    },
+    "task7_deterministic_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "evidence_id",
+        "kind",
+        "status",
+        "command",
+        "command_sha256",
+        "execution_profile",
+        "exit_code",
+        "report",
+        "log",
+        "checker",
+        "source_freeze",
+        "freeze_id",
+        "expected_final_tree_oid",
+        "observed_at",
+        "model_calls",
+        "candidate_claim",
+        "terminal_claim",
+        "non_claims"
+      ],
+      "properties": {
+        "schema": {"const": "daee-task7-deterministic-evidence-v1"},
+        "evidence_id": {"$ref": "#/$defs/sha256"},
+        "kind": {
+          "enum": [
+            "no-model-preflight",
+            "full-local-ci",
+            "generated-freshness-package",
+            "independent-whole-branch-review"
+          ]
+        },
+        "status": {"enum": ["PASS", "ACCEPT"]},
+        "command": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "command_sha256": {"$ref": "#/$defs/sha256"},
+        "execution_profile": {"$ref": "#/$defs/task7_execution_profile"},
+        "exit_code": {"const": 0},
+        "report": {"$ref": "#/$defs/byte_artifact_ref"},
+        "log": {"$ref": "#/$defs/byte_artifact_ref"},
+        "checker": {"$ref": "#/$defs/source_file_identity"},
+        "source_freeze": {"$ref": "#/$defs/byte_artifact_ref"},
+        "freeze_id": {"$ref": "#/$defs/sha256"},
+        "expected_final_tree_oid": {"$ref": "#/$defs/oid"},
+        "observed_at": {"$ref": "#/$defs/timestamp"},
+        "model_calls": {"const": 0},
+        "candidate_claim": {"const": false},
+        "terminal_claim": {"const": false},
+        "non_claims": {
+          "const": [
+            "does-not-claim-final-source-commit",
+            "does-not-claim-exact-sha-ci",
+            "does-not-authorize-model-or-candidate"
+          ]
+        }
+      }
+    },
+    "action_chain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authorization_id", "nonce", "authorization", "claim", "action_receipt", "result"],
+      "properties": {
+        "authorization_id": {"type": "string", "minLength": 1},
+        "nonce": {"type": "string", "minLength": 16},
+        "authorization": {"$ref": "#/$defs/artifact_ref"},
+        "claim": {"$ref": "#/$defs/artifact_ref"},
+        "action_receipt": {"$ref": "#/$defs/artifact_ref"},
+        "result": {"const": "PASS"}
+      }
+    },
+    "unprotected_readback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["endpoint", "http_status", "protected", "strict", "contexts", "checks", "matches_owner_required_set"],
+      "properties": {
+        "endpoint": {"type": "string", "pattern": "^repos/[^/]+/[^/]+/branches/.+/protection/required_status_checks$"},
+        "http_status": {"const": 404},
+        "protected": {"const": false},
+        "strict": {"type": "null"},
+        "contexts": {"type": "array", "maxItems": 0, "items": {"type": "string"}},
+        "checks": {"type": "array", "maxItems": 0, "items": {"type": "object"}},
+        "matches_owner_required_set": {"type": "null"}
+      }
+    },
+    "protected_readback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["endpoint", "http_status", "protected", "strict", "contexts", "checks", "matches_owner_required_set"],
+      "properties": {
+        "endpoint": {"type": "string", "pattern": "^repos/[^/]+/[^/]+/branches/.+/protection/required_status_checks$"},
+        "http_status": {"const": 200},
+        "protected": {"const": true},
+        "strict": {"type": "boolean"},
+        "contexts": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "checks": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["context", "app_id"],
+            "properties": {
+              "context": {"type": "string", "minLength": 1},
+              "app_id": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]}
+            }
+          }
+        },
+        "matches_owner_required_set": {"const": true}
+      }
+    },
+    "app": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "slug", "name"],
+      "properties": {
+        "id": {"type": "integer", "minimum": 1},
+        "slug": {"const": "github-actions"},
+        "name": {"const": "GitHub Actions"}
+      }
+    },
+    "runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "group_name", "labels"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "group_name": {"type": "string", "minLength": 1},
+        "labels": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "job_step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["number", "name", "status", "conclusion", "started_at", "completed_at"],
+      "properties": {
+        "number": {"type": "integer", "minimum": 1},
+        "name": {"type": "string", "minLength": 1},
+        "status": {"const": "completed"},
+        "conclusion": {"const": "success"},
+        "started_at": {"$ref": "#/$defs/timestamp"},
+        "completed_at": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    "check_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "raw_check_run_name", "check_run_id", "check_suite_id", "app", "status", "conclusion", "started_at", "completed_at", "details_url", "api_url"],
+      "properties": {
+        "name": {"const": "CI / runtime-checks"},
+        "raw_check_run_name": {"const": "runtime-checks"},
+        "check_run_id": {"type": "integer", "minimum": 1},
+        "check_suite_id": {"type": "integer", "minimum": 1},
+        "app": {"$ref": "#/$defs/app"},
+        "status": {"const": "completed"},
+        "conclusion": {"const": "success"},
+        "started_at": {"$ref": "#/$defs/timestamp"},
+        "completed_at": {"$ref": "#/$defs/timestamp"},
+        "details_url": {"$ref": "#/$defs/url"},
+        "api_url": {"$ref": "#/$defs/url"}
+      }
+    },
+    "linux_a01_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "evidence_id",
+        "source_sha",
+        "run_id",
+        "run_number",
+        "run_attempt",
+        "job_name",
+        "runner_os",
+        "runner_arch",
+        "runner_name",
+        "runner_environment",
+        "runner_label",
+        "step_name",
+        "command",
+        "checker",
+        "contract_test",
+        "suite_marker",
+        "suite_test_count",
+        "suite_status",
+        "skipped_count",
+        "substituted",
+        "stdout_sha256",
+        "stderr_sha256",
+        "native_linux",
+        "candidate_claim",
+        "terminal_claim"
+      ],
+      "properties": {
+        "schema": {"const": "daee-linux-a01-ci-evidence-v1"},
+        "evidence_id": {"$ref": "#/$defs/sha256"},
+        "source_sha": {"$ref": "#/$defs/oid"},
+        "run_id": {"type": "integer", "minimum": 1},
+        "run_number": {"type": "integer", "minimum": 1},
+        "run_attempt": {"type": "integer", "minimum": 1},
+        "job_name": {"const": "runtime-checks"},
+        "runner_os": {"const": "Linux"},
+        "runner_arch": {"type": "string", "minLength": 1},
+        "runner_name": {"type": "string", "minLength": 1},
+        "runner_environment": {"const": "github-hosted"},
+        "runner_label": {"const": "ubuntu-latest"},
+        "step_name": {"const": "Linux A01 custody self-test"},
+        "command": {"const": "python tools/check_captured_output_manifest.py --self-test"},
+        "checker": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "blob_oid", "raw_sha256"],
+          "properties": {
+            "path": {"const": "tools/check_captured_output_manifest.py"},
+            "blob_oid": {"$ref": "#/$defs/oid"},
+            "raw_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "contract_test": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "blob_oid", "raw_sha256"],
+          "properties": {
+            "path": {"const": "tests/captured-output-custody/test_contract.py"},
+            "blob_oid": {"$ref": "#/$defs/oid"},
+            "raw_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "suite_marker": {"const": "tests/captured-output-custody/test_contract.py"},
+        "suite_test_count": {"type": "integer", "minimum": 1},
+        "suite_status": {"const": "OK"},
+        "skipped_count": {"const": 0},
+        "substituted": {"const": false},
+        "stdout_sha256": {"$ref": "#/$defs/sha256"},
+        "stderr_sha256": {"$ref": "#/$defs/sha256"},
+        "native_linux": {"const": true},
+        "candidate_claim": {"const": false},
+        "terminal_claim": {"const": false}
+      }
+    }
+  }
+}

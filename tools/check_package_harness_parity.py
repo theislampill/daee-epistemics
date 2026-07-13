@@ -11,6 +11,8 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+from artifact_tree import tree_sha256 as tree_sha
+
 TOOLS = Path(__file__).resolve().parent
 if str(TOOLS) not in sys.path: sys.path.insert(0, str(TOOLS))
 from check_runtime_context_delivery import (Failure as RuntimeContextFailure, compose_actual_fixture,
@@ -47,13 +49,6 @@ class Failure(ValueError):
 
 
 def sha(path: Path) -> str: return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def tree_sha(root: Path) -> str:
-    base = root.resolve(strict=True); out = hashlib.sha256()
-    for path in sorted((p for p in base.rglob("*") if p.is_file()), key=lambda p: p.relative_to(base).as_posix()):
-        rel = path.relative_to(base).as_posix().encode(); out.update(len(rel).to_bytes(4, "big")); out.update(rel); out.update(bytes.fromhex(sha(path)))
-    return out.hexdigest()
 
 
 def contained(root: Path, relative: str) -> Path:

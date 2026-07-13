@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-checker-fixture-v1","base":"tests/ci-readback/valid/required-checks-bound-to-pushed-sha.json","operations":[{"op":"observation-set","path":"job.name","value":"release-package"}]}

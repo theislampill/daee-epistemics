@@ -69,10 +69,10 @@ def _yes_row() -> dict[str, Any]:
     return row
 
 
-def _base_registry(row: dict[str, Any], *, maturity: str) -> dict[str, Any]:
+def _base_registry(row: dict[str, Any], *, role: str = "ILLUSTRATIVE_FIXTURE") -> dict[str, Any]:
     return {
         "schema":"daee-model-smoke-escape-v1", "registry_id":"escape-fixture-registry", "append_only":True,
-        "candidate_maturity_status":maturity, "escapes":[row], "events":[],
+        "registry_role":role, "escapes":[row], "events":[],
         "structural_non_claims":["detectability status is scoped", "maturity is not model authorization", "structural controls are not semantic truth"],
     }
 
@@ -87,46 +87,52 @@ def _append_event(registry: dict[str, Any], event: dict[str, Any]) -> None:
 
 
 def build_case(case_id: str) -> dict[str, Any]:
-    if case_id == "closed-deterministic-escape": return _base_registry(_yes_row(), maturity="MATURE")
-    if case_id == "scoped-no": return _base_registry(_no_row(), maturity="MATURE")
+    if case_id == "closed-deterministic-escape": return _base_registry(_yes_row())
+    if case_id == "scoped-no": return _base_registry(_no_row())
     if case_id == "reassessment-due-without-mutation":
-        reg = _base_registry(_no_row(), maturity="MATURE")
+        reg = _base_registry(_no_row())
         _append_event(reg, {"event_type":"REASSESSMENT_DUE","escape_id":"escape-neutral-001","from_state":"NO","to_state":"NO","trigger":"checker-change","state_mutated":False})
         return reg
     if case_id == "adjudicated-no-to-unknown":
         row = _no_row(); row.update({"deterministic_detectability":"UNKNOWN","status":"OPEN","paid_cycle_eligible":False})
-        reg = _base_registry(row, maturity="BLOCKED")
+        reg = _base_registry(row)
         _append_event(reg, {"event_type":"NO_TO_UNKNOWN","escape_id":row["escape_id"],"from_state":"NO","to_state":"UNKNOWN","state_mutated":True,"automatic":False,"accountable_owner":"control-owner","independent_reviewer":"independent-reviewer","materially_new_evidence":"a neutral relation may now be observable","named_question":"can the new relation be checked without prescribed content","resolution_deadline":"2026-08-01","speculative":False})
         return reg
     if case_id == "renewed-no":
         reg = build_case("adjudicated-no-to-unknown")
         _append_event(reg, {"event_type":"UNKNOWN_TO_NO_RENEWED","escape_id":"escape-neutral-001","from_state":"UNKNOWN","to_state":"NO","state_mutated":True,"accountable_owner":"control-owner","independent_reviewer":"independent-reviewer","updated_evidence":"bounded reassessment found no valid binary observable","updated_compensating_control":"stronger independent review packet"})
-        reg["escapes"][0] = _no_row(); reg["candidate_maturity_status"] = "MATURE"
+        reg["escapes"][0] = _no_row()
         return reg
     if case_id == "open-yes-offered-mature":
-        row=_yes_row(); row["status"]="OPEN"; row["paid_cycle_eligible"]=False; return _base_registry(row,maturity="MATURE")
+        row=_yes_row(); row["status"]="OPEN"; row["paid_cycle_eligible"]=False; return _base_registry(row,role="LIVE_EVIDENCE")
     if case_id == "open-unknown-offered-mature":
-        reg=build_case("adjudicated-no-to-unknown"); reg["candidate_maturity_status"]="MATURE"; return reg
+        reg=build_case("adjudicated-no-to-unknown"); reg["registry_role"]="LIVE_EVIDENCE"; return reg
     if case_id == "green-only-no-red-boundary":
-        reg=_base_registry(_yes_row(),maturity="MATURE"); reg["escapes"][0]["canary"]["red_boundary"]=[]; return reg
+        reg=_base_registry(_yes_row()); reg["escapes"][0]["canary"]["red_boundary"]=[]; return reg
     if case_id == "case-topic-tainted-canary":
-        reg=_base_registry(_yes_row(),maturity="MATURE"); reg["escapes"][0]["canary"]["taint_tokens"]=["fixture-route-token"]; return reg
+        reg=_base_registry(_yes_row()); reg["escapes"][0]["canary"]["taint_tokens"]=["fixture-route-token"]; return reg
     if case_id == "wrong-reason-canary":
-        reg=_base_registry(_yes_row(),maturity="MATURE"); reg["escapes"][0]["canary"]["mutation_right_reason"][0]["observed_subcode"]="other-relation"; return reg
+        reg=_base_registry(_yes_row()); reg["escapes"][0]["canary"]["mutation_right_reason"][0]["observed_subcode"]="other-relation"; return reg
     if case_id == "recurring-escape-called-closed":
-        reg=_base_registry(_yes_row(),maturity="MATURE"); reg["escapes"][0]["recurrence_of_escape_id"]="escape-prior"; return reg
+        reg=_base_registry(_yes_row()); reg["escapes"][0]["recurrence_of_escape_id"]="escape-prior"; return reg
     if case_id == "automatic-no-to-unknown":
         reg=build_case("adjudicated-no-to-unknown"); event=reg["events"][0]; event.update({"automatic":True,"accountable_owner":None,"independent_reviewer":None}); event["event_hash"]=_event_hash(event); return reg
     if case_id == "speculative-unknown":
         reg=build_case("adjudicated-no-to-unknown"); event=reg["events"][0]; event.update({"speculative":True,"named_question":"future capability may help","resolution_deadline":None}); event["event_hash"]=_event_hash(event); return reg
     if case_id == "no-launch-waiver-lacking-controls":
-        reg=_base_registry(_no_row(),maturity="MATURE"); reg["escapes"][0]["causal_control"]["deterministic_green"]=[]; return reg
+        reg=_base_registry(_no_row()); reg["escapes"][0]["causal_control"]["deterministic_green"]=[]; return reg
     if case_id == "speculative-calls-avoided":
-        reg=_base_registry(_no_row(),maturity="MATURE"); reg["escapes"][0]["estimated_model_invocations_avoided"]=5; return reg
+        reg=_base_registry(_no_row()); reg["escapes"][0]["estimated_model_invocations_avoided"]=5; return reg
+    if case_id == "illustrative-offered-for-maturity":
+        return _base_registry(_no_row())
+    if case_id == "self-declared-candidate-maturity":
+        reg=_base_registry(_no_row()); reg["candidate_maturity_status"]="MATURE"; return reg
     raise KeyError(case_id)
 
 
 def validate_registry(document: Any) -> list[Finding]:
+    if isinstance(document, dict) and "candidate_maturity_status" in document:
+        return [Finding("self_declared_maturity", "escape registry contains self-declared candidate maturity", "maturity-self-declaration")]
     schema_errors = schema_findings(document, SCHEMA_REL)
     if schema_errors:
         return schema_errors
@@ -207,10 +213,20 @@ def validate_registry(document: Any) -> list[Finding]:
         avoided = row.get("estimated_model_invocations_avoided")
         if isinstance(avoided, int) and not row.get("blocked_invocation_receipt"):
             return [Finding("speculative_calls_avoided", "numeric calls avoided require an actual blocked planned invocation receipt", "calls-avoided")]
-    if document.get("candidate_maturity_status") == "MATURE":
-        for row in document.get("escapes", []):
-            if (row.get("deterministic_detectability") == "YES" and row.get("status") != "CLOSED") or row.get("deterministic_detectability") == "UNKNOWN":
-                return [Finding("open_detectability_offered_mature", "YES or UNKNOWN blocks candidate maturity", "maturity-block")]
+    return []
+
+
+def validate_for_candidate_maturity(document: Any) -> list[Finding]:
+    """Validate the escape-registry boundary consumed by derived maturity."""
+    findings = validate_registry(document)
+    if findings:
+        return findings
+    assert isinstance(document, dict)
+    if document.get("registry_role") != "LIVE_EVIDENCE":
+        return [Finding("illustrative_registry", "illustrative registry cannot supply candidate-maturity evidence", "illustrative-only")]
+    for row in document.get("escapes", []):
+        if (row.get("deterministic_detectability") == "YES" and row.get("status") != "CLOSED") or row.get("deterministic_detectability") == "UNKNOWN":
+            return [Finding("open_detectability_offered_mature", "open YES or any UNKNOWN blocks derived candidate maturity", "maturity-block")]
     return []
 
 
@@ -220,7 +236,10 @@ EXPECTED = {
     "wrong-reason-canary":"wrong_reason_canary", "recurring-escape-called-closed":"recurring_escape_called_closed",
     "automatic-no-to-unknown":"automatic_no_to_unknown", "speculative-unknown":"speculative_unknown",
     "no-launch-waiver-lacking-controls":"no_launch_waiver_lacking_controls", "speculative-calls-avoided":"speculative_calls_avoided",
+    "illustrative-offered-for-maturity":"illustrative_registry", "self-declared-candidate-maturity":"self_declared_maturity",
 }
+
+MATURITY_CASES = {"open-yes-offered-mature", "open-unknown-offered-mature", "illustrative-offered-for-maturity"}
 
 
 def run_fixture_inventory(root: Path, inventory: dict[str, Any]) -> tuple[list[str], tuple[int, int]]:
@@ -236,7 +255,8 @@ def run_fixture_inventory(root: Path, inventory: dict[str, Any]) -> tuple[list[s
         if not exp.is_file(): problems.append(f"missing expectation {exp}"); continue
         expectation=read_json(exp.relative_to(ROOT))
         if "expected_failure_subcode" not in expectation: problems.append(f"{case_id}: expectation lacks expected_failure_subcode")
-        findings=validate_registry(build_case(case_id)); expected=EXPECTED[case_id]
+        document=build_case(case_id)
+        findings=(validate_for_candidate_maturity(document) if case_id in MATURITY_CASES else validate_registry(document)); expected=EXPECTED[case_id]
         if not findings: problems.append(f"{case_id}: invalid fixture survived")
         elif findings[0].failure_class != expected: problems.append(f"{case_id}: expected {expected}, got {findings[0].failure_class}")
     scan_paths=[path.relative_to(ROOT) for path in root.rglob("*.json")]

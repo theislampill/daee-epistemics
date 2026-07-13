@@ -4,11 +4,16 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   runtime-checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v6
         with:
@@ -17,5 +22,40 @@ jobs:
       - name: Install checker dependencies
         run: python -m pip install --upgrade pip -r requirements-ci.txt
 
+      - name: Verify tracked source binding and checkpoint
+        run: python tools/check_source_provenance.py --tracked-only
+
+      - name: Linux A01 custody self-test
+        run: python tools/check_captured_output_manifest.py --self-test
+
+      - name: Verify Linux A01 evidence writer source
+        run: test "$(git hash-object tools/write_linux_a01_evidence.py)" = "$(git rev-parse "${{ github.sha }}:tools/write_linux_a01_evidence.py")"
+
+      - name: Emit Linux A01 evidence
+        run: >-
+          python tools/write_linux_a01_evidence.py
+          --out .ci-evidence/linux-a01.json
+          --source-sha "${{ github.sha }}"
+          --run-id "${{ github.run_id }}"
+          --run-number "${{ github.run_number }}"
+          --run-attempt "${{ github.run_attempt }}"
+          --job-name runtime-checks
+          --runner-label ubuntu-latest
+          --runner-environment "${{ runner.environment }}"
+
+      - name: Upload Linux A01 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-a01-evidence
+          path: .ci-evidence/linux-a01.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Remove Linux A01 staging
+        run: rm -f .ci-evidence/linux-a01.json && rmdir .ci-evidence
+
+      - name: Verify full CI executor source
+        run: test "$(git hash-object tools/run_local_ci.py)" = "$(git rev-parse "${{ github.sha }}:tools/run_local_ci.py")" && test "$(git hash-object tools/sanitized_python_bootstrap.py)" = "$(git rev-parse "${{ github.sha }}:tools/sanitized_python_bootstrap.py")"
+
       - name: Build and verify runtime
-        run: python tools/run_local_ci.py --strict-pwsh
+        run: python -I -S -B tools/sanitized_python_bootstrap.py --script tools/run_local_ci.py --strict-pwsh --command-timeout-seconds 900

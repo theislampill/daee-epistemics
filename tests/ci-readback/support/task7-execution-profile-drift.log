@@ -1,0 +1,33 @@
+{
+  "schema": "daee-task7-command-log-v1",
+  "kind": "no-model-preflight",
+  "entries": [
+    {
+      "sequence": 1,
+      "command": [
+        "python",
+        "tools/run_no_model_preflight.py",
+        "--json",
+        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/native/no-model-preflight.json"
+      ],
+      "execution_profile": {
+        "profile_id": "python-isolated-bootstrap-v2",
+        "launcher": "running-interpreter",
+        "python_flags": [
+          "-I",
+          "-B"
+        ],
+        "bootstrap_path": "tools/sanitized_python_bootstrap.py",
+        "environment_policy": "inherit-v1",
+        "import_roots_policy": "stdlib-plus-repo-tools-script-parent-direct-sysconfig-system-user-no-pth-v2",
+        "removed_environment_names": []
+      },
+      "exit_code": 0,
+      "stdout_base64": "TUFUUklYX0FVVEhPUklaRURfQUZURVJfUFJFRkxJR0hUCg==",
+      "stderr_base64": ""
+    }
+  ],
+  "complete": true,
+  "model_calls": 0,
+  "terminal_claim": false
+}

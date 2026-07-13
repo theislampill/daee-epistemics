@@ -1,0 +1,12 @@
+2026-07-12T12:10:00Z ##[group]Run python tools/check_captured_output_manifest.py --self-test
+2026-07-12T12:10:00Z python tools/check_captured_output_manifest.py --self-test
+2026-07-12T12:10:01Z .......................
+2026-07-12T12:10:01Z ----------------------------------------------------------------------
+2026-07-12T12:10:01Z Ran 23 tests in 1.000s
+2026-07-12T12:10:01Z
+2026-07-12T12:10:01Z OK
+2026-07-12T12:10:01Z ##[endgroup]
+2026-07-12T12:11:00Z ##[group]Run python -I -S -B tools/sanitized_python_bootstrap.py --script tools/run_local_ci.py --strict-pwsh --command-timeout-seconds 900
+2026-07-12T12:11:00Z python -I -S -B tools/sanitized_python_bootstrap.py --script tools/run_local_ci.py --strict-pwsh --command-timeout-seconds 900
+2026-07-12T12:20:00Z local CI: PASS
+2026-07-12T12:20:00Z ##[endgroup]

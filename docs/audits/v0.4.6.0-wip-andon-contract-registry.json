@@ -263,10 +263,11 @@
       "plan_sha256": "c9806064cff6c67c8b5ccdde747d95531c8924c0280a7e2dea547685ff0e431a",
       "milestones": [{"milestone_id": "A14.terminal", "dependencies": ["A01.terminal", "A10.terminal", "A11.terminal", "A12.terminal", "A13.terminal", "A15.terminal"]}],
       "owned_schema_paths": ["schema/smoke-matrix.schema.json", "schema/cross-model-paired-cycle.schema.json"],
-      "owned_tool_paths": ["tools/smoke_matrix_registry.py", "tools/check_smoke_matrix_manifest.py", "tools/campaign_usage_ledger.py", "tools/check_parallel_dispatch_manifest.py", "tools/build_candidate_package_record.py", "tools/build_smoke_matrix_verdict.py", "tools/run_five_smoke_matrix.py", "tools/run_paired_cross_model_matrix.py", "tools/check_paired_cross_model_manifest.py"],
+      "owned_tool_paths": ["tools/smoke_matrix_registry.py", "tools/campaign_usage_ledger.py", "tools/artifact_tree.py", "tools/build_candidate_package_record.py", "tools/check_smoke_matrix_manifest.py", "tools/check_parallel_dispatch_manifest.py", "tools/build_smoke_matrix_verdict.py", "tools/run_five_smoke_matrix.py", "tools/run_paired_cross_model_matrix.py", "tools/check_paired_cross_model_manifest.py"],
+      "owned_test_paths": ["tests/artifact-tree/test_contract.py", "tests/candidate-build/test_contract.py", "tests/smoke-matrix/reviewed-five-smoke-protocol.json", "tests/smoke-matrix/test_protocol.py"],
       "state_capsule_contribution": [],
       "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
-      "binding_adr_ids": ["DAEE-ADR-046-006", "DAEE-ADR-046-007", "DAEE-ADR-046-008", "DAEE-ADR-046-009", "DAEE-ADR-046-010", "DAEE-ADR-046-011", "DAEE-ADR-046-012", "DAEE-ADR-046-013", "DAEE-ADR-046-017", "DAEE-ADR-046-018", "DAEE-ADR-046-019", "DAEE-ADR-046-020", "DAEE-ADR-046-021", "DAEE-ADR-046-022", "DAEE-ADR-046-023", "DAEE-ADR-046-024", "DAEE-ADR-046-025", "DAEE-ADR-046-026"]
+      "binding_adr_ids": ["DAEE-ADR-046-006", "DAEE-ADR-046-007", "DAEE-ADR-046-008", "DAEE-ADR-046-009", "DAEE-ADR-046-010", "DAEE-ADR-046-011", "DAEE-ADR-046-012", "DAEE-ADR-046-013", "DAEE-ADR-046-017", "DAEE-ADR-046-018", "DAEE-ADR-046-019", "DAEE-ADR-046-020", "DAEE-ADR-046-021", "DAEE-ADR-046-022", "DAEE-ADR-046-023", "DAEE-ADR-046-024", "DAEE-ADR-046-025", "DAEE-ADR-046-026", "DAEE-ADR-046-028"]
     },
     {
       "andon_id": "A15",
@@ -290,11 +291,11 @@
         {"milestone_id": "A16.terminal", "dependencies": ["A01.terminal", "A02.terminal", "A03.terminal", "A04.terminal", "A05.terminal", "A06.terminal", "A07.terminal", "A08.terminal", "A09.terminal", "A10.terminal", "A11.terminal", "A12.terminal", "A13.terminal", "A14.terminal", "A15.terminal"]}
       ],
       "owned_schema_paths": ["schema/andon-closure-ledger.schema.json", "schema/architecture-decision-ledger.schema.json", "schema/source-binding.schema.json", "schema/state-capsule-v2.schema.json", "schema/release-action-authorization.schema.json", "schema/vcs-action-authorization.schema.json", "schema/ci-readback.schema.json", "schema/no-model-candidate-maturity.schema.json", "schema/evidence-retention-manifest.schema.json"],
-      "owned_tool_paths": ["tools/check_andon_closure_ledger.py", "tools/render_andon_closure_ledger.py", "tools/check_andon_contract_registry.py", "tools/check_architecture_decision_ledger.py", "tools/source_provenance.py", "tools/check_source_provenance.py", "tools/a16_immutable_custody.py", "tools/check_release_action_authorization.py", "tools/check_vcs_action_authorization.py", "tools/check_ci_readback.py", "tools/build_no_model_candidate_maturity_verdict.py", "tools/check_no_model_candidate_maturity.py", "tools/export_cycle_evidence_bundle.py", "tools/check_evidence_retention_manifest.py", "tools/check_state_capsule.py"],
-      "owned_test_paths": ["tests/source-provenance/contract-cases.json", "tests/source-provenance/test_contract.py", "tests/release-action-authorization/test_contract.py", "tests/vcs-action-authorization/test_contract.py"],
+      "owned_tool_paths": ["tools/check_andon_closure_ledger.py", "tools/render_andon_closure_ledger.py", "tools/check_andon_contract_registry.py", "tools/check_architecture_decision_ledger.py", "tools/source_provenance.py", "tools/check_source_provenance.py", "tools/a16_immutable_custody.py", "tools/check_release_action_authorization.py", "tools/check_vcs_action_authorization.py", "tools/check_ci_readback.py", "tools/write_linux_a01_evidence.py", "tools/write_task7_deterministic_evidence.py", "tools/sanitized_python_bootstrap.py", "tools/run_no_model_preflight.py", "tools/run_local_ci.py", "tools/build_no_model_candidate_maturity_verdict.py", "tools/check_no_model_candidate_maturity.py", "tools/export_cycle_evidence_bundle.py", "tools/check_evidence_retention_manifest.py", "tools/reviewed_campaign_orchestrator.py", "tools/run_reviewed_producer_cohort.py", "tools/run_reviewed_cold_review_cohort.py", "tools/check_state_capsule.py"],
+      "owned_test_paths": ["tests/source-provenance/contract-cases.json", "tests/source-provenance/test_contract.py", "tests/release-action-authorization/test_contract.py", "tests/vcs-action-authorization/test_contract.py", "tests/ci-readback/test_contract.py", "tests/no-model-candidate-maturity/test_contract.py", "tests/no-model-candidate-maturity/test_candidate_maturity.py", "tests/evidence-retention/test_contract.py", "tests/reviewed-campaign-orchestration/test_contract.py"],
       "state_capsule_contribution": ["schema-integration-ownership", "migration-custody", "non-claims"],
       "required_case_registry_ref": "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
-      "binding_adr_ids": ["DAEE-ADR-046-001", "DAEE-ADR-046-004", "DAEE-ADR-046-006", "DAEE-ADR-046-007", "DAEE-ADR-046-008", "DAEE-ADR-046-009", "DAEE-ADR-046-010", "DAEE-ADR-046-011", "DAEE-ADR-046-012", "DAEE-ADR-046-017", "DAEE-ADR-046-018", "DAEE-ADR-046-019", "DAEE-ADR-046-020", "DAEE-ADR-046-022", "DAEE-ADR-046-024", "DAEE-ADR-046-025", "DAEE-ADR-046-026", "DAEE-ADR-046-027"]
+      "binding_adr_ids": ["DAEE-ADR-046-001", "DAEE-ADR-046-004", "DAEE-ADR-046-006", "DAEE-ADR-046-007", "DAEE-ADR-046-008", "DAEE-ADR-046-009", "DAEE-ADR-046-010", "DAEE-ADR-046-011", "DAEE-ADR-046-012", "DAEE-ADR-046-017", "DAEE-ADR-046-018", "DAEE-ADR-046-019", "DAEE-ADR-046-020", "DAEE-ADR-046-022", "DAEE-ADR-046-024", "DAEE-ADR-046-025", "DAEE-ADR-046-026", "DAEE-ADR-046-027", "DAEE-ADR-046-028"]
     }
   ],
   "rules": {
@@ -306,8 +307,11 @@
     "all_binding_adrs_must_be_present_and_accepted": true,
     "generated_files_are_not_writable_owners": true,
     "source_binding_owner_paths_must_exist": true,
-    "global_missing_owner_path_rejection": false,
-    "global_missing_owner_path_rejection_deferred_reason": "Tasks 3-5 intentionally own planned A16 schema/tool families that are not materialized during the tracked-binding slice; activate the global gate only after those families exist."
+    "ci_readback_owner_paths_must_exist": true,
+    "candidate_custody_owner_paths_must_exist": true,
+    "candidate_maturity_owner_paths_must_exist": true,
+    "reviewed_campaign_owner_paths_must_exist": true,
+    "global_missing_owner_path_rejection": true
   },
   "status": "VERIFIED_STRUCTURAL",
   "non_claims": [

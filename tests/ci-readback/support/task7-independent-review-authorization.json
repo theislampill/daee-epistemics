@@ -1,0 +1,16 @@
+{
+  "schema": "daee-task7-independent-review-authorization-v1",
+  "authorization_id": "7a0855d02777ad0386630a9db9a3287ba4359f6810c0f5ec35d1e0d7d530e323",
+  "issuer_identity": "/root",
+  "implementation_owner_identity": "/root/task3b_ci_receipt",
+  "reviewer_identity": "/root/task3b_ci_receipt/task3b_requirements_audit",
+  "scope": "independent-whole-branch-review",
+  "reviewed_branch": "codex/v0.4.6.0-runtime-footprint-b10",
+  "expected_final_tree_oid": "4444444444444444444444444444444444444444",
+  "source_freeze_id": "361ce4b4bf753502e4ccf10734fe1320bdb85dd2a39aa887e728fccda52df150",
+  "issued_at": "2026-07-12T11:59:00Z",
+  "one_use": true,
+  "owner_acceptance": false,
+  "candidate_claim": false,
+  "terminal_claim": false
+}

@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/daee/evidence-retention-manifest.schema.json",
+  "title": "DAEE A16 evidence retention and export contract",
+  "oneOf": [
+    {"$ref": "#/$defs/candidateReadinessManifest"},
+    {"$ref": "#/$defs/observationCycleManifest"},
+    {"$ref": "#/$defs/finalReviewedCycleManifest"},
+    {"$ref": "#/$defs/exportReceipt"}
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "gitOid": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "timestamp": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+    "relativePath": {"type": "string", "minLength": 1, "pattern": "^[^\\\\].*"},
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "byte_count"],
+      "properties": {
+        "path": {"$ref": "#/$defs/relativePath"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "sourceIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "branch", "ref", "commit_sha", "tree_sha", "source_commit_receipt", "ci_readback"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1},
+        "branch": {"type": "string", "minLength": 1},
+        "ref": {"type": "string", "pattern": "^refs/heads/[^ ]+$"},
+        "commit_sha": {"$ref": "#/$defs/gitOid"},
+        "tree_sha": {"$ref": "#/$defs/gitOid"},
+        "source_commit_receipt": {"$ref": "#/$defs/artifactRef"},
+        "ci_readback": {"$ref": "#/$defs/artifactRef"}
+      }
+    },
+    "candidateIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "candidate_record", "candidate_readiness", "package_sha256", "package_tree_sha256", "tree_digest_algorithm", "status"],
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9._-]+$"},
+        "candidate_record": {"$ref": "#/$defs/artifactRef"},
+        "candidate_readiness": {"$ref": "#/$defs/artifactRef"},
+        "package_sha256": {"$ref": "#/$defs/sha256"},
+        "package_tree_sha256": {"$ref": "#/$defs/sha256"},
+        "tree_digest_algorithm": {"const": "daee-tree-sha256-v1"},
+        "status": {"const": "READY_UNUSED"}
+      }
+    },
+    "cycleIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cycle_id", "cycle_claim", "phase"],
+      "properties": {
+        "cycle_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9._-]+$"},
+        "cycle_claim": {"$ref": "#/$defs/artifactRef"},
+        "phase": {"enum": ["OBSERVATION", "REVIEWED_FINAL"]}
+      }
+    },
+    "retentionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "pruning_authorized", "separate_owner_authorization_required", "permanent_removal_residue_required"],
+      "properties": {
+        "mode": {"const": "RETAIN_INDEFINITELY"},
+        "pruning_authorized": {"const": false},
+        "separate_owner_authorization_required": {"const": true},
+        "permanent_removal_residue_required": {"const": true}
+      }
+    },
+    "inventoryPresent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "source_path", "retained_path", "classification", "required", "present", "sha256", "byte_count", "cas_object_path"],
+      "properties": {
+        "artifact_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9._-]+$"},
+        "source_path": {"$ref": "#/$defs/relativePath"},
+        "retained_path": {"$ref": "#/$defs/relativePath"},
+        "classification": {"enum": ["RESTRICTED_RAW", "SANITIZED_REVIEW", "PUBLIC_FINGERPRINT", "CONTROL_RECORD"]},
+        "required": {"type": "boolean"},
+        "present": {"const": true},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_count": {"type": "integer", "minimum": 0},
+        "cas_object_path": {"$ref": "#/$defs/relativePath"}
+      }
+    },
+    "inventoryAbsent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "source_path", "retained_path", "classification", "required", "present", "sha256", "byte_count", "cas_object_path"],
+      "properties": {
+        "artifact_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9._-]+$"},
+        "source_path": {"$ref": "#/$defs/relativePath"},
+        "retained_path": {"$ref": "#/$defs/relativePath"},
+        "classification": {"enum": ["RESTRICTED_RAW", "SANITIZED_REVIEW", "PUBLIC_FINGERPRINT", "CONTROL_RECORD"]},
+        "required": {"type": "boolean"},
+        "present": {"const": false},
+        "sha256": {"type": "null"},
+        "byte_count": {"type": "null"},
+        "cas_object_path": {"type": "null"}
+      }
+    },
+    "inventoryRow": {
+      "oneOf": [
+        {"$ref": "#/$defs/inventoryPresent"},
+        {"$ref": "#/$defs/inventoryAbsent"}
+      ]
+    },
+    "custody": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root_fingerprint_sha256", "object_store_path", "staging_path", "claim_path", "final_path", "receipt_path", "pointer_path", "expected_pointer_sha256"],
+      "properties": {
+        "root_fingerprint_sha256": {"$ref": "#/$defs/sha256"},
+        "object_store_path": {"const": "objects/sha256"},
+        "staging_path": {"$ref": "#/$defs/relativePath"},
+        "claim_path": {"$ref": "#/$defs/relativePath"},
+        "final_path": {"$ref": "#/$defs/relativePath"},
+        "receipt_path": {"$ref": "#/$defs/relativePath"},
+        "pointer_path": {"$ref": "#/$defs/relativePath"},
+        "expected_pointer_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "manifestBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "kind", "status", "export_id", "scope_id", "authorization_sha256", "authorization_file_sha256", "claim_receipt", "source_identity", "candidate_identity", "cycle_identity", "inventory", "inventory_digest_algorithm", "inventory_sha256", "retained_tree_digest_algorithm", "retained_tree_sha256", "cas_object_count", "retained_byte_count", "cas_readback_status", "publication_mode", "completeness", "missing_required_artifact_ids", "retention_policy", "custody", "exported_at", "model_execution_authorized", "terminal_claim", "non_claims", "manifest_sha256"],
+      "properties": {
+        "schema": {"const": "daee-evidence-retention-manifest-v1"},
+        "kind": {"enum": ["candidate-readiness-final-manifest", "observation-cycle-export", "final-reviewed-cycle-manifest"]},
+        "status": {"enum": ["RETENTION_GREEN", "RETENTION_PARTIAL"]},
+        "export_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9._-]+$"},
+        "scope_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9._-]+$"},
+        "authorization_sha256": {"$ref": "#/$defs/sha256"},
+        "authorization_file_sha256": {"$ref": "#/$defs/sha256"},
+        "claim_receipt": {"$ref": "#/$defs/artifactRef"},
+        "source_identity": {"$ref": "#/$defs/sourceIdentity"},
+        "candidate_identity": {"$ref": "#/$defs/candidateIdentity"},
+        "cycle_identity": {"type": ["object", "null"]},
+        "inventory": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/inventoryRow"}},
+        "inventory_digest_algorithm": {"const": "daee-retention-inventory-sha256-v1"},
+        "inventory_sha256": {"$ref": "#/$defs/sha256"},
+        "retained_tree_digest_algorithm": {"const": "daee-retained-tree-sha256-v1"},
+        "retained_tree_sha256": {"$ref": "#/$defs/sha256"},
+        "cas_object_count": {"type": "integer", "minimum": 0},
+        "retained_byte_count": {"type": "integer", "minimum": 0},
+        "cas_readback_status": {"const": "PASS"},
+        "publication_mode": {"const": "ATOMIC_DIRECTORY_NO_REPLACE_WITH_CAS_POINTER"},
+        "completeness": {"enum": ["COMPLETE", "PARTIAL"]},
+        "missing_required_artifact_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "retention_policy": {"$ref": "#/$defs/retentionPolicy"},
+        "custody": {"$ref": "#/$defs/custody"},
+        "exported_at": {"$ref": "#/$defs/timestamp"},
+        "model_execution_authorized": {"const": false},
+        "terminal_claim": {"const": false},
+        "non_claims": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "candidateReadinessManifest": {
+      "$ref": "#/$defs/manifestBase",
+      "properties": {
+        "kind": {"const": "candidate-readiness-final-manifest"},
+        "status": {"const": "RETENTION_GREEN"},
+        "cycle_identity": {"type": "null"},
+        "completeness": {"const": "COMPLETE"}
+      }
+    },
+    "observationCycleManifest": {
+      "$ref": "#/$defs/manifestBase",
+      "properties": {
+        "kind": {"const": "observation-cycle-export"},
+        "status": {"enum": ["RETENTION_GREEN", "RETENTION_PARTIAL"]},
+        "cycle_identity": {"$ref": "#/$defs/cycleIdentity"},
+        "completeness": {"enum": ["COMPLETE", "PARTIAL"]}
+      }
+    },
+    "finalReviewedCycleManifest": {
+      "$ref": "#/$defs/manifestBase",
+      "properties": {
+        "kind": {"const": "final-reviewed-cycle-manifest"},
+        "status": {"const": "RETENTION_GREEN"},
+        "cycle_identity": {"$ref": "#/$defs/cycleIdentity"},
+        "completeness": {"const": "COMPLETE"}
+      }
+    },
+    "exportReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "kind", "status", "export_id", "scope_id", "authorization_sha256", "authorization_file_sha256", "claim_receipt", "manifest", "pointer_record", "source_identity", "candidate_identity", "cycle_identity", "completeness", "object_count", "retained_byte_count", "retained_tree_sha256", "final_path", "pointer_path", "expected_pointer_sha256", "final_readback_status", "pointer_readback_status", "published_at", "one_use", "terminal", "terminal_claim", "model_execution_authorized", "non_claims", "receipt_sha256"],
+      "properties": {
+        "schema": {"const": "daee-evidence-retention-manifest-v1"},
+        "kind": {"const": "evidence-export-receipt"},
+        "status": {"enum": ["RETENTION_GREEN", "RETENTION_PARTIAL"]},
+        "export_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9._-]+$"},
+        "scope_id": {"type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9._-]+$"},
+        "authorization_sha256": {"$ref": "#/$defs/sha256"},
+        "authorization_file_sha256": {"$ref": "#/$defs/sha256"},
+        "claim_receipt": {"$ref": "#/$defs/artifactRef"},
+        "manifest": {"$ref": "#/$defs/artifactRef"},
+        "pointer_record": {"$ref": "#/$defs/artifactRef"},
+        "source_identity": {"$ref": "#/$defs/sourceIdentity"},
+        "candidate_identity": {"$ref": "#/$defs/candidateIdentity"},
+        "cycle_identity": {"type": ["object", "null"]},
+        "completeness": {"enum": ["COMPLETE", "PARTIAL"]},
+        "object_count": {"type": "integer", "minimum": 0},
+        "retained_byte_count": {"type": "integer", "minimum": 0},
+        "retained_tree_sha256": {"$ref": "#/$defs/sha256"},
+        "final_path": {"$ref": "#/$defs/relativePath"},
+        "pointer_path": {"$ref": "#/$defs/relativePath"},
+        "expected_pointer_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "final_readback_status": {"const": "PASS"},
+        "pointer_readback_status": {"const": "PASS"},
+        "published_at": {"$ref": "#/$defs/timestamp"},
+        "one_use": {"const": true},
+        "terminal": {"const": true},
+        "terminal_claim": {"const": false},
+        "model_execution_authorized": {"const": false},
+        "non_claims": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

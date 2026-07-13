@@ -1,0 +1,104 @@
+{
+  "schema": "daee-task7-result-report-v2",
+  "report_id": "06a859f27ecdb178dd8ab3dbf154a5f13547d7fcd5f55fb1cfffe5d4e2036d0d",
+  "kind": "full-local-ci",
+  "status": "PASS",
+  "producer_command": [
+    "python",
+    "tools/write_task7_deterministic_evidence.py",
+    "--build-verdict",
+    "--kind",
+    "full-local-ci",
+    "--source-freeze",
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/source-freeze.json",
+    "--out",
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/full-local-ci.json"
+  ],
+  "producer_command_sha256": "45a98f00a971c25d656a19182de951b523c22979f086d7bbff0425b4482d7ae9",
+  "producer_execution_profile": {
+    "profile_id": "python-isolated-bootstrap-v2",
+    "launcher": "running-interpreter",
+    "python_flags": [
+      "-I",
+      "-S",
+      "-B"
+    ],
+    "bootstrap_path": "tools/sanitized_python_bootstrap.py",
+    "environment_policy": "isolated-startup-then-delete-python-prefixed-and-pyvenv-launcher-v2",
+    "import_roots_policy": "stdlib-plus-repo-tools-script-parent-direct-sysconfig-system-user-no-pth-v2",
+    "removed_environment_names": []
+  },
+  "producer": {
+    "path": "tools/write_task7_deterministic_evidence.py",
+    "blob_oid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "raw_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "executed_checks": [
+    {
+      "sequence": 1,
+      "command": [
+        "python",
+        "tools/run_local_ci.py",
+        "--strict-pwsh",
+        "--command-timeout-seconds",
+        "900",
+        "--json",
+        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/native/full-local-ci.json"
+      ],
+      "command_sha256": "f9b71929259077426a35a85e3ed4fb7c768956779d7327497462d83680580c04",
+      "execution_profile": {
+        "profile_id": "python-isolated-bootstrap-v2",
+        "launcher": "running-interpreter",
+        "python_flags": [
+          "-I",
+          "-S",
+          "-B"
+        ],
+        "bootstrap_path": "tools/sanitized_python_bootstrap.py",
+        "environment_policy": "isolated-startup-then-delete-python-prefixed-and-pyvenv-launcher-v2",
+        "import_roots_policy": "stdlib-plus-repo-tools-script-parent-direct-sysconfig-system-user-no-pth-v2",
+        "removed_environment_names": []
+      },
+      "exit_code": 0,
+      "stdout_byte_count": 529,
+      "stdout_sha256": "175e96c14622fce0556b96a893cb8dcc0d02b86b518163a861d7513f9c1b68ad",
+      "stderr_byte_count": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "completion": {
+        "command_count": 172,
+        "command_list_sha256": "070a8ba7d7693565a0091a22ee309c29e57c8adaa553d179c6be421c676221be",
+        "command_timeout_seconds": 900,
+        "complete": true,
+        "completion_id": "6f27b3695ee922c8ea8db09d0799880b1977d4ac158fd18143e38acb18ad983a",
+        "end_at_command": 172,
+        "executed_count": 172,
+        "execution_plan_sha256": "45fe475728a429fcb909214738b0f6b8dc09353b950d05ca0b0702dc4c97d364",
+        "schema": "daee-run-local-ci-completion-v1",
+        "skip_count": 0,
+        "start_at_command": 1,
+        "status": "PASS",
+        "strict_pwsh": true,
+        "timeout_count": 0
+      }
+    }
+  ],
+  "check_count": 1,
+  "evidence_artifacts": [
+    {
+      "path": "tests/ci-readback/support/task7-full-local-ci-native-report.json",
+      "byte_count": 562,
+      "sha256": "aaba0963340d8f8567518ab0f4ce49f02ce76c96f2a69fc4654c136e0f8a1f0d"
+    }
+  ],
+  "source_freeze_id": "361ce4b4bf753502e4ccf10734fe1320bdb85dd2a39aa887e728fccda52df150",
+  "expected_final_tree_oid": "4444444444444444444444444444444444444444",
+  "observed_at": "2026-07-12T12:00:00Z",
+  "model_calls": 0,
+  "candidate_claim": false,
+  "terminal_claim": false,
+  "non_claims": [
+    "does-not-claim-final-source-commit",
+    "does-not-claim-exact-sha-ci",
+    "does-not-authorize-model-or-candidate"
+  ]
+}
