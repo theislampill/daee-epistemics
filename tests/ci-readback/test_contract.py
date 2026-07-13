@@ -448,12 +448,11 @@ class CiReadbackContract(unittest.TestCase):
         self.require_checker()
         checker = importlib.import_module("check_ci_readback")
         receipt = json.loads(VALID.read_text(encoding="utf-8"))
-        legacy_path = (
-            ROOT
-            / ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/"
-            "vcs-commit-authorization-a16-bounded-durability.json"
-        )
-        authorization = json.loads(legacy_path.read_text(encoding="utf-8"))
+        authorization = {
+            "schema": "daee-vcs-durability-authorization-v1",
+            "repository": str(ROOT.resolve()),
+            "branch": receipt["repository"]["branch"],
+        }
         finding = checker._authorization_scope(
             authorization,
             receipt["repository"],
@@ -853,7 +852,7 @@ class CiReadbackContract(unittest.TestCase):
             expected_process_names = [
                 name.upper() if os.name == "nt" else name
                 for name in removed_names
-                if name.upper() != "__PYVENV_LAUNCHER__"
+                if not (os.name == "nt" and name.upper() == "__PYVENV_LAUNCHER__")
             ]
             self.assertEqual(
                 profile["removed_environment_names"],
@@ -1267,8 +1266,13 @@ class CiReadbackContract(unittest.TestCase):
                     else mock.patch.object(runner.subprocess, "run", return_value=taskkill)
                 )
                 with mock.patch.object(runner.os, "name", "nt"), mock.patch.object(
+                    runner.subprocess,
+                    "CREATE_NEW_PROCESS_GROUP",
+                    0x00000200,
+                    create=True,
+                ), mock.patch.object(
                     runner.subprocess, "Popen", return_value=process
-                ), run_patch, mock.patch.object(
+                ) as popen, run_patch, mock.patch.object(
                     runner,
                     "_windows_process_parent_map",
                     side_effect=case["parent_maps"],
@@ -1281,6 +1285,8 @@ class CiReadbackContract(unittest.TestCase):
                     create=True,
                 ), mock.patch.object(runner, "PROCESS_TREE_TERMINATION_GRACE_SECONDS", 0.0):
                     result = runner.run_owned_command(["owned"], timeout_seconds=1)
+                self.assertEqual(popen.call_args.kwargs.get("creationflags"), 0x00000200)
+                self.assertNotIn("start_new_session", popen.call_args.kwargs)
                 self.assertEqual(result.returncode, 125)
                 self.assertTrue(result.timed_out)
                 self.assertTrue(result.teardown_failed)
