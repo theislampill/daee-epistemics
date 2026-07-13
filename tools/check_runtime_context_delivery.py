@@ -188,6 +188,10 @@ def validate(manifest: dict[str, Any], package_root: Path, run_root: Path) -> di
 
     runtime, selection = manifest["runtime"], manifest["selection"]
     package_root = package_root.resolve(strict=True); run_root = run_root.resolve(strict=True)
+    for component in manifest["components"]:
+        relative = component["source_path"]
+        if not relative.startswith("run://") and (package_root / relative).is_symlink():
+            contained(package_root, relative, stage)
     if tree_sha(package_root) != runtime["package_sha256"]:
         raise Failure("package-hash-mismatch", "01", "package-hash-drift", "package tree hash differs")
     if sha(contained(package_root, "build-manifest.json", stage)) != runtime["build_manifest_sha256"]:
@@ -441,15 +445,19 @@ def scenario_result(path: Path, package: Path | None = None) -> tuple[int, dict[
             return 1, Failure("schema-invalid", stage, "expectation-mismatch", "scenario and expectation disagree").diagnostic()
     with tempfile.TemporaryDirectory(prefix="daee-context-scenario-") as tmp:
         run = Path(tmp); package_root = (package or (ROOT / "skill")).resolve()
+        scenario_manifest = None
         if path.stem == "package-symlink-escape":
-            copied = run / "package"; shutil.copytree(package_root, copied); outside = run / "outside-package.md"; outside.write_text("outside package\n", encoding="utf-8")
+            copied = run / "package"; shutil.copytree(package_root, copied); package_root = copied
+            scenario_manifest = _actual_scenario_manifest(path, package_root, run)
+            outside = run / "outside-package.md"; outside.write_text("outside package\n", encoding="utf-8")
             try:
                 os.symlink(outside, copied / "escape-link.md")
             except OSError as exc:
                 return 0, {"checker_id": "runtime-context-delivery", "status": "skip", "skip_reason": "host-symlink-capability-unavailable", "os_error": f"{type(exc).__name__}: {exc}"}
-            package_root = copied
         try:
-            result = validate(_actual_scenario_manifest(path, package_root, run), package_root, run)
+            if scenario_manifest is None:
+                scenario_manifest = _actual_scenario_manifest(path, package_root, run)
+            result = validate(scenario_manifest, package_root, run)
             return 0, result | {"scenario": row.get("scenario")}
         except Failure as exc:
             diagnostic = exc.diagnostic()
