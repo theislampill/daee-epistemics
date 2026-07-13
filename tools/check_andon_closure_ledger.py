@@ -41,6 +41,7 @@ EXIT_CATEGORY = "structural-rejection"
 DOWNSTREAM_INVALIDATED = ["closure-view", "completion-verdict", "candidate-package", "release-action"]
 _GIT_BLOB_CACHE: dict[tuple[str, str], tuple[str | None, bytes | None, str | None]] = {}
 _FILE_SHA256_CACHE: dict[str, tuple[str | None, str | None]] = {}
+_GIT_TRACKED_CACHE: dict[str, bool] = {}
 
 
 class DuplicateObjectKey(ValueError):
@@ -283,6 +284,22 @@ def _repo_relative_path(value: Any) -> tuple[Path | None, str | None]:
     return resolved, None
 
 
+def _git_tracked_path(value: str) -> bool:
+    normalized = Path(value.replace("\\", "/")).as_posix()
+    if normalized in _GIT_TRACKED_CACHE:
+        return _GIT_TRACKED_CACHE[normalized]
+    check = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", "--", normalized],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    tracked = check.returncode == 0
+    _GIT_TRACKED_CACHE[normalized] = tracked
+    return tracked
+
+
 def _git_blob_bytes(commit_sha1: str, path: str) -> tuple[str | None, bytes | None, str | None]:
     cache_key = (commit_sha1, path)
     if cache_key in _GIT_BLOB_CACHE:
@@ -415,6 +432,16 @@ def semantic_findings(document: Any) -> list[Finding]:
             retained_artifact = evidence.get("retained_artifact")
             unretained_reason = evidence.get("unretained_reason")
             location = f"{row_id} evidence_refs[{index}] {kind}"
+            if isinstance(retained_artifact, str):
+                _, retained_path_problem = _repo_relative_path(retained_artifact)
+                if retained_path_problem is None and not _git_tracked_path(retained_artifact):
+                    return [
+                        Finding(
+                            "retained_artifact_local_only",
+                            f"{row_id} retained_artifact {retained_artifact} is local-only; "
+                            "retained evidence must live in tracked portable source",
+                        )
+                    ]
             if kind == "source_blob":
                 if not all(isinstance(value, str) and value for value in (commit_sha1, blob_sha1, sha256)):
                     return [Finding("source_blob_evidence_incomplete", f"{location} requires exact commit_sha1, blob_sha1, and sha256")]

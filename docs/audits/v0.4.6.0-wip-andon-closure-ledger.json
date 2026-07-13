@@ -2570,7 +2570,7 @@
           "sha256": "32968927937cfef6490cbbfe33e220c2a3ff224f0444bc58ec1fc88a7b506855",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/a11-task-review.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/a11-task-review.md",
           "unretained_reason": null
         }
       ],
@@ -2837,7 +2837,7 @@
           "sha256": "35319558403ab82bf8ba883c34299608694bb5fa77e5f66dc0e8712288bd51ed",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/a12-a13-shared-integration-review.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/a12-a13-shared-integration-review.md",
           "unretained_reason": null
         }
       ],
@@ -3071,7 +3071,7 @@
           "sha256": "35319558403ab82bf8ba883c34299608694bb5fa77e5f66dc0e8712288bd51ed",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/a12-a13-shared-integration-review.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/a12-a13-shared-integration-review.md",
           "unretained_reason": null
         }
       ],
@@ -3319,7 +3319,7 @@
           "sha256": "6ef1a9e01aacd07646808bee6f0103bcdfc14e831f87f4213657c2da579d4d73",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task4-candidate-custody-independent-review.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task4-candidate-custody-independent-review.md",
           "unretained_reason": null
         }
       ],
@@ -3604,7 +3604,7 @@
           "sha256": "44e92238a38cf73d4cff274b9ea29c05820fbe0a9601a57c87383112d2441da5",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/a15-task-review.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/a15-task-review.md",
           "unretained_reason": null
         }
       ],
@@ -3887,7 +3887,7 @@
           "sha256": "0839d7ba38d1312f21a133ae78d6ae9039fa279e6b585598b250cd9715bca725",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/a16-durability-checkpoint.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/a16-durability-checkpoint.md",
           "unretained_reason": null
         },
         {
@@ -3898,7 +3898,7 @@
           "sha256": "b488cbf392942537ae8dbfd5a740da45bac7b3818e1b9d7c9e94cd79c8e9afb7",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task3b-command-timeout-repair-independent-rereview.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task3b-command-timeout-repair-independent-rereview.md",
           "unretained_reason": null
         },
         {
@@ -3909,7 +3909,7 @@
           "sha256": "6ef1a9e01aacd07646808bee6f0103bcdfc14e831f87f4213657c2da579d4d73",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task4-candidate-custody-independent-review.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task4-candidate-custody-independent-review.md",
           "unretained_reason": null
         },
         {
@@ -3920,7 +3920,7 @@
           "sha256": "a4065ef74f80fe7af27e4ac9cff6ba04f165c2b85bfe6a68017c5cdc6e7bf390",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task4-shared-registration-independent-review.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task4-shared-registration-independent-review.md",
           "unretained_reason": null
         },
         {
@@ -3931,7 +3931,7 @@
           "sha256": "fd5f9c4c8e5905cbe14d99502754fbc0dc25bd6f56093396abc53d817946afd7",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task5-candidate-maturity-independent-rereview.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task5-candidate-maturity-independent-rereview.md",
           "unretained_reason": null
         },
         {
@@ -3942,7 +3942,7 @@
           "sha256": "32818d3342e131b633ae85b9a8039b08035e7399f2721fd207e1ed3023879564",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task5-evidence-retention-independent-rereview.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task5-evidence-retention-independent-rereview.md",
           "unretained_reason": null
         },
         {
@@ -3953,7 +3953,7 @@
           "sha256": "fb36500aa06d24a7a1057c07b183a2c718258fb49dc91681c99052216988e338",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task6-reviewed-campaign-orchestration-independent-rereview.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task6-reviewed-campaign-orchestration-independent-rereview.md",
           "unretained_reason": null
         },
         {
@@ -3964,7 +3964,7 @@
           "sha256": "04616a5939fdf65306548ee42b2d788b2a73caa3010dd8f36bd6efb07372dbf7",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-independent-whole-branch-review-r1.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-independent-whole-branch-review-r1.md",
           "unretained_reason": null
         },
         {
@@ -3975,7 +3975,7 @@
           "sha256": "6db8cc0718d53ba82ec0c1e58a07d46da0bd37b227572cfd6780311daaae684e",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-whole-branch-r1-repair-owner-report.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-whole-branch-r1-repair-owner-report.md",
           "unretained_reason": null
         },
         {
@@ -3986,7 +3986,7 @@
           "sha256": "7cce284796046e3314041e41b7d9c7c335b4272e54491575b0a989ef842f95bd",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-whole-branch-r1-repair-independent-closeout.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-whole-branch-r1-repair-independent-closeout.md",
           "unretained_reason": null
         },
         {
@@ -3997,7 +3997,7 @@
           "sha256": "f825c8b0dab683b1566ea6b42319b1b6338554f7c200182128ad03741d632a22",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-independent-whole-branch-review-r2.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-independent-whole-branch-review-r2.md",
           "unretained_reason": null
         },
         {
@@ -4008,7 +4008,7 @@
           "sha256": "5371bb8e28fd949ba100e309855f92a63cf99cdee462527c37594b6b893e63ff",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-whole-branch-r2-repair-owner-report.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-whole-branch-r2-repair-owner-report.md",
           "unretained_reason": null
         },
         {
@@ -4019,7 +4019,7 @@
           "sha256": "0c7645ec013bd33800c5b0e3efa774405054d9541670194d901abd505cd295e5",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-whole-branch-r2-repair-independent-closeout.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-whole-branch-r2-repair-independent-closeout.md",
           "unretained_reason": null
         },
         {
@@ -4030,7 +4030,7 @@
           "sha256": "2ba7dc7c34d7bf275b0eb17e64e6f39ca31a383c9f18630501c5744158182e32",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-independent-whole-branch-review-r3.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-independent-whole-branch-review-r3.md",
           "unretained_reason": null
         },
         {
@@ -4041,7 +4041,7 @@
           "sha256": "c4ff5c1c68d6247c1116959a10462eee739b4c54769a8ea662e7230444ff4b1e",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-whole-branch-r3-repair-owner-report.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-whole-branch-r3-repair-owner-report.md",
           "unretained_reason": null
         },
         {
@@ -4052,7 +4052,7 @@
           "sha256": "a9e0d6cc7a5a722519bf0c2286dcc9656df7832b382098d93969679c12b79bac",
           "command": null,
           "exit_code": null,
-          "retained_artifact": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-whole-branch-r3-repair-independent-closeout.md",
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-whole-branch-r3-repair-independent-closeout.md",
           "unretained_reason": null
         }
       ],
