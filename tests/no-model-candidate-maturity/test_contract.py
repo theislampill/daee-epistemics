@@ -285,7 +285,7 @@ class NoModelCandidateMaturityContractTests(unittest.TestCase):
 
     def test_production_builder_rejects_relocated_structural_ci_fixture(self) -> None:
         run_root = ROOT / ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5"
-        with tempfile.TemporaryDirectory(dir=run_root) as tmp:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             temp_root = Path(tmp)
             receipt_path = temp_root / "relocated-receipt.json"
             receipt_path.write_bytes((ROOT / self.ci_receipt["path"]).read_bytes())
@@ -405,7 +405,7 @@ class NoModelCandidateMaturityContractTests(unittest.TestCase):
 
     def test_live_escape_registry_rejects_unstructured_review_bytes(self) -> None:
         review = artifact_ref(
-            ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task4-candidate-custody-independent-review.md"
+            "docs/audits/evidence/v0.4.6.0-b10/task4-candidate-custody-independent-review.md"
         )
         with self.assertRaisesRegex(ValueError, "review.*JSON|schema"):
             builder.build_live_escape_registry(
