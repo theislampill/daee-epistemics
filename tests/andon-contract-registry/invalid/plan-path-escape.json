@@ -1,0 +1,1 @@
+{"fixture_schema":"daee-checker-fixture-v1","base":"docs/audits/v0.4.6.0-wip-andon-contract-registry.json","operations":[{"op":"set","path":"contracts.A01.plan_filename","value":"../../../../outputs/Sol/01_evidence_custody_and_causal_attribution_plan.md"}]}

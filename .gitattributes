@@ -10,3 +10,6 @@
 
 # Exact historical review mirrors retain their accepted byte endings.
 docs/audits/evidence/v0.4.6.0-b10/*.md whitespace=-blank-at-eof
+
+# Exact plan carriers retain Markdown hard-break whitespace.
+docs/audits/evidence/v0.4.6.0-b10/plans/*.md whitespace=-blank-at-eol

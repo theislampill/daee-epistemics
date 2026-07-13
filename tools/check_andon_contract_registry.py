@@ -7,6 +7,7 @@ import copy
 import hashlib
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Iterable
@@ -37,8 +38,9 @@ LIVE_REGISTRY = ROOT / "docs" / "audits" / "v0.4.6.0-wip-andon-contract-registry
 LIVE_ADR = ROOT / "docs" / "audits" / "v0.4.6.0-wip-architecture-decisions.json"
 LIVE_CLOSURE = ROOT / "docs" / "audits" / "v0.4.6.0-wip-andon-closure-ledger.json"
 MIGRATION_LEDGER = ROOT / "docs" / "audits" / "v0.4.6.0-wip-state-capsule-v2-migration-ledger.json"
-PLAN_ROOT = ROOT.parents[1] / "outputs" / "Sol"
+PLAN_ROOT = ROOT / "docs" / "audits" / "evidence" / "v0.4.6.0-b10" / "plans"
 FIXTURE_ROOT = ROOT / "tests" / "andon-contract-registry"
+_TRACKED_PLAN_CACHE: dict[str, bool] = {}
 SOURCE_BINDING_OWNER_PATHS = {
     "owned_schema_paths": ("schema/source-binding.schema.json",),
     "owned_tool_paths": ("tools/source_provenance.py", "tools/check_source_provenance.py"),
@@ -132,6 +134,60 @@ def materialize(path: Path, decision_path: Path) -> tuple[Any, Any, dict[str, An
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _tracked_plan_path(
+    andon_id: str,
+    filename: Any,
+    *,
+    plan_root: Path = PLAN_ROOT,
+) -> tuple[Path | None, Finding | None]:
+    if not isinstance(filename, str) or not filename.strip():
+        return None, Finding(
+            "plan_evidence_not_portable",
+            f"{andon_id} plan_filename must name repository-relative tracked evidence",
+        )
+    relative = Path(filename)
+    if relative.is_absolute() or len(relative.parts) != 1 or ".." in relative.parts:
+        return None, Finding(
+            "plan_evidence_not_portable",
+            f"{andon_id} plan_filename {filename} is not repository-relative tracked evidence",
+        )
+    try:
+        resolved_root = plan_root.resolve()
+        resolved_root.relative_to(ROOT.resolve())
+    except ValueError:
+        return None, Finding(
+            "plan_evidence_not_portable",
+            f"{andon_id} plan root {plan_root} is outside repository-relative tracked evidence",
+        )
+    plan = (resolved_root / relative).resolve()
+    try:
+        repository_path = plan.relative_to(ROOT.resolve()).as_posix()
+    except ValueError:
+        return None, Finding(
+            "plan_evidence_not_portable",
+            f"{andon_id} plan_filename {filename} escapes repository-relative tracked evidence",
+        )
+    if not plan.is_file():
+        return None, Finding("stale_plan_filename", f"{andon_id} plan {filename} not found")
+    tracked = _TRACKED_PLAN_CACHE.get(repository_path)
+    if tracked is None:
+        check = subprocess.run(
+            ["git", "ls-files", "--error-unmatch", "--", repository_path],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        tracked = check.returncode == 0
+        _TRACKED_PLAN_CACHE[repository_path] = tracked
+    if not tracked:
+        return None, Finding(
+            "plan_evidence_not_portable",
+            f"{andon_id} plan {repository_path} is local-only; plan_filename must resolve to repository-relative tracked evidence",
+        )
+    return plan, None
 
 
 def _owned_duplicates(contracts: list[dict[str, Any]], field: str) -> tuple[str, list[str]] | None:
@@ -274,9 +330,12 @@ def validate(registry: Any, decisions: Any, context: dict[str, Any]) -> list[Fin
         return [Finding("a16_terminal_contract", "A16.terminal must depend on A01-A15 terminal milestones")]
 
     for contract in contracts:
-        plan = PLAN_ROOT / str(contract.get("plan_filename", ""))
-        if not plan.is_file():
-            return [Finding("stale_plan_filename", f"{contract.get('andon_id')} plan {contract.get('plan_filename')} not found")]
+        plan, plan_finding = _tracked_plan_path(
+            str(contract.get("andon_id", "")),
+            contract.get("plan_filename"),
+        )
+        if plan_finding is not None or plan is None:
+            return [plan_finding or Finding("plan_evidence_not_portable", "plan evidence unavailable")]
         actual_hash = _sha256(plan)
         if actual_hash != contract.get("plan_sha256"):
             return [Finding("stale_plan_hash", f"{contract.get('andon_id')} plan_sha256 does not match {actual_hash}")]
@@ -360,6 +419,13 @@ def diag(path: Path, finding: Finding) -> dict[str, Any]:
 
 def self_test() -> int:
     problems: list[str] = []
+    _external_plan, external_finding = _tracked_plan_path(
+        "A01",
+        "01_evidence_custody_and_causal_attribution_plan.md",
+        plan_root=ROOT.parents[1] / "outputs" / "Sol",
+    )
+    if external_finding is None or external_finding.failure_class != "plan_evidence_not_portable":
+        problems.append("external plan root did not fail closed as plan_evidence_not_portable")
     valid = sorted((FIXTURE_ROOT / "valid").glob("*.json"))
     invalid = sorted(p for p in (FIXTURE_ROOT / "invalid").glob("*.json") if not p.name.endswith(".expectation.json"))
     for path in valid:

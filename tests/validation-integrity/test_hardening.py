@@ -131,20 +131,24 @@ class ValidationHardeningTests(unittest.TestCase):
         self.assert_failure(validate_escape_registry(value), "duplicate_event_hash")
 
     def test_outside_artifact_and_registry_object_split_fail(self) -> None:
-        outside_artifact = ROOT / "../../outputs/Sol/11_checker_fixture_and_promotion_integrity_plan.md"
-        self.assertTrue(outside_artifact.is_file())
-        value = copy.deepcopy(self.base)
-        value["artifacts"][1]["path"] = "../../outputs/Sol/11_checker_fixture_and_promotion_integrity_plan.md"
-        value["artifacts"][1]["sha256"] = sha256_file(outside_artifact)
-        value["checker_results"][0]["artifact_sha256"] = value["artifacts"][1]["sha256"]
-        self.assert_failure(validate_verdict(value, self.registry, root=ROOT, verify_files=True), "path_custody")
+        with tempfile.TemporaryDirectory() as outside_dir:
+            outside_root = Path(outside_dir)
+            outside_artifact = outside_root / "outside-artifact.md"
+            outside_artifact.write_text("outside artifact\n", encoding="utf-8")
+            outside_artifact_ref = Path(os.path.relpath(outside_artifact, ROOT)).as_posix()
+            value = copy.deepcopy(self.base)
+            value["artifacts"][1]["path"] = outside_artifact_ref
+            value["artifacts"][1]["sha256"] = sha256_file(outside_artifact)
+            value["checker_results"][0]["artifact_sha256"] = value["artifacts"][1]["sha256"]
+            self.assert_failure(validate_verdict(value, self.registry, root=ROOT, verify_files=True), "path_custody")
 
-        outside_registry = ROOT / "../daee-v45-tag/schema/hard-smoke-manifest.schema.json"
-        self.assertTrue(outside_registry.is_file())
-        value = copy.deepcopy(self.base)
-        value["registry_path"] = "../daee-v45-tag/schema/hard-smoke-manifest.schema.json"
-        value["registry_sha256"] = sha256_file(outside_registry)
-        self.assert_failure(validate_verdict(value, self.registry, root=ROOT, verify_files=True), "path_custody")
+            outside_registry = outside_root / "outside-registry.json"
+            outside_registry.write_text('{"type":"object"}\n', encoding="utf-8")
+            outside_registry_ref = Path(os.path.relpath(outside_registry, ROOT)).as_posix()
+            value = copy.deepcopy(self.base)
+            value["registry_path"] = outside_registry_ref
+            value["registry_sha256"] = sha256_file(outside_registry)
+            self.assert_failure(validate_verdict(value, self.registry, root=ROOT, verify_files=True), "path_custody")
 
     def test_common_resolver_rejects_traversal_and_absolute_paths(self) -> None:
         with self.assertRaises(PathCustodyError):
@@ -169,15 +173,18 @@ class ValidationHardeningTests(unittest.TestCase):
         self.assert_failure(assert_rejection(expectation, verdict, self.registry, root=ROOT, artifact_root=ROOT), "path_custody")
 
     def test_checker_and_consumer_source_escape_fail(self) -> None:
-        outside = ROOT / "../daee-v45-tag/schema/hard-smoke-manifest.schema.json"
-        value = copy.deepcopy(self.registry)
-        value["checkers"][0]["source_path"] = "../daee-v45-tag/schema/hard-smoke-manifest.schema.json"
-        value["checkers"][0]["source_sha256"] = sha256_file(outside)
-        self.assert_failure(validate_registry(value, root=ROOT, scan_repo=False), "path_custody")
+        with tempfile.TemporaryDirectory() as outside_dir:
+            outside = Path(outside_dir) / "outside-checker.py"
+            outside.write_text("# outside checker\n", encoding="utf-8")
+            outside_ref = Path(os.path.relpath(outside, ROOT)).as_posix()
+            value = copy.deepcopy(self.registry)
+            value["checkers"][0]["source_path"] = outside_ref
+            value["checkers"][0]["source_sha256"] = sha256_file(outside)
+            self.assert_failure(validate_registry(value, root=ROOT, scan_repo=False), "path_custody")
 
-        value = copy.deepcopy(self.registry)
-        value["consumers"] = [{"consumer_id":"outside-consumer", "source_path":"../daee-v45-tag/schema/hard-smoke-manifest.schema.json", "source_sha256":sha256_file(outside), "profile_id":"scorecard", "policy_source":"registry"}]
-        self.assert_failure(validate_registry(value, root=ROOT, scan_repo=True), "path_custody")
+            value = copy.deepcopy(self.registry)
+            value["consumers"] = [{"consumer_id":"outside-consumer", "source_path":outside_ref, "source_sha256":sha256_file(outside), "profile_id":"scorecard", "policy_source":"registry"}]
+            self.assert_failure(validate_registry(value, root=ROOT, scan_repo=True), "path_custody")
 
     def test_symlink_escape_when_supported(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT / "tests/validation-integrity") as inside_dir, tempfile.TemporaryDirectory() as outside_dir:
