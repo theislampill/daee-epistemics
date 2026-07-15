@@ -777,7 +777,7 @@ class SubprocessCodexHost:
             if version.returncode != 0:
                 raise RuntimeError("Codex version probe failed")
             catalog = self._run_probe_command(
-                [str(executable), "debug", "models", "--json"],
+                [str(executable), "debug", "models", "--bundled"],
                 cwd=private,
                 env=safe_env,
                 timeout=60,
@@ -795,6 +795,14 @@ class SubprocessCodexHost:
             if len(matches) != 1:
                 raise RuntimeError("Codex structured model catalog lacks one exact gpt-5.5 row")
             efforts = matches[0].get("supported_reasoning_efforts")
+            if efforts is None:
+                levels = matches[0].get("supported_reasoning_levels")
+                if not isinstance(levels, list) or any(
+                    not isinstance(item, dict) or not isinstance(item.get("effort"), str)
+                    for item in levels
+                ):
+                    raise RuntimeError("Codex structured model row has invalid reasoning levels")
+                efforts = [item["effort"] for item in levels]
             if not isinstance(efforts, list) or "high" not in efforts or any(not isinstance(item, str) for item in efforts):
                 raise RuntimeError("Codex structured model row does not support high reasoning")
             exec_help = self._run_probe_command(

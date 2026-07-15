@@ -4421,10 +4421,10 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "Task 11bk independently accepted predecessor live-adapter sha256 0d357768608eae2e6bc0b3c73d1af5846bba7abce855347daf79ab1f2fdad2af; Task 11bv current ANDON 145/146 owner repair preserves those joins while making capability metadata-only and secret-free and binding destructive directory cleanup to an immutable create-once ownership witness; this row binds exact current bytes only and does not claim provider invocation, independent successor acceptance, exact-SHA CI, candidate maturity, or terminal closure",
+          "source_ref": "Task 11bk independently accepted predecessor live-adapter sha256 0d357768608eae2e6bc0b3c73d1af5846bba7abce855347daf79ab1f2fdad2af; Task 11bv ANDON 145/146 owner repair preserves those joins while making capability metadata-only and secret-free and binding destructive directory cleanup to an immutable create-once ownership witness; Task 11dc/11dd ANDON 160 current bytes use the installed CLI's exact secret-free bundled model-catalog command and normalize its structured reasoning-level rows while preserving exact GPT-5.5/high validation; this row binds exact current bytes only and does not claim provider invocation, independent successor acceptance, exact-SHA CI, candidate maturity, or terminal closure",
           "commit_sha1": null,
           "blob_sha1": null,
-        "sha256": "d92a131195201b634682baca8d2d6b9d4795c1bd569c863284be7605ef11843d",
+          "sha256": "b00bdf384ae9c3476d922eaf803ccf9740d2ad55c0a71247bf102030ac5c906f",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/codex_live_producer_adapter.py",
@@ -4443,7 +4443,7 @@
         },
         {
           "kind": "command_result",
-          "source_ref": "Task 11bv current ANDON 145/146 owner verification; exact current live adapter sha256 3a099b84c09443eaa214bafc6f0f3c149cc9e79c69c794ed4e7c048ef1a85d68, unchanged orchestrator sha256 d86aba11c685aacd48002ea5dc4904fa3bf5b49cc61bd82576a5e7112d21eea9, and reviewed-campaign test sha256 6535adfe42e0242430d8f496be2ef6aa5e8176bd40fdc9e52cce4bb01e807fde; full reviewed-campaign suite is 91/91 GREEN including metadata-only secret-free capability, deferred credential acquisition after authority and reservation, immutable directory-witness replacement custody, strict non-finite admission/rederivation, exact mixed-receipt replay, five-way barrier, and zero-dispatch replay",
+          "source_ref": "Task 11dd ANDON 160 owner verification; exact current live adapter sha256 b00bdf384ae9c3476d922eaf803ccf9740d2ad55c0a71247bf102030ac5c906f and reviewed-campaign test sha256 d8a5560abe5cfeab4f3a22ebfa8f8b5012feeed146cc4683bb1233cb6ddec192; full reviewed-campaign suite is 111/111 GREEN including the installed Codex bundled model-catalog command, current structured reasoning-level normalization, exact GPT-5.5/high identity, metadata-only secret-free capability, deferred credential acquisition after authority and reservation, immutable directory-witness replacement custody, strict non-finite admission/rederivation, exact mixed-receipt replay, atomic five-member reservation, concurrent five-way observation, and zero-dispatch replay",
           "commit_sha1": null,
           "blob_sha1": null,
           "sha256": null,

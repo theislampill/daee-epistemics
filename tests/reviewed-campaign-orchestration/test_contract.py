@@ -5081,7 +5081,7 @@ class LiveProducerContractTests(unittest.TestCase):
             self.assertEqual(
                 [
                     [str(executable), "--version"],
-                    [str(executable), "debug", "models", "--json"],
+                    [str(executable), "debug", "models", "--bundled"],
                     [str(executable), "exec", "--help"],
                 ],
                 [call.args[0] for call in owned.call_args_list],
@@ -5091,6 +5091,44 @@ class LiveProducerContractTests(unittest.TestCase):
             )
             self.assertEqual("gpt-5.5", probe["catalog_row"]["slug"])
             self.assertIs(probe["credential_carrier_available"], True)
+
+    def test_capability_probe_normalizes_current_structured_reasoning_levels(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        help_text = """Usage: codex exec [OPTIONS] [PROMPT]\n\nOptions:\n  -c, --config <key=value>  Override configuration\n      --json                Emit JSONL\n      --ephemeral           Use ephemeral state\n      --ignore-user-config  Ignore user config\n      --ignore-rules        Ignore rules\n  -C, --cd <DIR>            Set working directory\n  -s, --sandbox <MODE>      Select sandbox\n  -m, --model <MODEL>       Select model\n      --output-last-message <FILE>  Retain final message\n  -h, --help                Print help\n"""
+        with tempfile.TemporaryDirectory(prefix="daee-live-current-catalog-") as temp:
+            executable = Path(temp) / "codex.exe"
+            executable.write_bytes(b"local no-network capability fixture\n")
+            host = live_adapter.SubprocessCodexHost()
+            current_catalog = {
+                "models": [
+                    {
+                        "slug": "gpt-5.5",
+                        "supported_reasoning_levels": [
+                            {"description": "Fast responses", "effort": "low"},
+                            {"description": "Greater reasoning depth", "effort": "high"},
+                        ],
+                    }
+                ]
+            }
+            with mock.patch.object(
+                host,
+                "_run_probe_command",
+                side_effect=[
+                    subprocess.CompletedProcess([], 0, "codex-cli 0.130.0-alpha.5\n", ""),
+                    subprocess.CompletedProcess([], 0, json.dumps(current_catalog), ""),
+                    subprocess.CompletedProcess([], 0, help_text, ""),
+                ],
+            ):
+                try:
+                    probe = host.probe(executable, credential_carrier_available=True)
+                except RuntimeError as exc:
+                    self.fail(f"current structured model catalog was rejected: {exc}")
+
+            self.assertEqual(
+                {"slug": "gpt-5.5", "supported_reasoning_efforts": ["low", "high"]},
+                probe["catalog_row"],
+            )
 
     def test_live_capability_reads_no_environment_credential_value_and_retains_none(self) -> None:
         import codex_live_producer_adapter as live_adapter
