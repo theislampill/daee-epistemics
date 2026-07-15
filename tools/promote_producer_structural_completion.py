@@ -576,7 +576,7 @@ def create_producer_structural_completion(
         handle.flush()
         os.fsync(handle.fileno())
         created_stat = os.fstat(handle.fileno())
-        owned_identity = (created_stat.st_dev, created_stat.st_ino)
+        owned_identity = (created_stat.st_dev, created_stat.st_ino, created_stat.st_ctime_ns)
     try:
         if target.read_bytes() != raw:
             raise StructuralCompletionError("producer structural completion readback mismatch")
@@ -591,7 +591,7 @@ def create_producer_structural_completion(
             if not target.exists():
                 raise
             target_stat = target.lstat()
-            target_identity = (target_stat.st_dev, target_stat.st_ino)
+            target_identity = (target_stat.st_dev, target_stat.st_ino, target_stat.st_ctime_ns)
             if (
                 _is_reparse(target)
                 or not stat.S_ISREG(target_stat.st_mode)
