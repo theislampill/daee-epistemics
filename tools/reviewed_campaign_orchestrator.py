@@ -145,6 +145,14 @@ class CampaignError(RuntimeError):
     """A deterministic orchestration contract rejection."""
 
 
+class _AttemptClaimSetError(CampaignError):
+    """A consumed attempt claim-set that must terminalize without dispatch."""
+
+    def __init__(self, message: str, claims: dict[str, Any]) -> None:
+        super().__init__(message)
+        self.claims = claims
+
+
 class ProviderAdapter(Protocol):
     def capability(self) -> dict[str, object]: ...
     def submit(self, execution_custody: dict[str, object]) -> dict[str, object]: ...
@@ -335,6 +343,75 @@ def _attempt_finalizer_path(lane: str, attempt_index: int) -> str:
     return f"{lane}/retry-finalizers/attempt-{attempt_index:02d}.json"
 
 
+def _attempt_claim_set_path(lane: str, attempt_index: int, authorization_sha256: str) -> str:
+    return (
+        f"claims/attempt-claim-sets/{lane}-attempt-{attempt_index:02d}-"
+        f"{authorization_sha256}.json"
+    )
+
+
+def _claim_projection(role: str, path: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "role": role,
+        "path": path,
+        "payload_sha256": record_sha256(payload),
+        "payload": payload,
+    }
+
+
+def _recover_claim_projections(
+    root: Path,
+    projections: list[dict[str, Any]],
+    refs: dict[str, dict[str, object] | list[dict[str, object]] | None],
+) -> list[dict[str, object]]:
+    ref_keys = {
+        "authorization": "authorization_claim",
+        "candidate": "candidate_claim",
+        "retry_continuation": "continuation_claim",
+    }
+    states: list[dict[str, object]] = []
+    for projection in projections:
+        role = projection["role"]
+        ref_key = ref_keys[role]
+        observed: dict[str, object] | None = None
+        status = "MISSING"
+        try:
+            observed = _publish_or_adopt_exact_json(
+                root,
+                projection["path"],
+                projection["payload"],
+                f"{role}_claim_projection_recovery",
+            )
+            refs[ref_key] = observed
+            status = "EXACT"
+        except Exception:
+            refs[ref_key] = None
+            path = _contained(
+                root,
+                projection["path"],
+                f"{role}_claim_projection_observation",
+                must_exist=False,
+            )
+            if path.exists():
+                status = "COLLISION"
+                if path.is_file():
+                    observed = _existing_ref(
+                        root,
+                        projection["path"],
+                        f"{role}_claim_projection_collision",
+                    )
+        states.append(
+            {
+                "role": role,
+                "path": projection["path"],
+                "expected_payload_sha256": projection["payload_sha256"],
+                "status": status,
+                "observed": observed,
+            }
+        )
+    return states
+
+
 def _consume_attempt_claims(
     root: Path,
     auth: dict[str, Any],
@@ -345,26 +422,39 @@ def _consume_attempt_claims(
     authorization_claim: dict[str, Any],
 ) -> dict[str, Any]:
     auth_claim_path = auth["authorization_claim_path"]
-    if _contained(root, auth_claim_path, f"{lane}_authorization_claim", must_exist=False).exists():
-        raise CampaignError(f"CREATE_ONCE_{lane.upper().replace('-', '_')}_AUTHORIZATION_CLAIM: destination already exists")
     retry = bindings["retry"]
-    continuation_claim_ref = None
-    candidate_claim_ref = None
     candidate_claim_path = auth.get("candidate_claim_path") if lane == "producer" else "claims/candidate.json"
+    continuation_claim: dict[str, Any] | None = None
+    candidate_claim: dict[str, Any] | None = None
+    candidate_claim_ref: dict[str, object] | None = None
     if retry["attempt_index"] == 1:
-        if lane == "producer" and _contained(root, candidate_claim_path, "candidate_claim", must_exist=False).exists():
-            raise CampaignError("CANDIDATE_ALREADY_CLAIMED")
+        if lane == "producer":
+            candidate_claim = {
+                "schema": "reviewed-campaign-candidate-claim-v1",
+                "candidate_id": auth["candidate_id"],
+                "candidate_maturity_sha256": bindings["candidate_sha256"],
+                "authorization_sha256": auth_sha,
+                "cycle_id": auth["cycle_or_review_batch_id"],
+                "state_before": "READY_UNUSED",
+                "irreversible": True,
+            }
+        else:
+            candidate_claim_ref = _existing_ref(root, candidate_claim_path, "candidate_claim")
     else:
         continuation = retry["continuation"]
         assert isinstance(continuation, dict)
         try:
             candidate_claim_ref = _existing_ref(root, candidate_claim_path, "candidate_claim")
-            candidate_claim, candidate_path, candidate_claim_sha = _load_ref(root, candidate_claim_ref, "candidate_claim")
+            retained_candidate_claim, candidate_path, candidate_claim_sha = _load_ref(
+                root,
+                candidate_claim_ref,
+                "candidate_claim",
+            )
             prior_finalizer, finalizer_path, finalizer_sha = _load_ref(root, continuation["prior_finalizer"], "retry_prior_finalizer_recheck")
         except CampaignError as exc:
             raise CampaignError(f"RETRY_CONTINUATION_CANDIDATE_CLAIM_UNAVAILABLE: {exc}") from exc
         expected_candidate_status = "CONSUMED_NO_DISPATCH" if lane == "producer" else "CONSUMED_OBSERVED"
-        if candidate_claim.get("schema") != "reviewed-campaign-candidate-claim-v1" or candidate_claim.get("candidate_id") != auth["candidate_id"] or candidate_claim.get("candidate_maturity_sha256") != bindings["candidate_sha256"] or candidate_claim.get("irreversible") is not True:
+        if retained_candidate_claim.get("schema") != "reviewed-campaign-candidate-claim-v1" or retained_candidate_claim.get("candidate_id") != auth["candidate_id"] or retained_candidate_claim.get("candidate_maturity_sha256") != bindings["candidate_sha256"] or retained_candidate_claim.get("irreversible") is not True:
             raise CampaignError("RETRY_CONTINUATION_CANDIDATE_CLAIM_BINDING")
         if finalizer_sha != retry["finalizer_sha256"] or prior_finalizer.get("schema") != "reviewed-campaign-observation-finalizer-v1" or prior_finalizer.get("candidate_id") != auth["candidate_id"] or prior_finalizer.get("lane") != lane or prior_finalizer.get("cycle_or_review_batch_id") != continuation["prior_batch_id"] or prior_finalizer.get("attempt_index") != continuation["prior_attempt_index"] or prior_finalizer.get("candidate_status") != expected_candidate_status or prior_finalizer.get("candidate_claim") != candidate_claim_ref:
             raise CampaignError("RETRY_CONTINUATION_CANDIDATE_CLAIM_FINALIZER_BINDING")
@@ -387,26 +477,117 @@ def _consume_attempt_claims(
             "status": "CONSUMED",
             "one_use": True,
         }
-        continuation_claim_ref = _publish_once_json(root, continuation["claim_path"], continuation_claim, "retry_continuation_claim")
-    authorization_claim_ref = _publish_once_json(root, auth_claim_path, authorization_claim, f"{lane}_authorization_claim")
-    if lane == "producer" and retry["attempt_index"] == 1:
-        candidate_claim = {
-            "schema": "reviewed-campaign-candidate-claim-v1",
-            "candidate_id": auth["candidate_id"],
-            "candidate_maturity_sha256": bindings["candidate_sha256"],
-            "authorization_sha256": auth_sha,
-            "cycle_id": auth["cycle_or_review_batch_id"],
-            "state_before": "READY_UNUSED",
-            "irreversible": True,
-        }
-        candidate_claim_ref = _publish_once_json(root, candidate_claim_path, candidate_claim, "candidate_claim")
-    elif candidate_claim_ref is None and _contained(root, candidate_claim_path, "candidate_claim", must_exist=False).is_file():
-        candidate_claim_ref = _existing_ref(root, candidate_claim_path, "candidate_claim")
-    return {
-        "authorization_claim": authorization_claim_ref,
-        "candidate_claim": candidate_claim_ref,
-        "continuation_claim": continuation_claim_ref,
+    projections: list[dict[str, Any]] = []
+    if continuation_claim is not None:
+        projections.append(
+            _claim_projection(
+                "retry_continuation",
+                retry["continuation"]["claim_path"],
+                continuation_claim,
+            )
+        )
+    projections.append(_claim_projection("authorization", auth_claim_path, authorization_claim))
+    if candidate_claim is not None:
+        projections.append(_claim_projection("candidate", candidate_claim_path, candidate_claim))
+
+    attempt_index = retry["attempt_index"]
+    claim_set = {
+        "schema": "reviewed-campaign-attempt-claim-set-v1",
+        "lane": lane,
+        "attempt_index": attempt_index,
+        "candidate_id": auth["candidate_id"],
+        "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
+        "authorization_sha256": auth_sha,
+        "claim_projections": projections,
+        "retained_candidate_claim": candidate_claim_ref,
+        "status": "CONSUMED",
+        "one_use": True,
     }
+    claim_set_relative = _attempt_claim_set_path(lane, attempt_index, auth_sha)
+    claim_set_path = _contained(root, claim_set_relative, "attempt_claim_set", must_exist=False)
+    recovering = claim_set_path.exists()
+    if recovering:
+        retained_set, retained_raw = _load_canonical_json(claim_set_path, "attempt_claim_set")
+        if retained_set != claim_set or retained_raw != canonical_bytes(claim_set):
+            raise CampaignError("ATTEMPT_CLAIM_SET_SUBSTITUTION")
+        claim_set_ref = _existing_ref(root, claim_set_relative, "attempt_claim_set")
+    else:
+        for projection in projections:
+            projection_path = _contained(
+                root,
+                projection["path"],
+                f"{projection['role']}_claim_projection",
+                must_exist=False,
+            )
+            if projection_path.exists():
+                if projection["role"] == "authorization":
+                    raise CampaignError(
+                        f"CREATE_ONCE_{lane.upper().replace('-', '_')}_AUTHORIZATION_CLAIM: "
+                        "destination already exists"
+                    )
+                if projection["role"] == "candidate":
+                    raise CampaignError("CANDIDATE_ALREADY_CLAIMED")
+                raise CampaignError("CREATE_ONCE_RETRY_CONTINUATION_CLAIM: destination already exists")
+        claim_set_ref = _publish_once_json(
+            root,
+            claim_set_relative,
+            claim_set,
+            "attempt_claim_set",
+        )
+
+    refs: dict[str, dict[str, object] | list[dict[str, object]] | None] = {
+        "authorization_claim": None,
+        "candidate_claim": candidate_claim_ref,
+        "continuation_claim": None,
+        "attempt_claim_set": claim_set_ref,
+    }
+    projection_ref_keys = {
+        "authorization": "authorization_claim",
+        "candidate": "candidate_claim",
+        "retry_continuation": "continuation_claim",
+    }
+
+    if recovering:
+        states = _recover_claim_projections(root, projections, refs)
+        if any(state["status"] != "EXACT" for state in states):
+            refs["claim_projection_states"] = states
+            raise _AttemptClaimSetError(
+                "ATTEMPT_CLAIM_PROJECTION_INCOMPLETE: exact claim set has non-exact projections",
+                refs,
+            )
+        raise _AttemptClaimSetError(
+            "ATTEMPT_CLAIM_SET_RECOVERY: exact claim set terminalized",
+            refs,
+        )
+
+    try:
+        for projection in projections:
+            refs[projection_ref_keys[projection["role"]]] = _publish_once_json(
+                root,
+                projection["path"],
+                projection["payload"],
+                (
+                    f"{lane}_authorization_claim"
+                    if projection["role"] == "authorization"
+                    else "candidate_claim"
+                    if projection["role"] == "candidate"
+                    else "retry_continuation_claim"
+                ),
+            )
+    except Exception as exc:
+        states = _recover_claim_projections(root, projections, refs)
+        if any(state["status"] != "EXACT" for state in states):
+            refs["claim_projection_states"] = states
+            raise _AttemptClaimSetError(
+                f"ATTEMPT_CLAIM_PROJECTION_INCOMPLETE: {type(exc).__name__}: {exc}",
+                refs,
+            ) from exc
+        raise _AttemptClaimSetError(
+            f"ATTEMPT_CLAIM_PROJECTION_FAILURE: {type(exc).__name__}: {exc}",
+            refs,
+        ) from exc
+
+    return refs
 
 
 def _terminal_publication_paths(lane: str, auth: dict[str, Any], attempt_index: int) -> tuple[str, str]:
@@ -684,6 +865,170 @@ def _validate_retained_json_ref(
     return record
 
 
+def _validate_attempt_claim_set(
+    root: Path,
+    payload: dict[str, Any],
+    auth: dict[str, Any],
+    auth_sha: str,
+    *,
+    lane: str,
+    attempt_index: int,
+) -> dict[str, str] | None:
+    claim_set_ref = payload.get("attempt_claim_set")
+    if claim_set_ref is None:
+        # Historical v1 finalizers predate atomic attempt claim sets.
+        if payload.get("claim_projection_states") is not None:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLAIM_PROJECTION_STATES_WITHOUT_SET")
+        return None
+    expected_path = _attempt_claim_set_path(lane, attempt_index, auth_sha)
+    claim_set = _validate_retained_json_ref(
+        root,
+        claim_set_ref,
+        expected_path,
+        "attempt_claim_set",
+    )
+    required = {
+        "schema",
+        "lane",
+        "attempt_index",
+        "candidate_id",
+        "cycle_or_review_batch_id",
+        "authorization_sha256",
+        "claim_projections",
+        "retained_candidate_claim",
+        "status",
+        "one_use",
+    }
+    expected = {
+        "schema": "reviewed-campaign-attempt-claim-set-v1",
+        "lane": lane,
+        "attempt_index": attempt_index,
+        "candidate_id": auth["candidate_id"],
+        "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
+        "authorization_sha256": auth_sha,
+        "status": "CONSUMED",
+        "one_use": True,
+    }
+    if set(claim_set) != required or any(
+        claim_set.get(key) != value for key, value in expected.items()
+    ):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_ATTEMPT_CLAIM_SET_BINDING")
+    expected_roles = (
+        ["retry_continuation", "authorization"]
+        if attempt_index > 1
+        else ["authorization", "candidate"]
+        if lane == "producer"
+        else ["authorization"]
+    )
+    projections = claim_set.get("claim_projections")
+    if (
+        not isinstance(projections, list)
+        or [row.get("role") for row in projections if isinstance(row, dict)] != expected_roles
+        or len(projections) != len(expected_roles)
+    ):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_ATTEMPT_CLAIM_SET_PROJECTIONS")
+    ref_fields = {
+        "authorization": "authorization_claim",
+        "candidate": "candidate_claim",
+        "retry_continuation": "continuation_claim",
+    }
+    explicit_states = payload.get("claim_projection_states")
+    if explicit_states is not None and (
+        not isinstance(explicit_states, list)
+        or len(explicit_states) != len(projections)
+    ):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLAIM_PROJECTION_STATES")
+    observed_statuses: dict[str, str] = {}
+    for index, projection in enumerate(projections):
+        if not isinstance(projection, dict) or set(projection) != {
+            "role",
+            "path",
+            "payload_sha256",
+            "payload",
+        }:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_ATTEMPT_CLAIM_SET_PROJECTIONS")
+        role = projection["role"]
+        retained_ref = payload.get(ref_fields[role])
+        state = None if explicit_states is None else explicit_states[index]
+        if state is None:
+            status = "EXACT"
+            observed_ref = retained_ref
+        else:
+            if not isinstance(state, dict) or set(state) != {
+                "role",
+                "path",
+                "expected_payload_sha256",
+                "status",
+                "observed",
+            }:
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLAIM_PROJECTION_STATES")
+            if (
+                state.get("role") != role
+                or state.get("path") != projection["path"]
+                or state.get("expected_payload_sha256") != projection["payload_sha256"]
+                or state.get("status") not in {"EXACT", "COLLISION", "MISSING"}
+            ):
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLAIM_PROJECTION_STATES")
+            status = state["status"]
+            observed_ref = state["observed"]
+
+        if status == "EXACT":
+            if retained_ref != observed_ref:
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLAIM_PROJECTION_EXACT_REF")
+            retained = _validate_retained_json_ref(
+                root,
+                retained_ref,
+                projection["path"],
+                f"attempt_claim_set_{role}_projection",
+            )
+            if (
+                retained != projection["payload"]
+                or projection["payload_sha256"] != record_sha256(retained)
+            ):
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_ATTEMPT_CLAIM_SET_PROJECTIONS")
+        elif status == "COLLISION":
+            if retained_ref is not None:
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLAIM_PROJECTION_COLLISION_REF")
+            path = _contained(
+                root,
+                projection["path"],
+                f"attempt_claim_set_{role}_projection_collision",
+                must_exist=False,
+            )
+            if not path.exists():
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLAIM_PROJECTION_COLLISION_MISSING")
+            if path.is_file():
+                expected_observed = _existing_ref(
+                    root,
+                    projection["path"],
+                    f"attempt_claim_set_{role}_projection_collision",
+                )
+                if observed_ref != expected_observed or path.read_bytes() == canonical_bytes(projection["payload"]):
+                    raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLAIM_PROJECTION_COLLISION_BINDING")
+            elif observed_ref is not None:
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLAIM_PROJECTION_COLLISION_KIND")
+        else:
+            if retained_ref is not None or observed_ref is not None:
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLAIM_PROJECTION_MISSING_REF")
+            path = _contained(
+                root,
+                projection["path"],
+                f"attempt_claim_set_{role}_projection_missing",
+                must_exist=False,
+            )
+            if path.exists():
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLAIM_PROJECTION_MISSING_COLLISION")
+        observed_statuses[role] = status
+    if explicit_states is not None and all(status == "EXACT" for status in observed_statuses.values()):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLAIM_PROJECTION_STATES_REDUNDANT")
+    expected_retained_candidate = (
+        None if "candidate" in expected_roles else payload.get("candidate_claim")
+    )
+    if claim_set.get("retained_candidate_claim") != expected_retained_candidate:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_ATTEMPT_CLAIM_SET_CANDIDATE")
+    return observed_statuses
+
+
 def _validate_failure_claims(
     root: Path,
     payload: dict[str, Any],
@@ -694,12 +1039,33 @@ def _validate_failure_claims(
     lane: str,
     attempt_index: int,
 ) -> None:
-    auth_claim = _validate_retained_json_ref(
+    projection_states = _validate_attempt_claim_set(
         root,
-        payload.get("authorization_claim"),
-        auth["authorization_claim_path"],
-        f"{lane}_resume_authorization_claim",
+        payload,
+        auth,
+        auth_sha,
+        lane=lane,
+        attempt_index=attempt_index,
     )
+
+    def projection_incomplete(role: str) -> bool:
+        return (
+            projection_states is not None
+            and role in projection_states
+            and projection_states[role] != "EXACT"
+        )
+
+    auth_claim = None
+    if projection_incomplete("authorization"):
+        if payload.get("authorization_claim") is not None:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_AUTHORIZATION_CLAIM_COLLISION_REF")
+    else:
+        auth_claim = _validate_retained_json_ref(
+            root,
+            payload.get("authorization_claim"),
+            auth["authorization_claim_path"],
+            f"{lane}_resume_authorization_claim",
+        )
     expected_auth_claim = {
         "schema": "reviewed-campaign-authorization-claim-v1",
         "kind": "producer-cohort" if lane == "producer" else "cold-review-cohort",
@@ -718,16 +1084,21 @@ def _validate_failure_claims(
                 "assessment_claim_sha256": auth["assessment_claim"]["sha256"],
             }
         )
-    if auth_claim != expected_auth_claim:
+    if auth_claim is not None and auth_claim != expected_auth_claim:
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_AUTHORIZATION_CLAIM_BINDING")
 
     candidate_path = auth.get("candidate_claim_path") if lane == "producer" else "claims/candidate.json"
-    candidate_claim = _validate_retained_json_ref(
-        root,
-        payload.get("candidate_claim"),
-        candidate_path,
-        "resume_candidate_claim",
-    )
+    candidate_claim = None
+    if projection_incomplete("candidate"):
+        if payload.get("candidate_claim") is not None:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CANDIDATE_CLAIM_COLLISION_REF")
+    else:
+        candidate_claim = _validate_retained_json_ref(
+            root,
+            payload.get("candidate_claim"),
+            candidate_path,
+            "resume_candidate_claim",
+        )
     candidate_common = {
         "schema": "reviewed-campaign-candidate-claim-v1",
         "candidate_id": auth["candidate_id"],
@@ -735,15 +1106,16 @@ def _validate_failure_claims(
         "state_before": "READY_UNUSED",
         "irreversible": True,
     }
-    if any(candidate_claim.get(key) != expected for key, expected in candidate_common.items()):
-        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CANDIDATE_CLAIM_BINDING")
-    if set(candidate_claim) != {*candidate_common, "authorization_sha256", "cycle_id"}:
-        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CANDIDATE_CLAIM_SHAPE")
-    if attempt_index == 1 and lane == "producer":
-        if candidate_claim.get("authorization_sha256") != auth_sha or candidate_claim.get("cycle_id") != auth["cycle_or_review_batch_id"]:
-            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CANDIDATE_CLAIM_AUTHORIZATION")
-    elif not isinstance(candidate_claim.get("authorization_sha256"), str) or SHA256_RE.fullmatch(candidate_claim["authorization_sha256"]) is None or not isinstance(candidate_claim.get("cycle_id"), str) or not candidate_claim["cycle_id"]:
-        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CANDIDATE_CLAIM_LINEAGE")
+    if candidate_claim is not None:
+        if any(candidate_claim.get(key) != expected for key, expected in candidate_common.items()):
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CANDIDATE_CLAIM_BINDING")
+        if set(candidate_claim) != {*candidate_common, "authorization_sha256", "cycle_id"}:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CANDIDATE_CLAIM_SHAPE")
+        if attempt_index == 1 and lane == "producer":
+            if candidate_claim.get("authorization_sha256") != auth_sha or candidate_claim.get("cycle_id") != auth["cycle_or_review_batch_id"]:
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CANDIDATE_CLAIM_AUTHORIZATION")
+        elif not isinstance(candidate_claim.get("authorization_sha256"), str) or SHA256_RE.fullmatch(candidate_claim["authorization_sha256"]) is None or not isinstance(candidate_claim.get("cycle_id"), str) or not candidate_claim["cycle_id"]:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CANDIDATE_CLAIM_LINEAGE")
 
     retry = bindings["retry"]
     if attempt_index == 1:
@@ -753,12 +1125,17 @@ def _validate_failure_claims(
     continuation = retry.get("continuation")
     if not isinstance(continuation, dict):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CONTINUATION_AUTHORIZATION")
-    continuation_claim = _validate_retained_json_ref(
-        root,
-        payload.get("continuation_claim"),
-        continuation["claim_path"],
-        "resume_continuation_claim",
-    )
+    continuation_claim = None
+    if projection_incomplete("retry_continuation"):
+        if payload.get("continuation_claim") is not None:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CONTINUATION_CLAIM_COLLISION_REF")
+    else:
+        continuation_claim = _validate_retained_json_ref(
+            root,
+            payload.get("continuation_claim"),
+            continuation["claim_path"],
+            "resume_continuation_claim",
+        )
     expected_continuation_claim = {
         "schema": "reviewed-campaign-retry-continuation-claim-v1",
         "authorization_id": continuation["authorization_id"],
@@ -772,7 +1149,7 @@ def _validate_failure_claims(
         "status": "CONSUMED",
         "one_use": True,
     }
-    if continuation_claim != expected_continuation_claim:
+    if continuation_claim is not None and continuation_claim != expected_continuation_claim:
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CONTINUATION_CLAIM_BINDING")
 
 
@@ -1078,10 +1455,16 @@ def _rederive_live_provider_facts(
         capture.get("raw_output"),
         f"producer_raw_output_{index}",
     )
+    projection_failed = result.get("projection_status") == "FAILED"
+    expected_result_path = (
+        capture.get("raw_output", {}).get("path")
+        if projection_failed and isinstance(capture.get("raw_output"), dict)
+        else f"producer/results/{case_id}.txt"
+    )
     _result_path, result_output = _validate_retained_ref(
         root,
         result.get("output"),
-        f"producer/results/{case_id}.txt",
+        expected_result_path,
         f"producer_resume_result_{index}",
     )
     try:
@@ -1192,12 +1575,14 @@ def _validate_failure_results(
         index = call_index + 1
         if lane == "producer":
             if _producer_capture_mode(auth):
-                expected_fields = {
+                normal_fields = {
                     "case_id", "capture_status", "structural_status", "output",
                     "capture_evidence", "provider_receipt", "provider_receipt_sha256",
                 }
+                failed_projection_fields = {*normal_fields, "projection_status"}
+                projection_failed = row.get("projection_status") == "FAILED"
                 if (
-                    set(row) != expected_fields
+                    set(row) != (failed_projection_fields if projection_failed else normal_fields)
                     or row.get("capture_status") != "CAPTURED"
                     or row.get("structural_status") != "UNVERIFIED"
                 ):
@@ -1230,6 +1615,7 @@ def _validate_failure_results(
                     or not isinstance(row.get("output"), dict)
                     or capture_output.get("sha256") != row["output"].get("sha256")
                     or capture_output.get("byte_count") != row["output"].get("byte_count")
+                    or (projection_failed and capture_output != row["output"])
                 ):
                     raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRODUCER_CAPTURE_OUTPUT")
                 custody, _custody_path, custody_sha = _load_ref(
@@ -1259,14 +1645,18 @@ def _validate_failure_results(
                     or completed_receipt.get("usage_reservation_sha256") != usage_reservation_sha
                 ):
                     raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRODUCER_CUSTODY_BINDING")
-                receipt, receipt_path, receipt_sha = _load_ref(
-                    root,
-                    row.get("provider_receipt"),
-                    f"producer_resume_receipt_{index}",
-                )
-                expected_receipt_path = (
-                    f"{auth['provider_receipt_root']}/{receipt_sha}.receipt.json"
-                )
+                if projection_failed:
+                    if row.get("provider_receipt") is not None:
+                        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESULT_RECEIPT")
+                    receipt = completed_receipt
+                    receipt_path = None
+                    receipt_sha = record_sha256(receipt)
+                else:
+                    receipt, receipt_path, receipt_sha = _load_ref(
+                        root,
+                        row.get("provider_receipt"),
+                        f"producer_resume_receipt_{index}",
+                    )
                 _rederive_live_provider_facts(
                     root,
                     capture,
@@ -1277,17 +1667,26 @@ def _validate_failure_results(
                     index=index,
                 )
                 if (
-                    receipt_path.relative_to(Path(os.path.abspath(root))).as_posix()
-                    != expected_receipt_path
-                    or receipt != completed_receipt
+                    receipt != completed_receipt
                     or row.get("provider_receipt_sha256") != receipt_sha
                     or capture.get("completion_identity", {}).get("provider_call_id")
                     != receipt.get("provider_call_id")
                 ):
                     raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESULT_RECEIPT")
+                if not projection_failed:
+                    expected_receipt_path = (
+                        f"{auth['provider_receipt_root']}/{receipt_sha}.receipt.json"
+                    )
+                    if (
+                        receipt_path is None
+                        or receipt_path.relative_to(Path(os.path.abspath(root))).as_posix()
+                        != expected_receipt_path
+                    ):
+                        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESULT_RECEIPT")
             elif set(row) != {"case_id", "structural_status", "output", "provider_receipt_sha256"} or row.get("structural_status") != "PASS":
                 raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRODUCER_RESULT_STATE")
-            _validate_retained_ref(root, row.get("output"), f"producer/results/{case_id}.txt", f"producer_resume_result_{index}")
+            if not (_producer_capture_mode(auth) and row.get("projection_status") == "FAILED"):
+                _validate_retained_ref(root, row.get("output"), f"producer/results/{case_id}.txt", f"producer_resume_result_{index}")
         else:
             if set(row) != {"case_id", "review_status", "packet_manifest_sha256", "review_output", "provider_receipt_sha256"} or row.get("review_status") != "PASS":
                 raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_COLD_RESULT_STATE")
@@ -1297,6 +1696,35 @@ def _validate_failure_results(
         if row.get("provider_receipt_sha256") != record_sha256(completed_receipt):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESULT_RECEIPT")
     return results
+
+
+_FAILURE_PHASE_CLASSIFICATIONS = {
+    "reservation": frozenset({"PROVED_NO_DISPATCH"}),
+    "pre-dispatch": frozenset({"PROVED_NO_DISPATCH"}),
+    "provider-execution": frozenset({"DISPATCH_UNKNOWN", "OUTCOME_UNKNOWN"}),
+    "result-publication": frozenset({"DISPATCH_UNKNOWN", "OUTCOME_UNKNOWN", "OBSERVED"}),
+    "provider-receipt-publication": frozenset(
+        {"DISPATCH_UNKNOWN", "OUTCOME_UNKNOWN", "OBSERVED"}
+    ),
+    "observation-validation": frozenset({"OBSERVED"}),
+    "after-observation-validation": frozenset({"OBSERVED"}),
+    "settlement": frozenset({"OBSERVED"}),
+    "after-settlement": frozenset({"OBSERVED"}),
+    "completion-publication": frozenset({"OBSERVED"}),
+    "after-completion": frozenset({"OBSERVED"}),
+    "finalizer-publication": frozenset({"OBSERVED"}),
+}
+
+
+def _terminal_failure_class(phase: object, classification: object) -> str | None:
+    allowed = _FAILURE_PHASE_CLASSIFICATIONS.get(phase)
+    if allowed is None or classification not in allowed:
+        return None
+    return (
+        "post-observation-terminal-failure"
+        if classification == "OBSERVED"
+        else "reservation-or-provider-failure"
+    )
 
 
 def _validate_failure_resume_payload(
@@ -1330,21 +1758,9 @@ def _validate_failure_resume_payload(
 
     phase = payload.get("failure_phase")
     classification = payload.get("dispatch_classification")
-    phase_classes = {
-        "reservation": {"PROVED_NO_DISPATCH"},
-        "pre-dispatch": {"PROVED_NO_DISPATCH"},
-        "provider-execution": {"DISPATCH_UNKNOWN", "OUTCOME_UNKNOWN"},
-        "observation-validation": {"OBSERVED"},
-        "after-observation-validation": {"OBSERVED"},
-        "settlement": {"OBSERVED"},
-        "after-settlement": {"OBSERVED"},
-        "completion-publication": {"OBSERVED"},
-        "after-completion": {"OBSERVED"},
-        "finalizer-publication": {"OBSERVED"},
-    }
-    if phase not in phase_classes or classification not in phase_classes[phase]:
+    expected_failure_class = _terminal_failure_class(phase, classification)
+    if expected_failure_class is None:
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PHASE_CLASSIFICATION")
-    expected_failure_class = "post-observation-terminal-failure" if classification == "OBSERVED" else "reservation-or-provider-failure"
     if incident.get("failure_class") != expected_failure_class:
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_FAILURE_CLASS")
     expected_candidate = (
@@ -1428,7 +1844,11 @@ def _validate_failure_resume_payload(
     elif completion_ref is not None:
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_COMPLETION_PHASE")
 
-    expected_resumable = classification == "PROVED_NO_DISPATCH" and not snapshot.get("unresolved_usage")
+    expected_resumable = (
+        classification == "PROVED_NO_DISPATCH"
+        and not snapshot.get("unresolved_usage")
+        and (lane != "producer" or payload.get("candidate_claim") is not None)
+    )
     if payload.get("resumable_retry") is not expected_resumable or payload.get("usage_unresolved") is not snapshot.get("unresolved_usage"):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RETRY_USAGE_STATE")
 
@@ -1540,6 +1960,9 @@ def _publish_failure_finalizer(
     interrupt_after_incident: bool = False,
 ) -> dict[str, Any]:
     snapshot = head_snapshot(usage_root)
+    failure_class = _terminal_failure_class(failure_phase, dispatch_classification)
+    if failure_class is None:
+        raise CampaignError("FAILURE_FINALIZER_PHASE_CLASSIFICATION")
     producer_usage_reservation_sha256s: list[str] | None = None
     if lane == "producer" and isinstance(reservation_sha256, str):
         reservation_path = usage_root / "transactions" / f"{reservation_sha256}.json"
@@ -1564,9 +1987,15 @@ def _publish_failure_finalizer(
         "candidate_id": auth["candidate_id"],
         "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
         "authorization_sha256": auth_sha,
+        "attempt_claim_set": claims.get("attempt_claim_set"),
         "authorization_claim": claims.get("authorization_claim"),
         "candidate_claim": claims.get("candidate_claim"),
         "continuation_claim": claims.get("continuation_claim"),
+        **(
+            {"claim_projection_states": claims["claim_projection_states"]}
+            if claims.get("claim_projection_states") is not None
+            else {}
+        ),
         "packet_disclosure": packet_disclosure,
         "failure_phase": failure_phase,
         "observed_results": observed_results or [],
@@ -1594,16 +2023,7 @@ def _publish_failure_finalizer(
         "candidate_id": auth["candidate_id"],
         "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
         "authorization_sha256": auth_sha,
-        "failure_class": (
-            "post-observation-terminal-failure"
-            if failure_phase in TERMINAL_PHASE_FAULTS or failure_phase in {
-                "observation-validation",
-                "settlement",
-                "completion-publication",
-                "finalizer-publication",
-            }
-            else "reservation-or-provider-failure"
-        ),
+        "failure_class": failure_class,
         "failure_phase": failure_phase,
         "error_type": type(error).__name__,
         "dispatch_classification": dispatch_classification,
@@ -1675,7 +2095,11 @@ def _finalize_no_dispatch_failure(
                 authorization_sha256=auth_sha,
             )
     snapshot = head_snapshot(usage_root)
-    resumable = not snapshot["open_reservations"] and not snapshot["unresolved_usage"]
+    resumable = (
+        not snapshot["open_reservations"]
+        and not snapshot["unresolved_usage"]
+        and (lane != "producer" or claims.get("candidate_claim") is not None)
+    )
     return _publish_failure_finalizer(
         root,
         usage_root,
@@ -2028,7 +2452,12 @@ def validate_retry_lineage(
     attempt = value.get("attempt_index")
     continuation = value.get("continuation_authorization")
     if isinstance(attempt, int) and not isinstance(attempt, bool) and attempt == 1 and continuation is None:
-        return {"attempt_index": 1, "continuation": None, "continuation_sha256": None}
+        return {
+            "attempt_index": 1,
+            "continuation": None,
+            "continuation_sha256": None,
+            "claim_set_recovery": False,
+        }
     if not isinstance(attempt, int) or isinstance(attempt, bool) or attempt < 2:
         raise CampaignError("RETRY_LINEAGE_INDEX")
     if not isinstance(continuation, dict):
@@ -2105,8 +2534,82 @@ def validate_retry_lineage(
     if authorization.get("claim_path") != expected_claim_path:
         raise CampaignError("RETRY_CONTINUATION_CLAIM_PATH")
     claim = _contained(root, expected_claim_path, "retry_continuation_claim", must_exist=False)
+    claim_set_recovery = False
     if claim.exists():
-        raise CampaignError("RETRY_CONTINUATION_REPLAY")
+        current_finalizer = _contained(
+            root,
+            _attempt_finalizer_path(lane, attempt),
+            "retry_current_attempt_finalizer",
+            must_exist=False,
+        )
+        if current_finalizer.exists():
+            raise CampaignError("RETRY_CONTINUATION_REPLAY")
+        current_auth_sha = record_sha256(current_auth)
+        claim_set_path = _contained(
+            root,
+            _attempt_claim_set_path(lane, attempt, current_auth_sha),
+            "retry_attempt_claim_set",
+            must_exist=False,
+        )
+        if not claim_set_path.is_file():
+            raise CampaignError("RETRY_CONTINUATION_REPLAY")
+        try:
+            claim_set, claim_set_raw = _load_canonical_json(
+                claim_set_path,
+                "retry_attempt_claim_set",
+            )
+            retained_claim, retained_claim_raw = _load_canonical_json(
+                claim,
+                "retry_continuation_claim",
+            )
+        except CampaignError as exc:
+            raise CampaignError(f"RETRY_CONTINUATION_CLAIM_SET_RECOVERY_INVALID: {exc}") from exc
+        expected_continuation_claim = {
+            "schema": "reviewed-campaign-retry-continuation-claim-v1",
+            "authorization_id": authorization["authorization_id"],
+            "authorization_sha256": authorization_sha,
+            "candidate_id": current_auth["candidate_id"],
+            "lane": lane,
+            "prior_batch_id": authorization["prior_batch_id"],
+            "next_batch_id": current_auth["cycle_or_review_batch_id"],
+            "next_attempt_index": attempt,
+            "successor_cohort_authorization_sha256": current_auth_sha,
+            "status": "CONSUMED",
+            "one_use": True,
+        }
+        projections = claim_set.get("claim_projections")
+        continuation_projection = (
+            next(
+                (
+                    row
+                    for row in projections
+                    if isinstance(row, dict) and row.get("role") == "retry_continuation"
+                ),
+                None,
+            )
+            if isinstance(projections, list)
+            else None
+        )
+        if (
+            claim_set_raw != canonical_bytes(claim_set)
+            or retained_claim_raw != canonical_bytes(retained_claim)
+            or claim_set.get("schema") != "reviewed-campaign-attempt-claim-set-v1"
+            or claim_set.get("lane") != lane
+            or claim_set.get("attempt_index") != attempt
+            or claim_set.get("candidate_id") != current_auth["candidate_id"]
+            or claim_set.get("cycle_or_review_batch_id") != current_auth["cycle_or_review_batch_id"]
+            or claim_set.get("authorization_sha256") != current_auth_sha
+            or claim_set.get("status") != "CONSUMED"
+            or claim_set.get("one_use") is not True
+            or not isinstance(continuation_projection, dict)
+            or continuation_projection.get("path") != expected_claim_path
+            or continuation_projection.get("payload") != expected_continuation_claim
+            or continuation_projection.get("payload_sha256")
+            != record_sha256(expected_continuation_claim)
+            or retained_claim != expected_continuation_claim
+        ):
+            raise CampaignError("RETRY_CONTINUATION_CLAIM_SET_RECOVERY_INVALID")
+        claim_set_recovery = True
     usage_root = _contained(root, current_auth.get("usage_ledger_root"), "retry_usage_ledger_root", must_exist=False)
     try:
         live_head_sha = head_snapshot(usage_root)["head_sha256"]
@@ -2120,6 +2623,7 @@ def validate_retry_lineage(
         "continuation_sha256": authorization_sha,
         "incident_sha256": incident_sha,
         "finalizer_sha256": finalizer_sha,
+        "claim_set_recovery": claim_set_recovery,
     }
 
 
@@ -2705,27 +3209,70 @@ LIVE_COST_UNAVAILABLE = {
 }
 
 
-def _live_partial_receipts(
+def _live_partial_observations(
     reservation: dict[str, Any],
     attempt_states: object,
     completed_receipts: list[dict[str, object]],
-) -> list[dict[str, object]]:
-    if not isinstance(attempt_states, list) or len(attempt_states) != 5:
+    completed_results: list[dict[str, object]],
+    execution_custodies: list[dict[str, Any]],
+) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
+    if (
+        not isinstance(attempt_states, list)
+        or len(attempt_states) != 5
+        or len(execution_custodies) != 5
+    ):
         raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
     completed_by_id = {row.get("call_id"): row for row in completed_receipts if isinstance(row, dict)}
+    result_by_case = {row.get("case_id"): row for row in completed_results if isinstance(row, dict)}
     rows: list[dict[str, object]] = []
+    results: list[dict[str, object]] = []
     observed_cases: list[str] = []
-    for index, (contract, state_row) in enumerate(zip(reservation["call_contract"], attempt_states), 1):
+    for index, (contract, state_row, execution_custody) in enumerate(
+        zip(reservation["call_contract"], attempt_states, execution_custodies),
+        1,
+    ):
         if not isinstance(state_row, dict) or set(state_row) != {"case_id", "state", "started_at", "ended_at", "host_invocation_id", "result"}:
             raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
         case_id = state_row.get("case_id")
-        if not isinstance(case_id, str) or not case_id:
+        if (
+            not isinstance(case_id, str)
+            or not case_id
+            or contract.get("case_id") != case_id
+            or not isinstance(execution_custody, dict)
+        ):
             raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
         observed_cases.append(case_id)
         call_id = f"{reservation['cycle_or_review_batch_id']}:call-{index:02d}"
-        completed = completed_by_id.get(call_id)
-        if state_row.get("state") == "COMPLETED" and completed is not None:
-            rows.append(completed)
+        if state_row.get("state") == "COMPLETED":
+            retained_result = state_row.get("result")
+            reconstructed = _provider_receipt(
+                reservation,
+                index,
+                retained_result,
+                record_sha256(execution_custody),
+                live=True,
+            )
+            completed = completed_by_id.get(call_id)
+            if completed is not None and completed != reconstructed:
+                raise CampaignError("LIVE_COMPLETED_RECEIPT_RECONSTRUCTION_MISMATCH")
+            receipt = completed or reconstructed
+            rows.append(receipt)
+            projected = result_by_case.get(case_id)
+            if projected is None:
+                assert isinstance(retained_result, dict)
+                projected = {
+                    "case_id": case_id,
+                    "capture_status": "CAPTURED",
+                    "structural_status": "UNVERIFIED",
+                    "projection_status": "FAILED",
+                    "output": copy.deepcopy(retained_result["raw_output"]),
+                    "capture_evidence": copy.deepcopy(retained_result["capture_evidence"]),
+                    "provider_receipt": None,
+                    "provider_receipt_sha256": record_sha256(receipt),
+                }
+            elif projected.get("provider_receipt_sha256") != record_sha256(receipt):
+                raise CampaignError("LIVE_COMPLETED_RESULT_RECEIPT_RECONSTRUCTION_MISMATCH")
+            results.append(projected)
             continue
         common = {
             "call_id": call_id,
@@ -2772,7 +3319,7 @@ def _live_partial_receipts(
             raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
     if len(set(observed_cases)) != 5:
         raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
-    return rows
+    return rows, results
 
 
 def _finalize_provider_failure(
@@ -2792,20 +3339,34 @@ def _finalize_provider_failure(
     observed_results: list[dict[str, object]] | None = None,
     completed_receipts: list[dict[str, object]] | None = None,
     live_attempt_states: object = None,
+    execution_custodies: list[dict[str, Any]] | None = None,
 ) -> None:
     live = _producer_capture_mode(auth)
     if live:
-        receipts = _live_partial_receipts(reservation, live_attempt_states, completed_receipts or [])
+        receipts, retained_results = _live_partial_observations(
+            reservation,
+            live_attempt_states,
+            completed_receipts or [],
+            observed_results or [],
+            execution_custodies or [],
+        )
         completed = sum(row["status"] == "COMPLETED" for row in receipts)
         unknown = sum(row["status"] == "UNKNOWN" for row in receipts)
         not_dispatched = sum(row["status"] == "NOT_DISPATCHED" for row in receipts)
-        positive = any(row["unknown_kind"] == "OUTCOME_UNKNOWN" for row in receipts)
         measured_cost = dict(LIVE_COST_UNAVAILABLE) if completed or unknown else {"unit": "usd", "value": "0"}
+        if completed == 5 and unknown == 0 and not_dispatched == 0:
+            classification = "OBSERVED"
+        elif any(row["unknown_kind"] == "OUTCOME_UNKNOWN" for row in receipts):
+            classification = "OUTCOME_UNKNOWN"
+        else:
+            classification = "DISPATCH_UNKNOWN"
     else:
         positive = len(handles) == 5
         receipts = _unknown_receipts(reservation, positive_dispatch_evidence=positive, handles=handles)
+        retained_results = observed_results or []
         completed, unknown, not_dispatched = 0, 5, 0
         measured_cost = {"unit": "usd", "value": "unknown"}
+        classification = "OUTCOME_UNKNOWN" if positive else "DISPATCH_UNKNOWN"
     terminal = settle(
         usage_root,
         reservation["transaction_sha256"],
@@ -2828,14 +3389,18 @@ def _finalize_provider_failure(
         attempt_index=attempt_index,
         claims=claims,
         packet_disclosure=packet_disclosure,
-        dispatch_classification="OUTCOME_UNKNOWN" if positive else "DISPATCH_UNKNOWN",
-        candidate_status="CONSUMED_DISPATCH_UNKNOWN" if lane == "producer" else "CONSUMED_OBSERVED",
+        dispatch_classification=classification,
+        candidate_status=(
+            "CONSUMED_OBSERVED"
+            if lane != "producer" or classification == "OBSERVED"
+            else "CONSUMED_DISPATCH_UNKNOWN"
+        ),
         reservation_sha256=reservation["transaction_sha256"],
         settlement_sha256=terminal["transaction_sha256"],
         error=error,
         resumable_retry=False,
         failure_phase=failure_phase,
-        observed_results=observed_results,
+        observed_results=retained_results,
     )
 
 
@@ -3051,7 +3616,39 @@ def run_producer_cohort(
             allow_test_fixture=allow_test_fixture,
         )
         _recheck_execution_tooling_binding(root, auth, allow_test_fixture=allow_test_fixture)
-    claims = _consume_attempt_claims(root, auth, auth_sha, bindings, lane="producer", authorization_claim=auth_claim)
+    try:
+        claims = _consume_attempt_claims(
+            root,
+            auth,
+            auth_sha,
+            bindings,
+            lane="producer",
+            authorization_claim=auth_claim,
+        )
+    except _AttemptClaimSetError as error:
+        if live:
+            abort = getattr(adapter, "abort_all", None)
+            if callable(abort):
+                try:
+                    abort()
+                except Exception as abort_exc:
+                    raise CampaignError(
+                        f"{error}; OWNED_PROCESS_TEARDOWN_FAILED: {abort_exc}"
+                    ) from error
+        _finalize_no_dispatch_failure(
+            root,
+            usage_root,
+            auth,
+            auth_sha,
+            lane="producer",
+            attempt_index=attempt_index,
+            claims=error.claims,
+            packet_disclosure=None,
+            reservation=None,
+            error=error,
+            failure_phase="pre-dispatch",
+        )
+        raise
     if fault_at == "after-claims-before-reservation":
         error = CampaignError("INJECTED_RESERVATION_FAILURE_AFTER_CLAIMS")
         _finalize_no_dispatch_failure(
@@ -3072,6 +3669,7 @@ def run_producer_cohort(
     handles: list[str] = []
     results: list[dict[str, object]] = []
     receipts: list[dict[str, object]] = []
+    envelopes: list[dict[str, Any]] = []
     completion_ref: dict[str, object] | None = None
     failure_phase = "reservation"
     try:
@@ -3125,7 +3723,6 @@ def run_producer_cohort(
             *({"event": "worker_ready", "worker": row["worker"], "case_id": row["case_id"]} for row in workers),
             {"event": "barrier_release"},
         ]
-        failure_phase = "provider-execution"
         if live:
             _recheck_live_authorization(
                 root,
@@ -3135,6 +3732,7 @@ def run_producer_cohort(
                 allow_test_fixture=allow_test_fixture,
             )
             _recheck_execution_tooling_binding(root, auth, allow_test_fixture=allow_test_fixture)
+        failure_phase = "provider-execution"
         if live:
             first_worker, first_envelope = workers[0], envelopes[0]
             raw_events.append({"event": "request_submit_started", "worker": first_worker["worker"], "case_id": first_worker["case_id"]})
@@ -3171,11 +3769,13 @@ def run_producer_cohort(
                 continue
             receipt = _provider_receipt(reservation, index, result, record_sha256(envelope), live=live)
             content = str(result["content_utf8"]).encode("utf-8")
+            failure_phase = "result-publication" if live else "provider-execution"
             output_ref = _publish_once_bytes(root, f"producer/results/{worker['case_id']}.txt", content, f"producer_result_{index}")
             if live:
                 capture_evidence = result["capture_evidence"]
                 receipt_raw = canonical_bytes(receipt)
                 receipt_sha = hashlib.sha256(receipt_raw).hexdigest()
+                failure_phase = "provider-receipt-publication"
                 receipt_ref = _publish_once_bytes(
                     root,
                     f"{auth['provider_receipt_root']}/{receipt_sha}.receipt.json",
@@ -3187,6 +3787,7 @@ def run_producer_cohort(
                 results.append({"case_id": worker["case_id"], "structural_status": "PASS", "output": output_ref, "provider_receipt_sha256": record_sha256(receipt)})
             receipts.append(receipt)
             raw_events.append({"event": "terminal_result_observed", "worker": worker["worker"], "case_id": worker["case_id"]})
+            failure_phase = "provider-execution"
         if observation_error is not None:
             raise observation_error
         if len(results) != 5 or len(receipts) != 5:
@@ -3274,6 +3875,7 @@ def run_producer_cohort(
                 "candidate_id": auth["candidate_id"],
                 "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
                 "authorization_sha256": auth_sha,
+                "attempt_claim_set": claims.get("attempt_claim_set"),
                 "authorization_claim": claims.get("authorization_claim"),
                 "candidate_claim": claims.get("candidate_claim"),
                 "continuation_claim": claims.get("continuation_claim"),
@@ -3367,6 +3969,7 @@ def run_producer_cohort(
                     observed_results=results,
                     completed_receipts=receipts,
                     live_attempt_states=live_attempt_states,
+                    execution_custodies=envelopes,
                 )
         except Exception as cleanup_exc:
             raise CampaignError(
@@ -3698,7 +4301,30 @@ def run_cold_review_cohort(
         lane="cold-review",
         attempt_index=attempt_index,
     )
-    claims = _consume_attempt_claims(root, auth, auth_sha, bindings, lane="cold-review", authorization_claim=auth_claim)
+    try:
+        claims = _consume_attempt_claims(
+            root,
+            auth,
+            auth_sha,
+            bindings,
+            lane="cold-review",
+            authorization_claim=auth_claim,
+        )
+    except _AttemptClaimSetError as error:
+        _finalize_no_dispatch_failure(
+            root,
+            usage_root,
+            auth,
+            auth_sha,
+            lane="cold-review",
+            attempt_index=attempt_index,
+            claims=error.claims,
+            packet_disclosure=None,
+            reservation=None,
+            error=error,
+            failure_phase="pre-dispatch",
+        )
+        raise
     disclosure = {
         "schema": "reviewed-campaign-packet-disclosure-v1",
         "candidate_id": auth["candidate_id"],
@@ -3854,6 +4480,7 @@ def run_cold_review_cohort(
                 "candidate_id": auth["candidate_id"],
                 "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
                 "authorization_sha256": auth_sha,
+                "attempt_claim_set": claims.get("attempt_claim_set"),
                 "authorization_claim": claims.get("authorization_claim"),
                 "candidate_claim": claims.get("candidate_claim"),
                 "continuation_claim": claims.get("continuation_claim"),

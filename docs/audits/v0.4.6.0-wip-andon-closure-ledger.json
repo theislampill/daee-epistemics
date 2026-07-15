@@ -4410,10 +4410,10 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "Task 11bi rejected predecessor repair tree 2e6d34ebfee35d0c0cb15052666966f2fcd95eb0; Task 11bj owner report sha256 ce6cb5f9e3a96da211be5915802edcfb91191e066fca17cb591f16ef4f5a8da8 and Task 11bk independent APPROVE sha256 9d5c056a0a57e8de23af58f06c5934c51c729f921eb663b3ec288a00a8ec61eb bind exact repaired strict-JSON, mixed-terminal replay, execution-tooling, predispatch, and timeout contracts; Task 11cg ANDON 150 current-byte repair preserves the governed provider-cost-unavailable aggregate during live post-observation failure terminalization",
+          "source_ref": "Task 11bi rejected predecessor repair tree 2e6d34ebfee35d0c0cb15052666966f2fcd95eb0; Task 11bj owner report sha256 ce6cb5f9e3a96da211be5915802edcfb91191e066fca17cb591f16ef4f5a8da8 and Task 11bk independent APPROVE sha256 9d5c056a0a57e8de23af58f06c5934c51c729f921eb663b3ec288a00a8ec61eb bind strict-JSON, mixed-terminal replay, execution-tooling, predispatch, and timeout contracts; Task 11cg ANDON 150 preserves governed provider-cost-unavailable settlement; Task 11cl ANDON 153/154 current bytes reconstruct exact completed receipts and terminal projections from retained adapter results plus original execution custody after projection failure and consume attempt authority through one atomic recoverable claim set; Task 11cn ANDON 155 makes publication and replay share one exact phase/classification/failure-class contract for mixed projection failures; Task 11cp ANDON 156 keeps pre-dispatch classification through the final live authorization and tooling rechecks and crosses into provider execution only immediately before the first submit; Task 11cu/11cv ANDON 159 current bytes treat the immutable attempt claim set as canonical after projection collision or persistent absence, retain ordered EXACT/COLLISION/MISSING projection states, preserve foreign bytes, terminalize without dispatch, and revalidate exact replay",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "3b872484bb9d1b91d471492aaf0365cead5178ffce9c6bbf4f6858195a4c6a6e",
+          "sha256": "d643fe9fa7f729bb0e7f85b7d84ceede98ee0a5716e8a909e3991cd1cfc9c5b5",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/reviewed_campaign_orchestrator.py",
@@ -4462,6 +4462,28 @@
           "exit_code": 0,
           "retained_artifact": null,
           "unretained_reason": "raw stdout and stderr and the ignored Task 11cg owner record are not tracked repository artifacts; bounded focused acceptance does not imply independent repair acceptance, exact-tree deterministic closure, exact-SHA CI, candidate maturity, provider execution, or terminal closure"
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Tasks 11cl/11cn/11cp current ANDON 153-156 test-first repair; reviewed-campaign orchestrator sha256 e89c40983a4a5c98b0e67040bff059230d379bb73712f668ef893e70ea456b7d and permanent test sha256 577ce028ccc791356ecc7ebd5a3ffe121754b55d07bf62165fa5ac12abb6f2f2; all ten all-completed live result/provider-receipt publication positions close five completed paid attempts without replacing foreign bytes, initial and retry claim projection failures terminalize from one atomic attempt claim set, interrupted exact claim sets recover without redispatch, the cold-review shared boundary is directly covered, mixed four-completed/one-outcome-unknown result and receipt projection failures settle exactly and replay without redispatch through one shared failure-state contract, and a fourth-load final pre-submit authorization drift proves five not-dispatched calls with zero host starts and exact replay; full reviewed-campaign contract is 106/106 GREEN",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/reviewed-campaign-orchestration/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and the ignored Task 11cl/11cn/11cp owner records are not tracked repository artifacts; focused GREEN does not imply independent repair acceptance, exact-tree deterministic closure, exact-SHA CI, candidate maturity, provider execution, or terminal closure"
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Task 11cw current ANDON 159 test-first repair; reviewed-campaign orchestrator sha256 d643fe9fa7f729bb0e7f85b7d84ceede98ee0a5716e8a909e3991cd1cfc9c5b5 and permanent test sha256 9d244d75e3f0d121db6009a93e9a973bf66c11922d7f3ebe3dd2f5359e2ca8a7; six initial/retry/cold-review foreign or persistently missing claim-projection subcases terminalize from the exact immutable claim set with ordered EXACT/COLLISION/MISSING states, preserve foreign bytes, retain no-dispatch evidence, and replay without redispatch; direct canaries are 4/4 GREEN, ten claim-set/projection/replay neighbors are 10/10 GREEN, and the full reviewed-campaign contract is 110/110 GREEN",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/reviewed-campaign-orchestration/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and the ignored Task 11cw owner record are not tracked repository artifacts; focused GREEN does not imply independent repair acceptance, exact-tree deterministic closure, exact-SHA CI, candidate maturity, provider execution, or terminal closure"
         },
         {
           "kind": "command_result",
@@ -4825,7 +4847,7 @@
       "remaining_risk": [
         "deterministic closure is not model, WIP, merge, release, or regression proof"
       ],
-      "next_action": "Keep A16 PARTIAL and terminal OPEN; regenerate the Branch 11 deterministic cohort on the final repaired tree, freeze and independently review that tree, require successor exact-SHA CI and a fresh mature candidate, then execute only the authorized governed campaign before final owner acceptance.",
+      "next_action": "Keep A16 PARTIAL and terminal OPEN; independently review the bounded ANDON 159 claim-projection terminalization/replay repair, then regenerate the Branch 11 deterministic cohort on the accepted exact tree and obtain a fresh whole-branch review; require successor exact-SHA CI and a fresh mature candidate before executing only the authorized governed campaign.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,

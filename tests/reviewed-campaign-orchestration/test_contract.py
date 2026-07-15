@@ -1100,6 +1100,731 @@ class ReviewedCampaignOrchestrationTests(unittest.TestCase):
                 run_producer_cohort(fixture.root, retry_auth, FakeNoDispatchAdapter(), allow_test_fixture=True)
             self.assertEqual(validate_head(fixture.root / "usage"), head_before_replay)
 
+    def test_attempt_claim_set_atomically_binds_initial_producer_claims(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-task6-attempt-claim-set-") as temp:
+            fixture = Fixture(Path(temp))
+            completion = run_producer_cohort(
+                fixture.root,
+                fixture.authorization,
+                FakeNoDispatchAdapter(),
+                allow_test_fixture=True,
+            )
+            finalizer = json.loads(
+                (fixture.root / "producer/observation-finalizer.json").read_text(encoding="utf-8")
+            )
+            claim_set_ref = finalizer["attempt_claim_set"]
+            claim_set_path = fixture.root / claim_set_ref["path"]
+            self.assertEqual(claim_set_ref, ref(fixture.root, claim_set_path))
+            claim_set = json.loads(claim_set_path.read_text(encoding="utf-8"))
+            self.assertEqual("reviewed-campaign-attempt-claim-set-v1", claim_set["schema"])
+            self.assertEqual("producer", claim_set["lane"])
+            self.assertEqual(1, claim_set["attempt_index"])
+            self.assertEqual("CONSUMED", claim_set["status"])
+            self.assertTrue(claim_set["one_use"])
+            self.assertIsNone(claim_set["retained_candidate_claim"])
+            self.assertEqual(
+                ["authorization", "candidate"],
+                [row["role"] for row in claim_set["claim_projections"]],
+            )
+            for projection in claim_set["claim_projections"]:
+                projection_path = fixture.root / projection["path"]
+                self.assertEqual(projection["payload"], json.loads(projection_path.read_text(encoding="utf-8")))
+                self.assertEqual(record_sha256(projection["payload"]), projection["payload_sha256"])
+            self.assertEqual(completion["authorization_sha256"], claim_set["authorization_sha256"])
+
+    def test_initial_producer_claim_projection_failures_terminalize_from_atomic_set(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        for target_role in ("producer_authorization_claim", "candidate_claim"):
+            with self.subTest(target_role=target_role), tempfile.TemporaryDirectory(
+                prefix=f"daee-task6-claim-projection-{target_role}-"
+            ) as temp:
+                fixture = Fixture(Path(temp))
+                adapter = FakeNoDispatchAdapter()
+                original = orchestrator._publish_once_json
+
+                def fail_after_publication(
+                    root: Path,
+                    relative: str,
+                    value: dict[str, object],
+                    role: str,
+                ) -> dict[str, object]:
+                    published = original(root, relative, value, role)
+                    if role == target_role:
+                        raise OSError(f"injected failure after {role}")
+                    return published
+
+                with mock.patch.object(
+                    orchestrator,
+                    "_publish_once_json",
+                    side_effect=fail_after_publication,
+                ):
+                    with self.assertRaisesRegex(CampaignError, "ATTEMPT_CLAIM_PROJECTION_FAILURE"):
+                        run_producer_cohort(
+                            fixture.root,
+                            fixture.authorization,
+                            adapter,
+                            allow_test_fixture=True,
+                        )
+                self.assertEqual([], adapter.log)
+                head = validate_head(fixture.root / "usage")
+                self.assertFalse(head["open_reservations"])
+                self.assertEqual(0, head["totals"]["producer_invocations"])
+                self.assertTrue((fixture.root / "claims/producer-authorization.json").is_file())
+                self.assertTrue((fixture.root / "claims/candidate.json").is_file())
+                finalizer = json.loads(
+                    (fixture.root / "producer/observation-finalizer.json").read_text(encoding="utf-8")
+                )
+                self.assertEqual("PROVED_NO_DISPATCH", finalizer["dispatch_classification"])
+                self.assertEqual("CONSUMED_NO_DISPATCH", finalizer["candidate_status"])
+                self.assertEqual(
+                    finalizer["attempt_claim_set"],
+                    ref(fixture.root, fixture.root / finalizer["attempt_claim_set"]["path"]),
+                )
+                replay_adapter = FakeNoDispatchAdapter()
+                with self.assertRaisesRegex(CampaignError, "ATTEMPT_ALREADY_TERMINALIZED"):
+                    run_producer_cohort(
+                        fixture.root,
+                        fixture.authorization,
+                        replay_adapter,
+                        allow_test_fixture=True,
+                    )
+                self.assertEqual([], replay_adapter.log)
+
+    def test_initial_producer_foreign_claim_projection_collisions_terminalize_and_replay(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        cases = (
+            ("producer_authorization_claim", "authorization", "authorization_claim"),
+            ("candidate_claim", "candidate", "candidate_claim"),
+        )
+        for target_role, projection_role, finalizer_field in cases:
+            with self.subTest(target_role=target_role), tempfile.TemporaryDirectory(
+                prefix=f"daee-task6-foreign-claim-projection-{target_role}-"
+            ) as temp:
+                fixture = Fixture(Path(temp))
+                adapter = FakeNoDispatchAdapter()
+                original = orchestrator._publish_once_json
+                foreign_raw = canonical(
+                    {"schema": "test-owned-foreign-claim-v1", "target_role": target_role}
+                )
+                foreign_path: Path | None = None
+
+                def collide_before_publication(
+                    root: Path,
+                    relative: str,
+                    value: dict[str, object],
+                    role: str,
+                ) -> dict[str, object]:
+                    nonlocal foreign_path
+                    if role == target_role and foreign_path is None:
+                        foreign_path = root / relative
+                        foreign_path.parent.mkdir(parents=True, exist_ok=True)
+                        foreign_path.write_bytes(foreign_raw)
+                    return original(root, relative, value, role)
+
+                with mock.patch.object(
+                    orchestrator,
+                    "_publish_once_json",
+                    side_effect=collide_before_publication,
+                ):
+                    with self.assertRaisesRegex(
+                        CampaignError,
+                        "ATTEMPT_CLAIM_PROJECTION_INCOMPLETE",
+                    ):
+                        run_producer_cohort(
+                            fixture.root,
+                            fixture.authorization,
+                            adapter,
+                            allow_test_fixture=True,
+                        )
+
+                self.assertIsNotNone(foreign_path)
+                assert foreign_path is not None
+                self.assertEqual(foreign_raw, foreign_path.read_bytes())
+                self.assertEqual([], adapter.log)
+                head = validate_head(fixture.root / "usage")
+                self.assertFalse(head["open_reservations"])
+                self.assertEqual(0, head["totals"]["producer_invocations"])
+                finalizer = json.loads(
+                    (fixture.root / "producer/observation-finalizer.json").read_text(encoding="utf-8")
+                )
+                self.assertEqual("PROVED_NO_DISPATCH", finalizer["dispatch_classification"])
+                states = {row["role"]: row for row in finalizer["claim_projection_states"]}
+                self.assertEqual({"authorization", "candidate"}, set(states))
+                self.assertEqual("COLLISION", states[projection_role]["status"])
+                self.assertEqual(ref(fixture.root, foreign_path), states[projection_role]["observed"])
+                self.assertIsNone(finalizer[finalizer_field])
+                other_role = "candidate" if projection_role == "authorization" else "authorization"
+                other_field = "candidate_claim" if other_role == "candidate" else "authorization_claim"
+                self.assertEqual("EXACT", states[other_role]["status"])
+                self.assertEqual(finalizer[other_field], states[other_role]["observed"])
+                self.assertEqual(
+                    projection_role != "candidate",
+                    finalizer["resumable_retry"],
+                )
+
+                replay_adapter = FakeNoDispatchAdapter()
+                with self.assertRaisesRegex(CampaignError, "ATTEMPT_ALREADY_TERMINALIZED"):
+                    run_producer_cohort(
+                        fixture.root,
+                        fixture.authorization,
+                        replay_adapter,
+                        allow_test_fixture=True,
+                    )
+                self.assertEqual([], replay_adapter.log)
+                self.assertEqual(foreign_raw, foreign_path.read_bytes())
+
+    def test_initial_producer_missing_claim_projection_terminalizes_and_replays(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-task6-missing-claim-projection-") as temp:
+            fixture = Fixture(Path(temp))
+            adapter = FakeNoDispatchAdapter()
+            original = orchestrator._publish_once_json
+
+            def keep_authorization_projection_missing(
+                root: Path,
+                relative: str,
+                value: dict[str, object],
+                role: str,
+            ) -> dict[str, object]:
+                if relative == "claims/producer-authorization.json":
+                    raise OSError("injected persistent authorization projection failure")
+                return original(root, relative, value, role)
+
+            with mock.patch.object(
+                orchestrator,
+                "_publish_once_json",
+                side_effect=keep_authorization_projection_missing,
+            ):
+                with self.assertRaisesRegex(
+                    CampaignError,
+                    "ATTEMPT_CLAIM_PROJECTION_INCOMPLETE",
+                ):
+                    run_producer_cohort(
+                        fixture.root,
+                        fixture.authorization,
+                        adapter,
+                        allow_test_fixture=True,
+                    )
+
+            self.assertEqual([], adapter.log)
+            self.assertFalse((fixture.root / "claims/producer-authorization.json").exists())
+            finalizer = json.loads(
+                (fixture.root / "producer/observation-finalizer.json").read_text(encoding="utf-8")
+            )
+            states = {row["role"]: row for row in finalizer["claim_projection_states"]}
+            self.assertEqual("MISSING", states["authorization"]["status"])
+            self.assertIsNone(states["authorization"]["observed"])
+            self.assertIsNone(finalizer["authorization_claim"])
+            self.assertEqual("EXACT", states["candidate"]["status"])
+            self.assertEqual(finalizer["candidate_claim"], states["candidate"]["observed"])
+            self.assertTrue(finalizer["resumable_retry"])
+
+            replay_adapter = FakeNoDispatchAdapter()
+            with self.assertRaisesRegex(CampaignError, "ATTEMPT_ALREADY_TERMINALIZED"):
+                run_producer_cohort(
+                    fixture.root,
+                    fixture.authorization,
+                    replay_adapter,
+                    allow_test_fixture=True,
+                )
+            self.assertEqual([], replay_adapter.log)
+
+    def test_initial_cold_claim_projection_failure_terminalizes_from_atomic_set(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-task6-cold-claim-projection-") as temp:
+            fixture = Fixture(Path(temp))
+            producer = run_producer_cohort(
+                fixture.root,
+                fixture.authorization,
+                FakeNoDispatchAdapter(),
+                allow_test_fixture=True,
+            )
+            assessments = [
+                {
+                    "case_id": case_id,
+                    "assessment_sha256": hashlib.sha256(f"human:{case_id}".encode()).hexdigest(),
+                }
+                for case_id in CASES
+            ]
+            assessment_claim = claim_initial_assessments(
+                fixture.root,
+                producer,
+                assessments,
+                claimant="human:task6-assessor",
+            )
+            packets = fixture.build_packets(producer)
+            cold_authorization = fixture.cold_authorization(producer, assessment_claim, packets)
+            adapter = FakeNoDispatchAdapter(lane="cold-review")
+            original = orchestrator._publish_once_json
+
+            def fail_after_publication(
+                root: Path,
+                relative: str,
+                value: dict[str, object],
+                role: str,
+            ) -> dict[str, object]:
+                published = original(root, relative, value, role)
+                if role == "cold-review_authorization_claim":
+                    raise OSError("injected failure after cold-review authorization claim")
+                return published
+
+            with mock.patch.object(
+                orchestrator,
+                "_publish_once_json",
+                side_effect=fail_after_publication,
+            ):
+                with self.assertRaisesRegex(CampaignError, "ATTEMPT_CLAIM_PROJECTION_FAILURE"):
+                    run_cold_review_cohort(
+                        fixture.root,
+                        cold_authorization,
+                        adapter,
+                        allow_test_fixture=True,
+                    )
+
+            self.assertEqual([], adapter.log)
+            head = validate_head(fixture.root / "usage")
+            self.assertFalse(head["open_reservations"])
+            self.assertEqual(0, head["totals"]["cold_review_invocations"])
+            self.assertFalse((fixture.root / "cold-review/packet-disclosure.json").exists())
+            finalizer = json.loads(
+                (fixture.root / "cold-review/observation-finalizer.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual("PROVED_NO_DISPATCH", finalizer["dispatch_classification"])
+            self.assertEqual("CONSUMED_OBSERVED", finalizer["candidate_status"])
+            self.assertEqual(
+                finalizer["attempt_claim_set"],
+                ref(fixture.root, fixture.root / finalizer["attempt_claim_set"]["path"]),
+            )
+
+    def test_cold_review_foreign_authorization_claim_collision_terminalizes_and_replays(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-task6-cold-foreign-claim-projection-") as temp:
+            fixture = Fixture(Path(temp))
+            producer = run_producer_cohort(
+                fixture.root,
+                fixture.authorization,
+                FakeNoDispatchAdapter(),
+                allow_test_fixture=True,
+            )
+            assessments = [
+                {
+                    "case_id": case_id,
+                    "assessment_sha256": hashlib.sha256(f"human:{case_id}".encode()).hexdigest(),
+                }
+                for case_id in CASES
+            ]
+            assessment_claim = claim_initial_assessments(
+                fixture.root,
+                producer,
+                assessments,
+                claimant="human:task6-assessor",
+            )
+            packets = fixture.build_packets(producer)
+            cold_authorization = fixture.cold_authorization(producer, assessment_claim, packets)
+            adapter = FakeNoDispatchAdapter(lane="cold-review")
+            original = orchestrator._publish_once_json
+            foreign_raw = canonical(
+                {"schema": "test-owned-foreign-claim-v1", "target_role": "cold-review_authorization_claim"}
+            )
+            foreign_path: Path | None = None
+
+            def collide_before_publication(
+                root: Path,
+                relative: str,
+                value: dict[str, object],
+                role: str,
+            ) -> dict[str, object]:
+                nonlocal foreign_path
+                if role == "cold-review_authorization_claim" and foreign_path is None:
+                    foreign_path = root / relative
+                    foreign_path.parent.mkdir(parents=True, exist_ok=True)
+                    foreign_path.write_bytes(foreign_raw)
+                return original(root, relative, value, role)
+
+            with mock.patch.object(
+                orchestrator,
+                "_publish_once_json",
+                side_effect=collide_before_publication,
+            ):
+                with self.assertRaisesRegex(
+                    CampaignError,
+                    "ATTEMPT_CLAIM_PROJECTION_INCOMPLETE",
+                ):
+                    run_cold_review_cohort(
+                        fixture.root,
+                        cold_authorization,
+                        adapter,
+                        allow_test_fixture=True,
+                    )
+
+            self.assertIsNotNone(foreign_path)
+            assert foreign_path is not None
+            self.assertEqual(foreign_raw, foreign_path.read_bytes())
+            self.assertEqual([], adapter.log)
+            self.assertFalse((fixture.root / "cold-review/packet-disclosure.json").exists())
+            finalizer = json.loads(
+                (fixture.root / "cold-review/observation-finalizer.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual("PROVED_NO_DISPATCH", finalizer["dispatch_classification"])
+            self.assertEqual("CONSUMED_OBSERVED", finalizer["candidate_status"])
+            self.assertEqual(
+                ["authorization"],
+                [row["role"] for row in finalizer["claim_projection_states"]],
+            )
+            state = finalizer["claim_projection_states"][0]
+            self.assertEqual("COLLISION", state["status"])
+            self.assertEqual(ref(fixture.root, foreign_path), state["observed"])
+            self.assertIsNone(finalizer["authorization_claim"])
+            self.assertIsNotNone(finalizer["candidate_claim"])
+            self.assertTrue(finalizer["resumable_retry"])
+
+            replay_adapter = FakeNoDispatchAdapter(lane="cold-review")
+            with self.assertRaisesRegex(CampaignError, "ATTEMPT_ALREADY_TERMINALIZED"):
+                run_cold_review_cohort(
+                    fixture.root,
+                    cold_authorization,
+                    replay_adapter,
+                    allow_test_fixture=True,
+                )
+            self.assertEqual([], replay_adapter.log)
+            self.assertEqual(foreign_raw, foreign_path.read_bytes())
+
+    def test_existing_exact_attempt_claim_set_reentry_terminalizes_interrupted_projection(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-task6-claim-set-reentry-") as temp:
+            fixture = Fixture(Path(temp))
+            original = orchestrator._publish_once_json
+
+            def interrupt_after_authorization(
+                root: Path,
+                relative: str,
+                value: dict[str, object],
+                role: str,
+            ) -> dict[str, object]:
+                published = original(root, relative, value, role)
+                if role == "producer_authorization_claim":
+                    raise KeyboardInterrupt("simulated process interruption after exact claim projection")
+                return published
+
+            with mock.patch.object(
+                orchestrator,
+                "_publish_once_json",
+                side_effect=interrupt_after_authorization,
+            ):
+                with self.assertRaises(KeyboardInterrupt):
+                    run_producer_cohort(
+                        fixture.root,
+                        fixture.authorization,
+                        FakeNoDispatchAdapter(),
+                        allow_test_fixture=True,
+                    )
+            self.assertTrue((fixture.root / "claims/producer-authorization.json").is_file())
+            self.assertFalse((fixture.root / "claims/candidate.json").exists())
+            self.assertFalse((fixture.root / "producer/observation-finalizer.json").exists())
+            recovery_adapter = FakeNoDispatchAdapter()
+            with self.assertRaisesRegex(CampaignError, "ATTEMPT_CLAIM_SET_RECOVERY"):
+                run_producer_cohort(
+                    fixture.root,
+                    fixture.authorization,
+                    recovery_adapter,
+                    allow_test_fixture=True,
+                )
+            self.assertEqual([], recovery_adapter.log)
+            self.assertTrue((fixture.root / "claims/candidate.json").is_file())
+            finalizer = json.loads(
+                (fixture.root / "producer/observation-finalizer.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual("PROVED_NO_DISPATCH", finalizer["dispatch_classification"])
+            self.assertFalse(validate_head(fixture.root / "usage")["open_reservations"])
+
+    def test_retry_claim_projection_failures_terminalize_without_consumed_authority_gap(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        for target_role in ("retry_continuation_claim", "producer_authorization_claim"):
+            with self.subTest(target_role=target_role), tempfile.TemporaryDirectory(
+                prefix=f"daee-task6-retry-claim-projection-{target_role}-"
+            ) as temp:
+                fixture = Fixture(Path(temp))
+                with self.assertRaisesRegex(CampaignError, "RESERVATION"):
+                    run_producer_cohort(
+                        fixture.root,
+                        fixture.authorization,
+                        FakeNoDispatchAdapter(),
+                        allow_test_fixture=True,
+                        fault_at="after-claims-before-reservation",
+                    )
+                prior_incident = fixture.root / "incidents/producer-task6-cycle-1.json"
+                prior_finalizer = fixture.root / "producer/observation-finalizer.json"
+                next_batch = "task6-claim-projection-retry-2"
+                continuation = fixture.retry_continuation(
+                    lane="producer",
+                    prior_batch_id="task6-cycle-1",
+                    next_batch_id=next_batch,
+                    prior_authorization=fixture.authorization,
+                    prior_incident=prior_incident,
+                    prior_finalizer=prior_finalizer,
+                )
+                retry_auth = fixture.root / "authorizations/producer-claim-projection-retry-2.json"
+                write_json(
+                    retry_auth,
+                    fixture.producer_authorization(
+                        authorization_id="task6-producer-claim-projection-auth-2",
+                        cycle_or_review_batch_id=next_batch,
+                        authorization_claim_path="claims/producer-claim-projection-authorization-retry-2.json",
+                        retry_lineage={
+                            "attempt_index": 2,
+                            "continuation_authorization": ref(fixture.root, continuation),
+                        },
+                    ),
+                )
+                original = orchestrator._publish_once_json
+
+                def fail_after_publication(
+                    root: Path,
+                    relative: str,
+                    value: dict[str, object],
+                    role: str,
+                ) -> dict[str, object]:
+                    published = original(root, relative, value, role)
+                    if role == target_role:
+                        raise OSError(f"injected failure after {role}")
+                    return published
+
+                retry_adapter = FakeNoDispatchAdapter()
+                with mock.patch.object(
+                    orchestrator,
+                    "_publish_once_json",
+                    side_effect=fail_after_publication,
+                ):
+                    with self.assertRaisesRegex(CampaignError, "ATTEMPT_CLAIM_PROJECTION_FAILURE"):
+                        run_producer_cohort(
+                            fixture.root,
+                            retry_auth,
+                            retry_adapter,
+                            allow_test_fixture=True,
+                        )
+                self.assertEqual([], retry_adapter.log)
+                self.assertFalse(validate_head(fixture.root / "usage")["open_reservations"])
+                retry_finalizer = json.loads(
+                    (fixture.root / "producer/retry-finalizers/attempt-02.json").read_text(encoding="utf-8")
+                )
+                self.assertEqual("PROVED_NO_DISPATCH", retry_finalizer["dispatch_classification"])
+                claim_set = json.loads(
+                    (fixture.root / retry_finalizer["attempt_claim_set"]["path"]).read_text(encoding="utf-8")
+                )
+                self.assertEqual(
+                    ["retry_continuation", "authorization"],
+                    [row["role"] for row in claim_set["claim_projections"]],
+                )
+                self.assertEqual(retry_finalizer["candidate_claim"], claim_set["retained_candidate_claim"])
+                replay_adapter = FakeNoDispatchAdapter()
+                with self.assertRaisesRegex(CampaignError, "RETRY_CONTINUATION_REPLAY|ATTEMPT_ALREADY_TERMINALIZED"):
+                    run_producer_cohort(
+                        fixture.root,
+                        retry_auth,
+                        replay_adapter,
+                        allow_test_fixture=True,
+                    )
+                self.assertEqual([], replay_adapter.log)
+
+    def test_retry_foreign_claim_projection_collisions_terminalize_and_replay(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        cases = (
+            ("retry_continuation_claim", "retry_continuation", "continuation_claim"),
+            ("producer_authorization_claim", "authorization", "authorization_claim"),
+        )
+        for target_role, projection_role, finalizer_field in cases:
+            with self.subTest(target_role=target_role), tempfile.TemporaryDirectory(
+                prefix=f"daee-task6-retry-foreign-claim-{target_role}-"
+            ) as temp:
+                fixture = Fixture(Path(temp))
+                with self.assertRaisesRegex(CampaignError, "RESERVATION"):
+                    run_producer_cohort(
+                        fixture.root,
+                        fixture.authorization,
+                        FakeNoDispatchAdapter(),
+                        allow_test_fixture=True,
+                        fault_at="after-claims-before-reservation",
+                    )
+                prior_incident = fixture.root / "incidents/producer-task6-cycle-1.json"
+                prior_finalizer = fixture.root / "producer/observation-finalizer.json"
+                next_batch = f"task6-foreign-claim-retry-{projection_role}"
+                continuation = fixture.retry_continuation(
+                    lane="producer",
+                    prior_batch_id="task6-cycle-1",
+                    next_batch_id=next_batch,
+                    prior_authorization=fixture.authorization,
+                    prior_incident=prior_incident,
+                    prior_finalizer=prior_finalizer,
+                )
+                retry_auth = fixture.root / f"authorizations/producer-foreign-{projection_role}-retry-2.json"
+                write_json(
+                    retry_auth,
+                    fixture.producer_authorization(
+                        authorization_id=f"task6-producer-foreign-{projection_role}-auth-2",
+                        cycle_or_review_batch_id=next_batch,
+                        authorization_claim_path=f"claims/producer-foreign-{projection_role}-authorization-retry-2.json",
+                        retry_lineage={
+                            "attempt_index": 2,
+                            "continuation_authorization": ref(fixture.root, continuation),
+                        },
+                    ),
+                )
+                adapter = FakeNoDispatchAdapter()
+                original = orchestrator._publish_once_json
+                foreign_raw = canonical(
+                    {"schema": "test-owned-foreign-claim-v1", "target_role": target_role}
+                )
+                foreign_path: Path | None = None
+
+                def collide_before_publication(
+                    root: Path,
+                    relative: str,
+                    value: dict[str, object],
+                    role: str,
+                ) -> dict[str, object]:
+                    nonlocal foreign_path
+                    if role == target_role and foreign_path is None:
+                        foreign_path = root / relative
+                        foreign_path.parent.mkdir(parents=True, exist_ok=True)
+                        foreign_path.write_bytes(foreign_raw)
+                    return original(root, relative, value, role)
+
+                with mock.patch.object(
+                    orchestrator,
+                    "_publish_once_json",
+                    side_effect=collide_before_publication,
+                ):
+                    with self.assertRaisesRegex(
+                        CampaignError,
+                        "ATTEMPT_CLAIM_PROJECTION_INCOMPLETE",
+                    ):
+                        run_producer_cohort(
+                            fixture.root,
+                            retry_auth,
+                            adapter,
+                            allow_test_fixture=True,
+                        )
+
+                self.assertIsNotNone(foreign_path)
+                assert foreign_path is not None
+                self.assertEqual(foreign_raw, foreign_path.read_bytes())
+                self.assertEqual([], adapter.log)
+                finalizer = json.loads(
+                    (fixture.root / "producer/retry-finalizers/attempt-02.json").read_text(encoding="utf-8")
+                )
+                states = {row["role"]: row for row in finalizer["claim_projection_states"]}
+                self.assertEqual({"retry_continuation", "authorization"}, set(states))
+                self.assertEqual("COLLISION", states[projection_role]["status"])
+                self.assertEqual(ref(fixture.root, foreign_path), states[projection_role]["observed"])
+                self.assertIsNone(finalizer[finalizer_field])
+                other_role = "authorization" if projection_role == "retry_continuation" else "retry_continuation"
+                other_field = "authorization_claim" if other_role == "authorization" else "continuation_claim"
+                self.assertEqual("EXACT", states[other_role]["status"])
+                self.assertEqual(finalizer[other_field], states[other_role]["observed"])
+                self.assertIsNotNone(finalizer["candidate_claim"])
+                self.assertTrue(finalizer["resumable_retry"])
+
+                replay_adapter = FakeNoDispatchAdapter()
+                with self.assertRaisesRegex(
+                    CampaignError,
+                    "RETRY_CONTINUATION_REPLAY|ATTEMPT_ALREADY_TERMINALIZED",
+                ):
+                    run_producer_cohort(
+                        fixture.root,
+                        retry_auth,
+                        replay_adapter,
+                        allow_test_fixture=True,
+                    )
+                self.assertEqual([], replay_adapter.log)
+                self.assertEqual(foreign_raw, foreign_path.read_bytes())
+
+    def test_retry_exact_claim_set_reentry_terminalizes_interrupted_continuation_projection(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-task6-retry-claim-set-reentry-") as temp:
+            fixture = Fixture(Path(temp))
+            with self.assertRaisesRegex(CampaignError, "RESERVATION"):
+                run_producer_cohort(
+                    fixture.root,
+                    fixture.authorization,
+                    FakeNoDispatchAdapter(),
+                    allow_test_fixture=True,
+                    fault_at="after-claims-before-reservation",
+                )
+            prior_incident = fixture.root / "incidents/producer-task6-cycle-1.json"
+            prior_finalizer = fixture.root / "producer/observation-finalizer.json"
+            next_batch = "task6-interrupted-continuation-retry-2"
+            continuation = fixture.retry_continuation(
+                lane="producer",
+                prior_batch_id="task6-cycle-1",
+                next_batch_id=next_batch,
+                prior_authorization=fixture.authorization,
+                prior_incident=prior_incident,
+                prior_finalizer=prior_finalizer,
+            )
+            retry_auth = fixture.root / "authorizations/producer-interrupted-continuation-retry-2.json"
+            write_json(
+                retry_auth,
+                fixture.producer_authorization(
+                    authorization_id="task6-producer-interrupted-continuation-auth-2",
+                    cycle_or_review_batch_id=next_batch,
+                    authorization_claim_path="claims/producer-interrupted-continuation-authorization-retry-2.json",
+                    retry_lineage={
+                        "attempt_index": 2,
+                        "continuation_authorization": ref(fixture.root, continuation),
+                    },
+                ),
+            )
+            original = orchestrator._publish_once_json
+
+            def interrupt_after_continuation(
+                root: Path,
+                relative: str,
+                value: dict[str, object],
+                role: str,
+            ) -> dict[str, object]:
+                published = original(root, relative, value, role)
+                if role == "retry_continuation_claim":
+                    raise KeyboardInterrupt("simulated process interruption after continuation claim")
+                return published
+
+            with mock.patch.object(
+                orchestrator,
+                "_publish_once_json",
+                side_effect=interrupt_after_continuation,
+            ):
+                with self.assertRaises(KeyboardInterrupt):
+                    run_producer_cohort(
+                        fixture.root,
+                        retry_auth,
+                        FakeNoDispatchAdapter(),
+                        allow_test_fixture=True,
+                    )
+            continuation_value = json.loads(continuation.read_text(encoding="utf-8"))
+            self.assertTrue((fixture.root / continuation_value["claim_path"]).is_file())
+            retry_finalizer_path = fixture.root / "producer/retry-finalizers/attempt-02.json"
+            self.assertFalse(retry_finalizer_path.exists())
+            recovery_adapter = FakeNoDispatchAdapter()
+            with self.assertRaisesRegex(CampaignError, "ATTEMPT_CLAIM_SET_RECOVERY"):
+                run_producer_cohort(
+                    fixture.root,
+                    retry_auth,
+                    recovery_adapter,
+                    allow_test_fixture=True,
+                )
+            self.assertEqual([], recovery_adapter.log)
+            retry_finalizer = json.loads(retry_finalizer_path.read_text(encoding="utf-8"))
+            self.assertEqual("PROVED_NO_DISPATCH", retry_finalizer["dispatch_classification"])
+            self.assertFalse(validate_head(fixture.root / "usage")["open_reservations"])
+
     def test_reservation_exception_after_head_publish_adopts_and_settles_own_open_reservation(self) -> None:
         with tempfile.TemporaryDirectory(prefix="daee-task6-open-reservation-") as temp:
             fixture = Fixture(Path(temp))
@@ -3514,6 +4239,248 @@ class LiveProducerContractTests(unittest.TestCase):
             self.assertFalse(finalizer["usage_unresolved"])
             self.assertTrue(finalizer["terminal"])
 
+    def test_live_result_and_receipt_publication_failures_close_all_completed_usage(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        scenarios = [
+            (index, role_kind, f"producer_{role_kind}_{index}")
+            for index in range(1, 6)
+            for role_kind in ("result", "provider_receipt")
+        ]
+        for index, role_kind, target_role in scenarios:
+            expected_phase = "result-publication" if role_kind == "result" else "provider-receipt-publication"
+            with self.subTest(index=index, role_kind=role_kind), tempfile.TemporaryDirectory(
+                prefix=f"daee-live-{role_kind}-publication-{index}-"
+            ) as temp:
+                fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+                host = _ScriptedCodexHost()
+                adapter = _ScriptedCodexTestAdapter(
+                    custody_root=fixture.root,
+                    codex_executable=executable,
+                    host=host,
+                    command_timeout_seconds=30,
+                )
+                original = orchestrator._publish_once_bytes
+
+                def fail_selected_publication(
+                    root: Path,
+                    relative: str,
+                    raw: bytes,
+                    role: str,
+                ) -> dict[str, object]:
+                    if role == target_role:
+                        raise OSError(f"injected {role} publication failure")
+                    return original(root, relative, raw, role)
+
+                with mock.patch.object(
+                    orchestrator,
+                    "_publish_once_bytes",
+                    side_effect=fail_selected_publication,
+                ):
+                    with self.assertRaisesRegex(
+                        CampaignError,
+                        rf"CAMPAIGN_TERMINALIZATION_FAILED\[{expected_phase}\]",
+                    ):
+                        run_producer_cohort(
+                            fixture.root,
+                            authorization,
+                            adapter,
+                            allow_test_fixture=True,
+                        )
+
+                head = validate_head(fixture.root / "usage")
+                self.assertEqual(5, head["totals"]["completed"])
+                self.assertEqual(5, head["totals"]["producer_invocations"])
+                self.assertFalse(head["open_reservations"])
+                self.assertFalse(head["unresolved_usage"])
+                finalizer = json.loads(
+                    (fixture.root / "producer/observation-finalizer.json").read_text(encoding="utf-8")
+                )
+                self.assertEqual(expected_phase, finalizer["failure_phase"])
+                self.assertEqual("OBSERVED", finalizer["dispatch_classification"])
+                self.assertEqual("CONSUMED_OBSERVED", finalizer["candidate_status"])
+                self.assertEqual(5, len(finalizer["observed_results"]))
+                failed_projections = [
+                    row
+                    for row in finalizer["observed_results"]
+                    if row.get("projection_status") == "FAILED"
+                ]
+                self.assertEqual(6 - index, len(failed_projections))
+                for row in failed_projections:
+                    capture = json.loads(
+                        (fixture.root / row["capture_evidence"]["path"]).read_text(encoding="utf-8")
+                    )
+                    self.assertEqual(capture["raw_output"], row["output"])
+                    self.assertIsNone(row["provider_receipt"])
+                replay_host = _ScriptedCodexHost()
+                replay_adapter = _ScriptedCodexTestAdapter(
+                    custody_root=fixture.root,
+                    codex_executable=executable,
+                    host=replay_host,
+                    command_timeout_seconds=30,
+                )
+                with self.assertRaisesRegex(CampaignError, "ATTEMPT_ALREADY_TERMINALIZED"):
+                    run_producer_cohort(
+                        fixture.root,
+                        authorization,
+                        replay_adapter,
+                        allow_test_fixture=True,
+                    )
+                self.assertEqual([], replay_host.starts)
+
+    def test_live_mixed_outcome_projection_failures_settle_and_replay_exactly(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        for role_kind, target_role in (
+            ("result", "producer_result_1"),
+            ("provider_receipt", "producer_provider_receipt_1"),
+        ):
+            expected_phase = (
+                "result-publication"
+                if role_kind == "result"
+                else "provider-receipt-publication"
+            )
+            with self.subTest(role_kind=role_kind), tempfile.TemporaryDirectory(
+                prefix=f"daee-live-mixed-{role_kind}-publication-"
+            ) as temp:
+                fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+                host = _ScriptedCodexHost(nonzero_at=3)
+                adapter = _ScriptedCodexTestAdapter(
+                    custody_root=fixture.root,
+                    codex_executable=executable,
+                    host=host,
+                    command_timeout_seconds=30,
+                )
+                original = orchestrator._publish_once_bytes
+
+                def fail_selected_publication(
+                    root: Path,
+                    relative: str,
+                    raw: bytes,
+                    role: str,
+                ) -> dict[str, object]:
+                    if role == target_role:
+                        raise OSError(f"injected mixed-state {role} publication failure")
+                    return original(root, relative, raw, role)
+
+                with mock.patch.object(
+                    orchestrator,
+                    "_publish_once_bytes",
+                    side_effect=fail_selected_publication,
+                ):
+                    with self.assertRaisesRegex(
+                        CampaignError,
+                        rf"CAMPAIGN_TERMINALIZATION_FAILED\[{expected_phase}\]",
+                    ):
+                        run_producer_cohort(
+                            fixture.root,
+                            authorization,
+                            adapter,
+                            allow_test_fixture=True,
+                        )
+
+                head = validate_head(fixture.root / "usage")
+                self.assertEqual(4, head["totals"]["completed"])
+                self.assertEqual(1, head["totals"]["unknown"])
+                self.assertEqual(5, head["totals"]["producer_invocations"])
+                self.assertFalse(head["open_reservations"])
+                self.assertTrue(head["unresolved_usage"])
+                finalizer = json.loads(
+                    (fixture.root / "producer/observation-finalizer.json").read_text(encoding="utf-8")
+                )
+                self.assertEqual(expected_phase, finalizer["failure_phase"])
+                self.assertEqual("OUTCOME_UNKNOWN", finalizer["dispatch_classification"])
+                self.assertEqual("CONSUMED_DISPATCH_UNKNOWN", finalizer["candidate_status"])
+                self.assertEqual(4, len(finalizer["observed_results"]))
+                self.assertTrue(
+                    all(
+                        row.get("projection_status") == "FAILED"
+                        for row in finalizer["observed_results"]
+                    )
+                )
+
+                replay_host = _ScriptedCodexHost()
+                replay_adapter = _ScriptedCodexTestAdapter(
+                    custody_root=fixture.root,
+                    codex_executable=executable,
+                    host=replay_host,
+                    command_timeout_seconds=30,
+                )
+                with self.assertRaisesRegex(CampaignError, "ATTEMPT_ALREADY_TERMINALIZED"):
+                    run_producer_cohort(
+                        fixture.root,
+                        authorization,
+                        replay_adapter,
+                        allow_test_fixture=True,
+                    )
+                self.assertEqual([], replay_host.starts)
+
+    def test_live_result_and_receipt_collisions_preserve_foreign_bytes_and_terminalize(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        for collision_kind in ("result", "provider_receipt"):
+            with self.subTest(collision_kind=collision_kind), tempfile.TemporaryDirectory(
+                prefix=f"daee-live-{collision_kind}-collision-"
+            ) as temp:
+                fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+                foreign = b"foreign create-once collision bytes\n"
+                original = orchestrator._publish_once_bytes
+                if collision_kind == "result":
+                    collision_path = fixture.root / f"producer/results/{CASES[0]}.txt"
+                    collision_path.parent.mkdir(parents=True, exist_ok=True)
+                    collision_path.write_bytes(foreign)
+                    publication = mock.patch.object(
+                        orchestrator,
+                        "_publish_once_bytes",
+                        side_effect=original,
+                    )
+                else:
+                    collision_path = None
+
+                    def collide_with_receipt(
+                        root: Path,
+                        relative: str,
+                        raw: bytes,
+                        role: str,
+                    ) -> dict[str, object]:
+                        nonlocal collision_path
+                        if role == "producer_provider_receipt_1":
+                            collision_path = root / relative
+                            collision_path.parent.mkdir(parents=True, exist_ok=True)
+                            collision_path.write_bytes(foreign)
+                        return original(root, relative, raw, role)
+
+                    publication = mock.patch.object(
+                        orchestrator,
+                        "_publish_once_bytes",
+                        side_effect=collide_with_receipt,
+                    )
+                adapter = _ScriptedCodexTestAdapter(
+                    custody_root=fixture.root,
+                    codex_executable=executable,
+                    host=_ScriptedCodexHost(),
+                    command_timeout_seconds=30,
+                )
+                with publication:
+                    with self.assertRaisesRegex(CampaignError, "CAMPAIGN_TERMINALIZATION_FAILED"):
+                        run_producer_cohort(
+                            fixture.root,
+                            authorization,
+                            adapter,
+                            allow_test_fixture=True,
+                        )
+                self.assertIsNotNone(collision_path)
+                self.assertEqual(foreign, collision_path.read_bytes())
+                head = validate_head(fixture.root / "usage")
+                self.assertEqual(5, head["totals"]["completed"])
+                self.assertFalse(head["open_reservations"])
+                self.assertFalse(head["unresolved_usage"])
+                finalizer = json.loads(
+                    (fixture.root / "producer/observation-finalizer.json").read_text(encoding="utf-8")
+                )
+                self.assertEqual("OBSERVED", finalizer["dispatch_classification"])
+                self.assertEqual(5, len(finalizer["observed_results"]))
+
     def test_live_concurrent_observation_interface_is_required_before_claim_or_reservation(self) -> None:
         with tempfile.TemporaryDirectory(prefix="daee-live-observe-many-required-") as temp:
             fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
@@ -3954,6 +4921,74 @@ class LiveProducerContractTests(unittest.TestCase):
             self.assertEqual([], host.starts)
             self.assertTrue((fixture.root / "claims/producer-authorization.json").is_file())
             self.assertTrue((fixture.root / "producer/observation-finalizer.json").is_file())
+
+    def test_live_final_presubmit_authority_drift_is_proved_no_dispatch_and_replayable(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-final-recheck-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = _ScriptedCodexHost()
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+            )
+            original = orchestrator._load_producer_authorization
+            calls = 0
+
+            def drift_on_final_presubmit(
+                root: Path,
+                path: Path,
+                **kwargs: object,
+            ) -> tuple[dict[str, object], str]:
+                nonlocal calls
+                calls += 1
+                value, sha = original(root, path, **kwargs)
+                if calls == 4:
+                    value = {**value, "package_sha256": "f" * 64}
+                return value, sha
+
+            with mock.patch.object(
+                orchestrator,
+                "_load_producer_authorization",
+                side_effect=drift_on_final_presubmit,
+            ):
+                with self.assertRaisesRegex(CampaignError, "LIVE_AUTHORIZATION_RECHECK_DRIFT"):
+                    run_producer_cohort(
+                        fixture.root,
+                        authorization,
+                        adapter,
+                        allow_test_fixture=True,
+                    )
+
+            self.assertEqual(4, calls)
+            self.assertEqual([], host.starts)
+            head = validate_head(fixture.root / "usage")
+            self.assertEqual(5, head["totals"]["not_dispatched"])
+            self.assertEqual(0, head["totals"]["producer_invocations"])
+            self.assertFalse(head["open_reservations"])
+            self.assertFalse(head["unresolved_usage"])
+            finalizer = json.loads(
+                (fixture.root / "producer/observation-finalizer.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual("pre-dispatch", finalizer["failure_phase"])
+            self.assertEqual("PROVED_NO_DISPATCH", finalizer["dispatch_classification"])
+            self.assertEqual("CONSUMED_NO_DISPATCH", finalizer["candidate_status"])
+
+            replay_host = _ScriptedCodexHost()
+            replay_adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=replay_host,
+            )
+            with self.assertRaisesRegex(CampaignError, "ATTEMPT_ALREADY_TERMINALIZED"):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    replay_adapter,
+                    allow_test_fixture=True,
+                )
+            self.assertEqual([], replay_host.starts)
 
     def test_live_path_custody_rejects_existing_reparse_components(self) -> None:
         import codex_live_producer_adapter as live_adapter
