@@ -8,7 +8,7 @@
         "python",
         "tools/run_no_model_preflight.py",
         "--json",
-        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/native/no-model-preflight.json"
+        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/native/no-model-preflight.json"
       ],
       "execution_profile": {
         "profile_id": "python-isolated-bootstrap-v2",

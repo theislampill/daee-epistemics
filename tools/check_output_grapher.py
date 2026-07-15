@@ -350,6 +350,7 @@ def check_static_artifact(errors: list[str]) -> None:
     check_source_section_preservation(errors)
     check_single_paste_embedded_witness(errors)
     check_browser_formal_reread_state_comparison(errors)
+    check_witness_attestation_parity(errors)
     check_browser_certificate_import_display(errors)
     check_paired_parser_alias_cleanup(errors)
 
@@ -600,6 +601,103 @@ console.log(JSON.stringify({{errors: model.errors || []}}));
     found = [str(item) for item in parsed.get("errors", [])]
     if not any("formal_reread_states[1]" in item and "route mismatch" in item for item in found):
         errors.append("browser parser must reject field_witness.formal_reread_states route mismatch")
+
+
+def browser_parser_errors(source: str, witness: dict[str, object]) -> list[str]:
+    node_script = f"""
+const fs = require('fs');
+global.window = {{}};
+global.document = {{
+  addEventListener: () => {{}},
+  getElementById: () => null,
+  querySelectorAll: () => []
+}};
+eval(fs.readFileSync({json.dumps(str(JS))}, 'utf8'));
+const model = window.daeeOutputGrapher.parseOutput(
+  {json.dumps(source)},
+  {json.dumps(json.dumps(witness, ensure_ascii=False))}
+);
+console.log(JSON.stringify({{errors: model.errors || []}}));
+"""
+    result = subprocess.run(
+        ["node", "-e", node_script],
+        cwd=ROOT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        capture_output=True,
+        timeout=30,
+    )
+    if result.returncode != 0:
+        return [f"browser parser execution failed: {(result.stderr or result.stdout).strip()}"]
+    try:
+        payload = json.loads(result.stdout or "{}")
+    except json.JSONDecodeError as exc:
+        return [f"browser parser emitted invalid JSON: {exc}"]
+    return [str(item) for item in payload.get("errors", [])]
+
+
+def check_witness_attestation_parity(errors: list[str]) -> None:
+    current_source = (FIXTURE_ROOT / "valid-current-no-new-resultant.md").read_text(encoding="utf-8")
+    current = json.loads(
+        (FIXTURE_ROOT / "valid-current-no-new-resultant.field_witness.json").read_text(encoding="utf-8")
+    )
+
+    missing_formal = json.loads(json.dumps(current))
+    missing_formal.pop("formal_reread_states", None)
+    for parser, found in (
+        ("Python", parse_output(current_source, json.dumps(missing_formal)).errors),
+        ("browser", browser_parser_errors(current_source, missing_formal)),
+    ):
+        if not any("non-edge MRP attestation" in item for item in found):
+            errors.append(f"{parser} parser must reject a non-edge MRP row without formal or legacy attestation")
+
+    wrong_legacy = json.loads(json.dumps(missing_formal))
+    wrong_legacy["mrp_resultants"] = [
+        {"source": "B1", "type": "no_new_resultant", "graph": "none", "route": "RECURSE"}
+    ]
+    for parser, found in (
+        ("Python", parse_output(current_source, json.dumps(wrong_legacy)).errors),
+        ("browser", browser_parser_errors(current_source, wrong_legacy)),
+    ):
+        if not any("route mismatch" in item for item in found):
+            errors.append(f"{parser} parser must reject a wrong legacy non-edge resultant route")
+
+    held_source = (FIXTURE_ROOT / "valid-mrp-held-burden-activation.md").read_text(encoding="utf-8")
+    held = json.loads(
+        (FIXTURE_ROOT / "valid-mrp-held-burden-activation.field_witness.json").read_text(encoding="utf-8")
+    )
+    edge_omitted = json.loads(json.dumps(held))
+    edge_omitted["edges"] = []
+    edge_omitted["coverage_proof"]["dependency_graph"]["edges"] = []
+    for parser, found in (
+        ("Python", parse_output(held_source, json.dumps(edge_omitted)).errors),
+        ("browser", browser_parser_errors(held_source, edge_omitted)),
+    ):
+        if not any("omits graph edges" in item for item in found):
+            errors.append(f"{parser} parser must reject field-witness dependency-edge omission")
+
+    graph_mismatch = json.loads(json.dumps(held))
+    graph_mismatch["mrp_resultants"][0]["graph"] = "B2->B1"
+    for parser, found in (
+        ("Python", parse_output(held_source, json.dumps(graph_mismatch)).errors),
+        ("browser", browser_parser_errors(held_source, graph_mismatch)),
+    ):
+        if not any("graph mismatch" in item for item in found):
+            errors.append(f"{parser} parser must reject field-witness MRP graph mismatch")
+
+    current_target = json.loads(json.dumps(held))
+    current_target["mrp_resultants"] = [
+        {"source": "B1", "target": "B2", "type": "held_burden_activation", "route": "RECURSE"}
+    ]
+    for parser, found in (
+        ("Python", parse_output(held_source, json.dumps(current_target)).errors),
+        ("browser", browser_parser_errors(held_source, current_target)),
+    ):
+        if found:
+            errors.append(
+                f"{parser} parser must accept the current source/target MRP resultant shape: {found}"
+            )
 
 
 def parse_skill_output_with_browser_js(path: Path) -> dict[str, list[str]]:
@@ -1301,6 +1399,7 @@ def check_fixtures(errors: list[str]) -> None:
     seen = {path.name for path in fixtures}
     required = {
         "valid-simple-closure.md",
+        "valid-current-no-new-resultant.md",
         "valid-mrp-held-burden-activation.md",
         "valid-mrp-generated-burden.md",
         "valid-hard-compound-reconstructible.md",

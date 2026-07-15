@@ -1,20 +1,22 @@
 {
   "schema": "daee-task7-result-report-v2",
-  "report_id": "6b9fde7603cd1e2c2a8ad746cfd53b80d77886d62ccb8227318fdedd3cf67854",
+  "report_id": "7ecd75aff5c844633f0ddc6fbfdd5c71e32690cb35ff691c087ec1536a3a7bcd",
   "kind": "full-local-ci",
   "status": "PASS",
   "producer_command": [
     "python",
     "tools/write_task7_deterministic_evidence.py",
     "--build-verdict",
+    "--evidence-namespace",
+    "branch11-v1",
     "--kind",
     "full-local-ci",
     "--source-freeze",
-    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/source-freeze.json",
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/source-freeze.json",
     "--out",
-    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/full-local-ci.json"
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/full-local-ci.json"
   ],
-  "producer_command_sha256": "45a98f00a971c25d656a19182de951b523c22979f086d7bbff0425b4482d7ae9",
+  "producer_command_sha256": "3f1771506d1eb6fa92fa5f677911c7534155ac4d9befdd0d2b6209e0ef42054c",
   "producer_execution_profile": {
     "profile_id": "python-isolated-bootstrap-v2",
     "launcher": "running-interpreter",
@@ -57,14 +59,14 @@
       },
       "exit_code": 0,
       "stdout_byte_count": 529,
-      "stdout_sha256": "175e96c14622fce0556b96a893cb8dcc0d02b86b518163a861d7513f9c1b68ad",
+      "stdout_sha256": "d12cf868c630143af1e84e07b4feb9981c2c549e4894f9ea996ecbe3e3cd9660",
       "stderr_byte_count": 0,
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ],
   "check_count": 1,
   "evidence_artifacts": [],
-  "source_freeze_id": "361ce4b4bf753502e4ccf10734fe1320bdb85dd2a39aa887e728fccda52df150",
+  "source_freeze_id": "c9407bc45393b8ff06fcce20047f94509322d96a089e90d713ba812507615d60",
   "expected_final_tree_oid": "4444444444444444444444444444444444444444",
   "observed_at": "2026-07-12T12:00:00Z",
   "model_calls": 0,

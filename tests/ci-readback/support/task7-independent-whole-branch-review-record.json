@@ -1,18 +1,18 @@
 {
   "schema": "daee-task7-whole-branch-review-v1",
-  "review_id": "ab76eebcf22a698180b20b56eec97680e6c3780c26fe5900fc6e65d8b9a5923b",
+  "review_id": "78f185b2bd01777780adcbdf91b4ac1d0b289a78077255d1c8cc58a1be00705a",
   "reviewer": "/root/task3b_ci_receipt/task3b_requirements_audit",
   "owner_identity": "/root/task3b_ci_receipt",
-  "review_authorization_id": "7a0855d02777ad0386630a9db9a3287ba4359f6810c0f5ec35d1e0d7d530e323",
+  "review_authorization_id": "07d0f47dbcf781d49babea50b263fafb55d8ad5910ecc246b3af6395381e4eae",
   "review_authorization": {
-    "path": "tests/ci-readback/support/task7-independent-review-authorization.json",
+    "path": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/authorizations/independent-reviewer.json",
     "byte_count": 735,
-    "sha256": "d5245327ed19a0511af390bea11ce937e30d1315324d6b3f78a218b158ee3c2a"
+    "sha256": "a14c1c219fed59b1bfe27b55a080aaf71c45d6c627d994d9f3ce8de868dc9792"
   },
   "independent_from_owner": true,
-  "reviewed_branch": "codex/v0.4.6.0-runtime-footprint-b10",
+  "reviewed_branch": "codex/v0.4.6.0-runtime-footprint-b11",
   "reviewed_tree_oid": "4444444444444444444444444444444444444444",
-  "source_freeze_id": "361ce4b4bf753502e4ccf10734fe1320bdb85dd2a39aa887e728fccda52df150",
+  "source_freeze_id": "c9407bc45393b8ff06fcce20047f94509322d96a089e90d713ba812507615d60",
   "manifest": {
     "algorithm": "path-nul-byte-count-nul-sha256-lf-v1",
     "path_count": 2,

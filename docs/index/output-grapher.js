@@ -940,8 +940,10 @@
       if(edge&&typeof edge==='object') return `${normalizeBurden(edge.source||edge.from||'')}->${normalizeBurden(edge.target||edge.to||'')}`;
       return '';
     }).filter(edge=>edge&&edge!=='->'));
-    if(witnessEdges.size){
-      const visibleEdges=new Set((model.graphEdges||[]).map(edge=>`${edge[0]}->${edge[1]}`));
+    const visibleEdges=new Set((model.graphEdges||[]).map(edge=>`${edge[0]}->${edge[1]}`));
+    if(visibleEdges.size&&!witnessEdges.size){
+      model.errors.push(`${label}: graphable output has visible dependency edges but field_witness omits graph edges`);
+    }else if(witnessEdges.size){
       const w=[...witnessEdges].sort().join(', '), v=[...visibleEdges].sort().join(', ');
       if(w!==v) model.errors.push(`${label}: edge mismatch visible=[${v}] field_witness=[${w}]`);
     }
@@ -991,19 +993,56 @@
       if(!item||typeof item!=='object') return;
       const source=normalizeBurden(String(item.source||item.burden||item.target||item.id||'').replace(/^MRP\(/,'').replace(/\)$/,''));
       if(!source) return;
-      witnessMrp[source]={type:String(item.type||item.result_type||item.resultant||''),route:String(item.route||item.next_route||''),graph:item.graph};
+      let graphValue=item.graph;
+      if(graphValue&&typeof graphValue==='object'){
+        graphValue=`${normalizeBurden(graphValue.source||graphValue.from||'')}->${normalizeBurden(graphValue.target||graphValue.to||'')}`;
+      }else if(item.graph_delta&&typeof item.graph_delta==='object'){
+        const edges=Array.isArray(item.graph_delta.edges_added)?item.graph_delta.edges_added:[];
+        const edge=edges[0];
+        if(Array.isArray(edge)&&edge.length>=2) graphValue=`${normalizeBurden(edge[0])}->${normalizeBurden(edge[1])}`;
+        else if(edge&&typeof edge==='object') graphValue=`${normalizeBurden(edge.source||edge.from||'')}->${normalizeBurden(edge.target||edge.to||'')}`;
+        else graphValue='none';
+      }else if(graphValue===undefined||graphValue===null){
+        graphValue=(item.source&&item.target)?`${normalizeBurden(item.source)}->${normalizeBurden(item.target)}`:'none';
+      }else{
+        graphValue=normalizeWitnessGraph(graphValue);
+      }
+      witnessMrp[source]={
+        type:String(item.type||item.result_type||item.resultant||''),
+        route:String(item.route||item.next_route||''),
+        graph:normalizeWitnessGraph(graphValue)
+      };
     });
     const visibleMrpEntries=Object.entries(model.mrp||{}).filter(([_,data])=>(data.resultTypes||[]).length||(data.routes||[]).length||(data.edges||[]).length);
-    if(visibleMrpEntries.length&&!Object.keys(witnessMrp).length){
+    const visibleEdgeMrpEntries=visibleMrpEntries.filter(([_,data])=>(data.edges||[]).length);
+    if(visibleEdgeMrpEntries.length&&!Object.keys(witnessMrp).length){
       model.errors.push(`${label}: visible MRP resultants appear in prose but field_witness omits mrp_resultants`);
     }
+    const formalSources=new Set(
+      (Array.isArray(body.formal_reread_states)?body.formal_reread_states:[])
+        .filter(state=>state&&typeof state==='object')
+        .map(state=>normalizeBurden(state.source_burden||state.source||''))
+        .filter(Boolean)
+    );
     visibleMrpEntries.forEach(([burden,data])=>{
       const witness=witnessMrp[burden];
-      if(!witness){model.errors.push(`${label}: missing MRP resultant for visible MRP(${burden})`); return;}
+      if(!witness){
+        if((data.edges||[]).length) model.errors.push(`${label}: missing MRP resultant for visible MRP(${burden})`);
+        else if(!formalSources.has(burden)) model.errors.push(`${label}: non-edge MRP attestation missing for visible MRP(${burden}); provide mrp_resultants or formal_reread_states`);
+        return;
+      }
       const visibleType=(data.resultTypes||[]).slice(-1)[0]||'';
       const visibleRoute=(data.routes||[]).slice(-1)[0]||'';
       if(visibleType&&witness.type&&visibleType!==witness.type) model.errors.push(`${label}: MRP(${burden}) type mismatch visible=${visibleType} field_witness=${witness.type}`);
       if(visibleRoute&&witness.route&&visibleRoute.toUpperCase()!==witness.route.toUpperCase()) model.errors.push(`${label}: MRP(${burden}) route mismatch visible=${visibleRoute} field_witness=${witness.route}`);
+      const visibleGraphs=new Set((data.edges||[]).map(edge=>`${edge[0]}->${edge[1]}`));
+      if(visibleGraphs.size&&(!witness.graph||witness.graph==='none')){
+        model.errors.push(`${label}: MRP(${burden}) visible graph edge omitted from field_witness MRP resultant`);
+      }else if(visibleGraphs.size&&witness.graph&&witness.graph!=='none'&&!visibleGraphs.has(witness.graph)){
+        model.errors.push(`${label}: MRP(${burden}) graph mismatch visible=[${[...visibleGraphs].sort().join(', ')}] field_witness=${witness.graph}`);
+      }else if(!visibleGraphs.size&&witness.graph&&witness.graph!=='none'){
+        model.errors.push(`${label}: MRP(${burden}) graph mismatch visible=[] field_witness=${witness.graph}`);
+      }
     });
     compareFormalRereadStates(model,body,visibleMrpEntries,label);
     function normalizeTerminalSource(source){

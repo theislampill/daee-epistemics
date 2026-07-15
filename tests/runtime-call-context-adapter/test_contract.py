@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Permanent Stage01/02 runtime-call preparation integration tests.
+"""Permanent staged and composite runtime-call preparation integration tests.
 
 These tests exercise only deterministic pre-dispatch custody.  They never
 invoke a model and do not claim state-capsule-v2 or release-bearing evidence.
 """
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import sys
@@ -53,6 +54,27 @@ EMPTY_VALIDATED_STATE = {
     "live_pressure": False,
     "ambiguous": False,
 }
+COMPOSITE_STAGE = "01-08"
+COMPOSITE_COMPONENT_IDS = [
+    "raw-input",
+    "package:SKILL.md",
+    "package:references/runtime-diagnostic-core.md",
+    "package:references/runtime-core-ir.md",
+    "package:references/runtime-core-routing.md",
+    "package:references/runtime-core-recursion.md",
+    "package:references/runtime-core-pipeline.md",
+    "package:references/runtime-shard-output-release.md",
+    "package:references/runtime-shard-render-contract.md",
+]
+COMPOSITE_VISIBLE_CLAUSE_IDS = [
+    "stage02.diagnostic-ir",
+    "stage03.routing-precedence",
+    "stage04.owner-act-execution",
+    "stage05.held-initial-continuation",
+    "stage06.witness-reconstruction",
+    "stage07.output-release",
+    "stage07.render-contract",
+]
 
 
 def load_runner():
@@ -138,6 +160,168 @@ class RuntimeCallContextAdapterContract(unittest.TestCase):
             source_commit="4" * 40,
             effective_context_limit=limit,
         )
+
+    def prepare_composite(
+        self,
+        run_root: Path,
+        *,
+        limit: int = 1_000_000,
+        previous_capsule: Path | None = None,
+        harness_prompt: str | None = None,
+        validated_state: dict | None = None,
+    ):
+        return prepare_runtime_call(
+            package_root=self.package_root,
+            repo_root=ROOT,
+            run_dir=run_root,
+            call_index=1,
+            case_id="adapter-contract",
+            stage=COMPOSITE_STAGE,
+            raw_input_path=self.raw_input(run_root),
+            previous_capsule_path=previous_capsule,
+            harness_prompt=harness_prompt,
+            validated_state=(
+                dict(EMPTY_VALIDATED_STATE)
+                if validated_state is None
+                else validated_state
+            ),
+            source_commit="4" * 40,
+            effective_context_limit=limit,
+        )
+
+    def test_composite_stage_binds_exact_ordered_package_union_without_capsule_or_harness(self):
+        with tempfile.TemporaryDirectory() as td:
+            prepared = self.prepare_composite(Path(td))
+            context = json.loads(prepared.context_path.read_text(encoding="utf-8"))
+            parity = json.loads(prepared.parity_path.read_text(encoding="utf-8"))
+            prompt = prepared.prompt_path.read_bytes()
+
+            self.assertEqual(context["selection"]["candidate_components"], COMPOSITE_COMPONENT_IDS)
+            self.assertEqual(context["selection"]["selected_components"], COMPOSITE_COMPONENT_IDS)
+            self.assertEqual([row["component_id"] for row in context["components"]], COMPOSITE_COMPONENT_IDS)
+            self.assertEqual(
+                [row["prompt_start_byte"] for row in context["components"]],
+                sorted(row["prompt_start_byte"] for row in context["components"]),
+            )
+            self.assertTrue(context["input"]["included"])
+            self.assertEqual(
+                context["state_capsule"],
+                {"bootstrap": True, "path": None, "sha256": None, "included": False, "validated": False},
+            )
+            self.assertFalse((prepared.call_root / "previous-capsule.json").exists())
+            self.assertFalse((prepared.call_root / "harness-stage-prompt.md").exists())
+            self.assertEqual(context["runtime"]["evidence_lane"], "package-faithful")
+            self.assertEqual(context["proof_mode"], "package-faithful")
+            self.assertTrue(any("does not prove Stage01-Stage08 completion" in claim for claim in context["non_claims"]))
+
+            telemetry = context["budget_telemetry"]
+            self.assertEqual(telemetry["effective_context_bytes"], len(prompt))
+            self.assertEqual(
+                telemetry["runtime_component_bytes"],
+                sum(row["byte_count"] for row in context["components"] if row["kind"] not in {"raw-input", "state-capsule", "harness-supplement", "local-excerpt"}),
+            )
+            self.assertEqual(
+                telemetry["transport_frame_bytes"],
+                len(prompt) - sum(row["byte_count"] for row in context["components"]),
+            )
+            self.assertEqual(telemetry["capsule_bytes"], 0)
+            self.assertEqual(telemetry["local_excerpt_bytes"], 0)
+
+            self.assertEqual(parity["classification"], "package-faithful")
+            self.assertEqual(parity["harness_supplements"], [])
+            self.assertEqual(parity["model_visible_clause_ids"], COMPOSITE_VISIBLE_CLAUSE_IDS)
+            adapter = next(row for row in parity["artifacts"] if row["kind"] == "adapter")
+            self.assertEqual((adapter["scope"], adapter["path"]), ("repo", "tools/runtime_call_context_adapter.py"))
+            self.assertEqual(adapter["sha256"], hashlib.sha256((ROOT / adapter["path"]).read_bytes()).hexdigest())
+
+            self.assertEqual(validate_context(context, self.package_root, prepared.call_root)["status"], "pass")
+            self.assertEqual(validate_parity(parity, self.package_root, prepared.call_root, ROOT)["status"], "pass")
+
+    def test_composite_stage_rejects_harness_capsule_and_dynamic_state_before_artifacts(self):
+        cases = [
+            ("harness", {"harness_prompt": "extra semantic instructions\n"}, "must not receive a harness prompt"),
+            ("capsule", {"previous_capsule": V1_CAPSULE}, "must not receive a previous capsule"),
+            (
+                "dynamic-state",
+                {"validated_state": dict(EMPTY_VALIDATED_STATE, route_shards=["references/runtime-core-routing.md"])},
+                "requires exact empty validated state",
+            ),
+        ]
+        for label, kwargs, message in cases:
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as td:
+                run_root = Path(td)
+                with self.assertRaisesRegex(RuntimeCallPreparationError, message):
+                    self.prepare_composite(run_root, **kwargs)
+                self.assertFalse((run_root / "runtime-calls").exists())
+
+    def test_composite_stage_enforces_actual_prompt_byte_limit_before_artifacts(self):
+        with tempfile.TemporaryDirectory() as td:
+            run_root = Path(td)
+            with self.assertRaisesRegex(RuntimeCallPreparationError, "effective context bytes .* exceed limit"):
+                self.prepare_composite(run_root, limit=1)
+            self.assertFalse((run_root / "runtime-calls").exists())
+
+    def test_composite_checker_rejects_component_order_and_actual_byte_telemetry_drift(self):
+        with tempfile.TemporaryDirectory() as td:
+            prepared = self.prepare_composite(Path(td))
+            context = json.loads(prepared.context_path.read_text(encoding="utf-8"))
+
+            reordered = json.loads(json.dumps(context))
+            reordered["components"][1], reordered["components"][2] = reordered["components"][2], reordered["components"][1]
+            with self.assertRaisesRegex(ContextFailure, "component order"):
+                validate_context(reordered, self.package_root, prepared.call_root)
+
+            underreported = json.loads(json.dumps(context))
+            underreported["budget_telemetry"]["effective_context_bytes"] -= 1
+            with self.assertRaisesRegex(ContextFailure, "effective context byte telemetry"):
+                validate_context(underreported, self.package_root, prepared.call_root)
+
+    def test_composite_checker_rejects_unregistered_framing_and_prior_output_claim(self):
+        for mutation in ("unregistered-framing", "prior-output-claim"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as td:
+                prepared = self.prepare_composite(Path(td))
+                context = json.loads(prepared.context_path.read_text(encoding="utf-8"))
+                if mutation == "prior-output-claim":
+                    context["prompt"]["includes_prior_full_output"] = True
+                    expected = "prior full output"
+                else:
+                    extra = b"unregistered semantic transport frame\n"
+                    prompt = prepared.prompt_path.read_bytes() + extra
+                    prepared.prompt_path.write_bytes(prompt)
+                    context["prompt"]["sha256"] = hashlib.sha256(prompt).hexdigest()
+                    context["prompt"]["byte_count"] = len(prompt)
+                    context["budget_telemetry"]["effective_context_bytes"] = len(prompt)
+                    context["budget_telemetry"]["transport_frame_bytes"] += len(extra)
+                    expected = "exact adapter serialization"
+                with self.assertRaisesRegex(ContextFailure, expected):
+                    validate_context(context, self.package_root, prepared.call_root)
+
+    def test_package_component_run_alias_false_pass_is_rejected_by_context_and_parity(self):
+        with tempfile.TemporaryDirectory() as td:
+            prepared = self.prepare_composite(Path(td))
+            context = json.loads(prepared.context_path.read_text(encoding="utf-8"))
+            parity = json.loads(prepared.parity_path.read_text(encoding="utf-8"))
+            component = next(
+                row
+                for row in context["components"]
+                if row["component_id"] == "package:references/runtime-core-routing.md"
+            )
+            alias = prepared.call_root / "package-component-alias.bin"
+            alias.write_bytes((self.package_root / component["source_path"]).read_bytes())
+            component["source_path"] = "run://package-component-alias.bin"
+
+            with self.subTest(validator="runtime-context"):
+                with self.assertRaisesRegex(ContextFailure, "resolver-owned source path"):
+                    validate_context(context, self.package_root, prepared.call_root)
+
+            context_bytes = (json.dumps(context, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+            prepared.context_path.write_bytes(context_bytes)
+            context_artifact = next(row for row in parity["artifacts"] if row["kind"] == "call-context")
+            context_artifact["sha256"] = hashlib.sha256(context_bytes).hexdigest()
+            context_artifact["byte_count"] = len(context_bytes)
+            with self.subTest(validator="package-parity"):
+                with self.assertRaisesRegex(ParityFailure, "resolver-owned source path"):
+                    validate_parity(parity, self.package_root, prepared.call_root, ROOT)
 
     def test_stage01_binds_raw_input_skill_and_kernel_clause_inventory(self):
         with tempfile.TemporaryDirectory() as td:

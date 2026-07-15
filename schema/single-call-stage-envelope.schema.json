@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dawah.wiki/schema/single-call-stage-envelope.schema.json",
+  "title": "DAEE single-call stage envelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "envelope_nonce",
+    "case_id",
+    "cycle_id",
+    "candidate_binding",
+    "input_binding",
+    "stage_records",
+    "stage08_request",
+    "non_claims"
+  ],
+  "properties": {
+    "schema": {"const": "daee-single-call-stage-envelope-v1"},
+    "envelope_nonce": {"$ref": "#/$defs/nonce"},
+    "case_id": {"type": "string", "minLength": 1},
+    "cycle_id": {"type": "string", "minLength": 1},
+    "candidate_binding": {"$ref": "#/$defs/candidate_binding"},
+    "input_binding": {"$ref": "#/$defs/input_binding"},
+    "stage_records": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "oneOf": [
+          {"$ref": "#/$defs/model_stage_record"},
+          {"$ref": "#/$defs/stage07_declaration"}
+        ]
+      }
+    },
+    "stage08_request": {"$ref": "#/$defs/stage08_request"},
+    "non_claims": {
+      "const": [
+        "stage08_checker_owned_not_model_authored",
+        "structural_pass_not_semantic_truth",
+        "one_capture_not_campaign_success"
+      ]
+    }
+  },
+  "$defs": {
+    "nonce": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "string_list": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "candidate_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "source_commit",
+        "candidate_record_sha256",
+        "candidate_maturity_sha256",
+        "archive_sha256",
+        "package_tree_sha256",
+        "skill_sha256",
+        "build_manifest_sha256"
+      ],
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1},
+        "source_commit": {"$ref": "#/$defs/source_commit"},
+        "candidate_record_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_maturity_sha256": {"$ref": "#/$defs/sha256"},
+        "archive_sha256": {"$ref": "#/$defs/sha256"},
+        "package_tree_sha256": {"$ref": "#/$defs/sha256"},
+        "skill_sha256": {"$ref": "#/$defs/sha256"},
+        "build_manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "input_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256", "byte_count"],
+      "properties": {
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "model_stage_record": {
+      "type": "object",
+      "required": ["id", "status", "produces", "requires"],
+      "properties": {
+        "id": {
+          "enum": [
+            "stage-01-intake",
+            "stage-02-layer-a-diagnostic-ir",
+            "stage-03-routing-owner-gate",
+            "stage-04-burden-execution-act",
+            "stage-05-mrp-reread-terminal-state",
+            "stage-06-field-witness-nar"
+          ]
+        },
+        "status": {"enum": ["pass", "held", "partial"]},
+        "produces": {"$ref": "#/$defs/string_list"},
+        "requires": {"$ref": "#/$defs/string_list"}
+      }
+    },
+    "stage07_declaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "status",
+        "produces",
+        "requires",
+        "release_output_transport",
+        "release_terminal_states",
+        "closure_claim",
+        "output_is_full_governed_answer"
+      ],
+      "properties": {
+        "id": {"const": "stage-07-release-output"},
+        "status": {"const": "pass"},
+        "produces": {"const": ["release_output", "release_terminal_states"]},
+        "requires": {"const": ["field_witness_body_refs", "nar_burdens"]},
+        "release_output_transport": {"const": "exact-tail-after-marker"},
+        "release_terminal_states": {
+          "type": "object",
+          "additionalProperties": {"type": "string", "minLength": 1}
+        },
+        "closure_claim": {"enum": ["complete", "hold", "partial", "recurse"]},
+        "output_is_full_governed_answer": {"const": true}
+      }
+    },
+    "stage08_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "owner", "input"],
+      "properties": {
+        "id": {"const": "stage-08-verifier-sidecars"},
+        "status": {"const": "pending-checker"},
+        "owner": {"const": "private-source-bound-checker"},
+        "input": {"const": "exact-stage07-tail"}
+      }
+    }
+  }
+}

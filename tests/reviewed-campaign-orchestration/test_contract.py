@@ -3,10 +3,14 @@ from __future__ import annotations
 import hashlib
 import json
 import copy
+import os
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timezone
+from unittest import mock
 from pathlib import Path
 
 
@@ -16,11 +20,13 @@ if str(TOOLS) not in sys.path:
     sys.path.insert(0, str(TOOLS))
 
 from check_parallel_dispatch_manifest import validate_dispatch_manifest
-from campaign_usage_ledger import head_snapshot, recover_orphan, reserve, validate_head
+from campaign_usage_ledger import _provider_facts, head_snapshot, recover_orphan, reserve, settle, validate_head
+from build_cold_review_packet import build as build_cold_review_packet
+import execution_tooling_manifest as tooling_manifest
 from reviewed_campaign_orchestrator import (
     CampaignError,
     _contained,
-    claim_initial_assessments,
+    claim_initial_assessments as _claim_initial_assessments,
     extract_mature_candidate_identity,
     ingest_final_adjudication,
     run_cold_review_cohort,
@@ -29,7 +35,13 @@ from reviewed_campaign_orchestrator import (
     validate_retry_lineage,
     record_sha256,
 )
-from build_cold_review_packet import build as build_cold_review_packet
+
+
+def claim_initial_assessments(*args, **kwargs):
+    """Legacy deterministic-fake helper; production tests use the real API directly."""
+    if "allow_test_fixture" in kwargs:
+        raise AssertionError("fake helper owns the explicit test-only compatibility switch")
+    return _claim_initial_assessments(*args, allow_test_fixture=True, **kwargs)
 
 
 CASES = [
@@ -66,6 +78,24 @@ def ref(root: Path, path: Path) -> dict[str, object]:
         "byte_count": len(raw),
         "sha256": hashlib.sha256(raw).hexdigest(),
     }
+
+
+def synthetic_execution_tooling_manifest(source_commit: str) -> dict[str, object]:
+    value: dict[str, object] = {
+        "schema": "daee-stage07-execution-tooling-manifest-v1",
+        "kind": "execution-tooling-manifest",
+        "source_commit": source_commit,
+        "source_tree": "a" * 40,
+        "profile": "stage07-release",
+        "membership": {"snapshot_roots": ["tools", "schema"], "runtime_resources": ["tests/fixture"]},
+        "result_order": ["fixture-check"],
+        "file_count": 1,
+        "aggregate_algorithm": "sha256-domain-canonical-json-stage07-tooling-v1",
+        "aggregate_sha256": "",
+        "files": [{"path": "tools/fixture.py", "git_mode": "100644", "blob_oid": "b" * 40, "byte_count": 8, "sha256": "c" * 64}],
+    }
+    value["aggregate_sha256"] = tooling_manifest._aggregate_sha256(value)
+    return value
 
 
 class FakeNoDispatchAdapter:
@@ -704,6 +734,8 @@ class ReviewedCampaignOrchestrationTests(unittest.TestCase):
                 allow_test_fixture=True,
             )
             self.assertEqual(completion["status"], "PRODUCER_STRUCTURAL_COMPLETE")
+            self.assertEqual(completion["review_protocol"], ref(fixture.root, fixture.protocol))
+            self.assertEqual(completion["review_protocol_sha256"], digest(fixture.protocol))
             self.assertEqual(len(completion["results"]), 5)
             self.assertFalse(validate_dispatch_manifest(completion["dispatch_manifest"], 5))
             first_observe = next(i for i, row in enumerate(adapter.log) if row[0] == "observe")
@@ -818,7 +850,7 @@ class ReviewedCampaignOrchestrationTests(unittest.TestCase):
             with self.assertRaisesRegex(CampaignError, "CREATE_ONCE"):
                 claim_initial_assessments(fixture.root, completion, assessments, claimant="human:task6-assessor")
 
-    def test_cli_live_provider_is_fail_closed(self) -> None:
+    def test_cli_live_provider_requires_exact_executable_before_claim(self) -> None:
         with tempfile.TemporaryDirectory(prefix="daee-task6-cli-") as temp:
             fixture = Fixture(Path(temp))
             proc = subprocess.run(
@@ -837,8 +869,8 @@ class ReviewedCampaignOrchestrationTests(unittest.TestCase):
                 capture_output=True,
                 timeout=20,
             )
-            self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
-            self.assertIn("LIVE_PROVIDER_UNSUPPORTED", proc.stdout)
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            self.assertIn("LIVE_PROVIDER_EXACT_CUSTODY_AUTHORIZATION_AND_EXECUTABLE_REQUIRED", proc.stdout)
             self.assertFalse((fixture.root / "claims").exists())
 
     def test_cold_review_requires_assessments_then_discloses_exact_packets_and_uses_barrier(self) -> None:
@@ -2263,6 +2295,2105 @@ class ReviewedCampaignOrchestrationTests(unittest.TestCase):
             self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
             self.assertIn("LIVE_PROVIDER_UNSUPPORTED", proc.stdout)
             self.assertFalse((fixture.root / "claims").exists())
+
+
+class _CompletedCodexProcess:
+    def __init__(self, pid: int, log: list[tuple[str, str]], worker: str, *, returncode: int = 0, interrupt: bool = False, timeout: bool = False, already_exited: bool = False, on_success: object | None = None) -> None:
+        self.pid = pid
+        self._log = log
+        self._worker = worker
+        self._complete = already_exited
+        self._returncode = returncode
+        self._interrupt = interrupt
+        self._timeout = timeout
+        self._on_success = on_success
+        self.owned_descendant_active = not already_exited
+        self.wait_timeouts: list[float | None] = []
+
+    def poll(self) -> int | None:
+        return self._returncode if self._complete else None
+
+    def wait(self, timeout: float | None = None) -> int:
+        self._log.append(("observe", self._worker))
+        self.wait_timeouts.append(timeout)
+        if self._interrupt:
+            self._interrupt = False
+            raise KeyboardInterrupt("injected observation interrupt")
+        if self._timeout:
+            self._timeout = False
+            raise subprocess.TimeoutExpired("fixture-codex", timeout or 1)
+        self._complete = True
+        if self._returncode == 0:
+            if callable(self._on_success):
+                self._on_success()
+                self._on_success = None
+            self.owned_descendant_active = False
+        return self._returncode
+
+
+class _StartedProcessFailure(RuntimeError):
+    def __init__(self, process: _CompletedCodexProcess) -> None:
+        super().__init__("injected submit failure after process start")
+        self.process = process
+
+
+class _ScriptedCodexHost:
+    """No-network process double for the production adapter boundary."""
+
+    def __init__(self, *, fail_probe: bool = False, fail_start_at: int | None = None, fail_after_start_at: int | None = None, nonzero_at: int | None = None, interrupt_at: int | None = None, timeout_at: int | None = None, already_exited_at: int | None = None, credential_residue_at: int | None = None, credential_residue_encoding: str = "utf-8") -> None:
+        self.fail_probe = fail_probe
+        self.fail_start_at = fail_start_at
+        self.fail_after_start_at = fail_after_start_at
+        self.nonzero_at = nonzero_at
+        self.interrupt_at = interrupt_at
+        self.timeout_at = timeout_at
+        self.already_exited_at = already_exited_at
+        self.credential_residue_at = credential_residue_at
+        self.credential_residue_encoding = credential_residue_encoding
+        self.log: list[tuple[str, str]] = []
+        self.starts: list[dict[str, object]] = []
+        self.processes: list[_CompletedCodexProcess] = []
+        self.aborted: list[int] = []
+        self.verified: list[int] = []
+
+    def probe(self, executable: Path, *, access_token: str) -> dict[str, object]:
+        self.log.append(("probe", executable.name))
+        if self.fail_probe:
+            raise RuntimeError("injected local capability failure")
+        return {
+            "version": "codex-cli 0.130.0-alpha.5",
+            "executable_sha256": hashlib.sha256(executable.read_bytes()).hexdigest(),
+            "catalog_row": {"slug": "gpt-5.5", "supported_reasoning_efforts": ["none", "low", "medium", "high"]},
+            "canonical_exec_flags": ["--json", "--ephemeral", "--ignore-user-config", "--ignore-rules", "-C", "-s", "-m", "-c", "--output-last-message", "-"],
+            "auth_available": bool(access_token),
+        }
+
+    def start(
+        self,
+        command: list[str],
+        *,
+        cwd: Path,
+        env: dict[str, str],
+        prompt_path: Path,
+        event_log_path: Path,
+        stderr_path: Path,
+        output_path: Path,
+        worker: str,
+    ) -> _CompletedCodexProcess:
+        self.log.append(("start", worker))
+        ordinal = len(self.starts) + 1
+        if self.fail_start_at == ordinal:
+            raise RuntimeError("injected submit failure")
+        thread_id = f"thread-{len(self.starts) + 1:02d}"
+        event_log_path.write_bytes(
+            canonical({"type": "thread.started", "thread_id": thread_id})
+            + canonical({"type": "turn.started"})
+        )
+        stderr_path.write_bytes(b"")
+
+        def complete_successfully() -> None:
+            event_log_path.write_bytes(
+                event_log_path.read_bytes()
+                + canonical({"type": "turn.completed", "usage": {"input_tokens": 10, "cached_input_tokens": 2, "output_tokens": 20}})
+            )
+            output_path.write_text(f"captured output for {worker}\n", encoding="utf-8", newline="\n")
+        self.starts.append(
+            {
+                "command": list(command),
+                "cwd": cwd,
+                "env": dict(env),
+                "prompt": prompt_path.read_bytes(),
+                "runtime_core_routing": (cwd / "references/runtime-core-routing.md").read_bytes(),
+                "event_log_path": event_log_path,
+                "output_path": output_path,
+                "worker": worker,
+            }
+        )
+        if self.credential_residue_at == ordinal:
+            residue = Path(env["TEMP"]) / "credential-residue.bin"
+            residue.write_bytes(env["CODEX_ACCESS_TOKEN"].encode(self.credential_residue_encoding))
+        process = _CompletedCodexProcess(
+            1000 + len(self.starts), self.log, worker,
+            returncode=9 if self.nonzero_at == ordinal else 0,
+            interrupt=self.interrupt_at == ordinal,
+            timeout=self.timeout_at == ordinal,
+            already_exited=self.already_exited_at == ordinal,
+            on_success=complete_successfully,
+        )
+        self.processes.append(process)
+        if self.fail_after_start_at == ordinal:
+            raise _StartedProcessFailure(process)
+        return process
+
+    def terminate_tree(self, process: _CompletedCodexProcess) -> None:
+        self.aborted.append(process.pid)
+        process._complete = True
+        process.owned_descendant_active = False
+
+    def verify_tree_stopped(self, process: _CompletedCodexProcess) -> bool:
+        self.verified.append(process.pid)
+        return process.poll() is not None and not process.owned_descendant_active
+
+
+class _ScriptedCodexTestAdapter:
+    """Non-provider wrapper for production-shaped adapter contract tests."""
+
+    def __init__(
+        self,
+        *,
+        custody_root: Path,
+        codex_executable: Path,
+        host: _ScriptedCodexHost,
+        command_timeout_seconds: int = 30,
+        fixture_token: str = "non-provider-scripted-fixture-token",
+    ) -> None:
+        from codex_live_producer_adapter import CodexLiveProducerAdapter
+
+        if not isinstance(host, _ScriptedCodexHost):
+            raise TypeError("scripted Codex test adapter requires the local non-provider test host")
+        self._host = host
+        self._executable = codex_executable
+        self._fixture_token = fixture_token
+        self._inner = CodexLiveProducerAdapter(
+            custody_root=custody_root,
+            codex_executable=codex_executable,
+            access_token=fixture_token,
+            host=host,
+            command_timeout_seconds=command_timeout_seconds,
+        )
+        self._capability: dict[str, object] | None = None
+
+    def capability(self) -> dict[str, object]:
+        probe = self._host.probe(
+            self._executable,
+            access_token=self._fixture_token,
+        )
+        self._capability = {
+            "schema": "reviewed-campaign-provider-capability-v1",
+            "adapter_kind": "codex-scripted-test-no-provider",
+            "adapter_version": "codex-scripted-test-v1",
+            "host_application_version": probe["version"],
+            "codex_executable_sha256": probe["executable_sha256"],
+            "model": "gpt-5.5",
+            "reasoning_effort": "high",
+            "test_only": True,
+            "paid_provider_reachable": False,
+            "live_execution_authorized": False,
+        }
+        self._inner._capability = copy.deepcopy(self._capability)
+        return copy.deepcopy(self._capability)
+
+    def prepare(
+        self,
+        auth: dict[str, object],
+        bindings: dict[str, object],
+        *,
+        allow_test_fixture: bool = False,
+    ) -> None:
+        if not allow_test_fixture:
+            raise RuntimeError("scripted Codex adapter is test-only")
+        if self._capability is None:
+            raise RuntimeError("scripted Codex capability must be established first")
+        self._inner.prepare(auth, bindings, allow_test_fixture=True)
+
+    def submit(self, execution_custody: dict[str, object]) -> dict[str, object]:
+        return self._inner.submit(execution_custody)
+
+    def submit_tail(self, execution_custodies: list[dict[str, object]]) -> list[dict[str, object]]:
+        return self._inner.submit_tail(execution_custodies)
+
+    def observe(self, handle: str, execution_custody: dict[str, object]) -> dict[str, object]:
+        return self._inner.observe(handle, execution_custody)
+
+    def execution_bindings(self) -> dict[str, dict[str, object]]:
+        return self._inner.execution_bindings()
+
+    def attempt_states(self) -> dict[str, dict[str, object]]:
+        return self._inner.attempt_states()
+
+    def abort_all(self) -> None:
+        self._inner.abort_all()
+
+    def __getattr__(self, name: str) -> object:
+        return getattr(self._inner, name)
+
+
+class LiveProducerContractTests(unittest.TestCase):
+    def _live_fixture(
+        self,
+        root: Path,
+        *,
+        full_tooling: bool = False,
+        command_timeout_seconds: int = 30,
+    ) -> tuple[Fixture, Path, Path, bytes]:
+        fixture = Fixture(root)
+        if full_tooling:
+            import checker_execution_snapshot as checker_snapshot
+            import run_staged_current_skill_smoke as stage_runner
+
+            plan = stage_runner.stage07_release_invocation_plan(
+                ROOT,
+                ROOT / ".daee" / "production-shaped-tooling-manifest-output.md",
+            )
+            for relative, source in checker_snapshot.execution_snapshot_sources(root=ROOT, plan=plan).items():
+                destination = root / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, destination)
+
+            def git(*arguments: str) -> str:
+                completed = subprocess.run(
+                    ["git", *arguments],
+                    cwd=root,
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                    timeout=120,
+                )
+                if completed.returncode != 0:
+                    raise AssertionError(completed.stdout + completed.stderr)
+                return completed.stdout.strip()
+
+            git("init", "--quiet")
+            git("config", "core.autocrlf", "false")
+            git("config", "user.email", "live-producer-fixture@example.invalid")
+            git("config", "user.name", "Live Producer Fixture")
+            git("add", "--all", "--", "tools", "schema", "atomics", "tests")
+            git("commit", "--quiet", "-m", "exact tooling fixture")
+            fixture.source_commit = git("rev-parse", "HEAD")
+        package_root = root / "candidate/extracted"
+        manifest = json.loads((ROOT / "skill/build-manifest.json").read_text(encoding="utf-8"))
+        for listed in manifest["canonical_package_files"]:
+            relative = Path(listed.removeprefix("skill/"))
+            source = ROOT / "skill" / relative
+            destination = package_root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, destination)
+        skill_bytes = (package_root / "SKILL.md").read_bytes()
+        fixture.package_tree_sha = __import__("artifact_tree").tree_sha256(package_root)
+        registry = json.loads(fixture.registry.read_text(encoding="utf-8"))
+        for index, row in enumerate(registry["cases"], 1):
+            raw = f"canonical input {index} for {row['case_id']}\n".encode()
+            target = root / row["input_path"]
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(raw)
+            row["raw_bytes"] = len(raw)
+            row["raw_sha256"] = hashlib.sha256(raw).hexdigest()
+        write_json(fixture.registry, registry)
+        protocol = json.loads(fixture.protocol.read_text(encoding="utf-8"))
+        protocol["input_registry"] = {
+            "path": fixture.registry.relative_to(root).as_posix(),
+            "sha256": digest(fixture.registry),
+        }
+        write_json(fixture.protocol, protocol)
+        # Refresh the fake Task6 bindings after the exact registry/protocol bytes change.
+        package = json.loads(fixture.package.read_text(encoding="utf-8"))
+        package["registry_sha256"] = digest(fixture.registry)
+        package.update(
+            {
+                "source_commit": fixture.source_commit,
+                "candidate_root": "candidate",
+                "extracted_root": "extracted",
+                "package_tree_sha256": fixture.package_tree_sha,
+                "skill_root": ref(root, package_root / "SKILL.md"),
+                "build_manifest": ref(root, package_root / "build-manifest.json"),
+            }
+        )
+        write_json(fixture.package, package)
+        preflight = json.loads(fixture.preflight.read_text(encoding="utf-8"))
+        preflight["registry_sha256"] = digest(fixture.registry)
+        preflight["source_commit"] = fixture.source_commit
+        preflight["review_protocol_sha256"] = digest(fixture.protocol)
+        write_json(fixture.preflight, preflight)
+        candidate = json.loads(fixture.candidate.read_text(encoding="utf-8"))
+        candidate["package_record_sha256"] = digest(fixture.package)
+        candidate["source_commit"] = fixture.source_commit
+        candidate["package_tree_sha256"] = fixture.package_tree_sha
+        candidate["source_preflight_sha256"] = digest(fixture.preflight)
+        candidate["registry_sha256"] = digest(fixture.registry)
+        candidate["review_protocol_sha256"] = digest(fixture.protocol)
+        write_json(fixture.candidate, candidate)
+        executable = root / "bin/codex.exe"
+        executable.parent.mkdir(parents=True)
+        executable.write_bytes(b"bounded codex executable fixture\n")
+        initial_head = head_snapshot(root / "usage")
+        tooling_path = root / "authorizations/stage07-execution-tooling.json"
+        if full_tooling:
+            tooling_ref = tooling_manifest.publish_execution_tooling_manifest(
+                root=root,
+                source_commit=fixture.source_commit,
+                output_path=tooling_path.relative_to(root),
+            )
+        else:
+            write_json(tooling_path, synthetic_execution_tooling_manifest(fixture.source_commit))
+            tooling_ref = ref(root, tooling_path)
+        matrix_tooling_ref = {"path": tooling_ref["path"], "sha256": tooling_ref["sha256"]}
+        registry_value = json.loads(fixture.registry.read_text(encoding="utf-8"))
+        case_inputs = [
+            {"case_id": row["case_id"], "input_sha256": row["raw_sha256"]}
+            for row in registry_value["cases"]
+        ]
+        branch = "codex/v0.4.6.0-runtime-footprint-b11"
+        parent = {
+            "schema": "reviewed-campaign-owner-authorization-v1",
+            "kind": "reviewed-five-smoke-campaign",
+            "authorization_id": "owner-five-smoke-01",
+            "status": "ACTIVE",
+            "revoked": False,
+            "valid_not_before": "2026-07-12T00:00:00Z",
+            "valid_not_after": "2099-07-12T02:00:00Z",
+            "branch": branch,
+            "source_commit": fixture.source_commit,
+            "source_preflight": {"path": fixture.preflight.relative_to(root).as_posix(), "sha256": digest(fixture.preflight)},
+            "candidate_id": fixture.candidate_id,
+            "candidate_state": "READY_UNUSED",
+            "candidate_claim_status": "UNCLAIMED",
+            "package_profile": "execution-mini",
+            "package_sha256": fixture.package_sha,
+            "package_tree_sha256": fixture.package_tree_sha,
+            "input_registry": {"path": fixture.registry.relative_to(root).as_posix(), "sha256": digest(fixture.registry)},
+            "review_protocol": {"path": fixture.protocol.relative_to(root).as_posix(), "sha256": digest(fixture.protocol)},
+            "action": "RUN_REVIEWED_FIVE_SMOKE",
+            "lane": "producer",
+            "model_runner": "codex",
+            "producer_model": "gpt-5.5",
+            "producer_reasoning_effort": "high",
+            "authorized_calls": 5,
+            "case_inputs": case_inputs,
+            "automatic_retry_authorized": False,
+            "optional_opus_authorized": False,
+        }
+        parent["authorization_sha256"] = record_sha256(parent)
+        parent_path = root / "authorizations/owner-five-smoke.json"
+        write_json(parent_path, parent)
+        matrix = {
+            "schema": "daee-smoke-matrix-v1",
+            "kind": "matrix-authorization",
+            "authorization_id": "live-producer-child-01",
+            "action": "RUN_REVIEWED_FIVE_SMOKE",
+            "one_use": True,
+            "candidate_id": fixture.candidate_id,
+            "candidate_record": {"path": fixture.package.relative_to(root).as_posix(), "sha256": digest(fixture.package)},
+            "candidate_readiness": {"path": fixture.candidate.relative_to(root).as_posix(), "sha256": digest(fixture.candidate)},
+            "candidate_maturity": {"path": fixture.candidate.relative_to(root).as_posix(), "sha256": digest(fixture.candidate)},
+            "source_commit_receipt": {"path": fixture.preflight.relative_to(root).as_posix(), "sha256": digest(fixture.preflight)},
+            "source_preflight": {"path": fixture.preflight.relative_to(root).as_posix(), "sha256": digest(fixture.preflight)},
+            "package_sha256": fixture.package_sha,
+            "package_tree_sha256": fixture.package_tree_sha,
+            "tree_digest_algorithm": "daee-tree-sha256-v1",
+            "input_registry": {"path": fixture.registry.relative_to(root).as_posix(), "sha256": digest(fixture.registry)},
+            "review_protocol": {"path": fixture.protocol.relative_to(root).as_posix(), "sha256": digest(fixture.protocol)},
+            "producer_model": "gpt-5.5",
+            "producer_reasoning_effort": "high",
+            "cold_review_model": "gpt-5.6-sol",
+            "cold_review_reasoning_effort": "xhigh",
+            "optional_opus_authorized": False,
+            "paid_execution_authorized": True,
+            "execution_lane": "producer",
+            "execution_mode": "LIVE_CODEX",
+            "test_only": False,
+            "live_execution_authorized": True,
+            "source_commit": fixture.source_commit,
+            "branch": branch,
+            "campaign_authorization": {"path": parent_path.relative_to(root).as_posix(), "sha256": digest(parent_path)},
+            "campaign_authorization_sha256": digest(parent_path),
+            "execution_tooling_manifest": matrix_tooling_ref,
+            "cycle_id": "live-cycle-01",
+            "launch_not_before": "2026-07-12T00:00:00Z",
+            "launch_not_after": "2099-07-12T01:00:00Z",
+            "expected_campaign_usage_sequence": initial_head["sequence"],
+            "expected_campaign_usage_head_sha256": initial_head["head_sha256"],
+            "case_inputs": case_inputs,
+            "candidate_state_at_authorization": "READY_UNUSED",
+            "candidate_claim_status_at_authorization": "UNCLAIMED",
+            "candidate_package_root": "candidate/extracted",
+            "model_runner": "codex",
+            "resolved_model": "gpt-5.5",
+            "adapter_version": "codex-live-v1",
+            "host_application_version": "codex-cli 0.130.0-alpha.5",
+            "codex_executable_sha256": hashlib.sha256(executable.read_bytes()).hexdigest(),
+            "provider_settings": {
+                "response_surface": "package-faithful",
+                "delivery_mode": "explicit-prompt-components",
+                "effective_context_limit_bytes": 1000000,
+                "command_timeout_seconds": command_timeout_seconds,
+                "parallelism": 5,
+                "fresh_context_per_case": True,
+                "submit_before_observe": True,
+                "sandbox": "read-only",
+                "approval_policy": "never",
+                "ignore_user_config": True,
+                "ignore_rules": True,
+                "ephemeral": True,
+            },
+            "cohort_size": 5,
+            "cohort_protocol": "barrier-five-submit-before-await-v1",
+            "case_ids": CASES,
+            "isolated_root_prefix": "producer/isolated",
+            "usage_ledger_root": "usage",
+            "authorization_claim_path": "claims/producer-authorization.json",
+            "candidate_claim_path": "claims/candidate.json",
+            "observation_finalizer_path": "producer/observation-finalizer.json",
+            "prompt_retention_root": "producer/prompts",
+            "output_retention_root": "producer/raw-outputs",
+            "provider_receipt_root": "producer/provider-receipts",
+            "structural_evidence_root": "producer/structural-evidence",
+        }
+        matrix["authorization_sha256"] = record_sha256(matrix)
+        matrix_path = root / "authorizations/matrix-live.json"
+        write_json(matrix_path, matrix)
+        return fixture, matrix_path, executable, skill_bytes
+
+    def _live_preparation_inputs(
+        self,
+        root: Path,
+    ) -> tuple[Fixture, dict[str, object], dict[str, object], object]:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        fixture, authorization, executable, _skill_bytes = self._live_fixture(root)
+        auth, auth_sha = orchestrator._load_producer_authorization(
+            fixture.root,
+            authorization,
+            allow_test_fixture=True,
+        )
+        bindings = orchestrator._validate_common_bindings(
+            fixture.root,
+            auth,
+            allow_test_fixture=True,
+        )
+        bindings["producer_output_contracts"] = orchestrator._producer_output_contracts(
+            auth,
+            auth_sha,
+            bindings,
+        )
+        adapter = _ScriptedCodexTestAdapter(
+            custody_root=fixture.root,
+            codex_executable=executable,
+            host=_ScriptedCodexHost(),
+            command_timeout_seconds=30,
+        )
+        adapter.capability()
+        return fixture, auth, bindings, adapter
+
+    def _adapter_submission_fixture(
+        self,
+        root: Path,
+        host: _ScriptedCodexHost,
+        *,
+        timeout: int = 30,
+    ) -> tuple[object, dict[str, object], Path, Path]:
+        import codex_live_producer_adapter as live_adapter
+
+        executable = root / "bin/codex.exe"
+        executable.parent.mkdir(parents=True)
+        executable.write_bytes(b"bounded local adapter executable fixture\n")
+        adapter = live_adapter.CodexLiveProducerAdapter(
+            custody_root=root,
+            codex_executable=executable,
+            access_token="fixture-access-token-never-retain",
+            host=host,
+            command_timeout_seconds=timeout,
+        )
+        isolated_root = root / "isolated"
+        isolated_identity = live_adapter._create_owned_directory(
+            isolated_root,
+            "adapter test isolation root",
+            parents=False,
+        )
+        adapter._isolated_root_owner = (isolated_root, isolated_identity)
+        worker_root = isolated_root / "producer-01"
+        worker_identity = live_adapter._create_owned_directory(
+            worker_root,
+            "adapter test worker",
+            parents=False,
+        )
+        adapter._owned_workers[worker_root] = worker_identity
+        home = worker_root / "home"
+        workspace = worker_root / "workspace"
+        run_root = worker_root / "run"
+        cache = worker_root / "cache"
+        private_temp = worker_root / "temp"
+        local_appdata = worker_root / "appdata/local"
+        roaming_appdata = worker_root / "appdata/roaming"
+        for directory in (home, workspace, run_root, cache, private_temp, local_appdata, roaming_appdata):
+            directory.mkdir(parents=True)
+        runtime_reference = workspace / "references/runtime-core-routing.md"
+        runtime_reference.parent.mkdir()
+        runtime_reference.write_bytes(b"local no-network runtime fixture\n")
+        prompt = root / "retained/prompt.md"
+        retained_input = root / "retained/input.bin"
+        runtime_context = root / "retained/runtime-context.json"
+        package_parity = root / "retained/package-parity.json"
+        prompt.parent.mkdir(parents=True)
+        prompt.write_bytes(b"local no-network prompt fixture\n")
+        retained_input.write_bytes(b"local input fixture\n")
+        runtime_context.write_bytes(canonical({"schema": "local-runtime-context-v1"}))
+        package_parity.write_bytes(canonical({"schema": "local-package-parity-v1"}))
+        output_root = root / "raw-output"
+        provider_root = root / "provider-receipts"
+        capture_root = root / "capture"
+        for directory in (output_root, provider_root, capture_root):
+            directory.mkdir()
+        case_id = CASES[0]
+        output_contract = {"schema": "local-adapter-output-contract-v1"}
+        capture_bindings: dict[str, object] = {}
+        adapter._prepared[case_id] = {
+            "case_id": case_id,
+            "worker": "producer-01",
+            "worker_root": worker_root,
+            "worker_identity": worker_identity,
+            "home": home,
+            "workspace": workspace,
+            "run_root": run_root,
+            "cache": cache,
+            "temp": private_temp,
+            "local_appdata": local_appdata,
+            "roaming_appdata": roaming_appdata,
+            "prompt": prompt,
+            "input": retained_input,
+            "runtime_context": runtime_context,
+            "package_harness_parity": package_parity,
+            "output_root": output_root,
+            "provider_root": provider_root,
+            "capture_root": capture_root,
+            "capture_bindings": capture_bindings,
+            "single_call_output_contract": output_contract,
+            "candidate_id": "local-adapter-candidate",
+            "source_commit": "2" * 40,
+            "package_sha256": "3" * 64,
+            "package_tree_sha256": "4" * 64,
+            "command_timeout_seconds": timeout,
+            "state": "NOT_SUBMITTED",
+            "result": None,
+            "started_at": None,
+            "ended_at": None,
+            "host_invocation_id": None,
+            "launch_deadline_monotonic": None,
+            "credential_scan_status": "PENDING",
+            "credential_scan_evidence": None,
+        }
+        adapter._ordered_cases = [case_id]
+        execution_custody = {
+            "case_id": case_id,
+            "model": "gpt-5.5",
+            "reasoning_effort": "high",
+            "provider_settings": {"command_timeout_seconds": timeout},
+            "single_call_output_contract": output_contract,
+            "capture_bindings": capture_bindings,
+        }
+        return adapter, execution_custody, isolated_root, provider_root
+
+    def _live_failure_replay_validation_inputs(
+        self,
+        root: Path,
+        *,
+        host_args: dict[str, object],
+    ) -> tuple[object, Path, dict[str, object], dict[str, object], dict[str, object], str, dict[str, object]]:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        fixture, authorization, executable, _skill_bytes = self._live_fixture(
+            root,
+            command_timeout_seconds=1,
+        )
+        adapter = _ScriptedCodexTestAdapter(
+            custody_root=fixture.root,
+            codex_executable=executable,
+            host=_ScriptedCodexHost(**host_args),
+            command_timeout_seconds=1,
+        )
+        with self.assertRaises(CampaignError):
+            run_producer_cohort(
+                fixture.root,
+                authorization,
+                adapter,
+                allow_test_fixture=True,
+            )
+        incident_path = fixture.root / "incidents/producer-live-cycle-01.json"
+        incident = json.loads(incident_path.read_text(encoding="utf-8"))
+        payload = copy.deepcopy(incident["finalizer_payload"])
+        auth, auth_sha = orchestrator._load_producer_authorization(
+            fixture.root,
+            authorization,
+            require_active_window=False,
+            allow_test_fixture=True,
+        )
+        bindings = orchestrator._validate_common_bindings(
+            fixture.root,
+            auth,
+            allow_test_fixture=True,
+        )
+        bindings["producer_output_contracts"] = orchestrator._producer_output_contracts(
+            auth,
+            auth_sha,
+            bindings,
+        )
+        return fixture, authorization, incident, payload, auth, auth_sha, bindings
+
+    def _run_live_success(self, root: Path) -> tuple[Fixture, Path, dict[str, object]]:
+        fixture, authorization, executable, _skill_bytes = self._live_fixture(root)
+        adapter = _ScriptedCodexTestAdapter(
+            custody_root=fixture.root,
+            codex_executable=executable,
+            host=_ScriptedCodexHost(),
+            command_timeout_seconds=30,
+        )
+        completion = run_producer_cohort(
+            fixture.root,
+            authorization,
+            adapter,
+            allow_test_fixture=True,
+        )
+        return fixture, authorization, completion
+
+    def _rewrite_first_capture(
+        self,
+        root: Path,
+        completion: dict[str, object],
+        *,
+        mutation: str,
+    ) -> dict[str, object]:
+        updated = copy.deepcopy(completion)
+        result = updated["results"][0]
+        capture_path = root / result["capture_evidence"]["path"]
+        capture = json.loads(capture_path.read_text(encoding="utf-8"))
+        if mutation in {"raw-thread", "raw-usage"}:
+            event_path = root / capture["raw_event_log"]["path"]
+            events = [json.loads(line) for line in event_path.read_bytes().splitlines()]
+            if mutation == "raw-thread":
+                next(row for row in events if row.get("type") == "thread.started")["thread_id"] = "forged-thread-id"
+            else:
+                next(row for row in events if row.get("type") == "turn.completed")["usage"]["input_tokens"] = 11
+            event_path.write_bytes(b"".join(canonical(row) for row in events))
+            capture["raw_event_log"] = ref(root, event_path)
+        elif mutation == "admission-prefix":
+            admission_path = root / capture["in_flight_admission"]["path"]
+            admission_path.write_bytes(
+                canonical({"type": "thread.started", "thread_id": "forged-admission-thread"})
+                + canonical({"type": "turn.started"})
+            )
+            capture["in_flight_admission"] = ref(root, admission_path)
+        elif mutation == "host":
+            capture["completion_identity"]["host_invocation_id"] = "codex-host:9999:gate88-secularism"
+        elif mutation == "timestamp":
+            capture["completion_identity"]["started_at"] = "2026-07-11T23:59:59Z"
+        elif mutation == "cost":
+            capture["cost"] = {"unit": "usd", "value": "1"}
+        else:
+            raise AssertionError(f"unknown capture mutation: {mutation}")
+        write_json(capture_path, capture)
+        result["capture_evidence"] = ref(root, capture_path)
+
+        completion_path = root / "producer/completion.json"
+        write_json(completion_path, updated)
+        finalizer_path = root / "producer/observation-finalizer.json"
+        finalizer = json.loads(finalizer_path.read_text(encoding="utf-8"))
+        finalizer["observed_results"] = copy.deepcopy(updated["results"])
+        finalizer["completion"] = ref(root, completion_path)
+        write_json(finalizer_path, finalizer)
+        return updated
+
+    def _append_later_usage(self, root: Path, authorization: Path, *, outcome: str) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        matrix = json.loads(authorization.read_text(encoding="utf-8"))
+        before = head_snapshot(root / "usage")
+        later_authorization_sha = "d" * 64
+        reservation = reserve(
+            root / "usage",
+            cohort="gpt-review",
+            calls=5,
+            expected_sequence=before["sequence"],
+            expected_head_sha256=before["head_sha256"],
+            campaign_authorization_sha256=matrix["campaign_authorization_sha256"],
+            authorization_sha256=later_authorization_sha,
+            candidate_id="later-candidate",
+            cycle_or_review_batch_id="later-review-batch",
+            call_subject_ids=CASES,
+        )
+        if outcome == "open":
+            return
+        if outcome == "resolved":
+            receipts = orchestrator._not_dispatched_receipts(reservation)
+            counts = {"completed": 0, "failed": 0, "cancelled": 0, "not_dispatched": 5, "unknown": 0}
+            cost = {"unit": "usd", "value": "0"}
+        elif outcome == "unresolved":
+            receipts = orchestrator._unknown_receipts(reservation, positive_dispatch_evidence=False)
+            counts = {"completed": 0, "failed": 0, "cancelled": 0, "not_dispatched": 0, "unknown": 5}
+            cost = {"unit": "usd", "value": "unknown"}
+        else:
+            raise AssertionError(f"unknown later usage outcome: {outcome}")
+        settle(
+            root / "usage",
+            reservation["transaction_sha256"],
+            **counts,
+            provider_usage_receipts=receipts,
+            measured_cost=cost,
+            candidate_id="later-candidate",
+            authorization_sha256=later_authorization_sha,
+        )
+
+    def test_live_completion_revalidation_rederives_retained_provider_facts(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        expected_markers = {
+            "raw-thread": "RAW_PROVIDER_ADMISSION",
+            "raw-usage": "RAW_PROVIDER_USAGE",
+            "admission-prefix": "RAW_PROVIDER_ADMISSION",
+            "host": "RAW_HOST_IDENTITY",
+            "timestamp": "DISPATCH_AUTHORIZATION_WINDOW",
+            "cost": "RAW_PROVIDER_COST",
+        }
+        with tempfile.TemporaryDirectory(prefix="daee-live-revalidation-base-") as temp:
+            base_root = Path(temp) / "base"
+            base_root.mkdir()
+            _fixture, authorization, completion = self._run_live_success(base_root)
+            authorization_relative = authorization.relative_to(base_root)
+            for mutation, marker in expected_markers.items():
+                with self.subTest(mutation=mutation):
+                    mutated_root = Path(temp) / mutation
+                    shutil.copytree(base_root, mutated_root)
+                    mutated = self._rewrite_first_capture(
+                        mutated_root,
+                        completion,
+                        mutation=mutation,
+                    )
+                    with self.assertRaisesRegex(CampaignError, marker):
+                        orchestrator.revalidate_live_producer_completion(
+                            mutated_root,
+                            mutated_root / authorization_relative,
+                            mutated,
+                            allow_test_fixture=True,
+                        )
+
+    def test_live_completion_revalidation_rejects_nonfinite_json_constants(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-nonfinite-revalidation-") as temp:
+            base_root = Path(temp) / "base"
+            base_root.mkdir()
+            _fixture, authorization, completion = self._run_live_success(base_root)
+            authorization_relative = authorization.relative_to(base_root)
+            for literal in ("NaN", "Infinity", "-Infinity"):
+                with self.subTest(literal=literal):
+                    mutated_root = Path(temp) / literal.replace("-", "negative-")
+                    shutil.copytree(base_root, mutated_root)
+                    mutated = copy.deepcopy(completion)
+                    result = mutated["results"][0]
+                    capture_path = mutated_root / result["capture_evidence"]["path"]
+                    capture = json.loads(capture_path.read_text(encoding="utf-8"))
+                    event_path = mutated_root / capture["raw_event_log"]["path"]
+                    lines = event_path.read_bytes().splitlines()
+                    terminal_index = next(
+                        index for index, line in enumerate(lines)
+                        if b'"type":"turn.completed"' in line
+                    )
+                    lines[terminal_index] = (
+                        lines[terminal_index][:-1]
+                        + b',"nonfinite_probe":'
+                        + literal.encode("ascii")
+                        + b"}"
+                    )
+                    event_path.write_bytes(b"\n".join(lines) + b"\n")
+                    capture["raw_event_log"] = ref(mutated_root, event_path)
+                    write_json(capture_path, capture)
+                    result["capture_evidence"] = ref(mutated_root, capture_path)
+                    completion_path = mutated_root / "producer/completion.json"
+                    write_json(completion_path, mutated)
+                    finalizer_path = mutated_root / "producer/observation-finalizer.json"
+                    finalizer = json.loads(finalizer_path.read_text(encoding="utf-8"))
+                    finalizer["observed_results"] = copy.deepcopy(mutated["results"])
+                    finalizer["completion"] = ref(mutated_root, completion_path)
+                    write_json(finalizer_path, finalizer)
+
+                    with self.assertRaisesRegex(CampaignError, "NONFINITE"):
+                        orchestrator.revalidate_live_producer_completion(
+                            mutated_root,
+                            mutated_root / authorization_relative,
+                            mutated,
+                            allow_test_fixture=True,
+                        )
+
+    def test_historical_live_completion_uses_dispatch_window_not_current_clock(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+        from codex_live_producer_adapter import CodexLiveProducerAdapter
+
+        class FutureClock(datetime):
+            @classmethod
+            def now(cls, tz: timezone | None = None) -> datetime:
+                value = cls(2100, 1, 1, tzinfo=timezone.utc)
+                return value if tz is not None else value.replace(tzinfo=None)
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-historical-window-") as temp:
+            fixture, authorization, completion = self._run_live_success(Path(temp))
+            with mock.patch.object(orchestrator, "datetime", FutureClock):
+                context = orchestrator.revalidate_live_producer_completion_context(
+                    fixture.root,
+                    authorization,
+                    completion,
+                    allow_test_fixture=True,
+                )
+            self.assertEqual(
+                {"completion", "authorization", "authorization_sha256", "bindings", "producer_output_contracts"},
+                set(context),
+            )
+            self.assertEqual(completion, context["completion"])
+            self.assertEqual(CASES, list(context["producer_output_contracts"]))
+
+            fresh_root = Path(temp) / "fresh-expired"
+            fresh_root.mkdir()
+            fresh_fixture, fresh_authorization, executable, _skill_bytes = self._live_fixture(fresh_root)
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fresh_fixture.root,
+                codex_executable=executable,
+                host=_ScriptedCodexHost(),
+                command_timeout_seconds=30,
+            )
+            with mock.patch.object(orchestrator, "datetime", FutureClock):
+                with self.assertRaisesRegex(CampaignError, "LIVE_AUTHORIZATION_WINDOW"):
+                    run_producer_cohort(
+                        fresh_fixture.root,
+                        fresh_authorization,
+                        adapter,
+                        allow_test_fixture=True,
+                    )
+
+    def test_historical_live_completion_accepts_settlement_ancestor_but_blocks_unsafe_head(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-usage-ancestor-") as temp:
+            base_root = Path(temp) / "base"
+            base_root.mkdir()
+            _fixture, authorization, completion = self._run_live_success(base_root)
+            authorization_relative = authorization.relative_to(base_root)
+
+            resolved_root = Path(temp) / "resolved"
+            shutil.copytree(base_root, resolved_root)
+            self._append_later_usage(
+                resolved_root,
+                resolved_root / authorization_relative,
+                outcome="resolved",
+            )
+            self.assertEqual(
+                completion,
+                orchestrator.revalidate_live_producer_completion(
+                    resolved_root,
+                    resolved_root / authorization_relative,
+                    completion,
+                    allow_test_fixture=True,
+                ),
+            )
+
+            forged_root = Path(temp) / "forged-settlement-state"
+            shutil.copytree(base_root, forged_root)
+            forged_finalizer_path = forged_root / "producer/observation-finalizer.json"
+            forged_finalizer = json.loads(forged_finalizer_path.read_text(encoding="utf-8"))
+            forged_finalizer["usage_unresolved"] = True
+            write_json(forged_finalizer_path, forged_finalizer)
+            with self.assertRaisesRegex(CampaignError, "USAGE_HEAD"):
+                orchestrator.revalidate_live_producer_completion(
+                    forged_root,
+                    forged_root / authorization_relative,
+                    completion,
+                    allow_test_fixture=True,
+                )
+
+            for outcome, marker in (("open", "OPEN_RESERVATION"), ("unresolved", "UNRESOLVED_USAGE")):
+                with self.subTest(outcome=outcome):
+                    unsafe_root = Path(temp) / outcome
+                    shutil.copytree(base_root, unsafe_root)
+                    self._append_later_usage(
+                        unsafe_root,
+                        unsafe_root / authorization_relative,
+                        outcome=outcome,
+                    )
+                    with self.assertRaisesRegex(CampaignError, marker):
+                        orchestrator.revalidate_live_producer_completion(
+                            unsafe_root,
+                            unsafe_root / authorization_relative,
+                            completion,
+                            allow_test_fixture=True,
+                        )
+
+    def test_live_adapter_uses_schema_owned_child_private_candidate_bytes_and_five_start_barrier(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-live-producer-") as temp:
+            fixture, authorization, executable, skill_bytes = self._live_fixture(Path(temp))
+            host = _ScriptedCodexHost()
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+                command_timeout_seconds=30,
+            )
+            completion = run_producer_cohort(fixture.root, authorization, adapter, allow_test_fixture=True)
+            import reviewed_campaign_orchestrator as orchestrator
+            self.assertEqual(
+                completion,
+                orchestrator.revalidate_live_producer_completion(
+                    fixture.root,
+                    authorization,
+                    completion,
+                    allow_test_fixture=True,
+                ),
+            )
+            first_observe = next(index for index, row in enumerate(host.log) if row[0] == "observe")
+            self.assertEqual(5, sum(row[0] == "start" for row in host.log[:first_observe]))
+            self.assertEqual(5, len(host.starts))
+            self.assertEqual("PRODUCER_CAPTURE_COMPLETE", completion["status"])
+            for result in completion["results"]:
+                capture_path = fixture.root / result["capture_evidence"]["path"]
+                capture = json.loads(capture_path.read_text(encoding="utf-8"))
+                admission = fixture.root / capture["in_flight_admission"]["path"]
+                events = fixture.root / capture["raw_event_log"]["path"]
+                admission_raw = admission.read_bytes()
+                self.assertTrue(events.read_bytes().startswith(admission_raw))
+                self.assertIn(b'"type":"thread.started"', admission_raw)
+                self.assertNotIn(b'"type":"turn.completed"', admission_raw)
+            for index, start in enumerate(host.starts):
+                command = start["command"]
+                self.assertIn("--json", command)
+                self.assertIn("--ignore-user-config", command)
+                self.assertIn("--ignore-rules", command)
+                self.assertIn("--ephemeral", command)
+                self.assertIn('model_reasoning_effort="high"', command)
+                self.assertNotIn("fixture-access-token-never-retain", " ".join(command))
+                self.assertEqual(Path(str(start["cwd"])), Path(start["env"]["CODEX_HOME"]).parent / "workspace")
+                self.assertEqual(start["env"]["CODEX_HOME"], start["env"]["HOME"])
+                worker_root = Path(str(start["cwd"])).parent
+                for field in ("TEMP", "TMP", "LOCALAPPDATA", "APPDATA", "XDG_CACHE_HOME"):
+                    self.assertTrue(Path(start["env"][field]).is_relative_to(worker_root), field)
+                self.assertEqual(
+                    (ROOT / "skill/references/runtime-core-routing.md").read_bytes(),
+                    start["runtime_core_routing"],
+                )
+                self.assertIn(skill_bytes, start["prompt"])
+                self.assertIn(CASES[index].encode(), start["prompt"])
+            retained = b"\n".join(path.read_bytes() for path in fixture.root.rglob("*") if path.is_file())
+            self.assertNotIn(b"fixture-access-token-never-retain", retained)
+            head = validate_head(fixture.root / "usage")
+            self.assertEqual(5, head["totals"]["completed"])
+            authorization_raw_sha = digest(authorization)
+            reservation = json.loads(
+                (
+                    fixture.root
+                    / "usage/transactions"
+                    / f"{completion['reservation_sha256']}.json"
+                ).read_text(encoding="utf-8")
+            )
+            self.assertEqual(authorization_raw_sha, reservation["authorization_sha256"])
+            self.assertEqual(5, len(reservation["call_contract"]))
+            matrix_authorization = json.loads(authorization.read_text(encoding="utf-8"))
+            self.assertEqual(30, matrix_authorization["provider_settings"]["command_timeout_seconds"])
+            changed_timeout = copy.deepcopy(matrix_authorization)
+            changed_timeout["provider_settings"]["command_timeout_seconds"] = 31
+            changed_timeout["authorization_sha256"] = record_sha256(changed_timeout)
+            self.assertNotEqual(
+                authorization_raw_sha,
+                hashlib.sha256(canonical(changed_timeout)).hexdigest(),
+            )
+            settlement = json.loads((fixture.root / "usage/transactions" / f"{completion['settlement_sha256']}.json").read_text())
+            self.assertEqual(
+                {"unit": "usd", "value": "unknown", "status": "UNAVAILABLE", "reason": "provider-cost-not-present-in-retained-jsonl", "source": "codex-cli-jsonl-v1"},
+                settlement["measured_cost"],
+            )
+            self.assertTrue(all(row["accepted"] is None and row["in_flight"] is False and row["acknowledgment_origin"] == "ADAPTER_IN_FLIGHT" for row in settlement["provider_usage_receipts"]))
+            contradictory = copy.deepcopy(settlement["provider_usage_receipts"])
+            contradictory[0]["in_flight"] = True
+            with self.assertRaisesRegex(ValueError, "clear adapter in-flight state"):
+                _provider_facts(
+                    contradictory,
+                    candidate_id=settlement["candidate_id"],
+                    batch_id=settlement["cycle_or_review_batch_id"],
+                    cohort=settlement["cohort"],
+                    reserved_calls=settlement["reserved_calls"],
+                    call_contract=settlement["call_contract"],
+                    paired_opus_contract=settlement.get("paired_opus_contract"),
+                    paired_parent_contract=settlement.get("paired_parent_contract"),
+                )
+            invalid_cached = copy.deepcopy(settlement["provider_usage_receipts"])
+            invalid_cached[0]["usage"]["cached_input_tokens"] = 11
+            with self.assertRaisesRegex(ValueError, "cached token usage"):
+                _provider_facts(
+                    invalid_cached,
+                    candidate_id=settlement["candidate_id"],
+                    batch_id=settlement["cycle_or_review_batch_id"],
+                    cohort=settlement["cohort"],
+                    reserved_calls=settlement["reserved_calls"],
+                    call_contract=settlement["call_contract"],
+                    paired_opus_contract=settlement.get("paired_opus_contract"),
+                    paired_parent_contract=settlement.get("paired_parent_contract"),
+                )
+            invalid_cost = copy.deepcopy(settlement["provider_usage_receipts"])
+            invalid_cost[0]["cost"].pop("reason")
+            with self.assertRaisesRegex(ValueError, "exact usd cost custody"):
+                _provider_facts(
+                    invalid_cost,
+                    candidate_id=settlement["candidate_id"],
+                    batch_id=settlement["cycle_or_review_batch_id"],
+                    cohort=settlement["cohort"],
+                    reserved_calls=settlement["reserved_calls"],
+                    call_contract=settlement["call_contract"],
+                    paired_opus_contract=settlement.get("paired_opus_contract"),
+                    paired_parent_contract=settlement.get("paired_parent_contract"),
+                )
+            for result in completion["results"]:
+                evidence = json.loads((fixture.root / result["capture_evidence"]["path"]).read_text())
+                execution_custody = json.loads(
+                    (fixture.root / evidence["execution_custody"]["path"]).read_text(
+                        encoding="utf-8"
+                    )
+                )
+                self.assertEqual(
+                    30,
+                    execution_custody["provider_settings"]["command_timeout_seconds"],
+                )
+                self.assertEqual("CAPTURED", evidence["status"])
+                self.assertEqual("UNVERIFIED", evidence["structural_status"])
+                self.assertIsNone(evidence["stage01_stage08_evidence"])
+                self.assertNotIn("source_file_locators", evidence)
+                self.assertEqual({"status": "RECORDED", "input_tokens": 10, "cached_input_tokens": 2, "output_tokens": 20, "total_tokens": 30}, evidence["usage"])
+                scan_ref = evidence["credential_residue_scan"]
+                scan = json.loads((fixture.root / scan_ref["path"]).read_text())
+                self.assertEqual("PASS", scan["status"])
+                self.assertEqual(["utf-8", "utf-16-le", "utf-16-be"], scan["encoding_forms_checked"])
+                for role, prefix in (("prompt", "producer/prompts/"), ("raw_output", "producer/raw-outputs/"), ("raw_event_log", "producer/provider-receipts/"), ("stderr", "producer/provider-receipts/")):
+                    self.assertTrue(evidence[role]["path"].startswith(prefix), (role, evidence[role]))
+                self.assertTrue(result["provider_receipt"]["path"].startswith("producer/provider-receipts/"))
+                for retained_ref in (result["capture_evidence"], result["provider_receipt"], evidence["prompt"], evidence["raw_output"], evidence["raw_event_log"], evidence["stderr"], scan_ref):
+                    retained_path = fixture.root / retained_ref["path"]
+                    self.assertEqual(retained_ref["byte_count"], len(retained_path.read_bytes()))
+                    self.assertEqual(retained_ref["sha256"], digest(retained_path))
+            self.assertEqual(fixture.package_sha, completion["package_sha256"])
+            self.assertEqual(fixture.package_tree_sha, completion["package_tree_sha256"])
+            finalizer = json.loads((fixture.root / "producer/observation-finalizer.json").read_text())
+            self.assertEqual(digest(fixture.root / "producer/completion.json"), finalizer["completion"]["sha256"])
+            self.assertFalse((fixture.root / "producer/isolated").exists())
+
+    def test_tail_workers_are_all_started_before_any_tail_admission_wait(self) -> None:
+        class TailAdmissionBarrierHost(_ScriptedCodexHost):
+            def __init__(self) -> None:
+                super().__init__()
+                self.withheld: list[tuple[Path, bytes]] = []
+
+            def start(self, *args: object, **kwargs: object) -> _CompletedCodexProcess:
+                process = super().start(*args, **kwargs)
+                event_log_path = kwargs["event_log_path"]
+                assert isinstance(event_log_path, Path)
+                ordinal = len(self.starts)
+                if 2 <= ordinal < 5:
+                    self.withheld.append((event_log_path, event_log_path.read_bytes()))
+                    event_log_path.write_bytes(b"")
+                elif ordinal == 5:
+                    for path, raw in self.withheld:
+                        path.write_bytes(raw)
+                return process
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-tail-admission-barrier-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = TailAdmissionBarrierHost()
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+                command_timeout_seconds=30,
+            )
+            completion = run_producer_cohort(
+                fixture.root,
+                authorization,
+                adapter,
+                allow_test_fixture=True,
+            )
+            first_observe = next(index for index, row in enumerate(host.log) if row[0] == "observe")
+            self.assertEqual(5, sum(row[0] == "start" for row in host.log[:first_observe]))
+            dispatch_events = completion["dispatch_manifest"]["events"]
+            tail_submit_positions = [
+                index
+                for index, row in enumerate(dispatch_events)
+                if row["event"] == "request_submit_started" and row.get("worker") != "producer-01"
+            ]
+            tail_admission_positions = [
+                index
+                for index, row in enumerate(dispatch_events)
+                if row["event"] == "call_entered_in_flight" and row.get("worker") != "producer-01"
+            ]
+            self.assertEqual((4, 4), (len(tail_submit_positions), len(tail_admission_positions)))
+            self.assertLess(max(tail_submit_positions), min(tail_admission_positions))
+            self.assertEqual("PRODUCER_CAPTURE_COMPLETE", completion["status"])
+
+    def test_live_prepare_requires_exclusive_absent_isolation_root_and_preserves_sentinel(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-live-existing-root-") as temp:
+            fixture, auth, bindings, adapter = self._live_preparation_inputs(Path(temp))
+            isolated_root = fixture.root / auth["isolated_root_prefix"]
+            isolated_root.mkdir(parents=True)
+            sentinel = isolated_root / "preexisting-sentinel.txt"
+            sentinel.write_bytes(b"foreign custody must survive\n")
+
+            with self.assertRaises(FileExistsError):
+                adapter.prepare(auth, bindings, allow_test_fixture=True)
+
+            self.assertEqual(b"foreign custody must survive\n", sentinel.read_bytes())
+            self.assertTrue(isolated_root.is_dir())
+
+    def test_live_prepare_midflight_worker_collision_preserves_foreign_path_and_fails_closed(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-worker-collision-") as temp:
+            fixture, auth, bindings, adapter = self._live_preparation_inputs(Path(temp))
+            isolated_root = fixture.root / auth["isolated_root_prefix"]
+            collision = isolated_root / "producer-02"
+            sentinel = collision / "foreign-sentinel.txt"
+            original_copy = live_adapter._copy_tree_exact
+
+            def inject_collision(source: Path, destination: Path) -> None:
+                original_copy(source, destination)
+                if destination.parent.name == "producer-01":
+                    collision.mkdir()
+                    sentinel.write_bytes(b"mid-prepare foreign custody\n")
+
+            with mock.patch.object(live_adapter, "_copy_tree_exact", side_effect=inject_collision):
+                with self.assertRaisesRegex(RuntimeError, "OWNED_ISOLATION_CLEANUP_FAILED_CLOSED"):
+                    adapter.prepare(auth, bindings, allow_test_fixture=True)
+
+            self.assertFalse((isolated_root / "producer-01").exists())
+            self.assertEqual(b"mid-prepare foreign custody\n", sentinel.read_bytes())
+            self.assertTrue(isolated_root.is_dir())
+
+    def test_live_prepare_same_name_replacements_are_preserved_and_fail_closed(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        for replacement_kind in ("worker", "root"):
+            with self.subTest(replacement_kind=replacement_kind), tempfile.TemporaryDirectory(
+                prefix=f"daee-live-{replacement_kind}-replacement-"
+            ) as temp:
+                fixture, auth, bindings, adapter = self._live_preparation_inputs(Path(temp))
+                isolated_root = fixture.root / auth["isolated_root_prefix"]
+                replacement: Path | None = None
+                sentinel: Path | None = None
+                original_copy = live_adapter._copy_tree_exact
+
+                def replace_then_fail(source: Path, destination: Path) -> None:
+                    nonlocal replacement, sentinel
+                    original_copy(source, destination)
+                    replacement = destination.parent if replacement_kind == "worker" else isolated_root
+                    shutil.rmtree(replacement)
+                    replacement.mkdir(parents=True)
+                    sentinel = replacement / "replacement-sentinel.txt"
+                    sentinel.write_bytes(f"{replacement_kind} replacement custody\n".encode())
+                    raise RuntimeError("injected failure after same-name replacement")
+
+                with mock.patch.object(live_adapter, "_copy_tree_exact", side_effect=replace_then_fail):
+                    with self.assertRaisesRegex(RuntimeError, "OWNED_ISOLATION_CLEANUP_FAILED_CLOSED"):
+                        adapter.prepare(auth, bindings, allow_test_fixture=True)
+
+                self.assertIsNotNone(replacement)
+                self.assertIsNotNone(sentinel)
+                self.assertEqual(
+                    f"{replacement_kind} replacement custody\n".encode(),
+                    sentinel.read_bytes(),
+                )
+                self.assertTrue(replacement.is_dir())
+
+    def test_live_credential_cleanup_preserves_replaced_worker_and_fails_closed(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-cleanup-replacement-") as temp:
+            _fixture, auth, bindings, adapter = self._live_preparation_inputs(Path(temp))
+            adapter.prepare(auth, bindings, allow_test_fixture=True)
+            row = adapter._prepared[CASES[0]]
+            worker_root = row["worker_root"]
+            sentinel = worker_root / "replacement-sentinel.txt"
+
+            def replace_before_cleanup(_worker_root: Path, _credential: str) -> dict[str, int]:
+                shutil.rmtree(worker_root)
+                worker_root.mkdir()
+                sentinel.write_bytes(b"credential cleanup replacement custody\n")
+                raise OSError("injected scan failure after worker replacement")
+
+            with mock.patch.object(
+                live_adapter,
+                "_scan_private_worker_for_credential",
+                side_effect=replace_before_cleanup,
+            ):
+                with self.assertRaisesRegex(RuntimeError, "OWNED_WORKER_CLEANUP_FAILED_CLOSED"):
+                    adapter._credential_readback(row)
+
+            self.assertEqual(b"credential cleanup replacement custody\n", sentinel.read_bytes())
+            self.assertTrue(worker_root.is_dir())
+
+    def test_live_package_tree_check_cannot_be_bypassed_as_a_nonfixture(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+        from reviewed_campaign_orchestrator import (
+            _load_producer_authorization,
+            _producer_output_contracts,
+            _validate_common_bindings,
+        )
+        with tempfile.TemporaryDirectory(prefix="daee-live-package-binding-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            auth, auth_sha = _load_producer_authorization(
+                fixture.root,
+                authorization,
+                allow_test_fixture=True,
+            )
+            bindings = _validate_common_bindings(fixture.root, auth, allow_test_fixture=True)
+            bindings["producer_output_contracts"] = _producer_output_contracts(auth, auth_sha, bindings)
+            adapter = live_adapter.CodexLiveProducerAdapter(
+                custody_root=fixture.root, codex_executable=executable,
+                access_token="fixture-access-token-never-retain", host=_ScriptedCodexHost(),
+                command_timeout_seconds=30,
+            )
+            adapter.capability()
+            with self.assertRaisesRegex(ValueError, "candidate package tree differs from authorization"):
+                adapter.prepare({**auth, "package_tree_sha256": "f" * 64}, bindings, allow_test_fixture=False)
+            self.assertFalse((fixture.root / "producer/isolated").exists())
+
+    def test_fixture_flag_rejects_paid_live_adapter_before_authorization_read(self) -> None:
+        from codex_live_producer_adapter import CodexLiveProducerAdapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-paid-fixture-escape-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = _ScriptedCodexHost()
+            adapter = CodexLiveProducerAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                access_token="fixture-access-token-never-retain",
+                host=host,
+            )
+
+            with self.assertRaisesRegex(CampaignError, "TEST_FIXTURE_PAID_PROVIDER_FORBIDDEN"):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+
+            self.assertEqual([("probe", executable.name)], host.log)
+            self.assertFalse((fixture.root / "claims").exists())
+            self.assertFalse((fixture.root / "usage").exists())
+
+    def test_fixture_flag_rejects_paid_live_adapter_preparation(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+        from codex_live_producer_adapter import CodexLiveProducerAdapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-paid-prepare-escape-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            auth, auth_sha = orchestrator._load_producer_authorization(
+                fixture.root,
+                authorization,
+                allow_test_fixture=True,
+            )
+            bindings = orchestrator._validate_common_bindings(
+                fixture.root,
+                auth,
+                allow_test_fixture=True,
+            )
+            bindings["producer_output_contracts"] = orchestrator._producer_output_contracts(
+                auth,
+                auth_sha,
+                bindings,
+            )
+            adapter = CodexLiveProducerAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                access_token="fixture-access-token-never-retain",
+                host=_ScriptedCodexHost(),
+            )
+            adapter.capability()
+
+            with self.assertRaisesRegex(RuntimeError, "paid live adapter cannot use test fixtures"):
+                adapter.prepare(auth, bindings, allow_test_fixture=True)
+
+            self.assertFalse((fixture.root / "producer/isolated").exists())
+
+    def test_fixture_common_bindings_reject_live_normalized_authority(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-binding-fixture-escape-") as temp:
+            fixture, authorization, _executable, _skill_bytes = self._live_fixture(Path(temp))
+            auth, _auth_sha = orchestrator._load_producer_authorization(
+                fixture.root,
+                authorization,
+            )
+
+            with self.assertRaisesRegex(CampaignError, "TEST_FIXTURE_LIVE_AUTHORITY_FORBIDDEN"):
+                orchestrator._validate_common_bindings(
+                    fixture.root,
+                    auth,
+                    allow_test_fixture=True,
+                )
+
+    def test_live_shaped_fixture_normalizes_to_nonlive_test_authority(self) -> None:
+        from reviewed_campaign_orchestrator import (
+            SCRIPTED_CODEX_TEST_MODE,
+            _load_producer_authorization,
+        )
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-fixture-authority-") as temp:
+            fixture, authorization, _executable, _skill_bytes = self._live_fixture(Path(temp))
+            auth, _auth_sha = _load_producer_authorization(
+                fixture.root,
+                authorization,
+                allow_test_fixture=True,
+            )
+
+            self.assertEqual(SCRIPTED_CODEX_TEST_MODE, auth["execution_mode"])
+            self.assertIs(auth["test_only"], True)
+            self.assertIs(auth["live_execution_authorized"], False)
+
+    def test_live_readiness_and_source_receipt_are_exact_preclaim_bindings(self) -> None:
+        from codex_live_producer_adapter import CodexLiveProducerAdapter
+        for role in ("candidate_readiness", "source_commit_receipt"):
+            with self.subTest(role=role), tempfile.TemporaryDirectory(prefix="daee-live-exact-binding-") as temp:
+                fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+                matrix = json.loads(authorization.read_text(encoding="utf-8"))
+                if role == "candidate_readiness":
+                    altered = json.loads(fixture.candidate.read_text(encoding="utf-8"))
+                    altered["candidate_id"] = "substituted-candidate"
+                else:
+                    altered = json.loads(fixture.preflight.read_text(encoding="utf-8"))
+                    altered["source_commit"] = "e" * 40
+                altered_path = fixture.root / f"inputs/altered-{role}.json"
+                write_json(altered_path, altered)
+                matrix[role] = {"path": altered_path.relative_to(fixture.root).as_posix(), "sha256": digest(altered_path)}
+                matrix["authorization_sha256"] = record_sha256({key: value for key, value in matrix.items() if key != "authorization_sha256"})
+                write_json(authorization, matrix)
+                host = _ScriptedCodexHost()
+                adapter = _ScriptedCodexTestAdapter(
+                    custody_root=fixture.root, codex_executable=executable,
+                    host=host,
+                )
+                marker = "CANDIDATE_READINESS_AUTHORIZATION_BINDING" if role == "candidate_readiness" else "SOURCE_COMMIT_RECEIPT_AUTHORIZATION_BINDING"
+                with self.assertRaisesRegex(CampaignError, marker):
+                    run_producer_cohort(fixture.root, authorization, adapter, allow_test_fixture=True)
+                self.assertFalse((fixture.root / "claims").exists())
+                self.assertEqual([("probe", executable.name)], host.log)
+
+    def test_live_authority_is_rechecked_before_claim_reservation_and_submit(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+        from codex_live_producer_adapter import CodexLiveProducerAdapter
+        with tempfile.TemporaryDirectory(prefix="daee-live-recheck-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = _ScriptedCodexHost()
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root, codex_executable=executable,
+                host=host,
+            )
+            original = orchestrator._load_producer_authorization
+            calls = 0
+
+            def drift_on_prereservation(
+                root: Path,
+                path: Path,
+                **kwargs: object,
+            ) -> tuple[dict[str, object], str]:
+                nonlocal calls
+                calls += 1
+                value, sha = original(root, path, **kwargs)
+                if calls == 3:
+                    value = {**value, "package_sha256": "f" * 64}
+                return value, sha
+
+            with mock.patch.object(orchestrator, "_load_producer_authorization", side_effect=drift_on_prereservation):
+                with self.assertRaisesRegex(CampaignError, "LIVE_AUTHORIZATION_RECHECK_DRIFT"):
+                    run_producer_cohort(fixture.root, authorization, adapter, allow_test_fixture=True)
+            self.assertEqual(3, calls)
+            self.assertEqual([], host.starts)
+            self.assertTrue((fixture.root / "claims/producer-authorization.json").is_file())
+            self.assertTrue((fixture.root / "producer/observation-finalizer.json").is_file())
+
+    def test_live_path_custody_rejects_existing_reparse_components(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+        with tempfile.TemporaryDirectory(prefix="daee-live-reparse-") as temp:
+            root = Path(temp)
+            component = root / "existing"
+            component.mkdir()
+            original = live_adapter._is_reparse
+            with mock.patch.object(live_adapter, "_is_reparse", side_effect=lambda path: path == component or original(path)):
+                with self.assertRaisesRegex(ValueError, "symlink/reparse component"):
+                    live_adapter._safe_join(root, "existing/child", "canary")
+
+    def test_live_capability_requires_exact_structured_catalog_and_cli_flags(self) -> None:
+        from codex_live_producer_adapter import CodexLiveProducerAdapter
+        for mutation in ("effort", "flags"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory(prefix="daee-live-catalog-") as temp:
+                fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+
+                class DriftHost(_ScriptedCodexHost):
+                    def probe(self, executable: Path, *, access_token: str) -> dict[str, object]:
+                        value = super().probe(executable, access_token=access_token)
+                        if mutation == "effort":
+                            value["catalog_row"] = {"slug": "gpt-5.5", "supported_reasoning_efforts": ["medium"]}
+                        else:
+                            value["canonical_exec_flags"] = value["canonical_exec_flags"][:-1]
+                        return value
+
+                host = DriftHost()
+                adapter = CodexLiveProducerAdapter(
+                    custody_root=fixture.root, codex_executable=executable,
+                    access_token="fixture-access-token-never-retain", host=host,
+                )
+                with self.assertRaisesRegex(CampaignError, "PROVIDER_CAPABILITY_UNAVAILABLE"):
+                    run_producer_cohort(fixture.root, authorization, adapter, allow_test_fixture=True)
+                self.assertFalse((fixture.root / "claims").exists())
+
+    def test_production_help_parser_requires_exact_option_declarations(self) -> None:
+        from codex_live_producer_adapter import _parse_codex_exec_option_identities
+        valid = """Usage: codex exec [OPTIONS] [PROMPT]\n\nOptions:\n  -c, --config <key=value>  Override configuration\n      --json                Emit JSONL\n      --ephemeral           Use ephemeral state\n      --ignore-user-config  Ignore user config\n      --ignore-rules        Ignore rules\n  -C, --cd <DIR>            Set working directory\n  -s, --sandbox <MODE>      Select sandbox\n  -m, --model <MODEL>       Select model\n      --output-last-message <FILE>  Retain final message\n  -h, --help                Print help\n"""
+        required = {"-c", "--json", "--ephemeral", "--ignore-user-config", "--ignore-rules", "-C", "-s", "-m", "--output-last-message"}
+        self.assertTrue(required.issubset(_parse_codex_exec_option_identities(valid)))
+        hostile = valid.replace("      --json                Emit JSONL", "      --json-output         Superstring only\n          --json  is mentioned only in prose")
+        parsed = _parse_codex_exec_option_identities(hostile)
+        self.assertIn("--json-output", parsed)
+        self.assertNotIn("--json", parsed)
+
+    def test_capability_probe_routes_every_process_through_owned_launcher(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        help_text = """Usage: codex exec [OPTIONS] [PROMPT]\n\nOptions:\n  -c, --config <key=value>  Override configuration\n      --json                Emit JSONL\n      --ephemeral           Use ephemeral state\n      --ignore-user-config  Ignore user config\n      --ignore-rules        Ignore rules\n  -C, --cd <DIR>            Set working directory\n  -s, --sandbox <MODE>      Select sandbox\n  -m, --model <MODEL>       Select model\n      --output-last-message <FILE>  Retain final message\n  -h, --help                Print help\n"""
+        with tempfile.TemporaryDirectory(prefix="daee-live-owned-probe-") as temp:
+            executable = Path(temp) / "codex.exe"
+            executable.write_bytes(b"local no-network capability fixture\n")
+            host = live_adapter.SubprocessCodexHost()
+            owned_results = [
+                subprocess.CompletedProcess([], 0, "codex-cli 0.130.0-alpha.5\n", ""),
+                subprocess.CompletedProcess(
+                    [],
+                    0,
+                    json.dumps(
+                        {
+                            "models": [
+                                {
+                                    "slug": "gpt-5.5",
+                                    "supported_reasoning_efforts": ["none", "low", "medium", "high"],
+                                }
+                            ]
+                        }
+                    ),
+                    "",
+                ),
+                subprocess.CompletedProcess([], 0, help_text, ""),
+            ]
+            with mock.patch.object(
+                host,
+                "_run_probe_command",
+                create=True,
+                side_effect=owned_results,
+            ) as owned, mock.patch.object(
+                live_adapter.subprocess,
+                "run",
+                side_effect=AssertionError("capability probe bypassed owned process custody"),
+            ):
+                probe = host.probe(executable, access_token="fixture-access-token-never-retain")
+
+            self.assertEqual(3, owned.call_count)
+            self.assertEqual("gpt-5.5", probe["catalog_row"]["slug"])
+            self.assertTrue(probe["auth_available"])
+
+    @unittest.skipUnless(os.name == "nt", "Windows Job Object custody canary")
+    def test_windows_owned_process_survives_disappearing_intermediate_until_job_teardown(self) -> None:
+        import ctypes
+        from ctypes import wintypes
+        from codex_live_producer_adapter import SubprocessCodexHost
+
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        kernel32.OpenProcess.restype = wintypes.HANDLE
+        kernel32.WaitForSingleObject.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+        kernel32.WaitForSingleObject.restype = wintypes.DWORD
+        kernel32.TerminateProcess.argtypes = [wintypes.HANDLE, wintypes.UINT]
+        kernel32.TerminateProcess.restype = wintypes.BOOL
+        kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+        kernel32.CloseHandle.restype = wintypes.BOOL
+        process = None
+        child_handle = None
+        wait_timeout = 0x00000102
+        wait_object_0 = 0x00000000
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-job-custody-") as temp:
+            root = Path(temp)
+            script = root / "disappearing-intermediate.py"
+            child_pid_path = root / "owned-child.pid"
+            prompt = root / "prompt.bin"
+            events = root / "events.jsonl"
+            stderr = root / "stderr.txt"
+            output = root / "output.txt"
+            prompt.write_bytes(b"")
+            script.write_text(
+                "import subprocess, sys\n"
+                "intermediate = \"import pathlib, subprocess, sys; "
+                "child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)']); "
+                "pathlib.Path(sys.argv[1]).write_text(str(child.pid), encoding='ascii')\"\n"
+                "subprocess.run([sys.executable, '-c', intermediate, sys.argv[1]], check=True)\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            host = SubprocessCodexHost()
+            try:
+                process = host.start(
+                    [sys.executable, str(script), str(child_pid_path)],
+                    cwd=root,
+                    env=dict(os.environ),
+                    prompt_path=prompt,
+                    event_log_path=events,
+                    stderr_path=stderr,
+                    output_path=output,
+                    worker="local-custody-canary",
+                )
+                self.assertEqual(0, process.wait(timeout=10))
+                child_pid = int(child_pid_path.read_text(encoding="ascii"))
+                child_handle = kernel32.OpenProcess(0x0001 | 0x100000, False, child_pid)
+                self.assertTrue(child_handle, ctypes.WinError(ctypes.get_last_error()))
+                self.assertEqual(wait_timeout, kernel32.WaitForSingleObject(child_handle, 0))
+
+                self.assertFalse(host.verify_tree_stopped(process))
+                host.terminate_tree(process)
+                self.assertTrue(host.verify_tree_stopped(process))
+                self.assertEqual(wait_object_0, kernel32.WaitForSingleObject(child_handle, 5000))
+            finally:
+                if process is not None:
+                    try:
+                        host.terminate_tree(process)
+                    except Exception:
+                        pass
+                if child_handle:
+                    if kernel32.WaitForSingleObject(child_handle, 0) == wait_timeout:
+                        kernel32.TerminateProcess(child_handle, 91)
+                        kernel32.WaitForSingleObject(child_handle, 5000)
+                    kernel32.CloseHandle(child_handle)
+
+    @unittest.skipUnless(os.name == "nt", "Windows Job Object custody canary")
+    def test_windows_status_query_failure_kills_owned_descendant_before_escape(self) -> None:
+        import ctypes
+        from ctypes import wintypes
+        from codex_live_producer_adapter import CodexLiveProducerAdapter, SubprocessCodexHost
+
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        kernel32.OpenProcess.restype = wintypes.HANDLE
+        kernel32.WaitForSingleObject.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+        kernel32.WaitForSingleObject.restype = wintypes.DWORD
+        kernel32.TerminateProcess.argtypes = [wintypes.HANDLE, wintypes.UINT]
+        kernel32.TerminateProcess.restype = wintypes.BOOL
+        kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+        kernel32.CloseHandle.restype = wintypes.BOOL
+        process = None
+        child_handle = None
+        wait_timeout = 0x00000102
+        wait_object_0 = 0x00000000
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-job-query-failure-") as temp:
+            root = Path(temp)
+            script = root / "disappearing-intermediate.py"
+            child_pid_path = root / "owned-child.pid"
+            prompt = root / "prompt.bin"
+            events = root / "events.jsonl"
+            stderr = root / "stderr.txt"
+            output = root / "output.txt"
+            prompt.write_bytes(b"")
+            script.write_text(
+                "import subprocess, sys\n"
+                "intermediate = \"import pathlib, subprocess, sys; "
+                "child = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)']); "
+                "pathlib.Path(sys.argv[1]).write_text(str(child.pid), encoding='ascii')\"\n"
+                "subprocess.run([sys.executable, '-c', intermediate, sys.argv[1]], check=True)\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            host = SubprocessCodexHost()
+            adapter = object.__new__(CodexLiveProducerAdapter)
+            adapter.host = host
+            try:
+                process = host.start(
+                    [sys.executable, str(script), str(child_pid_path)],
+                    cwd=root,
+                    env=dict(os.environ),
+                    prompt_path=prompt,
+                    event_log_path=events,
+                    stderr_path=stderr,
+                    output_path=output,
+                    worker="local-query-failure-canary",
+                )
+                self.assertEqual(0, process.wait(timeout=10))
+                child_pid = int(child_pid_path.read_text(encoding="ascii"))
+                child_handle = kernel32.OpenProcess(0x0001 | 0x100000, False, child_pid)
+                self.assertTrue(child_handle, ctypes.WinError(ctypes.get_last_error()))
+                self.assertEqual(wait_timeout, kernel32.WaitForSingleObject(child_handle, 0))
+
+                job = host._windows_jobs[process]
+                with mock.patch.object(
+                    job,
+                    "active_processes",
+                    side_effect=OSError("injected Windows Job Object status query failure"),
+                ), mock.patch.object(
+                    job,
+                    "terminate",
+                    side_effect=OSError("injected Windows Job Object terminate cleanup failure"),
+                ) as terminate:
+                    with self.assertRaises(BaseException) as captured:
+                        adapter._teardown_process(process)
+
+                self.assertEqual(wait_object_0, kernel32.WaitForSingleObject(child_handle, 5000))
+                terminate.assert_called_once_with(137)
+                self.assertIsInstance(captured.exception, RuntimeError)
+                self.assertIn(
+                    "injected Windows Job Object status query failure",
+                    str(captured.exception),
+                )
+                self.assertIn(
+                    "terminate: injected Windows Job Object terminate cleanup failure",
+                    str(captured.exception),
+                )
+                self.assertIsNone(job.handle)
+                self.assertNotIn(process, host._windows_jobs)
+            finally:
+                if process is not None:
+                    try:
+                        host.terminate_tree(process)
+                    except Exception:
+                        pass
+                if child_handle:
+                    if kernel32.WaitForSingleObject(child_handle, 0) == wait_timeout:
+                        kernel32.TerminateProcess(child_handle, 91)
+                        kernel32.WaitForSingleObject(child_handle, 5000)
+                    kernel32.CloseHandle(child_handle)
+
+    def test_already_exited_first_host_fails_before_adapter_in_flight_admission(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-live-exited-before-admission-") as temp:
+            host = _ScriptedCodexHost(already_exited_at=1)
+            adapter, execution_custody, isolated_root, provider_root = self._adapter_submission_fixture(
+                Path(temp),
+                host,
+            )
+            try:
+                with self.assertRaisesRegex(RuntimeError, "exited before adapter in-flight admission"):
+                    adapter.submit(execution_custody)
+            finally:
+                adapter.abort_all()
+
+            self.assertEqual(1, len(host.starts))
+            self.assertEqual([], host.processes[0].wait_timeouts)
+            self.assertEqual(1, len(list(provider_root.glob("*.credential-scan.json"))))
+            self.assertEqual("DISPATCH_UNKNOWN", adapter.attempt_states()[0]["state"])
+            self.assertFalse(isolated_root.exists())
+
+    def test_eventless_alive_first_host_cannot_yield_adapter_in_flight(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        class EventlessAliveHost(_ScriptedCodexHost):
+            def start(self, *args: object, **kwargs: object) -> _CompletedCodexProcess:
+                process = super().start(*args, **kwargs)
+                event_log_path = kwargs["event_log_path"]
+                output_path = kwargs["output_path"]
+                assert isinstance(event_log_path, Path)
+                assert isinstance(output_path, Path)
+                event_log_path.write_bytes(b"")
+                output_path.write_bytes(b"")
+                return process
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-eventless-before-admission-") as temp:
+            host = EventlessAliveHost()
+            adapter, execution_custody, isolated_root, _provider_root = self._adapter_submission_fixture(
+                Path(temp),
+                host,
+                timeout=1,
+            )
+            ticks = iter((100.0, 100.0, 101.0, 101.0))
+            try:
+                with mock.patch.object(
+                    live_adapter.time,
+                    "monotonic",
+                    side_effect=lambda: next(ticks, 101.0),
+                ), mock.patch.object(live_adapter.time, "sleep", return_value=None):
+                    with self.assertRaisesRegex(RuntimeError, "structured.*admission"):
+                        adapter.submit(execution_custody)
+            finally:
+                adapter.abort_all()
+
+            self.assertEqual(1, len(host.starts))
+            self.assertEqual("DISPATCH_UNKNOWN", adapter.attempt_states()[0]["state"])
+            self.assertFalse(isolated_root.exists())
+
+    def test_nonfinite_json_constants_cannot_yield_adapter_in_flight(self) -> None:
+        class NonfiniteAdmissionHost(_ScriptedCodexHost):
+            def __init__(self, literal: str) -> None:
+                super().__init__()
+                self.literal = literal
+
+            def start(self, *args: object, **kwargs: object) -> _CompletedCodexProcess:
+                process = super().start(*args, **kwargs)
+                event_log_path = kwargs["event_log_path"]
+                assert isinstance(event_log_path, Path)
+                event_log_path.write_bytes(
+                    b'{"type":"thread.started","thread_id":"thread-01","nonfinite_probe":'
+                    + self.literal.encode("ascii")
+                    + b"}\n"
+                )
+                return process
+
+        for literal in ("NaN", "Infinity", "-Infinity"):
+            with self.subTest(literal=literal), tempfile.TemporaryDirectory(
+                prefix="daee-live-nonfinite-admission-"
+            ) as temp:
+                host = NonfiniteAdmissionHost(literal)
+                adapter, execution_custody, isolated_root, _provider_root = self._adapter_submission_fixture(
+                    Path(temp),
+                    host,
+                    timeout=1,
+                )
+                try:
+                    with self.assertRaisesRegex(RuntimeError, "non-finite"):
+                        adapter.submit(execution_custody)
+                finally:
+                    adapter.abort_all()
+                self.assertEqual("DISPATCH_UNKNOWN", adapter.attempt_states()[0]["state"])
+                self.assertFalse(isolated_root.exists())
+
+    def test_elapsed_launch_deadline_times_out_without_waiting_live_host(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-elapsed-deadline-") as temp:
+            host = _ScriptedCodexHost()
+            adapter, execution_custody, isolated_root, _provider_root = self._adapter_submission_fixture(
+                Path(temp),
+                host,
+            )
+            ticks = iter([100.0, 131.0])
+
+            with mock.patch.object(live_adapter.time, "monotonic", side_effect=lambda: next(ticks)):
+                handle = adapter.submit(execution_custody)["handle_id"]
+                with self.assertRaisesRegex(RuntimeError, "producer command timed out"):
+                    adapter.observe(str(handle), execution_custody)
+            adapter.abort_all()
+
+            self.assertEqual(1, len(host.starts))
+            self.assertEqual([], host.processes[0].wait_timeouts)
+            self.assertTrue(all(not process.owned_descendant_active for process in host.processes))
+            self.assertEqual("OUTCOME_UNKNOWN", adapter.attempt_states()[0]["state"])
+            self.assertFalse(isolated_root.exists())
+
+    def test_observation_wait_receives_only_remaining_launch_budget(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-remaining-deadline-") as temp:
+            host = _ScriptedCodexHost()
+            adapter, execution_custody, isolated_root, _provider_root = self._adapter_submission_fixture(
+                Path(temp),
+                host,
+            )
+            ticks = iter([100.0, 112.0])
+
+            with mock.patch.object(live_adapter.time, "monotonic", side_effect=lambda: next(ticks)):
+                handle = adapter.submit(execution_custody)["handle_id"]
+                result = adapter.observe(str(handle), execution_custody)
+
+            self.assertEqual([18.0], host.processes[0].wait_timeouts)
+            self.assertEqual("CAPTURED", result["capture_status"])
+            self.assertEqual("COMPLETED", adapter.attempt_states()[0]["state"])
+            self.assertFalse(isolated_root.exists())
+
+    def test_post_execution_credential_residue_is_purged_and_terminalized_fail_closed(self) -> None:
+        from codex_live_producer_adapter import CodexLiveProducerAdapter
+        token = "fixture-access-token-never-retain"
+        for encoding in ("utf-8", "utf-16-le", "utf-16-be"):
+            with self.subTest(encoding=encoding), tempfile.TemporaryDirectory(prefix="daee-live-residue-") as temp:
+                fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+                host = _ScriptedCodexHost(credential_residue_at=1, credential_residue_encoding=encoding)
+                adapter = _ScriptedCodexTestAdapter(
+                    custody_root=fixture.root, codex_executable=executable,
+                    host=host, command_timeout_seconds=30, fixture_token=token,
+                )
+                with self.assertRaisesRegex(CampaignError, "access credential residue"):
+                    run_producer_cohort(fixture.root, authorization, adapter, allow_test_fixture=True)
+                self.assertFalse((fixture.root / "producer/isolated/producer-01").exists())
+                retained = b"\n".join(path.read_bytes() for path in fixture.root.rglob("*") if path.is_file())
+                self.assertNotIn(token.encode(encoding), retained)
+                head = validate_head(fixture.root / "usage")
+                terminal = json.loads((fixture.root / "usage/transactions" / f"{head['last_transaction_sha256']}.json").read_text())
+                self.assertEqual((0, 5, 0), (terminal["completed"], terminal["unknown"], terminal["not_dispatched"]))
+                finalizer = json.loads((fixture.root / "producer/observation-finalizer.json").read_text())
+                self.assertEqual([], finalizer["observed_results"])
+
+    def test_scan_unavailable_purges_worker_and_preserves_unknown_terminalization(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+        with tempfile.TemporaryDirectory(prefix="daee-live-scan-unavailable-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = _ScriptedCodexHost()
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root, codex_executable=executable,
+                host=host,
+            )
+            original = live_adapter._scan_private_worker_for_credential
+
+            def fail_first(worker_root: Path, credential: str) -> dict[str, int]:
+                if worker_root.name == "producer-01":
+                    raise OSError("injected credential scan readback failure")
+                return original(worker_root, credential)
+
+            with mock.patch.object(live_adapter, "_scan_private_worker_for_credential", side_effect=fail_first):
+                with self.assertRaisesRegex(CampaignError, "credential residue scan failed closed"):
+                    run_producer_cohort(fixture.root, authorization, adapter, allow_test_fixture=True)
+            self.assertFalse((fixture.root / "producer/isolated/producer-01").exists())
+            head = validate_head(fixture.root / "usage")
+            terminal = json.loads((fixture.root / "usage/transactions" / f"{head['last_transaction_sha256']}.json").read_text())
+            self.assertEqual((0, 5, 0), (terminal["completed"], terminal["unknown"], terminal["not_dispatched"]))
+            self.assertTrue((fixture.root / "producer/observation-finalizer.json").is_file())
+
+    def test_secondary_worker_abort_residue_cannot_bypass_cohort_terminalization(self) -> None:
+        from codex_live_producer_adapter import CodexLiveProducerAdapter
+        with tempfile.TemporaryDirectory(prefix="daee-live-secondary-abort-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = _ScriptedCodexHost(nonzero_at=1, credential_residue_at=2, credential_residue_encoding="utf-16-be")
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root, codex_executable=executable,
+                host=host,
+            )
+            with self.assertRaises(CampaignError):
+                run_producer_cohort(fixture.root, authorization, adapter, allow_test_fixture=True)
+            self.assertFalse((fixture.root / "producer/isolated/producer-02").exists())
+            head = validate_head(fixture.root / "usage")
+            terminal = json.loads((fixture.root / "usage/transactions" / f"{head['last_transaction_sha256']}.json").read_text())
+            self.assertEqual((0, 5, 0), (terminal["completed"], terminal["unknown"], terminal["not_dispatched"]))
+            finalizer = json.loads((fixture.root / "producer/observation-finalizer.json").read_text())
+            self.assertEqual([], finalizer["observed_results"])
+            self.assertEqual("OUTCOME_UNKNOWN", finalizer["dispatch_classification"])
+
+    def test_live_capability_failure_is_preclaim_and_zero_dispatch(self) -> None:
+        try:
+            from codex_live_producer_adapter import CodexLiveProducerAdapter
+        except ModuleNotFoundError as exc:
+            self.fail(f"live producer adapter is missing: {exc}")
+        with tempfile.TemporaryDirectory(prefix="daee-live-producer-probe-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = _ScriptedCodexHost(fail_probe=True)
+            adapter = CodexLiveProducerAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                access_token="fixture-access-token-never-retain",
+                host=host,
+                command_timeout_seconds=30,
+            )
+            with self.assertRaisesRegex(CampaignError, "PROVIDER_CAPABILITY_UNAVAILABLE"):
+                run_producer_cohort(fixture.root, authorization, adapter, allow_test_fixture=True)
+            self.assertEqual([("probe", executable.name)], host.log)
+            self.assertFalse((fixture.root / "claims").exists())
+            self.assertFalse((fixture.root / "producer/isolated").exists())
+
+    def test_authorized_command_timeout_mismatch_is_preclaim_and_reservation_free(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-live-timeout-mismatch-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = _ScriptedCodexHost()
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+                command_timeout_seconds=31,
+            )
+            with self.assertRaisesRegex(
+                CampaignError,
+                "LIVE_PROVIDER_COMMAND_TIMEOUT_MISMATCH",
+            ):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+            self.assertFalse((fixture.root / "claims").exists())
+            self.assertEqual(0, validate_head(fixture.root / "usage")["sequence"])
+            self.assertEqual([("probe", executable.name)], host.log)
+            self.assertFalse((fixture.root / "producer/isolated").exists())
+
+    def test_execution_custody_command_timeout_substitution_fails_before_host_start(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-live-timeout-custody-") as temp:
+            host = _ScriptedCodexHost()
+            adapter, execution_custody, isolated_root, _provider_root = self._adapter_submission_fixture(
+                Path(temp),
+                host,
+            )
+            execution_custody["provider_settings"]["command_timeout_seconds"] = 31
+            try:
+                with self.assertRaisesRegex(RuntimeError, "live command timeout custody drift"):
+                    adapter.submit(execution_custody)
+            finally:
+                adapter.abort_all()
+            self.assertEqual([], host.starts)
+            self.assertFalse(isolated_root.exists())
+
+    def test_live_parent_and_usage_predecessor_are_preclaim_authority(self) -> None:
+        from codex_live_producer_adapter import CodexLiveProducerAdapter
+        for mutation, marker in (("parent-revoked", "MATRIX_AUTHORIZATION_INVALID: campaign_authorization_contract"), ("usage-head-drift", "EXPECTED_CAMPAIGN_USAGE_HEAD_DRIFT")):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory(prefix="daee-live-authority-") as temp:
+                fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+                matrix = json.loads(authorization.read_text(encoding="utf-8"))
+                if mutation == "parent-revoked":
+                    parent_path = fixture.root / matrix["campaign_authorization"]["path"]
+                    parent = json.loads(parent_path.read_text(encoding="utf-8"))
+                    parent["status"] = "REVOKED"
+                    parent["authorization_sha256"] = record_sha256({key: value for key, value in parent.items() if key != "authorization_sha256"})
+                    write_json(parent_path, parent)
+                    matrix["campaign_authorization"]["sha256"] = digest(parent_path)
+                    matrix["campaign_authorization_sha256"] = digest(parent_path)
+                else:
+                    matrix["expected_campaign_usage_sequence"] += 1
+                matrix["authorization_sha256"] = record_sha256({key: value for key, value in matrix.items() if key != "authorization_sha256"})
+                write_json(authorization, matrix)
+                host = _ScriptedCodexHost()
+                adapter = _ScriptedCodexTestAdapter(
+                    custody_root=fixture.root, codex_executable=executable,
+                    host=host, command_timeout_seconds=30,
+                )
+                with self.assertRaisesRegex(CampaignError, marker):
+                    run_producer_cohort(fixture.root, authorization, adapter, allow_test_fixture=True)
+                self.assertFalse((fixture.root / "claims").exists())
+                self.assertEqual([("probe", executable.name)], host.log)
+
+    def test_private_candidate_copy_drift_fails_before_claim_and_is_cleaned(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+        with tempfile.TemporaryDirectory(prefix="daee-live-copy-drift-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = _ScriptedCodexHost()
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root, codex_executable=executable,
+                host=host, command_timeout_seconds=30,
+            )
+            original_copy = live_adapter._copy_tree_exact
+
+            def tampering_copy(source: Path, destination: Path) -> None:
+                original_copy(source, destination)
+                (destination / "SKILL.md").write_bytes((destination / "SKILL.md").read_bytes() + b"drift")
+
+            with mock.patch.object(live_adapter, "_copy_tree_exact", side_effect=tampering_copy):
+                with self.assertRaisesRegex(CampaignError, "private candidate package copy drift"):
+                    run_producer_cohort(fixture.root, authorization, adapter, allow_test_fixture=True)
+            self.assertFalse((fixture.root / "claims").exists())
+            self.assertFalse((fixture.root / "producer/isolated").exists())
+            self.assertEqual([("probe", executable.name)], host.log)
+
+    def test_mixed_failure_replay_requires_every_completed_receipt_result(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-mixed-result-replay-") as temp:
+            fixture, _authorization, incident, payload, auth, auth_sha, bindings = (
+                self._live_failure_replay_validation_inputs(
+                    Path(temp),
+                    host_args={"nonzero_at": 3},
+                )
+            )
+            self.assertEqual(2, len(payload["observed_results"]))
+            orchestrator._validate_failure_resume_payload(
+                fixture.root,
+                fixture.root / auth["usage_ledger_root"],
+                incident,
+                payload,
+                auth,
+                auth_sha,
+                bindings,
+                lane="producer",
+                attempt_index=1,
+            )
+            payload["observed_results"] = []
+            incident["observed_result_count"] = 0
+            with self.assertRaisesRegex(CampaignError, "COMPLETED_RECEIPTS"):
+                orchestrator._validate_failure_resume_payload(
+                    fixture.root,
+                    fixture.root / auth["usage_ledger_root"],
+                    incident,
+                    payload,
+                    auth,
+                    auth_sha,
+                    bindings,
+                    lane="producer",
+                    attempt_index=1,
+                )
+
+    def test_mixed_failure_replay_classification_is_derived_from_unknown_receipts(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        scenarios = [
+            ({"nonzero_at": 3}, "OUTCOME_UNKNOWN", "DISPATCH_UNKNOWN"),
+            ({"fail_start_at": 1}, "DISPATCH_UNKNOWN", "OUTCOME_UNKNOWN"),
+        ]
+        for host_args, recorded, substituted in scenarios:
+            with self.subTest(recorded=recorded, substituted=substituted), tempfile.TemporaryDirectory(
+                prefix="daee-live-classification-replay-"
+            ) as temp:
+                fixture, _authorization, incident, payload, auth, auth_sha, bindings = (
+                    self._live_failure_replay_validation_inputs(
+                        Path(temp),
+                        host_args=host_args,
+                    )
+                )
+                self.assertEqual(recorded, payload["dispatch_classification"])
+                orchestrator._validate_failure_resume_payload(
+                    fixture.root,
+                    fixture.root / auth["usage_ledger_root"],
+                    incident,
+                    payload,
+                    auth,
+                    auth_sha,
+                    bindings,
+                    lane="producer",
+                    attempt_index=1,
+                )
+                payload["dispatch_classification"] = substituted
+                payload["dispatch_status"] = substituted
+                incident["dispatch_classification"] = substituted
+                with self.assertRaisesRegex(CampaignError, "CLASSIFICATION_RECEIPTS"):
+                    orchestrator._validate_failure_resume_payload(
+                        fixture.root,
+                        fixture.root / auth["usage_ledger_root"],
+                        incident,
+                        payload,
+                        auth,
+                        auth_sha,
+                        bindings,
+                        lane="producer",
+                        attempt_index=1,
+                    )
+
+    def test_live_partial_failures_preserve_exact_call_state_and_verify_teardown(self) -> None:
+        from codex_live_producer_adapter import CodexLiveProducerAdapter
+        scenarios = [
+            ({"fail_after_start_at": 3}, 0, 3, 2, RuntimeError),
+            ({"nonzero_at": 3}, 2, 3, 0, RuntimeError),
+            ({"timeout_at": 2}, 1, 4, 0, RuntimeError),
+            ({"interrupt_at": 2}, 1, 4, 0, KeyboardInterrupt),
+        ]
+        for host_args, completed, unknown, not_dispatched, error_type in scenarios:
+            with self.subTest(host_args=host_args), tempfile.TemporaryDirectory(prefix="daee-live-partial-") as temp:
+                fixture, authorization, executable, _skill_bytes = self._live_fixture(
+                    Path(temp),
+                    command_timeout_seconds=1,
+                )
+                host = _ScriptedCodexHost(**host_args)
+                adapter = _ScriptedCodexTestAdapter(
+                    custody_root=fixture.root, codex_executable=executable,
+                    host=host,
+                    command_timeout_seconds=1,
+                )
+                with self.assertRaises(error_type):
+                    run_producer_cohort(fixture.root, authorization, adapter, allow_test_fixture=True)
+                head = validate_head(fixture.root / "usage")
+                terminal = json.loads((fixture.root / "usage/transactions" / f"{head['last_transaction_sha256']}.json").read_text())
+                self.assertEqual((completed, unknown, not_dispatched), (terminal["completed"], terminal["unknown"], terminal["not_dispatched"]))
+                finalizer = json.loads((fixture.root / "producer/observation-finalizer.json").read_text())
+                self.assertEqual(completed, len(finalizer.get("observed_results", [])))
+                started_pids = {1000 + index for index in range(1, len(host.starts) + 1)}
+                self.assertTrue(started_pids.issubset(set(host.verified)), (started_pids, host.verified))
+                self.assertTrue(all(not process.owned_descendant_active for process in host.processes))
+                replay_host = _ScriptedCodexHost()
+                replay_adapter = _ScriptedCodexTestAdapter(
+                    custody_root=fixture.root,
+                    codex_executable=executable,
+                    host=replay_host,
+                    command_timeout_seconds=1,
+                )
+                with self.assertRaisesRegex(CampaignError, "ATTEMPT_ALREADY_TERMINALIZED"):
+                    run_producer_cohort(
+                        fixture.root,
+                        authorization,
+                        replay_adapter,
+                        allow_test_fixture=True,
+                    )
+                self.assertEqual([], replay_host.starts)
 
 
 if __name__ == "__main__":

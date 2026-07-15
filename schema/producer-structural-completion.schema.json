@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dawah.wiki/schema/producer-structural-completion.schema.json",
+  "title": "DAEE reviewed producer structural completion aggregate v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "kind", "status", "execution_mode", "test_only", "candidate_id",
+    "source_commit", "cycle_id", "capture_completion", "producer_authorization",
+    "observation_finalizer", "input_registry",
+    "registry_sha256", "review_protocol", "review_protocol_sha256",
+    "package_record_sha256", "candidate_maturity_sha256", "package_sha256",
+    "package_tree_sha256", "authorization_sha256", "reservation_sha256",
+    "settlement_sha256", "dispatch_manifest", "case_ids", "results",
+    "cold_review_authorized", "non_claims"
+  ],
+  "properties": {
+    "schema": {"const": "reviewed-campaign-producer-completion-v1"},
+    "kind": {"const": "producer-structural-completion-aggregate"},
+    "status": {"const": "PRODUCER_STRUCTURAL_COMPLETE"},
+    "execution_mode": {"const": "LIVE_CODEX"},
+    "test_only": {"const": false},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "cycle_id": {"type": "string", "minLength": 1},
+    "capture_completion": {"$ref": "#/$defs/artifact"},
+    "producer_authorization": {"$ref": "#/$defs/artifact"},
+    "observation_finalizer": {"$ref": "#/$defs/artifact"},
+    "input_registry": {"$ref": "#/$defs/artifact"},
+    "registry_sha256": {"$ref": "#/$defs/sha256"},
+    "review_protocol": {"$ref": "#/$defs/artifact"},
+    "review_protocol_sha256": {"$ref": "#/$defs/sha256"},
+    "package_record_sha256": {"$ref": "#/$defs/sha256"},
+    "candidate_maturity_sha256": {"$ref": "#/$defs/sha256"},
+    "package_sha256": {"$ref": "#/$defs/sha256"},
+    "package_tree_sha256": {"$ref": "#/$defs/sha256"},
+    "authorization_sha256": {"$ref": "#/$defs/sha256"},
+    "reservation_sha256": {"$ref": "#/$defs/sha256"},
+    "settlement_sha256": {"$ref": "#/$defs/sha256"},
+    "dispatch_manifest": {"type": "object"},
+    "case_ids": {
+      "type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "results": {
+      "type": "array", "minItems": 5, "maxItems": 5,
+      "items": {"$ref": "#/$defs/result"}
+    },
+    "cold_review_authorized": {"const": false},
+    "non_claims": {
+      "const": {
+        "not_human_pre_disclosure_assessment": true,
+        "not_cold_review": true,
+        "not_campaign_success": true,
+        "not_release_or_owner_acceptance": true
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "byte_count"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id", "capture_status", "structural_status", "output",
+        "capture_evidence", "provider_receipt", "provider_receipt_sha256",
+        "capture_record", "structural_finalization"
+      ],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "capture_status": {"const": "CAPTURED"},
+        "structural_status": {"const": "PASS"},
+        "output": {"$ref": "#/$defs/artifact"},
+        "capture_evidence": {"$ref": "#/$defs/artifact"},
+        "provider_receipt": {"$ref": "#/$defs/artifact"},
+        "provider_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "capture_record": {"$ref": "#/$defs/artifact"},
+        "structural_finalization": {"$ref": "#/$defs/artifact"}
+      }
+    }
+  }
+}

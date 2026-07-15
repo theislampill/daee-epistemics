@@ -112,7 +112,13 @@ def _decimal_text(value: object, field: str, *, allow_unknown: bool=True) -> str
 
 
 def _cost(value: object, field: str="measured_cost") -> dict:
-    if not isinstance(value,dict) or set(value)!={"unit","value"} or value.get("unit")!="usd":raise ValueError(f"usage_provider_metadata: {field} requires exact usd unit/value")
+    if not isinstance(value,dict) or value.get("unit")!="usd":raise ValueError(f"usage_provider_metadata: {field} requires exact usd cost custody")
+    keys=set(value)
+    if keys=={"unit","value"}:
+        pass
+    elif keys=={"unit","value","status","reason","source"}:
+        if value.get("value")!="unknown" or value.get("status")!="UNAVAILABLE" or not isinstance(value.get("reason"),str) or not value["reason"] or not isinstance(value.get("source"),str) or not value["source"]:raise ValueError(f"usage_provider_metadata: {field} governed unavailability is invalid")
+    else:raise ValueError(f"usage_provider_metadata: {field} requires exact usd cost custody")
     _decimal_text(value.get("value"),f"{field}.value")
     return value
 
@@ -369,7 +375,7 @@ def _provider_facts(rows: object, *, candidate_id: str, batch_id: str, cohort: s
     if not isinstance(rows,list) or len(rows)!=reserved_calls:raise ValueError("usage_provider_metadata: exactly one provider row per reserved call is required")
     expected_ids=[f"{batch_id}:call-{index:02d}" for index in range(1,reserved_calls+1)]
     contract=_validate_call_contract(call_contract,cohort,reserved_calls,paired_opus_contract,paired_parent_contract,candidate_id)
-    statuses=[];cost_values=[];subjects=[];provider_ids=[];host_ids=[];attempted=accepted_count=in_flight_count=0
+    statuses=[];cost_values=[];cost_records=[];subjects=[];provider_ids=[];host_ids=[];attempted=accepted_count=in_flight_count=0
     for index,(row,call_id,authorized) in enumerate(zip(rows,expected_ids,contract),1):
         required={"call_id","parent_id","child_cycle_id","candidate_id","child_protocol_sha256","cycle_or_review_batch_id","case_id","subject_id","subject_output_sha256","model","reasoning_effort","protocol","started_at","ended_at","host_invocation_id","accepted","in_flight","status","unknown_kind","acknowledgment_origin","terminal_transport_status","provider_call_id","usage","cost"}
         if not isinstance(row,dict) or set(row)!=required:raise ValueError(f"usage_provider_metadata: provider row {index} has wrong shape")
@@ -397,7 +403,8 @@ def _provider_facts(rows: object, *, candidate_id: str, batch_id: str, cohort: s
         if not (isinstance(accepted,bool) or accepted is None) or not (isinstance(in_flight,bool) or in_flight is None):raise ValueError(f"usage_provider_metadata: provider row {index} accepted/in-flight shape is invalid")
         origin=row.get("acknowledgment_origin")
         if origin not in ACK_ORIGINS:raise ValueError(f"usage_provider_metadata: provider row {index} acknowledgment origin is invalid")
-        origin_shape={"NONE":accepted in {None,False} and in_flight in {None,False},"PROVIDER_ACCEPTED":accepted is True and in_flight in {None,False},"ADAPTER_IN_FLIGHT":accepted is None and in_flight is True,"BOTH":accepted is True and in_flight is True}[origin]
+        origin_shape={"NONE":accepted in {None,False} and in_flight in {None,False},"PROVIDER_ACCEPTED":accepted is True and in_flight in {None,False},"ADAPTER_IN_FLIGHT":accepted is None and in_flight in {True,False},"BOTH":accepted is True and in_flight is True}[origin]
+        if origin=="ADAPTER_IN_FLIGHT" and status=="COMPLETED" and in_flight is not False:raise ValueError(f"usage_provider_metadata: provider row {index} must clear adapter in-flight state after terminal completion")
         if not origin_shape:raise ValueError(f"usage_provider_metadata: provider row {index} acknowledgment facts contradict their origin")
         if status in {"COMPLETED","FAILED","CANCELLED"} and (origin=="NONE" or started is None or ended is None):raise ValueError(f"usage_provider_metadata: dispatched row {index} requires positive acknowledgment timing")
         if status=="NOT_DISPATCHED" and (accepted is not False or in_flight is not False or started is not None or ended is not None):raise ValueError(f"usage_provider_metadata: proved-zero row {index} has contradictory transport evidence")
@@ -411,15 +418,16 @@ def _provider_facts(rows: object, *, candidate_id: str, batch_id: str, cohort: s
         if status=="NOT_DISPATCHED" and provider_id is not None:raise ValueError(f"usage_provider_metadata: not-dispatched row {index} cannot name provider_call_id")
         if not isinstance(usage,dict) or usage.get("status") not in {"RECORDED","UNAVAILABLE"}:raise ValueError(f"usage_provider_metadata: provider row {index} usage is invalid")
         if usage.get("status")=="RECORDED":
-            if set(usage)!={"status","input_tokens","output_tokens","total_tokens"}:raise ValueError(f"usage_provider_metadata: recorded usage row {index} has wrong shape")
+            if set(usage) not in ({"status","input_tokens","output_tokens","total_tokens"},{"status","input_tokens","cached_input_tokens","output_tokens","total_tokens"}):raise ValueError(f"usage_provider_metadata: recorded usage row {index} has wrong shape")
             token_values=[usage[name] for name in ("input_tokens","output_tokens","total_tokens")]
             if any(not isinstance(item,int) or isinstance(item,bool) or item<0 for item in token_values) or usage["total_tokens"]!=usage["input_tokens"]+usage["output_tokens"]:raise ValueError(f"usage_provider_metadata: provider row {index} token arithmetic mismatch")
+            if "cached_input_tokens" in usage and (not isinstance(usage["cached_input_tokens"],int) or isinstance(usage["cached_input_tokens"],bool) or usage["cached_input_tokens"]<0 or usage["cached_input_tokens"]>usage["input_tokens"]):raise ValueError(f"usage_provider_metadata: provider row {index} cached token usage is invalid")
         elif set(usage)!={"status"}:raise ValueError(f"usage_provider_metadata: unavailable usage row {index} has wrong shape")
-        cost=_cost(row.get("cost"),f"provider row {index} cost");cost_values.append(cost["value"]);statuses.append(status)
+        cost=_cost(row.get("cost"),f"provider row {index} cost");cost_values.append(cost["value"]);cost_records.append(cost);statuses.append(status)
         if status=="NOT_DISPATCHED" and (usage!={"status":"UNAVAILABLE"} or cost["value"]!="0"):raise ValueError(f"usage_provider_metadata: proved not-dispatched row {index} requires unavailable usage and zero cost")
         if status=="UNKNOWN" and usage.get("status")!="UNAVAILABLE":raise ValueError(f"usage_provider_metadata: unknown row {index} must explicitly mark usage unavailable")
         if status=="UNKNOWN":
-            if accepted is False or in_flight is False and accepted is not True:raise ValueError(f"usage_provider_metadata: unknown row {index} cannot contradict or manufacture dispatch evidence")
+            if accepted is False or (in_flight is False and origin!="ADAPTER_IN_FLIGHT"):raise ValueError(f"usage_provider_metadata: unknown row {index} cannot contradict or manufacture dispatch evidence")
             if cost["value"]!="unknown":raise ValueError(f"usage_provider_metadata: unknown row {index} must explicitly mark cost unavailable")
             if unknown_kind=="DISPATCH_UNKNOWN" and any(value is not None for value in (accepted,in_flight,started,ended,host_id,provider_id)):raise ValueError(f"usage_provider_metadata: dispatch-unknown row {index} cannot manufacture transport evidence")
         positive=origin!="NONE"
@@ -433,12 +441,18 @@ def _provider_facts(rows: object, *, candidate_id: str, batch_id: str, cohort: s
     if attempted+counts["not_dispatched"]+dispatch_unknown!=reserved_calls or counts["completed"]+counts["failed"]+counts["cancelled"]+outcome_unknown!=attempted:raise ValueError("usage_arithmetic: reservation partition or proved-attempt outcome partition is inconsistent")
     aggregate="unknown" if "unknown" in cost_values else format(sum((Decimal(item) for item in cost_values),Decimal("0")),"f")
     if "." in aggregate:aggregate=aggregate.rstrip("0").rstrip(".") or "0"
+    if aggregate=="unknown":
+        unknown_records=[record for record in cost_records if record["value"]=="unknown"]
+        if unknown_records and all(set(record)=={"unit","value","status","reason","source"} and record==unknown_records[0] for record in unknown_records):return counts,dict(unknown_records[0])
     return counts,{"unit":"usd","value":aggregate}
 
 
 def _merge_cost(left: dict, right: dict) -> dict:
     _cost(left);_cost(right)
-    if "unknown" in {left["value"],right["value"]}:return {"unit":"usd","value":"unknown"}
+    if "unknown" in {left["value"],right["value"]}:
+        governed=[value for value in (left,right) if value["value"]=="unknown" and set(value)=={"unit","value","status","reason","source"}]
+        if governed and all(value==governed[0] for value in governed):return dict(governed[0])
+        return {"unit":"usd","value":"unknown"}
     value=format(Decimal(left["value"])+Decimal(right["value"]),"f")
     if "." in value:value=value.rstrip("0").rstrip(".") or "0"
     return {"unit":"usd","value":value}

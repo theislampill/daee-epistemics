@@ -59,7 +59,19 @@ CI_READBACK_OWNER_PATHS = {
         "tools/run_no_model_preflight.py",
         "tools/run_local_ci.py",
     ),
-    "owned_test_paths": ("tests/ci-readback/test_contract.py",),
+    "owned_test_paths": (
+        "tests/ci-readback/build_task7_fixtures.py",
+        "tests/ci-readback/support/commit-authorization.json",
+        "tests/ci-readback/test_contract.py",
+    ),
+}
+TASK7_NAMESPACE_OWNER_PATHS = {
+    "owned_schema_paths": ("schema/task7-deterministic-evidence-namespace.schema.json",),
+    "owned_tool_paths": (
+        "tools/write_task7_deterministic_evidence.py",
+        "tools/check_task7_deterministic_evidence_namespace.py",
+    ),
+    "owned_test_paths": ("tests/task7-deterministic-evidence-namespace/test_contract.py",),
 }
 CANDIDATE_CUSTODY_OWNER_PATHS = {
     "owned_schema_paths": ("schema/smoke-matrix.schema.json",),
@@ -99,6 +111,68 @@ REVIEWED_CAMPAIGN_OWNER_PATHS = {
         "tools/run_reviewed_cold_review_cohort.py",
     ),
     "owned_test_paths": ("tests/reviewed-campaign-orchestration/test_contract.py",),
+}
+BRANCH11_INTEGRATION_OWNER_PATHS = {
+    "A01": {
+        "owned_tool_paths": ("tools/check_initial_assessment_barrier.py",),
+        "owned_test_paths": ("tests/initial-assessment-barrier/test_contract.py",),
+    },
+    "A09": {
+        "owned_tool_paths": ("tools/build_b5_full_ir_projection_sidecar.py",),
+        "owned_test_paths": ("tests/b5-current-witness-adapter/test_contract.py",),
+    },
+    "A10": {
+        "owned_tool_paths": (
+            "docs/index/output-grapher.js",
+            "tools/check_output_grapher.py",
+            "tools/output_grapher_lib.py",
+        ),
+        "owned_test_paths": (
+            "tests/docs-output-grapher/valid-current-no-new-resultant.field_witness.json",
+            "tests/docs-output-grapher/valid-current-no-new-resultant.md",
+        ),
+    },
+    "A12": {
+        "owned_tool_paths": ("tools/runtime_call_context_adapter.py",),
+        "owned_test_paths": ("tests/runtime-call-context-adapter/test_contract.py",),
+    },
+    "A13": {
+        "owned_test_paths": (
+            "tests/package-harness-parity/invalid/adapter-hash-mismatch.expectation.json",
+            "tests/package-harness-parity/invalid/adapter-hash-mismatch.json",
+            "tests/package-harness-parity/invalid/adapter-path-substitution.expectation.json",
+            "tests/package-harness-parity/invalid/adapter-path-substitution.json",
+        ),
+    },
+    "A14": {
+        "owned_schema_paths": ("schema/single-call-stage-envelope.schema.json",),
+        "owned_tool_paths": (
+            "tools/finalize_single_call_stage_capture.py",
+            "tools/single_call_stage_envelope.py",
+        ),
+        "owned_test_paths": (
+            "tests/single-call-stage-envelope/test_contract.py",
+            "tests/single-call-stage-finalization/test_contract.py",
+        ),
+    },
+    "A16": {
+        "owned_schema_paths": (
+            "schema/execution-tooling-manifest.schema.json",
+            "schema/producer-capture-complete.schema.json",
+            "schema/producer-structural-completion.schema.json",
+        ),
+        "owned_tool_paths": (
+            "tools/codex_live_producer_adapter.py",
+            "tools/execution_tooling_manifest.py",
+            "tools/finalize_producer_capture_complete.py",
+            "tools/promote_producer_structural_completion.py",
+        ),
+        "owned_test_paths": (
+            "tests/execution-tooling-manifest/test_contract.py",
+            "tests/producer-capture-finalization/test_contract.py",
+            "tests/producer-structural-completion/test_contract.py",
+        ),
+    },
 }
 
 
@@ -287,6 +361,23 @@ def validate(registry: Any, decisions: Any, context: dict[str, Any]) -> list[Fin
                         f"A16 {field} must register CI-readback owner {required_path}",
                     )
                 ]
+    for field, required_paths in TASK7_NAMESPACE_OWNER_PATHS.items():
+        registered = a16.get(field, [])
+        for required_path in required_paths:
+            if required_path not in registered:
+                return [
+                    Finding(
+                        "task7_namespace_owner_registration",
+                        f"A16 {field} must register Task 7 evidence-namespace owner {required_path}",
+                    )
+                ]
+            if not (ROOT / required_path).is_file():
+                return [
+                    Finding(
+                        "task7_namespace_owner_registration",
+                        f"A16 registered Task 7 evidence-namespace owner path does not exist: {required_path}",
+                    )
+                ]
     for owner, family, failure_class, label in (
         (a14, CANDIDATE_CUSTODY_OWNER_PATHS, "candidate_custody_owner_registration", "candidate-custody"),
         (a16, CANDIDATE_MATURITY_OWNER_PATHS, "candidate_maturity_owner_registration", "candidate-maturity"),
@@ -299,17 +390,51 @@ def validate(registry: Any, decisions: Any, context: dict[str, Any]) -> list[Fin
                     return [Finding(failure_class, f"{owner['andon_id']} {field} must register {label} owner {required_path}")]
                 if not (ROOT / required_path).is_file():
                     return [Finding(failure_class, f"{owner['andon_id']} registered {label} owner path does not exist: {required_path}")]
+    contracts_by_id = {str(contract.get("andon_id")): contract for contract in contracts}
+    for owner_id, family in BRANCH11_INTEGRATION_OWNER_PATHS.items():
+        owner = contracts_by_id[owner_id]
+        for field, required_paths in family.items():
+            registered = owner.get(field, [])
+            for required_path in required_paths:
+                if required_path not in registered:
+                    return [
+                        Finding(
+                            "branch11_integration_owner_registration",
+                            f"{owner_id} {field} must register Branch 11 integration owner {required_path}",
+                        )
+                    ]
+                if not (ROOT / required_path).is_file():
+                    return [
+                        Finding(
+                            "branch11_integration_owner_registration",
+                            f"{owner_id} registered Branch 11 integration owner path does not exist: {required_path}",
+                        )
+                    ]
     rules = registry.get("rules", {})
     if rules.get("source_binding_owner_paths_must_exist") is not True:
         return [Finding("source_binding_owner_registration", "source-binding owner-path existence gate must be active")]
     if rules.get("ci_readback_owner_paths_must_exist") is not True:
         return [Finding("ci_readback_owner_registration", "CI-readback owner-path existence gate must be active")]
+    if rules.get("task7_namespace_owner_paths_must_exist") is not True:
+        return [
+            Finding(
+                "task7_namespace_owner_registration",
+                "Task 7 evidence-namespace owner-path existence gate must be active",
+            )
+        ]
     if rules.get("candidate_custody_owner_paths_must_exist") is not True:
         return [Finding("candidate_custody_owner_registration", "candidate-custody owner-path existence gate must be active")]
     if rules.get("candidate_maturity_owner_paths_must_exist") is not True:
         return [Finding("candidate_maturity_owner_registration", "candidate-maturity owner-path existence gate must be active")]
     if rules.get("reviewed_campaign_owner_paths_must_exist") is not True:
         return [Finding("reviewed_campaign_owner_registration", "reviewed-campaign owner-path existence gate must be active")]
+    if rules.get("branch11_integration_owner_paths_must_exist") is not True:
+        return [
+            Finding(
+                "branch11_integration_owner_registration",
+                "Branch 11 integration owner-path existence gate must be active",
+            )
+        ]
     if rules.get("global_missing_owner_path_rejection") is not True:
         return [
             Finding(

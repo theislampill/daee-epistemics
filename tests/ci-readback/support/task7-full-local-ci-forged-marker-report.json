@@ -1,20 +1,22 @@
 {
   "schema": "daee-task7-result-report-v2",
-  "report_id": "8bdfbcf138767039daefc86c51f09df8509ea8f313c8a4851aeb5350fe8617ce",
+  "report_id": "98599d12b8ed2d526035d1666dd86cfd01fe319afbd7947d354525bc23c2b83c",
   "kind": "full-local-ci",
   "status": "PASS",
   "producer_command": [
     "python",
     "tools/write_task7_deterministic_evidence.py",
     "--build-verdict",
+    "--evidence-namespace",
+    "branch11-v1",
     "--kind",
     "full-local-ci",
     "--source-freeze",
-    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/source-freeze.json",
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/source-freeze.json",
     "--out",
-    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/full-local-ci.json"
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/full-local-ci.json"
   ],
-  "producer_command_sha256": "45a98f00a971c25d656a19182de951b523c22979f086d7bbff0425b4482d7ae9",
+  "producer_command_sha256": "3f1771506d1eb6fa92fa5f677911c7534155ac4d9befdd0d2b6209e0ef42054c",
   "producer_execution_profile": {
     "profile_id": "python-isolated-bootstrap-v2",
     "launcher": "running-interpreter",
@@ -43,9 +45,9 @@
         "--command-timeout-seconds",
         "900",
         "--json",
-        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/native/full-local-ci.json"
+        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/native/full-local-ci.json"
       ],
-      "command_sha256": "f9b71929259077426a35a85e3ed4fb7c768956779d7327497462d83680580c04",
+      "command_sha256": "3622e2fddc95b45da4c1a1904fb0f4f45cfa097aabb4b8238d3c7ce054cff12c",
       "execution_profile": {
         "profile_id": "python-isolated-bootstrap-v2",
         "launcher": "running-interpreter",
@@ -61,7 +63,7 @@
       },
       "exit_code": 0,
       "stdout_byte_count": 51,
-      "stdout_sha256": "a8678cea2b1bc948e297a3f4caf997c410d45dc2b4330bc3349bf3473b3d0787",
+      "stdout_sha256": "cd37837000156b86d2a95166e93e8a876dd5b1b1d3d53fde52d2f3bdde9a0d36",
       "stderr_byte_count": 0,
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
@@ -69,12 +71,12 @@
   "check_count": 1,
   "evidence_artifacts": [
     {
-      "path": "tests/ci-readback/support/task7-full-local-ci-native-report.json",
+      "path": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/native/full-local-ci.json",
       "byte_count": 562,
-      "sha256": "aaba0963340d8f8567518ab0f4ce49f02ce76c96f2a69fc4654c136e0f8a1f0d"
+      "sha256": "6e4050309f06ae72870a0568367ed602f38893ae7a221b7b6e09e60692621675"
     }
   ],
-  "source_freeze_id": "361ce4b4bf753502e4ccf10734fe1320bdb85dd2a39aa887e728fccda52df150",
+  "source_freeze_id": "c9407bc45393b8ff06fcce20047f94509322d96a089e90d713ba812507615d60",
   "expected_final_tree_oid": "4444444444444444444444444444444444444444",
   "observed_at": "2026-07-12T12:00:00Z",
   "model_calls": 0,

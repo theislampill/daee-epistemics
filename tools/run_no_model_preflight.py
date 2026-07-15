@@ -131,6 +131,12 @@ A16_GATE_COMMANDS: dict[str, tuple[str, ...]] = {
         "python tests/evidence-retention/test_contract.py",
     ),
     "reviewed-campaign no-dispatch orchestration": (
+        "python tests/single-call-stage-envelope/test_contract.py",
+        "python tests/b5-current-witness-adapter/test_contract.py",
+        "python tests/producer-capture-finalization/test_contract.py",
+        "python tests/single-call-stage-finalization/test_contract.py",
+        "python tests/producer-structural-completion/test_contract.py",
+        "python tests/initial-assessment-barrier/test_contract.py",
         "python tools/reviewed_campaign_orchestrator.py --self-test",
         "python tests/reviewed-campaign-orchestration/test_contract.py",
     ),

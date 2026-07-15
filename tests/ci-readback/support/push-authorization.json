@@ -2,8 +2,8 @@
   "schema": "vcs-action-authorization-v1",
   "repository": "theislampill/daee-epistemics",
   "remote_name": "origin",
-  "target_branch": "codex/v0.4.6.0-runtime-footprint-b10",
-  "target_ref": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10",
+  "target_branch": "codex/v0.4.6.0-runtime-footprint-b11",
+  "target_ref": "refs/heads/codex/v0.4.6.0-runtime-footprint-b11",
   "scoped_paths": [
     {"path": "docs/audits/example-countermeasure.md", "sha256": "8888888888888888888888888888888888888888888888888888888888888888"},
     {"path": "tools/example_countermeasure.py", "sha256": "9999999999999999999999999999999999999999999999999999999999999999"}
@@ -13,7 +13,7 @@
   "verification_verdict_path": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/whole-branch-review.md",
   "verification_verdict_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
   "owner_identity": "theis-owner",
-  "writer_boundary_identity": "codex-branch10-writer",
+  "writer_boundary_identity": "codex-branch11-writer",
   "issued_at": "2026-07-12T10:00:00Z",
   "valid_not_before": "2026-07-12T11:00:00Z",
   "valid_not_after": "2026-07-12T13:00:00Z",
@@ -34,7 +34,7 @@
   "expected_old_remote_oid": "1111111111111111111111111111111111111111",
   "commit_receipt": {
     "path": "tests/ci-readback/support/commit-receipt.json",
-    "sha256": "8502f41316d261f3254551584012699e842985379a57d39fe1dabfa0a92a7f8e"
+    "sha256": "6e44d65bc4dab8187cc78890c5796f103dd74538e526ece32091f28235e28c2e"
   },
   "workflow_check_snapshot": {
     "provider": "github-actions",

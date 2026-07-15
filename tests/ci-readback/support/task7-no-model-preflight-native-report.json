@@ -3,9 +3,9 @@
   "decision": "MATRIX_AUTHORIZED_AFTER_PREFLIGHT",
   "complete": true,
   "gate_count": 25,
-  "command_count": 37,
-  "command_set_sha256": "321dec9870c4ea708c8bf68c5895c93b9f1bb993acf486b0b183f1b02a33ade9",
-  "execution_plan_sha256": "3b16420278c2813d336d5b9ccfd5be5e515f64e541aff050eb5464637701b4ab",
+  "command_count": 43,
+  "command_set_sha256": "7202ee27d65e5c80a23374129a64ed3eb8c25170bb64e1520b5b76397286c368",
+  "execution_plan_sha256": "e4386731fb1356aa8737f208d175521186fe0d80085488d3350bb7d64b9df3f6",
   "python_execution_profile_id": "python-isolated-bootstrap-v2",
   "gates": [
     {
@@ -838,6 +838,126 @@
       "passed": true,
       "repair_lane": "",
       "steps": [
+        {
+          "command": "python tests/single-call-stage-envelope/test_contract.py",
+          "execution_profile": {
+            "profile_id": "python-isolated-bootstrap-v2",
+            "launcher": "running-interpreter",
+            "python_flags": [
+              "-I",
+              "-S",
+              "-B"
+            ],
+            "bootstrap_path": "tools/sanitized_python_bootstrap.py",
+            "environment_policy": "isolated-startup-then-delete-python-prefixed-and-pyvenv-launcher-v2",
+            "import_roots_policy": "stdlib-plus-repo-tools-script-parent-direct-sysconfig-system-user-no-pth-v2",
+            "removed_environment_names": []
+          },
+          "returncode": 0,
+          "duration_sec": 0.001,
+          "timed_out": false,
+          "stdout_tail": ""
+        },
+        {
+          "command": "python tests/b5-current-witness-adapter/test_contract.py",
+          "execution_profile": {
+            "profile_id": "python-isolated-bootstrap-v2",
+            "launcher": "running-interpreter",
+            "python_flags": [
+              "-I",
+              "-S",
+              "-B"
+            ],
+            "bootstrap_path": "tools/sanitized_python_bootstrap.py",
+            "environment_policy": "isolated-startup-then-delete-python-prefixed-and-pyvenv-launcher-v2",
+            "import_roots_policy": "stdlib-plus-repo-tools-script-parent-direct-sysconfig-system-user-no-pth-v2",
+            "removed_environment_names": []
+          },
+          "returncode": 0,
+          "duration_sec": 0.001,
+          "timed_out": false,
+          "stdout_tail": ""
+        },
+        {
+          "command": "python tests/producer-capture-finalization/test_contract.py",
+          "execution_profile": {
+            "profile_id": "python-isolated-bootstrap-v2",
+            "launcher": "running-interpreter",
+            "python_flags": [
+              "-I",
+              "-S",
+              "-B"
+            ],
+            "bootstrap_path": "tools/sanitized_python_bootstrap.py",
+            "environment_policy": "isolated-startup-then-delete-python-prefixed-and-pyvenv-launcher-v2",
+            "import_roots_policy": "stdlib-plus-repo-tools-script-parent-direct-sysconfig-system-user-no-pth-v2",
+            "removed_environment_names": []
+          },
+          "returncode": 0,
+          "duration_sec": 0.001,
+          "timed_out": false,
+          "stdout_tail": ""
+        },
+        {
+          "command": "python tests/single-call-stage-finalization/test_contract.py",
+          "execution_profile": {
+            "profile_id": "python-isolated-bootstrap-v2",
+            "launcher": "running-interpreter",
+            "python_flags": [
+              "-I",
+              "-S",
+              "-B"
+            ],
+            "bootstrap_path": "tools/sanitized_python_bootstrap.py",
+            "environment_policy": "isolated-startup-then-delete-python-prefixed-and-pyvenv-launcher-v2",
+            "import_roots_policy": "stdlib-plus-repo-tools-script-parent-direct-sysconfig-system-user-no-pth-v2",
+            "removed_environment_names": []
+          },
+          "returncode": 0,
+          "duration_sec": 0.001,
+          "timed_out": false,
+          "stdout_tail": ""
+        },
+        {
+          "command": "python tests/producer-structural-completion/test_contract.py",
+          "execution_profile": {
+            "profile_id": "python-isolated-bootstrap-v2",
+            "launcher": "running-interpreter",
+            "python_flags": [
+              "-I",
+              "-S",
+              "-B"
+            ],
+            "bootstrap_path": "tools/sanitized_python_bootstrap.py",
+            "environment_policy": "isolated-startup-then-delete-python-prefixed-and-pyvenv-launcher-v2",
+            "import_roots_policy": "stdlib-plus-repo-tools-script-parent-direct-sysconfig-system-user-no-pth-v2",
+            "removed_environment_names": []
+          },
+          "returncode": 0,
+          "duration_sec": 0.001,
+          "timed_out": false,
+          "stdout_tail": ""
+        },
+        {
+          "command": "python tests/initial-assessment-barrier/test_contract.py",
+          "execution_profile": {
+            "profile_id": "python-isolated-bootstrap-v2",
+            "launcher": "running-interpreter",
+            "python_flags": [
+              "-I",
+              "-S",
+              "-B"
+            ],
+            "bootstrap_path": "tools/sanitized_python_bootstrap.py",
+            "environment_policy": "isolated-startup-then-delete-python-prefixed-and-pyvenv-launcher-v2",
+            "import_roots_policy": "stdlib-plus-repo-tools-script-parent-direct-sysconfig-system-user-no-pth-v2",
+            "removed_environment_names": []
+          },
+          "returncode": 0,
+          "duration_sec": 0.001,
+          "timed_out": false,
+          "stdout_tail": ""
+        },
         {
           "command": "python tools/reviewed_campaign_orchestrator.py --self-test",
           "execution_profile": {

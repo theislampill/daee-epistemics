@@ -19,6 +19,7 @@ if str(TOOLS) not in sys.path:
 
 import check_smoke_matrix_manifest as contract  # noqa: E402
 import build_candidate_package_record as builder  # noqa: E402
+import execution_tooling_manifest as tooling_manifest  # noqa: E402
 from a16_immutable_custody import canonical_json_bytes  # noqa: E402
 
 
@@ -41,6 +42,24 @@ def write_ref(root: Path, relative: str, payload: bytes) -> dict[str, str]:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(payload)
     return ref(relative, hashlib.sha256(payload).hexdigest())
+
+
+def test_execution_tooling_manifest(source_commit: str) -> dict:
+    value = {
+        "schema": "daee-stage07-execution-tooling-manifest-v1",
+        "kind": "execution-tooling-manifest",
+        "source_commit": source_commit,
+        "source_tree": "c" * 40,
+        "profile": "stage07-release",
+        "membership": {"snapshot_roots": ["tools", "schema"], "runtime_resources": ["tests/fixture"]},
+        "result_order": ["fixture-check"],
+        "file_count": 1,
+        "aggregate_algorithm": "sha256-domain-canonical-json-stage07-tooling-v1",
+        "aggregate_sha256": "",
+        "files": [{"path": "tools/fixture.py", "git_mode": "100644", "blob_oid": "d" * 40, "byte_count": 8, "sha256": "e" * 64}],
+    }
+    value["aggregate_sha256"] = tooling_manifest._aggregate_sha256(value)
+    return value
 
 
 def authorization() -> dict:
@@ -155,29 +174,133 @@ def candidate_record(auth: dict, claim: dict) -> dict:
     return value
 
 
-def matrix_authorization(record: dict) -> dict:
+def canonical_case_inputs(record: dict) -> list[dict[str, str]]:
+    registry = json.loads(
+        (ROOT / record["input_registry"]["path"]).read_text(encoding="utf-8")
+    )
+    return [
+        {
+            "case_id": row["case_id"],
+            "input_sha256": row["raw_sha256"].lower(),
+        }
+        for row in registry["cases"]
+    ]
+
+
+def campaign_authorization(record: dict, case_inputs: list[dict[str, str]]) -> dict:
+    value = {
+        "schema": "reviewed-campaign-owner-authorization-v1",
+        "kind": "reviewed-five-smoke-campaign",
+        "authorization_id": "owner-five-smoke-fixture",
+        "status": "ACTIVE",
+        "revoked": False,
+        "valid_not_before": "2026-07-12T00:00:00Z",
+        "valid_not_after": "2026-07-12T02:00:00Z",
+        "branch": record["branch"],
+        "source_commit": record["source_commit"],
+        "source_preflight": record["source_preflight"],
+        "candidate_id": record["candidate_id"],
+        "candidate_state": "READY_UNUSED",
+        "candidate_claim_status": "UNCLAIMED",
+        "package_profile": "execution-mini",
+        "package_sha256": record["archive"]["sha256"],
+        "package_tree_sha256": record["extracted_tree_sha256"],
+        "input_registry": record["input_registry"],
+        "review_protocol": record["review_protocol"],
+        "action": "RUN_REVIEWED_FIVE_SMOKE",
+        "lane": "producer",
+        "model_runner": "codex",
+        "producer_model": "gpt-5.5",
+        "producer_reasoning_effort": "high",
+        "authorized_calls": 5,
+        "case_inputs": case_inputs,
+        "automatic_retry_authorized": False,
+        "optional_opus_authorized": False,
+    }
+    value["authorization_sha256"] = canonical_sha(value, "authorization_sha256")
+    return value
+
+
+def matrix_authorization(
+    record: dict,
+    campaign_authorization_ref: dict[str, str],
+    case_inputs: list[dict[str, str]],
+    execution_tooling_manifest_ref: dict[str, str],
+) -> dict:
     value = {
         "schema": "daee-smoke-matrix-v1",
         "kind": "matrix-authorization",
         "authorization_id": "matrix-fixture",
         "action": "RUN_REVIEWED_FIVE_SMOKE",
         "one_use": True,
+        "execution_lane": "producer",
+        "execution_mode": "LIVE_CODEX",
+        "test_only": False,
+        "live_execution_authorized": True,
         "candidate_id": record["candidate_id"],
         "candidate_record": ref("candidate-record.json", record["record_sha256"]),
         "candidate_readiness": ref("candidate-readiness.json"),
         "candidate_maturity": ref("candidate-maturity.json"),
+        "candidate_state_at_authorization": "READY_UNUSED",
+        "candidate_claim_status_at_authorization": "UNCLAIMED",
+        "source_commit": record["source_commit"],
+        "branch": record["branch"],
         "source_commit_receipt": record["source_commit_receipt"],
+        "source_preflight": record["source_preflight"],
+        "campaign_authorization": campaign_authorization_ref,
+        "campaign_authorization_sha256": campaign_authorization_ref["sha256"],
+        "execution_tooling_manifest": execution_tooling_manifest_ref,
         "package_sha256": record["archive"]["sha256"],
         "package_tree_sha256": record["extracted_tree_sha256"],
         "tree_digest_algorithm": "daee-tree-sha256-v1",
+        "candidate_package_root": (
+            f"{record['candidate_root']}/{record['extracted_root']}"
+        ),
         "input_registry": record["input_registry"],
         "review_protocol": record["review_protocol"],
+        "case_inputs": case_inputs,
         "producer_model": "gpt-5.5",
         "producer_reasoning_effort": "high",
         "cold_review_model": "gpt-5.6-sol",
         "cold_review_reasoning_effort": "xhigh",
+        "model_runner": "codex",
+        "resolved_model": "gpt-5.5",
+        "adapter_version": "codex-live-v1",
+        "host_application_version": "codex-cli fixture",
+        "codex_executable_sha256": SHA,
+        "provider_settings": {
+            "response_surface": "package-faithful",
+            "delivery_mode": "explicit-prompt-components",
+            "effective_context_limit_bytes": 1000000,
+            "command_timeout_seconds": 30,
+            "parallelism": 5,
+            "fresh_context_per_case": True,
+            "submit_before_observe": True,
+            "sandbox": "read-only",
+            "approval_policy": "never",
+            "ignore_user_config": True,
+            "ignore_rules": True,
+            "ephemeral": True,
+        },
+        "cohort_size": 5,
+        "cohort_protocol": "barrier-five-submit-before-await-v1",
+        "case_ids": [row["case_id"] for row in case_inputs],
+        "cycle_id": "matrix-fixture-cycle",
+        "launch_not_before": "2026-07-12T00:00:00Z",
+        "launch_not_after": "2026-07-12T01:00:00Z",
+        "expected_campaign_usage_sequence": 0,
+        "expected_campaign_usage_head_sha256": SHA,
+        "isolated_root_prefix": "producer/isolated",
+        "usage_ledger_root": "usage",
+        "authorization_claim_path": "claims/producer-authorization.json",
+        "candidate_claim_path": "claims/candidate.json",
+        "observation_finalizer_path": "producer/observation-finalizer.json",
+        "prompt_retention_root": "producer/prompts",
+        "output_retention_root": "producer/raw-outputs",
+        "provider_receipt_root": "producer/provider-receipts",
+        "structural_evidence_root": "producer/structural-evidence",
         "optional_opus_authorized": False,
-        "paid_execution_authorized": False,
+        "paid_execution_authorized": True,
     }
     value["authorization_sha256"] = canonical_sha(value, "authorization_sha256")
     return value
@@ -240,15 +363,29 @@ class CandidateBuildContractTests(unittest.TestCase):
     def test_matrix_authorization_family_binds_candidate_and_protocol(self) -> None:
         build_auth = authorization()
         record = candidate_record(build_auth, build_claim(build_auth))
-        auth = matrix_authorization(record)
-        claim = matrix_claim(auth)
-        self.assertEqual([], contract.validate_manifest(auth, root=ROOT))
-        self.assertEqual([], contract.validate_manifest(claim, root=ROOT))
-        drift = {**auth, "package_tree_sha256": "f" * 64}
-        self.assertEqual(
-            "authorization_content_hash",
-            contract.validate_manifest(drift, root=ROOT)[0]["failure_class"],
-        )
+        case_inputs = canonical_case_inputs(record)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            parent = campaign_authorization(record, case_inputs)
+            parent_ref = write_ref(
+                root,
+                "campaign-authorization.json",
+                canonical_json_bytes(parent),
+            )
+            tooling_ref = write_ref(
+                root,
+                "execution-tooling-manifest.json",
+                canonical_json_bytes(test_execution_tooling_manifest(record["source_commit"])),
+            )
+            auth = matrix_authorization(record, parent_ref, case_inputs, tooling_ref)
+            claim = matrix_claim(auth)
+            self.assertEqual([], contract.validate_manifest(auth, root=root))
+            self.assertEqual([], contract.validate_manifest(claim, root=root))
+            drift = {**auth, "package_tree_sha256": "f" * 64}
+            self.assertEqual(
+                "authorization_content_hash",
+                contract.validate_manifest(drift, root=root)[0]["failure_class"],
+            )
 
     def _fake_build_authorization(self, root: Path) -> tuple[Path, dict]:
         auth = authorization()

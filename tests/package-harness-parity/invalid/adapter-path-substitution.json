@@ -1,0 +1,6 @@
+{
+  "schema": "daee-package-harness-scenario-v1",
+  "scenario": "adapter-path-substitution",
+  "expected_valid": false,
+  "mutation": "artifact-owner-mismatch"
+}

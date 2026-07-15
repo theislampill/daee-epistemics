@@ -1,20 +1,22 @@
 {
   "schema": "daee-task7-result-report-v2",
-  "report_id": "b0cc6b3e3c238cd114e1b63f34d9e76bb6203612fb5c7db83878d8ddcaf4910c",
+  "report_id": "cb6b6f6e9084aed1f1d940c18f63b1a0ec3657326d5f0ca279715df4f05833bc",
   "kind": "independent-whole-branch-review",
   "status": "ACCEPT",
   "producer_command": [
     "python",
     "tools/write_task7_deterministic_evidence.py",
     "--build-verdict",
+    "--evidence-namespace",
+    "branch11-v1",
     "--kind",
     "independent-whole-branch-review",
     "--source-freeze",
-    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/source-freeze.json",
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/source-freeze.json",
     "--out",
-    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/independent-whole-branch-review.json"
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/independent-whole-branch-review.json"
   ],
-  "producer_command_sha256": "c50272ec78d8132ec309148ab5ab8a570624c7ba9afd37c47ce4a5c4ea59f1d2",
+  "producer_command_sha256": "cb94b180b154b90acc61c0b4d94dd27d8d0806665af91ae74efaa5c8c857cfa7",
   "producer_execution_profile": {
     "profile_id": "python-isolated-bootstrap-v2",
     "launcher": "running-interpreter",
@@ -37,17 +39,17 @@
   "check_count": 0,
   "evidence_artifacts": [
     {
-      "path": "tests/ci-readback/support/task7-independent-review-authorization.json",
+      "path": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/authorizations/independent-reviewer.json",
       "byte_count": 735,
-      "sha256": "d5245327ed19a0511af390bea11ce937e30d1315324d6b3f78a218b158ee3c2a"
+      "sha256": "a14c1c219fed59b1bfe27b55a080aaf71c45d6c627d994d9f3ce8de868dc9792"
     },
     {
-      "path": "tests/ci-readback/support/task7-independent-whole-branch-review-record.json",
-      "byte_count": 1256,
-      "sha256": "2fc2baa659205d55183f8cb507f45a4855b668944df1767a60bb0ac219eeaf7e"
+      "path": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/reviews/task7-independent-whole-branch-review-branch11-v1.json",
+      "byte_count": 1326,
+      "sha256": "6947eea3d0869db26a1472cb4c28f1cb36beebc52dc7a677c823a5971aa7c8c4"
     }
   ],
-  "source_freeze_id": "361ce4b4bf753502e4ccf10734fe1320bdb85dd2a39aa887e728fccda52df150",
+  "source_freeze_id": "c9407bc45393b8ff06fcce20047f94509322d96a089e90d713ba812507615d60",
   "expected_final_tree_oid": "4444444444444444444444444444444444444444",
   "observed_at": "2026-07-12T12:00:00Z",
   "model_calls": 0,

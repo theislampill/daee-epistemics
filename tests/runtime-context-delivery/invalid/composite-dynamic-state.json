@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "composite-dynamic-state",
+  "expected_valid": false,
+  "mutation": "composite-dynamic-state-prohibited",
+  "stage": "01-08"
+}

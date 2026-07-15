@@ -1,11 +1,95 @@
 {
-  "$schema":"https://json-schema.org/draft/2020-12/schema","title":"DAEE topology initial assessment","type":"object","additionalProperties":false,
-  "required":["schema","assessment_id","case_id","cycle_id","input","output","reviewer_identity_or_accountable_role","recorded_utc","question_answers","findings","verdict","non_claims"],
-  "properties":{"schema":{"const":"daee-topology-initial-assessment-v1"},"assessment_id":{"type":"string","minLength":1},"case_id":{"type":"string","minLength":1},"cycle_id":{"type":"string","minLength":1},"input":{"$ref":"#/$defs/artifact"},"output":{"$ref":"#/$defs/artifact"},"reviewer_identity_or_accountable_role":{"type":"string","minLength":1},"recorded_utc":{"type":"string","minLength":1},"question_answers":{"type":"array","minItems":1,"items":{"$ref":"#/$defs/question"}},"findings":{"type":"array","items":{"$ref":"#/$defs/finding"}},"verdict":{"enum":["PASS","FAIL","PARTIAL"]},"non_claims":{"type":"array","minItems":1,"uniqueItems":true,"items":{"type":"string","minLength":1}}},
-  "$defs":{
-    "artifact":{"type":"object","additionalProperties":false,"required":["path","sha256","byte_count"],"properties":{"path":{"type":"string","minLength":1},"sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"},"byte_count":{"type":"integer","minimum":0}}},
-    "ids":{"type":"array","minItems":1,"uniqueItems":true,"items":{"type":"string","minLength":1}},
-    "question":{"type":"object","additionalProperties":false,"required":["question_id","answer","target_ids","basis"],"properties":{"question_id":{"type":"string","minLength":1},"answer":{"type":"string","minLength":1},"target_ids":{"$ref":"#/$defs/ids"},"basis":{"type":"string","minLength":1}}},
-    "finding":{"type":"object","additionalProperties":false,"required":["finding_id","target_ids","severity","basis"],"properties":{"finding_id":{"type":"string","minLength":1},"target_ids":{"$ref":"#/$defs/ids"},"severity":{"enum":["material","nonmaterial"]},"basis":{"type":"string","minLength":1}}}
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DAEE topology initial assessment",
+  "oneOf": [
+    {"$ref": "#/$defs/legacyV1"},
+    {"$ref": "#/$defs/campaignV2"}
+  ],
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "byte_count"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "byte_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question_id", "answer", "target_ids", "basis"],
+      "properties": {
+        "question_id": {"type": "string", "minLength": 1},
+        "answer": {"type": "string", "minLength": 1},
+        "target_ids": {"$ref": "#/$defs/ids"},
+        "basis": {"type": "string", "minLength": 1}
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "target_ids", "severity", "basis"],
+      "properties": {
+        "finding_id": {"type": "string", "minLength": 1},
+        "target_ids": {"$ref": "#/$defs/ids"},
+        "severity": {"enum": ["material", "nonmaterial"]},
+        "basis": {"type": "string", "minLength": 1}
+      }
+    },
+    "legacyV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "assessment_id", "case_id", "cycle_id", "input", "output", "reviewer_identity_or_accountable_role", "recorded_utc", "question_answers", "findings", "verdict", "non_claims"],
+      "properties": {
+        "schema": {"const": "daee-topology-initial-assessment-v1"},
+        "assessment_id": {"type": "string", "minLength": 1},
+        "case_id": {"type": "string", "minLength": 1},
+        "cycle_id": {"type": "string", "minLength": 1},
+        "input": {"$ref": "#/$defs/artifact"},
+        "output": {"$ref": "#/$defs/artifact"},
+        "reviewer_identity_or_accountable_role": {"type": "string", "minLength": 1},
+        "recorded_utc": {"type": "string", "minLength": 1},
+        "question_answers": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/question"}},
+        "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+        "verdict": {"enum": ["PASS", "FAIL", "PARTIAL"]},
+        "non_claims": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "campaignV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "assessment_id", "candidate_id", "source_commit", "case_id", "cycle_id", "producer_completion_sha256", "review_protocol_sha256", "structural_finalization", "raw_capture", "input", "output", "staged_handoff", "reviewer_identity_or_accountable_role", "relationship_to_producer", "independence_basis", "recorded_utc", "question_answers", "findings", "verdict", "non_claims"],
+      "properties": {
+        "schema": {"const": "daee-topology-initial-assessment-v2"},
+        "assessment_id": {"type": "string", "minLength": 1},
+        "candidate_id": {"type": "string", "minLength": 1},
+        "source_commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "case_id": {"type": "string", "minLength": 1},
+        "cycle_id": {"type": "string", "minLength": 1},
+        "producer_completion_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "review_protocol_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "structural_finalization": {"$ref": "#/$defs/artifact"},
+        "raw_capture": {"$ref": "#/$defs/artifact"},
+        "input": {"$ref": "#/$defs/artifact"},
+        "output": {"$ref": "#/$defs/artifact"},
+        "staged_handoff": {"$ref": "#/$defs/artifact"},
+        "reviewer_identity_or_accountable_role": {"type": "string", "pattern": "^human:[a-z0-9][a-z0-9._-]*$"},
+        "relationship_to_producer": {"const": "independent"},
+        "independence_basis": {"type": "string", "minLength": 1},
+        "recorded_utc": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"},
+        "question_answers": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/question"}},
+        "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+        "verdict": {"enum": ["PASS", "FAIL", "PARTIAL"]},
+        "non_claims": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
   }
 }

@@ -18,7 +18,17 @@ from artifact_tree import tree_sha256 as tree_sha
 TOOLS = Path(__file__).resolve().parent
 if str(TOOLS) not in sys.path:
     sys.path.insert(0, str(TOOLS))
-from runtime_context_resolver import ResolutionError, resolve_context, sha256_bytes  # noqa: E402
+from runtime_context_resolver import (  # noqa: E402
+    COMPOSITE_STAGE,
+    EMPTY_VALIDATED_STATE,
+    ResolutionError,
+    resolve_context,
+    sha256_bytes,
+)
+from single_call_stage_envelope import (  # noqa: E402
+    EnvelopeValidationError,
+    render_output_envelope_contract,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schema" / "runtime-call-context.schema.json"
@@ -34,7 +44,9 @@ SUPPORTED_SCENARIO_FAILURES = {
     "package-hash-mismatch", "unverifiable-host-receipt", "membership-is-not-delivery",
     "mandatory-stage-component-missing", "raw-input-not-delivered", "raw-input-hash-mismatch",
     "undeclared-prompt-envelope", "capsule-binding-mismatch", "cold-law-delivery-list-mismatch",
-    "usage-evidence-mismatch", "schema-invalid",
+    "usage-evidence-mismatch", "schema-invalid", "component-order-drift",
+    "context-byte-telemetry-mismatch", "composite-harness-prohibited",
+    "composite-dynamic-state-prohibited", "component-source-alias",
 }
 
 
@@ -214,11 +226,23 @@ def validate(manifest: dict[str, Any], package_root: Path, run_root: Path) -> di
         raise Failure("raw-input-hash-mismatch", stage, "raw-input-hash-drift", "raw input path/hash/byte count differ")
     capsule = manifest["state_capsule"]
     previous_capsule: bytes | None = None
-    if stage == "01":
-        if not capsule["bootstrap"] or capsule["included"] or capsule["path"] is not None or capsule["sha256"] is not None:
-            raise Failure("prior-capsule-not-delivered", stage, "bootstrap-contract", "Stage01 must be explicit capsule bootstrap")
+    composite = stage == COMPOSITE_STAGE
+    bootstrap = stage in {"01", COMPOSITE_STAGE}
+    if composite and manifest["validated_state"] != EMPTY_VALIDATED_STATE:
+        raise Failure(
+            "composite-dynamic-state-prohibited",
+            stage,
+            "composite-dynamic-state",
+            "composite call requires exact empty validated state",
+        )
+    if bootstrap:
+        if (not capsule["bootstrap"] or capsule["included"] or capsule["validated"]
+                or capsule["path"] is not None or capsule["sha256"] is not None):
+            subcode = "composite-prior-capsule" if composite else "bootstrap-contract"
+            detail = "composite call must not receive a prior capsule" if composite else "Stage01 must be explicit capsule bootstrap"
+            raise Failure("prior-capsule-not-delivered", stage, subcode, detail)
         if input_row["included"] is not True:
-            raise Failure("raw-input-not-delivered", stage, "raw-input-included-false", "Stage01 must transport exact raw input bytes")
+            raise Failure("raw-input-not-delivered", stage, "raw-input-included-false", f"{stage} must transport exact raw input bytes")
     else:
         if not capsule["included"] or not capsule["validated"] or not isinstance(capsule["path"], str):
             raise Failure("prior-capsule-not-delivered", stage, "previous-capsule-omitted", "dependent call lacks previous validated capsule")
@@ -229,7 +253,7 @@ def validate(manifest: dict[str, Any], package_root: Path, run_root: Path) -> di
 
     try:
         resolved = resolve_context(package_root, stage, manifest["validated_state"], previous_capsule,
-                                   selection["candidate_cap"], raw_input if stage == "01" else None)
+                                   selection["candidate_cap"], raw_input if bootstrap else None)
     except ResolutionError as exc:
         raise Failure("selected-component-not-delivered", stage, "resolver-failed", str(exc)) from exc
     if (resolved.get("status") == "HOLD" and resolved.get("hold_reason") == "live-pressure-without-semantic-context"
@@ -260,6 +284,13 @@ def validate(manifest: dict[str, Any], package_root: Path, run_root: Path) -> di
     expected_by_id = {x["component_id"]: x for x in resolved["components"]}
     missing = [component_id for component_id in resolved["selected_components"] if component_id not in by_id]
     if missing:
+        if composite:
+            raise Failure(
+                "mandatory-stage-component-missing",
+                stage,
+                "composite-mandatory-union-missing",
+                f"mandatory composite component missing: {missing}",
+            )
         if stage == "07" and any(x in missing for x in ("package:references/runtime-shard-output-release.md", "package:references/runtime-shard-render-contract.md")):
             raise Failure("mandatory-stage-component-missing", stage, "missing-both-stage07-shards", f"mandatory Stage07 component missing: {missing}")
         if "raw-input" in missing:
@@ -267,6 +298,24 @@ def validate(manifest: dict[str, Any], package_root: Path, run_root: Path) -> di
         if "state-capsule" in missing:
             raise Failure("prior-capsule-not-delivered", stage, "capsule-not-in-prompt", "previous capsule component is absent")
         raise Failure("selected-component-not-delivered", stage, "selected-shard-envelope-absent", f"selected-shard delivery component missing: {missing}")
+    if composite and (
+        any(row["kind"] == "harness-supplement" for row in components)
+        or runtime["evidence_lane"] != "package-faithful"
+        or manifest["proof_mode"] != "package-faithful"
+    ):
+        raise Failure(
+            "composite-harness-prohibited",
+            stage,
+            "composite-harness-prohibited",
+            "composite call must be package-faithful and contain no harness supplement",
+        )
+    if composite and ids != resolved["selected_components"]:
+        raise Failure(
+            "component-order-drift",
+            stage,
+            "component-order-drift",
+            "composite component order differs from the resolver-owned mandatory union",
+        )
     for component_id, expected in expected_by_id.items():
         actual = by_id.get(component_id)
         if actual is None:
@@ -309,6 +358,20 @@ def validate(manifest: dict[str, Any], package_root: Path, run_root: Path) -> di
     if sha256_bytes(prompt) != manifest["prompt"]["sha256"] or len(prompt) != manifest["prompt"]["byte_count"]:
         raise Failure("prompt-hash-mismatch", stage, "prompt-hash-drift", "prompt bytes changed after manifest binding")
     mode = runtime["delivery_mode"]; receipt = manifest.get("host_receipt")
+    if composite and manifest["prompt"]["includes_prior_full_output"]:
+        raise Failure(
+            "full-runtime-reinline",
+            stage,
+            "composite-prior-full-output",
+            "composite prompt must not contain or claim a prior full output",
+        )
+    if composite and mode != "explicit-prompt-components":
+        raise Failure(
+            "stage-derived-delivery-claim",
+            stage,
+            "composite-delivery-mode",
+            "composite package-faithful proof requires explicit prompt components",
+        )
     if mode == "unverified-host-ambient":
         raise Failure("membership-is-not-delivery", stage, "package-membership-only-claim", "package membership does not prove delivery")
     if mode == "host-skill-context-receipt":
@@ -318,8 +381,22 @@ def validate(manifest: dict[str, Any], package_root: Path, run_root: Path) -> di
             raise Failure("unverifiable-host-receipt", stage, "receipt-package-mismatch", "host receipt package hash differs")
 
     prompt_bound: list[tuple[str, str]] = []
+    composite_prompt_parts: list[bytes] = [b"DAEE validated runtime call context\n"]
     for component in components:
         data = source_bytes(component, package_root, run_root, stage)
+        expected = expected_by_id.get(component["component_id"])
+        if expected is not None:
+            expected_source_path = {
+                "transport://raw-input": f"run://{input_row['path']}",
+                "transport://previous-capsule": f"run://{capsule['path']}",
+            }.get(expected["source_path"], expected["source_path"])
+            if component["source_path"] != expected_source_path:
+                raise Failure(
+                    "component-source-alias",
+                    stage,
+                    "resolver-source-path-mismatch",
+                    f"component locator differs from resolver-owned source path: {component['component_id']}",
+                )
         if sha256_bytes(data) != component["sha256"] or len(data) != component["byte_count"]:
             raise Failure("component-hash-mismatch", stage, "source-slice-drift", f"component hash/bytes differ: {component['component_id']}")
         if component["delivery"] == "prompt-bound":
@@ -331,17 +408,87 @@ def validate(manifest: dict[str, Any], package_root: Path, run_root: Path) -> di
             start = prompt.index(envelope) + len(header); end = start + len(data)
             if component["prompt_start_byte"] != start or component["prompt_end_byte"] != end:
                 raise Failure("selected-component-not-delivered", stage, "component-offset-mismatch", f"component offsets differ: {component['component_id']}")
+            if composite:
+                composite_prompt_parts.extend([header, data, footer, b"\n"])
         elif component["delivery"] == "host-receipt-bound":
             rows = receipt.get("components", []) if isinstance(receipt, dict) else []
             if not any(x.get("component_id") == component["component_id"] and x.get("sha256") == component["sha256"] for x in rows if isinstance(x, dict)):
                 raise Failure("unverifiable-host-receipt", stage, "receipt-component-missing", f"receipt lacks component: {component['component_id']}")
+    output_contract = manifest.get("output_contract")
+    if output_contract is not None:
+        if not composite or not isinstance(output_contract, dict):
+            raise Failure("schema-invalid", stage, "output-contract-stage", "single-call output contract is valid only for composite 01-08")
+        contract = output_contract.get("contract")
+        try:
+            contract_bytes = render_output_envelope_contract(contract)
+        except (EnvelopeValidationError, TypeError, ValueError) as exc:
+            raise Failure("schema-invalid", stage, "output-contract-invalid", f"single-call output contract is invalid: {exc}") from exc
+        if (
+            contract.get("case_id") != manifest.get("case_id")
+            or contract.get("input_binding") != {
+                "sha256": input_row["sha256"],
+                "byte_count": input_row["byte_count"],
+            }
+            or contract.get("candidate_binding", {}).get("source_commit") != runtime["source_commit"]
+        ):
+            raise Failure("schema-invalid", stage, "output-contract-binding", "output contract differs from exact call/input/source bindings")
+        start = output_contract.get("prompt_start_byte")
+        end = output_contract.get("prompt_end_byte")
+        if (
+            not isinstance(start, int)
+            or not isinstance(end, int)
+            or end - start != len(contract_bytes)
+            or prompt[start:end] != contract_bytes
+            or output_contract.get("sha256") != sha256_bytes(contract_bytes)
+            or output_contract.get("byte_count") != len(contract_bytes)
+        ):
+            raise Failure("undeclared-prompt-envelope", stage, "output-contract-byte-drift", "output contract bytes/offset/hash differ from the prompt binding")
+        composite_prompt_parts.append(contract_bytes)
     observed_envelopes = [(m.group(1).decode(), m.group(2).decode()) for m in re.finditer(rb"----- BEGIN DAEE COMPONENT: ([^;\r\n]+); sha256=([0-9a-f]{64}) -----\r?\n", prompt)]
     if sorted(observed_envelopes) != sorted(prompt_bound):
         raise Failure("undeclared-prompt-envelope", stage, "undeclared-prompt-envelope", "prompt envelope inventory differs from declared prompt-bound components")
+    if composite and observed_envelopes != prompt_bound:
+        raise Failure("component-order-drift", stage, "component-order-drift", "composite prompt component order differs from declared component order")
+    if composite and prompt != b"".join(composite_prompt_parts):
+        raise Failure(
+            "undeclared-prompt-envelope",
+            stage,
+            "composite-exact-serialization",
+            "composite prompt differs from exact adapter serialization",
+        )
 
     telemetry = manifest["budget_telemetry"]
     if telemetry["selected_component_count"] != len(selected):
         raise Failure("schema-invalid", stage, "telemetry-selection-count", "selected component telemetry differs")
+    if composite:
+        expected_runtime_bytes = sum(
+            row["byte_count"]
+            for row in components
+            if row["kind"] not in {"raw-input", "state-capsule", "harness-supplement", "local-excerpt"}
+        )
+        expected_capsule_bytes = 0 if previous_capsule is None else len(previous_capsule)
+        expected_local_excerpt_bytes = sum(row["byte_count"] for row in components if row["kind"] == "local-excerpt")
+        expected_transport_bytes = len(prompt) - sum(
+            row["byte_count"] for row in components if row["delivery"] == "prompt-bound"
+        )
+        expected_telemetry = {
+            "effective_context_bytes": len(prompt),
+            "runtime_component_bytes": expected_runtime_bytes,
+            "capsule_bytes": expected_capsule_bytes,
+            "local_excerpt_bytes": expected_local_excerpt_bytes,
+            "transport_frame_bytes": expected_transport_bytes,
+        }
+        mismatches = [
+            key for key, expected in expected_telemetry.items()
+            if telemetry[key] != expected
+        ]
+        if mismatches:
+            raise Failure(
+                "context-byte-telemetry-mismatch",
+                stage,
+                "effective-context-byte-mismatch",
+                f"effective context byte telemetry differs from actual prompt bytes: {mismatches}",
+            )
     if telemetry["effective_context_bytes"] > telemetry["effective_context_limit"] and selection["status"] == "selected":
         raise Failure("context-budget-without-hold", stage, "over-budget-without-hold", "over-budget call did not HOLD/PARTIAL")
     expected_proof = "harness-assisted" if any(x["kind"] == "harness-supplement" for x in components) else "package-faithful"
@@ -358,6 +505,7 @@ def _actual_scenario_manifest(path: Path, package: Path, run: Path) -> dict[str,
     stage = str(row.get("stage", "03"))
     state = {"route_shards": [], "owner_module_ids": [], "cold_clause_ids": [], "live_pressure": False, "ambiguous": False}
     if kind == "bootstrap": stage = "01"
+    elif kind == "composite-bootstrap": stage = COMPOSITE_STAGE
     elif kind == "prior-capsule": stage = "02"
     elif kind == "owner-module": stage = "04"; state["owner_module_ids"] = ["M1-self-refutation"]
     elif kind == "cold-clause": stage = "04"; state["cold_clause_ids"] = ["clause.execution-mandate-detail"]
@@ -421,6 +569,60 @@ def _actual_scenario_manifest(path: Path, package: Path, run: Path) -> dict[str,
     elif mutation == "usage-evidence-mismatch":
         manifest["producer_declared_used"] = ["clause.execution-mandate-detail"]
         manifest["usage_status"] = "NOT_DECLARED"
+    elif mutation == "component-order-drift":
+        manifest["components"][1], manifest["components"][2] = manifest["components"][2], manifest["components"][1]
+    elif mutation == "context-byte-telemetry-mismatch":
+        manifest["budget_telemetry"]["effective_context_bytes"] -= 1
+    elif mutation == "composite-harness-prohibited":
+        supplement = b"unowned composite harness\n"
+        supplement_path = run / "harness-stage-prompt.md"
+        supplement_path.write_bytes(supplement)
+        digest = sha256_bytes(supplement)
+        prompt_path = run / manifest["prompt"]["path"]
+        prompt = prompt_path.read_bytes()
+        component_id = "harness:stage-prompt"
+        header = f"----- BEGIN DAEE COMPONENT: {component_id}; sha256={digest} -----\n".encode()
+        footer = f"\n----- END DAEE COMPONENT: {component_id} -----".encode()
+        start = len(prompt) + len(header)
+        prompt += header + supplement + footer + b"\n"
+        prompt_path.write_bytes(prompt)
+        manifest["components"].append({
+            "component_id": component_id,
+            "kind": "harness-supplement",
+            "source_path": "run://harness-stage-prompt.md",
+            "source_slice": {"kind": "whole-file", "start": 0, "end": 0},
+            "sha256": digest,
+            "byte_count": len(supplement),
+            "delivery": "prompt-bound",
+            "prompt_start_byte": start,
+            "prompt_end_byte": start + len(supplement),
+        })
+        manifest["runtime"]["evidence_lane"] = "harness-assisted"
+        manifest["proof_mode"] = "harness-assisted"
+        manifest["prompt"]["sha256"] = sha256_bytes(prompt)
+        manifest["prompt"]["byte_count"] = len(prompt)
+        manifest["budget_telemetry"]["effective_context_bytes"] = len(prompt)
+    elif mutation == "composite-dynamic-state-prohibited":
+        manifest["validated_state"]["route_shards"] = ["references/runtime-core-routing.md"]
+    elif mutation == "component-source-alias":
+        component = next(
+            row
+            for row in manifest["components"]
+            if row["component_id"] == "package:references/runtime-core-routing.md"
+        )
+        alias = run / "package-component-alias.bin"
+        alias.write_bytes((package / component["source_path"]).read_bytes())
+        component["source_path"] = "run://package-component-alias.bin"
+    if name == "composite-prior-capsule":
+        capsule_bytes = b'{"schema":"unexpected-prior-capsule"}'
+        (run / "previous-capsule.json").write_bytes(capsule_bytes)
+        manifest["state_capsule"] = {
+            "bootstrap": False,
+            "path": "previous-capsule.json",
+            "sha256": sha256_bytes(capsule_bytes),
+            "included": True,
+            "validated": True,
+        }
     elif mutation == "schema-invalid":
         if name == "unknown-input-field": manifest["input"]["review_unknown"] = True
         elif name == "unknown-validated-state-field": manifest["validated_state"]["review_unknown"] = True
@@ -486,11 +688,12 @@ def fixture_sweep(root: Path) -> tuple[bool, int, int, int]:
 def compose_actual_fixture(package_root: Path, run_root: Path, stage: str = "03", state: dict[str, Any] | None = None) -> dict[str, Any]:
     raw_input = b"neutral raw input bytes"
     (run_root / "raw-input.bin").write_bytes(raw_input)
-    capsule = None if stage == "01" else b'{"schema":"daee-state-capsule-v2","sequence":2}'
+    bootstrap = stage in {"01", COMPOSITE_STAGE}
+    capsule = None if bootstrap else b'{"schema":"daee-state-capsule-v2","sequence":2}'
     if capsule is not None: (run_root / "previous-capsule.json").write_bytes(capsule)
     state = state or {"route_shards": [], "owner_module_ids": [], "cold_clause_ids": [], "live_pressure": False, "ambiguous": False}
-    resolution = resolve_context(package_root, stage, state, capsule, 4, raw_input if stage == "01" else None)
-    parts = [b"DAEE transport frame\n"]
+    resolution = resolve_context(package_root, stage, state, capsule, 4, raw_input if bootstrap else None)
+    parts = [b"DAEE validated runtime call context\n" if stage == COMPOSITE_STAGE else b"DAEE transport frame\n"]
     components = []
     for raw in resolution["components"]:
         data = raw["bytes"]
@@ -505,12 +708,12 @@ def compose_actual_fixture(package_root: Path, run_root: Path, stage: str = "03"
     hold = resolution["status"] in {"HOLD", "PARTIAL"}
     cold_delivered = sorted(x["component_id"] for x in components if x["kind"] == "cold-law-clause")
     return {
-        "schema": "daee-runtime-call-context-v1", "case_id": "custody-only", "stage": stage, "call_index": int(stage),
+        "schema": "daee-runtime-call-context-v1", "case_id": "custody-only", "stage": stage, "call_index": 1 if stage == COMPOSITE_STAGE else int(stage),
         "runtime": {"delivery_mode": "explicit-prompt-components", "evidence_lane": "package-faithful", "package_profile": "execution-mini",
                     "package_sha256": tree_sha(package_root), "build_manifest_sha256": sha(package_root / "build-manifest.json"),
                     "skill_root_sha256": sha(package_root / "SKILL.md"), "source_commit": "0" * 40},
-        "input": {"path": "raw-input.bin", "sha256": sha256_bytes(raw_input), "byte_count": len(raw_input), "included": stage == "01"},
-        "state_capsule": {"bootstrap": stage == "01", "path": None if capsule is None else "previous-capsule.json", "sha256": None if capsule is None else sha256_bytes(capsule), "included": capsule is not None, "validated": capsule is not None},
+        "input": {"path": "raw-input.bin", "sha256": sha256_bytes(raw_input), "byte_count": len(raw_input), "included": bootstrap},
+        "state_capsule": {"bootstrap": bootstrap, "path": None if capsule is None else "previous-capsule.json", "sha256": None if capsule is None else sha256_bytes(capsule), "included": capsule is not None, "validated": capsule is not None},
         "validated_state": state,
         "selection": {"basis_kind": "structural-trigger", "basis_ids": ["validated-stage-02-route-state"],
                       "candidate_components": list(resolution["candidate_components"]), "selected_components": list(resolution["selected_components"]),
@@ -518,7 +721,7 @@ def compose_actual_fixture(package_root: Path, run_root: Path, stage: str = "03"
         "components": components, "cold_law_clauses_delivered": cold_delivered, "producer_declared_used": [], "operation_bound_components": [],
         "prompt": {"path": "prompt.md", "sha256": sha256_bytes(prompt), "byte_count": len(prompt), "includes_full_runtime": False, "includes_prior_full_output": False},
         "delivery_status": resolution["status"] if hold else "DELIVERED", "usage_status": resolution["status"] if hold else "NOT_DECLARED", "proof_mode": "package-faithful", "host_receipt": None,
-        "budget_telemetry": {"transport_frame_bytes": len(parts[0]), "runtime_component_bytes": runtime_bytes, "capsule_bytes": 0 if capsule is None else len(capsule),
+        "budget_telemetry": {"transport_frame_bytes": len(prompt) - sum(x["byte_count"] for x in components), "runtime_component_bytes": runtime_bytes, "capsule_bytes": 0 if capsule is None else len(capsule),
                              "local_excerpt_bytes": 0, "effective_context_bytes": len(prompt), "effective_context_limit": len(prompt) + 1000,
                              "selected_component_count": len(resolution["selected_components"])},
         "non_claims": ["delivery does not prove internal model attention", "structural context fidelity is not semantic truth"]}

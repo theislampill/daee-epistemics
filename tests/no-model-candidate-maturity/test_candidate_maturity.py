@@ -155,6 +155,7 @@ class CandidateMaturityContractTests(unittest.TestCase):
             "tools/check_model_smoke_escape_registry.py",
             "tools/check_runtime_context_delivery.py",
             "tools/producer-contract-registry.json",
+            "tools/runtime_call_context_adapter.py",
             "tools/runtime_context_resolver.py",
             "tools/validation-registry.json",
         ):

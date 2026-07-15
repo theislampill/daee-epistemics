@@ -23,7 +23,7 @@ from check_producer_checker_parity import DEFAULT_REGISTRY, validate_registry
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schema" / "package-harness-parity.schema.json"
 FIXTURES = ROOT / "tests" / "package-harness-parity"
-REQUIRED_KINDS = {"skill-root", "build-manifest", "cold-law-manifest", "module-map", "call-context", "prompt", "checker", "normalizer"}
+REQUIRED_KINDS = {"skill-root", "build-manifest", "cold-law-manifest", "module-map", "call-context", "prompt", "checker", "normalizer", "adapter"}
 ARTIFACT_OWNERS = {
     "skill-root": ("package", "SKILL.md"),
     "build-manifest": ("package", "build-manifest.json"),
@@ -32,12 +32,13 @@ ARTIFACT_OWNERS = {
     "call-context": ("run", "context.json"),
     "checker": ("repo", "tools/check_runtime_context_delivery.py"),
     "normalizer": ("repo", "tools/runtime_context_resolver.py"),
+    "adapter": ("repo", "tools/runtime_call_context_adapter.py"),
 }
 SCENARIO_FAILURES = {"package-harness-hash-mismatch", "membership-is-not-delivery", "harness-supplement-unbound", "lane-mislabel",
                      "unverified-host-ambient", "prompt-projection-hash-mismatch", "checker-hash-mismatch", "normalizer-hash-mismatch",
                      "runtime-context-invalid", "package-clause-unproven", "context-supplement-inventory-mismatch",
                      "lane-context-drift", "schema-invalid", "package-profile-invalid", "artifact-kind-duplicate",
-                     "artifact-owner-mismatch", "delivery-proof-mode-mismatch"}
+                     "artifact-owner-mismatch", "delivery-proof-mode-mismatch", "adapter-hash-mismatch"}
 
 
 class Failure(ValueError):
@@ -83,12 +84,12 @@ def validate(record: dict[str, Any], package_root: Path, run_root: Path, repo_ro
             raise Failure("artifact-kind-duplicate", "duplicate-artifact-kind", f"duplicate artifact kind: {kind}")
         expected_owner = ARTIFACT_OWNERS.get(kind)
         if expected_owner is not None and (scope, artifact.get("path")) != expected_owner:
-            subcode = f"{kind}-path-substitution" if kind in {"checker", "normalizer"} else f"{kind}-owner-mismatch"
+            subcode = f"{kind}-path-substitution" if kind in {"checker", "normalizer", "adapter"} else f"{kind}-owner-mismatch"
             raise Failure("artifact-owner-mismatch", subcode, f"artifact owner differs for {kind}: {scope}/{artifact.get('path')}")
         path = contained(roots[scope], artifact.get("path", "")); kinds.add(kind); artifact_paths[kind] = path; artifact_rows[kind] = artifact
         if sha(path) != artifact.get("sha256") or path.stat().st_size != artifact.get("byte_count"):
-            cls = {"prompt": "prompt-projection-hash-mismatch", "checker": "checker-hash-mismatch", "normalizer": "normalizer-hash-mismatch"}.get(kind, "package-harness-hash-mismatch")
-            subcode = {"prompt": "prompt-projection-drift", "checker": "checker-hash-mismatch", "normalizer": "normalizer-hash-mismatch"}.get(kind, "package-harness-hash-mismatch")
+            cls = {"prompt": "prompt-projection-hash-mismatch", "checker": "checker-hash-mismatch", "normalizer": "normalizer-hash-mismatch", "adapter": "adapter-hash-mismatch"}.get(kind, "package-harness-hash-mismatch")
+            subcode = {"prompt": "prompt-projection-drift", "checker": "checker-hash-mismatch", "normalizer": "normalizer-hash-mismatch", "adapter": "adapter-hash-mismatch"}.get(kind, "package-harness-hash-mismatch")
             raise Failure(cls, subcode, f"artifact hash/size differs: {artifact.get('path')}")
     missing = REQUIRED_KINDS - kinds
     if missing: raise Failure("package-harness-hash-mismatch", "required-artifact-missing", f"missing artifact kinds: {sorted(missing)}")
@@ -219,8 +220,8 @@ def scenario_result(path: Path) -> tuple[int, dict[str, Any]]:
         elif cls == "harness-supplement-unbound": record["harness_supplements"] = []
         elif cls == "lane-mislabel": record["classification"] = "package-faithful"
         elif cls == "unverified-host-ambient": record["classification"] = "unverified-host-ambient"; record["delivery_proof"] = "opaque-ambient"
-        elif cls in {"prompt-projection-hash-mismatch", "checker-hash-mismatch", "normalizer-hash-mismatch"}:
-            kind = {"prompt-projection-hash-mismatch": "prompt", "checker-hash-mismatch": "checker", "normalizer-hash-mismatch": "normalizer"}[cls]
+        elif cls in {"prompt-projection-hash-mismatch", "checker-hash-mismatch", "normalizer-hash-mismatch", "adapter-hash-mismatch"}:
+            kind = {"prompt-projection-hash-mismatch": "prompt", "checker-hash-mismatch": "checker", "normalizer-hash-mismatch": "normalizer", "adapter-hash-mismatch": "adapter"}[cls]
             next(x for x in record["artifacts"] if x["kind"] == kind)["sha256"] = "f" * 64
         elif cls == "runtime-context-invalid":
             context_path = run / "context.json"
@@ -243,7 +244,7 @@ def scenario_result(path: Path) -> tuple[int, dict[str, Any]]:
         elif cls == "package-profile-invalid": record["package_profile"] = "audit-full"
         elif cls == "artifact-kind-duplicate": record["artifacts"].append(copy.deepcopy(record["artifacts"][0]))
         elif cls == "artifact-owner-mismatch":
-            kind = "normalizer" if path.stem.startswith("normalizer") else "checker"
+            kind = "normalizer" if path.stem.startswith("normalizer") else "adapter" if path.stem.startswith("adapter") else "checker"
             target = next(x for x in record["artifacts"] if x["kind"] == kind)
             prompt = next(x for x in record["artifacts"] if x["kind"] == "prompt")
             target.update(scope=prompt["scope"], path=prompt["path"], sha256=prompt["sha256"], byte_count=prompt["byte_count"])
@@ -304,7 +305,8 @@ def build_record(package_root: Path, run_root: Path, assisted: bool) -> dict[str
         ("skill-root", "package", "SKILL.md"), ("build-manifest", "package", "build-manifest.json"),
         ("cold-law-manifest", "package", "cold-law-manifest.json"), ("module-map", "package", "compiled-module-map.json"),
         ("call-context", "run", "context.json"), ("prompt", "run", "prompt.md"),
-        ("checker", "repo", "tools/check_runtime_context_delivery.py"), ("normalizer", "repo", "tools/runtime_context_resolver.py")]
+        ("checker", "repo", "tools/check_runtime_context_delivery.py"), ("normalizer", "repo", "tools/runtime_context_resolver.py"),
+        ("adapter", "repo", "tools/runtime_call_context_adapter.py")]
     roots = {"package": package_root, "run": run_root, "repo": ROOT}; artifacts = []
     for kind, scope, rel in mapping:
         path = roots[scope] / rel; artifacts.append({"kind": kind, "scope": scope, "path": rel, "sha256": sha(path), "byte_count": path.stat().st_size})

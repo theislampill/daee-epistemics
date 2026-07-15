@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed Stage01/02 adapter for validated DAEE runtime call context.
+"""Fail-closed adapter for validated staged and composite DAEE call context.
 
 The adapter prepares exact model-visible prompt bytes, validates the A12
 runtime-context record, then validates the A13 package/harness parity record.
@@ -7,13 +7,14 @@ It performs no model invocation and returns only after both checks pass.
 """
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import re
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from check_package_harness_parity import (
     Failure as PackageParityFailure,
@@ -31,18 +32,18 @@ from package_shape import (
     expected_package_files,
     package_file_paths,
 )
-from runtime_context_resolver import ResolutionError, resolve_context, sha256_bytes
+from runtime_context_resolver import (
+    COMPOSITE_STAGE,
+    EMPTY_VALIDATED_STATE,
+    ResolutionError,
+    resolve_context,
+    sha256_bytes,
+)
+from single_call_stage_envelope import render_output_envelope_contract
 
 
-SUPPORTED_STAGES = {"01", "02"}
+SUPPORTED_STAGES = {"01", "02", COMPOSITE_STAGE}
 HARNESSED_COMPONENT_ID = "harness:stage-prompt"
-EMPTY_VALIDATED_STATE = {
-    "route_shards": [],
-    "owner_module_ids": [],
-    "cold_clause_ids": [],
-    "live_pressure": False,
-    "ambiguous": False,
-}
 _HEX40 = re.compile(r"^[0-9a-f]{40}$")
 
 
@@ -189,24 +190,26 @@ def _validated_capsule_bytes(
 
 def _render_prompt(
     resolution: dict[str, Any],
-    harness_prompt: bytes,
-) -> tuple[bytes, list[dict[str, Any]], int]:
+    harness_prompt: bytes | None,
+    output_contract: Mapping[str, Any] | None,
+) -> tuple[bytes, list[dict[str, Any]], int, dict[str, Any] | None]:
     parts: list[bytes] = [b"DAEE validated runtime call context\n"]
     components: list[dict[str, Any]] = []
     framing_bytes = len(parts[0])
 
     raw_components = list(resolution["components"])
-    raw_components.append(
-        {
-            "component_id": HARNESSED_COMPONENT_ID,
-            "kind": "harness-supplement",
-            "source_path": "run://harness-stage-prompt.md",
-            "source_slice": {"kind": "whole-file", "start": 0, "end": 0},
-            "sha256": sha256_bytes(harness_prompt),
-            "byte_count": len(harness_prompt),
-            "bytes": harness_prompt,
-        }
-    )
+    if harness_prompt is not None:
+        raw_components.append(
+            {
+                "component_id": HARNESSED_COMPONENT_ID,
+                "kind": "harness-supplement",
+                "source_path": "run://harness-stage-prompt.md",
+                "source_slice": {"kind": "whole-file", "start": 0, "end": 0},
+                "sha256": sha256_bytes(harness_prompt),
+                "byte_count": len(harness_prompt),
+                "bytes": harness_prompt,
+            }
+        )
     for raw in raw_components:
         data = raw["bytes"]
         header = (
@@ -231,7 +234,21 @@ def _render_prompt(
                 "prompt_end_byte": end,
             }
         )
-    return b"".join(parts), components, framing_bytes
+    retained_contract: dict[str, Any] | None = None
+    if output_contract is not None:
+        contract_bytes = render_output_envelope_contract(output_contract)
+        start = sum(len(part) for part in parts)
+        parts.append(contract_bytes)
+        end = start + len(contract_bytes)
+        framing_bytes += len(contract_bytes)
+        retained_contract = {
+            "contract": copy.deepcopy(dict(output_contract)),
+            "sha256": sha256_bytes(contract_bytes),
+            "byte_count": len(contract_bytes),
+            "prompt_start_byte": start,
+            "prompt_end_byte": end,
+        }
+    return b"".join(parts), components, framing_bytes, retained_contract
 
 
 def _model_visible_clause_ids(context_components: list[dict[str, Any]]) -> list[str]:
@@ -259,17 +276,18 @@ def prepare_runtime_call(
     stage: str,
     raw_input_path: Path,
     previous_capsule_path: Path | None,
-    harness_prompt: str,
+    harness_prompt: str | None,
     validated_state: dict[str, Any] | None,
     source_commit: str,
     effective_context_limit: int,
     candidate_cap: int = 4,
+    single_call_output_contract: Mapping[str, Any] | None = None,
 ) -> PreparedRuntimeCall:
     """Prepare and validate one supported call before any model dispatch.
 
     Stage02 accepts a structurally/semantically validated v1 capsule only as
-    historical transport compatibility.  This does not promote it to v2 or
-    release-bearing evidence.
+    historical transport compatibility.  Composite 01-08 is a one-call
+    package-context delivery contract, not evidence of eight-stage completion.
     """
     if stage not in SUPPORTED_STAGES:
         raise RuntimeCallPreparationError("stage", f"unsupported adapter stage: {stage}")
@@ -279,10 +297,19 @@ def prepare_runtime_call(
         raise RuntimeCallPreparationError("runtime", "source_commit must be exact lowercase 40-hex")
     if not isinstance(effective_context_limit, int) or effective_context_limit < 1:
         raise RuntimeCallPreparationError("budget", "effective_context_limit must be a positive integer")
-    if not harness_prompt:
-        raise RuntimeCallPreparationError("prompt", "harness prompt must not be empty")
     if validated_state is None:
         validated_state = dict(EMPTY_VALIDATED_STATE)
+    if stage == COMPOSITE_STAGE:
+        if harness_prompt is not None:
+            raise RuntimeCallPreparationError("prompt", "01-08 must not receive a harness prompt")
+        if previous_capsule_path is not None:
+            raise RuntimeCallPreparationError("state-capsule", "01-08 must not receive a previous capsule")
+        if validated_state != EMPTY_VALIDATED_STATE:
+            raise RuntimeCallPreparationError("resolver", "01-08 requires exact empty validated state")
+    elif single_call_output_contract is not None:
+        raise RuntimeCallPreparationError("prompt", "single-call output contract is valid only for composite 01-08")
+    elif not isinstance(harness_prompt, str) or not harness_prompt:
+        raise RuntimeCallPreparationError("prompt", "harness prompt must not be empty")
 
     package_root = package_root.resolve(strict=True)
     validate_execution_mini_package(package_root)
@@ -294,9 +321,9 @@ def prepare_runtime_call(
 
     capsule_bytes: bytes | None = None
     capsule_identity: str | None = None
-    if stage == "01":
+    if stage in {"01", COMPOSITE_STAGE}:
         if previous_capsule_path is not None:
-            raise RuntimeCallPreparationError("state-capsule", "Stage01 must not receive a previous capsule")
+            raise RuntimeCallPreparationError("state-capsule", f"{stage} must not receive a previous capsule")
     else:
         if previous_capsule_path is None:
             raise RuntimeCallPreparationError("state-capsule", "Stage02 requires the previous capsule")
@@ -307,16 +334,6 @@ def prepare_runtime_call(
             input_digest=sha256_bytes(raw_input),
         )
 
-    call_root = run_dir / "runtime-calls" / f"call-{call_index:03d}-stage-{stage}"
-    if call_root.exists():
-        raise RuntimeCallPreparationError("call", f"runtime call root already exists: {call_root}")
-    call_root.mkdir(parents=True)
-    (call_root / "raw-input.bin").write_bytes(raw_input)
-    harness_bytes = harness_prompt.encode("utf-8")
-    (call_root / "harness-stage-prompt.md").write_bytes(harness_bytes)
-    if capsule_bytes is not None:
-        (call_root / "previous-capsule.json").write_bytes(capsule_bytes)
-
     try:
         resolution = resolve_context(
             package_root,
@@ -324,7 +341,7 @@ def prepare_runtime_call(
             validated_state,
             capsule_bytes,
             candidate_cap,
-            raw_input if stage == "01" else None,
+            raw_input if stage in {"01", COMPOSITE_STAGE} else None,
         )
     except ResolutionError as exc:
         raise RuntimeCallPreparationError("resolver", str(exc)) from exc
@@ -334,7 +351,30 @@ def prepare_runtime_call(
             f"runtime context did not select: {resolution['status']}/{resolution['hold_reason']}",
         )
 
-    prompt_bytes, components, framing_bytes = _render_prompt(resolution, harness_bytes)
+    harness_bytes = None if harness_prompt is None else harness_prompt.encode("utf-8")
+    try:
+        prompt_bytes, components, framing_bytes, output_contract_record = _render_prompt(
+            resolution,
+            harness_bytes,
+            single_call_output_contract,
+        )
+    except Exception as exc:
+        raise RuntimeCallPreparationError("output-contract", str(exc)) from exc
+    if len(prompt_bytes) > effective_context_limit:
+        raise RuntimeCallPreparationError(
+            "budget",
+            f"over-budget-without-hold: effective context bytes {len(prompt_bytes)} exceed limit {effective_context_limit}",
+        )
+
+    call_root = run_dir / "runtime-calls" / f"call-{call_index:03d}-stage-{stage}"
+    if call_root.exists():
+        raise RuntimeCallPreparationError("call", f"runtime call root already exists: {call_root}")
+    call_root.mkdir(parents=True)
+    (call_root / "raw-input.bin").write_bytes(raw_input)
+    if harness_bytes is not None:
+        (call_root / "harness-stage-prompt.md").write_bytes(harness_bytes)
+    if capsule_bytes is not None:
+        (call_root / "previous-capsule.json").write_bytes(capsule_bytes)
     prompt_path = call_root / "prompt.md"
     prompt_path.write_bytes(prompt_bytes)
     context_path = call_root / "context.json"
@@ -351,6 +391,9 @@ def prepare_runtime_call(
     ]
     if capsule_identity == "daee-state-capsule-v1":
         non_claims.append("historical-v1 capsule compatibility is A12 transport only and is not v2 promotion")
+    if stage == COMPOSITE_STAGE:
+        non_claims.append("single-call context delivery does not prove Stage01-Stage08 completion")
+    evidence_lane = "harness-assisted" if harness_bytes is not None else "package-faithful"
 
     context: dict[str, Any] = {
         "schema": "daee-runtime-call-context-v1",
@@ -359,7 +402,7 @@ def prepare_runtime_call(
         "call_index": call_index,
         "runtime": {
             "delivery_mode": "explicit-prompt-components",
-            "evidence_lane": "harness-assisted",
+            "evidence_lane": evidence_lane,
             "package_profile": "execution-mini",
             "package_sha256": tree_sha(package_root),
             "build_manifest_sha256": _sha(package_root / "build-manifest.json"),
@@ -370,10 +413,10 @@ def prepare_runtime_call(
             "path": "raw-input.bin",
             "sha256": sha256_bytes(raw_input),
             "byte_count": len(raw_input),
-            "included": stage == "01" or raw_input in harness_bytes,
+            "included": stage in {"01", COMPOSITE_STAGE} or raw_input in (harness_bytes or b""),
         },
         "state_capsule": {
-            "bootstrap": stage == "01",
+            "bootstrap": stage in {"01", COMPOSITE_STAGE},
             "path": None if capsule_bytes is None else "previous-capsule.json",
             "sha256": None if capsule_bytes is None else sha256_bytes(capsule_bytes),
             "included": capsule_bytes is not None,
@@ -402,9 +445,10 @@ def prepare_runtime_call(
             "includes_full_runtime": False,
             "includes_prior_full_output": False,
         },
+        "output_contract": output_contract_record,
         "delivery_status": "DELIVERED",
         "usage_status": "NOT_DECLARED",
-        "proof_mode": "harness-assisted",
+        "proof_mode": evidence_lane,
         "host_receipt": None,
         "budget_telemetry": {
             "transport_frame_bytes": framing_bytes,
@@ -426,17 +470,21 @@ def prepare_runtime_call(
             f"{exc.failure_class}/{exc.subcode}: {exc.detail}",
         ) from exc
 
-    supplement = {
-        "supplement_id": HARNESSED_COMPONENT_ID,
-        "path": "harness-stage-prompt.md",
-        "sha256": sha256_bytes(harness_bytes),
-        "byte_count": len(harness_bytes),
-        "semantic": True,
-        "claimed_package_bound": False,
-    }
+    supplements = []
+    if harness_bytes is not None:
+        supplements.append(
+            {
+                "supplement_id": HARNESSED_COMPONENT_ID,
+                "path": "harness-stage-prompt.md",
+                "sha256": sha256_bytes(harness_bytes),
+                "byte_count": len(harness_bytes),
+                "semantic": True,
+                "claimed_package_bound": False,
+            }
+        )
     parity: dict[str, Any] = {
         "schema": "daee-package-harness-parity-v1",
-        "classification": "harness-assisted",
+        "classification": evidence_lane,
         "package_profile": "execution-mini",
         "package_tree_sha256": context["runtime"]["package_sha256"],
         "producer_registry_sha256": _sha(DEFAULT_REGISTRY),
@@ -450,12 +498,13 @@ def prepare_runtime_call(
             _artifact("prompt", "run", "prompt.md", call_root),
             _artifact("checker", "repo", "tools/check_runtime_context_delivery.py", repo_root),
             _artifact("normalizer", "repo", "tools/runtime_context_resolver.py", repo_root),
+            _artifact("adapter", "repo", "tools/runtime_call_context_adapter.py", repo_root),
         ],
-        "harness_supplements": [supplement],
+        "harness_supplements": supplements,
         "delivery_proof": "exact-component-binding",
         "semantic_repair_count": 0,
         "non_claims": [
-            "harness assistance is enumerated and is not relabeled package law",
+            "harness assistance is enumerated and is not relabeled package law" if supplements else "package-faithful context contains no harness supplement",
             "parity of exact bytes does not prove semantic correctness or release readiness",
         ],
     }

@@ -3,19 +3,9 @@
   "base": "tests/ci-readback/valid/required-checks-bound-to-pushed-sha.json",
   "operations": [
     {
-      "op": "set",
-      "path": "deterministic_verdicts.full_local_ci.path",
-      "value": "tests/ci-readback/support/task7-full-local-ci-forged-marker.json"
-    },
-    {
-      "op": "set",
-      "path": "deterministic_verdicts.full_local_ci.byte_count",
-      "value": 2438
-    },
-    {
-      "op": "set",
-      "path": "deterministic_verdicts.full_local_ci.sha256",
-      "value": "b56e69aa1f88372833a23611cee6a42002bf6f2ca2518942204dc941cbb2342b"
+      "op": "task7-artifact-substitute",
+      "role": "full_local_ci",
+      "source": "tests/ci-readback/support/task7-full-local-ci-forged-marker.json"
     }
   ]
 }

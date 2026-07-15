@@ -1,0 +1,6 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "composite-stage01-08-package-faithful",
+  "expected_valid": true,
+  "kind": "composite-bootstrap"
+}

@@ -3,19 +3,9 @@
   "base": "tests/ci-readback/valid/required-checks-bound-to-pushed-sha.json",
   "operations": [
     {
-      "op": "set",
-      "path": "deterministic_verdicts.no_model_preflight.path",
-      "value": "tests/ci-readback/support/task7-noop-role-command.json"
-    },
-    {
-      "op": "set",
-      "path": "deterministic_verdicts.no_model_preflight.byte_count",
-      "value": 2109
-    },
-    {
-      "op": "set",
-      "path": "deterministic_verdicts.no_model_preflight.sha256",
-      "value": "f3a8c51cd5795d64dcaae88ac7b007d96db4655a77a71a1381aae776533fee31"
+      "op": "task7-artifact-substitute",
+      "role": "no_model_preflight",
+      "source": "tests/ci-readback/support/task7-noop-role-command.json"
     }
   ]
 }

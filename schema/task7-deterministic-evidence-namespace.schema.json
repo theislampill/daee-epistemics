@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theislampill.github.io/daee-epistemics/schema/task7-deterministic-evidence-namespace.schema.json",
+  "title": "DAEE Task 7 deterministic-evidence namespace and integration-freeze contracts",
+  "description": "Repo-native contracts for the immutable Branch 10 Task 7 evidence namespace, its disjoint Branch 11 successor namespace, and the Branch 11 dirty-source integration freeze. These records authorize no model, VCS, release, candidate, or terminal action.",
+  "oneOf": [
+    {"$ref": "#/$defs/task7_source_freeze_v1_legacy"},
+    {"$ref": "#/$defs/task7_source_freeze_v2"},
+    {"$ref": "#/$defs/branch11_integration_freeze"}
+  ],
+  "$defs": {
+    "oid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/|\\\\)\\.\\.(?:/|\\\\|$)).+$"
+    },
+    "task7_source_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "blob_oid", "byte_count", "raw_sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"},
+        "blob_oid": {"$ref": "#/$defs/oid"},
+        "byte_count": {"type": "integer", "minimum": 0},
+        "raw_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "task7_source_freeze_v1_legacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "freeze_id",
+        "branch",
+        "ref",
+        "expected_final_tree_oid",
+        "manifest_algorithm",
+        "file_count",
+        "files_sha256",
+        "files",
+        "complete",
+        "model_calls",
+        "terminal_claim"
+      ],
+      "properties": {
+        "schema": {"const": "daee-task7-precommit-source-freeze-v1"},
+        "freeze_id": {"$ref": "#/$defs/sha256"},
+        "branch": {"const": "codex/v0.4.6.0-runtime-footprint-b10"},
+        "ref": {"const": "refs/heads/codex/v0.4.6.0-runtime-footprint-b10"},
+        "expected_final_tree_oid": {"$ref": "#/$defs/oid"},
+        "manifest_algorithm": {"const": "sha256-canonical-json-source-files-v1"},
+        "file_count": {"type": "integer", "minimum": 1},
+        "files_sha256": {"$ref": "#/$defs/sha256"},
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/task7_source_file"}
+        },
+        "complete": {"const": true},
+        "model_calls": {"const": 0},
+        "terminal_claim": {"const": false}
+      }
+    },
+    "task7_source_freeze_v2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "freeze_id",
+        "evidence_namespace",
+        "namespace_version",
+        "generation",
+        "evidence_root",
+        "branch",
+        "ref",
+        "expected_final_tree_oid",
+        "manifest_algorithm",
+        "file_count",
+        "files_sha256",
+        "files",
+        "complete",
+        "model_calls",
+        "terminal_claim"
+      ],
+      "properties": {
+        "schema": {"const": "daee-task7-precommit-source-freeze-v2"},
+        "freeze_id": {"$ref": "#/$defs/sha256"},
+        "evidence_namespace": {"const": "branch11-v1"},
+        "namespace_version": {"const": 1},
+        "generation": {"const": "branch11"},
+        "evidence_root": {"const": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1"},
+        "branch": {"const": "codex/v0.4.6.0-runtime-footprint-b11"},
+        "ref": {"const": "refs/heads/codex/v0.4.6.0-runtime-footprint-b11"},
+        "expected_final_tree_oid": {"$ref": "#/$defs/oid"},
+        "manifest_algorithm": {"const": "sha256-canonical-json-source-files-v1"},
+        "file_count": {"type": "integer", "minimum": 1},
+        "files_sha256": {"$ref": "#/$defs/sha256"},
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/task7_source_file"}
+        },
+        "complete": {"const": true},
+        "model_calls": {"const": 0},
+        "terminal_claim": {"const": false}
+      }
+    },
+    "branch11_integration_path": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "status", "sha256", "bytes"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"},
+        "status": {"enum": ["tracked-change", "untracked"]},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 0}
+      }
+    },
+    "branch11_integration_stability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_writers_stopped",
+        "source_bytes_must_match_each_path_sha256",
+        "aggregate_canonicalization"
+      ],
+      "properties": {
+        "source_writers_stopped": {"const": true},
+        "source_bytes_must_match_each_path_sha256": {"const": true},
+        "aggregate_canonicalization": {
+          "const": "UTF-8(path + TAB + lowercase sha256 + LF), paths sorted by ordinal code-unit order"
+        }
+      }
+    },
+    "branch11_integration_freeze": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "created_at_utc",
+        "branch",
+        "base_head",
+        "upstream",
+        "intended_push_target",
+        "scope",
+        "source_path_count",
+        "aggregate_sha256",
+        "paths",
+        "stability",
+        "nonclaims"
+      ],
+      "properties": {
+        "schema_version": {"const": "daee-b11-final-integration-freeze-v1"},
+        "created_at_utc": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:.]+Z$"
+        },
+        "branch": {"const": "codex/v0.4.6.0-runtime-footprint-b11"},
+        "base_head": {"const": "2ddd4d9efab2b437331b3f5d6247cb8f02abcfdf"},
+        "upstream": {"type": ["string", "null"]},
+        "intended_push_target": {"const": "origin/codex/v0.4.6.0-runtime-footprint-b11"},
+        "scope": {"type": "string", "minLength": 1},
+        "source_path_count": {"type": "integer", "minimum": 1},
+        "aggregate_sha256": {"$ref": "#/$defs/sha256"},
+        "paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/branch11_integration_path"}
+        },
+        "stability": {"$ref": "#/$defs/branch11_integration_stability"},
+        "nonclaims": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

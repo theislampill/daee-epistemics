@@ -23,6 +23,21 @@ STAGE_MANDATORY = {
     "06": ["references/runtime-core-pipeline.md"],
     "07": ["references/runtime-shard-output-release.md", "references/runtime-shard-render-contract.md"],
 }
+COMPOSITE_STAGE = "01-08"
+COMPOSITE_MANDATORY = tuple(
+    dict.fromkeys(
+        path
+        for stage in ("01", "02", "03", "04", "05", "06", "07")
+        for path in STAGE_MANDATORY[stage]
+    )
+)
+EMPTY_VALIDATED_STATE = {
+    "route_shards": [],
+    "owner_module_ids": [],
+    "cold_clause_ids": [],
+    "live_pressure": False,
+    "ambiguous": False,
+}
 
 
 class ResolutionError(ValueError):
@@ -102,29 +117,36 @@ def resolve_context(
     raw_input: bytes | None = None,
 ) -> dict[str, Any]:
     root = package_root.resolve(strict=True)
-    if stage not in STAGE_MANDATORY:
+    if stage not in STAGE_MANDATORY and stage != COMPOSITE_STAGE:
         raise ResolutionError(f"unsupported model stage: {stage}")
-    mandatory_ids = [f"package:{path}" for path in STAGE_MANDATORY[stage]]
+    composite = stage == COMPOSITE_STAGE
+    if composite and validated_state != EMPTY_VALIDATED_STATE:
+        raise ResolutionError("composite 01-08 requires exact empty validated state")
+    if composite and previous_capsule is not None:
+        raise ResolutionError("composite 01-08 must not receive a previous capsule")
+    mandatory_paths = list(COMPOSITE_MANDATORY if composite else STAGE_MANDATORY[stage])
+    mandatory_ids = [f"package:{path}" for path in mandatory_paths]
     route_paths = list(dict.fromkeys(validated_state.get("route_shards", [])))
     route_ids = [f"package:{path}" for path in route_paths]
     owner_ids = [f"owner:{module_id}" for module_id in validated_state.get("owner_module_ids", [])]
     cold_ids = list(validated_state.get("cold_clause_ids", []))
-    transport_ids = ["raw-input"] if stage == "01" else ["state-capsule"]
+    bootstrap = stage in {"01", COMPOSITE_STAGE}
+    transport_ids = ["raw-input"] if bootstrap else ["state-capsule"]
     candidate_ids = transport_ids + list(dict.fromkeys(mandatory_ids + route_ids + owner_ids + cold_ids))
-    if stage == "01" and raw_input is None:
+    if bootstrap and raw_input is None:
         return {"status": "HOLD", "hold_reason": "raw-input-missing", "components": [],
                 "candidate_components": candidate_ids, "selected_components": []}
-    if stage != "01" and previous_capsule is None:
+    if not bootstrap and previous_capsule is None:
         return {"status": "HOLD", "hold_reason": "previous-capsule-missing", "components": [],
                 "candidate_components": candidate_ids, "selected_components": []}
 
     components: list[dict[str, Any]] = []
-    if raw_input is not None and stage == "01":
+    if raw_input is not None and bootstrap:
         components.append(_component("raw-input", "raw-input", "transport://raw-input", raw_input))
     if previous_capsule is not None:
         components.append(_component("state-capsule", "state-capsule", "transport://previous-capsule", previous_capsule))
 
-    candidates = list(dict.fromkeys(STAGE_MANDATORY[stage] + route_paths))
+    candidates = list(dict.fromkeys(mandatory_paths + route_paths))
     ambiguous = bool(validated_state.get("ambiguous"))
     if ambiguous and len(route_paths) > candidate_cap:
         return {"status": "HOLD", "hold_reason": "route-ambiguous-over-cap", "components": components,
@@ -199,6 +221,9 @@ def self_test() -> int:
     bootstrap = resolve_context(root, "01", state, None, raw_input=raw)
     raw_component = next((x for x in bootstrap["components"] if x["kind"] == "raw-input"), None)
     checks.append(("stage01 transports exact raw input bytes", raw_component is not None and raw_component["bytes"] == raw and raw_component["sha256"] == sha256_bytes(raw)))
+    composite = resolve_context(root, COMPOSITE_STAGE, state, None, raw_input=raw)
+    expected_composite = ["raw-input", *[f"package:{path}" for path in COMPOSITE_MANDATORY]]
+    checks.append(("composite 01-08 selects exact ordered mandatory union", composite["selected_components"] == expected_composite))
     ok = all(v for _, v in checks)
     for name, passed in checks:
         print(f"  self-test {'PASS' if passed else 'FAIL'}: {name}")

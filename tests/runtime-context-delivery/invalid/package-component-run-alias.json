@@ -1,0 +1,7 @@
+{
+  "schema": "daee-runtime-context-scenario-v1",
+  "scenario": "package-component-run-alias",
+  "expected_valid": false,
+  "mutation": "component-source-alias",
+  "stage": "01-08"
+}

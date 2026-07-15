@@ -382,11 +382,21 @@
           "pattern": "^[a-f0-9]{40}$"
         },
         "expected_old_remote_oid": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{40}$"
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "remote_update_mode": {
-          "const": "exact-old-lease-fast-forward"
+          "enum": [
+            "exact-old-lease-fast-forward",
+            "exact-absent-lease-create"
+          ]
         },
         "commit_receipt": {
           "type": "object",
@@ -490,7 +500,30 @@
             ]
           }
         }
-      }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "remote_update_mode": {
+              "const": "exact-old-lease-fast-forward"
+            },
+            "expected_old_remote_oid": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            }
+          }
+        },
+        {
+          "properties": {
+            "remote_update_mode": {
+              "const": "exact-absent-lease-create"
+            },
+            "expected_old_remote_oid": {
+              "type": "null"
+            }
+          }
+        }
+      ]
     },
     {
       "type": "object",

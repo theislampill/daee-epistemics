@@ -119,6 +119,10 @@
     "check_hard_smoke_manifest.py": {
       "class": "required"
     },
+    "check_initial_assessment_barrier.py": {
+      "class": "indirect",
+      "owner_adjudication": "Task 11s producer structural-completion assessment hook"
+    },
     "check_input_pressure_coverage.py": {
       "class": "required"
     },
@@ -323,6 +327,9 @@
     "check_stub_integrity.py": {
       "class": "required"
     },
+    "check_task7_deterministic_evidence_namespace.py": {
+      "class": "required"
+    },
     "check_tlang_response_closure.py": {
       "class": "required"
     },
@@ -373,6 +380,12 @@
     "task5-retention-contract": "python tests/evidence-retention/test_contract.py",
     "task5-source-preflight-contract": "python tests/no-model-candidate-maturity/test_contract.py",
     "task5-candidate-maturity-contract": "python tests/no-model-candidate-maturity/test_candidate_maturity.py",
+    "task6-single-call-envelope-contract": "python tests/single-call-stage-envelope/test_contract.py",
+    "task6-b5-current-adapter-contract": "python tests/b5-current-witness-adapter/test_contract.py",
+    "task6-producer-capture-finalization-contract": "python tests/producer-capture-finalization/test_contract.py",
+    "task6-single-call-stage-finalization-contract": "python tests/single-call-stage-finalization/test_contract.py",
+    "task6-producer-structural-completion-contract": "python tests/producer-structural-completion/test_contract.py",
+    "task6-initial-assessment-barrier-contract": "python tests/initial-assessment-barrier/test_contract.py",
     "task6-reviewed-campaign-self-test": "python tools/reviewed_campaign_orchestrator.py --self-test",
     "task6-reviewed-campaign-contract": "python tests/reviewed-campaign-orchestration/test_contract.py",
     "task7-no-model-preflight-self-test": "python tools/run_no_model_preflight.py --self-test",

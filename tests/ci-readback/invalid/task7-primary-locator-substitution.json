@@ -1,0 +1,11 @@
+{
+  "fixture_schema": "daee-checker-fixture-v1",
+  "base": "tests/ci-readback/valid/required-checks-bound-to-pushed-sha.json",
+  "operations": [
+    {
+      "op": "set",
+      "path": "deterministic_verdicts.no_model_preflight.path",
+      "value": "tests/ci-readback/support/task7-no-model-preflight.json"
+    }
+  ]
+}

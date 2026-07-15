@@ -106,6 +106,7 @@ COMMANDS = [
     "python tools/export_cycle_evidence_bundle.py --self-test",
     "python tools/write_linux_a01_evidence.py --self-test",
     "python tools/write_task7_deterministic_evidence.py --self-test",
+    "python tools/check_task7_deterministic_evidence_namespace.py --self-test",
     "python tools/check_release_action_authorization.py --self-test",
     "python -B tests/release-action-authorization/test_contract.py",
     "python tools/check_vcs_action_authorization.py --self-test",
@@ -127,6 +128,12 @@ COMMANDS = [
     "python tools/check_runtime_context_delivery.py --self-test",
     "python tools/run_no_model_preflight.py --self-test",
     "python tools/check_smoke_matrix_manifest.py --self-test",
+    "python tests/single-call-stage-envelope/test_contract.py",
+    "python tests/b5-current-witness-adapter/test_contract.py",
+    "python tests/producer-capture-finalization/test_contract.py",
+    "python tests/single-call-stage-finalization/test_contract.py",
+    "python tests/producer-structural-completion/test_contract.py",
+    "python tests/initial-assessment-barrier/test_contract.py",
     "python tools/reviewed_campaign_orchestrator.py --self-test",
     "python tests/reviewed-campaign-orchestration/test_contract.py",
     "python tools/build_candidate_package_record.py --self-test",
@@ -205,6 +212,7 @@ TIMEOUT_EXIT_CODE = 124
 TEARDOWN_EXIT_CODE = 125
 TEARDOWN_FAILURE_KIND = "PROCESS_TREE_TEARDOWN"
 PROCESS_TREE_TERMINATION_GRACE_SECONDS = 5.0
+_CREATE_SUSPENDED = 0x00000004
 PYTHON_STARTUP_FLAGS = ("-I", "-S", "-B")
 PYTHON_BOOTSTRAP_PATH = Path(__file__).resolve().with_name("sanitized_python_bootstrap.py")
 PYTHON_LOGICAL_STARTUP_FLAGS = {"-B", "-E", "-I", "-S", "-s"}
@@ -273,171 +281,324 @@ def _posix_group_running(process_group_id: int) -> bool:
     return True
 
 
-def _windows_process_parent_map() -> dict[int, int]:
-    class PROCESSENTRY32W(ctypes.Structure):
+if os.name == "nt":
+    from ctypes import wintypes
+
+    _JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 0x00002000
+    _JOB_OBJECT_BASIC_ACCOUNTING_INFORMATION_CLASS = 1
+    _JOB_OBJECT_EXTENDED_LIMIT_INFORMATION_CLASS = 9
+    _TH32CS_SNAPTHREAD = 0x00000004
+    _THREAD_SUSPEND_RESUME = 0x0002
+    _INVALID_DWORD = 0xFFFFFFFF
+    _ERROR_NO_MORE_FILES = 18
+
+    class _JobObjectBasicAccountingInformation(ctypes.Structure):
         _fields_ = [
-            ("dwSize", ctypes.c_ulong),
-            ("cntUsage", ctypes.c_ulong),
-            ("th32ProcessID", ctypes.c_ulong),
-            ("th32DefaultHeapID", ctypes.c_size_t),
-            ("th32ModuleID", ctypes.c_ulong),
-            ("cntThreads", ctypes.c_ulong),
-            ("th32ParentProcessID", ctypes.c_ulong),
-            ("pcPriClassBase", ctypes.c_long),
-            ("dwFlags", ctypes.c_ulong),
-            ("szExeFile", ctypes.c_wchar * 260),
+            ("TotalUserTime", ctypes.c_longlong),
+            ("TotalKernelTime", ctypes.c_longlong),
+            ("ThisPeriodTotalUserTime", ctypes.c_longlong),
+            ("ThisPeriodTotalKernelTime", ctypes.c_longlong),
+            ("TotalPageFaultCount", wintypes.DWORD),
+            ("TotalProcesses", wintypes.DWORD),
+            ("ActiveProcesses", wintypes.DWORD),
+            ("TotalTerminatedProcesses", wintypes.DWORD),
         ]
 
-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
-    kernel32.CreateToolhelp32Snapshot.argtypes = [ctypes.c_ulong, ctypes.c_ulong]
-    kernel32.CreateToolhelp32Snapshot.restype = ctypes.c_void_p
-    kernel32.Process32FirstW.argtypes = [ctypes.c_void_p, ctypes.POINTER(PROCESSENTRY32W)]
-    kernel32.Process32FirstW.restype = ctypes.c_int
-    kernel32.Process32NextW.argtypes = [ctypes.c_void_p, ctypes.POINTER(PROCESSENTRY32W)]
-    kernel32.Process32NextW.restype = ctypes.c_int
-    kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
-    kernel32.CloseHandle.restype = ctypes.c_int
-    handle = kernel32.CreateToolhelp32Snapshot(0x00000002, 0)
-    invalid_handle = ctypes.c_void_p(-1).value
-    if not handle or handle == invalid_handle:
-        error = ctypes.get_last_error()
-        raise OSError(error, "CreateToolhelp32Snapshot failed")
-    try:
-        entry = PROCESSENTRY32W()
-        entry.dwSize = ctypes.sizeof(entry)
-        if not kernel32.Process32FirstW(handle, ctypes.byref(entry)):
-            error = ctypes.get_last_error()
-            if error == 18:  # ERROR_NO_MORE_FILES
-                return {}
-            raise OSError(error, "Process32FirstW failed")
-        parents: dict[int, int] = {}
-        while True:
-            parents[int(entry.th32ProcessID)] = int(entry.th32ParentProcessID)
-            if not kernel32.Process32NextW(handle, ctypes.byref(entry)):
+    class _JobObjectBasicLimitInformation(ctypes.Structure):
+        _fields_ = [
+            ("PerProcessUserTimeLimit", ctypes.c_longlong),
+            ("PerJobUserTimeLimit", ctypes.c_longlong),
+            ("LimitFlags", wintypes.DWORD),
+            ("MinimumWorkingSetSize", ctypes.c_size_t),
+            ("MaximumWorkingSetSize", ctypes.c_size_t),
+            ("ActiveProcessLimit", wintypes.DWORD),
+            ("Affinity", ctypes.c_size_t),
+            ("PriorityClass", wintypes.DWORD),
+            ("SchedulingClass", wintypes.DWORD),
+        ]
+
+    class _IoCounters(ctypes.Structure):
+        _fields_ = [
+            ("ReadOperationCount", ctypes.c_ulonglong),
+            ("WriteOperationCount", ctypes.c_ulonglong),
+            ("OtherOperationCount", ctypes.c_ulonglong),
+            ("ReadTransferCount", ctypes.c_ulonglong),
+            ("WriteTransferCount", ctypes.c_ulonglong),
+            ("OtherTransferCount", ctypes.c_ulonglong),
+        ]
+
+    class _JobObjectExtendedLimitInformation(ctypes.Structure):
+        _fields_ = [
+            ("BasicLimitInformation", _JobObjectBasicLimitInformation),
+            ("IoInfo", _IoCounters),
+            ("ProcessMemoryLimit", ctypes.c_size_t),
+            ("JobMemoryLimit", ctypes.c_size_t),
+            ("PeakProcessMemoryUsed", ctypes.c_size_t),
+            ("PeakJobMemoryUsed", ctypes.c_size_t),
+        ]
+
+    class _ThreadEntry32(ctypes.Structure):
+        _fields_ = [
+            ("dwSize", wintypes.DWORD),
+            ("cntUsage", wintypes.DWORD),
+            ("th32ThreadID", wintypes.DWORD),
+            ("th32OwnerProcessID", wintypes.DWORD),
+            ("tpBasePri", wintypes.LONG),
+            ("tpDeltaPri", wintypes.LONG),
+            ("dwFlags", wintypes.DWORD),
+        ]
+
+    _kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    _kernel32.CreateJobObjectW.argtypes = [ctypes.c_void_p, wintypes.LPCWSTR]
+    _kernel32.CreateJobObjectW.restype = wintypes.HANDLE
+    _kernel32.SetInformationJobObject.argtypes = [
+        wintypes.HANDLE,
+        ctypes.c_int,
+        ctypes.c_void_p,
+        wintypes.DWORD,
+    ]
+    _kernel32.SetInformationJobObject.restype = wintypes.BOOL
+    _kernel32.AssignProcessToJobObject.argtypes = [wintypes.HANDLE, wintypes.HANDLE]
+    _kernel32.AssignProcessToJobObject.restype = wintypes.BOOL
+    _kernel32.IsProcessInJob.argtypes = [wintypes.HANDLE, wintypes.HANDLE, ctypes.POINTER(wintypes.BOOL)]
+    _kernel32.IsProcessInJob.restype = wintypes.BOOL
+    _kernel32.QueryInformationJobObject.argtypes = [
+        wintypes.HANDLE,
+        ctypes.c_int,
+        ctypes.c_void_p,
+        wintypes.DWORD,
+        ctypes.POINTER(wintypes.DWORD),
+    ]
+    _kernel32.QueryInformationJobObject.restype = wintypes.BOOL
+    _kernel32.TerminateJobObject.argtypes = [wintypes.HANDLE, wintypes.UINT]
+    _kernel32.TerminateJobObject.restype = wintypes.BOOL
+    _kernel32.TerminateProcess.argtypes = [wintypes.HANDLE, wintypes.UINT]
+    _kernel32.TerminateProcess.restype = wintypes.BOOL
+    _kernel32.CreateToolhelp32Snapshot.argtypes = [wintypes.DWORD, wintypes.DWORD]
+    _kernel32.CreateToolhelp32Snapshot.restype = wintypes.HANDLE
+    _kernel32.Thread32First.argtypes = [wintypes.HANDLE, ctypes.POINTER(_ThreadEntry32)]
+    _kernel32.Thread32First.restype = wintypes.BOOL
+    _kernel32.Thread32Next.argtypes = [wintypes.HANDLE, ctypes.POINTER(_ThreadEntry32)]
+    _kernel32.Thread32Next.restype = wintypes.BOOL
+    _kernel32.OpenThread.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+    _kernel32.OpenThread.restype = wintypes.HANDLE
+    _kernel32.ResumeThread.argtypes = [wintypes.HANDLE]
+    _kernel32.ResumeThread.restype = wintypes.DWORD
+    _kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+    _kernel32.CloseHandle.restype = wintypes.BOOL
+
+    def _resume_only_suspended_thread(process: subprocess.Popen[bytes]) -> None:
+        snapshot = _kernel32.CreateToolhelp32Snapshot(_TH32CS_SNAPTHREAD, 0)
+        if int(snapshot) == ctypes.c_void_p(-1).value:
+            raise ctypes.WinError(ctypes.get_last_error())
+        thread_ids: list[int] = []
+        try:
+            entry = _ThreadEntry32()
+            entry.dwSize = ctypes.sizeof(entry)
+            present = bool(_kernel32.Thread32First(snapshot, ctypes.byref(entry)))
+            if not present and ctypes.get_last_error() != _ERROR_NO_MORE_FILES:
+                raise ctypes.WinError(ctypes.get_last_error())
+            while present:
+                if int(entry.th32OwnerProcessID) == process.pid:
+                    thread_ids.append(int(entry.th32ThreadID))
+                entry.dwSize = ctypes.sizeof(entry)
+                present = bool(_kernel32.Thread32Next(snapshot, ctypes.byref(entry)))
+                if not present and ctypes.get_last_error() != _ERROR_NO_MORE_FILES:
+                    raise ctypes.WinError(ctypes.get_last_error())
+        finally:
+            if not _kernel32.CloseHandle(snapshot):
+                raise ctypes.WinError(ctypes.get_last_error())
+        if len(thread_ids) != 1:
+            raise RuntimeError(
+                f"suspended Windows launch exposed {len(thread_ids)} threads; exactly one required"
+            )
+        thread = _kernel32.OpenThread(_THREAD_SUSPEND_RESUME, False, thread_ids[0])
+        if not thread:
+            raise ctypes.WinError(ctypes.get_last_error())
+        try:
+            previous_count = int(_kernel32.ResumeThread(thread))
+            if previous_count == _INVALID_DWORD:
+                raise ctypes.WinError(ctypes.get_last_error())
+            if previous_count != 1:
+                raise RuntimeError(
+                    f"suspended Windows launch had unexpected suspend count {previous_count}"
+                )
+        finally:
+            if not _kernel32.CloseHandle(thread):
+                raise ctypes.WinError(ctypes.get_last_error())
+
+    class _WindowsJobCustody:
+        """Kernel-owned process-tree custody, never reconstructed from process ancestry."""
+
+        def __init__(self) -> None:
+            handle = _kernel32.CreateJobObjectW(None, None)
+            if not handle:
+                raise ctypes.WinError(ctypes.get_last_error())
+            self.handle: int | None = int(handle)
+            limits = _JobObjectExtendedLimitInformation()
+            limits.BasicLimitInformation.LimitFlags = _JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+            if not _kernel32.SetInformationJobObject(
+                self._handle(),
+                _JOB_OBJECT_EXTENDED_LIMIT_INFORMATION_CLASS,
+                ctypes.byref(limits),
+                ctypes.sizeof(limits),
+            ):
                 error = ctypes.get_last_error()
-                if error != 18:  # ERROR_NO_MORE_FILES
-                    raise OSError(error, "Process32NextW failed")
-                break
-        return parents
-    finally:
-        kernel32.CloseHandle(handle)
+                self.close()
+                raise ctypes.WinError(error)
+
+        def _handle(self) -> wintypes.HANDLE:
+            if self.handle is None:
+                raise RuntimeError("Windows Job Object custody handle is closed")
+            return wintypes.HANDLE(self.handle)
+
+        def assign_verify_resume(self, process: subprocess.Popen[bytes]) -> None:
+            process_handle = wintypes.HANDLE(int(process._handle))
+            if not _kernel32.AssignProcessToJobObject(self._handle(), process_handle):
+                raise ctypes.WinError(ctypes.get_last_error())
+            assigned = wintypes.BOOL()
+            if not _kernel32.IsProcessInJob(process_handle, self._handle(), ctypes.byref(assigned)):
+                raise ctypes.WinError(ctypes.get_last_error())
+            if not assigned.value:
+                raise RuntimeError("Windows Job Object assignment verification failed")
+            _resume_only_suspended_thread(process)
+
+        def active_processes(self) -> int:
+            info = _JobObjectBasicAccountingInformation()
+            returned = wintypes.DWORD()
+            if not _kernel32.QueryInformationJobObject(
+                self._handle(),
+                _JOB_OBJECT_BASIC_ACCOUNTING_INFORMATION_CLASS,
+                ctypes.byref(info),
+                ctypes.sizeof(info),
+                ctypes.byref(returned),
+            ):
+                raise ctypes.WinError(ctypes.get_last_error())
+            return int(info.ActiveProcesses)
+
+        def terminate(self, exit_code: int) -> None:
+            if not _kernel32.TerminateJobObject(self._handle(), exit_code):
+                raise ctypes.WinError(ctypes.get_last_error())
+
+        def close(self) -> None:
+            handle = self.handle
+            if handle is None:
+                return
+            self.handle = None
+            if not _kernel32.CloseHandle(wintypes.HANDLE(handle)):
+                raise ctypes.WinError(ctypes.get_last_error())
 
 
-def _windows_pid_is_running(pid: int) -> bool:
-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
-    kernel32.OpenProcess.argtypes = [ctypes.c_ulong, ctypes.c_int, ctypes.c_ulong]
-    kernel32.OpenProcess.restype = ctypes.c_void_p
-    kernel32.GetExitCodeProcess.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_ulong)]
-    kernel32.GetExitCodeProcess.restype = ctypes.c_int
-    kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
-    kernel32.CloseHandle.restype = ctypes.c_int
-    handle = kernel32.OpenProcess(0x1000, False, pid)
-    if not handle:
-        error = ctypes.get_last_error()
-        if error == 87:  # ERROR_INVALID_PARAMETER: PID no longer exists.
-            return False
-        raise OSError(error, f"OpenProcess failed for PID {pid}")
+def _close_windows_job(job: object, issues: list[str]) -> None:
     try:
-        exit_code = ctypes.c_ulong()
-        if not kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
-            error = ctypes.get_last_error()
-            raise OSError(error, f"GetExitCodeProcess failed for PID {pid}")
-        return exit_code.value == 259  # STILL_ACTIVE
-    finally:
-        kernel32.CloseHandle(handle)
+        job.close()  # type: ignore[attr-defined]
+    except BaseException as exc:
+        issues.append(f"job-close:{type(exc).__name__}")
 
 
-def _windows_owned_pids(
-    root_pid: int, parent_map: Mapping[int, int], *, seeds: Sequence[int] = ()
-) -> set[int]:
-    owned = {root_pid, *seeds}
-    changed = True
-    while changed:
-        changed = False
-        for pid, parent_pid in parent_map.items():
-            if pid not in owned and parent_pid in owned:
-                owned.add(pid)
-                changed = True
-    return owned
-
-
-def _terminate_windows_owned_process_tree(process: subprocess.Popen[bytes]) -> None:
+def _cleanup_failed_windows_launch(
+    process: subprocess.Popen[bytes] | None,
+    job: object | None,
+) -> list[str]:
     issues: list[str] = []
-    try:
-        before = _windows_process_parent_map()
-    except OSError as exc:
-        before = {}
-        issues.append(f"snapshot-before:{type(exc).__name__}")
-    owned_pids = _windows_owned_pids(process.pid, before)
-
-    taskkill_succeeded = False
-    try:
-        taskkill = subprocess.run(
-            ["taskkill", "/PID", str(process.pid), "/T", "/F"],
-            capture_output=True,
-            check=False,
-            timeout=PROCESS_TREE_TERMINATION_GRACE_SECONDS,
-        )
-    except subprocess.TimeoutExpired:
-        issues.append("taskkill-timeout")
-    except OSError as exc:
-        issues.append(f"taskkill-spawn:{type(exc).__name__}")
-    else:
-        if taskkill.returncode == 0:
-            taskkill_succeeded = True
-        else:
-            issues.append(f"taskkill-returncode:{taskkill.returncode}")
-
-    if not taskkill_succeeded and process.poll() is None:
+    if process is not None:
         try:
-            process.kill()
-        except OSError as exc:
-            issues.append(f"root-kill:{type(exc).__name__}")
-
-    try:
-        process.wait(timeout=PROCESS_TREE_TERMINATION_GRACE_SECONDS)
-    except subprocess.TimeoutExpired:
-        issues.append("root-wait-timeout")
-        try:
-            process.kill()
-        except OSError as exc:
-            issues.append(f"root-kill-after-wait:{type(exc).__name__}")
+            if process.poll() is None and not _kernel32.TerminateProcess(
+                ctypes.c_void_p(int(process._handle)), TEARDOWN_EXIT_CODE
+            ):
+                issues.append(f"root-terminate:{ctypes.get_last_error()}")
+        except BaseException as exc:
+            issues.append(f"root-terminate:{type(exc).__name__}")
+    if job is not None:
+        _close_windows_job(job, issues)
+    if process is not None:
         try:
             process.wait(timeout=PROCESS_TREE_TERMINATION_GRACE_SECONDS)
-        except subprocess.TimeoutExpired:
-            issues.append("root-wait-timeout-after-kill")
+        except BaseException as exc:
+            issues.append(f"root-wait:{type(exc).__name__}")
+    return issues
 
-    try:
-        after = _windows_process_parent_map()
-    except OSError as exc:
-        after = {}
-        issues.append(f"snapshot-after:{type(exc).__name__}")
-    owned_pids = _windows_owned_pids(process.pid, after, seeds=tuple(owned_pids))
 
+def _wait_for_windows_job_empty(job: object, issues: list[str]) -> None:
     deadline = time.monotonic() + PROCESS_TREE_TERMINATION_GRACE_SECONDS
-    survivors: set[int] = set()
     while True:
-        survivors = set()
-        query_failed = False
-        for pid in sorted(owned_pids):
-            try:
-                if _windows_pid_is_running(pid):
-                    survivors.add(pid)
-            except OSError as exc:
-                issues.append(f"pid-query:{pid}:{type(exc).__name__}")
-                query_failed = True
-        if not survivors or query_failed or time.monotonic() >= deadline:
-            break
+        try:
+            active = job.active_processes()  # type: ignore[attr-defined]
+        except BaseException as exc:
+            issues.append(f"job-query:{type(exc).__name__}")
+            return
+        if active == 0:
+            return
+        if time.monotonic() >= deadline:
+            issues.append(f"active-processes:{active}")
+            return
         time.sleep(0.05)
-    if survivors:
-        issues.append("surviving-pids:" + ",".join(str(pid) for pid in sorted(survivors)))
+
+
+def _terminate_windows_owned_process_tree(
+    process: subprocess.Popen[bytes],
+    job: object,
+    *,
+    exit_code: int,
+) -> None:
+    issues: list[str] = []
+    try:
+        active = job.active_processes()  # type: ignore[attr-defined]
+    except BaseException as exc:
+        active = None
+        issues.append(f"job-query-before:{type(exc).__name__}")
+    if active is None or active > 0:
+        try:
+            job.terminate(exit_code)  # type: ignore[attr-defined]
+        except BaseException as exc:
+            issues.append(f"job-terminate:{type(exc).__name__}")
+    _wait_for_windows_job_empty(job, issues)
+    job_closed = False
+    if issues:
+        _close_windows_job(job, issues)
+        job_closed = True
+    try:
+        process.wait(timeout=PROCESS_TREE_TERMINATION_GRACE_SECONDS)
+    except BaseException as exc:
+        issues.append(f"root-wait:{type(exc).__name__}")
+    if not job_closed:
+        _close_windows_job(job, issues)
     if issues:
         raise OwnedProcessTeardownError(";".join(issues))
 
 
-def _terminate_owned_process_tree(process: subprocess.Popen[bytes]) -> None:
+def _release_completed_windows_process_tree(
+    process: subprocess.Popen[bytes],
+    job: object,
+) -> None:
+    issues: list[str] = []
+    try:
+        active = job.active_processes()  # type: ignore[attr-defined]
+    except BaseException as exc:
+        active = None
+        issues.append(f"job-query-after:{type(exc).__name__}")
+    if active is None or active > 0:
+        if active is not None:
+            issues.append(f"active-descendants-after-root:{active}")
+        try:
+            job.terminate(TEARDOWN_EXIT_CODE)  # type: ignore[attr-defined]
+        except BaseException as exc:
+            issues.append(f"job-terminate:{type(exc).__name__}")
+        _wait_for_windows_job_empty(job, issues)
+    _close_windows_job(job, issues)
+    if issues:
+        raise OwnedProcessTeardownError(";".join(issues))
+
+
+def _terminate_owned_process_tree(
+    process: subprocess.Popen[bytes],
+    *,
+    windows_job: object | None = None,
+) -> None:
     if os.name == "nt":
-        _terminate_windows_owned_process_tree(process)
+        if windows_job is None:
+            raise OwnedProcessTeardownError("Windows Job Object custody is unavailable")
+        _terminate_windows_owned_process_tree(process, windows_job, exit_code=TIMEOUT_EXIT_CODE)
         return
 
     process_group_id = process.pid
@@ -479,16 +640,41 @@ def run_owned_command(
         "stderr": subprocess.PIPE if capture_output else None,
         "env": dict(env) if env is not None else None,
     }
+    windows_job: object | None = None
+    process: subprocess.Popen[bytes] | None = None
     if os.name == "nt":
-        popen_kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+        try:
+            windows_job = _WindowsJobCustody()  # type: ignore[name-defined]
+            popen_kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP | _CREATE_SUSPENDED
+            process = subprocess.Popen(list(argv), **popen_kwargs)
+            windows_job.assign_verify_resume(process)  # type: ignore[attr-defined]
+        except BaseException as exc:
+            cleanup_issues = _cleanup_failed_windows_launch(process, windows_job)
+            message = str(exc).replace("\r", " ").replace("\n", " ").strip()
+            detail = f"launch-custody:{type(exc).__name__}"
+            if message:
+                detail += f":{message}"
+            if cleanup_issues:
+                detail += ";" + ";".join(cleanup_issues)
+            return OwnedCommandResult(
+                list(argv),
+                TEARDOWN_EXIT_CODE,
+                None,
+                f"{TEARDOWN_FAILURE_KIND} {detail}\n".encode("utf-8"),
+                False,
+                True,
+                TEARDOWN_FAILURE_KIND,
+            )
     else:
         popen_kwargs["start_new_session"] = True
-    process = subprocess.Popen(list(argv), **popen_kwargs)
+        process = subprocess.Popen(list(argv), **popen_kwargs)
+    if process is None:
+        raise RuntimeError("owned process launch returned no process")
     try:
         stdout, stderr = process.communicate(timeout=timeout_seconds or None)
     except subprocess.TimeoutExpired as timeout:
         try:
-            _terminate_owned_process_tree(process)
+            _terminate_owned_process_tree(process, windows_job=windows_job)
         except OwnedProcessTeardownError as exc:
             stderr = timeout.stderr
             if stderr and not stderr.endswith(b"\n"):
@@ -505,6 +691,22 @@ def run_owned_command(
             )
         stdout, stderr = process.communicate()
         return OwnedCommandResult(list(argv), TIMEOUT_EXIT_CODE, stdout, stderr, True)
+    if windows_job is not None:
+        try:
+            _release_completed_windows_process_tree(process, windows_job)
+        except OwnedProcessTeardownError as exc:
+            if stderr and not stderr.endswith(b"\n"):
+                stderr += b"\n"
+            stderr = (stderr or b"") + f"{TEARDOWN_FAILURE_KIND} {exc}\n".encode("utf-8")
+            return OwnedCommandResult(
+                list(argv),
+                TEARDOWN_EXIT_CODE,
+                stdout,
+                stderr,
+                False,
+                True,
+                TEARDOWN_FAILURE_KIND,
+            )
     return OwnedCommandResult(list(argv), process.returncode, stdout, stderr, False)
 
 

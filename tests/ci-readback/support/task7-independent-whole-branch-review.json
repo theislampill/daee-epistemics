@@ -1,20 +1,22 @@
 {
   "schema": "daee-task7-deterministic-evidence-v1",
-  "evidence_id": "d156eacf76c7b79af4a3cf609ac4b938db0de7a7f3635f73bda647e5b760290f",
+  "evidence_id": "61f025d09fd84e58c7eeb19891d72a48165ab1215d14e66597329f87e584ca75",
   "kind": "independent-whole-branch-review",
   "status": "ACCEPT",
   "command": [
     "python",
     "tools/write_task7_deterministic_evidence.py",
     "--build-verdict",
+    "--evidence-namespace",
+    "branch11-v1",
     "--kind",
     "independent-whole-branch-review",
     "--source-freeze",
-    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/source-freeze.json",
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/source-freeze.json",
     "--out",
-    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/independent-whole-branch-review.json"
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/independent-whole-branch-review.json"
   ],
-  "command_sha256": "c50272ec78d8132ec309148ab5ab8a570624c7ba9afd37c47ce4a5c4ea59f1d2",
+  "command_sha256": "cb94b180b154b90acc61c0b4d94dd27d8d0806665af91ae74efaa5c8c857cfa7",
   "execution_profile": {
     "profile_id": "python-isolated-bootstrap-v2",
     "launcher": "running-interpreter",
@@ -30,12 +32,12 @@
   },
   "exit_code": 0,
   "report": {
-    "path": "tests/ci-readback/support/task7-independent-whole-branch-review-report.json",
-    "byte_count": 2390,
-    "sha256": "3dfc76d8198a83a3d02ff4dee6b8990f65dac267a9afc2178041c9135c285e8e"
+    "path": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/reports/independent-whole-branch-review.json",
+    "byte_count": 2568,
+    "sha256": "204b4a011e45a91853daf3239424a21f9c2c8243875be7fe702e1dda0603b4aa"
   },
   "log": {
-    "path": "tests/ci-readback/support/task7-independent-whole-branch-review.log",
+    "path": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/logs/independent-whole-branch-review.json",
     "byte_count": 173,
     "sha256": "0c3c2e54693baae769a40b651d95040ccab8856c9b76cde8b2ef07b154a9a5d3"
   },
@@ -45,11 +47,11 @@
     "raw_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
   },
   "source_freeze": {
-    "path": "tests/ci-readback/support/task7-source-freeze.json",
-    "byte_count": 1043,
-    "sha256": "86b9a09e1fe0756d87081923df9258ae43ca4c14a51bced6f6ca5f1a735ce3d8"
+    "path": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/source-freeze.json",
+    "byte_count": 1257,
+    "sha256": "d29e2d6e7ab5e7a903e742def2181c82a13b2a54359a45489b054aef473697c0"
   },
-  "freeze_id": "361ce4b4bf753502e4ccf10734fe1320bdb85dd2a39aa887e728fccda52df150",
+  "freeze_id": "c9407bc45393b8ff06fcce20047f94509322d96a089e90d713ba812507615d60",
   "expected_final_tree_oid": "4444444444444444444444444444444444444444",
   "observed_at": "2026-07-12T12:00:00Z",
   "model_calls": 0,

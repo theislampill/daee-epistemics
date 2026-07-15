@@ -11,7 +11,7 @@
         "--command-timeout-seconds",
         "900",
         "--json",
-        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/native/full-local-ci.json"
+        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/native/full-local-ci.json"
       ],
       "execution_profile": {
         "profile_id": "python-isolated-bootstrap-v2",
@@ -27,7 +27,7 @@
         "removed_environment_names": []
       },
       "exit_code": 0,
-      "stdout_base64": "cnVuX2xvY2FsX2NpOiBQQVNTICgxNzIgY29tbWFuZChzKSwgaW5kaWNlcyAxLTE3MikK",
+      "stdout_base64": "cnVuX2xvY2FsX2NpOiBQQVNTICgxNzkgY29tbWFuZChzKSwgaW5kaWNlcyAxLTE3OSkK",
       "stderr_base64": ""
     }
   ],

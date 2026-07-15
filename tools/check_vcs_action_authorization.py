@@ -156,46 +156,334 @@ def hash_commit_message_file(path: Path) -> str:
 
 
 def guarded_push_update(value: dict[str, Any], *, observation: dict[str, Any], transport: Any) -> Finding | None:
-    """Execute one injected exact-old lease only after full-history FF proof."""
+    """Execute one injected server CAS after the mode-specific history proof."""
 
     if value.get("force") is not False:
         return Finding("force_forbidden", "force", "guarded push requires force=false")
-    guards = {
-        "remote_oid": value.get("expected_old_remote_oid"), "fast_forward": True,
-        "replace_objects_disabled": True, "shallow": False, "grafts_present": False,
-        "old_object_type": "commit", "new_object_type": "commit",
-    }
+    authorization_mode = value.get("remote_update_mode", "exact-old-lease-fast-forward")
+    if authorization_mode == "exact-old-lease-fast-forward":
+        transport_mode = "exact-old-lease"
+        guards = {
+            "remote_oid": value.get("expected_old_remote_oid"),
+            "fast_forward": True,
+            "replace_objects_disabled": True,
+            "shallow": False,
+            "grafts_present": False,
+            "old_object_type": "commit",
+            "new_object_type": "commit",
+        }
+    elif authorization_mode == "exact-absent-lease-create":
+        transport_mode = "exact-absent-lease-create"
+        if value.get("expected_old_remote_oid") is not None:
+            return Finding(
+                "remote_drift",
+                "expected-old-remote-oid",
+                "absent-ref create requires expected_old_remote_oid=null",
+            )
+        if observation.get("remote_oid") is not None:
+            return Finding(
+                "remote_drift",
+                "remote-ref-present",
+                "absent-ref create collided with a present remote ref",
+            )
+        guards = {
+            "remote_oid": None,
+            "replace_objects_disabled": True,
+            "shallow": False,
+            "grafts_present": False,
+            "old_object_type": None,
+            "new_object_type": "commit",
+        }
+    else:
+        return Finding(
+            "force_forbidden",
+            "remote-update-mode",
+            f"unsupported guarded push mode {authorization_mode!r}",
+        )
     for field, expected in guards.items():
         if observation.get(field) != expected:
             return Finding("remote_drift", f"guard-{field.replace('_','-')}", f"guarded push {field} must equal {expected!r}")
-    result = transport(
-        remote_name=value["remote_name"], target_ref=value["target_ref"],
-        expected_old_oid=value["expected_old_remote_oid"], new_oid=value["local_commit"],
-        force=False, atomic=True, mode="exact-old-lease",
-    )
-    if not isinstance(result, dict) or result.get("mode") != "exact-old-lease":
-        return Finding("remote_drift", "transport-proof", "guarded transport returned no exact-old lease proof")
+    try:
+        result = transport(
+            remote_name=value["remote_name"], target_ref=value["target_ref"],
+            expected_old_oid=value["expected_old_remote_oid"], new_oid=value["local_commit"],
+            force=False, atomic=True, mode=transport_mode,
+        )
+    except Exception as exc:
+        return Finding("remote_drift", "transport-failure", f"guarded transport failed without an adoptable proof: {exc}")
+    if not isinstance(result, dict) or result.get("mode") != transport_mode:
+        return Finding("remote_drift", "transport-proof", f"guarded transport returned no {transport_mode} proof")
+    if result.get("tracking_preflight_failed") is True:
+        return Finding(
+            "remote_drift",
+            "transport-tracking-preflight",
+            f"absent-ref local tracking preflight failed: {result.get('stderr', '')}",
+        )
     if result.get("applied") is not True:
-        return Finding("remote_drift", "remote-moved-at-cas", f"remote moved at exact-old CAS: {result.get('actual_old_oid')}")
+        return Finding("remote_drift", "remote-moved-at-cas", f"remote moved or appeared at server CAS: {result.get('actual_old_oid')}")
     if result.get("actual_old_oid") != value["expected_old_remote_oid"] or result.get("new_oid") != value["local_commit"]:
         return Finding("remote_drift", "transport-binding", "server CAS receipt old/new OIDs differ from authorization")
+    if authorization_mode == "exact-absent-lease-create":
+        branch = value["target_ref"].removeprefix("refs/heads/")
+        expected_upstream_ref = f"refs/remotes/{value['remote_name']}/{branch}"
+        tracking_previous_oid = result.get("tracking_previous_oid")
+        valid_tracking_predecessor = tracking_previous_oid is None or (
+            isinstance(tracking_previous_oid, str)
+            and len(tracking_previous_oid) == 40
+            and all(character in "0123456789abcdef" for character in tracking_previous_oid)
+        )
+        if (
+            result.get("tracking_established") is not True
+            or result.get("upstream_ref") != expected_upstream_ref
+            or result.get("upstream_oid") != value["local_commit"]
+            or result.get("tracking_update_mode") != "exact-local-ref-cas"
+            or not valid_tracking_predecessor
+        ):
+            return Finding(
+                "remote_drift",
+                "transport-tracking",
+                "successful absent-ref CAS must establish and report exact local upstream tracking",
+            )
     return None
 
 
+def _tracking_git(arguments: list[str], *, env: dict[str, str]) -> subprocess.CompletedProcess[bytes]:
+    return subprocess.run(
+        ["git", *arguments],
+        cwd=ROOT,
+        capture_output=True,
+        env=env,
+        check=False,
+        timeout=60,
+    )
+
+
+def _tracking_text(result: subprocess.CompletedProcess[bytes]) -> str:
+    return result.stdout.decode("utf-8", errors="replace").strip()
+
+
+def _tracking_config_values(result: subprocess.CompletedProcess[bytes]) -> list[str] | None:
+    if result.returncode == 1:
+        return []
+    if result.returncode != 0:
+        return None
+    return [row for row in _tracking_text(result).splitlines() if row]
+
+
+def _prepare_absent_ref_tracking(request: dict[str, Any], *, env: dict[str, str]) -> tuple[dict[str, Any] | None, str | None]:
+    ref = str(request["target_ref"])
+    branch_prefix = "refs/heads/"
+    branch = ref[len(branch_prefix):] if ref.startswith(branch_prefix) else ""
+    remote_name = str(request["remote_name"])
+    if not branch:
+        return None, "target ref is not a branch ref"
+    current_branch_result = _tracking_git(["branch", "--show-current"], env=env)
+    head_result = _tracking_git(["rev-parse", "HEAD"], env=env)
+    current_branch = _tracking_text(current_branch_result)
+    local_head = _tracking_text(head_result)
+    if (
+        current_branch_result.returncode != 0
+        or head_result.returncode != 0
+        or current_branch != branch
+        or local_head != request["new_oid"]
+    ):
+        return None, (
+            "absent-ref tracking requires the authorized current branch and exact local HEAD "
+            f"({ref!r}, {current_branch!r}, {local_head!r})"
+        )
+
+    configured_remote = _tracking_config_values(
+        _tracking_git(["config", "--get-all", f"branch.{branch}.remote"], env=env)
+    )
+    configured_merge = _tracking_config_values(
+        _tracking_git(["config", "--get-all", f"branch.{branch}.merge"], env=env)
+    )
+    if configured_remote is None or configured_merge is None:
+        return None, "existing upstream configuration could not be read"
+    if not (
+        (configured_remote == [] and configured_merge == [])
+        or (configured_remote == [remote_name] and configured_merge == [ref])
+    ):
+        return None, (
+            "existing upstream configuration differs from the authorized remote/ref "
+            f"({configured_remote!r}, {configured_merge!r})"
+        )
+
+    tracking_ref = f"refs/remotes/{remote_name}/{branch}"
+    symbolic = _tracking_git(["symbolic-ref", "-q", tracking_ref], env=env)
+    if symbolic.returncode == 0:
+        return None, f"local tracking ref is symbolic: {tracking_ref} -> {_tracking_text(symbolic)}"
+    if symbolic.returncode != 1:
+        return None, f"local tracking symbolic-ref query failed for {tracking_ref}"
+    predecessor = _tracking_git(["rev-parse", "--verify", "--quiet", tracking_ref], env=env)
+    if predecessor.returncode == 0:
+        previous_oid = _tracking_text(predecessor)
+        if len(previous_oid) != 40:
+            return None, f"local tracking predecessor is not one exact OID: {tracking_ref}"
+    elif predecessor.returncode == 1:
+        previous_oid = None
+    else:
+        return None, f"local tracking predecessor query failed for {tracking_ref}"
+
+    remote_url = _tracking_git(["remote", "get-url", remote_name], env=env)
+    if remote_url.returncode == 0 and _tracking_text(remote_url):
+        push_target = _tracking_text(remote_url)
+    else:
+        return None, f"authorized remote {remote_name!r} has no resolvable URL"
+    return {
+        "branch": branch,
+        "ref": ref,
+        "tracking_ref": tracking_ref,
+        "previous_oid": previous_oid,
+        "expected_old_token": previous_oid or ("0" * 40),
+        "push_target": push_target,
+    }, None
+
+
 def git_guarded_push_transport(**request: Any) -> dict[str, Any]:
-    """Production transport; not called by self-tests or this Task 3a run."""
+    """Run a guarded push and return the server result plus exact-ref readback."""
 
     ref = request["target_ref"]; expected = request["expected_old_oid"]; new = request["new_oid"]
-    command = ["git", "push", "--atomic", "--porcelain", f"--force-with-lease={ref}:{expected}", request["remote_name"], f"{new}:{ref}"]
+    mode = request.get("mode")
+    if request.get("force") is not False or request.get("atomic") is not True:
+        return {"mode": mode, "applied": False, "actual_old_oid": None, "new_oid": None,
+                "lease_argument": None, "exit_code": None, "stdout": "", "stderr": "guarded transport requires force=false and atomic=true"}
+    if mode == "exact-old-lease":
+        if not isinstance(expected, str):
+            return {"mode": mode, "applied": False, "actual_old_oid": None, "new_oid": None,
+                    "lease_argument": None, "exit_code": None, "stdout": "", "stderr": "exact-old lease requires an OID"}
+        lease_argument = f"--force-with-lease={ref}:{expected}"
+    elif mode == "exact-absent-lease-create":
+        if expected is not None:
+            return {"mode": mode, "applied": False, "actual_old_oid": None, "new_oid": None,
+                    "lease_argument": None, "exit_code": None, "stdout": "", "stderr": "absent-ref lease requires null old OID"}
+        lease_argument = f"--force-with-lease={ref}:"
+    else:
+        return {"mode": mode, "applied": False, "actual_old_oid": None, "new_oid": None,
+                "lease_argument": None, "exit_code": None, "stdout": "", "stderr": "unsupported guarded transport mode"}
     env = {**os.environ, "GIT_NO_REPLACE_OBJECTS": "1"}
-    result = subprocess.run(command, cwd=ROOT, capture_output=True, env=env, check=False)
-    lines = subprocess.run(["git", "ls-remote", "--refs", request["remote_name"], ref], cwd=ROOT, capture_output=True, env=env, check=False)
-    remote = lines.stdout.decode("utf-8", errors="replace").split()
-    actual = remote[0] if remote else None
-    return {"mode":"exact-old-lease", "applied":result.returncode == 0 and actual == new,
-            "actual_old_oid":expected if result.returncode == 0 else actual, "new_oid":actual,
-            "exit_code":result.returncode, "stdout":result.stdout.decode("utf-8", errors="replace"),
-            "stderr":result.stderr.decode("utf-8", errors="replace")}
+    tracking_context: dict[str, Any] | None = None
+    push_target = request["remote_name"]
+    try:
+        if mode == "exact-absent-lease-create":
+            tracking_context, tracking_preflight_error = _prepare_absent_ref_tracking(request, env=env)
+            if tracking_context is None:
+                return {
+                    "mode": mode,
+                    "applied": False,
+                    "actual_old_oid": None,
+                    "new_oid": None,
+                    "lease_argument": lease_argument,
+                    "exit_code": None,
+                    "stdout": "",
+                    "stderr": tracking_preflight_error or "local tracking preflight failed",
+                    "tracking_preflight_failed": True,
+                    "tracking_established": False,
+                    "upstream_ref": None,
+                    "upstream_oid": None,
+                }
+            push_target = tracking_context["push_target"]
+        command = ["git", "push", "--atomic", "--porcelain", lease_argument, push_target, f"{new}:{ref}"]
+        result = subprocess.run(command, cwd=ROOT, capture_output=True, env=env, check=False, timeout=60)
+        lines = subprocess.run(
+            ["git", "ls-remote", "--refs", request["remote_name"], ref],
+            cwd=ROOT, capture_output=True, env=env, check=False, timeout=60,
+        )
+    except subprocess.TimeoutExpired as exc:
+        return {"mode": mode, "applied": False, "actual_old_oid": None, "new_oid": None,
+                "lease_argument": lease_argument, "exit_code": None, "stdout": "", "stderr": f"guarded transport timeout: {exc}"}
+    stdout = result.stdout.decode("utf-8", errors="replace")
+    stderr = result.stderr.decode("utf-8", errors="replace")
+    remote = lines.stdout.decode("utf-8", errors="replace").split() if lines.returncode == 0 else []
+    actual = remote[0] if len(remote) == 2 and remote[1] == ref else None
+    created = any(
+        len(parts := line.split("\t")) >= 3
+        and parts[0].strip() == "*"
+        and parts[1].rsplit(":", 1)[-1] == ref
+        and parts[2].strip() == "[new branch]"
+        for line in stdout.splitlines()
+    )
+    applied = result.returncode == 0 and lines.returncode == 0 and actual == new
+    if mode == "exact-absent-lease-create":
+        applied = applied and created
+    actual_old = expected if mode == "exact-old-lease" and result.returncode == 0 else (None if applied else actual)
+    tracking_established = False
+    upstream_ref = None
+    upstream_oid = None
+    tracking_detail = ""
+    if mode == "exact-absent-lease-create" and applied and tracking_context is not None:
+        try:
+            update_result = _tracking_git(
+                [
+                    "update-ref",
+                    "--no-deref",
+                    tracking_context["tracking_ref"],
+                    new,
+                    tracking_context["expected_old_token"],
+                ],
+                env=env,
+            )
+            tracking_result = None
+            if update_result.returncode == 0:
+                tracking_result = _tracking_git(
+                    [
+                        "branch",
+                        f"--set-upstream-to={request['remote_name']}/{tracking_context['branch']}",
+                        tracking_context["branch"],
+                    ],
+                    env=env,
+                )
+            explicit_upstream = f"{tracking_context['branch']}@{{upstream}}"
+            upstream_ref_result = _tracking_git(
+                ["rev-parse", "--symbolic-full-name", explicit_upstream], env=env
+            )
+            upstream_oid_result = _tracking_git(["rev-parse", explicit_upstream], env=env)
+            current_branch_result = _tracking_git(["branch", "--show-current"], env=env)
+            local_head_result = _tracking_git(["rev-parse", "HEAD"], env=env)
+            upstream_ref = _tracking_text(upstream_ref_result) or None
+            upstream_oid = _tracking_text(upstream_oid_result) or None
+            tracking_established = (
+                update_result.returncode == 0
+                and tracking_result is not None
+                and tracking_result.returncode == 0
+                and upstream_ref_result.returncode == 0
+                and upstream_oid_result.returncode == 0
+                and current_branch_result.returncode == 0
+                and local_head_result.returncode == 0
+                and _tracking_text(current_branch_result) == tracking_context["branch"]
+                and _tracking_text(local_head_result) == new
+                and upstream_ref == tracking_context["tracking_ref"]
+                and upstream_oid == new
+            )
+            if not tracking_established:
+                tracking_detail = "\n".join(
+                    part
+                    for part in (
+                        update_result.stderr.decode("utf-8", errors="replace").strip(),
+                        tracking_result.stderr.decode("utf-8", errors="replace").strip()
+                        if tracking_result is not None
+                        else "local tracking CAS failed before upstream configuration",
+                        upstream_ref_result.stderr.decode("utf-8", errors="replace").strip(),
+                        upstream_oid_result.stderr.decode("utf-8", errors="replace").strip(),
+                        current_branch_result.stderr.decode("utf-8", errors="replace").strip(),
+                        local_head_result.stderr.decode("utf-8", errors="replace").strip(),
+                    )
+                    if part
+                )
+        except subprocess.TimeoutExpired as exc:
+            tracking_detail = f"local tracking command timeout: {exc}"
+    return {"mode": mode, "applied": applied,
+            "actual_old_oid": actual_old, "new_oid": actual,
+            "lease_argument": lease_argument, "exit_code": result.returncode, "stdout": stdout,
+            "stderr": "\n".join(part for part in (
+                stderr if lines.returncode == 0 else f"{stderr}\nls-remote failed: {lines.stderr.decode('utf-8', errors='replace')}".strip(),
+                tracking_detail,
+            ) if part),
+            "tracking_established": tracking_established,
+            "upstream_ref": upstream_ref,
+            "upstream_oid": upstream_oid,
+            "tracking_update_mode": "exact-local-ref-cas" if tracking_context is not None else None,
+            "tracking_previous_oid": tracking_context.get("previous_oid") if tracking_context is not None else None}
 
 
 def _authority_file_protected(path: Path) -> bool:
@@ -313,21 +601,20 @@ def validate_authorization(value: dict[str, Any], observed: dict[str, Any]) -> l
         if value["staged_tree"] != observed.get("staged_tree"):
             return [Finding("source_drift", "staged-tree", "staged_tree differs from the staged tree")]
     else:
-        if value.get("remote_update_mode") != "exact-old-lease-fast-forward":
-            return [Finding("force_forbidden", "remote-update-mode", "push requires exact-old lease plus independently proved fast-forward transport")]
+        remote_update_mode = value.get("remote_update_mode")
         if value["local_commit"] != observed.get("local_commit"):
             return [Finding("source_drift", "local-commit", "local_commit differs from the local commit")]
         if value["local_tree"] != observed.get("local_tree"):
             return [Finding("source_drift", "local-tree", "local_tree differs from the local tree")]
-        if value["expected_old_remote_oid"] != observed.get("remote_oid"):
-            return [Finding("remote_drift", "expected-old-remote-oid", "expected_old_remote_oid differs from reread remote ref")]
-        for field, expected in (
+        if remote_update_mode == "exact-absent-lease-create" and observed.get("remote_oid") is not None:
+            return [Finding("remote_drift", "remote-ref-present", "absent-ref create collided with a present remote ref")]
+        common_guards = (
             ("replace_objects_disabled", True),
             ("shallow", False),
             ("grafts_present", False),
-            ("old_object_type", "commit"),
             ("new_object_type", "commit"),
-        ):
+        )
+        for field, expected in common_guards:
             if observed.get(field) != expected:
                 return [
                     Finding(
@@ -336,8 +623,18 @@ def validate_authorization(value: dict[str, Any], observed: dict[str, Any]) -> l
                         f"full-history push guard {field} must equal {expected!r}",
                     )
                 ]
-        if observed.get("fast_forward") is not True:
-            return [Finding("remote_drift", "non-fast-forward", "expected old remote OID is not an ancestor of local_commit")]
+        if remote_update_mode == "exact-old-lease-fast-forward":
+            if value["expected_old_remote_oid"] != observed.get("remote_oid"):
+                return [Finding("remote_drift", "expected-old-remote-oid", "expected_old_remote_oid differs from reread remote ref")]
+            if observed.get("old_object_type") != "commit":
+                return [Finding("remote_drift", "guard-old-object-type", "full-history push guard old_object_type must equal 'commit'")]
+            if observed.get("fast_forward") is not True:
+                return [Finding("remote_drift", "non-fast-forward", "expected old remote OID is not an ancestor of local_commit")]
+        elif remote_update_mode == "exact-absent-lease-create":
+            if observed.get("old_object_type") is not None:
+                return [Finding("remote_drift", "guard-old-object-type", "absent-ref create requires no old remote object")]
+        else:
+            return [Finding("force_forbidden", "remote-update-mode", f"unsupported remote update mode {remote_update_mode!r}")]
         if value["workflow_check_snapshot"] != observed.get("workflow_check_snapshot"):
             return [Finding("workflow_drift", "workflow-check-snapshot", "workflow/check snapshot differs from authorization-time state")]
         receipt_ref = value["commit_receipt"]
@@ -501,6 +798,16 @@ def validate_action_result(value: dict[str, Any], observed: dict[str, Any]) -> l
             return [Finding("action_result", "push-local-source", "push final local commit/tree differ")]
         if observed.get("remote_oid") != value["local_commit"]:
             return [Finding("remote_drift", "push-result", "push PASS requires live remote ref to equal local_commit")]
+        expected_upstream_ref = f"refs/remotes/{value['remote_name']}/{value['target_branch']}"
+        if (
+            observed.get("upstream_ref") != expected_upstream_ref
+            or observed.get("upstream_oid") != value["local_commit"]
+        ):
+            return [Finding(
+                "remote_drift",
+                "push-upstream",
+                "push PASS requires local upstream ref/OID to track the exact local and remote commit",
+            )]
     return []
 
 
@@ -621,8 +928,11 @@ def collect_final_observation(value: dict[str, Any]) -> dict[str, Any]:
                 "scoped_paths": rows, "staged_diff_sha256": sha256_bytes(diff), "commit_message_sha256": sha256_bytes(message),
                 "verification_verdict_sha256": sha256_bytes(verification.read_bytes())}
     local = str(_git("rev-parse", "HEAD")); tree = str(_git("rev-parse", "HEAD^{tree}"))
+    upstream_ref = str(_git("rev-parse", "--symbolic-full-name", "@{upstream}"))
+    upstream_oid = str(_git("rev-parse", "@{upstream}"))
     lines = str(_git("ls-remote", "--refs", remote, value["target_ref"])).splitlines()
     return {**common, "local_commit": local, "local_tree": tree, "remote_oid": lines[0].split()[0] if lines else None,
+            "upstream_ref": upstream_ref, "upstream_oid": upstream_oid,
             "result_commit_oid": local, "result_tree_oid": tree}
 
 

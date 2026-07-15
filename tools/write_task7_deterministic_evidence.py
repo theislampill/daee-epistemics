@@ -13,6 +13,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping, Sequence
@@ -42,11 +43,79 @@ from source_provenance import DuplicateObjectKey, strict_json_loads
 
 ROOT = Path(__file__).resolve().parents[1]
 RUN_REL = Path(".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5")
-EVIDENCE_REL = RUN_REL / "evidence/deterministic-verdicts"
-EVIDENCE_ROOT = ROOT / EVIDENCE_REL
 SCHEMA_PATH = ROOT / "schema/ci-readback.schema.json"
-BRANCH = "codex/v0.4.6.0-runtime-footprint-b10"
-REF = f"refs/heads/{BRANCH}"
+NAMESPACE_SCHEMA_PATH = ROOT / "schema/task7-deterministic-evidence-namespace.schema.json"
+LEGACY_NAMESPACE_ID = "branch10-v1"
+DEFAULT_NAMESPACE_ID = "branch11-v1"
+
+
+@dataclass(frozen=True)
+class EvidenceNamespace:
+    namespace_id: str
+    namespace_version: int
+    generation: str
+    branch: str
+    ref: str
+    evidence_rel: Path
+    source_freeze_schema: str
+    source_freeze_definition: str
+    record_namespace_flag: bool
+
+    @property
+    def evidence_root(self) -> Path:
+        return ROOT / self.evidence_rel
+
+    @property
+    def source_freeze_rel(self) -> Path:
+        return self.evidence_rel / "source-freeze.json"
+
+    @property
+    def whole_branch_review_rel(self) -> Path:
+        suffix = "" if self.namespace_id == LEGACY_NAMESPACE_ID else f"-{self.namespace_id}"
+        return RUN_REL / f"reviews/task7-independent-whole-branch-review{suffix}.json"
+
+
+_LEGACY_BRANCH = "codex/v0.4.6.0-runtime-footprint-b10"
+_BRANCH11 = "codex/v0.4.6.0-runtime-footprint-b11"
+EVIDENCE_NAMESPACES = {
+    LEGACY_NAMESPACE_ID: EvidenceNamespace(
+        namespace_id=LEGACY_NAMESPACE_ID,
+        namespace_version=1,
+        generation="branch10",
+        branch=_LEGACY_BRANCH,
+        ref=f"refs/heads/{_LEGACY_BRANCH}",
+        evidence_rel=RUN_REL / "evidence/deterministic-verdicts",
+        source_freeze_schema="daee-task7-precommit-source-freeze-v1",
+        source_freeze_definition="task7_source_freeze_v1_legacy",
+        record_namespace_flag=False,
+    ),
+    DEFAULT_NAMESPACE_ID: EvidenceNamespace(
+        namespace_id=DEFAULT_NAMESPACE_ID,
+        namespace_version=1,
+        generation="branch11",
+        branch=_BRANCH11,
+        ref=f"refs/heads/{_BRANCH11}",
+        evidence_rel=RUN_REL / "evidence/deterministic-verdicts-b11-v1",
+        source_freeze_schema="daee-task7-precommit-source-freeze-v2",
+        source_freeze_definition="task7_source_freeze_v2",
+        record_namespace_flag=True,
+    ),
+}
+
+
+def namespace_contract(namespace_id: str) -> EvidenceNamespace:
+    try:
+        return EVIDENCE_NAMESPACES[namespace_id]
+    except KeyError as exc:
+        allowed = ", ".join(sorted(EVIDENCE_NAMESPACES))
+        raise ValueError(f"unsupported Task 7 evidence namespace {namespace_id!r}; allowed: {allowed}") from exc
+
+
+_DEFAULT_NAMESPACE = namespace_contract(DEFAULT_NAMESPACE_ID)
+EVIDENCE_REL = _DEFAULT_NAMESPACE.evidence_rel
+EVIDENCE_ROOT = _DEFAULT_NAMESPACE.evidence_root
+BRANCH = _DEFAULT_NAMESPACE.branch
+REF = _DEFAULT_NAMESPACE.ref
 STATUS_BY_KIND = {
     "no-model-preflight": "PASS",
     "full-local-ci": "PASS",
@@ -69,7 +138,7 @@ LOG_REL_BY_KIND = {
 }
 NO_MODEL_NATIVE_REPORT_REL = EVIDENCE_REL / "native/no-model-preflight.json"
 FULL_LOCAL_CI_NATIVE_REPORT_REL = EVIDENCE_REL / "native/full-local-ci.json"
-WHOLE_BRANCH_REVIEW_REL = RUN_REL / "reviews/task7-independent-whole-branch-review.json"
+WHOLE_BRANCH_REVIEW_REL = _DEFAULT_NAMESPACE.whole_branch_review_rel
 REVIEW_AUTHORIZATION_REL = EVIDENCE_REL / "authorizations/independent-reviewer.json"
 IMPLEMENTATION_OWNER_IDENTITY = "/root/task3b_ci_receipt"
 REVIEW_AUTHORIZATION_ISSUER = "/root"
@@ -97,6 +166,44 @@ ROLE_CHECKS = {
     ]],
     "independent-whole-branch-review": [],
 }
+
+
+def report_rel(kind: str, namespace_id: str = DEFAULT_NAMESPACE_ID) -> Path:
+    return namespace_contract(namespace_id).evidence_rel / "reports" / f"{kind}.json"
+
+
+def log_rel(kind: str, namespace_id: str = DEFAULT_NAMESPACE_ID) -> Path:
+    return namespace_contract(namespace_id).evidence_rel / "logs" / f"{kind}.json"
+
+
+def native_report_rel(kind: str, namespace_id: str = DEFAULT_NAMESPACE_ID) -> Path:
+    if kind not in {"no-model-preflight", "full-local-ci"}:
+        raise ValueError(f"Task 7 {kind} has no native report")
+    return namespace_contract(namespace_id).evidence_rel / "native" / f"{kind}.json"
+
+
+def review_authorization_rel(namespace_id: str = DEFAULT_NAMESPACE_ID) -> Path:
+    return namespace_contract(namespace_id).evidence_rel / "authorizations/independent-reviewer.json"
+
+
+def role_checks(kind: str, namespace_id: str = DEFAULT_NAMESPACE_ID) -> list[list[str]]:
+    if kind not in STATUS_BY_KIND:
+        raise ValueError(f"unsupported Task 7 verdict kind {kind!r}")
+    if namespace_id == DEFAULT_NAMESPACE_ID:
+        return [list(command) for command in ROLE_CHECKS[kind]]
+    if kind == "no-model-preflight":
+        return [["python", "tools/run_no_model_preflight.py", "--json", native_report_rel(kind, namespace_id).as_posix()]]
+    if kind == "full-local-ci":
+        return [[
+            "python",
+            "tools/run_local_ci.py",
+            "--strict-pwsh",
+            "--command-timeout-seconds",
+            "900",
+            "--json",
+            native_report_rel(kind, namespace_id).as_posix(),
+        ]]
+    return [list(command) for command in ROLE_CHECKS[kind]]
 NON_CLAIMS = [
     "does-not-claim-final-source-commit",
     "does-not-claim-exact-sha-ci",
@@ -135,8 +242,27 @@ def _schema_ref(name: str) -> dict[str, Any]:
     return {"$defs": schema["$defs"], "$ref": f"#/$defs/{name}"}
 
 
+def _namespace_schema() -> dict[str, Any]:
+    value = strict_json_loads(NAMESPACE_SCHEMA_PATH.read_bytes(), label=str(NAMESPACE_SCHEMA_PATH))
+    if not isinstance(value, dict) or not isinstance(value.get("$defs"), dict):
+        raise ValueError("Task 7 evidence-namespace schema definitions are unavailable")
+    return value
+
+
+def _namespace_schema_ref(name: str) -> dict[str, Any]:
+    schema = _namespace_schema()
+    return {"$defs": schema["$defs"], "$ref": f"#/$defs/{name}"}
+
+
 def _validate(value: Mapping[str, Any], definition: str, *, label: str) -> None:
     issues = validate_schema_subset(value, _schema_ref(definition))
+    if issues:
+        first = issues[0]
+        raise ValueError(f"{label} violates {definition} at {first.path}: {first.message}")
+
+
+def _validate_namespace(value: Mapping[str, Any], definition: str, *, label: str) -> None:
+    issues = validate_schema_subset(value, _namespace_schema_ref(definition))
     if issues:
         first = issues[0]
         raise ValueError(f"{label} violates {definition} at {first.path}: {first.message}")
@@ -161,9 +287,29 @@ def _files_digest(files: Sequence[Mapping[str, Any]]) -> str:
     return _sha(canonical_json_bytes(list(files)))
 
 
-def _freeze_id(tree_oid: str, files_sha256: str) -> str:
+def _freeze_id(tree_oid: str, files_sha256: str, namespace_id: str = DEFAULT_NAMESPACE_ID) -> str:
+    contract = namespace_contract(namespace_id)
+    if namespace_id == LEGACY_NAMESPACE_ID:
+        return _sha(
+            b"daee-task7-precommit-source-freeze-v1\0"
+            + tree_oid.encode("ascii")
+            + b"\0"
+            + files_sha256.encode("ascii")
+        )
     return _sha(
-        b"daee-task7-precommit-source-freeze-v1\0"
+        b"daee-task7-precommit-source-freeze-v2\0"
+        + contract.namespace_id.encode("ascii")
+        + b"\0"
+        + str(contract.namespace_version).encode("ascii")
+        + b"\0"
+        + contract.generation.encode("ascii")
+        + b"\0"
+        + contract.evidence_rel.as_posix().encode("utf-8")
+        + b"\0"
+        + contract.branch.encode("utf-8")
+        + b"\0"
+        + contract.ref.encode("utf-8")
+        + b"\0"
         + tree_oid.encode("ascii")
         + b"\0"
         + files_sha256.encode("ascii")
@@ -174,24 +320,36 @@ def _command_digest(command: Sequence[str]) -> str:
     return _sha(canonical_json_bytes(list(command)))
 
 
-def producer_command(kind: str) -> list[str]:
+def producer_command(kind: str, namespace_id: str = DEFAULT_NAMESPACE_ID) -> list[str]:
     if kind not in STATUS_BY_KIND:
         raise ValueError(f"unsupported Task 7 verdict kind {kind!r}")
-    return [
+    contract = namespace_contract(namespace_id)
+    command = [
         "python",
         PRODUCER_PATH,
         "--build-verdict",
+    ]
+    if contract.record_namespace_flag:
+        command.extend(["--evidence-namespace", namespace_id])
+    command.extend([
         "--kind",
         kind,
         "--source-freeze",
-        SOURCE_FREEZE_REL.as_posix(),
+        contract.source_freeze_rel.as_posix(),
         "--out",
-        (EVIDENCE_REL / ROLE_FILE_BY_KIND[kind]).as_posix(),
-    ]
+        (contract.evidence_rel / ROLE_FILE_BY_KIND[kind]).as_posix(),
+    ])
+    return command
 
 
-def validate_role_command(command: Sequence[str], kind: str, checker: str) -> None:
-    if checker != PRODUCER_PATH or list(command) != producer_command(kind):
+def validate_role_command(
+    command: Sequence[str],
+    kind: str,
+    checker: str,
+    *,
+    namespace_id: str = DEFAULT_NAMESPACE_ID,
+) -> None:
+    if checker != PRODUCER_PATH or list(command) != producer_command(kind, namespace_id):
         raise ValueError(f"Task 7 {kind} must use its exact source-bound producer command")
 
 
@@ -384,8 +542,9 @@ def build_result_report(
     producer: Mapping[str, Any],
     freeze: Mapping[str, Any],
     observed_at: str,
+    namespace_id: str = DEFAULT_NAMESPACE_ID,
 ) -> dict[str, Any]:
-    command = producer_command(kind)
+    command = producer_command(kind, namespace_id)
     value = {
         "schema": "daee-task7-result-report-v2",
         "report_id": "0" * 64,
@@ -426,8 +585,30 @@ def _load_json(path: Path, *, definition: str, label: str) -> tuple[dict[str, An
     return value, raw
 
 
-def validate_source_freeze(value: Mapping[str, Any]) -> None:
-    _validate(value, "task7_source_freeze", label="Task 7 source freeze")
+def _load_source_freeze(path: Path, namespace_id: str) -> tuple[dict[str, Any], bytes]:
+    raw = path.read_bytes()
+    try:
+        value = strict_json_loads(raw, label=str(path))
+    except DuplicateObjectKey as exc:
+        raise ValueError(f"Task 7 source freeze duplicate key rejected: {exc}") from exc
+    if not isinstance(value, dict):
+        raise ValueError("Task 7 source freeze root must be an object")
+    validate_source_freeze(value, namespace_id)
+    return value, raw
+
+
+def validate_source_freeze(
+    value: Mapping[str, Any],
+    namespace_id: str = DEFAULT_NAMESPACE_ID,
+) -> None:
+    contract = namespace_contract(namespace_id)
+    _validate_namespace(
+        value,
+        contract.source_freeze_definition,
+        label=f"Task 7 {namespace_id} source freeze",
+    )
+    if value["branch"] != contract.branch or value["ref"] != contract.ref:
+        raise ValueError(f"Task 7 {namespace_id} source freeze branch/ref binding drifted")
     files = value["files"]
     paths = [row["path"] for row in files]
     if paths != sorted(paths) or len(paths) != len(set(paths)):
@@ -437,18 +618,27 @@ def validate_source_freeze(value: Mapping[str, Any]) -> None:
     files_digest = _files_digest(files)
     if value["files_sha256"] != files_digest:
         raise ValueError("Task 7 source freeze files_sha256 drifted")
-    if value["freeze_id"] != _freeze_id(value["expected_final_tree_oid"], files_digest):
+    if value["freeze_id"] != _freeze_id(
+        value["expected_final_tree_oid"],
+        files_digest,
+        namespace_id,
+    ):
         raise ValueError("Task 7 source freeze freeze_id drifted")
 
 
-def build_source_freeze(tree_oid: str, files: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+def build_source_freeze(
+    tree_oid: str,
+    files: Sequence[Mapping[str, Any]],
+    namespace_id: str = DEFAULT_NAMESPACE_ID,
+) -> dict[str, Any]:
+    contract = namespace_contract(namespace_id)
     files = sorted((dict(row) for row in files), key=lambda row: row["path"])
     files_sha256 = _files_digest(files)
     value = {
-        "schema": "daee-task7-precommit-source-freeze-v1",
-        "freeze_id": _freeze_id(tree_oid, files_sha256),
-        "branch": BRANCH,
-        "ref": REF,
+        "schema": contract.source_freeze_schema,
+        "freeze_id": _freeze_id(tree_oid, files_sha256, namespace_id),
+        "branch": contract.branch,
+        "ref": contract.ref,
         "expected_final_tree_oid": tree_oid,
         "manifest_algorithm": "sha256-canonical-json-source-files-v1",
         "file_count": len(files),
@@ -458,7 +648,17 @@ def build_source_freeze(tree_oid: str, files: Sequence[Mapping[str, Any]]) -> di
         "model_calls": 0,
         "terminal_claim": False,
     }
-    validate_source_freeze(value)
+    if namespace_id != LEGACY_NAMESPACE_ID:
+        value = {
+            "schema": value["schema"],
+            "freeze_id": value["freeze_id"],
+            "evidence_namespace": contract.namespace_id,
+            "namespace_version": contract.namespace_version,
+            "generation": contract.generation,
+            "evidence_root": contract.evidence_rel.as_posix(),
+            **{key: item for key, item in value.items() if key not in {"schema", "freeze_id"}},
+        }
+    validate_source_freeze(value, namespace_id)
     return value
 
 
@@ -634,10 +834,11 @@ def _validate_no_model_native_report(path: Path) -> None:
 def _run_role_checks(
     kind: str,
     *,
+    namespace_id: str = DEFAULT_NAMESPACE_ID,
     timeout_seconds: int | float = TASK7_ROLE_OUTER_TIMEOUT_SECONDS,
 ) -> list[tuple[list[str], bytes, bytes]]:
     results: list[tuple[list[str], bytes, bytes]] = []
-    for command in ROLE_CHECKS[kind]:
+    for command in role_checks(kind, namespace_id):
         execution_argv = execution_argv_for(command)
         completed = run_owned_command(
             execution_argv,
@@ -667,10 +868,16 @@ def build_evidence(
     source_freeze: Mapping[str, Any],
     freeze: Mapping[str, Any],
     observed_at: str,
+    namespace_id: str = DEFAULT_NAMESPACE_ID,
 ) -> dict[str, Any]:
     if kind not in STATUS_BY_KIND:
         raise ValueError(f"unsupported Task 7 verdict kind {kind!r}")
-    validate_role_command(command, kind, str(checker.get("path", "")))
+    validate_role_command(
+        command,
+        kind,
+        str(checker.get("path", "")),
+        namespace_id=namespace_id,
+    )
     command_sha256 = _command_digest(command)
     value = {
         "schema": "daee-task7-deterministic-evidence-v1",
@@ -946,6 +1153,7 @@ def build_parser() -> argparse.ArgumentParser:
     mode.add_argument("--self-test", action="store_true")
     mode.add_argument("--build-freeze", action="store_true")
     mode.add_argument("--build-verdict", action="store_true")
+    parser.add_argument("--evidence-namespace", choices=sorted(EVIDENCE_NAMESPACES))
     parser.add_argument("--tree")
     parser.add_argument("--kind", choices=sorted(STATUS_BY_KIND))
     parser.add_argument("--source-freeze", type=Path)
@@ -965,9 +1173,22 @@ def main(argv: Iterable[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     if args.self_test:
-        if any(value is not None for value in (args.tree, args.kind, args.source_freeze, args.out)):
+        if any(
+            value is not None
+            for value in (
+                args.evidence_namespace,
+                args.tree,
+                args.kind,
+                args.source_freeze,
+                args.out,
+            )
+        ):
             parser.error("--self-test cannot be combined with build arguments")
         return self_test()
+    if args.evidence_namespace is None:
+        parser.error("build modes require --evidence-namespace")
+    namespace_id = args.evidence_namespace
+    contract = namespace_contract(namespace_id)
     try:
         if args.build_freeze:
             if args.tree is None or args.out is None:
@@ -976,23 +1197,26 @@ def main(argv: Iterable[str] | None = None) -> int:
                 parser.error("verdict arguments cannot be used with --build-freeze")
             if re.fullmatch(r"[0-9a-f]{40}", args.tree) is None:
                 parser.error("--tree must be a full lowercase Git tree OID")
-            target = _canonical_target(args.out, EVIDENCE_REL / "source-freeze.json")
-            value = build_source_freeze(args.tree, _tree_files(args.tree))
-            digest = _publish(EVIDENCE_ROOT, target, value)
+            target = _canonical_target(args.out, contract.source_freeze_rel)
+            value = build_source_freeze(
+                args.tree,
+                _tree_files(args.tree),
+                namespace_id=namespace_id,
+            )
+            digest = _publish(contract.evidence_root, target, value)
             print(f"Task 7 source freeze: PASS ({target.relative_to(ROOT).as_posix()} sha256={digest})")
             return 0
         required = {"--kind": args.kind, "--source-freeze": args.source_freeze, "--out": args.out}
         missing = [name for name, value in required.items() if value is None]
         if missing or args.tree is not None:
             parser.error(f"--build-verdict requires {', '.join(missing) if missing else 'no --tree'}")
-        expected_out = EVIDENCE_REL / ROLE_FILE_BY_KIND[args.kind]
+        expected_out = contract.evidence_rel / ROLE_FILE_BY_KIND[args.kind]
         target = _canonical_target(args.out, expected_out)
         freeze_path = resolve_repo_path(ROOT, args.source_freeze, must_exist=True, expect_file=True)
-        expected_freeze = (ROOT / SOURCE_FREEZE_REL).resolve()
+        expected_freeze = (ROOT / contract.source_freeze_rel).resolve()
         if freeze_path.resolve() != expected_freeze:
-            raise ValueError(f"--source-freeze must be canonical {SOURCE_FREEZE_REL}")
-        freeze, freeze_raw = _load_json(freeze_path, definition="task7_source_freeze", label="Task 7 source freeze")
-        validate_source_freeze(freeze)
+            raise ValueError(f"--source-freeze must be canonical {contract.source_freeze_rel}")
+        freeze, freeze_raw = _load_source_freeze(freeze_path, namespace_id)
         checker_rows = [row for row in freeze["files"] if row["path"] == PRODUCER_PATH]
         if len(checker_rows) != 1:
             raise ValueError("Task 7 role-bound producer is absent or duplicated in the complete source freeze")
@@ -1002,22 +1226,25 @@ def main(argv: Iterable[str] | None = None) -> int:
         if len(checker_raw) != checker_rows[0]["byte_count"] or _sha(checker_raw) != checker["raw_sha256"]:
             raise ValueError("Task 7 producer working bytes differ from the precommit source freeze")
         _verify_worktree_freeze(freeze)
-        report_path = (ROOT / REPORT_REL_BY_KIND[args.kind]).resolve()
-        log_path = (ROOT / LOG_REL_BY_KIND[args.kind]).resolve()
+        report_path = (ROOT / report_rel(args.kind, namespace_id)).resolve()
+        log_path = (ROOT / log_rel(args.kind, namespace_id)).resolve()
         if report_path.exists() or log_path.exists() or target.exists():
             raise CustodyError("Task 7 verdict cohort already exists", subcode="claim-replay")
         evidence_artifacts: list[dict[str, Any]] = []
         if args.kind == "no-model-preflight":
-            native_path = (ROOT / NO_MODEL_NATIVE_REPORT_REL).resolve()
+            native_path = (ROOT / native_report_rel(args.kind, namespace_id)).resolve()
             if native_path.exists():
                 raise CustodyError("Task 7 native no-model report already exists", subcode="claim-replay")
         elif args.kind == "full-local-ci":
-            native_path = (ROOT / FULL_LOCAL_CI_NATIVE_REPORT_REL).resolve()
+            native_path = (ROOT / native_report_rel(args.kind, namespace_id)).resolve()
             if native_path.exists():
                 raise CustodyError("Task 7 native full-local-CI report already exists", subcode="claim-replay")
         elif args.kind == "independent-whole-branch-review":
             authorization_path = resolve_repo_path(
-                ROOT, REVIEW_AUTHORIZATION_REL, must_exist=True, expect_file=True
+                ROOT,
+                review_authorization_rel(namespace_id),
+                must_exist=True,
+                expect_file=True,
             )
             authorization_value, _authorization_raw = _load_json(
                 authorization_path,
@@ -1025,7 +1252,12 @@ def main(argv: Iterable[str] | None = None) -> int:
                 label="Task 7 independent reviewer authorization",
             )
             authorization_ref = _artifact_ref(authorization_path)
-            review_path = resolve_repo_path(ROOT, WHOLE_BRANCH_REVIEW_REL, must_exist=True, expect_file=True)
+            review_path = resolve_repo_path(
+                ROOT,
+                contract.whole_branch_review_rel,
+                must_exist=True,
+                expect_file=True,
+            )
             review_value, _review_raw = _load_json(
                 review_path,
                 definition="task7_whole_branch_review",
@@ -1039,7 +1271,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             )
             evidence_artifacts.append(authorization_ref)
             evidence_artifacts.append(_artifact_ref(review_path))
-        results = _run_role_checks(args.kind)
+        results = _run_role_checks(args.kind, namespace_id=namespace_id)
         if args.kind == "no-model-preflight":
             _validate_no_model_native_report(native_path)
             evidence_artifacts.append(_artifact_ref(native_path))
@@ -1056,12 +1288,7 @@ def main(argv: Iterable[str] | None = None) -> int:
         _verify_worktree_freeze(freeze)
         if checker_path.read_bytes() != checker_raw:
             raise ValueError("Task 7 producer working bytes changed during verifier execution")
-        post_freeze, post_freeze_raw = _load_json(
-            freeze_path,
-            definition="task7_source_freeze",
-            label="Task 7 source freeze post-execution",
-        )
-        validate_source_freeze(post_freeze)
+        post_freeze, post_freeze_raw = _load_source_freeze(freeze_path, namespace_id)
         if post_freeze_raw != freeze_raw or post_freeze != freeze:
             raise ValueError("Task 7 source freeze changed during verifier execution")
         observed_at = _now()
@@ -1071,7 +1298,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             if review_time > evidence_time:
                 raise ValueError("Task 7 whole-branch review cannot postdate its evidence observation")
         command_log = build_command_log(args.kind, results)
-        _publish(EVIDENCE_ROOT, log_path, command_log)
+        _publish(contract.evidence_root, log_path, command_log)
         report_value = build_result_report(
             kind=args.kind,
             results=results,
@@ -1079,22 +1306,24 @@ def main(argv: Iterable[str] | None = None) -> int:
             producer=checker,
             freeze=freeze,
             observed_at=observed_at,
+            namespace_id=namespace_id,
         )
-        _publish(EVIDENCE_ROOT, report_path, report_value)
+        _publish(contract.evidence_root, report_path, report_value)
         source_freeze_ref = _artifact_ref(freeze_path)
         report_ref = _artifact_ref(report_path)
         log_ref = _artifact_ref(log_path)
         value = build_evidence(
             kind=args.kind,
-            command=producer_command(args.kind),
+            command=producer_command(args.kind, namespace_id),
             report=report_ref,
             log=log_ref,
             checker=checker,
             source_freeze=source_freeze_ref,
             freeze=freeze,
             observed_at=observed_at,
+            namespace_id=namespace_id,
         )
-        digest = _publish(EVIDENCE_ROOT, target, value)
+        digest = _publish(contract.evidence_root, target, value)
     except Task7RoleTimeout as exc:
         print(f"Task 7 deterministic evidence: TIMEOUT ({exc})")
         return exc.returncode

@@ -56,6 +56,14 @@ def artifact_ref(path: Path, raw: bytes) -> dict[str, Any]:
     }
 
 
+def artifact_ref_at(path: Path, raw: bytes) -> dict[str, Any]:
+    return {
+        "path": path.as_posix(),
+        "byte_count": len(raw),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+    }
+
+
 def native_no_model_report() -> dict[str, Any]:
     gates = [
         {
@@ -173,6 +181,8 @@ def role_results(kind: str) -> list[tuple[list[str], bytes, bytes]]:
 
 def build_expected() -> dict[Path, bytes]:
     expected: dict[Path, bytes] = {}
+    namespace_id = writer.DEFAULT_NAMESPACE_ID
+    contract = writer.namespace_contract(namespace_id)
     linux_log_path = SUPPORT / "linux-a01-job.log"
     linux_log_raw = linux_a01_job_log()
     linux_log_segment, _test_count, _status, _skipped = checker._a01_log(linux_log_raw)
@@ -212,7 +222,9 @@ def build_expected() -> dict[Path, bytes]:
     authorization = review_authorization(freeze)
     authorization_raw = pretty(authorization)
     expected[authorization_path] = authorization_raw
-    authorization_ref = artifact_ref(authorization_path, authorization_raw)
+    authorization_ref = artifact_ref_at(
+        writer.review_authorization_rel(namespace_id), authorization_raw
+    )
     review_path = SUPPORT / "task7-independent-whole-branch-review-record.json"
     review_raw = pretty(review_record(freeze, authorization, authorization_ref))
     expected[review_path] = review_raw
@@ -227,12 +239,18 @@ def build_expected() -> dict[Path, bytes]:
         expected[log_path] = log_raw
         evidence_artifacts: list[dict[str, Any]] = []
         if kind == "no-model-preflight":
-            evidence_artifacts.append(artifact_ref(native_path, native_raw))
+            evidence_artifacts.append(
+                artifact_ref_at(writer.native_report_rel(kind, namespace_id), native_raw)
+            )
         elif kind == "full-local-ci":
-            evidence_artifacts.append(artifact_ref(full_ci_native_path, full_ci_native_raw))
+            evidence_artifacts.append(
+                artifact_ref_at(writer.native_report_rel(kind, namespace_id), full_ci_native_raw)
+            )
         elif kind == "independent-whole-branch-review":
             evidence_artifacts.append(authorization_ref)
-            evidence_artifacts.append(artifact_ref(review_path, review_raw))
+            evidence_artifacts.append(
+                artifact_ref_at(contract.whole_branch_review_rel, review_raw)
+            )
         report = writer.build_result_report(
             kind=kind,
             results=results,
@@ -240,19 +258,21 @@ def build_expected() -> dict[Path, bytes]:
             producer=producer,
             freeze=freeze,
             observed_at=OBSERVED_AT,
+            namespace_id=namespace_id,
         )
         report_path = SUPPORT / f"task7-{kind}-report.json"
         report_raw = pretty(report)
         expected[report_path] = report_raw
         bundle = writer.build_evidence(
             kind=kind,
-            command=writer.producer_command(kind),
-            report=artifact_ref(report_path, report_raw),
-            log=artifact_ref(log_path, log_raw),
+            command=writer.producer_command(kind, namespace_id),
+            report=artifact_ref_at(writer.report_rel(kind, namespace_id), report_raw),
+            log=artifact_ref_at(writer.log_rel(kind, namespace_id), log_raw),
             checker=producer,
-            source_freeze=artifact_ref(freeze_path, freeze_raw),
+            source_freeze=artifact_ref_at(contract.source_freeze_rel, freeze_raw),
             freeze=freeze,
             observed_at=OBSERVED_AT,
+            namespace_id=namespace_id,
         )
         bundle_path = SUPPORT / f"task7-{kind}.json"
         bundle_raw = pretty(bundle)
@@ -298,25 +318,34 @@ def build_expected() -> dict[Path, bytes]:
         producer=producer,
         freeze=freeze,
         observed_at=OBSERVED_AT,
+        namespace_id=namespace_id,
     )
     timeout_drift_report_path = SUPPORT / "task7-full-local-ci-timeout-drift-report.json"
     timeout_drift_report_raw = pretty(timeout_drift_report)
     expected[timeout_drift_report_path] = timeout_drift_report_raw
     timeout_drift_bundle = writer.build_evidence(
         kind="full-local-ci",
-        command=writer.producer_command("full-local-ci"),
-        report=artifact_ref(timeout_drift_report_path, timeout_drift_report_raw),
-        log=artifact_ref(timeout_drift_log_path, timeout_drift_log_raw),
+        command=writer.producer_command("full-local-ci", namespace_id),
+        report=artifact_ref_at(
+            writer.report_rel("full-local-ci", namespace_id), timeout_drift_report_raw
+        ),
+        log=artifact_ref_at(
+            writer.log_rel("full-local-ci", namespace_id), timeout_drift_log_raw
+        ),
         checker=producer,
-        source_freeze=artifact_ref(freeze_path, freeze_raw),
+        source_freeze=artifact_ref_at(contract.source_freeze_rel, freeze_raw),
         freeze=freeze,
         observed_at=OBSERVED_AT,
+        namespace_id=namespace_id,
     )
     timeout_drift_bundle_path = SUPPORT / "task7-full-local-ci-timeout-drift.json"
     timeout_drift_bundle_raw = pretty(timeout_drift_bundle)
     expected[timeout_drift_bundle_path] = timeout_drift_bundle_raw
 
-    forged_stdout = b"run_local_ci: PASS (172 command(s), indices 1-172)\n"
+    command_count = len(local_ci.COMMANDS)
+    forged_stdout = (
+        f"run_local_ci: PASS ({command_count} command(s), indices 1-{command_count})\n"
+    ).encode("ascii")
     forged_log = json.loads(expected[SUPPORT / "task7-full-local-ci.log"])
     forged_log["entries"][0]["stdout_base64"] = base64.b64encode(forged_stdout).decode("ascii")
     forged_log_path = SUPPORT / "task7-full-local-ci-forged-marker.log"
@@ -332,8 +361,12 @@ def build_expected() -> dict[Path, bytes]:
     forged_report_raw = pretty(forged_report)
     expected[forged_report_path] = forged_report_raw
     forged_bundle = copy.deepcopy(bundle_by_kind["full-local-ci"])
-    forged_bundle["report"] = artifact_ref(forged_report_path, forged_report_raw)
-    forged_bundle["log"] = artifact_ref(forged_log_path, forged_log_raw)
+    forged_bundle["report"] = artifact_ref_at(
+        writer.report_rel("full-local-ci", namespace_id), forged_report_raw
+    )
+    forged_bundle["log"] = artifact_ref_at(
+        writer.log_rel("full-local-ci", namespace_id), forged_log_raw
+    )
     forged_bundle["evidence_id"] = writer._evidence_id(
         forged_bundle["kind"],
         forged_bundle["freeze_id"],
@@ -360,8 +393,12 @@ def build_expected() -> dict[Path, bytes]:
     profile_report_raw = pretty(profile_report)
     expected[profile_report_path] = profile_report_raw
     profile_bundle = copy.deepcopy(bundle_by_kind["no-model-preflight"])
-    profile_bundle["report"] = artifact_ref(profile_report_path, profile_report_raw)
-    profile_bundle["log"] = artifact_ref(profile_log_path, profile_log_raw)
+    profile_bundle["report"] = artifact_ref_at(
+        writer.report_rel("no-model-preflight", namespace_id), profile_report_raw
+    )
+    profile_bundle["log"] = artifact_ref_at(
+        writer.log_rel("no-model-preflight", namespace_id), profile_log_raw
+    )
     profile_bundle["evidence_id"] = writer._evidence_id(
         profile_bundle["kind"],
         profile_bundle["freeze_id"],
@@ -389,8 +426,12 @@ def build_expected() -> dict[Path, bytes]:
     removed_name_report_raw = pretty(removed_name_report)
     expected[removed_name_report_path] = removed_name_report_raw
     removed_name_bundle = copy.deepcopy(bundle_by_kind["no-model-preflight"])
-    removed_name_bundle["report"] = artifact_ref(removed_name_report_path, removed_name_report_raw)
-    removed_name_bundle["log"] = artifact_ref(removed_name_log_path, removed_name_log_raw)
+    removed_name_bundle["report"] = artifact_ref_at(
+        writer.report_rel("no-model-preflight", namespace_id), removed_name_report_raw
+    )
+    removed_name_bundle["log"] = artifact_ref_at(
+        writer.log_rel("no-model-preflight", namespace_id), removed_name_log_raw
+    )
     removed_name_bundle["evidence_id"] = writer._evidence_id(
         removed_name_bundle["kind"],
         removed_name_bundle["freeze_id"],
@@ -408,10 +449,11 @@ def build_expected() -> dict[Path, bytes]:
     receipt["linux_a01"]["job_log_sha256"] = hashlib.sha256(linux_log_raw).hexdigest()
     receipt["linux_a01"]["log_segment_sha256"] = hashlib.sha256(linux_log_segment).hexdigest()
     for kind, role in ROLE_BY_KIND.items():
-        bundle_path = SUPPORT / f"task7-{kind}.json"
         raw = bundle_raw_by_kind[kind]
         receipt["deterministic_verdicts"][role] = {
-            **artifact_ref(bundle_path, raw),
+            **artifact_ref_at(
+                contract.evidence_rel / writer.ROLE_FILE_BY_KIND[kind], raw
+            ),
             "artifact_schema": "daee-task7-deterministic-evidence-v1",
             "kind": kind,
             "status": writer.STATUS_BY_KIND[kind],
@@ -422,15 +464,24 @@ def build_expected() -> dict[Path, bytes]:
     replay = json.loads(replay_path.read_text(encoding="utf-8"))
     no_model_path = SUPPORT / "task7-no-model-preflight.json"
     no_model_raw = bundle_raw_by_kind["no-model-preflight"]
-    replay["operations"][0]["value"] = no_model_path.relative_to(ROOT).as_posix()
-    replay["operations"][1]["value"] = len(no_model_raw)
-    replay["operations"][2]["value"] = hashlib.sha256(no_model_raw).hexdigest()
+    replay["operations"] = [
+        {
+            "op": "task7-artifact-substitute",
+            "role": "full_local_ci",
+            "source": no_model_path.relative_to(ROOT).as_posix(),
+        }
+    ]
     expected[replay_path] = pretty(replay)
 
     wrong_path = HERE / "invalid/wrong-source-task7-evidence.json"
     wrong = json.loads(wrong_path.read_text(encoding="utf-8"))
-    wrong["operations"][1]["value"] = len(wrong_source_raw)
-    wrong["operations"][2]["value"] = hashlib.sha256(wrong_source_raw).hexdigest()
+    wrong["operations"] = [
+        {
+            "op": "task7-artifact-substitute",
+            "role": "no_model_preflight",
+            "source": wrong_source_path.relative_to(ROOT).as_posix(),
+        }
+    ]
     expected[wrong_path] = pretty(wrong)
 
     noop_fixture_path = HERE / "invalid/noop-task7-role-command.json"
@@ -439,19 +490,9 @@ def build_expected() -> dict[Path, bytes]:
         "base": VALID.relative_to(ROOT).as_posix(),
         "operations": [
             {
-                "op": "set",
-                "path": "deterministic_verdicts.no_model_preflight.path",
-                "value": noop_path.relative_to(ROOT).as_posix(),
-            },
-            {
-                "op": "set",
-                "path": "deterministic_verdicts.no_model_preflight.byte_count",
-                "value": len(noop_raw),
-            },
-            {
-                "op": "set",
-                "path": "deterministic_verdicts.no_model_preflight.sha256",
-                "value": hashlib.sha256(noop_raw).hexdigest(),
+                "op": "task7-artifact-substitute",
+                "role": "no_model_preflight",
+                "source": noop_path.relative_to(ROOT).as_posix(),
             },
         ],
     }
@@ -463,19 +504,9 @@ def build_expected() -> dict[Path, bytes]:
         "base": VALID.relative_to(ROOT).as_posix(),
         "operations": [
             {
-                "op": "set",
-                "path": "deterministic_verdicts.full_local_ci.path",
-                "value": timeout_drift_bundle_path.relative_to(ROOT).as_posix(),
-            },
-            {
-                "op": "set",
-                "path": "deterministic_verdicts.full_local_ci.byte_count",
-                "value": len(timeout_drift_bundle_raw),
-            },
-            {
-                "op": "set",
-                "path": "deterministic_verdicts.full_local_ci.sha256",
-                "value": hashlib.sha256(timeout_drift_bundle_raw).hexdigest(),
+                "op": "task7-artifact-substitute",
+                "role": "full_local_ci",
+                "source": timeout_drift_bundle_path.relative_to(ROOT).as_posix(),
             },
         ],
     }
@@ -487,9 +518,11 @@ def build_expected() -> dict[Path, bytes]:
             "fixture_schema": "daee-checker-fixture-v1",
             "base": VALID.relative_to(ROOT).as_posix(),
             "operations": [
-                {"op": "set", "path": "deterministic_verdicts.full_local_ci.path", "value": forged_bundle_path.relative_to(ROOT).as_posix()},
-                {"op": "set", "path": "deterministic_verdicts.full_local_ci.byte_count", "value": len(forged_bundle_raw)},
-                {"op": "set", "path": "deterministic_verdicts.full_local_ci.sha256", "value": hashlib.sha256(forged_bundle_raw).hexdigest()},
+                {
+                    "op": "task7-artifact-substitute",
+                    "role": "full_local_ci",
+                    "source": forged_bundle_path.relative_to(ROOT).as_posix(),
+                },
             ],
         }
     )
@@ -499,9 +532,11 @@ def build_expected() -> dict[Path, bytes]:
             "fixture_schema": "daee-checker-fixture-v1",
             "base": VALID.relative_to(ROOT).as_posix(),
             "operations": [
-                {"op": "set", "path": "deterministic_verdicts.no_model_preflight.path", "value": profile_bundle_path.relative_to(ROOT).as_posix()},
-                {"op": "set", "path": "deterministic_verdicts.no_model_preflight.byte_count", "value": len(profile_bundle_raw)},
-                {"op": "set", "path": "deterministic_verdicts.no_model_preflight.sha256", "value": hashlib.sha256(profile_bundle_raw).hexdigest()},
+                {
+                    "op": "task7-artifact-substitute",
+                    "role": "no_model_preflight",
+                    "source": profile_bundle_path.relative_to(ROOT).as_posix(),
+                },
             ],
         }
     )
@@ -512,20 +547,24 @@ def build_expected() -> dict[Path, bytes]:
             "base": VALID.relative_to(ROOT).as_posix(),
             "operations": [
                 {
+                    "op": "task7-artifact-substitute",
+                    "role": "no_model_preflight",
+                    "source": removed_name_bundle_path.relative_to(ROOT).as_posix(),
+                },
+            ],
+        }
+    )
+    locator_fixture_path = HERE / "invalid/task7-primary-locator-substitution.json"
+    expected[locator_fixture_path] = pretty(
+        {
+            "fixture_schema": "daee-checker-fixture-v1",
+            "base": VALID.relative_to(ROOT).as_posix(),
+            "operations": [
+                {
                     "op": "set",
                     "path": "deterministic_verdicts.no_model_preflight.path",
-                    "value": removed_name_bundle_path.relative_to(ROOT).as_posix(),
-                },
-                {
-                    "op": "set",
-                    "path": "deterministic_verdicts.no_model_preflight.byte_count",
-                    "value": len(removed_name_bundle_raw),
-                },
-                {
-                    "op": "set",
-                    "path": "deterministic_verdicts.no_model_preflight.sha256",
-                    "value": hashlib.sha256(removed_name_bundle_raw).hexdigest(),
-                },
+                    "value": no_model_path.relative_to(ROOT).as_posix(),
+                }
             ],
         }
     )

@@ -8,6 +8,7 @@ import json
 import os
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 from contract_validation import PathCustodyError, SchemaDefinitionError, resolve_repo_path, validate_schema_subset
@@ -23,6 +24,7 @@ import campaign_usage_ledger
 from smoke_matrix_registry import ROOT, load_registry, validate_registry
 from validation_registry import load_registry as load_validation_registry, validate_verdict as validate_registry_verdict
 from artifact_tree import TREE_DIGEST_ALGORITHM, tree_sha256 as _shared_tree_digest
+import execution_tooling_manifest as tooling_manifest
 
 FIXTURES = ROOT / "tests" / "smoke-matrix" / "fixtures"
 EXPECTATION_SCHEMA_PATH = ROOT / "schema" / "negative-fixture-expectation.schema.json"
@@ -112,6 +114,47 @@ def _tree_digest(directory: Path) -> str:
 
 def _identity(data: dict) -> dict:
     return {field:data[field] for field in ("matrix_id","candidate_id","source_commit","package_sha256","package_tree_sha256","campaign_authorization_sha256","matrix_authorization_sha256")}
+
+
+def _live_matrix_authority_errors(data: dict, root: Path) -> list[dict[str,str]]:
+    try:
+        parent,parent_raw=_read_ref(root,data["campaign_authorization"])
+    except (OSError,ValueError,json.JSONDecodeError) as exc:
+        return [_err("campaign_authorization_binding",str(exc))]
+    parent_sha=hashlib.sha256(parent_raw).hexdigest()
+    if parent_sha!=data["campaign_authorization_sha256"]:
+        return [_err("campaign_authorization_binding","parent campaign reference and full canonical artifact hash differ")]
+    parent_keys={"schema","kind","authorization_id","status","revoked","valid_not_before","valid_not_after","branch","source_commit","source_preflight","candidate_id","candidate_state","candidate_claim_status","package_profile","package_sha256","package_tree_sha256","input_registry","review_protocol","action","lane","model_runner","producer_model","producer_reasoning_effort","authorized_calls","case_inputs","automatic_retry_authorized","optional_opus_authorized","authorization_sha256"}
+    if set(parent)!=parent_keys or parent.get("schema")!="reviewed-campaign-owner-authorization-v1" or parent.get("kind")!="reviewed-five-smoke-campaign":
+        return [_err("campaign_authorization_contract","parent campaign artifact has the wrong exact shape")]
+    unsigned={key:value for key,value in parent.items() if key!="authorization_sha256"}
+    if parent.get("authorization_sha256")!=hashlib.sha256((json.dumps(unsigned,sort_keys=True,separators=(",",":"))+"\n").encode()).hexdigest():
+        return [_err("campaign_authorization_contract","parent campaign unsigned self-hash is invalid")]
+    exact={"status":"ACTIVE","revoked":False,"branch":data["branch"],"source_commit":data["source_commit"],"source_preflight":data["source_preflight"],"candidate_id":data["candidate_id"],"candidate_state":"READY_UNUSED","candidate_claim_status":"UNCLAIMED","package_profile":"execution-mini","package_sha256":data["package_sha256"],"package_tree_sha256":data["package_tree_sha256"],"input_registry":data["input_registry"],"review_protocol":data["review_protocol"],"action":"RUN_REVIEWED_FIVE_SMOKE","lane":"producer","model_runner":"codex","producer_model":"gpt-5.5","producer_reasoning_effort":"high","authorized_calls":5,"case_inputs":data["case_inputs"],"automatic_retry_authorized":False,"optional_opus_authorized":False}
+    if any(parent.get(field)!=value for field,value in exact.items()):
+        return [_err("campaign_authorization_contract","parent campaign scope differs from the child source/candidate/registry/model/case delegation")]
+    try:
+        execution_tooling,execution_tooling_raw=_read_ref(root,data["execution_tooling_manifest"])
+        if execution_tooling_raw!=(json.dumps(execution_tooling,sort_keys=True,separators=(",",":"))+"\n").encode("utf-8"):
+            raise ValueError("execution tooling manifest must be canonical JSON")
+        tooling_manifest.validate_execution_tooling_manifest_identity(
+            manifest=execution_tooling,
+            expected_source_commit=data["source_commit"],
+            schema_root=ROOT,
+        )
+    except (OSError,ValueError,tooling_manifest.ExecutionToolingManifestError) as exc:
+        return [_err("execution_tooling_manifest_binding",str(exc))]
+    if [row["case_id"] for row in data["case_inputs"]]!=data["case_ids"]:
+        return [_err("campaign_authorization_cases","child case/input rows differ from the exact ordered case set")]
+    try:
+        parse=lambda value:datetime.strptime(value,"%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+        parent_start,parent_end=parse(parent["valid_not_before"]),parse(parent["valid_not_after"])
+        child_start,child_end=parse(data["launch_not_before"]),parse(data["launch_not_after"])
+    except (TypeError,ValueError) as exc:
+        return [_err("campaign_authorization_window",str(exc))]
+    if not parent_start<=child_start<child_end<=parent_end:
+        return [_err("campaign_authorization_window","child launch window is not contained in the active parent window")]
+    return []
 
 
 def _artifact_identity_errors(value: dict, identity: dict, *, cycle_field: str="cycle_id") -> bool:
@@ -345,6 +388,8 @@ def validate_manifest(data: object, *, root: Path = ROOT) -> list[dict[str,str]]
             try:candidate.relative_to(custody);claim.relative_to(custody/"claims")
             except ValueError:return [_err("candidate_custody_path","candidate root must be beneath its authorized custody root")]
             if claim.name!=f"{data['authorization_id']}.claim.json":return [_err("candidate_claim_path","candidate claim path must be derived from the authorization ID")]
+        if kind=="matrix-authorization":
+            return _live_matrix_authority_errors(data,root)
         return []
     if kind in {"candidate-build-claim","matrix-authorization-claim"}:
         expected=hashlib.sha256((json.dumps({key:value for key,value in data.items() if key!="claim_sha256"},sort_keys=True,separators=(",",":"))+"\n").encode()).hexdigest()

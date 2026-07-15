@@ -9,17 +9,25 @@ CAS-governed campaign usage ledger.
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Protocol
 
 from campaign_usage_ledger import head_snapshot, reserve, settle
 from check_cold_comprehensiveness_review import validate_packet_manifest
+from check_initial_assessment_barrier import (
+    AssessmentBarrierError,
+    revalidate_assessment_claim,
+    validate_initial_assessment_set,
+)
 from check_parallel_dispatch_manifest import chain_dispatch_events, validate_dispatch_manifest
+import execution_tooling_manifest as tooling_manifest
 
 
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
@@ -34,6 +42,7 @@ WINDOWS_DEVICE_NAMES = {
 TASK6_IMPLEMENTATION_OWNER = "/root/task6_no_dispatch"
 CONTINUATION_ISSUER = "/root"
 TEST_EXECUTION_MODE = "DETERMINISTIC_FAKE_NO_DISPATCH"
+SCRIPTED_CODEX_TEST_MODE = "SCRIPTED_CODEX_TEST_NO_PROVIDER"
 PROVIDER_CAPABILITY_KEYS = {
     "schema",
     "adapter_kind",
@@ -133,7 +142,19 @@ class CampaignError(RuntimeError):
 class ProviderAdapter(Protocol):
     def capability(self) -> dict[str, object]: ...
     def submit(self, execution_custody: dict[str, object]) -> dict[str, object]: ...
+    def submit_tail(self, execution_custodies: list[dict[str, object]]) -> list[dict[str, object]]: ...
     def observe(self, handle: str, execution_custody: dict[str, object]) -> dict[str, object]: ...
+
+
+def _producer_capture_mode(auth: dict[str, Any]) -> bool:
+    return auth.get("kind") == "producer-cohort" and auth.get("execution_mode") in {
+        "LIVE_CODEX",
+        SCRIPTED_CODEX_TEST_MODE,
+    }
+
+
+def _production_live_mode(auth: dict[str, Any]) -> bool:
+    return auth.get("kind") == "producer-cohort" and auth.get("execution_mode") == "LIVE_CODEX"
 
 
 def canonical_bytes(value: object) -> bytes:
@@ -420,13 +441,30 @@ def _expected_success_dispatch_manifest(auth: dict[str, Any], *, lane: str) -> d
         ),
         {"event": "barrier_release"},
     ]
-    for worker in workers:
+    if lane == "producer" and _producer_capture_mode(auth):
+        first, *tail = workers
         raw_events.extend(
             (
-                {"event": "request_submit_started", "worker": worker["worker"], "case_id": worker["case_id"]},
-                {"event": "call_entered_in_flight", "worker": worker["worker"], "case_id": worker["case_id"]},
+                {"event": "request_submit_started", "worker": first["worker"], "case_id": first["case_id"]},
+                {"event": "call_entered_in_flight", "worker": first["worker"], "case_id": first["case_id"]},
             )
         )
+        raw_events.extend(
+            {"event": "request_submit_started", "worker": worker["worker"], "case_id": worker["case_id"]}
+            for worker in tail
+        )
+        raw_events.extend(
+            {"event": "call_entered_in_flight", "worker": worker["worker"], "case_id": worker["case_id"]}
+            for worker in tail
+        )
+    else:
+        for worker in workers:
+            raw_events.extend(
+                (
+                    {"event": "request_submit_started", "worker": worker["worker"], "case_id": worker["case_id"]},
+                    {"event": "call_entered_in_flight", "worker": worker["worker"], "case_id": worker["case_id"]},
+                )
+            )
     raw_events.append({"event": "all_five_in_flight"})
     for worker in workers:
         raw_events.append(
@@ -465,17 +503,32 @@ def _expected_success_completion(
         "results": results,
     }
     if lane == "producer":
-        return {
+        completion = {
             "schema": "reviewed-campaign-producer-completion-v1",
-            "status": "PRODUCER_STRUCTURAL_COMPLETE",
+            "status": (
+                "PRODUCER_CAPTURE_COMPLETE"
+                if _producer_capture_mode(auth)
+                else "PRODUCER_STRUCTURAL_COMPLETE"
+            ),
+            "execution_mode": auth["execution_mode"],
+            "test_only": auth["test_only"],
             **common,
             "cycle_id": auth["cycle_or_review_batch_id"],
             "source_commit": auth["source_commit"],
+            "review_protocol": dict(auth["review_protocol"]),
             "registry_sha256": bindings["registry_sha256"],
             "package_record_sha256": bindings["package_sha256"],
             "candidate_maturity_sha256": bindings["candidate_sha256"],
             "cold_review_authorized": False,
         }
+        if _producer_capture_mode(auth):
+            completion.update(
+                {
+                    "package_sha256": auth["package_sha256"],
+                    "package_tree_sha256": auth["package_tree_sha256"],
+                }
+            )
+        return completion
     return {
         "schema": "reviewed-campaign-cold-review-completion-v1",
         "status": "COLD_REVIEW_COHORT_COMPLETE",
@@ -498,6 +551,7 @@ def _validate_success_finalizer(
     *,
     lane: str,
     attempt_index: int,
+    historical_usage: bool = False,
 ) -> None:
     _require_terminal_common(
         value,
@@ -508,9 +562,14 @@ def _validate_success_finalizer(
         role="success_finalizer",
     )
     expected_review_status = None if lane == "producer" else "OBSERVED"
+    expected_dispatch_status = (
+        "LIVE_RAW_CAPTURE_COMPLETE"
+        if lane == "producer" and _producer_capture_mode(auth)
+        else "DETERMINISTIC_FAKE_COMPLETE"
+    )
     if (
         value.get("terminal") is not True
-        or value.get("dispatch_status") != "DETERMINISTIC_FAKE_COMPLETE"
+        or value.get("dispatch_status") != expected_dispatch_status
         or value.get("candidate_status") != "CONSUMED_OBSERVED"
         or value.get("review_status") != expected_review_status
     ):
@@ -540,7 +599,12 @@ def _validate_success_finalizer(
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_SUCCESS_PACKET_DISCLOSURE_BINDING")
 
     snapshot = head_snapshot(usage_root)
-    usage_value = {**value, "usage_unresolved": snapshot["unresolved_usage"]}
+    if historical_usage and "usage_unresolved" in value:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_USAGE_HEAD")
+    usage_value = {
+        **value,
+        "usage_unresolved": False if historical_usage else snapshot["unresolved_usage"],
+    }
     reservation, settlement = _validate_failure_usage(
         usage_root,
         usage_value,
@@ -548,6 +612,7 @@ def _validate_success_finalizer(
         auth_sha,
         snapshot,
         lane=lane,
+        historical=historical_usage,
     )
     if reservation is None or settlement is None or settlement.get("completed") != 5 or settlement.get("unknown") != 0 or snapshot.get("unresolved_usage") is not False:
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_SUCCESS_USAGE_STATE")
@@ -627,8 +692,8 @@ def _validate_failure_claims(
         "kind": "producer-cohort" if lane == "producer" else "cold-review-cohort",
         "authorization_sha256": auth_sha,
         "candidate_id": auth["candidate_id"],
-        "execution_mode": TEST_EXECUTION_MODE,
-        "live_dispatch": False,
+        "execution_mode": auth["execution_mode"],
+        "live_dispatch": auth.get("execution_mode") == "LIVE_CODEX",
     }
     if lane == "producer":
         expected_auth_claim["cycle_or_review_batch_id"] = auth["cycle_or_review_batch_id"]
@@ -698,6 +763,37 @@ def _validate_failure_claims(
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CONTINUATION_CLAIM_BINDING")
 
 
+def _historical_usage_resulting_head(
+    usage_root: Path,
+    snapshot: dict[str, Any],
+    transaction_sha256: str,
+) -> str:
+    """Return the recorded head immediately after a canonical ancestor transaction."""
+
+    current = snapshot.get("last_transaction_sha256")
+    child: dict[str, Any] | None = None
+    visited: set[str] = set()
+    while isinstance(current, str):
+        if current in visited:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_USAGE_ANCESTRY_CYCLE")
+        visited.add(current)
+        path = usage_root / "transactions" / f"{current}.json"
+        transaction, raw = _load_canonical_json(path, "historical_usage_transaction")
+        if hashlib.sha256(raw).hexdigest() != current:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_USAGE_ANCESTRY_CONTENT_ADDRESS")
+        if current == transaction_sha256:
+            if child is None:
+                head_sha = snapshot.get("head_sha256")
+            else:
+                head_sha = child.get("predecessor_usage_head_sha256")
+            if not isinstance(head_sha, str) or SHA256_RE.fullmatch(head_sha) is None:
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_USAGE_ANCESTRY_HEAD")
+            return head_sha
+        child = transaction
+        current = transaction.get("predecessor_transaction_sha256")
+    raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_SETTLEMENT_NOT_USAGE_ANCESTOR")
+
+
 def _validate_failure_usage(
     usage_root: Path,
     payload: dict[str, Any],
@@ -706,6 +802,7 @@ def _validate_failure_usage(
     snapshot: dict[str, Any],
     *,
     lane: str,
+    historical: bool = False,
 ) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
     reservation_sha = payload.get("reservation_sha256")
     settlement_sha = payload.get("settlement_sha256")
@@ -753,14 +850,296 @@ def _validate_failure_usage(
         }
         if any(settlement.get(key) != expected for key, expected in expected_settlement.items()):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_SETTLEMENT_BINDING")
-        if snapshot.get("last_transaction_sha256") != settlement_sha:
+        if not historical and snapshot.get("last_transaction_sha256") != settlement_sha:
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_SETTLEMENT_NOT_USAGE_HEAD")
 
     if snapshot.get("open_reservations"):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_OPEN_RESERVATION")
-    if payload.get("resulting_usage_head_sha256") != snapshot.get("head_sha256") or payload.get("usage_unresolved") is not snapshot.get("unresolved_usage"):
+    if historical and snapshot.get("unresolved_usage") is not False:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_UNRESOLVED_USAGE")
+    expected_head = snapshot.get("head_sha256")
+    expected_unresolved = snapshot.get("unresolved_usage")
+    if historical and settlement is not None and isinstance(settlement_sha, str):
+        expected_head = _historical_usage_resulting_head(usage_root, snapshot, settlement_sha)
+        expected_unresolved = settlement.get("unknown", 0) > 0
+    if payload.get("resulting_usage_head_sha256") != expected_head or payload.get("usage_unresolved") is not expected_unresolved:
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_USAGE_HEAD")
     return reservation, settlement
+
+
+def _load_retained_bytes_ref(
+    root: Path,
+    value: object,
+    role: str,
+) -> tuple[Path, bytes, str]:
+    if not isinstance(value, dict) or set(value) != {"path", "byte_count", "sha256"}:
+        raise CampaignError(f"{role.upper()}_REF_SHAPE")
+    expected_sha = value.get("sha256")
+    if not isinstance(expected_sha, str) or SHA256_RE.fullmatch(expected_sha) is None:
+        raise CampaignError(f"{role.upper()}_REF_HASH")
+    path = _contained(root, value.get("path"), role, must_exist=True)
+    raw = path.read_bytes()
+    if value.get("byte_count") != len(raw) or hashlib.sha256(raw).hexdigest() != expected_sha:
+        raise CampaignError(f"{role.upper()}_CONTENT_ADDRESS")
+    return path, raw, expected_sha
+
+
+def _strict_jsonl_object(line: bytes, role: str) -> dict[str, Any]:
+    def reject_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        value: dict[str, Any] = {}
+        for key, item in pairs:
+            if key in value:
+                raise CampaignError(f"{role.upper()}_DUPLICATE_KEY")
+            value[key] = item
+        return value
+
+    def reject_nonfinite(constant: str) -> object:
+        raise CampaignError(f"{role.upper()}_NONFINITE_NUMBER: {constant}")
+
+    try:
+        value = json.loads(
+            line,
+            object_pairs_hook=reject_duplicates,
+            parse_constant=reject_nonfinite,
+        )
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise CampaignError(f"{role.upper()}_JSON_INVALID") from exc
+    if not isinstance(value, dict):
+        raise CampaignError(f"{role.upper()}_OBJECT_REQUIRED")
+    return value
+
+
+def _rederive_live_provider_facts(
+    root: Path,
+    capture: dict[str, Any],
+    receipt: dict[str, Any],
+    result: dict[str, Any],
+    auth: dict[str, Any],
+    *,
+    case_id: str,
+    index: int,
+) -> None:
+    """Derive provider facts from retained JSONL/capture bytes before trusting receipts."""
+
+    events_path, events_raw, _events_sha = _load_retained_bytes_ref(
+        root,
+        capture.get("raw_event_log"),
+        f"producer_raw_event_log_{index}",
+    )
+    retained_relative = events_path.relative_to(Path(os.path.abspath(root))).as_posix()
+    if not retained_relative.startswith(f"{auth['provider_receipt_root']}/"):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_EVENT_CUSTODY")
+    lines = events_raw.splitlines()
+    if not lines or any(not line for line in lines):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_EVENT_JSONL")
+    events = [
+        _strict_jsonl_object(line, f"producer_raw_event_{index}_{ordinal}")
+        for ordinal, line in enumerate(lines, 1)
+    ]
+    thread_rows = [row for row in events if row.get("type") == "thread.started"]
+    completed_rows = [row for row in events if row.get("type") == "turn.completed"]
+    failed_rows = [row for row in events if row.get("type") in {"turn.failed", "error"}]
+    if (
+        len(thread_rows) != 1
+        or len(completed_rows) != 1
+        or failed_rows
+        or not isinstance(thread_rows[0].get("thread_id"), str)
+        or not thread_rows[0]["thread_id"]
+    ):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_PROVIDER_IDENTITY")
+    try:
+        admission_path, admission_raw, _admission_sha = _load_retained_bytes_ref(
+            root,
+            capture.get("in_flight_admission"),
+            f"producer_in_flight_admission_{index}",
+        )
+        admission_relative = admission_path.relative_to(Path(os.path.abspath(root))).as_posix()
+        if (
+            not admission_relative.startswith(f"{auth['provider_receipt_root']}/")
+            or not admission_raw
+            or not admission_raw.endswith(b"\n")
+            or not events_raw.startswith(admission_raw)
+        ):
+            raise CampaignError("admission prefix custody or binding invalid")
+        admission_lines = admission_raw.splitlines()
+        if any(not line for line in admission_lines):
+            raise CampaignError("admission prefix JSONL invalid")
+        admission_events = [
+            _strict_jsonl_object(line, f"producer_in_flight_admission_{index}_{ordinal}")
+            for ordinal, line in enumerate(admission_lines, 1)
+        ]
+        admission_threads = [row for row in admission_events if row.get("type") == "thread.started"]
+        if (
+            len(admission_threads) != 1
+            or admission_threads[0].get("thread_id") != thread_rows[0]["thread_id"]
+            or any(row.get("type") in {"turn.completed", "turn.failed", "error"} for row in admission_events)
+        ):
+            raise CampaignError("admission prefix semantics invalid")
+    except (CampaignError, ValueError) as exc:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_PROVIDER_ADMISSION") from exc
+    derived_provider_call_id = f"codex-thread:{thread_rows[0]['thread_id']}"
+    raw_usage = completed_rows[0].get("usage")
+    if not isinstance(raw_usage, dict):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_PROVIDER_USAGE")
+    input_tokens = raw_usage.get("input_tokens")
+    cached_tokens = raw_usage.get("cached_input_tokens")
+    output_tokens = raw_usage.get("output_tokens")
+    token_values = (input_tokens, cached_tokens, output_tokens)
+    if (
+        any(not isinstance(value, int) or isinstance(value, bool) or value < 0 for value in token_values)
+        or cached_tokens > input_tokens
+    ):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_PROVIDER_USAGE")
+    derived_usage = {
+        "status": "RECORDED",
+        "input_tokens": input_tokens,
+        "cached_input_tokens": cached_tokens,
+        "output_tokens": output_tokens,
+        "total_tokens": input_tokens + output_tokens,
+    }
+    if any("cost" in row for row in events):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_PROVIDER_COST")
+    derived_cost = dict(LIVE_COST_UNAVAILABLE)
+
+    identity = capture.get("completion_identity")
+    if not isinstance(identity, dict) or set(identity) != {
+        "provider_call_id", "host_invocation_id", "started_at", "ended_at",
+    }:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_PROVIDER_IDENTITY")
+    if identity.get("provider_call_id") != derived_provider_call_id:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_PROVIDER_IDENTITY")
+    host_invocation_id = identity.get("host_invocation_id")
+    if (
+        not isinstance(host_invocation_id, str)
+        or re.fullmatch(rf"codex-host:[1-9][0-9]*:{re.escape(case_id)}", host_invocation_id) is None
+    ):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_HOST_IDENTITY")
+    try:
+        started_at = _parse_utc(identity.get("started_at"), "producer_dispatch_started_at")
+        ended_at = _parse_utc(identity.get("ended_at"), "producer_dispatch_ended_at")
+    except CampaignError as exc:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_HOST_TIMESTAMPS") from exc
+    if ended_at < started_at:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_HOST_TIMESTAMPS")
+    window = auth.get("authorization_window")
+    if not isinstance(window, dict) or set(window) != {
+        "launch_not_before", "launch_not_after", "parent_valid_not_before", "parent_valid_not_after",
+    }:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_DISPATCH_AUTHORIZATION_WINDOW")
+    child_start = _parse_utc(window["launch_not_before"], "historical_launch_not_before")
+    child_end = _parse_utc(window["launch_not_after"], "historical_launch_not_after")
+    parent_start = _parse_utc(window["parent_valid_not_before"], "historical_parent_valid_not_before")
+    parent_end = _parse_utc(window["parent_valid_not_after"], "historical_parent_valid_not_after")
+    if not parent_start <= child_start <= started_at <= child_end <= parent_end:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_DISPATCH_AUTHORIZATION_WINDOW")
+
+    if capture.get("usage") != derived_usage or receipt.get("usage") != derived_usage:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_PROVIDER_USAGE")
+    if capture.get("cost") != derived_cost or receipt.get("cost") != derived_cost:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_PROVIDER_COST")
+    if receipt.get("provider_call_id") != derived_provider_call_id:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_PROVIDER_IDENTITY")
+    if receipt.get("host_invocation_id") != host_invocation_id:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_HOST_IDENTITY")
+    if receipt.get("started_at") != identity["started_at"] or receipt.get("ended_at") != identity["ended_at"]:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_HOST_TIMESTAMPS")
+    if (
+        receipt.get("accepted") is not None
+        or receipt.get("in_flight") is not False
+        or receipt.get("acknowledgment_origin") != "ADAPTER_IN_FLIGHT"
+        or receipt.get("status") != "COMPLETED"
+        or receipt.get("unknown_kind") is not None
+        or receipt.get("terminal_transport_status") != "COMPLETED"
+    ):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_HOST_TRANSPORT")
+    _output_path, raw_output, _output_sha = _load_retained_bytes_ref(
+        root,
+        capture.get("raw_output"),
+        f"producer_raw_output_{index}",
+    )
+    _result_path, result_output = _validate_retained_ref(
+        root,
+        result.get("output"),
+        f"producer/results/{case_id}.txt",
+        f"producer_resume_result_{index}",
+    )
+    try:
+        raw_output.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_OUTPUT_UTF8") from exc
+    if not raw_output or raw_output != result_output:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_OUTPUT_BINDING")
+
+
+def _derive_terminal_receipt_state(
+    settlement: dict[str, Any] | None,
+    auth: dict[str, Any],
+) -> dict[str, Any]:
+    if settlement is None:
+        return {
+            "classification": "PROVED_NO_DISPATCH",
+            "completed": 0,
+            "dispatch_unknown": 0,
+            "outcome_unknown": 0,
+            "not_dispatched": 0,
+            "completed_receipts": [],
+        }
+    receipts = settlement.get("provider_usage_receipts")
+    if not isinstance(receipts, list) or len(receipts) != 5:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RECEIPT_STATE_INVENTORY")
+    completed_receipts: list[tuple[int, dict[str, Any]]] = []
+    dispatch_unknown = 0
+    outcome_unknown = 0
+    not_dispatched = 0
+    batch_id = settlement.get("cycle_or_review_batch_id")
+    for index, receipt in enumerate(receipts):
+        if not isinstance(receipt, dict):
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RECEIPT_STATE_INVENTORY")
+        if receipt.get("call_id") != f"{batch_id}:call-{index + 1:02d}":
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RECEIPT_CALL_IDENTITY")
+        status = receipt.get("status")
+        unknown_kind = receipt.get("unknown_kind")
+        if status == "COMPLETED" and unknown_kind is None:
+            completed_receipts.append((index, receipt))
+        elif status == "UNKNOWN" and unknown_kind == "DISPATCH_UNKNOWN":
+            dispatch_unknown += 1
+        elif status == "UNKNOWN" and unknown_kind == "OUTCOME_UNKNOWN":
+            outcome_unknown += 1
+        elif status == "NOT_DISPATCHED" and unknown_kind is None:
+            not_dispatched += 1
+        else:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RECEIPT_STATE_INVENTORY")
+    completed = len(completed_receipts)
+    unknown = dispatch_unknown + outcome_unknown
+    expected_counts = {
+        "completed": completed,
+        "unknown": unknown,
+        "not_dispatched": not_dispatched,
+        "failed": 0,
+        "cancelled": 0,
+    }
+    if any(settlement.get(field) != value for field, value in expected_counts.items()):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RECEIPT_STATE_COUNTS")
+    if completed + unknown + not_dispatched != 5:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RECEIPT_STATE_COUNTS")
+    if outcome_unknown:
+        classification = "OUTCOME_UNKNOWN"
+    elif dispatch_unknown:
+        classification = "DISPATCH_UNKNOWN"
+    elif completed == 5:
+        classification = "OBSERVED"
+    elif not_dispatched == 5:
+        classification = "PROVED_NO_DISPATCH"
+    else:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RECEIPT_STATE_CLASSIFICATION")
+    return {
+        "classification": classification,
+        "completed": completed,
+        "dispatch_unknown": dispatch_unknown,
+        "outcome_unknown": outcome_unknown,
+        "not_dispatched": not_dispatched,
+        "completed_receipts": completed_receipts,
+    }
 
 
 def _validate_failure_results(
@@ -775,36 +1154,120 @@ def _validate_failure_results(
     results = payload.get("observed_results")
     if not isinstance(results, list) or any(not isinstance(row, dict) for row in results):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESULTS_SHAPE")
-    classification = payload.get("dispatch_classification")
-    expected_count = 0 if classification == "PROVED_NO_DISPATCH" else 5 if classification == "OBSERVED" else None
-    if expected_count is not None and len(results) != expected_count:
-        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESULTS_COUNT")
-    if classification in {"DISPATCH_UNKNOWN", "OUTCOME_UNKNOWN"} and len(results) > 4:
-        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_UNKNOWN_RESULTS_COUNT")
-    if [row.get("case_id") for row in results] != auth["case_ids"][:len(results)]:
-        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESULTS_CASE_ORDER")
-
-    receipts = settlement.get("provider_usage_receipts") if isinstance(settlement, dict) else None
-    if results and (not isinstance(receipts, list) or len(receipts) != 5):
-        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESULTS_RECEIPTS")
+    receipt_state = _derive_terminal_receipt_state(settlement, auth)
+    completed_receipts = receipt_state["completed_receipts"]
+    if len(results) != len(completed_receipts):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESULTS_COMPLETED_RECEIPTS")
+    expected_cases = [auth["case_ids"][index] for index, _receipt in completed_receipts]
+    if [row.get("case_id") for row in results] != expected_cases:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESULTS_COMPLETED_RECEIPTS")
     packet_by_case = {
         row.get("case_id"): row.get("manifest_sha256")
         for row in packet_disclosure.get("packet_set", [])
         if isinstance(row, dict)
     } if isinstance(packet_disclosure, dict) else {}
-    for index, row in enumerate(results):
-        case_id = auth["case_ids"][index]
+    for row, (call_index, completed_receipt) in zip(results, completed_receipts):
+        case_id = auth["case_ids"][call_index]
+        index = call_index + 1
         if lane == "producer":
-            if set(row) != {"case_id", "structural_status", "output", "provider_receipt_sha256"} or row.get("structural_status") != "PASS":
+            if _producer_capture_mode(auth):
+                expected_fields = {
+                    "case_id", "capture_status", "structural_status", "output",
+                    "capture_evidence", "provider_receipt", "provider_receipt_sha256",
+                }
+                if (
+                    set(row) != expected_fields
+                    or row.get("capture_status") != "CAPTURED"
+                    or row.get("structural_status") != "UNVERIFIED"
+                ):
+                    raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRODUCER_RESULT_STATE")
+                capture, _capture_path, _capture_sha = _load_ref(
+                    root,
+                    row.get("capture_evidence"),
+                    f"producer_resume_capture_{index}",
+                )
+                capture_expected = {
+                    "schema": "reviewed-campaign-live-capture-v1",
+                    "status": "CAPTURED",
+                    "candidate_id": auth["candidate_id"],
+                    "source_commit": auth["source_commit"],
+                    "case_id": case_id,
+                    "package_sha256": auth["package_sha256"],
+                    "package_tree_sha256": auth["package_tree_sha256"],
+                    "structural_status": "UNVERIFIED",
+                }
+                if any(capture.get(key) != expected for key, expected in capture_expected.items()):
+                    raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRODUCER_CAPTURE_BINDING")
+                capture_output = capture.get("raw_output")
+                if (
+                    not isinstance(capture_output, dict)
+                    or _existing_ref(
+                        root,
+                        capture_output.get("path"),
+                        f"producer_resume_capture_output_{index}",
+                    ) != capture_output
+                    or not isinstance(row.get("output"), dict)
+                    or capture_output.get("sha256") != row["output"].get("sha256")
+                    or capture_output.get("byte_count") != row["output"].get("byte_count")
+                ):
+                    raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRODUCER_CAPTURE_OUTPUT")
+                custody, _custody_path, custody_sha = _load_ref(
+                    root,
+                    capture.get("execution_custody"),
+                    f"producer_resume_custody_{index}",
+                )
+                custody_expected = {
+                    "schema": "reviewed-campaign-execution-custody-v1",
+                    "lane": "producer",
+                    "candidate_id": auth["candidate_id"],
+                    "source_commit": auth["source_commit"],
+                    "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
+                    "case_id": case_id,
+                    "model": "gpt-5.5",
+                    "reasoning_effort": "high",
+                    "authorization_sha256": payload.get("authorization_sha256"),
+                }
+                if (
+                    any(custody.get(key) != expected for key, expected in custody_expected.items())
+                    or capture.get("execution_custody_sha256") != custody_sha
+                ):
+                    raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRODUCER_CUSTODY_BINDING")
+                receipt, receipt_path, receipt_sha = _load_ref(
+                    root,
+                    row.get("provider_receipt"),
+                    f"producer_resume_receipt_{index}",
+                )
+                expected_receipt_path = (
+                    f"{auth['provider_receipt_root']}/{receipt_sha}.receipt.json"
+                )
+                _rederive_live_provider_facts(
+                    root,
+                    capture,
+                    receipt,
+                    row,
+                    auth,
+                    case_id=case_id,
+                    index=index,
+                )
+                if (
+                    receipt_path.relative_to(Path(os.path.abspath(root))).as_posix()
+                    != expected_receipt_path
+                    or receipt != completed_receipt
+                    or row.get("provider_receipt_sha256") != receipt_sha
+                    or capture.get("completion_identity", {}).get("provider_call_id")
+                    != receipt.get("provider_call_id")
+                ):
+                    raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESULT_RECEIPT")
+            elif set(row) != {"case_id", "structural_status", "output", "provider_receipt_sha256"} or row.get("structural_status") != "PASS":
                 raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRODUCER_RESULT_STATE")
-            _validate_retained_ref(root, row.get("output"), f"producer/results/{case_id}.txt", f"producer_resume_result_{index + 1}")
+            _validate_retained_ref(root, row.get("output"), f"producer/results/{case_id}.txt", f"producer_resume_result_{index}")
         else:
             if set(row) != {"case_id", "review_status", "packet_manifest_sha256", "review_output", "provider_receipt_sha256"} or row.get("review_status") != "PASS":
                 raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_COLD_RESULT_STATE")
             if row.get("packet_manifest_sha256") != packet_by_case.get(case_id):
                 raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_COLD_RESULT_PACKET")
-            _validate_retained_ref(root, row.get("review_output"), f"cold-review/results/{case_id}.txt", f"cold_resume_result_{index + 1}")
-        if row.get("provider_receipt_sha256") != record_sha256(receipts[index]):
+            _validate_retained_ref(root, row.get("review_output"), f"cold-review/results/{case_id}.txt", f"cold_resume_result_{index}")
+        if row.get("provider_receipt_sha256") != record_sha256(completed_receipt):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESULT_RECEIPT")
     return results
 
@@ -887,13 +1350,25 @@ def _validate_failure_resume_payload(
 
     snapshot = head_snapshot(usage_root)
     reservation, settlement = _validate_failure_usage(usage_root, payload, auth, auth_sha, snapshot, lane=lane)
+    receipt_state = _derive_terminal_receipt_state(settlement, auth)
+    if classification != receipt_state["classification"]:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLASSIFICATION_RECEIPTS")
     results = _validate_failure_results(root, payload, auth, settlement, packet_disclosure, lane=lane)
     if classification != "PROVED_NO_DISPATCH" and (reservation is None or settlement is None):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_TERMINAL_USAGE_REQUIRED")
     if classification == "OBSERVED" and (settlement.get("completed") != 5 or settlement.get("unknown") != 0):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_OBSERVED_SETTLEMENT")
-    if classification in {"DISPATCH_UNKNOWN", "OUTCOME_UNKNOWN"} and (settlement.get("unknown") != 5 or snapshot.get("unresolved_usage") is not True):
-        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_UNKNOWN_SETTLEMENT")
+    if classification in {"DISPATCH_UNKNOWN", "OUTCOME_UNKNOWN"}:
+        completed = settlement.get("completed")
+        unknown = settlement.get("unknown")
+        not_dispatched = settlement.get("not_dispatched")
+        if (
+            not all(isinstance(value, int) and not isinstance(value, bool) for value in (completed, unknown, not_dispatched))
+            or unknown < 1
+            or completed + unknown + not_dispatched != 5
+            or snapshot.get("unresolved_usage") is not True
+        ):
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_UNKNOWN_SETTLEMENT")
     if classification == "PROVED_NO_DISPATCH" and settlement is not None and (settlement.get("not_dispatched") != 5 or settlement.get("unknown") != 0):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_NO_DISPATCH_SETTLEMENT")
 
@@ -910,6 +1385,13 @@ def _validate_failure_resume_payload(
             "settlement_sha256": payload.get("settlement_sha256"),
             "results": results,
         }
+        if lane == "producer":
+            expected_completion.update(
+                {
+                    "review_protocol": dict(auth["review_protocol"]),
+                    "review_protocol_sha256": bindings["protocol_sha256"],
+                }
+            )
         if any(completion.get(key) != expected for key, expected in expected_completion.items()):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_COMPLETION_BINDING")
         batch_field = "cycle_id" if lane == "producer" else "review_batch_id"
@@ -1183,9 +1665,252 @@ def _require_fake_capability(adapter: ProviderAdapter) -> dict[str, object]:
     return capability
 
 
-def _load_producer_authorization(root: Path, path: Path) -> tuple[dict[str, Any], str]:
+LIVE_PROVIDER_CAPABILITY_KEYS = {
+    "schema", "adapter_kind", "adapter_version", "host_application_version",
+    "codex_executable_sha256", "model", "reasoning_effort", "test_only",
+    "paid_provider_reachable", "live_execution_authorized",
+}
+
+
+def _probe_producer_capability(adapter: ProviderAdapter) -> dict[str, object]:
+    """Probe before any authorization read/claim; this probe must produce no model output."""
+    try:
+        capability = adapter.capability()
+    except Exception as exc:
+        raise CampaignError("PROVIDER_CAPABILITY_UNAVAILABLE") from exc
+    if not isinstance(capability, dict):
+        raise CampaignError("PROVIDER_CAPABILITY_INVALID")
+    if capability.get("adapter_kind") == "deterministic-fake-no-dispatch":
+        if set(capability) != PROVIDER_CAPABILITY_KEYS:
+            raise CampaignError("PROVIDER_CAPABILITY_INVALID")
+        exact = {
+            "schema": "reviewed-campaign-provider-capability-v1",
+            "adapter_kind": "deterministic-fake-no-dispatch",
+            "adapter_version": "deterministic-fake-v1",
+            "host_application_version": "deterministic-test-host-v1",
+            "test_only": True,
+            "paid_provider_reachable": False,
+            "live_execution_authorized": False,
+        }
+        if capability != exact:
+            raise CampaignError("PROVIDER_CAPABILITY_INVALID")
+        return capability
+    if capability.get("adapter_kind") == "codex-scripted-test-no-provider":
+        if set(capability) != LIVE_PROVIDER_CAPABILITY_KEYS:
+            raise CampaignError("PROVIDER_CAPABILITY_INVALID")
+        exact_scripted = {
+            "schema": "reviewed-campaign-provider-capability-v1",
+            "adapter_kind": "codex-scripted-test-no-provider",
+            "adapter_version": "codex-scripted-test-v1",
+            "model": "gpt-5.5",
+            "reasoning_effort": "high",
+            "test_only": True,
+            "paid_provider_reachable": False,
+            "live_execution_authorized": False,
+        }
+        if any(capability.get(key) != value for key, value in exact_scripted.items()):
+            raise CampaignError("PROVIDER_CAPABILITY_INVALID")
+        if not isinstance(capability.get("host_application_version"), str) or not capability["host_application_version"]:
+            raise CampaignError("PROVIDER_CAPABILITY_INVALID")
+        if not isinstance(capability.get("codex_executable_sha256"), str) or SHA256_RE.fullmatch(capability["codex_executable_sha256"]) is None:
+            raise CampaignError("PROVIDER_CAPABILITY_INVALID")
+        return capability
+    if set(capability) != LIVE_PROVIDER_CAPABILITY_KEYS:
+        if capability.get("paid_provider_reachable") or not capability.get("test_only"):
+            raise CampaignError("LIVE_PROVIDER_UNSUPPORTED")
+        raise CampaignError("PROVIDER_CAPABILITY_INVALID")
+    exact_live = {
+        "schema": "reviewed-campaign-provider-capability-v1",
+        "adapter_kind": "codex-live",
+        "adapter_version": "codex-live-v1",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "test_only": False,
+        "paid_provider_reachable": True,
+        "live_execution_authorized": True,
+    }
+    if any(capability.get(key) != value for key, value in exact_live.items()):
+        raise CampaignError("PROVIDER_CAPABILITY_INVALID")
+    if not isinstance(capability.get("host_application_version"), str) or not capability["host_application_version"]:
+        raise CampaignError("PROVIDER_CAPABILITY_INVALID")
+    if not isinstance(capability.get("codex_executable_sha256"), str) or SHA256_RE.fullmatch(capability["codex_executable_sha256"]) is None:
+        raise CampaignError("PROVIDER_CAPABILITY_INVALID")
+    return capability
+
+
+def _matrix_ref(root: Path, value: object, role: str) -> tuple[dict[str, Any], dict[str, object], bytes]:
+    if not isinstance(value, dict) or set(value) != {"path", "sha256"}:
+        raise CampaignError(f"{role.upper()}_REF_SHAPE")
+    path = _contained(root, value.get("path"), role, must_exist=True)
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != value.get("sha256"):
+        raise CampaignError(f"{role.upper()}_CONTENT_ADDRESS")
+    try:
+        record = json.loads(raw)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise CampaignError(f"{role.upper()}_JSON_INVALID") from exc
+    if not isinstance(record, dict) or raw != canonical_bytes(record):
+        raise CampaignError(f"{role.upper()}_CANONICAL_JSON_REQUIRED")
+    internal = {"path": value["path"], "byte_count": len(raw), "sha256": value["sha256"]}
+    return record, internal, raw
+
+
+def _parse_utc(value: object, role: str) -> datetime:
+    if not isinstance(value, str):
+        raise CampaignError(f"{role.upper()}_INVALID")
+    try:
+        parsed = datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    except ValueError as exc:
+        raise CampaignError(f"{role.upper()}_INVALID") from exc
+    return parsed
+
+
+def _normalize_live_producer_authorization(
+    root: Path,
+    authorization: dict[str, Any],
+    raw: bytes,
+    *,
+    require_active_window: bool = True,
+    allow_test_fixture: bool = False,
+) -> tuple[dict[str, Any], str]:
+    try:
+        from check_smoke_matrix_manifest import validate_manifest
+    except Exception as exc:
+        raise CampaignError("MATRIX_AUTHORIZATION_CHECKER_UNAVAILABLE") from exc
+    findings = validate_manifest(authorization, root=root)
+    if findings:
+        raise CampaignError(f"MATRIX_AUTHORIZATION_INVALID: {findings[0]['failure_class']}")
+    parent, parent_ref, parent_raw = _matrix_ref(root, authorization["campaign_authorization"], "campaign_authorization")
+    parent_keys = {
+        "schema", "kind", "authorization_id", "status", "revoked", "valid_not_before", "valid_not_after",
+        "branch", "source_commit", "source_preflight", "candidate_id", "candidate_state",
+        "candidate_claim_status", "package_profile", "package_sha256", "package_tree_sha256",
+        "input_registry", "review_protocol", "action", "lane", "model_runner", "producer_model",
+        "producer_reasoning_effort", "authorized_calls", "case_inputs", "automatic_retry_authorized",
+        "optional_opus_authorized", "authorization_sha256",
+    }
+    if set(parent) != parent_keys or parent.get("schema") != "reviewed-campaign-owner-authorization-v1" or parent.get("kind") != "reviewed-five-smoke-campaign":
+        raise CampaignError("PARENT_CAMPAIGN_AUTHORIZATION_SHAPE")
+    unsigned_parent = {key: value for key, value in parent.items() if key != "authorization_sha256"}
+    if parent.get("authorization_sha256") != record_sha256(unsigned_parent):
+        raise CampaignError("PARENT_CAMPAIGN_AUTHORIZATION_SELF_HASH")
+    parent_sha = hashlib.sha256(parent_raw).hexdigest()
+    if parent_ref["sha256"] != parent_sha or authorization.get("campaign_authorization_sha256") != parent_sha:
+        raise CampaignError("PARENT_CAMPAIGN_AUTHORIZATION_BINDING")
+    parent_exact = {
+        "status": "ACTIVE", "revoked": False, "branch": authorization["branch"],
+        "source_commit": authorization["source_commit"], "source_preflight": authorization["source_preflight"],
+        "candidate_id": authorization["candidate_id"], "candidate_state": "READY_UNUSED",
+        "candidate_claim_status": "UNCLAIMED", "package_profile": "execution-mini",
+        "package_sha256": authorization["package_sha256"], "package_tree_sha256": authorization["package_tree_sha256"],
+        "input_registry": authorization["input_registry"], "review_protocol": authorization["review_protocol"],
+        "action": "RUN_REVIEWED_FIVE_SMOKE", "lane": "producer", "model_runner": "codex",
+        "producer_model": "gpt-5.5", "producer_reasoning_effort": "high", "authorized_calls": 5,
+        "case_inputs": authorization["case_inputs"], "automatic_retry_authorized": False,
+        "optional_opus_authorized": False,
+    }
+    if any(parent.get(key) != expected for key, expected in parent_exact.items()):
+        raise CampaignError("PARENT_CAMPAIGN_AUTHORIZATION_SCOPE")
+    child_start = _parse_utc(authorization["launch_not_before"], "launch_not_before")
+    child_end = _parse_utc(authorization["launch_not_after"], "launch_not_after")
+    parent_start = _parse_utc(parent["valid_not_before"], "parent_valid_not_before")
+    parent_end = _parse_utc(parent["valid_not_after"], "parent_valid_not_after")
+    if not parent_start <= child_start < child_end <= parent_end:
+        raise CampaignError("LIVE_AUTHORIZATION_WINDOW")
+    if require_active_window:
+        now = datetime.now(timezone.utc)
+        if not child_start <= now <= child_end:
+            raise CampaignError("LIVE_AUTHORIZATION_WINDOW")
+    refs: dict[str, dict[str, object]] = {}
+    for internal_name, field in (
+        ("candidate_readiness", "candidate_readiness"),
+        ("candidate_maturity", "candidate_maturity"),
+        ("package_record", "candidate_record"),
+        ("source_commit_receipt", "source_commit_receipt"),
+        ("source_preflight", "source_preflight"),
+        ("execution_tooling_manifest", "execution_tooling_manifest"),
+        ("registry", "input_registry"), ("review_protocol", "review_protocol"),
+    ):
+        _record, refs[internal_name], _raw = _matrix_ref(root, authorization[field], field)
+    normalized: dict[str, Any] = {
+        "schema": "reviewed-campaign-cohort-authorization-v1",
+        "kind": "producer-cohort",
+        "authorization_id": authorization["authorization_id"],
+        "one_use": True,
+        "execution_mode": "LIVE_CODEX",
+        "test_only": False,
+        "live_execution_authorized": True,
+        "campaign_authorization_sha256": parent_sha,
+        "campaign_authorization": parent_ref,
+        "candidate_id": authorization["candidate_id"],
+        "candidate_state_at_authorization": authorization["candidate_state_at_authorization"],
+        "candidate_claim_status_at_authorization": authorization["candidate_claim_status_at_authorization"],
+        "cycle_or_review_batch_id": authorization["cycle_id"],
+        "source_commit": authorization["source_commit"],
+        "package_sha256": authorization["package_sha256"],
+        "package_tree_sha256": authorization["package_tree_sha256"],
+        "tree_digest_algorithm": authorization["tree_digest_algorithm"],
+        **refs,
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "adapter_version": authorization["adapter_version"],
+        "host_application_version": authorization["host_application_version"],
+        "codex_executable_sha256": authorization["codex_executable_sha256"],
+        "provider_settings": authorization["provider_settings"],
+        "cohort_size": 5,
+        "cohort_protocol": "barrier-five-submit-before-await-v1",
+        "case_ids": authorization["case_ids"],
+        "case_inputs": authorization["case_inputs"],
+        "candidate_package_root": authorization["candidate_package_root"],
+        "isolated_root_prefix": authorization["isolated_root_prefix"],
+        "usage_ledger_root": authorization["usage_ledger_root"],
+        "authorization_claim_path": authorization["authorization_claim_path"],
+        "candidate_claim_path": authorization["candidate_claim_path"],
+        "observation_finalizer_path": authorization["observation_finalizer_path"],
+        "prompt_retention_root": authorization["prompt_retention_root"],
+        "output_retention_root": authorization["output_retention_root"],
+        "provider_receipt_root": authorization["provider_receipt_root"],
+        "structural_evidence_root": authorization["structural_evidence_root"],
+        "expected_campaign_usage_sequence": authorization["expected_campaign_usage_sequence"],
+        "expected_campaign_usage_head_sha256": authorization["expected_campaign_usage_head_sha256"],
+        "authorization_window": {
+            "launch_not_before": authorization["launch_not_before"],
+            "launch_not_after": authorization["launch_not_after"],
+            "parent_valid_not_before": parent["valid_not_before"],
+            "parent_valid_not_after": parent["valid_not_after"],
+        },
+        "retry_lineage": {"attempt_index": 1, "continuation_authorization": None},
+        "matrix_authorization_sha256": authorization["authorization_sha256"],
+    }
+    if allow_test_fixture:
+        normalized.update(
+            {
+                "execution_mode": SCRIPTED_CODEX_TEST_MODE,
+                "test_only": True,
+                "live_execution_authorized": False,
+                "adapter_version": "codex-scripted-test-v1",
+            }
+        )
+    return normalized, hashlib.sha256(raw).hexdigest()
+
+
+def _load_producer_authorization(
+    root: Path,
+    path: Path,
+    *,
+    require_active_window: bool = True,
+    allow_test_fixture: bool = False,
+) -> tuple[dict[str, Any], str]:
     relative = _relative_to_root(root, path, "producer_authorization")
     authorization, raw = _load_canonical_json(_contained(root, relative, "producer_authorization", must_exist=True), "producer_authorization")
+    if authorization.get("schema") == "daee-smoke-matrix-v1" and authorization.get("kind") == "matrix-authorization":
+        return _normalize_live_producer_authorization(
+            root,
+            authorization,
+            raw,
+            require_active_window=require_active_window,
+            allow_test_fixture=allow_test_fixture,
+        )
     if set(authorization) != PRODUCER_AUTH_KEYS:
         raise CampaignError("PRODUCER_AUTHORIZATION_SHAPE")
     exact = {
@@ -1214,6 +1939,23 @@ def _load_producer_authorization(root: Path, path: Path) -> tuple[dict[str, Any]
     if not isinstance(authorization.get("source_commit"), str) or GIT_OID_RE.fullmatch(authorization["source_commit"]) is None:
         raise CampaignError("PRODUCER_AUTHORIZATION_SOURCE_COMMIT")
     return authorization, hashlib.sha256(raw).hexdigest()
+
+
+def _recheck_live_authorization(
+    root: Path,
+    path: Path,
+    expected: dict[str, Any],
+    expected_sha256: str,
+    *,
+    allow_test_fixture: bool = False,
+) -> None:
+    observed, observed_sha256 = _load_producer_authorization(
+        root,
+        path,
+        allow_test_fixture=allow_test_fixture,
+    )
+    if observed_sha256 != expected_sha256 or observed != expected:
+        raise CampaignError("LIVE_AUTHORIZATION_RECHECK_DRIFT")
 
 
 def retry_continuation_authorization_id(value: dict[str, Any]) -> str:
@@ -1352,6 +2094,15 @@ def extract_mature_candidate_identity(candidate: object) -> dict[str, Any]:
     for role, ref in refs.items():
         if not isinstance(ref, dict) or set(ref) != {"path", "byte_count", "sha256"}:
             raise CampaignError(f"CANDIDATE_MATURITY_{role.upper()}_REF")
+    optional_refs = {
+        "candidate_readiness": identity.get("candidate_readiness"),
+        "source_commit_receipt": candidate.get("ci_receipt"),
+    }
+    for role, ref in optional_refs.items():
+        if ref is not None:
+            if not isinstance(ref, dict) or set(ref) != {"path", "byte_count", "sha256"}:
+                raise CampaignError(f"CANDIDATE_MATURITY_{role.upper()}_REF")
+            refs[role] = ref
     package_tree_sha256 = identity.get("package_tree_sha256")
     if not isinstance(package_tree_sha256, str) or SHA256_RE.fullmatch(package_tree_sha256) is None:
         raise CampaignError("CANDIDATE_MATURITY_PACKAGE_TREE")
@@ -1364,11 +2115,38 @@ def extract_mature_candidate_identity(candidate: object) -> dict[str, Any]:
 
 
 def _validate_common_bindings(root: Path, auth: dict[str, Any], *, allow_test_fixture: bool) -> dict[str, Any]:
+    if allow_test_fixture and _production_live_mode(auth):
+        raise CampaignError("TEST_FIXTURE_LIVE_AUTHORITY_FORBIDDEN")
+    readiness_ref = auth.get("candidate_readiness", auth["candidate_maturity"])
+    source_receipt_ref = auth.get("source_commit_receipt", auth["source_preflight"])
+    readiness, _readiness_path, readiness_sha = _load_ref(root, readiness_ref, "candidate_readiness")
     candidate, _candidate_path, candidate_sha = _load_ref(root, auth["candidate_maturity"], "candidate_maturity")
     package, _package_path, package_sha = _load_ref(root, auth["package_record"], "package_record")
+    source_receipt, _source_receipt_path, source_receipt_sha = _load_ref(root, source_receipt_ref, "source_commit_receipt")
     preflight, _preflight_path, preflight_sha = _load_ref(root, auth["source_preflight"], "source_preflight")
     registry, _registry_path, registry_sha = _load_ref(root, auth["registry"], "registry")
     protocol, _protocol_path, protocol_sha = _load_ref(root, auth["review_protocol"], "review_protocol")
+    execution_tooling: dict[str, Any] | None = None
+    if _producer_capture_mode(auth):
+        try:
+            if allow_test_fixture:
+                execution_tooling, _tooling_path, _tooling_sha = _load_ref(
+                    root,
+                    auth.get("execution_tooling_manifest"),
+                    "execution_tooling_manifest",
+                )
+                execution_tooling = tooling_manifest.validate_execution_tooling_manifest_identity(
+                    manifest=execution_tooling,
+                    expected_source_commit=auth["source_commit"],
+                )
+            else:
+                execution_tooling = tooling_manifest.load_and_verify_execution_tooling_manifest(
+                    root=root,
+                    manifest_ref=auth.get("execution_tooling_manifest"),
+                    expected_source_commit=auth["source_commit"],
+                )
+        except tooling_manifest.ExecutionToolingManifestError as exc:
+            raise CampaignError(f"EXECUTION_TOOLING_MANIFEST_INVALID: {exc}") from exc
     if not allow_test_fixture:
         try:
             from check_no_model_candidate_maturity import validate_candidate_maturity
@@ -1380,8 +2158,8 @@ def _validate_common_bindings(root: Path, auth: dict[str, Any], *, allow_test_fi
         mature = extract_mature_candidate_identity(candidate)
         if mature["candidate_id"] != auth["candidate_id"] or mature["source_commit"] != auth["source_commit"]:
             raise CampaignError("CANDIDATE_AUTHORIZATION_BINDING")
-        for role in ("package_record", "source_preflight", "registry", "review_protocol"):
-            if auth[role] != mature[role]:
+        for role in ("candidate_readiness", "package_record", "source_commit_receipt", "source_preflight", "registry", "review_protocol"):
+            if role not in mature or auth[role] != mature[role]:
                 raise CampaignError(f"CANDIDATE_{role.upper()}_BINDING")
         if preflight.get("schema") != "daee-no-model-candidate-maturity-v1" or preflight.get("kind") != "source-preflight" or preflight.get("status") != "NO_MODEL_SOURCE_PREFLIGHT_GREEN":
             raise CampaignError("SOURCE_PREFLIGHT_INVALID")
@@ -1409,6 +2187,47 @@ def _validate_common_bindings(root: Path, auth: dict[str, Any], *, allow_test_fi
     case_ids = auth.get("case_ids")
     if not isinstance(case_ids, list) or len(case_ids) != 5 or len(set(case_ids)) != 5 or case_ids != protocol.get("case_ids"):
         raise CampaignError("CANONICAL_CASE_SET_BINDING")
+    if _producer_capture_mode(auth):
+        readiness_state = readiness.get("candidate_state") if allow_test_fixture else readiness.get("status")
+        readiness_claim = readiness.get("claim_status")
+        if (
+            readiness.get("candidate_id") != auth["candidate_id"]
+            or readiness_state != "READY_UNUSED"
+            or auth.get("candidate_state_at_authorization") != "READY_UNUSED"
+            or auth.get("candidate_claim_status_at_authorization") != "UNCLAIMED"
+        ):
+            raise CampaignError("CANDIDATE_READINESS_AUTHORIZATION_BINDING")
+        if allow_test_fixture:
+            if readiness_claim != "UNCLAIMED":
+                raise CampaignError("CANDIDATE_READINESS_AUTHORIZATION_BINDING")
+        elif candidate.get("candidate", {}).get("claim_status") != "UNCLAIMED":
+            raise CampaignError("CANDIDATE_READINESS_AUTHORIZATION_BINDING")
+        receipt_commit = source_receipt.get("source_commit")
+        if receipt_commit is None and isinstance(source_receipt.get("source"), dict):
+            receipt_commit = source_receipt["source"].get("commit_sha")
+        if receipt_commit != auth["source_commit"]:
+            raise CampaignError("SOURCE_COMMIT_RECEIPT_AUTHORIZATION_BINDING")
+        package_archive_sha = package.get("package_sha256")
+        if package_archive_sha is None and isinstance(package.get("archive"), dict):
+            package_archive_sha = package["archive"].get("sha256")
+        package_tree_sha = package.get("package_tree_sha256", package.get("extracted_tree_sha256"))
+        if (
+            package_archive_sha != auth.get("package_sha256")
+            or package_tree_sha != auth.get("package_tree_sha256")
+            or readiness.get("package_sha256", readiness.get("archive_sha256")) != auth.get("package_sha256")
+            or readiness.get("package_tree_sha256", readiness.get("extracted_tree_sha256")) != auth.get("package_tree_sha256")
+        ):
+            raise CampaignError("PACKAGE_AUTHORIZATION_BINDING")
+        cases = registry.get("cases")
+        exact_case_inputs = (
+            [{"case_id": row.get("case_id"), "input_sha256": row.get("raw_sha256")} for row in cases]
+            if isinstance(cases, list) else None
+        )
+        if auth.get("case_inputs") != exact_case_inputs or [row["case_id"] for row in auth["case_inputs"]] != case_ids:
+            raise CampaignError("CANONICAL_CASE_INPUT_BINDING")
+        expected_package_root = f"{package.get('candidate_root')}/{package.get('extracted_root')}"
+        if auth.get("candidate_package_root") != expected_package_root:
+            raise CampaignError("CANDIDATE_PACKAGE_ROOT_BINDING")
     producer = protocol.get("producer")
     if not isinstance(producer, dict) or producer.get("cohort_size") != 5 or producer.get("model") != "gpt-5.5" or producer.get("reasoning_effort") != "high" or producer.get("protocol") != "barrier-five-submit-before-await-v1" or producer.get("paid_execution_authorized") is not False:
         raise CampaignError("REVIEW_PROTOCOL_PRODUCER_CONTRACT")
@@ -1432,16 +2251,118 @@ def _validate_common_bindings(root: Path, auth: dict[str, Any], *, allow_test_fi
     return {
         "candidate": candidate,
         "candidate_sha256": candidate_sha,
+        "readiness": readiness,
+        "readiness_sha256": readiness_sha,
         "package": package,
         "package_sha256": package_sha,
+        "source_receipt": source_receipt,
+        "source_receipt_sha256": source_receipt_sha,
         "preflight": preflight,
         "preflight_sha256": preflight_sha,
         "registry": registry,
         "registry_sha256": registry_sha,
         "protocol": protocol,
         "protocol_sha256": protocol_sha,
+        "execution_tooling_manifest": execution_tooling,
         "retry": retry,
     }
+
+
+def _recheck_execution_tooling_binding(
+    root: Path,
+    auth: dict[str, Any],
+    *,
+    allow_test_fixture: bool,
+) -> None:
+    try:
+        if allow_test_fixture:
+            value, _path, _sha = _load_ref(
+                root,
+                auth.get("execution_tooling_manifest"),
+                "execution_tooling_manifest",
+            )
+            tooling_manifest.validate_execution_tooling_manifest_identity(
+                manifest=value,
+                expected_source_commit=auth["source_commit"],
+            )
+        else:
+            tooling_manifest.load_and_verify_execution_tooling_manifest(
+                root=root,
+                manifest_ref=auth.get("execution_tooling_manifest"),
+                expected_source_commit=auth["source_commit"],
+            )
+    except tooling_manifest.ExecutionToolingManifestError as exc:
+        raise CampaignError(f"EXECUTION_TOOLING_MANIFEST_DRIFT: {exc}") from exc
+
+
+def _producer_output_contracts(
+    auth: dict[str, Any],
+    authorization_sha256: str,
+    bindings: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    """Derive the exact pre-dispatch one-call envelope contracts."""
+
+    package = bindings["package"]
+    registry = bindings["registry"]
+    skill = package.get("skill_root")
+    build_manifest = package.get("build_manifest")
+    cases = registry.get("cases")
+    if (
+        not isinstance(skill, dict)
+        or SHA256_RE.fullmatch(str(skill.get("sha256", ""))) is None
+        or not isinstance(build_manifest, dict)
+        or SHA256_RE.fullmatch(str(build_manifest.get("sha256", ""))) is None
+        or not isinstance(cases, list)
+    ):
+        raise CampaignError("PRODUCER_OUTPUT_CONTRACT_PACKAGE_BINDING")
+    candidate_binding = {
+        "candidate_id": auth["candidate_id"],
+        "source_commit": auth["source_commit"],
+        "candidate_record_sha256": bindings["package_sha256"],
+        "candidate_maturity_sha256": bindings["candidate_sha256"],
+        "archive_sha256": auth["package_sha256"],
+        "package_tree_sha256": auth["package_tree_sha256"],
+        "skill_sha256": skill["sha256"],
+        "build_manifest_sha256": build_manifest["sha256"],
+    }
+    contracts: dict[str, dict[str, Any]] = {}
+    for row in cases:
+        if not isinstance(row, dict):
+            raise CampaignError("PRODUCER_OUTPUT_CONTRACT_CASE_BINDING")
+        case_id = row.get("case_id")
+        raw_sha256 = row.get("raw_sha256")
+        raw_bytes = row.get("raw_bytes")
+        if (
+            not isinstance(case_id, str)
+            or not case_id
+            or SHA256_RE.fullmatch(str(raw_sha256)) is None
+            or not isinstance(raw_bytes, int)
+            or isinstance(raw_bytes, bool)
+            or raw_bytes < 1
+        ):
+            raise CampaignError("PRODUCER_OUTPUT_CONTRACT_CASE_BINDING")
+        nonce_seed = canonical_bytes(
+            {
+                "schema": "daee-single-call-envelope-nonce-seed-v1",
+                "authorization_sha256": authorization_sha256,
+                "candidate_id": auth["candidate_id"],
+                "cycle_id": auth["cycle_or_review_batch_id"],
+                "case_id": case_id,
+            }
+        )
+        contracts[case_id] = {
+            "schema": "daee-single-call-output-envelope-contract-v1",
+            "envelope_nonce": hashlib.sha256(nonce_seed).hexdigest()[:32],
+            "case_id": case_id,
+            "cycle_id": auth["cycle_or_review_batch_id"],
+            "candidate_binding": dict(candidate_binding),
+            "input_binding": {"sha256": raw_sha256, "byte_count": raw_bytes},
+            "transport": "daee-single-call-stage-envelope-v1",
+            "stage08_owner": "private-source-bound-checker",
+        }
+    if list(contracts) != auth["case_ids"]:
+        raise CampaignError("PRODUCER_OUTPUT_CONTRACT_CASE_ORDER")
+    return contracts
 
 
 def _worker_inventory(auth: dict[str, Any], lane: str) -> list[dict[str, str]]:
@@ -1464,6 +2385,8 @@ def _execution_custody(
     *,
     lane: str,
     packet: dict[str, Any] | None,
+    producer_output_contract: dict[str, Any] | None = None,
+    producer_capture_bindings: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     packet_custody = None
     if lane == "cold-review":
@@ -1499,18 +2422,38 @@ def _execution_custody(
     }
     if lane == "producer" and packet_custody is not None:
         raise CampaignError("EXECUTION_CUSTODY_PRODUCER_PACKET_FORBIDDEN")
+    if lane == "producer" and _producer_capture_mode(auth):
+        if not isinstance(producer_output_contract, dict) or not isinstance(producer_capture_bindings, dict):
+            raise CampaignError("EXECUTION_CUSTODY_PRODUCER_CAPTURE_BINDING_REQUIRED")
+        envelope["single_call_output_contract"] = producer_output_contract
+        envelope["capture_bindings"] = producer_capture_bindings
+        envelope["execution_tooling_manifest"] = copy.deepcopy(auth["execution_tooling_manifest"])
+    elif producer_output_contract is not None or producer_capture_bindings is not None:
+        raise CampaignError("EXECUTION_CUSTODY_PRODUCER_CAPTURE_BINDING_FORBIDDEN")
     return envelope
 
 
-def _submit_with_custody(adapter: ProviderAdapter, envelope: dict[str, Any]) -> str:
+def _validate_submit_acknowledgment(
+    envelope: dict[str, Any],
+    acknowledgment: object,
+    *,
+    live: bool,
+) -> str:
     expected_sha = record_sha256(envelope)
-    acknowledgment = adapter.submit(envelope)
-    required = {"handle_id", "execution_custody_sha256", "accepted", "in_flight"}
+    required = (
+        {"handle_id", "execution_custody_sha256", "accepted", "in_flight", "acknowledgment_origin", "started_at", "host_invocation_id"}
+        if live else {"handle_id", "execution_custody_sha256", "accepted", "in_flight"}
+    )
     if not isinstance(acknowledgment, dict) or set(acknowledgment) != required:
         raise CampaignError("EXECUTION_CUSTODY_SUBMIT_ACK_SHAPE")
     if acknowledgment.get("execution_custody_sha256") != expected_sha:
         raise CampaignError("EXECUTION_CUSTODY_SUBMIT_ACK_BINDING")
-    if acknowledgment.get("accepted") is not True or acknowledgment.get("in_flight") is not True:
+    if live:
+        if acknowledgment.get("accepted") is not None or acknowledgment.get("in_flight") is not True or acknowledgment.get("acknowledgment_origin") != "ADAPTER_IN_FLIGHT":
+            raise CampaignError("EXECUTION_CUSTODY_SUBMIT_ACK_STATE")
+        if not isinstance(acknowledgment.get("started_at"), str) or not isinstance(acknowledgment.get("host_invocation_id"), str):
+            raise CampaignError("EXECUTION_CUSTODY_SUBMIT_ACK_STATE")
+    elif acknowledgment.get("accepted") is not True or acknowledgment.get("in_flight") is not True:
         raise CampaignError("EXECUTION_CUSTODY_SUBMIT_ACK_STATE")
     handle = acknowledgment.get("handle_id")
     if not isinstance(handle, str) or not handle:
@@ -1518,12 +2461,41 @@ def _submit_with_custody(adapter: ProviderAdapter, envelope: dict[str, Any]) -> 
     return handle
 
 
-def _provider_receipt(reservation: dict[str, Any], index: int, result: dict[str, object], execution_custody_sha256: str) -> dict[str, object]:
+def _submit_with_custody(adapter: ProviderAdapter, envelope: dict[str, Any], *, live: bool = False) -> str:
+    return _validate_submit_acknowledgment(envelope, adapter.submit(envelope), live=live)
+
+
+def _submit_tail_with_custody(
+    adapter: ProviderAdapter,
+    envelopes: list[dict[str, Any]],
+) -> list[str]:
+    if len(envelopes) != 4:
+        raise CampaignError("EXACT_FOUR_CASE_PRODUCER_TAIL_REQUIRED")
+    submit_tail = getattr(adapter, "submit_tail", None)
+    if not callable(submit_tail):
+        raise CampaignError("STRUCTURED_IN_FLIGHT_TAIL_SUBMISSION_UNAVAILABLE")
+    acknowledgments = submit_tail(envelopes)
+    if not isinstance(acknowledgments, list) or len(acknowledgments) != 4:
+        raise CampaignError("EXECUTION_CUSTODY_TAIL_ACK_SHAPE")
+    return [
+        _validate_submit_acknowledgment(envelope, acknowledgment, live=True)
+        for envelope, acknowledgment in zip(envelopes, acknowledgments)
+    ]
+
+
+def _provider_receipt(reservation: dict[str, Any], index: int, result: dict[str, object], execution_custody_sha256: str, *, live: bool = False) -> dict[str, object]:
     contract = reservation["call_contract"][index - 1]
-    required_result = {"content_utf8", "structural_status", "provider_call_id", "execution_custody_sha256", "usage", "cost"}
+    required_result = (
+        {"content_utf8", "capture_status", "capture_evidence", "provider_call_id", "execution_custody_sha256", "execution_custody", "usage", "cost", "started_at", "ended_at", "host_invocation_id", "accepted", "in_flight", "acknowledgment_origin", "raw_event_log", "raw_output", "stderr", "prompt", "credential_residue_scan"}
+        if live else {"content_utf8", "structural_status", "provider_call_id", "execution_custody_sha256", "usage", "cost"}
+    )
     if not isinstance(result, dict) or "execution_custody_sha256" not in result:
         raise CampaignError("EXECUTION_CUSTODY_OBSERVE_SHAPE")
-    if set(result) != required_result or result.get("structural_status") != "PASS" or not isinstance(result.get("content_utf8"), str):
+    if set(result) != required_result or not isinstance(result.get("content_utf8"), str):
+        raise CampaignError("PRODUCER_STRUCTURAL_RESULT_INVALID")
+    if live and result.get("capture_status") != "CAPTURED":
+        raise CampaignError("PRODUCER_CAPTURE_RESULT_INVALID")
+    if not live and result.get("structural_status") != "PASS":
         raise CampaignError("PRODUCER_STRUCTURAL_RESULT_INVALID")
     if result.get("execution_custody_sha256") != execution_custody_sha256:
         raise CampaignError("EXECUTION_CUSTODY_OBSERVE_BINDING")
@@ -1534,14 +2506,14 @@ def _provider_receipt(reservation: dict[str, Any], index: int, result: dict[str,
         "call_id": f"{reservation['cycle_or_review_batch_id']}:call-{index:02d}",
         **contract,
         "cycle_or_review_batch_id": reservation["cycle_or_review_batch_id"],
-        "started_at": "2026-07-12T00:00:00Z",
-        "ended_at": "2026-07-12T00:00:01Z",
-        "host_invocation_id": f"task6-{reservation['cycle_or_review_batch_id']}-{index:02d}",
-        "accepted": True,
-        "in_flight": True,
+        "started_at": result["started_at"] if live else "2026-07-12T00:00:00Z",
+        "ended_at": result["ended_at"] if live else "2026-07-12T00:00:01Z",
+        "host_invocation_id": result["host_invocation_id"] if live else f"task6-{reservation['cycle_or_review_batch_id']}-{index:02d}",
+        "accepted": result["accepted"] if live else True,
+        "in_flight": result["in_flight"] if live else True,
         "status": "COMPLETED",
         "unknown_kind": None,
-        "acknowledgment_origin": "BOTH",
+        "acknowledgment_origin": result["acknowledgment_origin"] if live else "BOTH",
         "terminal_transport_status": "COMPLETED",
         "provider_call_id": provider_id,
         "usage": result["usage"],
@@ -1600,6 +2572,85 @@ def _unknown_receipts(reservation: dict[str, Any], *, positive_dispatch_evidence
     return rows
 
 
+LIVE_COST_UNAVAILABLE = {
+    "unit": "usd",
+    "value": "unknown",
+    "status": "UNAVAILABLE",
+    "reason": "provider-cost-not-present-in-retained-jsonl",
+    "source": "codex-cli-jsonl-v1",
+}
+
+
+def _live_partial_receipts(
+    reservation: dict[str, Any],
+    attempt_states: object,
+    completed_receipts: list[dict[str, object]],
+) -> list[dict[str, object]]:
+    if not isinstance(attempt_states, list) or len(attempt_states) != 5:
+        raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
+    completed_by_id = {row.get("call_id"): row for row in completed_receipts if isinstance(row, dict)}
+    rows: list[dict[str, object]] = []
+    observed_cases: list[str] = []
+    for index, (contract, state_row) in enumerate(zip(reservation["call_contract"], attempt_states), 1):
+        if not isinstance(state_row, dict) or set(state_row) != {"case_id", "state", "started_at", "ended_at", "host_invocation_id", "result"}:
+            raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
+        case_id = state_row.get("case_id")
+        if not isinstance(case_id, str) or not case_id:
+            raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
+        observed_cases.append(case_id)
+        call_id = f"{reservation['cycle_or_review_batch_id']}:call-{index:02d}"
+        completed = completed_by_id.get(call_id)
+        if state_row.get("state") == "COMPLETED" and completed is not None:
+            rows.append(completed)
+            continue
+        common = {
+            "call_id": call_id,
+            **contract,
+            "cycle_or_review_batch_id": reservation["cycle_or_review_batch_id"],
+        }
+        if state_row.get("state") == "NOT_SUBMITTED":
+            rows.append(
+                {
+                    **common, "started_at": None, "ended_at": None, "host_invocation_id": None,
+                    "accepted": False, "in_flight": False, "status": "NOT_DISPATCHED",
+                    "unknown_kind": None, "acknowledgment_origin": "NONE",
+                    "terminal_transport_status": "NOT_STARTED", "provider_call_id": None,
+                    "usage": {"status": "UNAVAILABLE"}, "cost": {"unit": "usd", "value": "0"},
+                }
+            )
+        elif state_row.get("state") in {"DISPATCH_UNKNOWN", "SUBMITTING", "PENDING_STRUCTURED_ADMISSION"}:
+            rows.append(
+                {
+                    **common, "started_at": None, "ended_at": None, "host_invocation_id": None,
+                    "accepted": None, "in_flight": None, "status": "UNKNOWN",
+                    "unknown_kind": "DISPATCH_UNKNOWN", "acknowledgment_origin": "NONE",
+                    "terminal_transport_status": "UNKNOWN", "provider_call_id": None,
+                    "usage": {"status": "UNAVAILABLE"}, "cost": dict(LIVE_COST_UNAVAILABLE),
+                }
+            )
+        elif state_row.get("state") == "OUTCOME_UNKNOWN":
+            started_at = state_row.get("started_at")
+            ended_at = state_row.get("ended_at")
+            host_invocation_id = state_row.get("host_invocation_id")
+            if not all(isinstance(value, str) and value for value in (started_at, ended_at, host_invocation_id)):
+                raise CampaignError("LIVE_OUTCOME_UNKNOWN_LACKS_POSITIVE_DISPATCH_EVIDENCE")
+            rows.append(
+                {
+                    **common, "started_at": started_at, "ended_at": ended_at,
+                    "host_invocation_id": host_invocation_id, "accepted": None,
+                    "in_flight": False, "status": "UNKNOWN", "unknown_kind": "OUTCOME_UNKNOWN",
+                    "acknowledgment_origin": "ADAPTER_IN_FLIGHT", "terminal_transport_status": "UNKNOWN",
+                    "provider_call_id": None, "usage": {"status": "UNAVAILABLE"},
+                    "cost": dict(LIVE_COST_UNAVAILABLE),
+                }
+            )
+        else:
+            raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
+    if len(set(observed_cases)) != 5:
+        raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
+    return rows
+
+
 def _finalize_provider_failure(
     root: Path,
     usage_root: Path,
@@ -1609,25 +2660,38 @@ def _finalize_provider_failure(
     *,
     handles: list[str],
     lane: str,
-    error: Exception,
+    error: BaseException,
     attempt_index: int,
     claims: dict[str, Any],
     packet_disclosure: dict[str, object] | None,
     failure_phase: str = "provider-execution",
     observed_results: list[dict[str, object]] | None = None,
+    completed_receipts: list[dict[str, object]] | None = None,
+    live_attempt_states: object = None,
 ) -> None:
-    positive = len(handles) == 5
-    receipts = _unknown_receipts(reservation, positive_dispatch_evidence=positive, handles=handles)
+    live = _producer_capture_mode(auth)
+    if live:
+        receipts = _live_partial_receipts(reservation, live_attempt_states, completed_receipts or [])
+        completed = sum(row["status"] == "COMPLETED" for row in receipts)
+        unknown = sum(row["status"] == "UNKNOWN" for row in receipts)
+        not_dispatched = sum(row["status"] == "NOT_DISPATCHED" for row in receipts)
+        positive = any(row["unknown_kind"] == "OUTCOME_UNKNOWN" for row in receipts)
+        measured_cost = dict(LIVE_COST_UNAVAILABLE) if completed or unknown else {"unit": "usd", "value": "0"}
+    else:
+        positive = len(handles) == 5
+        receipts = _unknown_receipts(reservation, positive_dispatch_evidence=positive, handles=handles)
+        completed, unknown, not_dispatched = 0, 5, 0
+        measured_cost = {"unit": "usd", "value": "unknown"}
     terminal = settle(
         usage_root,
         reservation["transaction_sha256"],
-        completed=0,
+        completed=completed,
         failed=0,
         cancelled=0,
-        not_dispatched=0,
-        unknown=5,
+        not_dispatched=not_dispatched,
+        unknown=unknown,
         provider_usage_receipts=receipts,
-        measured_cost={"unit": "usd", "value": "unknown"},
+        measured_cost=measured_cost,
         candidate_id=auth["candidate_id"],
         authorization_sha256=auth_sha,
     )
@@ -1749,12 +2813,53 @@ def run_producer_cohort(
     allow_test_fixture: bool = False,
     fault_at: str | None = None,
 ) -> dict[str, Any]:
-    """Run one fake-only producer cohort after every exact preflight gate."""
+    """Run one exact producer cohort; live mode stops at immutable raw capture."""
     root = Path(os.path.abspath(custody_root))
-    _require_fake_capability(adapter)  # Must precede authorization reads/claims.
+    capability = _probe_producer_capability(adapter)  # Must precede authorization reads/claims.
+    if allow_test_fixture and (
+        capability.get("adapter_kind") == "codex-live"
+        or capability.get("paid_provider_reachable") is not False
+        or capability.get("test_only") is not True
+        or capability.get("live_execution_authorized") is not False
+    ):
+        raise CampaignError("TEST_FIXTURE_PAID_PROVIDER_FORBIDDEN")
     _validate_fault_injection(fault_at, allow_test_fixture)
-    auth, auth_sha = _load_producer_authorization(root, authorization_path)
+    auth, auth_sha = _load_producer_authorization(
+        root,
+        authorization_path,
+        allow_test_fixture=allow_test_fixture,
+    )
+    live = _producer_capture_mode(auth)
+    if live:
+        expected_adapter_kind = (
+            "codex-live"
+            if _production_live_mode(auth)
+            else "codex-scripted-test-no-provider"
+        )
+        if capability.get("adapter_kind") != expected_adapter_kind:
+            raise CampaignError("LIVE_PROVIDER_CAPABILITY_REQUIRED")
+        if (
+            capability.get("adapter_version") != auth.get("adapter_version")
+            or capability.get("host_application_version") != auth.get("host_application_version")
+            or capability.get("codex_executable_sha256") != auth.get("codex_executable_sha256")
+        ):
+            raise CampaignError("LIVE_PROVIDER_IDENTITY_MISMATCH")
+        configured_timeout = getattr(adapter, "configured_command_timeout_seconds", None)
+        try:
+            actual_timeout = configured_timeout() if callable(configured_timeout) else None
+        except Exception as exc:
+            raise CampaignError("LIVE_PROVIDER_COMMAND_TIMEOUT_UNAVAILABLE") from exc
+        authorized_timeout = auth.get("provider_settings", {}).get("command_timeout_seconds")
+        if actual_timeout != authorized_timeout:
+            raise CampaignError("LIVE_PROVIDER_COMMAND_TIMEOUT_MISMATCH")
+    elif capability.get("adapter_kind") != "deterministic-fake-no-dispatch":
+        raise CampaignError("LIVE_PROVIDER_UNSUPPORTED: fake authorization cannot reach a live adapter")
     bindings = _validate_common_bindings(root, auth, allow_test_fixture=allow_test_fixture)
+    producer_output_contracts: dict[str, dict[str, Any]] = {}
+    producer_capture_bindings: dict[str, dict[str, Any]] = {}
+    if live:
+        producer_output_contracts = _producer_output_contracts(auth, auth_sha, bindings)
+        bindings["producer_output_contracts"] = producer_output_contracts
     _contained(
         root,
         auth.get("isolated_root_prefix"),
@@ -1768,8 +2873,8 @@ def run_producer_cohort(
         "authorization_sha256": auth_sha,
         "candidate_id": auth["candidate_id"],
         "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
-        "execution_mode": TEST_EXECUTION_MODE,
-        "live_dispatch": False,
+        "execution_mode": auth["execution_mode"],
+        "live_dispatch": _production_live_mode(auth),
     }
     usage_root = _contained(root, auth["usage_ledger_root"], "usage_ledger_root", must_exist=False)
     _preflight_terminal_publications(
@@ -1781,6 +2886,43 @@ def run_producer_cohort(
         lane="producer",
         attempt_index=attempt_index,
     )
+    if live:
+        expected_sequence = auth["expected_campaign_usage_sequence"]
+        expected_head = auth["expected_campaign_usage_head_sha256"]
+        snapshot = head_snapshot(usage_root)
+        if snapshot["sequence"] != expected_sequence or snapshot["head_sha256"] != expected_head:
+            raise CampaignError("EXPECTED_CAMPAIGN_USAGE_HEAD_DRIFT")
+    if live and auth.get("observation_finalizer_path") != _attempt_finalizer_path("producer", attempt_index):
+        raise CampaignError("LIVE_OBSERVATION_FINALIZER_LOCATOR_BINDING")
+    if live:
+        prepare = getattr(adapter, "prepare", None)
+        if not callable(prepare):
+            raise CampaignError("LIVE_PROVIDER_PREPARATION_UNAVAILABLE")
+        try:
+            prepare(auth, bindings, allow_test_fixture=allow_test_fixture)
+        except Exception as exc:
+            raise CampaignError(f"LIVE_PROVIDER_PREPARATION_FAILED: {exc}") from exc
+        prepared_bindings = getattr(adapter, "execution_bindings", None)
+        if (
+            not callable(getattr(adapter, "attempt_states", None))
+            or not callable(getattr(adapter, "abort_all", None))
+            or not callable(prepared_bindings)
+        ):
+            raise CampaignError("LIVE_PROVIDER_TERMINALIZATION_INTERFACE_UNAVAILABLE")
+        try:
+            producer_capture_bindings = prepared_bindings()
+        except Exception as exc:
+            raise CampaignError(f"LIVE_PROVIDER_CAPTURE_BINDINGS_UNAVAILABLE: {exc}") from exc
+        if list(producer_capture_bindings) != auth["case_ids"]:
+            raise CampaignError("LIVE_PROVIDER_CAPTURE_BINDINGS_CASE_ORDER")
+        _recheck_live_authorization(
+            root,
+            authorization_path,
+            auth,
+            auth_sha,
+            allow_test_fixture=allow_test_fixture,
+        )
+        _recheck_execution_tooling_binding(root, auth, allow_test_fixture=allow_test_fixture)
     claims = _consume_attempt_claims(root, auth, auth_sha, bindings, lane="producer", authorization_claim=auth_claim)
     if fault_at == "after-claims-before-reservation":
         error = CampaignError("INJECTED_RESERVATION_FAILURE_AFTER_CLAIMS")
@@ -1806,12 +2948,23 @@ def run_producer_cohort(
     failure_phase = "reservation"
     try:
         snapshot = head_snapshot(usage_root)
+        reserve_sequence = auth["expected_campaign_usage_sequence"] if live else snapshot["sequence"]
+        reserve_head = auth["expected_campaign_usage_head_sha256"] if live else snapshot["head_sha256"]
+        if live:
+            _recheck_live_authorization(
+                root,
+                authorization_path,
+                auth,
+                auth_sha,
+                allow_test_fixture=allow_test_fixture,
+            )
+            _recheck_execution_tooling_binding(root, auth, allow_test_fixture=allow_test_fixture)
         reservation = reserve(
             usage_root,
             cohort="gpt-producer",
             calls=5,
-            expected_sequence=snapshot["sequence"],
-            expected_head_sha256=snapshot["head_sha256"],
+            expected_sequence=reserve_sequence,
+            expected_head_sha256=reserve_head,
             campaign_authorization_sha256=auth["campaign_authorization_sha256"],
             authorization_sha256=auth_sha,
             candidate_id=auth["candidate_id"],
@@ -1825,7 +2978,16 @@ def run_producer_cohort(
             raise CampaignError("INJECTED_PRE_DISPATCH_FAILURE")
         workers = _worker_inventory(auth, "producer")
         envelopes = [
-            _execution_custody(auth, auth_sha, worker, contract, lane="producer", packet=None)
+            _execution_custody(
+                auth,
+                auth_sha,
+                worker,
+                contract,
+                lane="producer",
+                packet=None,
+                producer_output_contract=producer_output_contracts.get(worker["case_id"]) if live else None,
+                producer_capture_bindings=producer_capture_bindings.get(worker["case_id"]) if live else None,
+            )
             for worker, contract in zip(workers, reservation["call_contract"])
         ]
         raw_events: list[dict[str, object]] = [
@@ -1833,17 +2995,50 @@ def run_producer_cohort(
             {"event": "barrier_release"},
         ]
         failure_phase = "provider-execution"
-        for worker, envelope in zip(workers, envelopes):
-            raw_events.append({"event": "request_submit_started", "worker": worker["worker"], "case_id": worker["case_id"]})
-            handles.append(_submit_with_custody(adapter, envelope))
-            raw_events.append({"event": "call_entered_in_flight", "worker": worker["worker"], "case_id": worker["case_id"]})
+        if live:
+            _recheck_live_authorization(
+                root,
+                authorization_path,
+                auth,
+                auth_sha,
+                allow_test_fixture=allow_test_fixture,
+            )
+            _recheck_execution_tooling_binding(root, auth, allow_test_fixture=allow_test_fixture)
+        if live:
+            first_worker, first_envelope = workers[0], envelopes[0]
+            raw_events.append({"event": "request_submit_started", "worker": first_worker["worker"], "case_id": first_worker["case_id"]})
+            handles.append(_submit_with_custody(adapter, first_envelope, live=True))
+            raw_events.append({"event": "call_entered_in_flight", "worker": first_worker["worker"], "case_id": first_worker["case_id"]})
+            for worker in workers[1:]:
+                raw_events.append({"event": "request_submit_started", "worker": worker["worker"], "case_id": worker["case_id"]})
+            tail_handles = _submit_tail_with_custody(adapter, envelopes[1:])
+            handles.extend(tail_handles)
+            for worker in workers[1:]:
+                raw_events.append({"event": "call_entered_in_flight", "worker": worker["worker"], "case_id": worker["case_id"]})
+        else:
+            for worker, envelope in zip(workers, envelopes):
+                raw_events.append({"event": "request_submit_started", "worker": worker["worker"], "case_id": worker["case_id"]})
+                handles.append(_submit_with_custody(adapter, envelope, live=False))
+                raw_events.append({"event": "call_entered_in_flight", "worker": worker["worker"], "case_id": worker["case_id"]})
         raw_events.append({"event": "all_five_in_flight"})
         for index, (worker, envelope, handle) in enumerate(zip(workers, envelopes, handles), 1):
             result = adapter.observe(handle, envelope)
-            receipt = _provider_receipt(reservation, index, result, record_sha256(envelope))
+            receipt = _provider_receipt(reservation, index, result, record_sha256(envelope), live=live)
             content = str(result["content_utf8"]).encode("utf-8")
             output_ref = _publish_once_bytes(root, f"producer/results/{worker['case_id']}.txt", content, f"producer_result_{index}")
-            results.append({"case_id": worker["case_id"], "structural_status": "PASS", "output": output_ref, "provider_receipt_sha256": record_sha256(receipt)})
+            if live:
+                capture_evidence = result["capture_evidence"]
+                receipt_raw = canonical_bytes(receipt)
+                receipt_sha = hashlib.sha256(receipt_raw).hexdigest()
+                receipt_ref = _publish_once_bytes(
+                    root,
+                    f"{auth['provider_receipt_root']}/{receipt_sha}.receipt.json",
+                    receipt_raw,
+                    f"producer_provider_receipt_{index}",
+                )
+                results.append({"case_id": worker["case_id"], "capture_status": "CAPTURED", "structural_status": "UNVERIFIED", "output": output_ref, "capture_evidence": capture_evidence, "provider_receipt": receipt_ref, "provider_receipt_sha256": receipt_sha})
+            else:
+                results.append({"case_id": worker["case_id"], "structural_status": "PASS", "output": output_ref, "provider_receipt_sha256": record_sha256(receipt)})
             receipts.append(receipt)
             raw_events.append({"event": "terminal_result_observed", "worker": worker["worker"], "case_id": worker["case_id"]})
         failure_phase = "observation-validation"
@@ -1871,7 +3066,7 @@ def run_producer_cohort(
             not_dispatched=0,
             unknown=0,
             provider_usage_receipts=receipts,
-            measured_cost={"unit": "usd", "value": "0"},
+            measured_cost=dict(LIVE_COST_UNAVAILABLE) if live else {"unit": "usd", "value": "0"},
             candidate_id=auth["candidate_id"],
             authorization_sha256=auth_sha,
         )
@@ -1880,11 +3075,14 @@ def run_producer_cohort(
             raise CampaignError(f"INJECTED_TERMINAL_PHASE_FAILURE: {fault_at}")
         completion: dict[str, Any] = {
             "schema": "reviewed-campaign-producer-completion-v1",
-            "status": "PRODUCER_STRUCTURAL_COMPLETE",
+            "status": "PRODUCER_CAPTURE_COMPLETE" if live else "PRODUCER_STRUCTURAL_COMPLETE",
+            "execution_mode": auth["execution_mode"],
+            "test_only": auth["test_only"],
             "candidate_id": auth["candidate_id"],
             "cycle_id": auth["cycle_or_review_batch_id"],
             "source_commit": auth["source_commit"],
             "registry_sha256": bindings["registry_sha256"],
+            "review_protocol": dict(auth["review_protocol"]),
             "review_protocol_sha256": bindings["protocol_sha256"],
             "package_record_sha256": bindings["package_sha256"],
             "candidate_maturity_sha256": bindings["candidate_sha256"],
@@ -1895,6 +3093,13 @@ def run_producer_cohort(
             "results": results,
             "cold_review_authorized": False,
         }
+        if live:
+            completion.update(
+                {
+                    "package_sha256": auth["package_sha256"],
+                    "package_tree_sha256": auth["package_tree_sha256"],
+                }
+            )
         failure_phase = "completion-publication"
         completion_ref = _publish_once_json(root, "producer/completion.json", completion, "producer_completion")
         if fault_at == "after-completion":
@@ -1903,7 +3108,7 @@ def run_producer_cohort(
         failure_phase = "finalizer-publication"
         _publish_once_json(
             root,
-            _attempt_finalizer_path("producer", attempt_index),
+            auth["observation_finalizer_path"] if live else _attempt_finalizer_path("producer", attempt_index),
             {
                 "schema": "reviewed-campaign-observation-finalizer-v1",
                 "lane": "producer",
@@ -1915,7 +3120,7 @@ def run_producer_cohort(
                 "candidate_claim": claims.get("candidate_claim"),
                 "continuation_claim": claims.get("continuation_claim"),
                 "candidate_status": "CONSUMED_OBSERVED",
-                "dispatch_status": "DETERMINISTIC_FAKE_COMPLETE",
+                "dispatch_status": "LIVE_RAW_CAPTURE_COMPLETE" if live else "DETERMINISTIC_FAKE_COMPLETE",
                 "reservation_sha256": reservation["transaction_sha256"],
                 "settlement_sha256": settlement["transaction_sha256"],
                 "observed_results": results,
@@ -1926,7 +3131,26 @@ def run_producer_cohort(
             "producer_finalizer",
         )
         return completion
-    except Exception as exc:
+    except BaseException as exc:
+        interrupted = isinstance(exc, KeyboardInterrupt)
+        live_attempt_states: object = None
+        if live:
+            abort_error: Exception | None = None
+            try:
+                abort = getattr(adapter, "abort_all", None)
+                if callable(abort):
+                    abort()
+            except Exception as abort_exc:
+                abort_error = abort_exc
+            try:
+                live_attempt_states = adapter.attempt_states()
+            except Exception as state_exc:
+                if abort_error is None:
+                    abort_error = state_exc
+                else:
+                    abort_error = CampaignError(f"{abort_error}; ATTEMPT_STATE_READBACK_FAILED: {state_exc}")
+            if abort_error is not None:
+                exc = CampaignError(f"{exc}; OWNED_PROCESS_TEARDOWN_FAILED: {abort_error}")
         try:
             if reservation is None or failure_phase in {"reservation", "pre-dispatch"}:
                 _finalize_no_dispatch_failure(
@@ -1975,6 +3199,8 @@ def run_producer_cohort(
                     packet_disclosure=None,
                     failure_phase=failure_phase,
                     observed_results=results,
+                    completed_receipts=receipts,
+                    live_attempt_states=live_attempt_states,
                 )
         except Exception as cleanup_exc:
             raise CampaignError(
@@ -1983,6 +3209,8 @@ def run_producer_cohort(
             ) from exc
         if isinstance(exc, CampaignError) and str(exc).startswith("INJECTED_"):
             raise
+        if interrupted:
+            raise
         if failure_phase == "reservation":
             raise CampaignError(f"RESERVATION_FAILURE: {exc}") from exc
         if failure_phase == "provider-execution":
@@ -1990,41 +3218,169 @@ def run_producer_cohort(
         raise CampaignError(f"CAMPAIGN_TERMINALIZATION_FAILED[{failure_phase}]: {exc}") from exc
 
 
+def revalidate_live_producer_completion_context(
+    custody_root: Path,
+    authorization_path: Path,
+    completion: dict[str, Any],
+    *,
+    allow_test_fixture: bool = False,
+) -> dict[str, Any]:
+    """Reopen a historical live completion and return its validated promotion context."""
+
+    root = Path(os.path.abspath(custody_root))
+    auth, auth_sha = _load_producer_authorization(
+        root,
+        authorization_path,
+        require_active_window=False,
+        allow_test_fixture=allow_test_fixture,
+    )
+    expected_mode = SCRIPTED_CODEX_TEST_MODE if allow_test_fixture else "LIVE_CODEX"
+    if auth.get("execution_mode") != expected_mode:
+        raise CampaignError("LIVE_PRODUCER_COMPLETION_REQUIRED")
+    if not allow_test_fixture and (
+        auth.get("test_only") is not False
+        or auth.get("live_execution_authorized") is not True
+    ):
+        raise CampaignError("LIVE_PRODUCER_AUTHORIZATION_REQUIRED")
+    bindings = _validate_common_bindings(
+        root,
+        auth,
+        allow_test_fixture=allow_test_fixture,
+    )
+    attempt_index = bindings["retry"]["attempt_index"]
+    finalizer_path = _contained(
+        root,
+        auth["observation_finalizer_path"],
+        "live_producer_observation_finalizer",
+        must_exist=True,
+    )
+    finalizer, _finalizer_raw = _load_canonical_json(
+        finalizer_path,
+        "live_producer_observation_finalizer",
+    )
+    usage_root = _contained(
+        root,
+        auth["usage_ledger_root"],
+        "live_producer_usage_root",
+        must_exist=False,
+    )
+    _validate_success_finalizer(
+        root,
+        usage_root,
+        finalizer,
+        auth,
+        auth_sha,
+        bindings,
+        lane="producer",
+        attempt_index=attempt_index,
+        historical_usage=True,
+    )
+    retained_path = _contained(
+        root,
+        "producer/completion.json",
+        "live_producer_completion",
+        must_exist=True,
+    )
+    retained, _retained_raw = _load_canonical_json(
+        retained_path,
+        "live_producer_completion",
+    )
+    if retained != completion or finalizer.get("completion") != _existing_ref(
+        root,
+        "producer/completion.json",
+        "live_producer_completion",
+    ):
+        raise CampaignError("LIVE_PRODUCER_COMPLETION_EXACT_READBACK")
+    output_contracts = _producer_output_contracts(auth, auth_sha, bindings)
+    return {
+        "completion": copy.deepcopy(retained),
+        "authorization": copy.deepcopy(auth),
+        "authorization_sha256": auth_sha,
+        "bindings": copy.deepcopy(bindings),
+        "producer_output_contracts": copy.deepcopy(output_contracts),
+    }
+
+
+def revalidate_live_producer_completion(
+    custody_root: Path,
+    authorization_path: Path,
+    completion: dict[str, Any],
+    *,
+    allow_test_fixture: bool = False,
+) -> dict[str, Any]:
+    """Reopen the live producer auth, evidence, usage, and finalizer chain."""
+
+    context = revalidate_live_producer_completion_context(
+        custody_root,
+        authorization_path,
+        completion,
+        allow_test_fixture=allow_test_fixture,
+    )
+    return context["completion"]
+
+
 def claim_initial_assessments(
     custody_root: Path,
     producer_completion: dict[str, Any],
-    assessments: list[dict[str, str]],
+    assessments: list[dict[str, object]],
     *,
     claimant: str,
+    allow_test_fixture: bool = False,
 ) -> dict[str, Any]:
     root = Path(os.path.abspath(custody_root))
     if producer_completion.get("schema") != "reviewed-campaign-producer-completion-v1" or producer_completion.get("status") != "PRODUCER_STRUCTURAL_COMPLETE":
         raise CampaignError("PRODUCER_STRUCTURAL_COMPLETION_REQUIRED")
     results = producer_completion.get("results")
-    if not isinstance(results, list) or len(results) != 5 or any(not isinstance(row, dict) or row.get("structural_status") != "PASS" for row in results):
+    if not isinstance(results, list) or len(results) != 5 or any(
+        not isinstance(row, dict)
+        or not isinstance(row.get("case_id"), str)
+        or not row.get("case_id")
+        or row.get("structural_status") != "PASS"
+        for row in results
+    ):
         raise CampaignError("PRODUCER_STRUCTURAL_COMPLETION_REQUIRED")
     if not isinstance(claimant, str) or HUMAN_ID_RE.fullmatch(claimant) is None:
         raise CampaignError("HUMAN_CLAIMANT_IDENTITY")
-    if not isinstance(assessments, list) or len(assessments) != 5:
-        raise CampaignError("ASSESSMENT_COUNT: exact five assessments required")
     expected_cases = [row["case_id"] for row in results]
-    if [row.get("case_id") for row in assessments if isinstance(row, dict)] != expected_cases:
-        raise CampaignError("ASSESSMENT_CASE_BINDING")
-    for row in assessments:
-        if set(row) != {"case_id", "assessment_sha256"} or SHA256_RE.fullmatch(str(row.get("assessment_sha256", ""))) is None:
-            raise CampaignError("ASSESSMENT_HASH_BINDING")
-    claim: dict[str, Any] = {
-        "schema": "reviewed-campaign-initial-assessment-claim-v1",
-        "status": "ALL_FIVE_INITIAL_ASSESSMENTS_HASH_CLAIMED",
-        "candidate_id": producer_completion["candidate_id"],
-        "cycle_id": producer_completion["cycle_id"],
-        "producer_completion_sha256": record_sha256(producer_completion),
-        "review_protocol_sha256": producer_completion["review_protocol_sha256"],
-        "human_claimant": claimant,
-        "assessments": assessments,
-        "count": 5,
-        "cold_review_disclosure_permitted": True,
-    }
+    fake_compatibility = (
+        allow_test_fixture
+        and producer_completion.get("execution_mode") == TEST_EXECUTION_MODE
+        and producer_completion.get("test_only") is True
+    )
+    if fake_compatibility:
+        if not isinstance(assessments, list) or len(assessments) != 5:
+            raise CampaignError("ASSESSMENT_COUNT: exact five assessments required")
+        if [row.get("case_id") for row in assessments if isinstance(row, dict)] != expected_cases:
+            raise CampaignError("ASSESSMENT_CASE_BINDING")
+        for row in assessments:
+            if set(row) != {"case_id", "assessment_sha256"} or SHA256_RE.fullmatch(str(row.get("assessment_sha256", ""))) is None:
+                raise CampaignError("ASSESSMENT_HASH_BINDING")
+        claim: dict[str, Any] = {
+            "schema": "reviewed-campaign-initial-assessment-claim-v1",
+            "status": "ALL_FIVE_INITIAL_ASSESSMENTS_HASH_CLAIMED",
+            "candidate_id": producer_completion["candidate_id"],
+            "cycle_id": producer_completion["cycle_id"],
+            "producer_completion_sha256": record_sha256(producer_completion),
+            "review_protocol_sha256": producer_completion["review_protocol_sha256"],
+            "human_claimant": claimant,
+            "assessments": assessments,
+            "count": 5,
+            "cold_review_disclosure_permitted": True,
+            "compatibility_mode": "DETERMINISTIC_FAKE_HASH_ONLY",
+        }
+    else:
+        if not isinstance(assessments, list) or any(not isinstance(row, dict) or set(row) != {"case_id", "assessment"} for row in assessments):
+            raise CampaignError("ASSESSMENT_ARTIFACT_REQUIRED")
+        try:
+            validated = validate_initial_assessment_set(root, producer_completion, assessments, claimant=claimant)
+        except AssessmentBarrierError as exc:
+            raise CampaignError(str(exc)) from exc
+        claim = {
+            "schema": "reviewed-campaign-initial-assessment-claim-v2",
+            "status": "ALL_FIVE_INITIAL_ASSESSMENTS_HASH_CLAIMED",
+            **validated,
+            "cold_review_disclosure_permitted": True,
+        }
     _publish_once_json(root, "human-initial-assessments/claim.json", claim, "assessment_claim")
     return claim
 
@@ -2068,8 +3424,27 @@ def _validate_packet_set(
     auth: dict[str, Any],
     producer: dict[str, Any],
     assessment: dict[str, Any],
+    *,
+    allow_test_fixture: bool = False,
 ) -> list[dict[str, Any]]:
-    if assessment.get("schema") != "reviewed-campaign-initial-assessment-claim-v1" or assessment.get("status") != "ALL_FIVE_INITIAL_ASSESSMENTS_HASH_CLAIMED" or assessment.get("count") != 5 or assessment.get("cold_review_disclosure_permitted") is not True:
+    if assessment.get("schema") == "reviewed-campaign-initial-assessment-claim-v2":
+        try:
+            revalidate_assessment_claim(root, producer, assessment)
+        except AssessmentBarrierError as exc:
+            raise CampaignError(str(exc)) from exc
+    else:
+        fake_compatibility = (
+            allow_test_fixture
+            and auth.get("execution_mode") == TEST_EXECUTION_MODE
+            and auth.get("test_only") is True
+            and producer.get("execution_mode") == TEST_EXECUTION_MODE
+            and producer.get("test_only") is True
+            and assessment.get("schema") == "reviewed-campaign-initial-assessment-claim-v1"
+            and assessment.get("compatibility_mode") == "DETERMINISTIC_FAKE_HASH_ONLY"
+        )
+        if not fake_compatibility:
+            raise CampaignError("ASSESSMENT_CLAIM_REQUIRED_BEFORE_DISCLOSURE")
+    if assessment.get("status") != "ALL_FIVE_INITIAL_ASSESSMENTS_HASH_CLAIMED" or assessment.get("count") != 5 or assessment.get("cold_review_disclosure_permitted") is not True:
         raise CampaignError("ASSESSMENT_CLAIM_REQUIRED_BEFORE_DISCLOSURE")
     if assessment.get("candidate_id") != auth["candidate_id"] or assessment.get("cycle_id") != auth["producer_cycle_id"] or assessment.get("producer_completion_sha256") != record_sha256(producer):
         raise CampaignError("ASSESSMENT_PRODUCER_BINDING")
@@ -2135,7 +3510,7 @@ def run_cold_review_cohort(
         raise CampaignError("PRODUCER_COMPLETION_BINDING")
     if producer.get("review_protocol_sha256") != bindings["protocol_sha256"] or producer.get("registry_sha256") != bindings["registry_sha256"]:
         raise CampaignError("PROTOCOL_DRIFT_INVALIDATES_FULL_REVIEW_COHORT")
-    packets = _validate_packet_set(root, auth, producer, assessment)
+    packets = _validate_packet_set(root, auth, producer, assessment, allow_test_fixture=allow_test_fixture)
     auth_claim = {
         "schema": "reviewed-campaign-authorization-claim-v1",
         "kind": "cold-review-cohort",

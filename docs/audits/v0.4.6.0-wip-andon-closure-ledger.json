@@ -1,6 +1,6 @@
 {
   "schema": "daee-andon-closure-ledger-v2",
-  "ledger_id": "daee-v0.4.6.0-wip-branch10-closure",
+  "ledger_id": "daee-v0.4.6.0-wip-branch11-closure",
   "source_binding": {
     "schema": "daee-source-binding-v1",
     "binding_id": "daee-v0.4.6.0-branch10-predecessor-binding",
@@ -43,7 +43,7 @@
     ],
     "terminal_claim": false
   },
-  "branch": "codex/v0.4.6.0-runtime-footprint-b10",
+  "branch": "codex/v0.4.6.0-runtime-footprint-b11",
   "regression_status": "unproven",
   "required_andon_ids": [
     "A01",
@@ -247,13 +247,13 @@
       "title": "evidence custody and causal attribution are incomplete",
       "priority": "P0",
       "status": "OPEN",
-      "bounded_verified": "PREDECESSOR_VERIFIED_CURRENT_DRIFTED",
+      "bounded_verified": "CURRENT",
       "integration_open": true,
       "owner_gated": true,
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "authoritative issuer, cohort, and finalizer integration",
+        "fresh campaign capture, human assessment, and cold-review evidence under the governed disclosure barrier",
         "actual Linux execution as a named component of later exact-SHA CI",
         "shared deterministic closure and independent whole-branch review"
       ],
@@ -291,6 +291,28 @@
           "exit_code": 0,
           "retained_artifact": null,
           "unretained_reason": "raw stdout and stderr were not retained in the repository; the exact command result is summarized in the durable run-root state"
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "current Branch 11 human pre-disclosure assessment schema bytes",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "9822c6abb749d3b849ddcf63acb3c02734eb8bb011f23456bd4e93be07acdcd3",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "schema/topology-initial-assessment.schema.json",
+          "unretained_reason": null
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Task 11k initial-assessment bounded review record sha256 857d1a9ed9c9b8ed01ee728498219976612f3c26d91d4af0e631047086ce7301 plus ANDON 132 duplicate-key owner report sha256 6b6ac53757afdf67d581bec378b1a5900365ea69df7a1568597e480bfddcd795; current uncommitted checker sha256 434b79da6d8a2094519b7ac4523d572eed758e29adecd8d077084158319fd55b and test sha256 6efa42401734d085315a5757fe0a0b6bb28087b972ad5b8f87c6e65887967fde; focused and independent full assessment suites are 9/9 GREEN",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/initial-assessment-barrier/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and local durable review records are not tracked repository artifacts; the records preserve bounded acceptance and exact-current assessment hashes without a campaign or human-assessment claim"
         }
       ],
       "evidence_class": "confirmed",
@@ -336,7 +358,8 @@
         "schema/cold-comprehensiveness-review.schema.json",
         "schema/review-incident-report.schema.json",
         "tools/check_topology_review.py",
-        "tools/check_review_incident_report.py"
+        "tools/check_review_incident_report.py",
+        "tools/check_initial_assessment_barrier.py"
       ],
       "binding_adr_ids": [
         "DAEE-ADR-046-006",
@@ -392,7 +415,9 @@
           "tests/captured-output-custody/test_contract.py",
           "tests/captured-output-custody/valid/complete-single-capture/scenario.json",
           "tests/captured-output-custody/invalid/missing-input-hash/scenario.json",
-          "tests/captured-output-custody/invalid/missing-input-hash/scenario.expectation.json"
+          "tests/captured-output-custody/invalid/missing-input-hash/scenario.expectation.json",
+          "tools/check_initial_assessment_barrier.py",
+          "tests/initial-assessment-barrier/test_contract.py"
         ],
         "generated_files": []
       },
@@ -411,6 +436,12 @@
             "expected": "exit 0 with valid/invalid and neighboring controls passing",
             "exit_code": null,
             "evidence_sha256": null
+          },
+          {
+            "command": "python -B tests/initial-assessment-barrier/test_contract.py",
+            "expected": "exit 0 with exact five human artifacts, structural aggregate revalidation, immutable protocol binding, create-once claim, and pre-disclosure fail-closed controls passing",
+            "exit_code": 0,
+            "evidence_sha256": "6b6ac53757afdf67d581bec378b1a5900365ea69df7a1568597e480bfddcd795"
           }
         ],
         "right_reason_negatives": [
@@ -426,7 +457,7 @@
           "expected_failure_class": "evidence_custody",
           "neighbor_valid_fixture": "tests/captured-output-custody/valid/complete-single-capture/scenario.json",
           "mutation_operator": "delete-input-hash",
-          "status": "PREDECESSOR_VERIFIED_CURRENT_DRIFTED"
+          "status": "VERIFIED_STRUCTURAL"
         }
       ],
       "rollback": {
@@ -462,7 +493,7 @@
       "remaining_risk": [
         "semantic causality remains unproven without a controlled paired comparison"
       ],
-      "next_action": "Preserve predecessor bounded acceptance; close current issuer/cohort/finalizer and Linux exact-SHA CI joins before fresh terminal verification.",
+      "next_action": "Preserve the current structural assessment/disclosure barrier; finish final deterministic integration, exact-SHA CI, and fresh candidate maturity before the authorized campaign creates any producer, human-assessment, or cold-review evidence; keep A01 terminal OPEN.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -2070,7 +2101,6 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "shared-handshake preservation of current and historical witness roles",
         "A10 projection join",
         "full local CI and later exact-SHA CI"
       ],
@@ -2108,6 +2138,28 @@
           "exit_code": 0,
           "retained_artifact": null,
           "unretained_reason": "raw stdout and stderr were not retained in the repository; the exact command result is summarized in the durable run-root state"
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "current Branch 11 B.5 current/historical projection adapter bytes",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "020a7cc4bbc762052ad1e25e406884ef6f64d2dd0d68f04de859910d1bb80e09",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/build_b5_full_ir_projection_sidecar.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Task 11h independently accepted current/historical B.5 adapter record sha256 f2089c424a806239d61fec3f36e57f127e77ef4f40a32ecf62714e958bf3bb4c; current uncommitted permanent test sha256 78921daae57b42f4d14b578fa72fb87dbed6860163c83a3dc3b2c156ff5ade63",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/b5-current-witness-adapter/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and the local durable review record are not tracked repository artifacts; the record preserves bounded acceptance and exact hashes without terminal A09 closure"
         }
       ],
       "evidence_class": "confirmed",
@@ -2167,7 +2219,8 @@
         "schema/field-witness.schema.json",
         "schema/field-witness-envelope.schema.json",
         "tools/witness_artifact_roles.py",
-        "tools/build_staged_governed_output.py"
+        "tools/build_staged_governed_output.py",
+        "tools/build_b5_full_ir_projection_sidecar.py"
       ],
       "binding_adr_ids": [
         "DAEE-ADR-046-005",
@@ -2218,7 +2271,9 @@
           "tests/witness-artifact-roles/valid/current-triplet/public-graph.json",
           "tests/witness-artifact-roles/valid/historical-compatibility/legacy-public-graph.json",
           "tests/witness-artifact-roles/invalid/field-before-human-witness.md",
-          "tests/witness-artifact-roles/invalid/field-before-human-witness.expectation.json"
+          "tests/witness-artifact-roles/invalid/field-before-human-witness.expectation.json",
+          "tools/build_b5_full_ir_projection_sidecar.py",
+          "tests/b5-current-witness-adapter/test_contract.py"
         ],
         "generated_files": []
       },
@@ -2237,6 +2292,12 @@
             "expected": "exit 0 with valid/invalid and neighboring controls passing",
             "exit_code": null,
             "evidence_sha256": null
+          },
+          {
+            "command": "python -B tests/b5-current-witness-adapter/test_contract.py",
+            "expected": "exit 0 with current NAR-v2 identity, historical diagnostic split, ambiguity rejection, terminal/reread/graph parity, and no-invented-member controls passing",
+            "exit_code": 0,
+            "evidence_sha256": "f2089c424a806239d61fec3f36e57f127e77ef4f40a32ecf62714e958bf3bb4c"
           }
         ],
         "right_reason_negatives": [
@@ -2288,7 +2349,7 @@
       "remaining_risk": [
         "machine graph agreement is not truth or uptake proof"
       ],
-      "next_action": "Preserve the current bounded A09 witness split while closing shared-handshake, projection, and CI joins.",
+      "next_action": "Preserve the independently accepted current/historical B.5 witness split while closing the A10 projection, final deterministic suite, exact-SHA CI, dependency, and owner-acceptance joins; keep A09 terminal OPEN.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -2314,9 +2375,9 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "shared-handshake and package projection join",
-        "package-faithful staged runner integration",
-        "full local CI and later exact-SHA CI"
+        "complete final no-model preflight, full local CI, and zero-finding whole-branch review on the Branch 11 integration bytes",
+        "ordinary successor commit followed by exact-SHA GitHub CI on that pushed commit",
+        "mandatory terminal dependencies and final owner acceptance"
       ],
       "scope_exclusions": [
         "no push to main",
@@ -2352,6 +2413,72 @@
           "exit_code": 0,
           "retained_artifact": null,
           "unretained_reason": "raw stdout and stderr were not retained in the repository; the exact command result is summarized in the durable run-root state"
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "current Branch 11 Output Grapher Python parser and projection owner bytes",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "ae00c85510c14974d3a851f09c5235d6eef0a2383e2622920cffee714103a154",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/output_grapher_lib.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "current Branch 11 Output Grapher checker bytes",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "a2f26232f750308081b505c9958a4ad7bb34b87c74a1f3476a82f10f8d89cc9d",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/check_output_grapher.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "current Branch 11 source-owned browser Output Grapher bytes; generated HTML is not the JavaScript owner",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "5f96f686521a2793e134d936defbab506b241bd8e3156ecd4f92bc2f3dd9ffd7",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "docs/index/output-grapher.js",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "generated docs index rebuilt from accepted Output Grapher source",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "7eda22958c1980d066733a7ebb8df474007c5f7a60620529dbe91ad18ae3d86e",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "docs/index.html",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "generated pipeline docs rebuilt from accepted Output Grapher source",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "5191d70b924a73392ab1848ed14c16214520d6662c45cdaf6e9ecbefc5839536",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "docs/daee-epistemics-pipeline.html",
+          "unretained_reason": null
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Task 11g independently accepted Python/browser Output Grapher repair record sha256 f4d3e4a5b5a75ae5333d1cf5f49786861ab9a77f2902c6228d03d79928288c88; current uncommitted no-new-resultant fixture sha256 ffd587befb8d754b574a2452f0973f548e22c20028080d13668fa9f458d92b52 and sidecar sha256 3c4b7cd21c937fc0b6c5b2547dfe9b0317cb5448bcb179a62e38818a90f2f8d1",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tools/check_output_grapher.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and the local durable review record are not tracked repository artifacts; the record preserves bounded 25-fixture and Python/browser parity acceptance without terminal A10 closure"
         }
       ],
       "evidence_class": "confirmed",
@@ -2400,7 +2527,10 @@
         "schema/stage-projection.schema.json",
         "tools/stage_projection_contract.py",
         "tools/check_stage_projection_parity.py",
-        "tools/build_staged_governed_output.py"
+        "tools/build_staged_governed_output.py",
+        "tools/output_grapher_lib.py",
+        "tools/check_output_grapher.py",
+        "docs/index/output-grapher.js"
       ],
       "binding_adr_ids": [
         "DAEE-ADR-046-001",
@@ -2449,9 +2579,17 @@
           "tests/stage-projection-parity/test_contract.py",
           "tests/stage-projection-parity/valid/lossless-stage06-stage07.json",
           "tests/stage-projection-parity/invalid/stage07-structured-cardinality-loss.json",
-          "tests/stage-projection-parity/invalid/stage07-structured-cardinality-loss.expectation.json"
+          "tests/stage-projection-parity/invalid/stage07-structured-cardinality-loss.expectation.json",
+          "tools/output_grapher_lib.py",
+          "tools/check_output_grapher.py",
+          "docs/index/output-grapher.js",
+          "tests/docs-output-grapher/valid-current-no-new-resultant.md",
+          "tests/docs-output-grapher/valid-current-no-new-resultant.field_witness.json"
         ],
-        "generated_files": []
+        "generated_files": [
+          "docs/index.html",
+          "docs/daee-epistemics-pipeline.html"
+        ]
       },
       "verification": {
         "smoke_a": [
@@ -2468,6 +2606,12 @@
             "expected": "exit 0 with valid/invalid and neighboring controls passing",
             "exit_code": null,
             "evidence_sha256": null
+          },
+          {
+            "command": "python -B tools/check_output_grapher.py",
+            "expected": "exit 0 with all governed Output Grapher fixtures plus Python/browser no-new-resultant parity passing",
+            "exit_code": 0,
+            "evidence_sha256": "f4d3e4a5b5a75ae5333d1cf5f49786861ab9a77f2902c6228d03d79928288c88"
           }
         ],
         "right_reason_negatives": [
@@ -2519,7 +2663,7 @@
       "remaining_risk": [
         "presentation formatting may vary only outside canonical semantic fingerprints"
       ],
-      "next_action": "Preserve the current bounded A10 projection owner while closing package, handshake, and CI joins.",
+      "next_action": "Preserve the independently accepted Stage projection and Python/browser Output Grapher bytes while closing final deterministic suites, whole-branch review, successor exact-SHA CI, terminal dependencies, and owner acceptance; keep A10 terminal OPEN.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -2790,7 +2934,7 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "fresh deterministic source freeze, complete no-model preflight, full local CI, and zero-finding whole-branch review on the post-repair tree",
+        "fresh deterministic source freeze, complete no-model preflight, full local CI, and zero-finding whole-branch review on the final Branch 11 tree",
         "ordinary successor commit followed by exact-SHA GitHub CI on that pushed commit",
         "mandatory terminal dependencies and final owner acceptance"
       ],
@@ -2808,11 +2952,11 @@
       ],
       "evidence_refs": [
         {
-          "kind": "source_blob",
-          "source_ref": "tools/runtime_context_resolver.py at the immutable Branch 10 checkpoint",
-          "commit_sha1": "43d1d98bf52bd61367496f527047c3dc00f089ae",
-          "blob_sha1": "f7c3635312c0abdc27e68b33889376c736e4299f",
-          "sha256": "84c9aa4a2ced6c118ea1a2ddebf0d294de495b89109cbf6b0b39b211a080b718",
+          "kind": "file_sha256",
+          "source_ref": "tools/runtime_context_resolver.py current Branch 11 composite-context bytes",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "4a49c3539783dc80c2a1be0e1622c405584d412dd88357ca6e8829cef42f16ac",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/runtime_context_resolver.py",
@@ -2839,6 +2983,61 @@
           "exit_code": null,
           "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/a12-a13-shared-integration-review.md",
           "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "current Branch 11 composite runtime-call-context schema bytes",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "5fda6241f8b629d0c6c42f5322ed1b2cb015d80d75c13a2bde52c9ced56e13f8",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "schema/runtime-call-context.schema.json",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "current Branch 11 runtime-call-context adapter owner bytes",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "a2ca04d923aa6faa63274388941b58c7d684d88dae63fc8168dbaf534c2f7255",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/runtime_call_context_adapter.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "current Branch 11 runtime-context delivery checker bytes",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "492af76431539d5fff6bfc993c466dc01433deba4e6f77059ff5055c2f474766",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/check_runtime_context_delivery.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "current Branch 11 runtime-call-context adapter permanent tests",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "98ccbf3ca6be0aa531adb3a8852dc2e07824e1f9e2576a59a51afb7b69296061",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tests/runtime-call-context-adapter/test_contract.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Task 11j independently accepted composite-context closeout record sha256 3282ed3aad2fd0624555ca35190485064240ceed4ee949f18856962c9f68913f; current uncommitted canonical composite fixture sha256 9915296151453cc1d7389b55f38698361f770fbe03d53f5efff8ee7805d0f869; later current owner bytes remain subject to final whole-branch review",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/runtime-call-context-adapter/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and the local durable review record are not tracked repository artifacts; the record preserves the bounded 26-path manifest and adapter-test acceptance without terminal A12 closure"
         }
       ],
       "evidence_class": "confirmed",
@@ -2886,7 +3085,8 @@
         "schema/runtime-call-context.schema.json",
         "tools/runtime_context_resolver.py",
         "tools/check_runtime_context_delivery.py",
-        "tools/measure_load_path_budget.py"
+        "tools/measure_load_path_budget.py",
+        "tools/runtime_call_context_adapter.py"
       ],
       "binding_adr_ids": [
         "DAEE-ADR-046-003"
@@ -2919,16 +3119,32 @@
         "follow_up_control": "missing owner body, wrong shard, stale context hash, route change, and budget property fixtures"
       },
       "implementation": {
-        "commit": "bcccb4e34c75e1f8e363ef020e2deeaabae60435",
+        "commit": null,
         "files": [
           "schema/runtime-call-context.schema.json",
           "tools/runtime_context_resolver.py",
+          "tools/runtime_call_context_adapter.py",
           "tools/check_runtime_context_delivery.py",
           "tools/run_staged_current_skill_smoke.py",
           "tests/runtime-call-context-adapter/test_contract.py",
           "tests/runtime-context-delivery/valid/stage04-owner-module-section.json",
           "tests/runtime-context-delivery/invalid/declared-used-not-delivered.json",
-          "tests/runtime-context-delivery/invalid/declared-used-not-delivered.expectation.json"
+          "tests/runtime-context-delivery/invalid/declared-used-not-delivered.expectation.json",
+          "tests/runtime-context-delivery/valid/composite-stage01-08-package-faithful.json",
+          "tests/runtime-context-delivery/invalid/composite-component-order-drift.json",
+          "tests/runtime-context-delivery/invalid/composite-component-order-drift.expectation.json",
+          "tests/runtime-context-delivery/invalid/composite-dynamic-state.json",
+          "tests/runtime-context-delivery/invalid/composite-dynamic-state.expectation.json",
+          "tests/runtime-context-delivery/invalid/composite-effective-bytes-underreported.json",
+          "tests/runtime-context-delivery/invalid/composite-effective-bytes-underreported.expectation.json",
+          "tests/runtime-context-delivery/invalid/composite-harness-assisted.json",
+          "tests/runtime-context-delivery/invalid/composite-harness-assisted.expectation.json",
+          "tests/runtime-context-delivery/invalid/composite-mandatory-union-missing.json",
+          "tests/runtime-context-delivery/invalid/composite-mandatory-union-missing.expectation.json",
+          "tests/runtime-context-delivery/invalid/composite-prior-capsule.json",
+          "tests/runtime-context-delivery/invalid/composite-prior-capsule.expectation.json",
+          "tests/runtime-context-delivery/invalid/package-component-run-alias.json",
+          "tests/runtime-context-delivery/invalid/package-component-run-alias.expectation.json"
         ],
         "generated_files": []
       },
@@ -2938,7 +3154,7 @@
             "command": "python tools/check_runtime_context_delivery.py --self-test",
             "expected": "exit 0 with runtime-context delivery self-test controls passing",
             "exit_code": 0,
-            "evidence_sha256": "35319558403ab82bf8ba883c34299608694bb5fa77e5f66dc0e8712288bd51ed"
+            "evidence_sha256": "3282ed3aad2fd0624555ca35190485064240ceed4ee949f18856962c9f68913f"
           }
         ],
         "smoke_b": [
@@ -2950,7 +3166,14 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/runtime-context-delivery/invalid/declared-used-not-delivered.expectation.json"
+          "tests/runtime-context-delivery/invalid/declared-used-not-delivered.expectation.json",
+          "tests/runtime-context-delivery/invalid/composite-component-order-drift.expectation.json",
+          "tests/runtime-context-delivery/invalid/composite-dynamic-state.expectation.json",
+          "tests/runtime-context-delivery/invalid/composite-effective-bytes-underreported.expectation.json",
+          "tests/runtime-context-delivery/invalid/composite-harness-assisted.expectation.json",
+          "tests/runtime-context-delivery/invalid/composite-mandatory-union-missing.expectation.json",
+          "tests/runtime-context-delivery/invalid/composite-prior-capsule.expectation.json",
+          "tests/runtime-context-delivery/invalid/package-component-run-alias.expectation.json"
         ],
         "structural_only": true
       },
@@ -2962,6 +3185,15 @@
           "expected_failure_class": "declared-use-not-delivered",
           "neighbor_valid_fixture": "tests/runtime-context-delivery/valid/stage04-owner-module-section.json",
           "mutation_operator": "drop-owner-context-ref",
+          "status": "VERIFIED_STRUCTURAL"
+        },
+        {
+          "canary_id": "ANDON-A12-package_component_run_alias",
+          "negative_fixture": "tests/runtime-context-delivery/invalid/package-component-run-alias.json",
+          "expected_stage": "preflight",
+          "expected_failure_class": "component-source-alias",
+          "neighbor_valid_fixture": "tests/runtime-context-delivery/valid/composite-stage01-08-package-faithful.json",
+          "mutation_operator": "replace-package-source-with-run-alias",
           "status": "VERIFIED_STRUCTURAL"
         }
       ],
@@ -2998,7 +3230,7 @@
       "remaining_risk": [
         "load-path proof is delivery evidence, not model comprehension proof"
       ],
-      "next_action": "Preserve the independently accepted A12 shared integration while the independently accepted R3 repair set is frozen as a new exact tree and receives fresh deterministic/whole-branch review evidence; then require successor exact-SHA CI, terminal dependencies, and owner acceptance; keep A12 terminal OPEN.",
+      "next_action": "Preserve the current composite runtime-context owner/test bytes and bounded Task 11j acceptance while completing final deterministic suites, whole-branch review, successor exact-SHA CI, terminal dependencies, and owner acceptance; keep A12 terminal OPEN.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -3024,7 +3256,7 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "fresh deterministic source freeze, complete no-model preflight, full local CI, and zero-finding whole-branch review on the post-repair tree",
+        "fresh deterministic source freeze, complete no-model preflight, full local CI, and zero-finding whole-branch review on the final Branch 11 tree",
         "ordinary successor commit followed by exact-SHA GitHub CI on that pushed commit",
         "mandatory terminal dependencies and final owner acceptance"
       ],
@@ -3046,7 +3278,7 @@
           "source_ref": "tools/check_package_harness_parity.py current shared-integration bytes",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "675502a6bc514d99d21c3d5e7c02036069e38ab11c0a4332572681c05a0bae1c",
+          "sha256": "55fb020dd1d00bda0bff95ea8f4035b7f92fc91a913d2ab7fae334d77d540845",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/check_package_harness_parity.py",
@@ -3073,6 +3305,28 @@
           "exit_code": null,
           "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/a12-a13-shared-integration-review.md",
           "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "current Branch 11 adapter-bound package-harness parity schema",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "c3e53ea638bd0b3c1d5acd33c3c1ff0faae729ad985955efed5d34ce760213c8",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "schema/package-harness-parity.schema.json",
+          "unretained_reason": null
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "current Branch 11 owner verification after exact adapter-binding migration: uncommitted adapter-hash fixture sha256 ff7ea4bc2edabd00fd60bdcb6be1eb7d63e81de3107ff4b17085708f7d8259a4, expectation sha256 4db6032808007f5ac3e1871f4387e884370a35eaffa78853c80760c169c9c162, adapter-path fixture sha256 23f5e673deb0c300a68d794351c959a9dc36ea98260adacf71825c131ce98c04, expectation sha256 9b1913111b7fdf63ec12a311b7bda51f8c000bc3acbba3ed142b0a9cf28475c1; independent whole-branch review remains open",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tools/check_package_harness_parity.py --self-test",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr were not retained in a tracked repository artifact; current file hashes and permanent negative expectations are retained while final independent whole-branch review remains open"
         }
       ],
       "evidence_class": "confirmed",
@@ -3155,7 +3409,7 @@
         "follow_up_control": "teaching-only, repair-only, adapter-only, package-isolation, and raw-first fixtures"
       },
       "implementation": {
-        "commit": "bcccb4e34c75e1f8e363ef020e2deeaabae60435",
+        "commit": null,
         "files": [
           "schema/package-harness-parity.schema.json",
           "tools/producer-contract-registry.json",
@@ -3164,7 +3418,11 @@
           "tools/run_staged_current_skill_smoke.py",
           "tests/package-harness-parity/valid/neighbor-package-faithful.json",
           "tests/package-harness-parity/invalid/package-membership-only-claim.json",
-          "tests/package-harness-parity/invalid/package-membership-only-claim.expectation.json"
+          "tests/package-harness-parity/invalid/package-membership-only-claim.expectation.json",
+          "tests/package-harness-parity/invalid/adapter-hash-mismatch.json",
+          "tests/package-harness-parity/invalid/adapter-hash-mismatch.expectation.json",
+          "tests/package-harness-parity/invalid/adapter-path-substitution.json",
+          "tests/package-harness-parity/invalid/adapter-path-substitution.expectation.json"
         ],
         "generated_files": []
       },
@@ -3174,7 +3432,7 @@
             "command": "python tools/check_producer_checker_parity.py --self-test",
             "expected": "exit 0 with producer/checker registry and semantic-repair negatives passing",
             "exit_code": 0,
-            "evidence_sha256": "35319558403ab82bf8ba883c34299608694bb5fa77e5f66dc0e8712288bd51ed"
+            "evidence_sha256": null
           }
         ],
         "smoke_b": [
@@ -3186,7 +3444,9 @@
           }
         ],
         "right_reason_negatives": [
-          "tests/package-harness-parity/invalid/package-membership-only-claim.expectation.json"
+          "tests/package-harness-parity/invalid/package-membership-only-claim.expectation.json",
+          "tests/package-harness-parity/invalid/adapter-hash-mismatch.expectation.json",
+          "tests/package-harness-parity/invalid/adapter-path-substitution.expectation.json"
         ],
         "structural_only": true
       },
@@ -3198,6 +3458,24 @@
           "expected_failure_class": "membership-is-not-delivery",
           "neighbor_valid_fixture": "tests/package-harness-parity/valid/neighbor-package-faithful.json",
           "mutation_operator": "replace-delivery-proof-with-membership",
+          "status": "VERIFIED_STRUCTURAL"
+        },
+        {
+          "canary_id": "ANDON-A13-adapter_hash_mismatch",
+          "negative_fixture": "tests/package-harness-parity/invalid/adapter-hash-mismatch.json",
+          "expected_stage": "preflight",
+          "expected_failure_class": "adapter-hash-mismatch",
+          "neighbor_valid_fixture": "tests/package-harness-parity/valid/neighbor-package-faithful.json",
+          "mutation_operator": "replace-runtime-adapter-hash",
+          "status": "VERIFIED_STRUCTURAL"
+        },
+        {
+          "canary_id": "ANDON-A13-adapter_path_substitution",
+          "negative_fixture": "tests/package-harness-parity/invalid/adapter-path-substitution.json",
+          "expected_stage": "preflight",
+          "expected_failure_class": "artifact-owner-mismatch",
+          "neighbor_valid_fixture": "tests/package-harness-parity/valid/neighbor-package-faithful.json",
+          "mutation_operator": "replace-runtime-adapter-path",
           "status": "VERIFIED_STRUCTURAL"
         }
       ],
@@ -3234,7 +3512,7 @@
       "remaining_risk": [
         "deterministic parity does not replace the package-faithful behavioral matrix"
       ],
-      "next_action": "Preserve the independently accepted A13 shared integration while the independently accepted R3 repair set is frozen as a new exact tree and receives fresh deterministic/whole-branch review evidence; then require successor exact-SHA CI, terminal dependencies, and owner acceptance; keep A13 terminal OPEN.",
+      "next_action": "Preserve the current adapter-bound package-harness parity bytes and permanent path/hash canaries while completing final deterministic suites, whole-branch review, successor exact-SHA CI, terminal dependencies, and owner acceptance; keep A13 terminal OPEN.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -3260,7 +3538,7 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "fresh deterministic source freeze, complete no-model preflight, full local CI, and zero-finding whole-branch review on the post-repair tree",
+        "fresh deterministic source freeze, complete no-model preflight, full local CI, and zero-finding whole-branch review on the final Branch 11 tree",
         "final successor commit, external exact-commit receipt, and exact-SHA GitHub CI",
         "fresh immutable candidate construction and package-faithful maturity proof",
         "separately authorized reviewed five-smoke campaign and final owner acceptance"
@@ -3279,11 +3557,11 @@
       ],
       "evidence_refs": [
         {
-          "kind": "source_blob",
-          "source_ref": "tools/campaign_usage_ledger.py frozen for the no-finding bounded A14 review",
-          "commit_sha1": "43d1d98bf52bd61367496f527047c3dc00f089ae",
-          "blob_sha1": "3245b27ee1e5b178582dfa27ce2dbab580ba49bc",
-          "sha256": "5a759a7fab8dc664ef4aeebffd7eb8db6fd9514bde49cca8ab9ec27bb38e21d3",
+          "kind": "file_sha256",
+          "source_ref": "tools/campaign_usage_ledger.py current Branch 11 campaign-usage custody bytes",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "26818045522824a743f5257dec0797973dc76b37a14c899a2ea5e9f241c2f336",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/campaign_usage_ledger.py",
@@ -3291,10 +3569,10 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "tests/smoke-matrix/test_protocol.py current bounded Task 4 candidate-custody bytes",
+          "source_ref": "tests/smoke-matrix/test_protocol.py current Branch 11 ANDON 142 timeout-binding contract bytes",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "c5d37990fc3f32d548cc9404f7a05cd3c1a356354f5204aed492121edd4cbd8d",
+          "sha256": "d271262f6638570dab4171dbc5829e6f6d8cd085a46eae728d4ae905b9dcf161",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tests/smoke-matrix/test_protocol.py",
@@ -3321,6 +3599,28 @@
           "exit_code": null,
           "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task4-candidate-custody-independent-review.md",
           "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "current Branch 11 smoke-matrix provider-context, capture-binding, and ANDON 142 timeout-binding schema",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "6346e943f6ae45bf4b443d8c26afe020e3f5b97b146f71995a2f48cfc0229526",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "schema/smoke-matrix.schema.json",
+          "unretained_reason": null
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Task 11h bounded B.5/finalizer record sha256 f2089c424a806239d61fec3f36e57f127e77ef4f40a32ecf62714e958bf3bb4c plus Task 11z retained-replay owner report sha256 409a54b6d5904c9bf6110b38d63c7d123d36b4e59f3d8a717c41087bd7863e07; current envelope schema sha256 cc46b6c97bb80532a88f81c9f93e803cc55e32dcc7095b9d6e0de8376737d4a7, owner sha256 b8b362bf9c4bc4138b2e78e52a286f268a38172aa0abcb02f10d5a6475a47577, test sha256 5fa4901c8514b125836c4af482902efc4aba22344873e449ab366344930cecae, tooling-bound finalizer sha256 6970d3426908dc36c7892e44be2f4c64e10671ad8f68cd52f0ddda9a84db0227, and finalizer test sha256 0249e8ef19090def7358b6c1ce597724ef6cac937a33c19a83da8aaf784730f4; strict retained inventory, bound plan, tooling-manifest identity, and all checker rows replay 14/14 GREEN",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/single-call-stage-finalization/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and local durable records are not tracked repository artifacts; exact-current finalizer hashes are owner-verified while final whole-branch review remains open"
         }
       ],
       "evidence_class": "confirmed",
@@ -3381,7 +3681,10 @@
         "tools/campaign_usage_ledger.py",
         "tools/build_candidate_package_record.py",
         "tools/run_five_smoke_matrix.py",
-        "tools/run_paired_cross_model_matrix.py"
+        "tools/run_paired_cross_model_matrix.py",
+        "schema/single-call-stage-envelope.schema.json",
+        "tools/single_call_stage_envelope.py",
+        "tools/finalize_single_call_stage_capture.py"
       ],
       "binding_adr_ids": [
         "DAEE-ADR-046-006",
@@ -3449,7 +3752,12 @@
           "tests/artifact-tree/test_contract.py",
           "tests/candidate-build/test_contract.py",
           "tests/smoke-matrix/reviewed-five-smoke-protocol.json",
-          "tests/smoke-matrix/test_protocol.py"
+          "tests/smoke-matrix/test_protocol.py",
+          "schema/single-call-stage-envelope.schema.json",
+          "tools/single_call_stage_envelope.py",
+          "tests/single-call-stage-envelope/test_contract.py",
+          "tools/finalize_single_call_stage_capture.py",
+          "tests/single-call-stage-finalization/test_contract.py"
         ],
         "generated_files": []
       },
@@ -3474,6 +3782,18 @@
             "expected": "exit 0 with Task 4 candidate-custody and reviewed protocol contract passing",
             "exit_code": 0,
             "evidence_sha256": "6ef1a9e01aacd07646808bee6f0103bcdfc14e831f87f4213657c2da579d4d73"
+          },
+          {
+            "command": "python -B tests/single-call-stage-envelope/test_contract.py",
+            "expected": "exit 0 with exact Stage01-08 envelope identity, raw-output, witness-role, and failure-nonpromotion controls passing",
+            "exit_code": 0,
+            "evidence_sha256": null
+          },
+          {
+            "command": "python -B tests/single-call-stage-finalization/test_contract.py",
+            "expected": "exit 0 with strict deterministic finalization, create-once custody, current/historical B.5 split, and failure-nonpromotion controls passing",
+            "exit_code": 0,
+            "evidence_sha256": "409a54b6d5904c9bf6110b38d63c7d123d36b4e59f3d8a717c41087bd7863e07"
           }
         ],
         "right_reason_negatives": [
@@ -3531,7 +3851,7 @@
       "remaining_risk": [
         "no live producer or reviewer behavior is proven until separately authorized execution"
       ],
-      "next_action": "Preserve bounded A14 and Task 4 custody acceptance while the independently accepted R3 repair set is frozen as a new exact tree and receives fresh deterministic/whole-branch review evidence; then require successor exact-SHA CI, a fresh mature candidate, the reviewed campaign, and owner acceptance; keep A14 terminal OPEN.",
+      "next_action": "Preserve the current envelope/finalizer and campaign-control bytes while completing final deterministic suites, whole-branch review, successor exact-SHA CI, a fresh mature Branch 11 candidate, the separately authorized reviewed campaign, and owner acceptance; keep A14 terminal OPEN.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -3838,8 +4158,8 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "freeze the independently accepted whole-branch R3 repair set as one new exact source tree",
-        "fresh post-repair source freeze, complete 25-gate no-model preflight, full local CI, and zero-finding independent whole-branch review",
+        "refresh the Branch 11 Task 7 deterministic cohort on the final repaired tree and freeze one exact source tree",
+        "fresh final-source freeze, complete no-model preflight, full local CI, and zero-finding independent whole-branch review",
         "final successor commit, external exact-commit receipt, clean local/upstream/remote equality, and exact-SHA GitHub CI",
         "fresh immutable candidate construction, retention, package-faithful maturity, and independent readiness review",
         "separately authorized reviewed five-smoke campaign and final owner acceptance"
@@ -4054,6 +4374,171 @@
           "exit_code": null,
           "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-whole-branch-r3-repair-independent-closeout.md",
           "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Whole-branch review R4 rejected prospective tree 3b022b9507a303def93c24ff8d06d44575de5c70 with 0 Critical, 5 Important, and 0 Minor findings; its complete deterministic PASS cohort remains historical and non-promotable",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "5dd5ffb155c247068e8d51c460354ef9abf8284794a8a5ea90d19fc979504fb8",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-independent-whole-branch-review-r4.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Owner closeout of the five concrete R4 repairs; no new deterministic whole-branch evidence or terminal claim",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "3fb5885c19d28536165f30b9331d43908b93495f22c8cbf1d02b95de4b0071bb",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-whole-branch-r4-repair-owner-report.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Independent bounded acceptance of all five R4 repairs; not a whole-branch review of the later final tree",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "339dc781749e5de9f2adf29c0ec3a5138ec18e3ec21937699d93cf43a9018a6e",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/task7-whole-branch-r4-repair-independent-closeout.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Task 11bi rejected predecessor repair tree 2e6d34ebfee35d0c0cb15052666966f2fcd95eb0; Task 11bj owner report sha256 ce6cb5f9e3a96da211be5915802edcfb91191e066fca17cb591f16ef4f5a8da8 and Task 11bk independent APPROVE sha256 9d5c056a0a57e8de23af58f06c5934c51c729f921eb663b3ec288a00a8ec61eb bind exact repaired strict-JSON, mixed-terminal replay, execution-tooling, predispatch, and timeout contracts",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "d86aba11c685aacd48002ea5dc4904fa3bf5b49cc61bd82576a5e7112d21eea9",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/reviewed_campaign_orchestrator.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Task 11bk independently accepted the exact current structured-admission parser, content-addressed admission prefix, five-way submit-before-observe barrier, strict non-finite rejection, provider-fact rederivation, deadline, and teardown bytes; no provider invocation claim",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "0d357768608eae2e6bc0b3c73d1af5846bba7abce855347daf79ab1f2fdad2af",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/codex_live_producer_adapter.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Task 11bk reconfirmed the inherited exact Windows suspended-launch Job Object custody, stable-handle membership verification, governed timeout teardown, and zero-active-member readback bytes; no PID-ancestry or taskkill fallback",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "f769d96653aefc8b7e6e89fffc55979f57e9a0b1610000aaebf3abb6e90a2461",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/run_local_ci.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Task 11bj owner report sha256 ce6cb5f9e3a96da211be5915802edcfb91191e066fca17cb591f16ef4f5a8da8 and Task 11bk independent APPROVE sha256 9d5c056a0a57e8de23af58f06c5934c51c729f921eb663b3ec288a00a8ec61eb; exact current live adapter sha256 0d357768608eae2e6bc0b3c73d1af5846bba7abce855347daf79ab1f2fdad2af, orchestrator sha256 d86aba11c685aacd48002ea5dc4904fa3bf5b49cc61bd82576a5e7112d21eea9, and reviewed-campaign test sha256 2599d5e96cc9dcd9e9307e2bba5ed3f8d3e2509692f54d71ca0f8d10b6da3622; full reviewed-campaign suite is 84/84 GREEN including strict non-finite admission/rederivation, exact mixed-receipt replay, five-way barrier, and zero-dispatch replay",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/reviewed-campaign-orchestration/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and local durable Task 11bj/11bk records are not tracked repository artifacts; bounded deterministic acceptance does not imply provider execution, final whole-branch acceptance, or terminal closure"
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Task 11bj owner verification after Task 11bk acceptance; current tooling-bound capture schema sha256 e0616acb1ff645c31e21a766b99f9671c6c3e652150926ef1acc37901b48a859, bridge sha256 6f5416c4170f5c0e9b848a70895d50d2549a5668d88892e589d4bf1de3c400af, and permanent test sha256 66513599523fc762f8e079c4f3330ef5e65b2f1115338935409fad54815483db; 2/2 GREEN including valid execution-tooling manifest fixture custody and exact result/captured-output/provider-subject identity",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/producer-capture-finalization/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and the local durable owner record are not tracked repository artifacts; exact-current per-case bridge bytes remain within A16 PARTIAL pending fresh deterministic and whole-branch review"
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Task 11bj owner verification after Task 11bk acceptance; current aggregate schema sha256 7940b0c37441e79d8e55bca92662b9045ca333e6b34a46bff05e6cd78311c732, tooling-bound promoter sha256 191050e83875687d95a4c97d3e74f039aa0020399a464617418e4ff98d6a7756, and permanent test sha256 079f3f0346978f6b75322f065d195e8352a080ca4cc696e076cdbf017c12783f; registered producer-structural suite is 17/17 GREEN including tooling canaries, scripted/test finalizer barrier, and shallow-fabrication rejection",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/producer-structural-completion/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and local durable review records are not tracked repository artifacts; bounded structural acceptance is not campaign, candidate, release, or terminal closure"
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Task 11v Branch 11 Task 7 namespace owner report sha256 3cd7e18d25625ea0090bd5b7c687ad6e01c51190634c820199f68432d55c5628; schema sha256 4f578bbdbd2a71b978e4508b344b500c4710cffe24d14eda88d7345862ed008e, checker sha256 5d324874cdeb5d1d6ef9ab95881def50adb3f3cc7264c278aebc85e13220d311, and test sha256 7858272da46ac5e49d6298cf782ed2af2136124f29e1f50a9a92ba381b835e17; versioned Branch 10 and Branch 11 namespaces are disjoint and independently 14/14 GREEN",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/task7-deterministic-evidence-namespace/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and the local durable owner report are not tracked repository artifacts; final generated Branch 11 cohort remains pending the final source freeze"
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Task 11bk independently reconfirmed exact current Windows Job custody and CI-readback integration; checker sha256 36c74e09a56914f93a27a5e5d57d5963f37c07dc99f24e5068f31b0a732701eb, schema sha256 6e607b2dbfed00591b843bd1d86528b448b73c9e132037028b7dbc9b9f4443ca, test sha256 8bbbd00f486c6b09a5b196565b83f671493bf9bb547914e1bc81b88a75c01ba7, builder sha256 21640026d561bc9da66138dc32dcdcb492f9ad18d9ee4cda14e3ec9c1a00a12d, and runner sha256 f769d96653aefc8b7e6e89fffc55979f57e9a0b1610000aaebf3abb6e90a2461; full contract 60/60 GREEN including the governed real timeout tree canary",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/ci-readback/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and local durable Task 11bk review are not tracked repository artifacts; final create-once Branch 11 Task 7 evidence and exact-tree whole-branch review remain open"
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "ANDON 135 failed Task 7 freeze sha256 f4cccaf78f177403d3658973e79ce92b63641bd152d50acde8901518ddb2e1be and native no-model report sha256 0c057ab8a6b867f13679208e96d11f537ee2af4a1281a9981bdba11e65d4832e remain in tree-keyed failed-attempt history with no PASS role/report/log; Task 11ad owner report sha256 1e736475d1d763d5248ccd7c6dbf6670f6f315dd23877120e252d1b532b93381 and Task 11ae independent review sha256 7ff63f20f7f25ced3a2eb311a8e8528da1aa6c0ea98428ebf65b2c43a14d9f44; current isolated maturity fixture test sha256 2d5a82067982e577bcb3be43c1ae5678c6dddaed0779aede2df011837fd91c43 is independently APPROVED with direct 21/21 and self-test 36/36 GREEN",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/no-model-candidate-maturity/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and ignored failed-attempt/review records are not tracked repository artifacts; fresh Task 7 freeze and all downstream gates remain open"
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "ANDON 136 exact tree 80ff7a855af07c379870fff2c6abe1f01f122af7 passed governed no-model verdict sha256 0e059c93da1f07733434d9aa011f645c105e708ff6fcd84f83779e460b0cbf46 before full local CI stopped at the single unregistered Task 7 namespace checker failure; the exact freeze/no-model cohort remains in tree-keyed failed-attempt history and no full-local-CI PASS artifact exists; Task 11af owner report sha256 2abb607a2a5e97d30fb6e3bcde302d9521b3d825443d8b432cc9a7aab3413394 and Task 11ag independent review sha256 ee69a38cdc733e745a195a2755bb7c3c351e3c0833570dca06ed981ec54d3bdd; repaired registry sha256 ec3eb25ede495e7f510e40abd0923937b4a91a18d7b30e3a3082d8fc72218b66 and runner sha256 1bbb0c3c6009adf9bbc009b5cd36dd4576603099e42684cce03c05e3a2e9ef84 are independently APPROVED with namespace self, registry self, and live coverage GREEN",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tools/check_ci_registry_coverage.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and ignored failed-attempt/review records are not tracked repository artifacts; a new exact-tree Task 7 cohort and all downstream gates remain open"
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "ANDON 137 exact tree 58a9aff8a956f68151eb77faa6fb313e3c5ee172 stopped its no-model role at Gates 19 and 23 because the 179-command local-CI plan was still bound to the prior 178-command completion schema and generated fixture cohort; failed source freeze sha256 314ac3392d293ca0751836d35e6cf1a5cb833b49c61d0032c546a8a5cdb173be and native report sha256 01494832521125339ba2411a461dd26274640259b45d964bf259838845cfec78 remain in tree-keyed history with no PASS role artifact; Task 11ah owner report sha256 5acf9807e7a50485aad9f737c08102cd6cfd27160e31914b302ede2a9bac62e0 and Task 11ai independent review sha256 023a5e4f0ec3810c0653d4faecf9aaa768561edf3b36269e08b02910a1a42f80; repaired schema sha256 a367a1a3f26e23684db1825a32374d0dfc2e8ea1048495ff1340558c43c31463 and 12-path aggregate sha256 d08f81eb091b5ee891ff484cecd47a1e5468fdbfd4eae226ffcb2cafb8356a0e are independently APPROVED with fixture 41/41, CI 1/64 plus 57/57, and maturity 36/36 plus 21/21 GREEN",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/ci-readback/build_task7_fixtures.py --check",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and ignored failed-attempt/review records are not tracked repository artifacts; a new exact-tree Task 7 cohort and all downstream gates remain open"
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "Task 11w absent-ref CAS owner report sha256 472e844fe54d574350ecb965b4f0414a8d77ec0df852a2b42dee2f88f5ba6ab4 plus R4 truthful-upstream independent acceptance; VCS schema sha256 d29b2237d4a7c069048dd20b513c1546d9f94bca446f31bcf0b9589f8a6d09a1, checker sha256 3acec46b1fcf73714d7a8a4f5b826298054a1bbd5df847147c4e9ac59b4c0380, and test sha256 3c88d528208e9a0d4bbb68119c847a3501fac1c24848e61079b3dc9e600a3d8c; exact absent-ref lease-create, collision controls, explicit upstream establishment, and equality readback are independently GREEN",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/vcs-action-authorization/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw stdout and stderr and the local durable owner report are not tracked repository artifacts; no authorization, push claim, receipt, or remote ref was created"
         }
       ],
       "evidence_class": "confirmed",
@@ -4122,11 +4607,19 @@
         "schema/no-model-candidate-maturity.schema.json",
         "schema/evidence-retention-manifest.schema.json",
         "schema/vcs-action-authorization.schema.json",
+        "schema/execution-tooling-manifest.schema.json",
         "tools/check_ci_readback.py",
         "tools/build_candidate_package_record.py",
         "tools/check_no_model_candidate_maturity.py",
         "tools/check_evidence_retention_manifest.py",
-        "tools/reviewed_campaign_orchestrator.py"
+        "tools/reviewed_campaign_orchestrator.py",
+        "tools/codex_live_producer_adapter.py",
+        "tools/execution_tooling_manifest.py",
+        "tests/execution-tooling-manifest/test_contract.py",
+        "schema/producer-capture-complete.schema.json",
+        "tools/finalize_producer_capture_complete.py",
+        "schema/producer-structural-completion.schema.json",
+        "tools/promote_producer_structural_completion.py"
       ],
       "binding_adr_ids": [
         "DAEE-ADR-046-001",
@@ -4179,6 +4672,9 @@
           "schema/architecture-decision-ledger.schema.json",
           "schema/source-binding.schema.json",
           "schema/state-capsule-v2.schema.json",
+          "schema/vcs-action-authorization.schema.json",
+          "schema/ci-readback.schema.json",
+          "schema/task7-deterministic-evidence-namespace.schema.json",
           "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
           "docs/audits/v0.4.6.0-wip-andon-contract-registry.json",
           "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
@@ -4189,11 +4685,14 @@
           "tools/check_andon_contract_registry.py",
           "tools/source_provenance.py",
           "tools/check_source_provenance.py",
+          "tools/check_vcs_action_authorization.py",
           "tools/check_ci_readback.py",
           "tools/write_linux_a01_evidence.py",
           "tools/write_task7_deterministic_evidence.py",
+          "tools/check_task7_deterministic_evidence_namespace.py",
           "tools/sanitized_python_bootstrap.py",
           "tools/check_no_model_candidate_maturity.py",
+          "tests/no-model-candidate-maturity/test_contract.py",
           "tools/check_evidence_retention_manifest.py",
           "tools/export_cycle_evidence_bundle.py",
           "tools/reviewed_campaign_orchestrator.py",
@@ -4201,7 +4700,21 @@
           "tools/run_reviewed_cold_review_cohort.py",
           "tools/run_no_model_preflight.py",
           "tools/run_local_ci.py",
-          "tools/check_state_capsule.py"
+          "tools/check_state_capsule.py",
+          "tools/codex_live_producer_adapter.py",
+          "schema/execution-tooling-manifest.schema.json",
+          "tools/execution_tooling_manifest.py",
+          "tests/execution-tooling-manifest/test_contract.py",
+          "tests/reviewed-campaign-orchestration/test_contract.py",
+          "schema/producer-capture-complete.schema.json",
+          "tools/finalize_producer_capture_complete.py",
+          "tests/producer-capture-finalization/test_contract.py",
+          "schema/producer-structural-completion.schema.json",
+          "tools/promote_producer_structural_completion.py",
+          "tests/producer-structural-completion/test_contract.py",
+          "tests/vcs-action-authorization/test_contract.py",
+          "tests/ci-readback/test_contract.py",
+          "tests/task7-deterministic-evidence-namespace/test_contract.py"
         ],
         "generated_files": [
           "docs/audits/v0.4.6.0-wip-andon-closure-ledger.md"
@@ -4222,6 +4735,30 @@
             "expected": "exit 0 with valid/invalid and neighboring controls passing",
             "exit_code": null,
             "evidence_sha256": null
+          },
+          {
+            "command": "python -B tests/producer-capture-finalization/test_contract.py",
+            "expected": "exit 0 with exact per-case input/prompt/context/package/custody/output/provider-receipt joins and failure nonpublication passing",
+            "exit_code": 0,
+            "evidence_sha256": null
+          },
+          {
+            "command": "python -B tests/producer-structural-completion/test_contract.py",
+            "expected": "exit 0 with exact five-case identity/ref/output joins, all six execution-tooling canaries, test-only finalizer barrier, create-once publication, safe rollback, collision defense, and successful retry passing",
+            "exit_code": 0,
+            "evidence_sha256": "36af90f0de9b09b81bf8c57ee8ee3cd23d62515bd6d59e96f07f3d4fac00c8ec"
+          },
+          {
+            "command": "python -B tests/ci-readback/test_contract.py",
+            "expected": "exit 0 with exact Branch 11 Task 7 bundle/nested locators, isolated fixture materialization, right-reason negatives, and Branch 10 compatibility passing",
+            "exit_code": 0,
+            "evidence_sha256": "f9ac3bd870fd3d4ca091d84ddfb28806b40f453d5247c1eec5290df7f6d1d4c7"
+          },
+          {
+            "command": "python -B tests/no-model-candidate-maturity/test_contract.py",
+            "expected": "exit 0 with canonical Task 7 receipt materialized only in an isolated complete fixture graph and production fixture rejection/collision controls preserved",
+            "exit_code": 0,
+            "evidence_sha256": "7ff63f20f7f25ced3a2eb311a8e8528da1aa6c0ea98428ebf65b2c43a14d9f44"
           }
         ],
         "right_reason_negatives": [
@@ -4277,7 +4814,7 @@
       "remaining_risk": [
         "deterministic closure is not model, WIP, merge, release, or regression proof"
       ],
-      "next_action": "Keep A16 terminal OPEN; freeze the independently accepted R3 repair set as a new tree, rebuild source/generated/package/preflight/local-CI evidence, and require a zero-finding whole-branch review before a successor commit, exact-SHA CI/external receipt, or fresh mature candidate; no paid campaign may begin earlier.",
+      "next_action": "Keep A16 PARTIAL and terminal OPEN; regenerate the Branch 11 deterministic cohort on the final repaired tree, freeze and independently review that tree, require successor exact-SHA CI and a fresh mature candidate, then execute only the authorized governed campaign before final owner acceptance.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,

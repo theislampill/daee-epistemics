@@ -1,0 +1,6 @@
+{
+  "schema": "daee-package-harness-scenario-v1",
+  "scenario": "adapter-hash-mismatch",
+  "expected_valid": false,
+  "mutation": "adapter-hash-mismatch"
+}

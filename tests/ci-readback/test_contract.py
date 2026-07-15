@@ -9,6 +9,7 @@ import json
 import hashlib
 import importlib
 import ctypes
+from ctypes import wintypes
 import io
 import os
 import subprocess
@@ -95,71 +96,167 @@ REQUIRED_NEGATIVES = {
     "forged-full-local-ci-pass-marker",
     "task7-execution-profile-drift",
     "task7-removed-environment-name-profile-drift",
+    "task7-primary-locator-substitution",
 }
 
 
-def process_is_running(pid: int) -> bool:
+def read_process_identity(path: Path) -> dict[str, int | None]:
+    value = json.loads(path.read_text(encoding="ascii"))
+    if (
+        not isinstance(value, dict)
+        or set(value) != {"creation_filetime", "pid"}
+        or type(value.get("pid")) is not int
+        or value["pid"] <= 0
+        or (
+            value.get("creation_filetime") is not None
+            and (type(value["creation_filetime"]) is not int or value["creation_filetime"] <= 0)
+        )
+    ):
+        raise AssertionError(f"malformed test process identity: {value!r}")
+    return value
+
+
+def _open_matching_windows_process(identity: dict[str, int | None]) -> int | None:
+    creation_filetime = identity.get("creation_filetime")
+    if type(creation_filetime) is not int:
+        raise AssertionError("Windows test process identity lacks a creation FILETIME")
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel32.OpenProcess.argtypes = [ctypes.c_ulong, ctypes.c_int, ctypes.c_ulong]
+    kernel32.OpenProcess.restype = ctypes.c_void_p
+    kernel32.GetProcessTimes.argtypes = [
+        ctypes.c_void_p,
+        ctypes.POINTER(wintypes.FILETIME),
+        ctypes.POINTER(wintypes.FILETIME),
+        ctypes.POINTER(wintypes.FILETIME),
+        ctypes.POINTER(wintypes.FILETIME),
+    ]
+    kernel32.GetProcessTimes.restype = ctypes.c_int
+    kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
+    kernel32.CloseHandle.restype = ctypes.c_int
+    handle = kernel32.OpenProcess(0x0001 | 0x1000 | 0x100000, False, int(identity["pid"]))
+    if not handle:
+        error = ctypes.get_last_error()
+        if error == 87:  # ERROR_INVALID_PARAMETER: the recorded PID no longer exists.
+            return None
+        raise ctypes.WinError(error)
+    creation = wintypes.FILETIME()
+    exit_time = wintypes.FILETIME()
+    kernel = wintypes.FILETIME()
+    user = wintypes.FILETIME()
+    if not kernel32.GetProcessTimes(
+        handle,
+        ctypes.byref(creation),
+        ctypes.byref(exit_time),
+        ctypes.byref(kernel),
+        ctypes.byref(user),
+    ):
+        error = ctypes.get_last_error()
+        kernel32.CloseHandle(handle)
+        raise ctypes.WinError(error)
+    observed = (int(creation.dwHighDateTime) << 32) | int(creation.dwLowDateTime)
+    if observed != creation_filetime:
+        if not kernel32.CloseHandle(handle):
+            raise ctypes.WinError(ctypes.get_last_error())
+        return None
+    return int(handle)
+
+
+def wait_for_process_exit(identity: dict[str, int | None], timeout: float = 5.0) -> bool:
+    pid = int(identity["pid"])
     if os.name == "nt":
         kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
-        kernel32.OpenProcess.restype = ctypes.c_void_p
-        handle = kernel32.OpenProcess(0x1000, False, pid)
-        if not handle:
-            return False
+        kernel32.WaitForSingleObject.argtypes = [ctypes.c_void_p, ctypes.c_ulong]
+        kernel32.WaitForSingleObject.restype = ctypes.c_ulong
+        kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
+        kernel32.CloseHandle.restype = ctypes.c_int
+        handle = _open_matching_windows_process(identity)
+        if handle is None:
+            return True
         try:
-            exit_code = ctypes.c_ulong()
-            if not kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
-                return False
-            return exit_code.value == 259
+            result = kernel32.WaitForSingleObject(ctypes.c_void_p(handle), max(0, int(timeout * 1000)))
+            if result not in {0x00000000, 0x00000102}:
+                raise ctypes.WinError(ctypes.get_last_error())
+            return result == 0x00000000
         finally:
-            kernel32.CloseHandle(handle)
+            if not kernel32.CloseHandle(ctypes.c_void_p(handle)):
+                raise ctypes.WinError(ctypes.get_last_error())
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        try:
+            os.kill(pid, 0)
+        except OSError:
+            return True
+        time.sleep(0.05)
     try:
         os.kill(pid, 0)
     except OSError:
-        return False
-    return True
+        return True
+    return False
 
 
-def wait_for_process_exit(pid: int, timeout: float = 5.0) -> bool:
-    deadline = time.monotonic() + timeout
-    while time.monotonic() < deadline:
-        if not process_is_running(pid):
-            return True
-        time.sleep(0.05)
-    return not process_is_running(pid)
-
-
-def stop_test_process(pid: int) -> None:
-    if not process_is_running(pid):
-        return
+def stop_test_process(identity: dict[str, int | None]) -> None:
+    pid = int(identity["pid"])
     if os.name == "nt":
-        subprocess.run(
-            ["taskkill", "/PID", str(pid), "/T", "/F"],
-            capture_output=True,
-            check=False,
-        )
-    else:
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel32.WaitForSingleObject.argtypes = [ctypes.c_void_p, ctypes.c_ulong]
+        kernel32.WaitForSingleObject.restype = ctypes.c_ulong
+        kernel32.TerminateProcess.argtypes = [ctypes.c_void_p, ctypes.c_uint]
+        kernel32.TerminateProcess.restype = ctypes.c_int
+        kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
+        kernel32.CloseHandle.restype = ctypes.c_int
+        handle = _open_matching_windows_process(identity)
+        if handle is None:
+            return
         try:
-            os.kill(pid, 9)
-        except OSError:
-            pass
+            if kernel32.WaitForSingleObject(ctypes.c_void_p(handle), 0) == 0x00000102:
+                if not kernel32.TerminateProcess(ctypes.c_void_p(handle), 91):
+                    raise ctypes.WinError(ctypes.get_last_error())
+                if kernel32.WaitForSingleObject(ctypes.c_void_p(handle), 5000) != 0x00000000:
+                    raise AssertionError("matching test process did not terminate")
+        finally:
+            if not kernel32.CloseHandle(ctypes.c_void_p(handle)):
+                raise ctypes.WinError(ctypes.get_last_error())
+        return
+    try:
+        os.kill(pid, 9)
+    except OSError:
+        pass
 
 
 def write_owned_process_tree(root: Path) -> tuple[list[str], Path, Path]:
-    child_pid = root / "child.pid"
-    grandchild_pid = root / "grandchild.pid"
+    child_identity = root / "child.identity.json"
+    grandchild_identity = root / "grandchild.identity.json"
+    identity_source = (
+        "def process_identity():\n"
+        "    if os.name != 'nt':\n"
+        "        return {'creation_filetime': None, 'pid': os.getpid()}\n"
+        "    import ctypes\n"
+        "    from ctypes import wintypes\n"
+        "    kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)\n"
+        "    kernel32.GetCurrentProcess.restype = wintypes.HANDLE\n"
+        "    kernel32.GetProcessTimes.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.FILETIME), ctypes.POINTER(wintypes.FILETIME), ctypes.POINTER(wintypes.FILETIME), ctypes.POINTER(wintypes.FILETIME)]\n"
+        "    kernel32.GetProcessTimes.restype = wintypes.BOOL\n"
+        "    creation, exit_time, kernel, user = (wintypes.FILETIME() for _ in range(4))\n"
+        "    if not kernel32.GetProcessTimes(kernel32.GetCurrentProcess(), ctypes.byref(creation), ctypes.byref(exit_time), ctypes.byref(kernel), ctypes.byref(user)):\n"
+        "        raise ctypes.WinError(ctypes.get_last_error())\n"
+        "    value = (int(creation.dwHighDateTime) << 32) | int(creation.dwLowDateTime)\n"
+        "    return {'creation_filetime': value, 'pid': os.getpid()}\n"
+    )
     grandchild = root / "grandchild.py"
     grandchild.write_text(
-        "import os, sys, time\n"
+        "import json, os, sys, time\n"
         "from pathlib import Path\n"
-        "Path(sys.argv[1]).write_text(str(os.getpid()), encoding='ascii')\n"
+        + identity_source
+        + "Path(sys.argv[1]).write_text(json.dumps(process_identity(), sort_keys=True, separators=(',', ':')), encoding='ascii')\n"
         "time.sleep(60)\n",
         encoding="utf-8",
     )
     child = root / "child.py"
     child.write_text(
-        "import os, subprocess, sys, time\n"
+        "import json, os, subprocess, sys, time\n"
         "from pathlib import Path\n"
-        "Path(sys.argv[1]).write_text(str(os.getpid()), encoding='ascii')\n"
+        + identity_source
+        + "Path(sys.argv[1]).write_text(json.dumps(process_identity(), sort_keys=True, separators=(',', ':')), encoding='ascii')\n"
         "subprocess.Popen([sys.executable, sys.argv[2], sys.argv[3]])\n"
         "deadline = time.monotonic() + 5\n"
         "while not Path(sys.argv[3]).exists() and time.monotonic() < deadline:\n"
@@ -167,7 +264,11 @@ def write_owned_process_tree(root: Path) -> tuple[list[str], Path, Path]:
         "time.sleep(60)\n",
         encoding="utf-8",
     )
-    return [sys.executable, str(child), str(child_pid), str(grandchild), str(grandchild_pid)], child_pid, grandchild_pid
+    return (
+        [sys.executable, str(child), str(child_identity), str(grandchild), str(grandchild_identity)],
+        child_identity,
+        grandchild_identity,
+    )
 
 
 class CiReadbackContract(unittest.TestCase):
@@ -212,11 +313,136 @@ class CiReadbackContract(unittest.TestCase):
         self.assertEqual(schema["properties"]["provider"], {"const": "github-actions"})
         self.assertIn("artifact_inventory", schema["required"])
         self.assertEqual(
+            {"const": "refs/remotes/origin/codex/v0.4.6.0-runtime-footprint-b11"},
             schema["properties"]["source"]["properties"]["equality"]["properties"]["upstream_ref"],
-            {"const": "refs/remotes/origin/codex/v0.4.6.0-runtime-footprint-b10"},
         )
         source = CHECKER.read_text(encoding="utf-8")
         self.assertIn("len(all_artifacts) != 1", source)
+
+    def test_remote_update_mode_contract_keeps_null_predecessor_but_requires_tracked_upstream(self) -> None:
+        schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
+        receipt = json.loads(VALID.read_text(encoding="utf-8"))
+
+        existing = copy.deepcopy(receipt)
+        existing["vcs"]["remote_update_mode"] = "exact-old-lease-fast-forward"
+        existing["source"]["equality"]["remote_update_mode"] = (
+            "exact-old-lease-fast-forward"
+        )
+        self.assertEqual([], validate_schema_subset(existing, schema))
+
+        created = copy.deepcopy(existing)
+        created["vcs"]["remote_update_mode"] = "exact-absent-lease-create"
+        created["vcs"]["expected_old_remote_oid"] = None
+        created["source"]["equality"].update(
+            {
+                "remote_update_mode": "exact-absent-lease-create",
+                "expected_old_remote_oid": None,
+            }
+        )
+        self.assertEqual([], validate_schema_subset(created, schema))
+
+        for path, value in (
+            (("vcs", "expected_old_remote_oid"), "1" * 40),
+            (("source", "equality", "expected_old_remote_oid"), "1" * 40),
+            (("source", "equality", "upstream_ref"), None),
+            (("source", "equality", "upstream_oid"), None),
+        ):
+            with self.subTest(path=path):
+                mismatched = copy.deepcopy(created)
+                target = mismatched
+                for segment in path[:-1]:
+                    target = target[segment]
+                target[path[-1]] = value
+                self.assertTrue(validate_schema_subset(mismatched, schema))
+        for path in (
+            ("vcs", "remote_update_mode"),
+            ("source", "equality", "remote_update_mode"),
+        ):
+            with self.subTest(missing=path):
+                missing = copy.deepcopy(created)
+                target = missing
+                for segment in path[:-1]:
+                    target = target[segment]
+                del target[path[-1]]
+                self.assertTrue(validate_schema_subset(missing, schema))
+
+    def test_vcs_readback_rejects_authorization_receipt_source_mode_disagreement(self) -> None:
+        checker = importlib.import_module("check_ci_readback")
+        receipt = json.loads(VALID.read_text(encoding="utf-8"))
+        receipt["vcs"]["remote_update_mode"] = "exact-absent-lease-create"
+        receipt["vcs"]["expected_old_remote_oid"] = None
+        receipt["source"]["equality"].update(
+            {
+                "remote_update_mode": "exact-absent-lease-create",
+                "upstream_ref": None,
+                "upstream_oid": None,
+                "expected_old_remote_oid": None,
+            }
+        )
+        public_push_authorization = {
+            "schema": "vcs-action-authorization-v1",
+            "commit_receipt": receipt["vcs"]["commit"]["action_receipt"],
+            "remote_update_mode": "exact-absent-lease-create",
+            "expected_old_remote_oid": None,
+        }
+
+        def validate(candidate: dict[str, object], authorization: dict[str, object]):
+            with mock.patch.object(
+                checker,
+                "_validate_public_action_chain",
+                side_effect=[
+                    ({"authorization": {"schema": "vcs-action-authorization-v1"}}, None),
+                    ({"authorization": authorization}, None),
+                ],
+            ):
+                return checker._validate_vcs(candidate)
+
+        self.assertIsNone(validate(receipt, public_push_authorization))
+        for location in ("receipt", "source"):
+            with self.subTest(location=location):
+                mismatched = copy.deepcopy(receipt)
+                if location == "receipt":
+                    mismatched["vcs"]["remote_update_mode"] = (
+                        "exact-old-lease-fast-forward"
+                    )
+                else:
+                    mismatched["source"]["equality"]["remote_update_mode"] = (
+                        "exact-old-lease-fast-forward"
+                    )
+                finding = validate(mismatched, public_push_authorization)
+                self.assertIsNotNone(finding)
+                self.assertEqual("remote-update-mode", finding.failure_subcode)
+
+    def test_create_mode_source_equality_rejects_null_upstream_after_push(self) -> None:
+        checker = importlib.import_module("check_ci_readback")
+        with self.assertRaisesRegex(ValueError, "upstream"):
+            checker._validated_source_equality(
+                local_head="3" * 40,
+                source_sha="3" * 40,
+                upstream_ref=None,
+                upstream_oid=None,
+                live_remote_ref="refs/heads/codex/v0.4.6.0-runtime-footprint-b11",
+                live_remote_oid="3" * 40,
+                expected_old_remote_oid=None,
+                remote_update_mode="exact-absent-lease-create",
+            )
+
+        equality = checker._validated_source_equality(
+            local_head="3" * 40,
+            source_sha="3" * 40,
+            upstream_ref="refs/remotes/origin/codex/v0.4.6.0-runtime-footprint-b11",
+            upstream_oid="3" * 40,
+            live_remote_ref="refs/heads/codex/v0.4.6.0-runtime-footprint-b11",
+            live_remote_oid="3" * 40,
+            expected_old_remote_oid=None,
+            remote_update_mode="exact-absent-lease-create",
+        )
+        self.assertEqual(
+            "refs/remotes/origin/codex/v0.4.6.0-runtime-footprint-b11",
+            equality["upstream_ref"],
+        )
+        self.assertEqual("3" * 40, equality["upstream_oid"])
+        self.assertTrue(equality["all_equal"])
 
     def test_valid_fixture_and_same_stem_expectations_are_complete(self) -> None:
         schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
@@ -228,16 +454,20 @@ class CiReadbackContract(unittest.TestCase):
         self.assertEqual(receipt["linux_a01"]["artifact"]["entry_byte_count"], len(evidence_raw))
         self.assertEqual(receipt["linux_a01"]["artifact"]["entry_sha256"], hashlib.sha256(evidence_raw).hexdigest())
         self.assertEqual(receipt["artifact_inventory"], [receipt["linux_a01"]["artifact"]])
-        for role, ref in receipt["deterministic_verdicts"].items():
-            with self.subTest(deterministic_verdict=role):
-                artifact_path = ROOT / ref["path"]
-                artifact_raw = artifact_path.read_bytes()
-                artifact = json.loads(artifact_raw)
-                self.assertEqual(ref["byte_count"], len(artifact_raw))
-                self.assertEqual(ref["sha256"], hashlib.sha256(artifact_raw).hexdigest())
-                self.assertEqual(ref["artifact_schema"], artifact["schema"])
-                self.assertEqual(ref["kind"], artifact["kind"])
-                self.assertEqual(ref["status"], artifact["status"])
+        checker = importlib.import_module("check_ci_readback")
+        with tempfile.TemporaryDirectory() as directory:
+            fixture_root = Path(directory)
+            checker._materialize_task7_self_test_root(fixture_root)
+            for role, ref in receipt["deterministic_verdicts"].items():
+                with self.subTest(deterministic_verdict=role):
+                    artifact_path = fixture_root / ref["path"]
+                    artifact_raw = artifact_path.read_bytes()
+                    artifact = json.loads(artifact_raw)
+                    self.assertEqual(ref["byte_count"], len(artifact_raw))
+                    self.assertEqual(ref["sha256"], hashlib.sha256(artifact_raw).hexdigest())
+                    self.assertEqual(ref["artifact_schema"], artifact["schema"])
+                    self.assertEqual(ref["kind"], artifact["kind"])
+                    self.assertEqual(ref["status"], artifact["status"])
         expectation_schema = json.loads(EXPECTATION_SCHEMA.read_text(encoding="utf-8"))
         fixtures = sorted((HERE / "invalid").glob("*.json"))
         fixtures = [path for path in fixtures if not path.name.endswith(".expectation.json")]
@@ -319,16 +549,18 @@ class CiReadbackContract(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as directory:
             temp_root = Path(directory)
-            path = temp_root / "native.json"
+            checker._materialize_task7_self_test_root(temp_root)
+            path = temp_root / checker.TASK7_NO_MODEL_NATIVE_REPORT_REL
+            path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(value), encoding="utf-8")
             writer._validate_no_model_native_report(path)
 
             receipt = json.loads(VALID.read_text(encoding="utf-8"))
             bundle_ref = receipt["deterministic_verdicts"]["no_model_preflight"]
-            bundle = json.loads((ROOT / bundle_ref["path"]).read_text(encoding="utf-8"))
-            report = json.loads((ROOT / bundle["report"]["path"]).read_text(encoding="utf-8"))
-            command_log = json.loads((ROOT / bundle["log"]["path"]).read_text(encoding="utf-8"))
-            freeze = json.loads((ROOT / bundle["source_freeze"]["path"]).read_text(encoding="utf-8"))
+            bundle = json.loads((temp_root / bundle_ref["path"]).read_text(encoding="utf-8"))
+            report = json.loads((temp_root / bundle["report"]["path"]).read_text(encoding="utf-8"))
+            command_log = json.loads((temp_root / bundle["log"]["path"]).read_text(encoding="utf-8"))
+            freeze = json.loads((temp_root / bundle["source_freeze"]["path"]).read_text(encoding="utf-8"))
 
             def readback_finding(native: dict[str, object]) -> object:
                 raw = (json.dumps(native, indent=2) + "\n").encode("utf-8")
@@ -389,6 +621,75 @@ class CiReadbackContract(unittest.TestCase):
                 expected_returncode = preflight.EXPECTED_GATE_RETURN_CODES.get(gate["number"], 0)
                 for step in gate["steps"]:
                     self.assertEqual(step["returncode"], expected_returncode)
+
+    def test_task7_branch11_namespace_is_shared_by_writer_and_ci_readback(self) -> None:
+        self.require_checker()
+        checker = importlib.import_module("check_ci_readback")
+        writer = importlib.import_module("write_task7_deterministic_evidence")
+        namespace_id = "branch11-v1"
+        contract = writer.namespace_contract(namespace_id)
+        self.assertEqual(checker.TASK7_EVIDENCE_NAMESPACE, namespace_id)
+        self.assertEqual(checker.DETERMINISTIC_VERDICT_ROOT_REL, contract.evidence_rel)
+        for kind in writer.STATUS_BY_KIND:
+            with self.subTest(kind=kind):
+                self.assertEqual(
+                    checker._task7_producer_command(kind),
+                    writer.producer_command(kind, namespace_id),
+                )
+        freeze = json.loads(
+            (ROOT / "tests/ci-readback/support/task7-source-freeze.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(freeze["schema"], "daee-task7-precommit-source-freeze-v2")
+        self.assertEqual(freeze["evidence_namespace"], namespace_id)
+        self.assertEqual(freeze["evidence_root"], contract.evidence_rel.as_posix())
+        self.assertEqual(
+            freeze["freeze_id"],
+            checker._task7_freeze_id(freeze["expected_final_tree_oid"], freeze["files_sha256"]),
+        )
+
+    def test_task7_branch11_evidence_locators_are_exact(self) -> None:
+        self.require_checker()
+        checker = importlib.import_module("check_ci_readback")
+        receipt = json.loads(VALID.read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as directory:
+            temp_root = Path(directory)
+            checker._materialize_task7_self_test_root(temp_root)
+            self.assertEqual(checker._validate_receipt_structure(receipt, root=temp_root), [])
+
+            primary = copy.deepcopy(receipt)
+            primary["deterministic_verdicts"]["no_model_preflight"]["path"] = (
+                "tests/ci-readback/support/task7-no-model-preflight.json"
+            )
+            findings = checker._validate_receipt_structure(primary, root=temp_root)
+            self.assertTrue(findings)
+            self.assertEqual(
+                (findings[0].failure_class, findings[0].failure_subcode),
+                ("deterministic_verdicts", "artifact-locator"),
+            )
+
+            ref = receipt["deterministic_verdicts"]["no_model_preflight"]
+            bundle = json.loads((temp_root / ref["path"]).read_text(encoding="utf-8"))
+            source_tree_oid = receipt["source"]["tree_oid"]
+            for field, support_path in (
+                ("report", "tests/ci-readback/support/task7-no-model-preflight-report.json"),
+                ("log", "tests/ci-readback/support/task7-no-model-preflight.log"),
+                ("source_freeze", "tests/ci-readback/support/task7-source-freeze.json"),
+            ):
+                with self.subTest(field=field):
+                    candidate = copy.deepcopy(bundle)
+                    candidate[field]["path"] = support_path
+                    finding = checker._validate_task7_bundle(
+                        "no_model_preflight",
+                        checker.DETERMINISTIC_VERDICT_SPECS["no_model_preflight"],
+                        candidate,
+                        root=temp_root,
+                        source_tree_oid=source_tree_oid,
+                    )
+                    self.assertIsNotNone(finding)
+                    self.assertEqual(
+                        (finding.failure_class, finding.failure_subcode),
+                        ("deterministic_verdicts", "artifact-locator"),
+                    )
 
     def test_cli_surface_has_no_fixture_injection_or_external_shortcut(self) -> None:
         self.require_checker()
@@ -678,22 +979,25 @@ class CiReadbackContract(unittest.TestCase):
         checker = importlib.import_module("check_ci_readback")
         receipt = json.loads(VALID.read_text(encoding="utf-8"))
         ref = receipt["deterministic_verdicts"]["no_model_preflight"]
-        bundle = json.loads((ROOT / ref["path"]).read_text(encoding="utf-8"))
-        bundle["checker"] = {
-            "path": "tests/ci-readback/support/task7-verdict-checker.py",
-            "blob_oid": "a" * 40,
-            "raw_sha256": "b" * 64,
-        }
-        bundle["command"] = ["python", "tests/ci-readback/support/task7-verdict-checker.py"]
-        finding = checker._validate_task7_bundle(
-            "no_model_preflight",
-            checker.DETERMINISTIC_VERDICT_SPECS["no_model_preflight"],
-            bundle,
-            root=ROOT,
-            source_tree_oid=receipt["source"]["tree_oid"],
-        )
-        self.assertIsNotNone(finding)
-        self.assertEqual(finding.failure_subcode, "role-command")
+        with tempfile.TemporaryDirectory() as directory:
+            temp_root = Path(directory)
+            checker._materialize_task7_self_test_root(temp_root)
+            bundle = json.loads((temp_root / ref["path"]).read_text(encoding="utf-8"))
+            bundle["checker"] = {
+                "path": "tests/ci-readback/support/task7-verdict-checker.py",
+                "blob_oid": "a" * 40,
+                "raw_sha256": "b" * 64,
+            }
+            bundle["command"] = ["python", "tests/ci-readback/support/task7-verdict-checker.py"]
+            finding = checker._validate_task7_bundle(
+                "no_model_preflight",
+                checker.DETERMINISTIC_VERDICT_SPECS["no_model_preflight"],
+                bundle,
+                root=temp_root,
+                source_tree_oid=receipt["source"]["tree_oid"],
+            )
+            self.assertIsNotNone(finding)
+            self.assertEqual(finding.failure_subcode, "role-command")
         bare = {
             "schema": "daee-task7-result-report-v1",
             "kind": "no-model-preflight",
@@ -804,6 +1108,7 @@ class CiReadbackContract(unittest.TestCase):
 
     def test_task7_role_python_profile_blocks_inherited_sitecustomize_pass_forgery(self) -> None:
         writer = importlib.import_module("write_task7_deterministic_evidence")
+        command_count = len(importlib.import_module("run_local_ci").COMMANDS)
         with tempfile.TemporaryDirectory(prefix="daee-task7-python-env-") as temporary:
             root = Path(temporary)
             sentinel = root / "sitecustomize-ran"
@@ -811,7 +1116,7 @@ class CiReadbackContract(unittest.TestCase):
                 "import os\n"
                 "from pathlib import Path\n"
                 f"Path({str(sentinel)!r}).write_text('injected', encoding='ascii')\n"
-                "os.write(1, b'run_local_ci: PASS (172 command(s), indices 1-172)\\n')\n"
+                f"os.write(1, b'run_local_ci: PASS ({command_count} command(s), indices 1-{command_count})\\n')\n"
                 "os._exit(0)\n",
                 encoding="utf-8",
             )
@@ -1210,17 +1515,225 @@ class CiReadbackContract(unittest.TestCase):
             with self.subTest(command=command), self.assertRaises(ValueError):
                 runner.execution_argv_for(command)
 
-    def test_windows_timeout_teardown_failures_are_structured_infrastructure_results(self) -> None:
+    def test_windows_timeout_uses_generation_stable_job_custody_not_pid_ancestry(self) -> None:
+        runner = importlib.import_module("run_local_ci")
+        events: list[str] = []
+
+        class FakeProcess:
+            pid = 55492
+            _handle = 70001
+
+            def __init__(self) -> None:
+                self.returncode = None
+                self.communicate_calls = 0
+
+            def communicate(self, timeout: float | None = None) -> tuple[bytes, bytes]:
+                self.communicate_calls += 1
+                events.append("communicate" if self.communicate_calls == 1 else "communicate-after-teardown")
+                if self.communicate_calls == 1:
+                    raise subprocess.TimeoutExpired(["owned"], timeout, output=b"partial", stderr=b"")
+                return b"complete", b""
+
+            def poll(self) -> int | None:
+                return self.returncode
+
+            def wait(self, timeout: float | None = None) -> int:
+                events.append("wait-root")
+                self.returncode = 124
+                return self.returncode
+
+            def kill(self) -> None:
+                raise AssertionError("stable Job Object custody must not fall back to root PID/process.kill")
+
+        class FakeWindowsJobCustody:
+            def __init__(self) -> None:
+                events.append("create-job")
+                self.active = 1
+
+            def assign_verify_resume(self, process: FakeProcess) -> None:
+                self.assert_process(process)
+                events.extend(["assign-stable-handle", "verify-membership", "resume-suspended-root"])
+
+            def active_processes(self) -> int:
+                events.append("query-active-processes")
+                return self.active
+
+            def terminate(self, exit_code: int) -> None:
+                self.assertEqual(exit_code, 124)
+                events.append("terminate-job")
+                self.active = 0
+
+            def close(self) -> None:
+                events.append("close-job")
+
+            @staticmethod
+            def assert_process(process: FakeProcess) -> None:
+                if process._handle != 70001:
+                    raise AssertionError("Job Object assignment did not receive the stable process handle")
+
+            @staticmethod
+            def assertEqual(actual: int, expected: int) -> None:
+                if actual != expected:
+                    raise AssertionError(f"expected {expected}, got {actual}")
+
+        process = FakeProcess()
+        stale_parent_generation = {45372: 55492, 41852: 45372}
+
+        def launch(*args: object, **kwargs: object) -> FakeProcess:
+            del args
+            flags = int(kwargs.get("creationflags", 0))
+            self.assertEqual(flags & 0x00000200, 0x00000200)
+            self.assertEqual(flags & 0x00000004, 0x00000004)
+            events.append("launch-suspended-root")
+            return process
+
+        with mock.patch.object(runner.os, "name", "nt"), mock.patch.object(
+            runner.subprocess,
+            "CREATE_NEW_PROCESS_GROUP",
+            0x00000200,
+            create=True,
+        ), mock.patch.object(
+            runner.subprocess,
+            "Popen",
+            side_effect=launch,
+        ), mock.patch.object(
+            runner,
+            "_WindowsJobCustody",
+            FakeWindowsJobCustody,
+            create=True,
+        ), mock.patch.object(
+            runner,
+            "_windows_process_parent_map",
+            side_effect=[stale_parent_generation, stale_parent_generation],
+            create=True,
+        ) as parent_snapshot, mock.patch.object(
+            runner,
+            "_windows_pid_is_running",
+            side_effect=lambda pid: pid in {41852, 45372},
+            create=True,
+        ) as pid_running, mock.patch.object(
+            runner.subprocess,
+            "run",
+            return_value=subprocess.CompletedProcess(["taskkill"], 0, b"", b""),
+        ) as taskkill, mock.patch.object(runner, "PROCESS_TREE_TERMINATION_GRACE_SECONDS", 0.0):
+            result = runner.run_owned_command(["owned"], timeout_seconds=1)
+
+        self.assertEqual(result.returncode, 124, (result.stderr or b"").decode("utf-8", "replace"))
+        self.assertTrue(result.timed_out)
+        self.assertFalse(result.teardown_failed)
+        self.assertEqual(result.failure_kind, None)
+        parent_snapshot.assert_not_called()
+        pid_running.assert_not_called()
+        taskkill.assert_not_called()
+        self.assertEqual(
+            events,
+            [
+                "create-job",
+                "launch-suspended-root",
+                "assign-stable-handle",
+                "verify-membership",
+                "resume-suspended-root",
+                "communicate",
+                "query-active-processes",
+                "terminate-job",
+                "query-active-processes",
+                "wait-root",
+                "close-job",
+                "communicate-after-teardown",
+            ],
+        )
+
+    def test_windows_launch_custody_failures_are_structured_infrastructure_results(self) -> None:
         runner = importlib.import_module("run_local_ci")
 
         class FakeProcess:
             pid = 43120
+            _handle = 70002
+            returncode = None
+
+            def poll(self) -> int | None:
+                return self.returncode
+
+            def wait(self, timeout: float | None = None) -> int:
+                self.returncode = 125
+                return self.returncode
+
+        class FakeKernel32:
+            def __init__(self) -> None:
+                self.terminations: list[tuple[int, int]] = []
+
+            def TerminateProcess(self, handle: object, exit_code: int) -> bool:
+                value = int(getattr(handle, "value", handle))
+                self.terminations.append((value, exit_code))
+                return True
+
+        cases = {
+            "job-create": {"factory": OSError("job-create"), "popen": None},
+            "job-configure": {"factory": OSError("job-configure"), "popen": None},
+            "process-launch": {"factory": None, "popen": OSError("process-launch")},
+            "job-assign": {"factory": RuntimeError("job-assign"), "popen": FakeProcess()},
+            "job-verify": {"factory": RuntimeError("job-verify"), "popen": FakeProcess()},
+            "root-resume": {"factory": RuntimeError("root-resume"), "popen": FakeProcess()},
+        }
+        for name, case in cases.items():
+            with self.subTest(name=name):
+                events: list[str] = []
+                kernel32 = FakeKernel32()
+
+                class FakeJob:
+                    def assign_verify_resume(self, process: FakeProcess) -> None:
+                        del process
+                        if isinstance(case["factory"], BaseException):
+                            raise case["factory"]
+
+                    def close(self) -> None:
+                        events.append("close-job")
+
+                factory = (
+                    mock.Mock(side_effect=case["factory"])
+                    if name in {"job-create", "job-configure"}
+                    else mock.Mock(return_value=FakeJob())
+                )
+                popen_value = case["popen"]
+                popen = (
+                    mock.Mock(side_effect=popen_value)
+                    if isinstance(popen_value, BaseException)
+                    else mock.Mock(return_value=popen_value)
+                )
+                with mock.patch.object(runner.os, "name", "nt"), mock.patch.object(
+                    runner.subprocess,
+                    "CREATE_NEW_PROCESS_GROUP",
+                    0x00000200,
+                    create=True,
+                ), mock.patch.object(runner, "_WindowsJobCustody", factory, create=True), mock.patch.object(
+                    runner.subprocess, "Popen", popen
+                ), mock.patch.object(runner, "_kernel32", kernel32, create=True), mock.patch.object(
+                    runner.subprocess,
+                    "run",
+                    side_effect=AssertionError("taskkill fallback is forbidden"),
+                ):
+                    result = runner.run_owned_command(["owned"], timeout_seconds=1)
+
+                self.assertEqual(result.returncode, 125)
+                self.assertFalse(result.timed_out)
+                self.assertTrue(result.teardown_failed)
+                self.assertEqual(result.failure_kind, "PROCESS_TREE_TEARDOWN")
+                self.assertIn(name, (result.stderr or b"").decode("utf-8"))
+                if isinstance(popen_value, FakeProcess):
+                    self.assertEqual(kernel32.terminations, [(70002, 125)])
+                    self.assertEqual(events, ["close-job"])
+
+    def test_windows_timeout_job_failures_are_structured_infrastructure_results(self) -> None:
+        runner = importlib.import_module("run_local_ci")
+
+        class FakeProcess:
+            pid = 43120
+            _handle = 70003
 
             def __init__(self, *, wait_timeout: bool = False) -> None:
                 self.returncode = None
                 self.wait_timeout = wait_timeout
                 self.communicate_calls = 0
-                self.kill_calls = 0
 
             def communicate(self, timeout: float | None = None) -> tuple[bytes, bytes]:
                 self.communicate_calls += 1
@@ -1232,90 +1745,124 @@ class CiReadbackContract(unittest.TestCase):
                 return self.returncode
 
             def kill(self) -> None:
-                self.kill_calls += 1
-                self.returncode = -9
+                raise AssertionError("Job Object timeout custody must not use process.kill")
 
             def wait(self, timeout: float | None = None) -> int:
                 if self.wait_timeout:
                     self.wait_timeout = False
                     raise subprocess.TimeoutExpired(["owned"], timeout)
-                if self.returncode is None:
-                    self.returncode = 0
+                self.returncode = 124
                 return self.returncode
 
         cases = {
-            "taskkill-nonzero": {
-                "taskkill": subprocess.CompletedProcess(["taskkill"], 1, b"", b"denied"),
-                "wait_timeout": False,
-                "parent_maps": [{43121: 43120}, {}],
-                "running": False,
-                "marker": "taskkill-returncode",
-            },
-            "taskkill-spawn-failure": {
-                "taskkill": FileNotFoundError("taskkill unavailable"),
-                "wait_timeout": False,
-                "parent_maps": [{43121: 43120}, {}],
-                "running": False,
-                "marker": "taskkill-spawn",
-            },
-            "taskkill-timeout": {
-                "taskkill": subprocess.TimeoutExpired(["taskkill"], 0),
-                "wait_timeout": False,
-                "parent_maps": [{43121: 43120}, {}],
-                "running": False,
-                "marker": "taskkill-timeout",
-            },
-            "root-wait-timeout": {
-                "taskkill": subprocess.CompletedProcess(["taskkill"], 0, b"", b""),
-                "wait_timeout": True,
-                "parent_maps": [{43121: 43120}, {}],
-                "running": False,
-                "marker": "root-wait-timeout",
-            },
-            "surviving-descendant": {
-                "taskkill": subprocess.CompletedProcess(["taskkill"], 0, b"", b""),
-                "wait_timeout": False,
-                "parent_maps": [{43121: 43120}, {43121: 43120}],
-                "running": lambda pid: pid == 43121,
-                "marker": "surviving-pids",
-            },
+            "job-query-before": {"active": [OSError("query"), 0], "terminate": None, "wait": False, "close": None},
+            "job-terminate": {"active": [1, 0], "terminate": OSError("terminate"), "wait": False, "close": None},
+            "active-processes": {"active": [1, 1], "terminate": None, "wait": False, "close": None},
+            "root-wait": {"active": [1, 0], "terminate": None, "wait": True, "close": None},
+            "job-close": {"active": [1, 0], "terminate": None, "wait": False, "close": OSError("close")},
         }
         for name, case in cases.items():
             with self.subTest(name=name):
-                process = FakeProcess(wait_timeout=case["wait_timeout"])
-                taskkill = case["taskkill"]
-                run_patch = (
-                    mock.patch.object(runner.subprocess, "run", side_effect=taskkill)
-                    if isinstance(taskkill, BaseException)
-                    else mock.patch.object(runner.subprocess, "run", return_value=taskkill)
-                )
+                process = FakeProcess(wait_timeout=bool(case["wait"]))
+
+                class FakeJob:
+                    def __init__(self) -> None:
+                        self.active = list(case["active"])
+                        self.close_calls = 0
+
+                    def assign_verify_resume(self, launched: FakeProcess) -> None:
+                        self.launched = launched
+
+                    def active_processes(self) -> int:
+                        value = self.active.pop(0)
+                        if isinstance(value, BaseException):
+                            raise value
+                        return int(value)
+
+                    def terminate(self, exit_code: int) -> None:
+                        self.exit_code = exit_code
+                        if isinstance(case["terminate"], BaseException):
+                            raise case["terminate"]
+
+                    def close(self) -> None:
+                        self.close_calls += 1
+                        if isinstance(case["close"], BaseException):
+                            raise case["close"]
+
+                job = FakeJob()
                 with mock.patch.object(runner.os, "name", "nt"), mock.patch.object(
                     runner.subprocess,
                     "CREATE_NEW_PROCESS_GROUP",
                     0x00000200,
                     create=True,
-                ), mock.patch.object(
+                ), mock.patch.object(runner, "_WindowsJobCustody", return_value=job, create=True), mock.patch.object(
                     runner.subprocess, "Popen", return_value=process
-                ) as popen, run_patch, mock.patch.object(
-                    runner,
-                    "_windows_process_parent_map",
-                    side_effect=case["parent_maps"],
-                    create=True,
-                ), mock.patch.object(
-                    runner,
-                    "_windows_pid_is_running",
-                    side_effect=case["running"] if callable(case["running"]) else None,
-                    return_value=case["running"] if not callable(case["running"]) else mock.DEFAULT,
-                    create=True,
-                ), mock.patch.object(runner, "PROCESS_TREE_TERMINATION_GRACE_SECONDS", 0.0):
+                ), mock.patch.object(runner, "PROCESS_TREE_TERMINATION_GRACE_SECONDS", 0.0), mock.patch.object(
+                    runner.subprocess,
+                    "run",
+                    side_effect=AssertionError("taskkill fallback is forbidden"),
+                ):
                     result = runner.run_owned_command(["owned"], timeout_seconds=1)
-                self.assertEqual(popen.call_args.kwargs.get("creationflags"), 0x00000200)
-                self.assertNotIn("start_new_session", popen.call_args.kwargs)
+
                 self.assertEqual(result.returncode, 125)
                 self.assertTrue(result.timed_out)
                 self.assertTrue(result.teardown_failed)
                 self.assertEqual(result.failure_kind, "PROCESS_TREE_TEARDOWN")
-                self.assertIn(case["marker"], (result.stderr or b"").decode("utf-8"))
+                self.assertIn(name, (result.stderr or b"").decode("utf-8"))
+                self.assertGreaterEqual(job.close_calls, 1)
+
+    def test_windows_normal_completion_requires_zero_active_job_descendants(self) -> None:
+        runner = importlib.import_module("run_local_ci")
+
+        class FakeProcess:
+            pid = 43120
+            _handle = 70004
+            returncode = 0
+
+            def communicate(self, timeout: float | None = None) -> tuple[bytes, bytes]:
+                return b"complete", b""
+
+        class FakeJob:
+            def __init__(self) -> None:
+                self.active = [1, 0]
+                self.terminate_calls: list[int] = []
+                self.close_calls = 0
+
+            def assign_verify_resume(self, process: FakeProcess) -> None:
+                self.process = process
+
+            def active_processes(self) -> int:
+                return self.active.pop(0)
+
+            def terminate(self, exit_code: int) -> None:
+                self.terminate_calls.append(exit_code)
+
+            def close(self) -> None:
+                self.close_calls += 1
+
+        process = FakeProcess()
+        job = FakeJob()
+        with mock.patch.object(runner.os, "name", "nt"), mock.patch.object(
+            runner.subprocess,
+            "CREATE_NEW_PROCESS_GROUP",
+            0x00000200,
+            create=True,
+        ), mock.patch.object(runner, "_WindowsJobCustody", return_value=job, create=True), mock.patch.object(
+            runner.subprocess, "Popen", return_value=process
+        ), mock.patch.object(
+            runner.subprocess,
+            "run",
+            side_effect=AssertionError("taskkill fallback is forbidden"),
+        ):
+            result = runner.run_owned_command(["owned"], timeout_seconds=1)
+
+        self.assertEqual(result.returncode, 125)
+        self.assertFalse(result.timed_out)
+        self.assertTrue(result.teardown_failed)
+        self.assertEqual(result.failure_kind, "PROCESS_TREE_TEARDOWN")
+        self.assertIn("active-descendants-after-root:1", (result.stderr or b"").decode("utf-8"))
+        self.assertEqual(job.terminate_calls, [125])
+        self.assertEqual(job.close_calls, 1)
 
     def test_local_ci_cli_preserves_distinct_teardown_failure(self) -> None:
         runner = importlib.import_module("run_local_ci")
@@ -1323,7 +1870,7 @@ class CiReadbackContract(unittest.TestCase):
             args=["owned"],
             returncode=125,
             stdout=b"",
-            stderr=b"PROCESS_TREE_TEARDOWN taskkill-timeout",
+            stderr=b"PROCESS_TREE_TEARDOWN job-terminate:OSError",
             timed_out=True,
             teardown_failed=True,
             failure_kind="PROCESS_TREE_TEARDOWN",
@@ -1345,14 +1892,14 @@ class CiReadbackContract(unittest.TestCase):
         runner = importlib.import_module("run_local_ci")
         with tempfile.TemporaryDirectory(prefix="daee-local-ci-timeout-") as temporary:
             root = Path(temporary)
-            first_argv, child_pid_path, grandchild_pid_path = write_owned_process_tree(root)
+            first_argv, child_identity_path, grandchild_identity_path = write_owned_process_tree(root)
             next_marker = root / "next-command-ran"
             next_argv = [
                 sys.executable,
                 "-c",
                 f"from pathlib import Path; Path({str(next_marker)!r}).write_text('ran', encoding='ascii')",
             ]
-            pids: list[int] = []
+            identities: list[dict[str, int | None]] = []
             try:
                 with mock.patch.object(runner, "COMMANDS", ["owned-tree", "later-command"]), mock.patch.object(
                     runner,
@@ -1365,21 +1912,21 @@ class CiReadbackContract(unittest.TestCase):
                 ):
                     exit_code = runner.main()
                 self.assertEqual(exit_code, 124)
-                self.assertTrue(child_pid_path.is_file())
-                self.assertTrue(grandchild_pid_path.is_file())
-                pids = [int(child_pid_path.read_text()), int(grandchild_pid_path.read_text())]
-                self.assertTrue(all(wait_for_process_exit(pid) for pid in pids), pids)
+                self.assertTrue(child_identity_path.is_file())
+                self.assertTrue(grandchild_identity_path.is_file())
+                identities = [read_process_identity(child_identity_path), read_process_identity(grandchild_identity_path)]
+                self.assertTrue(all(wait_for_process_exit(identity) for identity in identities), identities)
                 self.assertFalse(next_marker.exists())
             finally:
-                for path in (child_pid_path, grandchild_pid_path):
+                for path in (child_identity_path, grandchild_identity_path):
                     if path.is_file():
-                        stop_test_process(int(path.read_text()))
+                        stop_test_process(read_process_identity(path))
 
     def test_task7_outer_timeout_kills_owned_child_tree_and_propagates_124(self) -> None:
         writer = importlib.import_module("write_task7_deterministic_evidence")
         with tempfile.TemporaryDirectory(prefix="daee-task7-timeout-") as temporary:
             root = Path(temporary)
-            argv, child_pid_path, grandchild_pid_path = write_owned_process_tree(root)
+            argv, child_identity_path, grandchild_identity_path = write_owned_process_tree(root)
             logical = ["python", *argv[1:]]
             try:
                 with mock.patch.dict(writer.ROLE_CHECKS, {"full-local-ci": [logical]}):
@@ -1387,12 +1934,12 @@ class CiReadbackContract(unittest.TestCase):
                         writer._run_role_checks("full-local-ci", timeout_seconds=1)
                 self.assertEqual(raised.exception.returncode, 124)
                 self.assertIn("timeout", str(raised.exception).lower())
-                pids = [int(child_pid_path.read_text()), int(grandchild_pid_path.read_text())]
-                self.assertTrue(all(wait_for_process_exit(pid) for pid in pids), pids)
+                identities = [read_process_identity(child_identity_path), read_process_identity(grandchild_identity_path)]
+                self.assertTrue(all(wait_for_process_exit(identity) for identity in identities), identities)
             finally:
-                for path in (child_pid_path, grandchild_pid_path):
+                for path in (child_identity_path, grandchild_identity_path):
                     if path.is_file():
-                        stop_test_process(int(path.read_text()))
+                        stop_test_process(read_process_identity(path))
 
     def test_task7_contentful_fixture_cohort_is_reproducible(self) -> None:
         completed = subprocess.run(

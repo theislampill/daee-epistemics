@@ -911,7 +911,12 @@ def field_witness_mrp_resultants(payload: dict[str, Any]) -> dict[str, dict[str,
             else:
                 graph = "none"
         elif graph_value is None:
-            graph = "none"
+            target = item.get("target")
+            target_token = normalize_burden_token(str(target or ""))
+            if item.get("source") and target_token:
+                graph = f"{source_token}->{target_token}"
+            else:
+                graph = "none"
         else:
             graph = normalize_witness_graph(str(graph_value))
         resultants[source_token] = {
@@ -1097,12 +1102,27 @@ def compare_field_witness(result: ParseResult, raw_json: str, label: str = "fiel
         for burden, data in result.mrp.items()
         if data.get("result_types") or data.get("routes") or data.get("edges")
     }
-    if visible_mrp and not witness_mrp:
+    visible_edge_mrp = {
+        burden: data for burden, data in visible_mrp.items() if data.get("edges")
+    }
+    if visible_edge_mrp and not witness_mrp:
         result.errors.append(f"{label}: visible MRP resultants appear in prose but field_witness omits mrp_resultants")
+    formal_raw = field_witness_body(payload).get("formal_reread_states")
+    formal_sources = {
+        normalize_burden_token(str(state.get("source_burden") or state.get("source") or ""))
+        for state in formal_raw
+        if isinstance(state, dict)
+    } if isinstance(formal_raw, list) else set()
     for burden, data in visible_mrp.items():
         witness = witness_mrp.get(burden)
         if not witness:
-            result.errors.append(f"{label}: missing MRP resultant for visible MRP({burden})")
+            if data.get("edges"):
+                result.errors.append(f"{label}: missing MRP resultant for visible MRP({burden})")
+            elif burden not in formal_sources:
+                result.errors.append(
+                    f"{label}: non-edge MRP attestation missing for visible MRP({burden}); "
+                    "provide mrp_resultants or formal_reread_states"
+                )
             continue
         visible_type = (data.get("result_types") or [""])[-1]
         visible_route = (data.get("routes") or [""])[-1]
@@ -1121,6 +1141,10 @@ def compare_field_witness(result: ParseResult, raw_json: str, label: str = "fiel
         elif visible_graphs and witness_graph and witness_graph != "none" and witness_graph not in visible_graphs:
             result.errors.append(
                 f"{label}: MRP({burden}) graph mismatch visible={sorted(visible_graphs)} field_witness={witness_graph!r}"
+            )
+        elif not visible_graphs and witness_graph and witness_graph != "none":
+            result.errors.append(
+                f"{label}: MRP({burden}) graph mismatch visible=[] field_witness={witness_graph!r}"
             )
     compare_formal_reread_states(result, field_witness_body(payload), visible_mrp, label)
     witness_terminals = field_witness_terminals(payload)

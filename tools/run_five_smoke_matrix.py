@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Five-case causal barrier runner; only deterministic fake execution is implemented."""
+"""Canonical five-case barrier runner for fake tests or governed live raw capture."""
 from __future__ import annotations
 
 import argparse
@@ -12,8 +12,10 @@ from pathlib import Path
 
 from check_parallel_dispatch_manifest import chain_dispatch_events, validate_dispatch_manifest
 from smoke_matrix_registry import DEFAULT_REGISTRY, ROOT, load_registry
+from codex_live_producer_adapter import CodexLiveProducerAdapter
+from reviewed_campaign_orchestrator import CampaignError, run_producer_cohort
 
-LIVE_CODEX_EXECUTION_IMPLEMENTED = False
+LIVE_CODEX_EXECUTION_IMPLEMENTED = True
 
 
 class DeterministicFakeRunner:
@@ -92,18 +94,21 @@ def self_test() -> int:
 
 
 def main() -> int:
-    p=argparse.ArgumentParser();p.add_argument("--model-runner",choices=("fake","codex"));p.add_argument("--test-only-fake-runner",action="store_true");p.add_argument("--authorization",type=Path);p.add_argument("--candidate-maturity",type=Path);p.add_argument("--one-use-claim",type=Path);p.add_argument("--out",type=Path);p.add_argument("--self-test",action="store_true");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("--model-runner",choices=("fake","codex"));p.add_argument("--test-only-fake-runner",action="store_true");p.add_argument("--authorization",type=Path);p.add_argument("--candidate-maturity",type=Path);p.add_argument("--one-use-claim",type=Path);p.add_argument("--custody-root",type=Path);p.add_argument("--codex-executable",type=Path);p.add_argument("--command-timeout-seconds",type=int,default=3600);p.add_argument("--out",type=Path);p.add_argument("--self-test",action="store_true");a=p.parse_args()
     if a.self_test:return self_test()
     if a.model_runner=="fake":
         if not a.test_only_fake_runner: print(json.dumps({"status":"FAIL","error":"TEST_ONLY_FAKE_RUNNER_FLAG_REQUIRED"}));return 1
         result=simulate_fake_cycle(["ok"]*5)
     elif a.model_runner=="codex":
-        if not LIVE_CODEX_EXECUTION_IMPLEMENTED:
-            print(json.dumps({"status":"BLOCKED","error":"LIVE_MODEL_EXECUTION_NOT_IMPLEMENTED_OR_AUTHORIZED_IN_BRANCH_10_DETERMINISTIC_LANE"},sort_keys=True));return 2
-        auth=json.loads(a.authorization.read_text(encoding="utf-8")) if a.authorization else None; maturity=json.loads(a.candidate_maturity.read_text(encoding="utf-8")) if a.candidate_maturity else None
-        try: authorize_model_runner("codex",authorization=auth,maturity=maturity,claim=a.one_use_claim)
-        except PermissionError as exc: print(json.dumps({"status":"FAIL","error":str(exc)},sort_keys=True));return 1
-        raise AssertionError("live Codex execution implementation flag is inconsistent")
+        if a.custody_root is None or a.authorization is None or a.codex_executable is None:
+            print(json.dumps({"status":"FAIL","error":"LIVE_PROVIDER_EXACT_CUSTODY_AUTHORIZATION_AND_EXECUTABLE_REQUIRED"},sort_keys=True));return 1
+        if a.command_timeout_seconds<=0:
+            print(json.dumps({"status":"FAIL","error":"LIVE_PROVIDER_POSITIVE_TIMEOUT_REQUIRED"},sort_keys=True));return 1
+        try:
+            adapter=CodexLiveProducerAdapter(custody_root=a.custody_root,codex_executable=a.codex_executable,command_timeout_seconds=a.command_timeout_seconds)
+            result=run_producer_cohort(a.custody_root,a.authorization,adapter)
+        except (CampaignError,OSError,RuntimeError,ValueError) as exc:
+            print(json.dumps({"status":"FAIL","error":str(exc)},sort_keys=True));return 1
     else:p.error("--model-runner is required")
     payload=json.dumps(result,indent=2,sort_keys=True)+"\n"
     if a.out:a.out.write_text(payload,encoding="utf-8",newline="\n")

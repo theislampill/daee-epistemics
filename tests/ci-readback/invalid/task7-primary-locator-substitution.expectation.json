@@ -1,0 +1,25 @@
+{
+  "schema": "daee-negative-fixture-expectation-v1",
+  "fixture": "task7-primary-locator-substitution.json",
+  "kind": "invalid-single-signature",
+  "expected_checker_id": "ci-readback",
+  "expected_exit_category": "structural-rejection",
+  "expected_exit_code": 1,
+  "expected_earliest_stage": "control-plane",
+  "expected_failure_class": "deterministic_verdicts",
+  "expected_failure_subcode": "artifact-locator",
+  "expected_downstream_invalidated": [
+    "exact-sha-ci",
+    "source-preflight",
+    "candidate-package",
+    "release-action"
+  ],
+  "required_diagnostic_markers": [
+    "artifact-locator",
+    "bundle locator"
+  ],
+  "forbidden_artifacts": [
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/receipts/source-commit/3333333333333333333333333333333333333333.json"
+  ],
+  "provenance": "Branch 11 Task 7 exact canonical evidence locator canary"
+}

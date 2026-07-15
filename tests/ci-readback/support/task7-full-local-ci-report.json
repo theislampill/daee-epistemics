@@ -1,20 +1,22 @@
 {
   "schema": "daee-task7-result-report-v2",
-  "report_id": "06a859f27ecdb178dd8ab3dbf154a5f13547d7fcd5f55fb1cfffe5d4e2036d0d",
+  "report_id": "6b4b647b4b646856af92e78f74a35244c38c8cbdd8a3aee5011841562998217b",
   "kind": "full-local-ci",
   "status": "PASS",
   "producer_command": [
     "python",
     "tools/write_task7_deterministic_evidence.py",
     "--build-verdict",
+    "--evidence-namespace",
+    "branch11-v1",
     "--kind",
     "full-local-ci",
     "--source-freeze",
-    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/source-freeze.json",
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/source-freeze.json",
     "--out",
-    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/full-local-ci.json"
+    ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/full-local-ci.json"
   ],
-  "producer_command_sha256": "45a98f00a971c25d656a19182de951b523c22979f086d7bbff0425b4482d7ae9",
+  "producer_command_sha256": "3f1771506d1eb6fa92fa5f677911c7534155ac4d9befdd0d2b6209e0ef42054c",
   "producer_execution_profile": {
     "profile_id": "python-isolated-bootstrap-v2",
     "launcher": "running-interpreter",
@@ -43,9 +45,9 @@
         "--command-timeout-seconds",
         "900",
         "--json",
-        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts/native/full-local-ci.json"
+        ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/native/full-local-ci.json"
       ],
-      "command_sha256": "f9b71929259077426a35a85e3ed4fb7c768956779d7327497462d83680580c04",
+      "command_sha256": "3622e2fddc95b45da4c1a1904fb0f4f45cfa097aabb4b8238d3c7ce054cff12c",
       "execution_profile": {
         "profile_id": "python-isolated-bootstrap-v2",
         "launcher": "running-interpreter",
@@ -61,18 +63,18 @@
       },
       "exit_code": 0,
       "stdout_byte_count": 529,
-      "stdout_sha256": "175e96c14622fce0556b96a893cb8dcc0d02b86b518163a861d7513f9c1b68ad",
+      "stdout_sha256": "d12cf868c630143af1e84e07b4feb9981c2c549e4894f9ea996ecbe3e3cd9660",
       "stderr_byte_count": 0,
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "completion": {
-        "command_count": 172,
-        "command_list_sha256": "070a8ba7d7693565a0091a22ee309c29e57c8adaa553d179c6be421c676221be",
+        "command_count": 179,
+        "command_list_sha256": "028e4b02955519545b2e9c30dd614d49bcf4fb73eee9993832038c68761d20c9",
         "command_timeout_seconds": 900,
         "complete": true,
-        "completion_id": "6f27b3695ee922c8ea8db09d0799880b1977d4ac158fd18143e38acb18ad983a",
-        "end_at_command": 172,
-        "executed_count": 172,
-        "execution_plan_sha256": "45fe475728a429fcb909214738b0f6b8dc09353b950d05ca0b0702dc4c97d364",
+        "completion_id": "6b6d2a8dc1aa534d27eb6ba52a6ce63274b70528645a52a7a57cfdc5a24a5729",
+        "end_at_command": 179,
+        "executed_count": 179,
+        "execution_plan_sha256": "4aed4d93a23787aeb5288a8384b20fd3101d1e647796f45340787e517ece4082",
         "schema": "daee-run-local-ci-completion-v1",
         "skip_count": 0,
         "start_at_command": 1,
@@ -85,12 +87,12 @@
   "check_count": 1,
   "evidence_artifacts": [
     {
-      "path": "tests/ci-readback/support/task7-full-local-ci-native-report.json",
+      "path": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/native/full-local-ci.json",
       "byte_count": 562,
-      "sha256": "aaba0963340d8f8567518ab0f4ce49f02ce76c96f2a69fc4654c136e0f8a1f0d"
+      "sha256": "6e4050309f06ae72870a0568367ed602f38893ae7a221b7b6e09e60692621675"
     }
   ],
-  "source_freeze_id": "361ce4b4bf753502e4ccf10734fe1320bdb85dd2a39aa887e728fccda52df150",
+  "source_freeze_id": "c9407bc45393b8ff06fcce20047f94509322d96a089e90d713ba812507615d60",
   "expected_final_tree_oid": "4444444444444444444444444444444444444444",
   "observed_at": "2026-07-12T12:00:00Z",
   "model_calls": 0,

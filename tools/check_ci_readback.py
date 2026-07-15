@@ -10,6 +10,7 @@ import io
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -77,8 +78,10 @@ CHECKER_ID = "ci-readback"
 DOWNSTREAM = ["exact-sha-ci", "source-preflight", "candidate-package", "release-action"]
 REPOSITORY = "theislampill/daee-epistemics"
 REMOTE_URL = "https://github.com/theislampill/daee-epistemics.git"
-BRANCH = "codex/v0.4.6.0-runtime-footprint-b10"
+BRANCH = "codex/v0.4.6.0-runtime-footprint-b11"
 REMOTE_REF = f"refs/heads/{BRANCH}"
+EXACT_OLD_MODE = "exact-old-lease-fast-forward"
+EXACT_ABSENT_MODE = "exact-absent-lease-create"
 WORKFLOW_PATH = ".github/workflows/ci.yml"
 WORKFLOW_NAME = "CI"
 JOB_NAME = "runtime-checks"
@@ -133,7 +136,10 @@ NON_CLAIMS = [
     "does-not-authorize-or-execute-model-provider-use",
     "does-not-record-owner-acceptance",
 ]
-DETERMINISTIC_VERDICT_ROOT_REL = RUN_REL / "evidence/deterministic-verdicts"
+TASK7_EVIDENCE_NAMESPACE = "branch11-v1"
+TASK7_NAMESPACE_VERSION = 1
+TASK7_GENERATION = "branch11"
+DETERMINISTIC_VERDICT_ROOT_REL = RUN_REL / "evidence/deterministic-verdicts-b11-v1"
 DETERMINISTIC_VERDICT_SPECS = {
     "no_model_preflight": {
         "path": DETERMINISTIC_VERDICT_ROOT_REL / "no-model-preflight.json",
@@ -174,7 +180,7 @@ TASK7_LOG_REL_BY_KIND = {
 }
 TASK7_NO_MODEL_NATIVE_REPORT_REL = DETERMINISTIC_VERDICT_ROOT_REL / "native/no-model-preflight.json"
 TASK7_FULL_LOCAL_CI_NATIVE_REPORT_REL = DETERMINISTIC_VERDICT_ROOT_REL / "native/full-local-ci.json"
-TASK7_WHOLE_BRANCH_REVIEW_REL = RUN_REL / "reviews/task7-independent-whole-branch-review.json"
+TASK7_WHOLE_BRANCH_REVIEW_REL = RUN_REL / "reviews/task7-independent-whole-branch-review-branch11-v1.json"
 TASK7_REVIEW_AUTHORIZATION_REL = DETERMINISTIC_VERDICT_ROOT_REL / "authorizations/independent-reviewer.json"
 TASK7_IMPLEMENTATION_OWNER_IDENTITY = "/root/task3b_ci_receipt"
 TASK7_REVIEW_AUTHORIZATION_ISSUER = "/root"
@@ -521,6 +527,7 @@ def _validate_vcs(value: Mapping[str, Any]) -> Finding | None:
         if commit_ref != commit_chain["action_receipt"]:
             return Finding("vcs_evidence", "wrong-action-receipt", "push authorization does not bind the exact commit action receipt")
         expected_old = push_authorization.get("expected_old_remote_oid")
+        remote_update_mode = push_authorization.get("remote_update_mode")
     else:
         if (
             push_authorization.get("commit_receipt_path") != commit_chain["action_receipt"]["path"]
@@ -528,6 +535,15 @@ def _validate_vcs(value: Mapping[str, Any]) -> Finding | None:
         ):
             return Finding("vcs_evidence", "wrong-action-receipt", "legacy push authorization does not bind the exact commit action receipt")
         expected_old = push_authorization.get("expected_old_remote_oid")
+        remote_update_mode = EXACT_OLD_MODE
+    receipt_mode = vcs.get("remote_update_mode", EXACT_OLD_MODE)
+    source_mode = value["source"]["equality"].get("remote_update_mode", EXACT_OLD_MODE)
+    if remote_update_mode != receipt_mode or remote_update_mode != source_mode:
+        return Finding(
+            "vcs_evidence",
+            "remote-update-mode",
+            "remote update mode differs across push authorization, combined receipt, and source equality",
+        )
     if expected_old != vcs.get("expected_old_remote_oid") or expected_old != value["source"]["equality"]["expected_old_remote_oid"]:
         return Finding("vcs_evidence", "expected-old-remote", "VCS expected old remote OID differs from push authorization")
     return None
@@ -552,7 +568,19 @@ def _task7_files_digest(files: Sequence[Mapping[str, Any]]) -> str:
 
 def _task7_freeze_id(tree_oid: str, files_sha256: str) -> str:
     return sha256_bytes(
-        b"daee-task7-precommit-source-freeze-v1\0"
+        b"daee-task7-precommit-source-freeze-v2\0"
+        + TASK7_EVIDENCE_NAMESPACE.encode("ascii")
+        + b"\0"
+        + str(TASK7_NAMESPACE_VERSION).encode("ascii")
+        + b"\0"
+        + TASK7_GENERATION.encode("ascii")
+        + b"\0"
+        + DETERMINISTIC_VERDICT_ROOT_REL.as_posix().encode("utf-8")
+        + b"\0"
+        + BRANCH.encode("utf-8")
+        + b"\0"
+        + REMOTE_REF.encode("utf-8")
+        + b"\0"
         + tree_oid.encode("ascii")
         + b"\0"
         + files_sha256.encode("ascii")
@@ -574,6 +602,8 @@ def _task7_producer_command(kind: str) -> list[str]:
         "python",
         TASK7_PRODUCER_PATH,
         "--build-verdict",
+        "--evidence-namespace",
+        TASK7_EVIDENCE_NAMESPACE,
         "--kind",
         kind,
         "--source-freeze",
@@ -673,6 +703,32 @@ def _task7_ref_artifact(
     return path, raw, parsed, None
 
 
+def _task7_exact_locator_finding(
+    ref: Mapping[str, Any],
+    expected: Path,
+    *,
+    root: Path,
+    role: str,
+    label: str,
+) -> Finding | None:
+    observed = str(ref.get("path", ""))
+    try:
+        resolve_repo_path(root, observed, must_exist=False)
+    except PathCustodyError as exc:
+        return Finding(
+            "deterministic_verdicts",
+            exc.subcode,
+            f"deterministic verdict {role} {label} path rejected: {exc}",
+        )
+    if observed != expected.as_posix():
+        return Finding(
+            "deterministic_verdicts",
+            "artifact-locator",
+            f"deterministic verdict {role} {label} locator must be {expected.as_posix()}",
+        )
+    return None
+
+
 def _task7_result_semantics(
     role: str,
     spec: Mapping[str, Any],
@@ -764,6 +820,37 @@ def _task7_result_semantics(
     artifacts = report.get("evidence_artifacts")
     if not isinstance(artifacts, list):
         return Finding("deterministic_verdicts", "report-evidence", f"deterministic verdict {role} evidence_artifacts are missing")
+    expected_artifact_paths = {
+        "no-model-preflight": [TASK7_NO_MODEL_NATIVE_REPORT_REL],
+        "full-local-ci": [TASK7_FULL_LOCAL_CI_NATIVE_REPORT_REL],
+        "generated-freshness-package": [],
+        "independent-whole-branch-review": [
+            TASK7_REVIEW_AUTHORIZATION_REL,
+            TASK7_WHOLE_BRANCH_REVIEW_REL,
+        ],
+    }[kind]
+    if len(artifacts) != len(expected_artifact_paths):
+        return Finding(
+            "deterministic_verdicts",
+            "artifact-locator",
+            f"deterministic verdict {role} evidence artifact locator count drifted",
+        )
+    for index, (artifact_ref, expected_path) in enumerate(zip(artifacts, expected_artifact_paths), 1):
+        if not isinstance(artifact_ref, Mapping):
+            return Finding(
+                "deterministic_verdicts",
+                "artifact-locator",
+                f"deterministic verdict {role} evidence artifact {index} locator is not an object",
+            )
+        locator_finding = _task7_exact_locator_finding(
+            artifact_ref,
+            expected_path,
+            root=root,
+            role=role,
+            label=f"evidence artifact {index}",
+        )
+        if locator_finding:
+            return locator_finding
     if kind == "no-model-preflight":
         if len(artifacts) != 1 or not decoded_stdout or b"MATRIX_AUTHORIZED_AFTER_PREFLIGHT" not in decoded_stdout[0]:
             return Finding("deterministic_verdicts", "preflight-result", "no-model preflight lacks its authorized command/report evidence")
@@ -925,6 +1012,29 @@ def _validate_task7_bundle(
         return Finding("deterministic_verdicts", "command-hash", f"deterministic verdict {role} command hash drifted")
     if bundle.get("evidence_id") != _task7_evidence_id(bundle):
         return Finding("deterministic_verdicts", "evidence-id", f"deterministic verdict {role} evidence_id drifted")
+    kind = str(spec["kind"])
+    for label, expected_path in (
+        ("report", TASK7_REPORT_REL_BY_KIND[kind]),
+        ("log", TASK7_LOG_REL_BY_KIND[kind]),
+        ("source freeze", TASK7_SOURCE_FREEZE_REL),
+    ):
+        field = "source_freeze" if label == "source freeze" else label
+        ref = bundle.get(field)
+        if not isinstance(ref, Mapping):
+            return Finding(
+                "deterministic_verdicts",
+                "artifact-locator",
+                f"deterministic verdict {role} {label} locator is not an object",
+            )
+        locator_finding = _task7_exact_locator_finding(
+            ref,
+            expected_path,
+            root=root,
+            role=role,
+            label=label,
+        )
+        if locator_finding:
+            return locator_finding
     inner_paths = [bundle[name]["path"] for name in ("report", "log", "source_freeze")]
     if len(inner_paths) != len(set(inner_paths)):
         return Finding("deterministic_verdicts", "replayed-evidence", f"deterministic verdict {role} replays an inner artifact")
@@ -1000,7 +1110,7 @@ def _validate_deterministic_verdicts(value: Mapping[str, Any], *, root: Path) ->
     source_tree_oid = source.get("tree_oid") if isinstance(source, Mapping) else None
     if not isinstance(source_tree_oid, str):
         return Finding("deterministic_verdicts", "wrong-source", "receipt source tree is unavailable")
-    seen_primary: set[tuple[str, str]] = set()
+    seen_primary: set[str] = set()
     shared_freeze: tuple[str, str, str] | None = None
     for role, spec in DETERMINISTIC_VERDICT_SPECS.items():
         ref = verdicts.get(role)
@@ -1012,7 +1122,16 @@ def _validate_deterministic_verdicts(value: Mapping[str, Any], *, root: Path) ->
                 "status",
                 f"deterministic verdict {role} status must be {spec['status']}, got {ref.get('status')}",
             )
-        primary_identity = (str(ref.get("path")), str(ref.get("sha256")))
+        locator_finding = _task7_exact_locator_finding(
+            ref,
+            Path(spec["path"]),
+            root=root,
+            role=role,
+            label="bundle",
+        )
+        if locator_finding:
+            return locator_finding
+        primary_identity = str(ref.get("sha256"))
         if primary_identity in seen_primary:
             return Finding(
                 "deterministic_verdicts", "replayed-evidence", f"deterministic verdict {role} replays another role bundle"
@@ -1192,13 +1311,16 @@ def _validate_receipt_structure(value: Mapping[str, Any], *, root: Path = ROOT) 
     if [row["oid"] for row in value["lineage"]["parent_object_types"]] != source["parent_oids"]:
         return [Finding("lineage", "parent-object-types", "parent object-type rows differ from raw parents")]
     equality = source["equality"]
-    if not (
+    exact_source = (
         equality["local_head"]
         == equality["upstream_oid"]
         == equality["live_remote_oid"]
         == source["commit_sha"]
-    ):
-        return [Finding("source_equality", "exact-oid-equality", "local/upstream/live remote are not the exact source SHA")]
+        and equality["upstream_ref"]
+        == f"refs/remotes/origin/{value['repository']['branch']}"
+    )
+    if not exact_source:
+        return [Finding("source_equality", "exact-oid-equality", "mode-specific local/upstream/live remote source equality failed")]
     if value["run"]["head_sha"] != source["commit_sha"]:
         return [Finding("ci_identity", "head-sha", "run head_sha is not the exact source SHA")]
     if value["run"]["head_branch"] != value["repository"]["branch"]:
@@ -1275,6 +1397,14 @@ def _compare_live(value: Mapping[str, Any], observed: Mapping[str, Any]) -> Find
         return Finding("source_state", "dirty-source", f"source worktree/index/untracked inventory is dirty: {clean}")
     expected_equality = source["equality"]
     actual_equality = observed_source.get("equality", {})
+    actual_mode = actual_equality.get("remote_update_mode", EXACT_OLD_MODE)
+    expected_mode = expected_equality.get("remote_update_mode", EXACT_OLD_MODE)
+    if actual_mode != expected_mode:
+        return Finding(
+            "source_equality",
+            "remote-update-mode",
+            f"remote update mode drifted: {actual_mode} != {expected_mode}",
+        )
     if actual_equality.get("upstream_ref") != expected_equality.get("upstream_ref"):
         return Finding(
             "source_equality",
@@ -1457,14 +1587,130 @@ def _custody_scenario(value: dict[str, Any], operation: str) -> Finding:
         return Finding("self_test", "unexpected-pass", "CAS predecessor mismatch survived")
 
 
+def _task7_fixture_storage_map() -> dict[Path, Path]:
+    support = FIXTURE_ROOT / "support"
+    mapping = {
+        TASK7_SOURCE_FREEZE_REL: support / "task7-source-freeze.json",
+        TASK7_NO_MODEL_NATIVE_REPORT_REL: support / "task7-no-model-preflight-native-report.json",
+        TASK7_FULL_LOCAL_CI_NATIVE_REPORT_REL: support / "task7-full-local-ci-native-report.json",
+        TASK7_REVIEW_AUTHORIZATION_REL: support / "task7-independent-review-authorization.json",
+        TASK7_WHOLE_BRANCH_REVIEW_REL: support / "task7-independent-whole-branch-review-record.json",
+    }
+    for role, spec in DETERMINISTIC_VERDICT_SPECS.items():
+        kind = str(spec["kind"])
+        mapping[Path(spec["path"])] = support / f"task7-{kind}.json"
+        mapping[TASK7_REPORT_REL_BY_KIND[kind]] = support / f"task7-{kind}-report.json"
+        mapping[TASK7_LOG_REL_BY_KIND[kind]] = support / f"task7-{kind}.log"
+    return mapping
+
+
+def _materialize_task7_self_test_root(destination: Path) -> None:
+    support = FIXTURE_ROOT / "support"
+    mirrored_support = destination / support.relative_to(ROOT)
+    shutil.copytree(support, mirrored_support, dirs_exist_ok=True)
+    for relative, storage in _task7_fixture_storage_map().items():
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(storage.read_bytes())
+
+
+def _task7_fixture_hash_index() -> dict[tuple[int, str], Path]:
+    result: dict[tuple[int, str], Path] = {}
+    for path in sorted((FIXTURE_ROOT / "support").rglob("*")):
+        if path.is_file():
+            raw = path.read_bytes()
+            result.setdefault((len(raw), sha256_bytes(raw)), path)
+    return result
+
+
+def _materialize_task7_referenced_artifacts(
+    value: Any,
+    *,
+    root: Path,
+    hash_index: Mapping[tuple[int, str], Path],
+    seen: set[tuple[str, str]],
+) -> None:
+    if isinstance(value, Mapping):
+        path_value = value.get("path")
+        byte_count = value.get("byte_count")
+        digest = value.get("sha256")
+        if isinstance(path_value, str) and isinstance(byte_count, int) and isinstance(digest, str):
+            identity = (path_value, digest)
+            if identity not in seen:
+                seen.add(identity)
+                backing = hash_index.get((byte_count, digest))
+                if backing is not None:
+                    target = resolve_repo_path(root, path_value, must_exist=False)
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    raw = backing.read_bytes()
+                    target.write_bytes(raw)
+                    try:
+                        nested = strict_json_loads(raw, label=str(backing))
+                    except (DuplicateObjectKey, ValueError):
+                        nested = None
+                    if nested is not None:
+                        _materialize_task7_referenced_artifacts(
+                            nested,
+                            root=root,
+                            hash_index=hash_index,
+                            seen=seen,
+                        )
+        for nested in value.values():
+            _materialize_task7_referenced_artifacts(
+                nested,
+                root=root,
+                hash_index=hash_index,
+                seen=seen,
+            )
+    elif isinstance(value, list):
+        for nested in value:
+            _materialize_task7_referenced_artifacts(
+                nested,
+                root=root,
+                hash_index=hash_index,
+                seen=seen,
+            )
+
+
+def _task7_artifact_substitute(
+    receipt: dict[str, Any],
+    *,
+    root: Path,
+    role: str,
+    source: str,
+) -> None:
+    spec = DETERMINISTIC_VERDICT_SPECS.get(role)
+    if spec is None:
+        raise ValueError(f"unsupported Task 7 substitute role {role!r}")
+    source_path = resolve_repo_path(ROOT, source, must_exist=True, expect_file=True)
+    raw = source_path.read_bytes()
+    artifact = strict_json_loads(raw, label=str(source_path))
+    target = root / Path(spec["path"])
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(raw)
+    ref = receipt["deterministic_verdicts"][role]
+    ref["path"] = Path(spec["path"]).as_posix()
+    ref["byte_count"] = len(raw)
+    ref["sha256"] = sha256_bytes(raw)
+    _materialize_task7_referenced_artifacts(
+        artifact,
+        root=root,
+        hash_index=_task7_fixture_hash_index(),
+        seen=set(),
+    )
+
+
 def self_test() -> tuple[list[str], int, int]:
     problems: list[str] = []
     base, _raw, finding = _load_raw(VALID_FIXTURE)
     if finding or base is None:
         return [f"valid fixture load failed: {finding}"], 0, 0
-    valid_findings = validate_receipt(base, live_observation=copy.deepcopy(base))
-    if valid_findings:
-        problems.append(f"valid fixture rejected: {valid_findings[0].failure_class}/{valid_findings[0].failure_subcode}: {valid_findings[0].message}")
+    with tempfile.TemporaryDirectory(prefix="daee-ci-readback-task7-valid-") as temporary:
+        fixture_root = Path(temporary)
+        _materialize_task7_self_test_root(fixture_root)
+        valid_findings = validate_receipt(base, root=fixture_root, live_observation=copy.deepcopy(base))
+        if valid_findings:
+            problems.append(f"valid fixture rejected: {valid_findings[0].failure_class}/{valid_findings[0].failure_subcode}: {valid_findings[0].message}")
     invalid_paths = sorted(
         path
         for path in (FIXTURE_ROOT / "invalid").glob("*.json")
@@ -1476,50 +1722,60 @@ def self_test() -> tuple[list[str], int, int]:
         except (OSError, ValueError) as exc:
             problems.append(f"{path.name}: fixture load failed: {exc}")
             continue
-        receipt = copy.deepcopy(base)
-        observation = copy.deepcopy(base)
-        raw_override: bytes | None = None
-        custody_operation: str | None = None
-        try:
-            for operation in fixture.get("operations", []):
-                op = operation.get("op")
-                if op == "set":
-                    _set_dotted(receipt, operation["path"], operation.get("value"))
-                elif op == "delete":
-                    _delete_dotted(receipt, operation["path"])
-                elif op == "append":
-                    _append_dotted(receipt, operation["path"], operation.get("value"))
-                elif op == "observation-set":
-                    _set_dotted(observation, operation["path"], operation.get("value"))
-                elif op == "observation-delete":
-                    _delete_dotted(observation, operation["path"])
-                elif op == "observation-append":
-                    _append_dotted(observation, operation["path"], operation.get("value"))
-                elif op == "inject-duplicate-key":
-                    raw_override = (
-                        "{" + json.dumps(operation["key"]) + ":" + json.dumps(operation.get("value")) + "," + json.dumps(receipt)[1:]
-                    ).encode("utf-8")
-                elif op in {"custody-precreate-collision", "custody-head-predecessor-mismatch"}:
-                    custody_operation = op
-                else:
-                    raise ValueError(f"unsupported fixture operation {operation!r}")
-        except (KeyError, TypeError, ValueError) as exc:
-            problems.append(f"{path.name}: fixture operation failed: {exc}")
-            continue
-        if raw_override is not None:
+        with tempfile.TemporaryDirectory(prefix="daee-ci-readback-task7-invalid-") as temporary:
+            fixture_root = Path(temporary)
+            _materialize_task7_self_test_root(fixture_root)
+            receipt = copy.deepcopy(base)
+            observation = copy.deepcopy(base)
+            raw_override: bytes | None = None
+            custody_operation: str | None = None
             try:
-                strict_json_loads(raw_override, label=path.name)
-            except DuplicateObjectKey as exc:
-                first = Finding("malformed_json", "duplicate-key", f"duplicate JSON key rejected: {exc}")
-            except ValueError as exc:
-                first = Finding("malformed_json", "malformed-json", str(exc))
+                for operation in fixture.get("operations", []):
+                    op = operation.get("op")
+                    if op == "set":
+                        _set_dotted(receipt, operation["path"], operation.get("value"))
+                    elif op == "delete":
+                        _delete_dotted(receipt, operation["path"])
+                    elif op == "append":
+                        _append_dotted(receipt, operation["path"], operation.get("value"))
+                    elif op == "observation-set":
+                        _set_dotted(observation, operation["path"], operation.get("value"))
+                    elif op == "observation-delete":
+                        _delete_dotted(observation, operation["path"])
+                    elif op == "observation-append":
+                        _append_dotted(observation, operation["path"], operation.get("value"))
+                    elif op == "task7-artifact-substitute":
+                        _task7_artifact_substitute(
+                            receipt,
+                            root=fixture_root,
+                            role=operation["role"],
+                            source=operation["source"],
+                        )
+                    elif op == "inject-duplicate-key":
+                        raw_override = (
+                            "{" + json.dumps(operation["key"]) + ":" + json.dumps(operation.get("value")) + "," + json.dumps(receipt)[1:]
+                        ).encode("utf-8")
+                    elif op in {"custody-precreate-collision", "custody-head-predecessor-mismatch"}:
+                        custody_operation = op
+                    else:
+                        raise ValueError(f"unsupported fixture operation {operation!r}")
+            except (KeyError, OSError, TypeError, ValueError) as exc:
+                problems.append(f"{path.name}: fixture operation failed: {exc}")
+                continue
+            if raw_override is not None:
+                try:
+                    strict_json_loads(raw_override, label=path.name)
+                except DuplicateObjectKey as exc:
+                    first = Finding("malformed_json", "duplicate-key", f"duplicate JSON key rejected: {exc}")
+                except ValueError as exc:
+                    first = Finding("malformed_json", "malformed-json", str(exc))
+                else:
+                    first = Finding("self_test", "unexpected-pass", "duplicate-key fixture survived")
+            elif custody_operation:
+                first = _custody_scenario(receipt, custody_operation)
             else:
-                first = Finding("self_test", "unexpected-pass", "duplicate-key fixture survived")
-        elif custody_operation:
-            first = _custody_scenario(receipt, custody_operation)
-        else:
-            findings = validate_receipt(receipt, live_observation=observation)
-            first = findings[0] if findings else Finding("self_test", "unexpected-pass", "invalid fixture survived")
+                findings = validate_receipt(receipt, root=fixture_root, live_observation=observation)
+                first = findings[0] if findings else Finding("self_test", "unexpected-pass", "invalid fixture survived")
         ok, message = _expectation_ok(path, first)
         if not ok:
             problems.append(message)
@@ -1724,7 +1980,53 @@ def _lineage(source_sha: str) -> tuple[dict[str, Any], list[str], list[str]]:
     }, parent_lines, parent_oids
 
 
-def _source_and_carriers(source_sha: str, remote: str, ref: str, expected_old: str) -> tuple[dict[str, Any], dict[str, Any], list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
+def _validated_source_equality(
+    *,
+    local_head: str,
+    source_sha: str,
+    upstream_ref: str | None,
+    upstream_oid: str | None,
+    live_remote_ref: str,
+    live_remote_oid: str,
+    expected_old_remote_oid: str | None,
+    remote_update_mode: str,
+) -> dict[str, Any]:
+    expected_upstream_ref = f"refs/remotes/origin/{BRANCH}"
+    if not (
+        local_head
+        == upstream_oid
+        == live_remote_oid
+        == source_sha
+        and upstream_ref == expected_upstream_ref
+    ):
+        raise ValueError("local/upstream/live-remote exact source equality failed")
+    if remote_update_mode == EXACT_OLD_MODE:
+        if expected_old_remote_oid is None:
+            raise ValueError("exact-old mode requires a non-null predecessor OID")
+    elif remote_update_mode == EXACT_ABSENT_MODE:
+        if expected_old_remote_oid is not None:
+            raise ValueError("absent-ref create requires a null predecessor OID")
+    else:
+        raise ValueError(f"unsupported remote update mode {remote_update_mode!r}")
+    return {
+        "local_head": local_head,
+        "upstream_ref": upstream_ref,
+        "upstream_oid": upstream_oid,
+        "live_remote_ref": live_remote_ref,
+        "live_remote_oid": live_remote_oid,
+        "expected_old_remote_oid": expected_old_remote_oid,
+        "remote_update_mode": remote_update_mode,
+        "all_equal": True,
+    }
+
+
+def _source_and_carriers(
+    source_sha: str,
+    remote: str,
+    ref: str,
+    expected_old: str | None,
+    remote_update_mode: str,
+) -> tuple[dict[str, Any], dict[str, Any], list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
     local_head = _git_text(["rev-parse", "HEAD"])
     if local_head != source_sha:
         raise ValueError(f"local HEAD {local_head} differs from requested source SHA {source_sha}")
@@ -1734,6 +2036,8 @@ def _source_and_carriers(source_sha: str, remote: str, ref: str, expected_old: s
     status_raw = _run_git(["status", "--porcelain=v2", "-z", "--untracked-files=all"])
     if status_raw:
         raise ValueError("dirty source index/worktree/untracked inventory blocks receipt")
+    if remote_update_mode not in (EXACT_OLD_MODE, EXACT_ABSENT_MODE):
+        raise ValueError(f"unsupported remote update mode {remote_update_mode!r}")
     upstream_ref = _git_text(["rev-parse", "--symbolic-full-name", "@{upstream}"])
     upstream_oid = _git_text(["rev-parse", "@{upstream}"])
     remote_result = subprocess.run(
@@ -1749,8 +2053,16 @@ def _source_and_carriers(source_sha: str, remote: str, ref: str, expected_old: s
     if len(rows) != 1 or len(rows[0]) != 2 or rows[0][1] != ref:
         raise ValueError(f"git ls-remote did not return exactly {ref}")
     live_remote_oid = rows[0][0]
-    if not (local_head == upstream_oid == live_remote_oid == source_sha):
-        raise ValueError("local/upstream/live-remote exact source equality failed")
+    equality = _validated_source_equality(
+        local_head=local_head,
+        source_sha=source_sha,
+        upstream_ref=upstream_ref,
+        upstream_oid=upstream_oid,
+        live_remote_ref=ref,
+        live_remote_oid=live_remote_oid,
+        expected_old_remote_oid=expected_old,
+        remote_update_mode=remote_update_mode,
+    )
     lineage, parent_lines, parent_oids = _lineage(source_sha)
     tree_oid = _git_text(["show", "-s", "--format=%T", source_sha])
     clean = {
@@ -1759,15 +2071,6 @@ def _source_and_carriers(source_sha: str, remote: str, ref: str, expected_old: s
         "untracked_source_paths": [],
         "porcelain_v2_byte_count": len(status_raw),
         "porcelain_v2_sha256": sha256_bytes(status_raw),
-    }
-    equality = {
-        "local_head": local_head,
-        "upstream_ref": upstream_ref,
-        "upstream_oid": upstream_oid,
-        "live_remote_ref": ref,
-        "live_remote_oid": live_remote_oid,
-        "expected_old_remote_oid": expected_old,
-        "all_equal": True,
     }
     source = {
         "commit_sha": source_sha,
@@ -1877,7 +2180,7 @@ def _find_legacy_authorization(root: Path, authorization_id: str, action: str) -
     return matches[0]
 
 
-def _vcs_from_push_receipt(push_receipt_path: Path) -> tuple[dict[str, Any], str]:
+def _vcs_from_push_receipt(push_receipt_path: Path) -> tuple[dict[str, Any], str | None]:
     candidate: str | Path = push_receipt_path
     if push_receipt_path.is_absolute():
         try:
@@ -1921,7 +2224,18 @@ def _vcs_from_push_receipt(push_receipt_path: Path) -> tuple[dict[str, Any], str
             "action_receipt": _record_ref(path),
             "result": "PASS",
         }
-        return {"commit": commit_chain, "push": push_chain, "expected_old_remote_oid": push_auth["expected_old_remote_oid"]}, push_auth["expected_old_remote_oid"]
+        remote_update_mode = push_auth.get("remote_update_mode")
+        expected_old = push_auth.get("expected_old_remote_oid")
+        if remote_update_mode not in (EXACT_OLD_MODE, EXACT_ABSENT_MODE):
+            raise ValueError(f"unsupported push authorization mode {remote_update_mode!r}")
+        if (remote_update_mode == EXACT_OLD_MODE) != isinstance(expected_old, str):
+            raise ValueError("push authorization mode and expected old remote OID disagree")
+        return {
+            "commit": commit_chain,
+            "push": push_chain,
+            "expected_old_remote_oid": expected_old,
+            "remote_update_mode": remote_update_mode,
+        }, expected_old
     if schema != "daee-vcs-durability-action-receipt-v1":
         raise ValueError(f"unsupported push receipt schema {schema!r}")
     if push_receipt.get("action") != "push" or push_receipt.get("result") != "PASS":
@@ -1950,6 +2264,7 @@ def _vcs_from_push_receipt(push_receipt_path: Path) -> tuple[dict[str, Any], str
         "commit": legacy_chain(commit_auth, commit_auth_path, commit_claim_path, commit_receipt_path),
         "push": legacy_chain(push_auth, push_auth_path, push_claim_path, path),
         "expected_old_remote_oid": old,
+        "remote_update_mode": EXACT_OLD_MODE,
     }, old
 
 
@@ -2004,7 +2319,7 @@ def collect_live_observation(
     ref: str,
     source_sha: str,
     vcs: Mapping[str, Any],
-    expected_old: str,
+    expected_old: str | None,
 ) -> dict[str, Any]:
     if repository != REPOSITORY or remote != "origin" or ref != REMOTE_REF:
         raise ValueError("repository/remote/ref differ from the frozen source binding")
@@ -2012,7 +2327,13 @@ def collect_live_observation(
     if _remote_repository(remote_url) != repository:
         raise ValueError("Git remote repository differs from requested owner/repo")
     _gh_auth()
-    source, lineage, carriers, binding, joined = _source_and_carriers(source_sha, remote, ref, expected_old)
+    source, lineage, carriers, binding, joined = _source_and_carriers(
+        source_sha,
+        remote,
+        ref,
+        expected_old,
+        str(vcs.get("remote_update_mode")),
+    )
     deterministic_verdicts = _collect_deterministic_verdicts(source_sha, source["tree_oid"])
     workflow_local = joined["workflow"]
     _status, workflow_api = _gh_json(f"repos/{repository}/actions/workflows/ci.yml")

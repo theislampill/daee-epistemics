@@ -8,7 +8,7 @@
   "properties": {
     "schema": {"const": "daee-runtime-call-context-v1"},
     "case_id": {"type": "string"},
-    "stage": {"type": "string", "pattern": "^(01|02|03|04|05|06|07)$"},
+    "stage": {"type": "string", "pattern": "^(01|02|03|04|05|06|07|01-08)$"},
     "call_index": {"type": "integer", "minimum": 1},
     "runtime": {
       "type": "object",
@@ -89,6 +89,23 @@
         "includes_prior_full_output": {"type": "boolean"}
       }
     },
+    "output_contract": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["contract", "sha256", "byte_count", "prompt_start_byte", "prompt_end_byte"],
+          "properties": {
+            "contract": {"$ref": "#/$defs/output_contract_binding"},
+            "sha256": {"$ref": "#/$defs/sha256"},
+            "byte_count": {"type": "integer", "minimum": 1},
+            "prompt_start_byte": {"type": "integer", "minimum": 0},
+            "prompt_end_byte": {"type": "integer", "minimum": 1}
+          }
+        }
+      ]
+    },
     "delivery_status": {"enum": ["DELIVERED", "PARTIAL", "HOLD", "UNVERIFIED"]},
     "usage_status": {"enum": ["NOT_DECLARED", "PRODUCER_DECLARED", "OPERATION_BOUND", "PARTIAL", "HOLD"]},
     "proof_mode": {"enum": ["package-faithful", "harness-assisted", "unverified-host-ambient"]},
@@ -134,6 +151,45 @@
   },
   "$defs": {
     "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "output_contract_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "envelope_nonce", "case_id", "cycle_id", "candidate_binding", "input_binding", "transport", "stage08_owner"],
+      "properties": {
+        "schema": {"const": "daee-single-call-output-envelope-contract-v1"},
+        "envelope_nonce": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+        "case_id": {"type": "string", "minLength": 1},
+        "cycle_id": {"type": "string", "minLength": 1},
+        "candidate_binding": {"$ref": "#/$defs/candidate_binding"},
+        "input_binding": {"$ref": "#/$defs/input_binding"},
+        "transport": {"const": "daee-single-call-stage-envelope-v1"},
+        "stage08_owner": {"const": "private-source-bound-checker"}
+      }
+    },
+    "candidate_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "source_commit", "candidate_record_sha256", "candidate_maturity_sha256", "archive_sha256", "package_tree_sha256", "skill_sha256", "build_manifest_sha256"],
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1},
+        "source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "candidate_record_sha256": {"$ref": "#/$defs/sha256"},
+        "candidate_maturity_sha256": {"$ref": "#/$defs/sha256"},
+        "archive_sha256": {"$ref": "#/$defs/sha256"},
+        "package_tree_sha256": {"$ref": "#/$defs/sha256"},
+        "skill_sha256": {"$ref": "#/$defs/sha256"},
+        "build_manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "input_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256", "byte_count"],
+      "properties": {
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byte_count": {"type": "integer", "minimum": 1}
+      }
+    },
     "component": {
       "type": "object",
       "additionalProperties": false,

@@ -275,13 +275,41 @@ class FixtureProtocolTests(unittest.TestCase):
         representatives["candidate-readiness-marker"] = readiness
         matrix_auth = {
             "schema":"daee-smoke-matrix-v1","kind":"matrix-authorization","authorization_id":"matrix-a","action":"RUN_REVIEWED_FIVE_SMOKE",
-            "one_use":True,"candidate_id":"candidate","candidate_record":ref,"candidate_readiness":ref,"candidate_maturity":ref,"source_commit_receipt":ref,
+            "one_use":True,"execution_lane":"producer","execution_mode":"LIVE_CODEX","test_only":False,"live_execution_authorized":True,
+            "candidate_id":"candidate","candidate_record":ref,"candidate_readiness":ref,"candidate_maturity":ref,
+            "candidate_state_at_authorization":"READY_UNUSED","candidate_claim_status_at_authorization":"UNCLAIMED",
+            "source_commit_receipt":ref,"source_preflight":ref,"campaign_authorization":ref,"execution_tooling_manifest":ref,
             "package_sha256":"a"*64,"package_tree_sha256":"b"*64,"tree_digest_algorithm":"daee-tree-sha256-v1","input_registry":ref,
             "review_protocol":ref,"producer_model":"gpt-5.5","producer_reasoning_effort":"high","cold_review_model":"gpt-5.6-sol",
-            "cold_review_reasoning_effort":"xhigh","optional_opus_authorized":False,"paid_execution_authorized":False,
+            "cold_review_reasoning_effort":"xhigh","optional_opus_authorized":False,"paid_execution_authorized":True,
+            "source_commit":"a"*40,"branch":"codex/v0.4.6.0-runtime-footprint-b11","campaign_authorization_sha256":"c"*64,"cycle_id":"matrix-cycle-a",
+            "launch_not_before":"2026-07-12T00:00:00Z","launch_not_after":"2026-07-12T01:00:00Z",
+            "expected_campaign_usage_sequence":0,"expected_campaign_usage_head_sha256":"d"*64,
+            "candidate_package_root":"custody/candidates/candidate/extracted","model_runner":"codex",
+            "resolved_model":"gpt-5.5","adapter_version":"codex-live-v1","host_application_version":"codex-cli 0.130.0-alpha.5",
+            "codex_executable_sha256":"e"*64,
+            "provider_settings":{"response_surface":"package-faithful","delivery_mode":"explicit-prompt-components","effective_context_limit_bytes":1000000,"command_timeout_seconds":30,"parallelism":5,
+                                 "fresh_context_per_case":True,"submit_before_observe":True,"sandbox":"read-only",
+                                 "approval_policy":"never","ignore_user_config":True,"ignore_rules":True,"ephemeral":True},
+            "cohort_size":5,"cohort_protocol":"barrier-five-submit-before-await-v1",
+            "case_ids":["gate88-secularism","gate88-khaybar","gate88-trinitarian-j173","gate88-tst-lillard","gate88-torah-quran-source-authentication"],
+            "case_inputs":[{"case_id":case_id,"input_sha256":str(index)*64} for index,case_id in enumerate(["gate88-secularism","gate88-khaybar","gate88-trinitarian-j173","gate88-tst-lillard","gate88-torah-quran-source-authentication"],1)],
+            "isolated_root_prefix":"producer/isolated","usage_ledger_root":"usage",
+            "authorization_claim_path":"claims/producer-authorization.json","candidate_claim_path":"claims/candidate.json",
+            "observation_finalizer_path":"producer/observation-finalizer.json",
+            "prompt_retention_root":"producer/prompts","output_retention_root":"producer/raw-outputs",
+            "provider_receipt_root":"producer/provider-receipts","structural_evidence_root":"producer/structural-evidence",
         }
         matrix_auth["authorization_sha256"] = canonical_sha256(matrix_auth)
         representatives["matrix-authorization"] = matrix_auth
+        for invalid_timeout in (0, -1, True):
+            invalid = json.loads(json.dumps(matrix_auth))
+            invalid["provider_settings"]["command_timeout_seconds"] = invalid_timeout
+            invalid["authorization_sha256"] = canonical_sha256(invalid)
+            self.assertEqual(
+                "schema_contract",
+                matrix.validate_manifest(invalid, root=ROOT)[0]["failure_class"],
+            )
         matrix_claim = {"schema":"daee-smoke-matrix-v1","kind":"matrix-authorization-claim","claim_id":"matrix-a-claim",
                         "authorization_id":"matrix-a","authorization_sha256":matrix_auth["authorization_sha256"],"candidate_id":"candidate",
                         "claimed_at":"2026-07-12T00:02:00Z","one_use":True}
@@ -1265,7 +1293,7 @@ class FixtureProtocolTests(unittest.TestCase):
                 five_runner.authorize_model_runner("codex", authorization=partial, maturity=maturity, claim=claim)
             self.assertFalse(claim.exists())
 
-    def test_unimplemented_codex_runner_blocks_before_consuming_claim(self) -> None:
+    def test_codex_runner_requires_exact_live_custody_before_consuming_claim(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             temp = Path(td)
             maturity = {"status": "NO_MODEL_CANDIDATE_MATURE", "candidate_id": "c1"}
@@ -1298,8 +1326,8 @@ class FixtureProtocolTests(unittest.TestCase):
                 capture_output=True,
                 check=False,
             )
-            self.assertEqual(2, result.returncode, result.stderr or result.stdout)
-            self.assertIn("LIVE_MODEL_EXECUTION_NOT_IMPLEMENTED", result.stdout)
+            self.assertEqual(1, result.returncode, result.stderr or result.stdout)
+            self.assertIn("LIVE_PROVIDER_EXACT_CUSTODY_AUTHORIZATION_AND_EXECUTABLE_REQUIRED", result.stdout)
             self.assertFalse(claim_path.exists(), "a pre-dispatch capability failure consumed the claim")
 
     def test_final_verdict_fails_closed_until_review_join_is_implemented(self) -> None:
