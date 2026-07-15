@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import re
+import secrets
 import shutil
 import signal
 import stat
@@ -20,7 +21,7 @@ import tempfile
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 from artifact_tree import tree_sha256
 from runtime_call_context_adapter import prepare_runtime_call
@@ -32,6 +33,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 CANONICAL_EXEC_FLAGS = ["--json", "--ephemeral", "--ignore-user-config", "--ignore-rules", "-C", "-s", "-m", "-c", "--output-last-message", "-"]
 _REPARSE_POINT = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
+_OWNERSHIP_WITNESS_NAME = ".daee-owned-directory-v1"
+_OWNERSHIP_WITNESS_BYTE_COUNT = 32
 _OPTION_DECLARATION_RE = re.compile(
     r"^\s*(?P<short>-[A-Za-z0-9])?"
     r"(?:(?:,\s*)?(?P<long>--[a-z0-9][a-z0-9-]*))?"
@@ -258,7 +261,14 @@ class IsolationCleanupError(RuntimeError):
     pass
 
 
-DirectoryIdentity = tuple[int, int]
+class DirectoryIdentity(NamedTuple):
+    directory_device: int
+    directory_inode: int
+    witness_device: int
+    witness_inode: int
+    witness_ctime_ns: int
+    witness_byte_count: int
+    witness_sha256: str
 
 
 def _canonical(value: object) -> bytes:
@@ -330,7 +340,7 @@ def _lstat_optional(path: Path) -> os.stat_result | None:
         return None
 
 
-def _regular_directory_identity(path: Path, label: str) -> DirectoryIdentity:
+def _regular_directory_stat(path: Path, label: str) -> os.stat_result:
     observed = _lstat_optional(path)
     if observed is None:
         raise IsolationCleanupError(f"{label}: creation identity unavailable")
@@ -340,16 +350,119 @@ def _regular_directory_identity(path: Path, label: str) -> DirectoryIdentity:
         or bool(getattr(observed, "st_file_attributes", 0) & _REPARSE_POINT)
     ):
         raise IsolationCleanupError(f"{label}: regular non-reparse directory required")
-    return (observed.st_dev, observed.st_ino)
+    return observed
+
+
+def _ownership_witness_identity(path: Path, label: str) -> tuple[int, int, int, int, str]:
+    before = _lstat_optional(path)
+    if before is None:
+        raise IsolationCleanupError(
+            f"OWNED_ISOLATION_CLEANUP_UNSAFE: {label} ownership witness is missing"
+        )
+    if (
+        not stat.S_ISREG(before.st_mode)
+        or stat.S_ISLNK(before.st_mode)
+        or bool(getattr(before, "st_file_attributes", 0) & _REPARSE_POINT)
+        or before.st_size != _OWNERSHIP_WITNESS_BYTE_COUNT
+    ):
+        raise IsolationCleanupError(
+            f"OWNED_ISOLATION_CLEANUP_UNSAFE: {label} ownership witness is not the exact regular file"
+        )
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        descriptor = os.open(path, flags)
+    except OSError as exc:
+        raise IsolationCleanupError(
+            f"OWNED_ISOLATION_CLEANUP_UNSAFE: {label} ownership witness could not be opened"
+        ) from exc
+    try:
+        opened = os.fstat(descriptor)
+        before_identity = (
+            before.st_dev,
+            before.st_ino,
+            before.st_ctime_ns,
+            before.st_size,
+        )
+        opened_identity = (
+            opened.st_dev,
+            opened.st_ino,
+            opened.st_ctime_ns,
+            opened.st_size,
+        )
+        if not stat.S_ISREG(opened.st_mode) or opened_identity != before_identity:
+            raise IsolationCleanupError(
+                f"OWNED_ISOLATION_CLEANUP_UNSAFE: {label} ownership witness changed before readback"
+            )
+        raw = bytearray()
+        while len(raw) <= _OWNERSHIP_WITNESS_BYTE_COUNT:
+            chunk = os.read(descriptor, _OWNERSHIP_WITNESS_BYTE_COUNT + 1 - len(raw))
+            if not chunk:
+                break
+            raw.extend(chunk)
+    finally:
+        os.close(descriptor)
+    if len(raw) != _OWNERSHIP_WITNESS_BYTE_COUNT:
+        raise IsolationCleanupError(
+            f"OWNED_ISOLATION_CLEANUP_UNSAFE: {label} ownership witness byte count changed"
+        )
+    after = _lstat_optional(path)
+    if after is None or (
+        after.st_dev,
+        after.st_ino,
+        after.st_ctime_ns,
+        after.st_size,
+    ) != before_identity or (
+        not stat.S_ISREG(after.st_mode)
+        or stat.S_ISLNK(after.st_mode)
+        or bool(getattr(after, "st_file_attributes", 0) & _REPARSE_POINT)
+    ):
+        raise IsolationCleanupError(
+            f"OWNED_ISOLATION_CLEANUP_UNSAFE: {label} ownership witness changed during readback"
+        )
+    return (
+        before.st_dev,
+        before.st_ino,
+        before.st_ctime_ns,
+        len(raw),
+        hashlib.sha256(raw).hexdigest(),
+    )
+
+
+def _regular_directory_identity(path: Path, label: str) -> DirectoryIdentity:
+    observed = _regular_directory_stat(path, label)
+    witness = _ownership_witness_identity(path / _OWNERSHIP_WITNESS_NAME, label)
+    return DirectoryIdentity(observed.st_dev, observed.st_ino, *witness)
 
 
 def _create_owned_directory(path: Path, label: str, *, parents: bool) -> DirectoryIdentity:
     path.mkdir(parents=parents, exist_ok=False)
+    created = _regular_directory_stat(path, label)
+    witness_path = path / _OWNERSHIP_WITNESS_NAME
+    witness_raw = secrets.token_bytes(_OWNERSHIP_WITNESS_BYTE_COUNT)
     try:
-        return _regular_directory_identity(path, label)
-    except IsolationCleanupError as exc:
+        _write_once(witness_path, witness_raw)
+        identity = _regular_directory_identity(path, label)
+        if (identity.directory_device, identity.directory_inode) != (
+            created.st_dev,
+            created.st_ino,
+        ):
+            raise IsolationCleanupError(f"{label}: parent identity changed during witness creation")
+        return identity
+    except BaseException as exc:
+        try:
+            current = _regular_directory_stat(path, label)
+            if (current.st_dev, current.st_ino) == (created.st_dev, created.st_ino):
+                witness = _ownership_witness_identity(witness_path, label)
+                if witness[-1] == hashlib.sha256(witness_raw).hexdigest():
+                    entries = list(path.iterdir())
+                    if entries == [witness_path]:
+                        witness_path.unlink()
+                        path.rmdir()
+        except BaseException:
+            pass
+        residue = "; unverified creation residue retained" if _lstat_optional(path) is not None else ""
         raise IsolationCleanupError(
-            f"OWNED_ISOLATION_CREATION_IDENTITY_UNAVAILABLE: {label}"
+            f"OWNED_ISOLATION_CREATION_IDENTITY_UNAVAILABLE: {label}{residue}"
         ) from exc
 
 
@@ -370,9 +483,20 @@ def _require_owned_directory(
             f"OWNED_ISOLATION_CLEANUP_UNSAFE: {label} is not a regular non-reparse directory"
         )
     actual = (observed.st_dev, observed.st_ino)
-    if actual != expected:
+    if actual != (expected.directory_device, expected.directory_inode):
         raise IsolationCleanupError(
             f"OWNED_ISOLATION_CLEANUP_UNSAFE: {label} creation identity changed"
+        )
+    witness = _ownership_witness_identity(path / _OWNERSHIP_WITNESS_NAME, label)
+    if witness != (
+        expected.witness_device,
+        expected.witness_inode,
+        expected.witness_ctime_ns,
+        expected.witness_byte_count,
+        expected.witness_sha256,
+    ):
+        raise IsolationCleanupError(
+            f"OWNED_ISOLATION_CLEANUP_UNSAFE: {label} ownership witness changed"
         )
     return observed
 
@@ -608,7 +732,14 @@ class SubprocessCodexHost:
                 stderr.read().decode("utf-8"),
             )
 
-    def probe(self, executable: Path, *, access_token: str) -> dict[str, object]:
+    def probe(
+        self,
+        executable: Path,
+        *,
+        credential_carrier_available: bool,
+    ) -> dict[str, object]:
+        if type(credential_carrier_available) is not bool:
+            raise TypeError("credential carrier availability must be Boolean")
         safe_env = {
             key: value
             for key in ("SYSTEMROOT", "WINDIR", "COMSPEC", "TEMP", "TMP", "PATH")
@@ -632,7 +763,6 @@ class SubprocessCodexHost:
                     "LOCALAPPDATA": str(private_local),
                     "APPDATA": str(private_roaming),
                     "XDG_CACHE_HOME": str(private_cache),
-                    "CODEX_ACCESS_TOKEN": access_token,
                 }
             )
             version = self._run_probe_command(
@@ -676,7 +806,7 @@ class SubprocessCodexHost:
                 "executable_sha256": _sha256(executable),
                 "catalog_row": {"slug": "gpt-5.5", "supported_reasoning_efforts": efforts},
                 "canonical_exec_flags": list(CANONICAL_EXEC_FLAGS),
-                "auth_available": bool(access_token),
+                "credential_carrier_available": credential_carrier_available,
             }
 
     def start(
@@ -824,7 +954,7 @@ class CodexLiveProducerAdapter:
         self.root = Path(os.path.abspath(custody_root))
         self.executable = Path(os.path.abspath(codex_executable))
         self._access_token = access_token
-        self._credential: str | None = access_token
+        self._credential: str | None = None
         self.host = host or SubprocessCodexHost()
         self.timeout = command_timeout_seconds
         self._capability: dict[str, object] | None = None
@@ -869,11 +999,7 @@ class CodexLiveProducerAdapter:
     def _remove_owned_worker(self, row: dict[str, Any]) -> None:
         path = row.get("worker_root")
         identity = row.get("worker_identity")
-        if not isinstance(path, Path) or not (
-            isinstance(identity, tuple)
-            and len(identity) == 2
-            and all(isinstance(value, int) for value in identity)
-        ):
+        if not isinstance(path, Path) or not isinstance(identity, DirectoryIdentity):
             raise IsolationCleanupError(
                 "OWNED_ISOLATION_CLEANUP_UNSAFE: worker creation identity unavailable"
             )
@@ -887,6 +1013,36 @@ class CodexLiveProducerAdapter:
         if observed is None:
             self._isolated_root_owner = None
             return
+        witness_path = path / _OWNERSHIP_WITNESS_NAME
+        try:
+            entries = list(path.iterdir())
+        except OSError as exc:
+            raise IsolationCleanupError(
+                "OWNED_ISOLATION_CLEANUP_INCOMPLETE: isolation root inventory failed"
+            ) from exc
+        if entries != [witness_path]:
+            raise IsolationCleanupError(
+                "OWNED_ISOLATION_CLEANUP_UNSAFE: isolation root contains non-witness entries"
+            )
+        _require_owned_directory(path, identity, "isolation root")
+        try:
+            witness_path.unlink()
+        except OSError as exc:
+            raise IsolationCleanupError(
+                "OWNED_ISOLATION_CLEANUP_INCOMPLETE: isolation root ownership witness removal failed"
+            ) from exc
+        if _lstat_optional(witness_path) is not None:
+            raise IsolationCleanupError(
+                "OWNED_ISOLATION_CLEANUP_INCOMPLETE: isolation root ownership witness still exists"
+            )
+        current = _regular_directory_stat(path, "isolation root")
+        if (current.st_dev, current.st_ino) != (
+            identity.directory_device,
+            identity.directory_inode,
+        ):
+            raise IsolationCleanupError(
+                "OWNED_ISOLATION_CLEANUP_UNSAFE: isolation root changed before final removal"
+            )
         try:
             path.rmdir()
         except OSError as exc:
@@ -930,9 +1086,33 @@ class CodexLiveProducerAdapter:
         self._credential = candidate
         return candidate
 
+    def _credential_carrier_available(self) -> bool:
+        if isinstance(self._access_token, str) and bool(self._access_token):
+            return True
+        if "CODEX_ACCESS_TOKEN" in os.environ:
+            return True
+        auth = Path.home() / ".codex/auth.json"
+        observed = _lstat_optional(auth)
+        return bool(
+            observed is not None
+            and stat.S_ISREG(observed.st_mode)
+            and not stat.S_ISLNK(observed.st_mode)
+            and not bool(getattr(observed, "st_file_attributes", 0) & _REPARSE_POINT)
+            and observed.st_size > 0
+        )
+
     def capability(self) -> dict[str, object]:
-        probe = self.host.probe(self.executable, access_token=self._token())
-        required = {"version", "executable_sha256", "catalog_row", "canonical_exec_flags", "auth_available"}
+        probe = self.host.probe(
+            self.executable,
+            credential_carrier_available=self._credential_carrier_available(),
+        )
+        required = {
+            "version",
+            "executable_sha256",
+            "catalog_row",
+            "canonical_exec_flags",
+            "credential_carrier_available",
+        }
         if not isinstance(probe, dict) or set(probe) != required:
             raise RuntimeError("Codex capability probe shape invalid")
         catalog_row = probe["catalog_row"]
@@ -943,7 +1123,7 @@ class CodexLiveProducerAdapter:
             or not isinstance(catalog_row.get("supported_reasoning_efforts"), list)
             or "high" not in catalog_row["supported_reasoning_efforts"]
             or probe["canonical_exec_flags"] != CANONICAL_EXEC_FLAGS
-            or probe["auth_available"] is not True
+            or probe["credential_carrier_available"] is not True
         ):
             raise RuntimeError("Codex capability probe contract invalid")
         self._capability = {

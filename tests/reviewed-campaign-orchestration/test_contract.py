@@ -5,6 +5,7 @@ import json
 import copy
 import os
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -2355,9 +2356,13 @@ class _ScriptedCodexHost:
         self.processes: list[_CompletedCodexProcess] = []
         self.aborted: list[int] = []
         self.verified: list[int] = []
+        self.probe_carriers: list[bool] = []
 
-    def probe(self, executable: Path, *, access_token: str) -> dict[str, object]:
+    def probe(self, executable: Path, *, credential_carrier_available: bool) -> dict[str, object]:
+        if type(credential_carrier_available) is not bool:
+            raise TypeError("credential carrier availability must be Boolean")
         self.log.append(("probe", executable.name))
+        self.probe_carriers.append(credential_carrier_available)
         if self.fail_probe:
             raise RuntimeError("injected local capability failure")
         return {
@@ -2365,7 +2370,7 @@ class _ScriptedCodexHost:
             "executable_sha256": hashlib.sha256(executable.read_bytes()).hexdigest(),
             "catalog_row": {"slug": "gpt-5.5", "supported_reasoning_efforts": ["none", "low", "medium", "high"]},
             "canonical_exec_flags": ["--json", "--ephemeral", "--ignore-user-config", "--ignore-rules", "-C", "-s", "-m", "-c", "--output-last-message", "-"],
-            "auth_available": bool(access_token),
+            "credential_carrier_available": credential_carrier_available,
         }
 
     def start(
@@ -2466,7 +2471,7 @@ class _ScriptedCodexTestAdapter:
     def capability(self) -> dict[str, object]:
         probe = self._host.probe(
             self._executable,
-            access_token=self._fixture_token,
+            credential_carrier_available=bool(self._fixture_token),
         )
         self._capability = {
             "schema": "reviewed-campaign-provider-capability-v1",
@@ -3497,6 +3502,7 @@ class LiveProducerContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="daee-live-cleanup-replacement-") as temp:
             _fixture, auth, bindings, adapter = self._live_preparation_inputs(Path(temp))
             adapter.prepare(auth, bindings, allow_test_fixture=True)
+            adapter._token()
             row = adapter._prepared[CASES[0]]
             worker_root = row["worker_root"]
             sentinel = worker_root / "replacement-sentinel.txt"
@@ -3717,8 +3723,11 @@ class LiveProducerContractTests(unittest.TestCase):
                 fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
 
                 class DriftHost(_ScriptedCodexHost):
-                    def probe(self, executable: Path, *, access_token: str) -> dict[str, object]:
-                        value = super().probe(executable, access_token=access_token)
+                    def probe(self, executable: Path, *, credential_carrier_available: bool) -> dict[str, object]:
+                        value = super().probe(
+                            executable,
+                            credential_carrier_available=credential_carrier_available,
+                        )
                         if mutation == "effort":
                             value["catalog_row"] = {"slug": "gpt-5.5", "supported_reasoning_efforts": ["medium"]}
                         else:
@@ -3781,11 +3790,307 @@ class LiveProducerContractTests(unittest.TestCase):
                 "run",
                 side_effect=AssertionError("capability probe bypassed owned process custody"),
             ):
-                probe = host.probe(executable, access_token="fixture-access-token-never-retain")
+                probe = host.probe(executable, credential_carrier_available=True)
 
             self.assertEqual(3, owned.call_count)
+            self.assertEqual(
+                [
+                    [str(executable), "--version"],
+                    [str(executable), "debug", "models", "--json"],
+                    [str(executable), "exec", "--help"],
+                ],
+                [call.args[0] for call in owned.call_args_list],
+            )
+            self.assertTrue(
+                all("CODEX_ACCESS_TOKEN" not in call.kwargs["env"] for call in owned.call_args_list)
+            )
             self.assertEqual("gpt-5.5", probe["catalog_row"]["slug"])
-            self.assertTrue(probe["auth_available"])
+            self.assertIs(probe["credential_carrier_available"], True)
+
+    def test_live_capability_reads_no_environment_credential_value_and_retains_none(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        class MembershipOnlyEnvironment:
+            def __contains__(self, key: object) -> bool:
+                return key == "CODEX_ACCESS_TOKEN"
+
+            def get(self, *_args: object, **_kwargs: object) -> object:
+                raise AssertionError("credential environment value was read")
+
+            def __getitem__(self, _key: object) -> object:
+                raise AssertionError("credential environment value was indexed")
+
+            def __iter__(self):
+                raise AssertionError("credential environment was iterated")
+
+            def items(self):
+                raise AssertionError("credential environment items were read")
+
+            def values(self):
+                raise AssertionError("credential environment values were read")
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-secret-free-capability-") as temp:
+            root = Path(temp)
+            executable = root / "codex.exe"
+            executable.write_bytes(b"local no-network capability fixture\n")
+            host = _ScriptedCodexHost()
+            adapter = live_adapter.CodexLiveProducerAdapter(
+                custody_root=root,
+                codex_executable=executable,
+                host=host,
+            )
+
+            with mock.patch.object(live_adapter.os, "environ", MembershipOnlyEnvironment()):
+                capability = adapter.capability()
+
+            self.assertEqual("gpt-5.5", capability["model"])
+            self.assertEqual([True], host.probe_carriers)
+            self.assertIsNone(adapter._credential)
+
+    def test_live_capability_auth_file_carrier_uses_metadata_only(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-carrier-metadata-") as temp:
+            root = Path(temp)
+            executable = root / "codex.exe"
+            executable.write_bytes(b"local no-network capability fixture\n")
+
+            cases = []
+            for name, kind, expected in (
+                ("absent", "absent", False),
+                ("empty", "empty", False),
+                ("directory", "directory", False),
+                ("regular", "regular", True),
+            ):
+                home = root / name
+                auth = home / ".codex/auth.json"
+                auth.parent.mkdir(parents=True)
+                if kind == "empty":
+                    auth.write_bytes(b"")
+                elif kind == "directory":
+                    auth.mkdir()
+                elif kind == "regular":
+                    auth.write_bytes(b"nonempty carrier; not parsed by capability\n")
+                cases.append((name, home, expected))
+
+            for name, home, expected in cases:
+                with self.subTest(name=name):
+                    adapter = live_adapter.CodexLiveProducerAdapter(
+                        custody_root=root,
+                        codex_executable=executable,
+                        host=_ScriptedCodexHost(),
+                    )
+                    with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                        live_adapter.Path,
+                        "home",
+                        return_value=home,
+                    ), mock.patch.object(
+                        live_adapter.Path,
+                        "read_text",
+                        side_effect=AssertionError("auth carrier content was read"),
+                    ):
+                        self.assertIs(adapter._credential_carrier_available(), expected)
+                    self.assertIsNone(adapter._credential)
+
+            auth = root / "reparse/.codex/auth.json"
+            auth.parent.mkdir(parents=True)
+            auth.write_bytes(b"synthetic reparse carrier\n")
+            observed = mock.Mock(
+                st_mode=stat.S_IFREG | 0o600,
+                st_size=24,
+                st_file_attributes=live_adapter._REPARSE_POINT,
+            )
+            adapter = live_adapter.CodexLiveProducerAdapter(
+                custody_root=root,
+                codex_executable=executable,
+                host=_ScriptedCodexHost(),
+            )
+            with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                live_adapter.Path,
+                "home",
+                return_value=root / "reparse",
+            ), mock.patch.object(
+                live_adapter,
+                "_lstat_optional",
+                return_value=observed,
+            ), mock.patch.object(
+                live_adapter.Path,
+                "read_text",
+                side_effect=AssertionError("reparse auth carrier content was read"),
+            ):
+                self.assertIs(adapter._credential_carrier_available(), False)
+
+    def test_capability_host_rejects_non_boolean_carrier_before_launch(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-host-carrier-type-") as temp:
+            executable = Path(temp) / "codex.exe"
+            executable.write_bytes(b"local no-network capability fixture\n")
+            host = live_adapter.SubprocessCodexHost()
+            with mock.patch.object(
+                host,
+                "_run_probe_command",
+                side_effect=AssertionError("invalid carrier reached process launch"),
+            ) as launched:
+                with self.assertRaisesRegex(TypeError, "credential carrier availability must be Boolean"):
+                    host.probe(executable, credential_carrier_available="not-a-Boolean")
+            launched.assert_not_called()
+
+    def test_live_token_acquisition_waits_for_claim_and_reservation(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-live-deferred-token-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = _ScriptedCodexHost()
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+            )
+            observations: list[tuple[bool, int, int]] = []
+            original = adapter._inner._token
+
+            def acquire_after_authority() -> str:
+                snapshot = head_snapshot(fixture.root / "usage")
+                observations.append(
+                    (
+                        (fixture.root / "claims/producer-authorization.json").is_file(),
+                        len(snapshot["open_reservations"]),
+                        len(host.starts),
+                    )
+                )
+                return original()
+
+            self.assertIsNone(adapter._inner._credential)
+            with mock.patch.object(adapter._inner, "_token", side_effect=acquire_after_authority):
+                completion = run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+
+            self.assertEqual("PRODUCER_CAPTURE_COMPLETE", completion["status"])
+            self.assertEqual(5, len(observations))
+            self.assertEqual((True, 1, 0), observations[0])
+
+    def test_directory_ownership_rejects_same_device_inode_replacement(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-directory-identity-") as temp:
+            path = Path(temp) / "owned"
+            identity = live_adapter._create_owned_directory(path, "owned", parents=False)
+            shutil.rmtree(path)
+            path.mkdir()
+            sentinel = path / "foreign-sentinel.txt"
+            sentinel.write_bytes(b"same-device-inode replacement must survive\n")
+            original_lstat = live_adapter._lstat_optional
+            collision = mock.Mock(
+                st_mode=stat.S_IFDIR | 0o700,
+                st_dev=identity[0],
+                st_ino=identity[1],
+                st_file_attributes=0,
+            )
+
+            def collide(candidate: Path):
+                if candidate == path:
+                    return collision
+                return original_lstat(candidate)
+
+            with mock.patch.object(live_adapter, "_lstat_optional", side_effect=collide):
+                with self.assertRaisesRegex(
+                    live_adapter.IsolationCleanupError,
+                    "ownership witness|creation identity changed",
+                ):
+                    live_adapter._require_owned_directory(path, identity, "owned")
+
+            self.assertEqual(b"same-device-inode replacement must survive\n", sentinel.read_bytes())
+
+    def test_directory_ownership_witness_survives_legitimate_mutations_and_controls_root_cleanup(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-directory-witness-normal-") as temp:
+            path = Path(temp) / "owned"
+            identity = live_adapter._create_owned_directory(path, "owned", parents=False)
+            marker = path / live_adapter._OWNERSHIP_WITNESS_NAME
+            self.assertTrue(marker.is_file())
+
+            child = path / "mutable-child"
+            child.mkdir()
+            payload = child / "payload.bin"
+            payload.write_bytes(b"legitimate descendant mutation\n")
+            payload.write_bytes(b"legitimate descendant mutation updated\n")
+            shutil.rmtree(child)
+
+            self.assertIsNotNone(live_adapter._require_owned_directory(path, identity, "owned"))
+            adapter = object.__new__(live_adapter.CodexLiveProducerAdapter)
+            adapter._owned_workers = {}
+            adapter._isolated_root_owner = (path, identity)
+            adapter._remove_owned_root_if_ready()
+            self.assertFalse(path.exists())
+            self.assertIsNone(adapter._isolated_root_owner)
+
+    def test_directory_ownership_witness_drift_preserves_foreign_path(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        for mutation in ("missing", "tampered", "same-byte-recreated", "reparse", "copied-replacement"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory(
+                prefix=f"daee-live-directory-witness-{mutation}-"
+            ) as temp:
+                path = Path(temp) / "owned"
+                identity = live_adapter._create_owned_directory(path, "owned", parents=False)
+                marker = path / live_adapter._OWNERSHIP_WITNESS_NAME
+                marker_bytes = marker.read_bytes()
+                sentinel = path / "foreign-sentinel.txt"
+                original_lstat = live_adapter._lstat_optional
+
+                if mutation == "missing":
+                    marker.unlink()
+                    sentinel.write_bytes(b"missing witness replacement\n")
+                elif mutation == "tampered":
+                    marker.write_bytes(b"x" * len(marker_bytes))
+                    sentinel.write_bytes(b"tampered witness replacement\n")
+                elif mutation == "same-byte-recreated":
+                    marker.unlink()
+                    marker.write_bytes(marker_bytes)
+                    sentinel.write_bytes(b"recreated witness replacement\n")
+                elif mutation == "reparse":
+                    sentinel.write_bytes(b"reparse witness replacement\n")
+                else:
+                    shutil.rmtree(path)
+                    path.mkdir()
+                    marker.write_bytes(marker_bytes)
+                    sentinel.write_bytes(b"copied witness replacement\n")
+
+                collision = mock.Mock(
+                    st_mode=stat.S_IFDIR | 0o700,
+                    st_dev=identity[0],
+                    st_ino=identity[1],
+                    st_file_attributes=0,
+                )
+                reparse = mock.Mock(
+                    st_mode=stat.S_IFREG | 0o600,
+                    st_dev=identity.witness_device,
+                    st_ino=identity.witness_inode,
+                    st_ctime_ns=identity.witness_ctime_ns,
+                    st_size=identity.witness_byte_count,
+                    st_file_attributes=live_adapter._REPARSE_POINT,
+                )
+
+                def drift(candidate: Path):
+                    if mutation == "copied-replacement" and candidate == path:
+                        return collision
+                    if mutation == "reparse" and candidate == marker:
+                        return reparse
+                    return original_lstat(candidate)
+
+                with mock.patch.object(live_adapter, "_lstat_optional", side_effect=drift):
+                    with self.assertRaisesRegex(
+                        live_adapter.IsolationCleanupError,
+                        "ownership witness|creation identity changed",
+                    ):
+                        live_adapter._require_owned_directory(path, identity, "owned")
+
+                self.assertTrue(path.is_dir())
+                self.assertTrue(sentinel.is_file())
 
     @unittest.skipUnless(os.name == "nt", "Windows Job Object custody canary")
     def test_windows_owned_process_survives_disappearing_intermediate_until_job_teardown(self) -> None:

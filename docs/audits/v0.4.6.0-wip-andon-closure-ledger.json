@@ -4421,10 +4421,10 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "Task 11bk independently accepted the exact current structured-admission parser, content-addressed admission prefix, five-way submit-before-observe barrier, strict non-finite rejection, provider-fact rederivation, deadline, and teardown bytes; no provider invocation claim",
+          "source_ref": "Task 11bk independently accepted predecessor live-adapter sha256 0d357768608eae2e6bc0b3c73d1af5846bba7abce855347daf79ab1f2fdad2af; Task 11bv current ANDON 145/146 owner repair preserves those joins while making capability metadata-only and secret-free and binding destructive directory cleanup to an immutable create-once ownership witness; this row binds exact current bytes only and does not claim provider invocation, independent successor acceptance, exact-SHA CI, candidate maturity, or terminal closure",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "0d357768608eae2e6bc0b3c73d1af5846bba7abce855347daf79ab1f2fdad2af",
+          "sha256": "3a099b84c09443eaa214bafc6f0f3c149cc9e79c69c794ed4e7c048ef1a85d68",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/codex_live_producer_adapter.py",
@@ -4443,14 +4443,14 @@
         },
         {
           "kind": "command_result",
-          "source_ref": "Task 11bj owner report sha256 ce6cb5f9e3a96da211be5915802edcfb91191e066fca17cb591f16ef4f5a8da8 and Task 11bk independent APPROVE sha256 9d5c056a0a57e8de23af58f06c5934c51c729f921eb663b3ec288a00a8ec61eb; exact current live adapter sha256 0d357768608eae2e6bc0b3c73d1af5846bba7abce855347daf79ab1f2fdad2af, orchestrator sha256 d86aba11c685aacd48002ea5dc4904fa3bf5b49cc61bd82576a5e7112d21eea9, and reviewed-campaign test sha256 2599d5e96cc9dcd9e9307e2bba5ed3f8d3e2509692f54d71ca0f8d10b6da3622; full reviewed-campaign suite is 84/84 GREEN including strict non-finite admission/rederivation, exact mixed-receipt replay, five-way barrier, and zero-dispatch replay",
+          "source_ref": "Task 11bv current ANDON 145/146 owner verification; exact current live adapter sha256 3a099b84c09443eaa214bafc6f0f3c149cc9e79c69c794ed4e7c048ef1a85d68, unchanged orchestrator sha256 d86aba11c685aacd48002ea5dc4904fa3bf5b49cc61bd82576a5e7112d21eea9, and reviewed-campaign test sha256 6535adfe42e0242430d8f496be2ef6aa5e8176bd40fdc9e52cce4bb01e807fde; full reviewed-campaign suite is 91/91 GREEN including metadata-only secret-free capability, deferred credential acquisition after authority and reservation, immutable directory-witness replacement custody, strict non-finite admission/rederivation, exact mixed-receipt replay, five-way barrier, and zero-dispatch replay",
           "commit_sha1": null,
           "blob_sha1": null,
           "sha256": null,
           "command": "python -B tests/reviewed-campaign-orchestration/test_contract.py",
           "exit_code": 0,
           "retained_artifact": null,
-          "unretained_reason": "raw stdout and stderr and local durable Task 11bj/11bk records are not tracked repository artifacts; bounded deterministic acceptance does not imply provider execution, final whole-branch acceptance, or terminal closure"
+          "unretained_reason": "raw stdout and stderr and the local durable Task 11bv owner record are not tracked repository artifacts; bounded deterministic acceptance does not imply independent successor acceptance, provider execution, final whole-branch acceptance, or terminal closure"
         },
         {
           "kind": "command_result",
@@ -4465,7 +4465,7 @@
         },
         {
           "kind": "command_result",
-          "source_ref": "Task 11bj owner verification after Task 11bk acceptance; current aggregate schema sha256 7940b0c37441e79d8e55bca92662b9045ca333e6b34a46bff05e6cd78311c732, tooling-bound promoter sha256 191050e83875687d95a4c97d3e74f039aa0020399a464617418e4ff98d6a7756, and permanent test sha256 079f3f0346978f6b75322f065d195e8352a080ca4cc696e076cdbf017c12783f; registered producer-structural suite is 17/17 GREEN including tooling canaries, scripted/test finalizer barrier, and shallow-fabrication rejection",
+          "source_ref": "Task 11br ANDON 144 owner verification after bounded independent acceptance; current aggregate schema sha256 7940b0c37441e79d8e55bca92662b9045ca333e6b34a46bff05e6cd78311c732, tooling-bound promoter sha256 579715d8417af03e2f8adcafa495911dcab204dc7a25631efa5d1663e76b4339, and permanent test sha256 079f3f0346978f6b75322f065d195e8352a080ca4cc696e076cdbf017c12783f; registered producer-structural suite is 17/17 GREEN including Linux same-inode rollback custody, tooling canaries, scripted/test finalizer barrier, and shallow-fabrication rejection",
           "commit_sha1": null,
           "blob_sha1": null,
           "sha256": null,
