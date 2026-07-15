@@ -19,7 +19,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Protocol
 
-from campaign_usage_ledger import head_snapshot, reserve, settle
+from campaign_usage_ledger import (
+    PRODUCER_OBSERVATION_PROTOCOL,
+    PRODUCER_WORKER_DEADLINE_RULE,
+    head_snapshot,
+    reserve,
+    settle,
+)
 from check_cold_comprehensiveness_review import validate_packet_manifest
 from check_initial_assessment_barrier import (
     AssessmentBarrierError,
@@ -144,6 +150,7 @@ class ProviderAdapter(Protocol):
     def submit(self, execution_custody: dict[str, object]) -> dict[str, object]: ...
     def submit_tail(self, execution_custodies: list[dict[str, object]]) -> list[dict[str, object]]: ...
     def observe(self, handle: str, execution_custody: dict[str, object]) -> dict[str, object]: ...
+    def observe_many(self, handles: list[str], execution_custodies: list[dict[str, object]]) -> tuple[list[dict[str, object] | None], BaseException | None]: ...
 
 
 def _producer_capture_mode(auth: dict[str, Any]) -> bool:
@@ -492,6 +499,7 @@ def _expected_success_completion(
     lane: str,
     reservation_sha256: object,
     settlement_sha256: object,
+    producer_usage_reservation_sha256s: list[str] | None = None,
 ) -> dict[str, Any]:
     common = {
         "candidate_id": auth["candidate_id"],
@@ -526,6 +534,7 @@ def _expected_success_completion(
                 {
                     "package_sha256": auth["package_sha256"],
                     "package_tree_sha256": auth["package_tree_sha256"],
+                    "producer_usage_reservation_sha256s": producer_usage_reservation_sha256s,
                 }
             )
         return completion
@@ -640,6 +649,10 @@ def _validate_success_finalizer(
         lane=lane,
         reservation_sha256=value.get("reservation_sha256"),
         settlement_sha256=value.get("settlement_sha256"),
+        producer_usage_reservation_sha256s=(
+            [row["reservation_sha256"] for row in reservation["reservation_members"]]
+            if reservation.get("kind") == "reservation-set" else None
+        ),
     )
     if completion != expected_completion:
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_SUCCESS_COMPLETION_EXACT_BINDING")
@@ -817,9 +830,10 @@ def _validate_failure_usage(
         reservation, reservation_raw = _load_canonical_json(reservation_path, "resume_reservation")
         if hashlib.sha256(reservation_raw).hexdigest() != reservation_sha:
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESERVATION_CONTENT_ADDRESS")
+        producer_set = lane == "producer" and _producer_capture_mode(auth)
         expected_reservation = {
-            "schema": "campaign-usage-transaction-v1",
-            "kind": "reservation",
+            "schema": "campaign-usage-transaction-v2" if producer_set else "campaign-usage-transaction-v1",
+            "kind": "reservation-set" if producer_set else "reservation",
             "authorization_sha256": auth_sha,
             "candidate_id": auth["candidate_id"],
             "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
@@ -828,6 +842,10 @@ def _validate_failure_usage(
         }
         if any(reservation.get(key) != expected for key, expected in expected_reservation.items()):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESERVATION_BINDING")
+        if producer_set:
+            member_shas = [row.get("reservation_sha256") for row in reservation.get("reservation_members", []) if isinstance(row, dict)]
+            if len(member_shas) != 5 or payload.get("producer_usage_reservation_sha256s") != member_shas:
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RESERVATION_MEMBER_BINDING")
 
     if settlement_sha is None:
         settlement = None
@@ -838,9 +856,10 @@ def _validate_failure_usage(
         settlement, settlement_raw = _load_canonical_json(settlement_path, "resume_settlement")
         if hashlib.sha256(settlement_raw).hexdigest() != settlement_sha:
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_SETTLEMENT_CONTENT_ADDRESS")
+        producer_set = lane == "producer" and _producer_capture_mode(auth)
         expected_settlement = {
-            "schema": "campaign-usage-transaction-v1",
-            "kind": "settlement",
+            "schema": "campaign-usage-transaction-v2" if producer_set else "campaign-usage-transaction-v1",
+            "kind": "settlement-set" if producer_set else "settlement",
             "authorization_sha256": auth_sha,
             "candidate_id": auth["candidate_id"],
             "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
@@ -850,6 +869,8 @@ def _validate_failure_usage(
         }
         if any(settlement.get(key) != expected for key, expected in expected_settlement.items()):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_SETTLEMENT_BINDING")
+        if producer_set and settlement.get("reservation_members") != reservation.get("reservation_members"):
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_SETTLEMENT_MEMBER_BINDING")
         if not historical and snapshot.get("last_transaction_sha256") != settlement_sha:
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_SETTLEMENT_NOT_USAGE_HEAD")
 
@@ -1227,9 +1248,15 @@ def _validate_failure_results(
                     "reasoning_effort": "high",
                     "authorization_sha256": payload.get("authorization_sha256"),
                 }
+                reservation_members = settlement.get("reservation_members")
+                if not isinstance(reservation_members, list) or len(reservation_members) != 5:
+                    raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRODUCER_RESERVATION_MEMBERS")
+                usage_reservation_sha = reservation_members[index - 1].get("reservation_sha256")
+                custody_expected["usage_reservation_sha256"] = usage_reservation_sha
                 if (
                     any(custody.get(key) != expected for key, expected in custody_expected.items())
                     or capture.get("execution_custody_sha256") != custody_sha
+                    or completed_receipt.get("usage_reservation_sha256") != usage_reservation_sha
                 ):
                     raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRODUCER_CUSTODY_BINDING")
                 receipt, receipt_path, receipt_sha = _load_ref(
@@ -1290,6 +1317,7 @@ def _validate_failure_resume_payload(
         "failure_phase": payload.get("failure_phase"),
         "dispatch_classification": payload.get("dispatch_classification"),
         "reservation_sha256": payload.get("reservation_sha256"),
+        "producer_usage_reservation_sha256s": payload.get("producer_usage_reservation_sha256s"),
         "settlement_sha256": payload.get("settlement_sha256"),
         "resulting_usage_head_sha256": payload.get("resulting_usage_head_sha256"),
         "completion": payload.get("completion"),
@@ -1512,6 +1540,23 @@ def _publish_failure_finalizer(
     interrupt_after_incident: bool = False,
 ) -> dict[str, Any]:
     snapshot = head_snapshot(usage_root)
+    producer_usage_reservation_sha256s: list[str] | None = None
+    if lane == "producer" and isinstance(reservation_sha256, str):
+        reservation_path = usage_root / "transactions" / f"{reservation_sha256}.json"
+        reservation_record, reservation_raw = _load_canonical_json(
+            reservation_path,
+            "failure_finalizer_reservation",
+        )
+        if hashlib.sha256(reservation_raw).hexdigest() != reservation_sha256:
+            raise CampaignError("FAILURE_FINALIZER_RESERVATION_CONTENT_ADDRESS")
+        if reservation_record.get("kind") == "reservation-set":
+            producer_usage_reservation_sha256s = [
+                row.get("reservation_sha256")
+                for row in reservation_record.get("reservation_members", [])
+                if isinstance(row, dict)
+            ]
+            if len(producer_usage_reservation_sha256s) != 5:
+                raise CampaignError("FAILURE_FINALIZER_RESERVATION_MEMBER_BINDING")
     finalizer_payload = {
         "schema": "reviewed-campaign-observation-finalizer-v1",
         "lane": lane,
@@ -1531,6 +1576,10 @@ def _publish_failure_finalizer(
         "dispatch_status": "PROVED_NOT_DISPATCHED" if dispatch_classification == "PROVED_NO_DISPATCH" else dispatch_classification,
         "dispatch_classification": dispatch_classification,
         "reservation_sha256": reservation_sha256,
+        **(
+            {"producer_usage_reservation_sha256s": producer_usage_reservation_sha256s}
+            if producer_usage_reservation_sha256s is not None else {}
+        ),
         "settlement_sha256": settlement_sha256,
         "resulting_usage_head_sha256": snapshot["head_sha256"],
         "usage_unresolved": snapshot["unresolved_usage"],
@@ -1559,6 +1608,10 @@ def _publish_failure_finalizer(
         "error_type": type(error).__name__,
         "dispatch_classification": dispatch_classification,
         "reservation_sha256": reservation_sha256,
+        **(
+            {"producer_usage_reservation_sha256s": producer_usage_reservation_sha256s}
+            if producer_usage_reservation_sha256s is not None else {}
+        ),
         "settlement_sha256": settlement_sha256,
         "resulting_usage_head_sha256": snapshot["head_sha256"],
         "continuation_authorized": False,
@@ -1601,7 +1654,7 @@ def _finalize_no_dispatch_failure(
                 candidate_reservation, raw = _load_canonical_json(transaction_path, "open_reservation")
             except (CampaignError, OSError) as exc:
                 raise CampaignError(f"RESERVATION_FAILURE_OPEN_STATE_INVALID: {exc}") from exc
-            if hashlib.sha256(raw).hexdigest() == open_sha and candidate_reservation.get("kind") == "reservation" and candidate_reservation.get("candidate_id") == auth["candidate_id"] and candidate_reservation.get("authorization_sha256") == auth_sha and candidate_reservation.get("cycle_or_review_batch_id") == auth["cycle_or_review_batch_id"]:
+            if hashlib.sha256(raw).hexdigest() == open_sha and candidate_reservation.get("kind") in {"reservation","reservation-set"} and candidate_reservation.get("candidate_id") == auth["candidate_id"] and candidate_reservation.get("authorization_sha256") == auth_sha and candidate_reservation.get("cycle_or_review_batch_id") == auth["cycle_or_review_batch_id"]:
                 reservation = {**candidate_reservation, "transaction_sha256": open_sha}
     reservation_sha = reservation.get("transaction_sha256") if isinstance(reservation, dict) else None
     if reservation_sha is not None:
@@ -2377,6 +2430,73 @@ def _worker_inventory(auth: dict[str, Any], lane: str) -> list[dict[str, str]]:
     return rows
 
 
+def _live_producer_reservation_bindings(
+    auth: dict[str, Any],
+    auth_sha: str,
+) -> list[dict[str, object]]:
+    if not _producer_capture_mode(auth):
+        raise CampaignError("LIVE_PRODUCER_RESERVATION_BINDINGS_REQUIRED")
+    case_inputs = auth.get("case_inputs")
+    provider_settings = auth.get("provider_settings")
+    window = auth.get("authorization_window")
+    if (
+        not isinstance(case_inputs, list)
+        or len(case_inputs) != 5
+        or not isinstance(provider_settings, dict)
+        or provider_settings.get("observation_protocol") != PRODUCER_OBSERVATION_PROTOCOL
+        or not isinstance(window, dict)
+    ):
+        raise CampaignError("LIVE_PRODUCER_RESERVATION_BINDING_INVALID")
+    timeout = provider_settings.get("command_timeout_seconds")
+    deadline = window.get("launch_not_after")
+    if not isinstance(timeout, int) or isinstance(timeout, bool) or timeout < 1:
+        raise CampaignError("LIVE_PRODUCER_RESERVATION_TIMEOUT_INVALID")
+    _parse_utc(deadline, "producer_cohort_deadline")
+    shared = {
+        "schema": "campaign-usage-reservation-member-v1",
+        "campaign_authorization_sha256": auth["campaign_authorization_sha256"],
+        "matrix_authorization_sha256": auth["matrix_authorization_sha256"],
+        "authorization_sha256": auth_sha,
+        "candidate_id": auth["candidate_id"],
+        "candidate_maturity_sha256": auth["candidate_maturity"]["sha256"],
+        "candidate_record_sha256": auth["package_record"]["sha256"],
+        "source_commit": auth["source_commit"],
+        "package_sha256": auth["package_sha256"],
+        "package_tree_sha256": auth["package_tree_sha256"],
+        "execution_tooling_manifest_sha256": auth["execution_tooling_manifest"]["sha256"],
+        "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
+        "cohort": "gpt-producer",
+        "model": "gpt-5.5",
+        "reasoning_effort": "high",
+        "cohort_deadline_utc": deadline,
+        "worker_timeout_seconds": timeout,
+        "worker_deadline_rule": PRODUCER_WORKER_DEADLINE_RULE,
+        "observation_protocol": PRODUCER_OBSERVATION_PROTOCOL,
+    }
+    rows: list[dict[str, object]] = []
+    for index, case_input in enumerate(case_inputs, 1):
+        if not isinstance(case_input, dict) or set(case_input) != {"case_id", "input_sha256"}:
+            raise CampaignError("LIVE_PRODUCER_RESERVATION_CASE_INPUT_INVALID")
+        case_id = case_input.get("case_id")
+        input_sha = case_input.get("input_sha256")
+        if (
+            case_id != auth["case_ids"][index - 1]
+            or not isinstance(input_sha, str)
+            or SHA256_RE.fullmatch(input_sha) is None
+        ):
+            raise CampaignError("LIVE_PRODUCER_RESERVATION_CASE_INPUT_INVALID")
+        rows.append(
+            {
+                **shared,
+                "reservation_ordinal": index,
+                "case_id": case_id,
+                "subject_id": f"producer:{case_id}",
+                "input_sha256": input_sha,
+            }
+        )
+    return rows
+
+
 def _execution_custody(
     auth: dict[str, Any],
     auth_sha: str,
@@ -2425,6 +2545,10 @@ def _execution_custody(
     if lane == "producer" and _producer_capture_mode(auth):
         if not isinstance(producer_output_contract, dict) or not isinstance(producer_capture_bindings, dict):
             raise CampaignError("EXECUTION_CUSTODY_PRODUCER_CAPTURE_BINDING_REQUIRED")
+        usage_reservation_sha = call_contract.get("usage_reservation_sha256")
+        if not isinstance(usage_reservation_sha, str) or SHA256_RE.fullmatch(usage_reservation_sha) is None:
+            raise CampaignError("EXECUTION_CUSTODY_PRODUCER_USAGE_RESERVATION_REQUIRED")
+        envelope["usage_reservation_sha256"] = usage_reservation_sha
         envelope["single_call_output_contract"] = producer_output_contract
         envelope["capture_bindings"] = producer_capture_bindings
         envelope["execution_tooling_manifest"] = copy.deepcopy(auth["execution_tooling_manifest"])
@@ -2748,7 +2872,7 @@ def _finalize_observed_failure(
             not_dispatched=0,
             unknown=0,
             provider_usage_receipts=receipts,
-            measured_cost={"unit": "usd", "value": "0"},
+            measured_cost=dict(LIVE_COST_UNAVAILABLE) if _producer_capture_mode(auth) else {"unit": "usd", "value": "0"},
             candidate_id=auth["candidate_id"],
             authorization_sha256=auth_sha,
         )
@@ -2758,7 +2882,7 @@ def _finalize_observed_failure(
             raise CampaignError("OBSERVED_FAILURE_TERMINAL_MISSING")
         terminal_path = usage_root / "transactions" / f"{terminal_sha}.json"
         terminal, _raw = _load_canonical_json(terminal_path, "observed_failure_terminal")
-        if terminal.get("kind") != "settlement" or terminal.get("reservation_transaction_sha256") != reservation_sha:
+        if terminal.get("kind") not in {"settlement","settlement-set"} or terminal.get("reservation_transaction_sha256") != reservation_sha:
             raise CampaignError("OBSERVED_FAILURE_TERMINAL_BINDING")
         terminal = {**terminal, "transaction_sha256": terminal_sha}
     else:
@@ -2895,6 +3019,10 @@ def run_producer_cohort(
     if live and auth.get("observation_finalizer_path") != _attempt_finalizer_path("producer", attempt_index):
         raise CampaignError("LIVE_OBSERVATION_FINALIZER_LOCATOR_BINDING")
     if live:
+        if auth.get("provider_settings", {}).get("observation_protocol") != PRODUCER_OBSERVATION_PROTOCOL:
+            raise CampaignError("LIVE_PROVIDER_CONCURRENT_OBSERVATION_PROTOCOL")
+        if not callable(getattr(adapter, "observe_many", None)):
+            raise CampaignError("LIVE_PROVIDER_CONCURRENT_OBSERVATION_UNAVAILABLE")
         prepare = getattr(adapter, "prepare", None)
         if not callable(prepare):
             raise CampaignError("LIVE_PROVIDER_PREPARATION_UNAVAILABLE")
@@ -2970,6 +3098,9 @@ def run_producer_cohort(
             candidate_id=auth["candidate_id"],
             cycle_or_review_batch_id=auth["cycle_or_review_batch_id"],
             call_subject_ids=subjects,
+            producer_reservation_bindings=(
+                _live_producer_reservation_bindings(auth, auth_sha) if live else None
+            ),
         )
         if fault_at == "reservation-exception-after-open":
             raise CampaignError("INJECTED_RESERVATION_EXCEPTION_AFTER_OPEN")
@@ -3021,8 +3152,23 @@ def run_producer_cohort(
                 handles.append(_submit_with_custody(adapter, envelope, live=False))
                 raw_events.append({"event": "call_entered_in_flight", "worker": worker["worker"], "case_id": worker["case_id"]})
         raw_events.append({"event": "all_five_in_flight"})
-        for index, (worker, envelope, handle) in enumerate(zip(workers, envelopes, handles), 1):
-            result = adapter.observe(handle, envelope)
+        observation_error: BaseException | None = None
+        if live:
+            observed_batch = adapter.observe_many(handles, envelopes)
+            if (
+                not isinstance(observed_batch, tuple)
+                or len(observed_batch) != 2
+                or not isinstance(observed_batch[0], list)
+                or len(observed_batch[0]) != 5
+                or not (observed_batch[1] is None or isinstance(observed_batch[1], BaseException))
+            ):
+                raise CampaignError("LIVE_PROVIDER_CONCURRENT_OBSERVATION_SHAPE")
+            observed_results, observation_error = observed_batch
+        else:
+            observed_results = [adapter.observe(handle, envelope) for handle, envelope in zip(handles, envelopes)]
+        for index, (worker, envelope, result) in enumerate(zip(workers, envelopes, observed_results), 1):
+            if result is None:
+                continue
             receipt = _provider_receipt(reservation, index, result, record_sha256(envelope), live=live)
             content = str(result["content_utf8"]).encode("utf-8")
             output_ref = _publish_once_bytes(root, f"producer/results/{worker['case_id']}.txt", content, f"producer_result_{index}")
@@ -3041,6 +3187,10 @@ def run_producer_cohort(
                 results.append({"case_id": worker["case_id"], "structural_status": "PASS", "output": output_ref, "provider_receipt_sha256": record_sha256(receipt)})
             receipts.append(receipt)
             raw_events.append({"event": "terminal_result_observed", "worker": worker["worker"], "case_id": worker["case_id"]})
+        if observation_error is not None:
+            raise observation_error
+        if len(results) != 5 or len(receipts) != 5:
+            raise CampaignError("LIVE_PROVIDER_CONCURRENT_OBSERVATION_INCOMPLETE")
         failure_phase = "observation-validation"
         manifest = {
             "schema": "daee-smoke-matrix-v1",
@@ -3088,6 +3238,14 @@ def run_producer_cohort(
             "candidate_maturity_sha256": bindings["candidate_sha256"],
             "authorization_sha256": auth_sha,
             "reservation_sha256": reservation["transaction_sha256"],
+            **(
+                {
+                    "producer_usage_reservation_sha256s": [
+                        row["reservation_sha256"] for row in reservation["reservation_members"]
+                    ]
+                }
+                if live else {}
+            ),
             "settlement_sha256": settlement["transaction_sha256"],
             "dispatch_manifest": manifest,
             "results": results,
@@ -3122,6 +3280,14 @@ def run_producer_cohort(
                 "candidate_status": "CONSUMED_OBSERVED",
                 "dispatch_status": "LIVE_RAW_CAPTURE_COMPLETE" if live else "DETERMINISTIC_FAKE_COMPLETE",
                 "reservation_sha256": reservation["transaction_sha256"],
+                **(
+                    {
+                        "producer_usage_reservation_sha256s": [
+                            row["reservation_sha256"] for row in reservation["reservation_members"]
+                        ]
+                    }
+                    if live else {}
+                ),
                 "settlement_sha256": settlement["transaction_sha256"],
                 "observed_results": results,
                 "completion": completion_ref,

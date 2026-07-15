@@ -276,6 +276,7 @@ def matrix_authorization(
             "parallelism": 5,
             "fresh_context_per_case": True,
             "submit_before_observe": True,
+            "observation_protocol": "concurrent-five-shared-deadline-v1",
             "sandbox": "read-only",
             "approval_policy": "never",
             "ignore_user_config": True,

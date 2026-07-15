@@ -11,6 +11,7 @@
     "registry_sha256", "review_protocol", "review_protocol_sha256",
     "package_record_sha256", "candidate_maturity_sha256", "package_sha256",
     "package_tree_sha256", "authorization_sha256", "reservation_sha256",
+    "producer_usage_reservation_sha256s",
     "settlement_sha256", "dispatch_manifest", "case_ids", "results",
     "cold_review_authorized", "non_claims"
   ],
@@ -36,6 +37,10 @@
     "package_tree_sha256": {"$ref": "#/$defs/sha256"},
     "authorization_sha256": {"$ref": "#/$defs/sha256"},
     "reservation_sha256": {"$ref": "#/$defs/sha256"},
+    "producer_usage_reservation_sha256s": {
+      "type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/sha256"}
+    },
     "settlement_sha256": {"$ref": "#/$defs/sha256"},
     "dispatch_manifest": {"type": "object"},
     "case_ids": {
@@ -72,12 +77,13 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "case_id", "capture_status", "structural_status", "output",
+        "case_id", "usage_reservation_sha256", "capture_status", "structural_status", "output",
         "capture_evidence", "provider_receipt", "provider_receipt_sha256",
         "capture_record", "structural_finalization"
       ],
       "properties": {
         "case_id": {"type": "string", "minLength": 1},
+        "usage_reservation_sha256": {"$ref": "#/$defs/sha256"},
         "capture_status": {"const": "CAPTURED"},
         "structural_status": {"const": "PASS"},
         "output": {"$ref": "#/$defs/artifact"},

@@ -23,6 +23,20 @@ CALL_STATUSES = {"COMPLETED", "FAILED", "CANCELLED", "NOT_DISPATCHED", "UNKNOWN"
 COHORT_PROTOCOLS = {"gpt-producer":"barrier-five-submit-before-await-v1","paired-producer":"barrier-ten-submit-before-await-v1","gpt-review":"independent-cold-review-v1","paired-review":"paired-independent-cold-review-v1"}
 TRANSPORT_STATUSES={"NOT_STARTED","PROVIDER_ACCEPTED","ADAPTER_IN_FLIGHT","IN_FLIGHT","COMPLETED","FAILED","CANCELLED","TIMEOUT","CONNECTION_LOST","UNKNOWN"}
 ACK_ORIGINS={"NONE","PROVIDER_ACCEPTED","ADAPTER_IN_FLIGHT","BOTH"}
+PRODUCER_OBSERVATION_PROTOCOL = "concurrent-five-shared-deadline-v1"
+PRODUCER_WORKER_DEADLINE_RULE = "min(worker-start-plus-timeout,cohort-deadline)"
+PRODUCER_RESERVATION_MEMBER_UNSIGNED_KEYS = {
+    "schema", "reservation_ordinal", "campaign_authorization_sha256",
+    "matrix_authorization_sha256", "authorization_sha256", "candidate_id",
+    "candidate_maturity_sha256", "candidate_record_sha256", "source_commit",
+    "package_sha256", "package_tree_sha256", "execution_tooling_manifest_sha256",
+    "cycle_or_review_batch_id", "cohort", "case_id", "subject_id", "input_sha256",
+    "model", "reasoning_effort", "cohort_deadline_utc", "worker_timeout_seconds",
+    "worker_deadline_rule", "observation_protocol",
+}
+PRODUCER_RESERVATION_MEMBER_KEYS = PRODUCER_RESERVATION_MEMBER_UNSIGNED_KEYS | {
+    "reservation_sha256"
+}
 
 
 def _canonical(value: dict) -> bytes:
@@ -31,6 +45,126 @@ def _canonical(value: dict) -> bytes:
 
 def _digest(value: dict) -> str:
     return hashlib.sha256(_canonical(value)).hexdigest()
+
+
+def producer_reservation_member_sha256(value: dict) -> str:
+    """Content-address one exact producer usage reservation member."""
+    return hashlib.sha256(
+        b"daee-campaign-usage-reservation-member-v1\0" + _canonical(value)
+    ).hexdigest()
+
+
+def build_producer_reservation_members(rows: object) -> list[dict]:
+    if not isinstance(rows, list) or len(rows) != 5:
+        raise ValueError("usage_reservation_set: exactly five producer reservation bindings are required")
+    members: list[dict] = []
+    for index, row in enumerate(rows, 1):
+        if not isinstance(row, dict) or set(row) != PRODUCER_RESERVATION_MEMBER_UNSIGNED_KEYS:
+            raise ValueError(f"usage_reservation_set: member {index} has wrong unsigned shape")
+        unsigned = dict(row)
+        if unsigned.get("reservation_ordinal") != index:
+            raise ValueError("usage_reservation_set: reservation members must use canonical ordinals")
+        members.append(
+            {
+                **unsigned,
+                "reservation_sha256": producer_reservation_member_sha256(unsigned),
+            }
+        )
+    return members
+
+
+def _validate_producer_reservation_members(
+    value: object,
+    *,
+    campaign_authorization_sha256: str,
+    authorization_sha256: str,
+    candidate_id: str,
+    cycle_or_review_batch_id: str,
+    call_contract: object,
+) -> list[dict]:
+    if not isinstance(value, list) or len(value) != 5:
+        raise ValueError("usage_reservation_set: exactly five producer reservation members are required")
+    members: list[dict] = []
+    cases: list[str] = []
+    subjects: list[str] = []
+    member_hashes: list[str] = []
+    shared: dict[str, object] | None = None
+    shared_fields = (
+        "campaign_authorization_sha256", "matrix_authorization_sha256",
+        "authorization_sha256", "candidate_id", "candidate_maturity_sha256",
+        "candidate_record_sha256", "source_commit", "package_sha256",
+        "package_tree_sha256", "execution_tooling_manifest_sha256",
+        "cycle_or_review_batch_id", "cohort", "model", "reasoning_effort",
+        "cohort_deadline_utc", "worker_timeout_seconds", "worker_deadline_rule",
+        "observation_protocol",
+    )
+    for index, member in enumerate(value, 1):
+        if not isinstance(member, dict) or set(member) != PRODUCER_RESERVATION_MEMBER_KEYS:
+            raise ValueError(f"usage_reservation_set: member {index} has wrong shape")
+        if member.get("schema") != "campaign-usage-reservation-member-v1":
+            raise ValueError("usage_reservation_set: member schema is invalid")
+        if member.get("reservation_ordinal") != index:
+            raise ValueError("usage_reservation_set: member order/ordinal differs from canonical case order")
+        supplied_sha = _sha(member.get("reservation_sha256"), "producer_usage_reservation_sha256")
+        unsigned = {key: item for key, item in member.items() if key != "reservation_sha256"}
+        if supplied_sha != producer_reservation_member_sha256(unsigned):
+            raise ValueError("usage_reservation_set: member content address mismatch")
+        for field in (
+            "campaign_authorization_sha256", "matrix_authorization_sha256",
+            "authorization_sha256", "candidate_maturity_sha256", "candidate_record_sha256",
+            "package_sha256", "package_tree_sha256", "execution_tooling_manifest_sha256",
+            "input_sha256",
+        ):
+            _sha(member.get(field), field)
+        if member.get("campaign_authorization_sha256") != campaign_authorization_sha256:
+            raise ValueError("usage_reservation_set: member campaign authorization differs from set")
+        if member.get("authorization_sha256") != authorization_sha256:
+            raise ValueError("usage_reservation_set: member authorization differs from set")
+        if member.get("candidate_id") != candidate_id:
+            raise ValueError("usage_reservation_set: member candidate differs from set")
+        if member.get("cycle_or_review_batch_id") != cycle_or_review_batch_id:
+            raise ValueError("usage_reservation_set: member cycle differs from set")
+        if not isinstance(member.get("source_commit"), str) or re.fullmatch(r"[a-f0-9]{40}", member["source_commit"]) is None:
+            raise ValueError("usage_reservation_set: member source commit is invalid")
+        case_id = _text(member.get("case_id"), "case_id")
+        subject_id = _text(member.get("subject_id"), "subject_id")
+        if subject_id != f"producer:{case_id}":
+            raise ValueError("usage_reservation_set: member subject/case binding mismatch")
+        if member.get("cohort") != "gpt-producer" or member.get("model") != "gpt-5.5" or member.get("reasoning_effort") != "high":
+            raise ValueError("usage_reservation_set: member cohort/model/effort binding mismatch")
+        deadline = member.get("cohort_deadline_utc")
+        if not isinstance(deadline, str) or re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z", deadline) is None:
+            raise ValueError("usage_reservation_set: absolute cohort deadline is invalid")
+        timeout = member.get("worker_timeout_seconds")
+        if not isinstance(timeout, int) or isinstance(timeout, bool) or timeout < 1:
+            raise ValueError("usage_reservation_set: governed worker timeout is invalid")
+        if member.get("worker_deadline_rule") != PRODUCER_WORKER_DEADLINE_RULE:
+            raise ValueError("usage_reservation_set: worker deadline rule is invalid")
+        if member.get("observation_protocol") != PRODUCER_OBSERVATION_PROTOCOL:
+            raise ValueError("usage_reservation_set: concurrent observation protocol is invalid")
+        observed_shared = {field: member[field] for field in shared_fields}
+        if shared is None:
+            shared = observed_shared
+        elif observed_shared != shared:
+            raise ValueError("usage_reservation_set: cohort-level member bindings differ")
+        cases.append(case_id)
+        subjects.append(subject_id)
+        member_hashes.append(supplied_sha)
+        members.append(member)
+    if len(set(cases)) != 5 or len(set(subjects)) != 5 or len(set(member_hashes)) != 5:
+        raise ValueError("usage_reservation_set: cases, subjects, and member identities must be unique")
+    if not isinstance(call_contract, list) or len(call_contract) != 5:
+        raise ValueError("usage_reservation_set: exact call contract is required")
+    for member, contract in zip(members, call_contract):
+        if not isinstance(contract, dict) or (
+            contract.get("case_id") != member["case_id"]
+            or contract.get("subject_id") != member["subject_id"]
+            or contract.get("model") != member["model"]
+            or contract.get("reasoning_effort") != member["reasoning_effort"]
+            or contract.get("usage_reservation_sha256") != member["reservation_sha256"]
+        ):
+            raise ValueError("usage_reservation_set: call contract differs from reservation member")
+    return members
 
 
 def _initial() -> dict:
@@ -338,11 +472,11 @@ def _opus_contract(value: object, cohort: str) -> dict|None:
     return value
 
 
-def _make_call_contract(cohort: str, reserved_calls: int, subject_ids: list[str]|None=None, paired_opus_contract: dict|None=None, paired_parent_contract: dict|None=None, candidate_id: str|None=None) -> list[dict]:
+def _make_call_contract(cohort: str, reserved_calls: int, subject_ids: list[str]|None=None, paired_opus_contract: dict|None=None, paired_parent_contract: dict|None=None, candidate_id: str|None=None, case_ids: list[str]|None=None, usage_reservation_sha256s: list[str]|None=None) -> list[dict]:
     if not isinstance(subject_ids,list):raise ValueError("usage_binding: explicit call subject manifest must be a list")
     subjects=subject_ids
     if len(subjects)!=reserved_calls or any(not isinstance(item,str) or not item for item in subjects) or len(subjects)!=len(set(subjects)):raise ValueError("usage_binding: call subject manifest must contain exact unique identities")
-    parent=_paired_parent_contract(paired_parent_contract,cohort);opus=_opus_contract(paired_opus_contract,cohort);models=[];efforts=[];candidates=[];child_cycles=[];child_protocols=[];case_ids=[];output_hashes=[]
+    parent=_paired_parent_contract(paired_parent_contract,cohort);opus=_opus_contract(paired_opus_contract,cohort);models=[];efforts=[];candidates=[];child_cycles=[];child_protocols=[];resolved_case_ids=[];output_hashes=[]
     if parent is not None:
         if candidate_id!=parent["parent_id"] or subjects!=parent["gpt_subject_ids"]+parent["opus_subject_ids"]:raise ValueError("usage_binding: paired parent/candidate/subject inventory mismatch")
         if cohort=="paired-producer":
@@ -351,22 +485,45 @@ def _make_call_contract(cohort: str, reserved_calls: int, subject_ids: list[str]
         candidates=[parent["gpt_candidate_id"]]*5+[parent["opus_candidate_id"]]*5
         child_cycles=[parent["gpt_child_cycle_id"]]*5+[parent["opus_child_cycle_id"]]*5
         child_protocols=[parent["gpt_child_protocol_sha256"]]*5+[parent["opus_child_protocol_sha256"]]*5
-        case_ids=parent["gpt_case_ids"]+parent["opus_case_ids"]
+        resolved_case_ids=parent["gpt_case_ids"]+parent["opus_case_ids"]
         output_hashes=parent["gpt_output_sha256s"]+parent["opus_output_sha256s"]
     else:
-        _text(candidate_id,"candidate_id");candidates=[candidate_id]*reserved_calls;child_cycles=[None]*reserved_calls;child_protocols=[None]*reserved_calls;case_ids=[None]*reserved_calls;output_hashes=[None]*reserved_calls
+        _text(candidate_id,"candidate_id");candidates=[candidate_id]*reserved_calls;child_cycles=[None]*reserved_calls;child_protocols=[None]*reserved_calls;output_hashes=[None]*reserved_calls
+        if case_ids is None:
+            resolved_case_ids=[None]*reserved_calls
+        elif not isinstance(case_ids,list) or len(case_ids)!=reserved_calls or len(set(case_ids))!=reserved_calls or any(not isinstance(item,str) or not item for item in case_ids):
+            raise ValueError("usage_binding: exact unique case manifest is required")
+        else:
+            resolved_case_ids=list(case_ids)
+    if usage_reservation_sha256s is not None:
+        if cohort!="gpt-producer" or not isinstance(usage_reservation_sha256s,list) or len(usage_reservation_sha256s)!=reserved_calls or len(set(usage_reservation_sha256s))!=reserved_calls:
+            raise ValueError("usage_reservation_set: exact unique producer reservation identities are required")
+        for reservation_sha in usage_reservation_sha256s:_sha(reservation_sha,"producer_usage_reservation_sha256")
     for index in range(reserved_calls):
         if cohort=="paired-producer" and index>=reserved_calls//2:
             if subjects[index]!=opus["subject_ids"][index-reserved_calls//2]:raise ValueError("usage_binding: paired Opus subject differs from child authorization")
             models.append(opus["model"]);efforts.append(opus["reasoning_effort"])
         elif cohort in {"gpt-review","paired-review"}:models.append("gpt-5.6-sol");efforts.append("xhigh")
         else:models.append("gpt-5.5");efforts.append("high")
-    return [{"parent_id":parent["parent_id"] if parent else None,"child_cycle_id":child_cycle,"candidate_id":candidate,"child_protocol_sha256":child_protocol,"case_id":case_id,"subject_id":subject,"subject_output_sha256":output_hash,"model":model,"reasoning_effort":effort,"protocol":COHORT_PROTOCOLS[cohort]} for child_cycle,candidate,child_protocol,case_id,subject,output_hash,model,effort in zip(child_cycles,candidates,child_protocols,case_ids,subjects,output_hashes,models,efforts)]
+    rows=[{"parent_id":parent["parent_id"] if parent else None,"child_cycle_id":child_cycle,"candidate_id":candidate,"child_protocol_sha256":child_protocol,"case_id":case_id,"subject_id":subject,"subject_output_sha256":output_hash,"model":model,"reasoning_effort":effort,"protocol":COHORT_PROTOCOLS[cohort]} for child_cycle,candidate,child_protocol,case_id,subject,output_hash,model,effort in zip(child_cycles,candidates,child_protocols,resolved_case_ids,subjects,output_hashes,models,efforts)]
+    if usage_reservation_sha256s is not None:
+        rows=[{**row,"usage_reservation_sha256":reservation_sha} for row,reservation_sha in zip(rows,usage_reservation_sha256s)]
+    return rows
 
 
 def _validate_call_contract(value: object, cohort: str, reserved_calls: int, paired_opus_contract: dict|None, paired_parent_contract: dict|None, candidate_id: str) -> list[dict]:
     if not isinstance(value,list) or len(value)!=reserved_calls:raise ValueError("usage_binding: exact cohort call contract is required")
-    expected=_make_call_contract(cohort,reserved_calls,[row.get("subject_id") if isinstance(row,dict) else None for row in value],paired_opus_contract,paired_parent_contract,candidate_id)
+    has_case_manifest=all(isinstance(row,dict) and row.get("case_id") is not None for row in value)
+    has_reservation_manifest=all(isinstance(row,dict) and "usage_reservation_sha256" in row for row in value)
+    if any(isinstance(row,dict) and "usage_reservation_sha256" in row for row in value) != has_reservation_manifest:
+        raise ValueError("usage_reservation_set: call contract reservation identities are partial")
+    expected=_make_call_contract(
+        cohort,reserved_calls,
+        [row.get("subject_id") if isinstance(row,dict) else None for row in value],
+        paired_opus_contract,paired_parent_contract,candidate_id,
+        [row.get("case_id") for row in value] if has_case_manifest and paired_parent_contract is None else None,
+        [row.get("usage_reservation_sha256") for row in value] if has_reservation_manifest else None,
+    )
     if value!=expected:raise ValueError("usage_binding: subject/model/effort/protocol contract differs from exact cohort manifest")
     return value
 
@@ -377,11 +534,11 @@ def _provider_facts(rows: object, *, candidate_id: str, batch_id: str, cohort: s
     contract=_validate_call_contract(call_contract,cohort,reserved_calls,paired_opus_contract,paired_parent_contract,candidate_id)
     statuses=[];cost_values=[];cost_records=[];subjects=[];provider_ids=[];host_ids=[];attempted=accepted_count=in_flight_count=0
     for index,(row,call_id,authorized) in enumerate(zip(rows,expected_ids,contract),1):
-        required={"call_id","parent_id","child_cycle_id","candidate_id","child_protocol_sha256","cycle_or_review_batch_id","case_id","subject_id","subject_output_sha256","model","reasoning_effort","protocol","started_at","ended_at","host_invocation_id","accepted","in_flight","status","unknown_kind","acknowledgment_origin","terminal_transport_status","provider_call_id","usage","cost"}
+        required=set(authorized)|{"call_id","cycle_or_review_batch_id","started_at","ended_at","host_invocation_id","accepted","in_flight","status","unknown_kind","acknowledgment_origin","terminal_transport_status","provider_call_id","usage","cost"}
         if not isinstance(row,dict) or set(row)!=required:raise ValueError(f"usage_provider_metadata: provider row {index} has wrong shape")
         if row.get("call_id")!=call_id or row.get("candidate_id")!=authorized["candidate_id"] or row.get("cycle_or_review_batch_id")!=batch_id:raise ValueError(f"usage_provider_metadata: provider row {index} identity binding mismatch")
         subject=row.get("subject_id")
-        if {field:row.get(field) for field in ("parent_id","child_cycle_id","candidate_id","child_protocol_sha256","case_id","subject_id","subject_output_sha256","model","reasoning_effort","protocol") }!=authorized:raise ValueError(f"usage_provider_metadata: provider row {index} parent/child/candidate/case/subject/output/model/protocol differs from reservation contract")
+        if {field:row.get(field) for field in authorized}!=authorized:raise ValueError(f"usage_provider_metadata: provider row {index} parent/child/candidate/case/subject/output/model/protocol/reservation differs from reservation contract")
         subjects.append(subject)
         status=row.get("status")
         if status not in CALL_STATUSES:raise ValueError(f"usage_provider_metadata: provider row {index} status is invalid")
@@ -511,7 +668,7 @@ def _reservation_digests_for_authorization(root: Path, authorization_sha256: str
     for path in transaction_dir.glob("*.json"):
         if re.fullmatch(r"[a-f0-9]{64}\.json",path.name) is None:continue
         tx=_load_transaction(root,path.stem)
-        if tx.get("kind")=="reservation" and tx.get("authorization_sha256")==authorization_sha256:matches.add(path.stem)
+        if tx.get("kind") in {"reservation","reservation-set"} and tx.get("authorization_sha256")==authorization_sha256:matches.add(path.stem)
     return matches
 
 
@@ -522,7 +679,7 @@ def _terminal_digests_for_reservation(root: Path, reservation_sha256: str) -> se
     for path in transaction_dir.glob("*.json"):
         if re.fullmatch(r"[a-f0-9]{64}\.json",path.name) is None:continue
         tx=_load_transaction(root,path.stem)
-        if tx.get("kind") in {"settlement","orphan-recovery"} and tx.get("reservation_transaction_sha256")==reservation_sha256:matches.add(path.stem)
+        if tx.get("kind") in {"settlement","settlement-set","orphan-recovery","orphan-recovery-set"} and tx.get("reservation_transaction_sha256")==reservation_sha256:matches.add(path.stem)
     return matches
 
 
@@ -535,12 +692,19 @@ def _require_exact_terminal_adoption(root: Path, reservation_sha256: str, tx: di
 def _validate_transaction(tx: dict) -> None:
     common={"schema","kind","sequence","predecessor_usage_head_sha256","predecessor_transaction_sha256","campaign_authorization_sha256","authorization_sha256","candidate_id","cycle_or_review_batch_id","cohort","lane","call_contract","paired_opus_contract","paired_parent_contract","authorization_custody"}
     kind=tx.get("kind")
-    required={
+    v1_required={
         "reservation": common|{"reserved_calls"},
         "settlement": common|{"reservation_transaction_sha256","reserved_calls","attempted","accepted","in_flight","completed","failed","cancelled","not_dispatched","unknown","provider_usage_receipts","measured_cost"},
         "orphan-recovery": common|{"reservation_transaction_sha256","reserved_calls","recovery_authorization_sha256","orphan_id","dispatch_provider_evidence_sha256","attempted","accepted","in_flight","completed","failed","cancelled","not_dispatched","unknown","provider_usage_receipts","measured_cost"},
-    }.get(kind)
-    if tx.get("schema")!="campaign-usage-transaction-v1" or required is None or set(tx)!=required:
+    }
+    v2_required={
+        "reservation-set": common|{"reserved_calls","reservation_members"},
+        "settlement-set": common|{"reservation_transaction_sha256","reserved_calls","reservation_members","attempted","accepted","in_flight","completed","failed","cancelled","not_dispatched","unknown","provider_usage_receipts","measured_cost"},
+        "orphan-recovery-set": common|{"reservation_transaction_sha256","reserved_calls","reservation_members","recovery_authorization_sha256","orphan_id","dispatch_provider_evidence_sha256","attempted","accepted","in_flight","completed","failed","cancelled","not_dispatched","unknown","provider_usage_receipts","measured_cost"},
+    }
+    schema=tx.get("schema")
+    required=(v1_required if schema=="campaign-usage-transaction-v1" else v2_required if schema=="campaign-usage-transaction-v2" else {}).get(kind)
+    if required is None or set(tx)!=required:
         raise ValueError("usage_transaction_shape: exact discriminator and fields are required")
     custody=tx.get("authorization_custody")
     if not isinstance(custody,list) or any(not isinstance(row,dict) for row in custody):
@@ -557,8 +721,19 @@ def _validate_transaction(tx: dict) -> None:
     _opus_contract(tx.get("paired_opus_contract"),tx["cohort"])
     _paired_parent_contract(tx.get("paired_parent_contract"),tx["cohort"])
     if tx.get("paired_opus_contract") is not None and tx["paired_opus_contract"].get("candidate_id")!=tx["paired_parent_contract"].get("opus_candidate_id"):raise ValueError("usage_binding: paired Opus child authorization candidate differs from sibling custody")
-    _validate_call_contract(tx.get("call_contract"),tx["cohort"],tx["reserved_calls"],tx.get("paired_opus_contract"),tx.get("paired_parent_contract"),tx["candidate_id"])
-    if kind in {"settlement","orphan-recovery"}:
+    call_contract=_validate_call_contract(tx.get("call_contract"),tx["cohort"],tx["reserved_calls"],tx.get("paired_opus_contract"),tx.get("paired_parent_contract"),tx["candidate_id"])
+    if schema=="campaign-usage-transaction-v2":
+        if tx.get("cohort")!="gpt-producer" or tx.get("lane")!="producer" or tx.get("reserved_calls")!=5:
+            raise ValueError("usage_reservation_set: v2 transaction is producer-five only")
+        _validate_producer_reservation_members(
+            tx.get("reservation_members"),
+            campaign_authorization_sha256=tx["campaign_authorization_sha256"],
+            authorization_sha256=tx["authorization_sha256"],
+            candidate_id=tx["candidate_id"],
+            cycle_or_review_batch_id=tx["cycle_or_review_batch_id"],
+            call_contract=call_contract,
+        )
+    if kind in {"settlement","settlement-set","orphan-recovery","orphan-recovery-set"}:
         _sha(tx.get("reservation_transaction_sha256"),"reservation_transaction_sha256")
         count_fields=("attempted","accepted","in_flight","completed","failed","cancelled","not_dispatched","unknown")
         if any(not isinstance(tx.get(field),int) or isinstance(tx.get(field),bool) or tx[field]<0 for field in count_fields):
@@ -566,7 +741,7 @@ def _validate_transaction(tx: dict) -> None:
         derived,aggregate=_provider_facts(tx.get("provider_usage_receipts"),candidate_id=tx["candidate_id"],batch_id=tx["cycle_or_review_batch_id"],cohort=tx["cohort"],reserved_calls=tx["reserved_calls"],call_contract=tx["call_contract"],paired_opus_contract=tx["paired_opus_contract"],paired_parent_contract=tx["paired_parent_contract"])
         if any(tx.get(field)!=derived[field] for field in derived):raise ValueError("usage_arithmetic: terminal counts differ from provider/dispatch rows")
         if tx.get("measured_cost")!=aggregate:raise ValueError("usage_provider_metadata: measured cost does not equal per-call aggregation")
-    if kind=="orphan-recovery":
+    if kind in {"orphan-recovery","orphan-recovery-set"}:
         _sha(tx.get("recovery_authorization_sha256"),"recovery_authorization_sha256")
         _text(tx.get("orphan_id"),"orphan_id")
         evidence_sha=tx.get("dispatch_provider_evidence_sha256")
@@ -579,14 +754,18 @@ def _apply_transaction(state: dict, digest: str, tx: dict, transactions: dict[st
     if tx["predecessor_usage_head_sha256"]!=_digest(state): raise ValueError("usage_chain_predecessor: predecessor head hash mismatch")
     campaign=state["campaign_authorization_sha256"]
     if campaign not in {None,tx["campaign_authorization_sha256"]}: raise ValueError("usage_binding: campaign cross-binding mismatch")
-    if tx["kind"]=="reservation":
+    if tx["kind"] in {"reservation","reservation-set"}:
         if state["open_reservations"] or state["unresolved_usage"]: raise ValueError("unresolved_usage: reservation cannot advance an open or unresolved head")
         return {**state,"sequence":tx["sequence"],"campaign_authorization_sha256":tx["campaign_authorization_sha256"],"last_transaction_sha256":digest,"open_reservations":[digest]}
     reservation_sha=tx["reservation_transaction_sha256"]
     if state["open_reservations"]!=[reservation_sha]: raise ValueError("usage_head_conflict: terminal transaction does not settle the canonical reservation")
     reservation=transactions.get(reservation_sha)
-    if reservation is None or reservation.get("kind")!="reservation": raise ValueError("usage_chain_gap: terminal transaction references no reservation")
-    for field in ("campaign_authorization_sha256","authorization_sha256","candidate_id","cycle_or_review_batch_id","cohort","lane","reserved_calls","call_contract","paired_opus_contract","paired_parent_contract","authorization_custody"):
+    if reservation is None or reservation.get("kind") not in {"reservation","reservation-set"}: raise ValueError("usage_chain_gap: terminal transaction references no reservation")
+    if (reservation.get("kind")=="reservation-set") != (tx.get("kind") in {"settlement-set","orphan-recovery-set"}):
+        raise ValueError("usage_binding: reservation-set terminal discriminator mismatch")
+    binding_fields=["campaign_authorization_sha256","authorization_sha256","candidate_id","cycle_or_review_batch_id","cohort","lane","reserved_calls","call_contract","paired_opus_contract","paired_parent_contract","authorization_custody"]
+    if reservation.get("kind")=="reservation-set":binding_fields.append("reservation_members")
+    for field in binding_fields:
         if tx[field]!=reservation[field]: raise ValueError(f"usage_binding: {field} differs from reservation")
     counts=[tx[name] for name in ("completed","failed","cancelled","not_dispatched","unknown")]
     if any(not isinstance(value,int) or isinstance(value,bool) or value<0 for value in counts) or sum(counts)!=tx["reserved_calls"]:
@@ -649,6 +828,7 @@ def reserve(root: Path, *, cohort: str, calls: int, expected_sequence: int, expe
             campaign_authorization_sha256: str | None = None, authorization_sha256: str | None = None,
             candidate_id: str | None = None, cycle_or_review_batch_id: str | None = None,
             call_subject_ids: list[str] | None = None, paired_opus_contract: dict|None=None, paired_parent_contract: dict|None=None,
+            producer_reservation_bindings: list[dict] | None = None,
             outer_parent_authorization_path: Path|None=None,
             paired_protocol_authorization_path: Path|None=None, paired_protocol_authorization_sha256: str|None=None,
             gpt_child_authorization_path: Path|None=None, gpt_child_authorization_sha256: str|None=None,
@@ -661,6 +841,8 @@ def reserve(root: Path, *, cohort: str, calls: int, expected_sequence: int, expe
     authorization=_sha(authorization_sha256,"authorization_sha256")
     candidate=_text(candidate_id,"candidate_id"); batch=_text(cycle_or_review_batch_id,"cycle_or_review_batch_id")
     lane="producer" if cohort in {"gpt-producer","paired-producer"} else "cold-review"
+    if producer_reservation_bindings is not None and cohort!="gpt-producer":
+        raise ValueError("usage_reservation_set: producer reservation bindings are gpt-producer only")
     if cohort in {"paired-producer","paired-review"}:
         if paired_parent_contract is not None or paired_opus_contract is not None:raise ValueError("usage_binding: paired custody must come from externally hash-anchored authorization artifacts")
         paired_parent_contract,opus_contract,authorization_snapshots=_load_paired_authorizations(root,cohort,candidate_id,call_subject_ids,authorization,outer_path=outer_parent_authorization_path,protocol_path=paired_protocol_authorization_path,protocol_sha256=paired_protocol_authorization_sha256,gpt_path=gpt_child_authorization_path,gpt_sha256=gpt_child_authorization_sha256,opus_path=opus_child_authorization_path,opus_sha256=opus_child_authorization_sha256)
@@ -679,11 +861,20 @@ def reserve(root: Path, *, cohort: str, calls: int, expected_sequence: int, expe
         try:
             _verify_authorization_snapshots(root,authorization_snapshots)
             authorization_custody=_transfer_authorization_custody(root,authorization_snapshots)
-            call_contract=_make_call_contract(cohort,calls,call_subject_ids,opus_contract,paired_parent_contract,candidate_id)
-            tx={"schema":"campaign-usage-transaction-v1","kind":"reservation","sequence":expected_sequence+1,
+            reservation_members=(
+                build_producer_reservation_members(producer_reservation_bindings)
+                if producer_reservation_bindings is not None else None
+            )
+            call_contract=_make_call_contract(
+                cohort,calls,call_subject_ids,opus_contract,paired_parent_contract,candidate_id,
+                [row["case_id"] for row in reservation_members] if reservation_members is not None else None,
+                [row["reservation_sha256"] for row in reservation_members] if reservation_members is not None else None,
+            )
+            tx={"schema":"campaign-usage-transaction-v2" if reservation_members is not None else "campaign-usage-transaction-v1","kind":"reservation-set" if reservation_members is not None else "reservation","sequence":expected_sequence+1,
                 "predecessor_usage_head_sha256":actual_head_sha256,"predecessor_transaction_sha256":head.get("last_transaction_sha256"),
                 "campaign_authorization_sha256":campaign,"authorization_sha256":authorization,"candidate_id":candidate,
                 "cycle_or_review_batch_id":batch,"cohort":cohort,"lane":lane,"call_contract":call_contract,"paired_opus_contract":opus_contract,"paired_parent_contract":paired_parent_contract,"authorization_custody":authorization_custody,"reserved_calls":calls}
+            if reservation_members is not None:tx["reservation_members"]=reservation_members
             intended_digest=_digest(tx)
             if prior_authorization_reservations and prior_authorization_reservations!={intended_digest}:raise ValueError("usage_authorization_replay: only the byte-identical append-before-head reservation may be adopted")
             _validate_authorization_custody(root,tx,materialized=True)
@@ -707,7 +898,7 @@ def settle(root: Path, reservation_sha256: str, *, completed: int, failed: int, 
         head=validate_head(root)
         if head.get("open_reservations")!=[reservation_sha256]: raise ValueError("usage_head_conflict: reservation is not the canonical open reservation")
         reservation=_load_transaction(root,reservation_sha256)
-        if reservation.get("kind")!="reservation":raise ValueError("usage_binding: settlement target is not a reservation")
+        if reservation.get("kind") not in {"reservation","reservation-set"}:raise ValueError("usage_binding: settlement target is not a reservation")
         if candidate_id!=reservation["candidate_id"] or authorization_sha256!=reservation["authorization_sha256"]:
             raise ValueError("usage_binding: settlement candidate/authorization differs from reservation")
         if sum(values)!=reservation["reserved_calls"]: raise ValueError("usage_arithmetic: settlement must account for every reserved call")
@@ -717,13 +908,15 @@ def settle(root: Path, reservation_sha256: str, *, completed: int, failed: int, 
         caller={"completed":completed,"failed":failed,"cancelled":cancelled,"not_dispatched":not_dispatched,"unknown":unknown}
         if any(caller[field]!=derived[field] for field in caller):raise ValueError("usage_arithmetic: settlement counts differ from per-call provider facts")
         if cost!=aggregate:raise ValueError("usage_provider_metadata: measured cost does not equal per-call aggregation")
-        tx={"schema":"campaign-usage-transaction-v1","kind":"settlement","sequence":head["sequence"]+1,
+        reservation_set=reservation.get("kind")=="reservation-set"
+        tx={"schema":"campaign-usage-transaction-v2" if reservation_set else "campaign-usage-transaction-v1","kind":"settlement-set" if reservation_set else "settlement","sequence":head["sequence"]+1,
             "predecessor_usage_head_sha256":_digest(head),"predecessor_transaction_sha256":head["last_transaction_sha256"],
             "campaign_authorization_sha256":reservation["campaign_authorization_sha256"],"authorization_sha256":reservation["authorization_sha256"],
             "candidate_id":reservation["candidate_id"],"cycle_or_review_batch_id":reservation["cycle_or_review_batch_id"],
             "cohort":reservation["cohort"],"lane":reservation["lane"],"call_contract":reservation["call_contract"],"paired_opus_contract":reservation["paired_opus_contract"],"paired_parent_contract":reservation["paired_parent_contract"],"authorization_custody":reservation["authorization_custody"],"reservation_transaction_sha256":reservation_sha256,
             "reserved_calls":reservation["reserved_calls"],"attempted":derived["attempted"],"accepted":derived["accepted"],"in_flight":derived["in_flight"],"completed":completed,"failed":failed,
             "cancelled":cancelled,"not_dispatched":not_dispatched,"unknown":unknown,"provider_usage_receipts":receipts,"measured_cost":cost}
+        if reservation_set:tx["reservation_members"]=reservation["reservation_members"]
         _require_exact_terminal_adoption(root,reservation_sha256,tx)
         digest=_append(root,tx); totals=dict(head["totals"])
         for key in ("attempted","accepted","in_flight","completed","failed","cancelled","not_dispatched","unknown"): totals[key]=totals.get(key,0)+tx[key]
@@ -746,11 +939,19 @@ def recover_orphan(root: Path, reservation_sha256: str, *, recovery_authorizatio
     try:raw=recovery_authorization.read_bytes();authorization=json.loads(raw)
     except (OSError,json.JSONDecodeError) as exc:raise ValueError(f"recovery_authorization_invalid: {exc}") from exc
     required={"schema","kind","authorization_id","campaign_authorization_sha256","authorization_sha256","reservation_sha256","orphan_id","candidate_id","expected_usage_head_sha256","claim_path","dispatch_provider_evidence_path","dispatch_provider_evidence_sha256"}
-    if not isinstance(authorization,dict) or set(authorization)!=required or authorization.get("schema")!="campaign-usage-recovery-authorization-v1" or authorization.get("kind")!="orphan-recovery-authorization":raise ValueError("recovery_authorization_invalid: exact authorization shape required")
+    required_set=required|{"producer_usage_reservation_sha256s"}
+    if not isinstance(authorization,dict) or (
+        (set(authorization)==required and authorization.get("schema")=="campaign-usage-recovery-authorization-v1" and authorization.get("kind")=="orphan-recovery-authorization")
+        or (set(authorization)==required_set and authorization.get("schema")=="campaign-usage-recovery-authorization-v2" and authorization.get("kind")=="orphan-recovery-set-authorization")
+    ) is not True:raise ValueError("recovery_authorization_invalid: exact authorization shape required")
     if authorization.get("reservation_sha256")!=reservation_sha256 or authorization.get("orphan_id")!=orphan_id or authorization.get("candidate_id")!=candidate_id:raise ValueError("recovery_authorization_binding: reservation, orphan, and candidate must match")
     for field in ("campaign_authorization_sha256","authorization_sha256","reservation_sha256","expected_usage_head_sha256"):
         value=authorization.get(field)
         if not isinstance(value,str) or re.fullmatch(r"[a-f0-9]{64}",value) is None:raise ValueError(f"recovery_authorization_invalid: {field} must be SHA-256")
+    authorized_members=authorization.get("producer_usage_reservation_sha256s")
+    if authorized_members is not None and (not isinstance(authorized_members,list) or len(authorized_members)!=5 or len(set(authorized_members))!=5):raise ValueError("recovery_authorization_invalid: exact five producer usage reservation identities required")
+    if authorized_members is not None:
+        for member_sha in authorized_members:_sha(member_sha,"producer_usage_reservation_sha256")
     if not isinstance(authorization.get("claim_path"),str) or not authorization["claim_path"]:raise ValueError("recovery_authorization_invalid: claim_path must be nonempty text")
     claim_rel=Path(authorization["claim_path"])
     if claim_rel.is_absolute() or ".." in claim_rel.parts:raise ValueError("recovery_authorization_invalid: claim path must be contained")
@@ -762,21 +963,26 @@ def recover_orphan(root: Path, reservation_sha256: str, *, recovery_authorizatio
     if claim_preexists and head_before.get("open_reservations")!=[reservation_sha256]:raise ValueError("recovery_authorization_replay: authorization claim belongs to an already-finalized recovery")
     if head_before.get("campaign_authorization_sha256")!=authorization["campaign_authorization_sha256"] or head_before["head_sha256"]!=authorization["expected_usage_head_sha256"]:raise ValueError("recovery_authorization_binding: campaign or expected head mismatch")
     reservation_before=_load_transaction(root,reservation_sha256)
-    if reservation_before.get("kind")!="reservation" or authorization["authorization_sha256"]!=reservation_before["authorization_sha256"] or candidate_id!=reservation_before["candidate_id"]:
+    if reservation_before.get("kind") not in {"reservation","reservation-set"} or authorization["authorization_sha256"]!=reservation_before["authorization_sha256"] or candidate_id!=reservation_before["candidate_id"]:
         raise ValueError("recovery_authorization_binding: authorization or candidate differs from reservation")
+    reservation_set=reservation_before.get("kind")=="reservation-set"
+    exact_member_shas=[row["reservation_sha256"] for row in reservation_before.get("reservation_members",[])] if reservation_set else None
+    if (authorized_members is not None)!=reservation_set or authorized_members!=exact_member_shas:
+        raise ValueError("recovery_authorization_binding: producer reservation member set differs from orphan")
     with _lock(root):
         head=validate_head(root)
         if head.get("open_reservations")!=[reservation_sha256]:
             raise ValueError("usage_head_conflict: reservation is not the canonical orphan")
         reservation=_load_transaction(root,reservation_sha256)
-        if reservation.get("kind")!="reservation" or authorization["authorization_sha256"]!=reservation["authorization_sha256"] or authorization["campaign_authorization_sha256"]!=reservation["campaign_authorization_sha256"] or candidate_id!=reservation["candidate_id"]:
+        if reservation.get("kind") not in {"reservation","reservation-set"} or authorization["authorization_sha256"]!=reservation["authorization_sha256"] or authorization["campaign_authorization_sha256"]!=reservation["campaign_authorization_sha256"] or candidate_id!=reservation["candidate_id"]:
             raise ValueError("recovery_authorization_binding: authorization/campaign/candidate differs from reservation")
         rows,evidence_sha=_load_recovery_evidence(root,authorization,reservation)
         derived,cost=_provider_facts(rows,candidate_id=reservation["candidate_id"],batch_id=reservation["cycle_or_review_batch_id"],cohort=reservation["cohort"],reserved_calls=reservation["reserved_calls"],call_contract=reservation["call_contract"],paired_opus_contract=reservation["paired_opus_contract"],paired_parent_contract=reservation["paired_parent_contract"])
         caller={"completed":completed,"failed":failed,"cancelled":cancelled,"not_dispatched":not_dispatched,"unknown":unknown}
         if evidence_sha is not None and any(caller[field]!=derived[field] for field in caller):raise ValueError("usage_arithmetic: recovery caller counts differ from immutable dispatch/provider evidence")
         completed,failed,cancelled,not_dispatched,unknown=(derived[field] for field in ("completed","failed","cancelled","not_dispatched","unknown"))
-        tx={"schema":"campaign-usage-transaction-v1","kind":"orphan-recovery","sequence":head["sequence"]+1,
+        reservation_set=reservation.get("kind")=="reservation-set"
+        tx={"schema":"campaign-usage-transaction-v2" if reservation_set else "campaign-usage-transaction-v1","kind":"orphan-recovery-set" if reservation_set else "orphan-recovery","sequence":head["sequence"]+1,
             "predecessor_usage_head_sha256":_digest(head),"predecessor_transaction_sha256":head["last_transaction_sha256"],
             "campaign_authorization_sha256":reservation["campaign_authorization_sha256"],"authorization_sha256":reservation["authorization_sha256"],
             "candidate_id":candidate_id,"cycle_or_review_batch_id":reservation["cycle_or_review_batch_id"],"lane":reservation["lane"],"call_contract":reservation["call_contract"],"paired_opus_contract":reservation["paired_opus_contract"],"paired_parent_contract":reservation["paired_parent_contract"],"authorization_custody":reservation["authorization_custody"],
@@ -785,9 +991,11 @@ def recover_orphan(root: Path, reservation_sha256: str, *, recovery_authorizatio
             "cohort":reservation["cohort"],"attempted":derived["attempted"],"accepted":derived["accepted"],"in_flight":derived["in_flight"],
             "completed":completed,"failed":failed,"cancelled":cancelled,
             "not_dispatched":not_dispatched,"unknown":unknown,"provider_usage_receipts":rows,"measured_cost":cost}
+        if reservation_set:tx["reservation_members"]=reservation["reservation_members"]
         _validate_transaction(tx)
         _require_exact_terminal_adoption(root,reservation_sha256,tx)
-        claim_record={"schema":"campaign-usage-recovery-claim-v1","authorization_sha256":authorization_sha256,"reservation_sha256":reservation_sha256,"orphan_id":orphan_id,"candidate_id":candidate_id,"dispatch_provider_evidence_sha256":evidence_sha}
+        claim_record={"schema":"campaign-usage-recovery-claim-v2" if reservation_set else "campaign-usage-recovery-claim-v1","authorization_sha256":authorization_sha256,"reservation_sha256":reservation_sha256,"orphan_id":orphan_id,"candidate_id":candidate_id,"dispatch_provider_evidence_sha256":evidence_sha}
+        if reservation_set:claim_record["producer_usage_reservation_sha256s"]=exact_member_shas
         claim_raw=_canonical(claim_record)
         if claim.exists():
             claim_path=_authorization_lexical_path(root,claim,"recovery_claim")

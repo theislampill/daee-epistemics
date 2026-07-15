@@ -203,7 +203,8 @@ def _capture_completion(
         "candidate_id", "source_commit", "cycle_id", "registry_sha256",
         "review_protocol", "review_protocol_sha256", "package_record_sha256",
         "candidate_maturity_sha256", "package_sha256", "package_tree_sha256",
-        "authorization_sha256", "reservation_sha256", "settlement_sha256",
+        "authorization_sha256", "reservation_sha256",
+        "producer_usage_reservation_sha256s", "settlement_sha256",
         "dispatch_manifest", "results",
     ):
         if field not in value:
@@ -425,6 +426,21 @@ def _derive(
     )
     protocol_ref, registry_ref, registry_cases = _protocol_and_registry(root, capture, authority)
     raw_results = capture.get("results")
+    usage_reservation_shas = capture.get("producer_usage_reservation_sha256s")
+    if (
+        not isinstance(usage_reservation_shas, list)
+        or len(usage_reservation_shas) != 5
+        or len(set(usage_reservation_shas)) != 5
+        or any(
+            not isinstance(item, str)
+            or len(item) != 64
+            or any(character not in "0123456789abcdef" for character in item)
+            for item in usage_reservation_shas
+        )
+    ):
+        raise StructuralCompletionError(
+            "producer capture usage reservation set is not the exact canonical five"
+        )
     if (
         not isinstance(raw_results, list)
         or len(raw_results) != 5
@@ -469,6 +485,7 @@ def _derive(
             or payload.get("candidate_id") != capture["candidate_id"]
             or payload.get("source_commit") != capture["source_commit"]
             or payload.get("cycle_id") != capture["cycle_id"]
+            or payload.get("usage_reservation_sha256") != usage_reservation_shas[index - 1]
             or payload.get("refs", {}).get("producer_completion") != capture_ref
         ):
             raise StructuralCompletionError(f"{case_id} capture record identity mismatch")
@@ -496,6 +513,7 @@ def _derive(
         promoted_results.append(
             {
                 "case_id": case_id,
+                "usage_reservation_sha256": usage_reservation_shas[index - 1],
                 "capture_status": "CAPTURED",
                 "structural_status": "PASS",
                 "output": copy.deepcopy(raw_result["output"]),
@@ -529,6 +547,7 @@ def _derive(
         "package_tree_sha256": capture["package_tree_sha256"],
         "authorization_sha256": capture["authorization_sha256"],
         "reservation_sha256": capture["reservation_sha256"],
+        "producer_usage_reservation_sha256s": copy.deepcopy(usage_reservation_shas),
         "settlement_sha256": capture["settlement_sha256"],
         "dispatch_manifest": copy.deepcopy(capture["dispatch_manifest"]),
         "case_ids": list(CANONICAL_CASE_IDS),

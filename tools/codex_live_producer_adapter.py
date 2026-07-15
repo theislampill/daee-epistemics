@@ -19,6 +19,7 @@ import stat
 import subprocess
 import tempfile
 import time
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed, wait
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, NamedTuple
@@ -35,6 +36,8 @@ CANONICAL_EXEC_FLAGS = ["--json", "--ephemeral", "--ignore-user-config", "--igno
 _REPARSE_POINT = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
 _OWNERSHIP_WITNESS_NAME = ".daee-owned-directory-v1"
 _OWNERSHIP_WITNESS_BYTE_COUNT = 32
+_OBSERVATION_QUIESCENCE_SECONDS = 20.0
+_PRODUCER_OBSERVATION_PROTOCOL = "concurrent-five-shared-deadline-v1"
 _OPTION_DECLARATION_RE = re.compile(
     r"^\s*(?P<short>-[A-Za-z0-9])?"
     r"(?:(?:,\s*)?(?P<long>--[a-z0-9][a-z0-9-]*))?"
@@ -1175,6 +1178,8 @@ class CodexLiveProducerAdapter:
         if not isinstance(output_contracts, dict) or list(output_contracts) != [row.get("case_id") for row in cases]:
             raise ValueError("exact ordered producer output contracts required")
         provider_settings = auth.get("provider_settings", {})
+        if provider_settings.get("observation_protocol") != _PRODUCER_OBSERVATION_PROTOCOL:
+            raise ValueError("authorization-bound concurrent observation protocol required")
         context_limit = provider_settings.get("effective_context_limit_bytes")
         if not isinstance(context_limit, int) or isinstance(context_limit, bool) or context_limit < 1:
             raise ValueError("positive authorization-bound effective context limit required")
@@ -1347,6 +1352,12 @@ class CodexLiveProducerAdapter:
             or command_timeout_seconds != self.timeout
         ):
             raise RuntimeError("live command timeout custody drift")
+        if (
+            provider_settings.get("observation_protocol") != _PRODUCER_OBSERVATION_PROTOCOL
+            or not isinstance(execution_custody.get("usage_reservation_sha256"), str)
+            or re.fullmatch(r"[a-f0-9]{64}", execution_custody["usage_reservation_sha256"]) is None
+        ):
+            raise RuntimeError("live usage reservation or observation protocol custody drift")
         custody_path = _retain_content_addressed(
             prepared["capture_root"],
             _canonical(execution_custody),
@@ -1554,18 +1565,156 @@ class CodexLiveProducerAdapter:
         pending = [self._start_pending(execution_custody) for execution_custody in execution_custodies]
         return [self._await_structured_admission(handle, row) for handle, row in pending]
 
+    @staticmethod
+    def _wait_for_terminal_process(row: dict[str, Any]) -> int:
+        deadline = row.get("launch_deadline_monotonic")
+        if not isinstance(deadline, (int, float)) or isinstance(deadline, bool):
+            raise RuntimeError("Codex producer launch deadline unavailable")
+        remaining = float(deadline) - time.monotonic()
+        if remaining <= 0:
+            raise subprocess.TimeoutExpired("Codex producer command", 0)
+        return row["process"].wait(timeout=remaining)
+
+    def observe_many(
+        self,
+        handles: list[str],
+        execution_custodies: list[dict[str, object]],
+    ) -> tuple[list[dict[str, object] | None], BaseException | None]:
+        """Observe the canonical five concurrently, with coordinator-only mutation."""
+        if (
+            not isinstance(handles, list)
+            or not isinstance(execution_custodies, list)
+            or len(handles) != 5
+            or len(execution_custodies) != 5
+            or len(set(handles)) != 5
+        ):
+            raise RuntimeError("exact five unique live producer observations required")
+        rows: list[dict[str, Any]] = []
+        for index, (handle, custody) in enumerate(zip(handles, execution_custodies), 1):
+            row = self._handles.get(handle)
+            if row is None or custody.get("case_id") != self._ordered_cases[index - 1] or row.get("case_id") != custody.get("case_id"):
+                raise RuntimeError("live producer observation handle/case order drift")
+            provider_settings = custody.get("provider_settings")
+            if not isinstance(provider_settings, dict) or provider_settings.get("observation_protocol") != _PRODUCER_OBSERVATION_PROTOCOL:
+                raise RuntimeError("live producer concurrent observation protocol drift")
+            expected_custody = hashlib.sha256(_canonical(custody)).hexdigest()
+            if row.get("execution_custody_sha256") != expected_custody:
+                raise RuntimeError("live producer observation custody drift")
+            rows.append(row)
+
+        results: list[dict[str, object] | None] = [None] * 5
+        first_error: BaseException | None = None
+        processed: set[int] = set()
+        executor = ThreadPoolExecutor(max_workers=5, thread_name_prefix="daee-producer-observe")
+        futures: dict[Future[int], int] = {
+            executor.submit(self._wait_for_terminal_process, row): index
+            for index, row in enumerate(rows)
+        }
+        try:
+            for future in as_completed(futures):
+                index = futures[future]
+                processed.add(index)
+                try:
+                    returncode = future.result()
+                    if returncode != 0:
+                        raise RuntimeError(f"Codex producer command exited {returncode}")
+                    results[index] = self._observe_terminal(
+                        handles[index],
+                        execution_custodies[index],
+                        terminal_returncode=returncode,
+                    )
+                except BaseException as exc:
+                    first_error = exc
+                    break
+
+            if first_error is None:
+                executor.shutdown(wait=True, cancel_futures=False)
+                return results, None
+
+            teardown_errors: list[str] = []
+            for row in rows:
+                try:
+                    self._teardown_process(row["process"])
+                except BaseException as exc:
+                    teardown_errors.append(str(exc))
+            _done, not_done = wait(futures, timeout=_OBSERVATION_QUIESCENCE_SECONDS)
+            if not_done:
+                teardown_errors.append("observer tasks did not quiesce within the governed teardown bound")
+            for future, index in futures.items():
+                if index in processed or not future.done():
+                    continue
+                processed.add(index)
+                try:
+                    returncode = future.result()
+                    if returncode == 0:
+                        results[index] = self._observe_terminal(
+                            handles[index],
+                            execution_custodies[index],
+                            terminal_returncode=returncode,
+                        )
+                    else:
+                        raise RuntimeError(f"Codex producer command exited {returncode}")
+                except BaseException:
+                    pass
+
+            for index, row in enumerate(rows):
+                if results[index] is None and row.get("state") != "COMPLETED":
+                    try:
+                        if row.get("state") == "ADAPTER_IN_FLIGHT":
+                            self._mark_outcome_unknown(row)
+                        self._credential_readback(row)
+                    except BaseException as exc:
+                        teardown_errors.append(str(exc))
+                try:
+                    self._remove_owned_worker(row)
+                except BaseException as exc:
+                    teardown_errors.append(str(exc))
+            try:
+                self._remove_owned_root_if_ready()
+            except BaseException as exc:
+                teardown_errors.append(str(exc))
+            if teardown_errors:
+                first_error = RuntimeError(
+                    f"{first_error}; concurrent observation teardown failed: {'; '.join(teardown_errors)}"
+                )
+            return results, first_error
+        finally:
+            executor.shutdown(wait=False, cancel_futures=True)
+
     def observe(self, handle: str, execution_custody: dict[str, object]) -> dict[str, object]:
+        return self._observe_terminal(
+            handle,
+            execution_custody,
+            terminal_returncode=None,
+        )
+
+    def _observe_terminal(
+        self,
+        handle: str,
+        execution_custody: dict[str, object],
+        *,
+        terminal_returncode: int | None,
+    ) -> dict[str, object]:
         row = self._handles.get(handle)
         if row is None:
             raise RuntimeError("unknown live producer handle")
         try:
-            deadline = row.get("launch_deadline_monotonic")
-            if not isinstance(deadline, (int, float)) or isinstance(deadline, bool):
-                raise RuntimeError("Codex producer launch deadline unavailable")
-            remaining = float(deadline) - time.monotonic()
-            if remaining <= 0:
-                raise subprocess.TimeoutExpired("Codex producer command", 0)
-            returncode = row["process"].wait(timeout=remaining)
+            if terminal_returncode is None:
+                deadline = row.get("launch_deadline_monotonic")
+                if not isinstance(deadline, (int, float)) or isinstance(deadline, bool):
+                    raise RuntimeError("Codex producer launch deadline unavailable")
+                remaining = float(deadline) - time.monotonic()
+                if remaining <= 0:
+                    raise subprocess.TimeoutExpired("Codex producer command", 0)
+                returncode = row["process"].wait(timeout=remaining)
+            else:
+                if (
+                    not isinstance(terminal_returncode, int)
+                    or isinstance(terminal_returncode, bool)
+                    or row["process"].poll() != terminal_returncode
+                ):
+                    raise RuntimeError("Codex producer terminal wait readback drift")
+                returncode = terminal_returncode
             if returncode != 0:
                 raise RuntimeError(f"Codex producer command exited {returncode}")
             self._teardown_process(row["process"])

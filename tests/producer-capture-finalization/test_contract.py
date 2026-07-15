@@ -28,6 +28,7 @@ CYCLE_ID = "b11-reviewed-five-smoke-01"
 CANDIDATE_ID = "b11-candidate-01"
 SOURCE_COMMIT = "2" * 40
 NONCE = "0123456789abcdef0123456789abcdef"
+USAGE_RESERVATION_SHA256S = [f"{index:064x}" for index in range(10, 15)]
 CANDIDATE_BINDING = {
     "candidate_id": CANDIDATE_ID,
     "source_commit": SOURCE_COMMIT,
@@ -251,11 +252,13 @@ class ProducerCaptureFinalizationContract(unittest.TestCase):
             "cycle_or_review_batch_id": CYCLE_ID,
             "case_id": CASE_ID,
             "subject_id": f"producer:{CASE_ID}",
+            "usage_reservation_sha256": USAGE_RESERVATION_SHA256S[0],
             "model": "gpt-5.5",
             "reasoning_effort": "high",
             "provider_settings": {
                 "effective_context_limit_bytes": 500000,
                 "command_timeout_seconds": 30,
+                "observation_protocol": "concurrent-five-shared-deadline-v1",
             },
             "execution_tooling_manifest": tooling_manifest_ref,
             "single_call_output_contract": output_contract,
@@ -272,6 +275,7 @@ class ProducerCaptureFinalizationContract(unittest.TestCase):
             "cycle_or_review_batch_id": CYCLE_ID,
             "case_id": CASE_ID,
             "subject_id": f"producer:{CASE_ID}",
+            "usage_reservation_sha256": USAGE_RESERVATION_SHA256S[0],
             "model": "gpt-5.5",
             "reasoning_effort": "high",
             "status": "COMPLETED",
@@ -311,6 +315,8 @@ class ProducerCaptureFinalizationContract(unittest.TestCase):
             "candidate_maturity_sha256": CANDIDATE_BINDING["candidate_maturity_sha256"],
             "package_sha256": CANDIDATE_BINDING["archive_sha256"],
             "package_tree_sha256": CANDIDATE_BINDING["package_tree_sha256"],
+            "reservation_sha256": "f" * 64,
+            "producer_usage_reservation_sha256s": list(USAGE_RESERVATION_SHA256S),
             "results": [
                 {
                     "case_id": CASE_ID,
@@ -332,6 +338,7 @@ class ProducerCaptureFinalizationContract(unittest.TestCase):
             "source_commit": SOURCE_COMMIT,
             "cycle_id": CYCLE_ID,
             "case_id": CASE_ID,
+            "usage_reservation_sha256": USAGE_RESERVATION_SHA256S[0],
             "envelope_nonce": NONCE,
             "candidate_binding": copy.deepcopy(CANDIDATE_BINDING),
             "input_binding": {
@@ -399,14 +406,22 @@ class ProducerCaptureFinalizationContract(unittest.TestCase):
             "composite_runtime_context": "capture evidence runtime_context artifact ref mismatch",
             "authorization_context_limit": "authorization-bound context limit mismatch",
             "authorization_command_timeout": "authorization-bound command timeout invalid",
+            "observation_protocol": "authorization-bound concurrent observation protocol invalid",
+            "reservation_completion": "producer completion usage reservation binding mismatch",
+            "reservation_custody": "execution custody usage reservation mismatch",
+            "reservation_receipt": "provider receipt case/subject/reservation mismatch",
             "package_parity": "package harness parity is not package-faithful",
-            "provider_subject": "provider receipt case/subject mismatch",
+            "provider_subject": "provider receipt case/subject/reservation mismatch",
         }
         for role in (
             "raw_output",
             "composite_runtime_context",
             "authorization_context_limit",
             "authorization_command_timeout",
+            "observation_protocol",
+            "reservation_completion",
+            "reservation_custody",
+            "reservation_receipt",
             "package_parity",
             "provider_subject",
         ):
@@ -420,14 +435,26 @@ class ProducerCaptureFinalizationContract(unittest.TestCase):
                     )
                     context["budget_telemetry"]["effective_context_limit"] += 1
                     payload["refs"][role] = self.retain_json("substituted-context", context)
-                elif role in {"authorization_context_limit", "authorization_command_timeout"}:
+                elif role == "reservation_completion":
+                    completion = json.loads(
+                        (self.scratch / payload["refs"]["producer_completion"]["path"]).read_text(encoding="utf-8")
+                    )
+                    completion["producer_usage_reservation_sha256s"][0] = "9" * 64
+                    payload["refs"]["producer_completion"] = self.retain_json(
+                        "substituted-completion-reservation", completion
+                    )
+                elif role in {"authorization_context_limit", "authorization_command_timeout", "observation_protocol", "reservation_custody"}:
                     custody = json.loads(
                         (self.scratch / payload["refs"]["execution_custody"]["path"]).read_text(encoding="utf-8")
                     )
                     if role == "authorization_context_limit":
                         custody["provider_settings"]["effective_context_limit_bytes"] -= 1
-                    else:
+                    elif role == "authorization_command_timeout":
                         custody["provider_settings"]["command_timeout_seconds"] = 0
+                    elif role == "observation_protocol":
+                        custody["provider_settings"]["observation_protocol"] = "serial-five-v1"
+                    else:
+                        custody["usage_reservation_sha256"] = "9" * 64
                     substituted = self.retain_json("substituted-custody-limit", custody)
                     payload["refs"]["execution_custody"] = substituted
                     capture = json.loads(
@@ -480,7 +507,10 @@ class ProducerCaptureFinalizationContract(unittest.TestCase):
                             encoding="utf-8"
                         )
                     )
-                    receipt["subject_id"] = "producer:wrong-case"
+                    if role == "reservation_receipt":
+                        receipt["usage_reservation_sha256"] = "9" * 64
+                    else:
+                        receipt["subject_id"] = "producer:wrong-case"
                     substituted = self.retain_json("substituted-provider-subject", receipt)
                     payload["refs"]["provider_receipt"] = substituted
                     completion = json.loads(

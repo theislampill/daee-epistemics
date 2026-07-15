@@ -238,10 +238,19 @@ def _validated_inputs(root: Path, payload: dict[str, Any]) -> tuple[dict[str, by
         if actual != binding.get(key):
             raise CaptureFinalizationError(f"producer completion candidate binding mismatch: {key}")
     results = completion.get("results")
-    matches = [row for row in results if isinstance(row, dict) and row.get("case_id") == payload["case_id"]] if isinstance(results, list) else []
+    matches = [(index, row) for index, row in enumerate(results) if isinstance(row, dict) and row.get("case_id") == payload["case_id"]] if isinstance(results, list) else []
     if len(matches) != 1:
         raise CaptureFinalizationError("producer completion must contain exactly one selected case")
-    result = matches[0]
+    result_index, result = matches[0]
+    usage_reservation_shas = completion.get("producer_usage_reservation_sha256s")
+    if (
+        not isinstance(usage_reservation_shas, list)
+        or len(usage_reservation_shas) != 5
+        or len(set(usage_reservation_shas)) != 5
+        or result_index >= len(usage_reservation_shas)
+        or usage_reservation_shas[result_index] != payload["usage_reservation_sha256"]
+    ):
+        raise CaptureFinalizationError("producer completion usage reservation binding mismatch")
     if result.get("capture_status") != "CAPTURED" or result.get("structural_status") != "UNVERIFIED":
         raise CaptureFinalizationError("selected producer result is not unverified captured output")
     result_output = result.get("output")
@@ -289,6 +298,8 @@ def _validated_inputs(root: Path, payload: dict[str, Any]) -> tuple[dict[str, by
     _identity(custody, payload, "execution custody", cycle_key="cycle_or_review_batch_id")
     if custody.get("model") != "gpt-5.5" or custody.get("reasoning_effort") != "high":
         raise CaptureFinalizationError("execution custody model identity mismatch")
+    if custody.get("usage_reservation_sha256") != payload["usage_reservation_sha256"]:
+        raise CaptureFinalizationError("execution custody usage reservation mismatch")
     tooling_ref = custody.get("execution_tooling_manifest")
     if not isinstance(tooling_ref, dict) or set(tooling_ref) != {"path", "byte_count", "sha256"}:
         raise CaptureFinalizationError("execution custody tooling manifest ref invalid")
@@ -343,6 +354,8 @@ def _validated_inputs(root: Path, payload: dict[str, Any]) -> tuple[dict[str, by
         or command_timeout_seconds < 1
     ):
         raise CaptureFinalizationError("authorization-bound command timeout invalid")
+    if provider_settings.get("observation_protocol") != "concurrent-five-shared-deadline-v1":
+        raise CaptureFinalizationError("authorization-bound concurrent observation protocol invalid")
     authorization_limit = (
         provider_settings.get("effective_context_limit_bytes")
         if isinstance(provider_settings, dict)
@@ -385,8 +398,9 @@ def _validated_inputs(root: Path, payload: dict[str, Any]) -> tuple[dict[str, by
     if (
         receipt.get("subject_id") != f"producer:{payload['case_id']}"
         or receipt.get("case_id") not in {None, payload["case_id"]}
+        or receipt.get("usage_reservation_sha256") != payload["usage_reservation_sha256"]
     ):
-        raise CaptureFinalizationError("provider receipt case/subject mismatch")
+        raise CaptureFinalizationError("provider receipt case/subject/reservation mismatch")
     if capture.get("completion_identity", {}).get("provider_call_id") != receipt.get("provider_call_id"):
         raise CaptureFinalizationError("provider completion identity mismatch")
 

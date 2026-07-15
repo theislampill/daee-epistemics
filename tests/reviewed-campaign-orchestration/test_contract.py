@@ -9,6 +9,8 @@ import stat
 import subprocess
 import sys
 import tempfile
+import threading
+import time
 import unittest
 from datetime import datetime, timezone
 from unittest import mock
@@ -2510,6 +2512,13 @@ class _ScriptedCodexTestAdapter:
     def observe(self, handle: str, execution_custody: dict[str, object]) -> dict[str, object]:
         return self._inner.observe(handle, execution_custody)
 
+    def observe_many(
+        self,
+        handles: list[str],
+        execution_custodies: list[dict[str, object]],
+    ) -> tuple[list[dict[str, object] | None], BaseException | None]:
+        return self._inner.observe_many(handles, execution_custodies)
+
     def execution_bindings(self) -> dict[str, dict[str, object]]:
         return self._inner.execution_bindings()
 
@@ -2724,6 +2733,7 @@ class LiveProducerContractTests(unittest.TestCase):
                 "parallelism": 5,
                 "fresh_context_per_case": True,
                 "submit_before_observe": True,
+                "observation_protocol": "concurrent-five-shared-deadline-v1",
                 "sandbox": "read-only",
                 "approval_policy": "never",
                 "ignore_user_config": True,
@@ -2881,7 +2891,11 @@ class LiveProducerContractTests(unittest.TestCase):
             "case_id": case_id,
             "model": "gpt-5.5",
             "reasoning_effort": "high",
-            "provider_settings": {"command_timeout_seconds": timeout},
+            "provider_settings": {
+                "command_timeout_seconds": timeout,
+                "observation_protocol": "concurrent-five-shared-deadline-v1",
+            },
+            "usage_reservation_sha256": "5" * 64,
             "single_call_output_contract": output_contract,
             "capture_bindings": capture_bindings,
         }
@@ -3370,6 +3384,242 @@ class LiveProducerContractTests(unittest.TestCase):
             self.assertEqual(fixture.package_tree_sha, completion["package_tree_sha256"])
             finalizer = json.loads((fixture.root / "producer/observation-finalizer.json").read_text())
             self.assertEqual(digest(fixture.root / "producer/completion.json"), finalizer["completion"]["sha256"])
+            self.assertFalse((fixture.root / "producer/isolated").exists())
+
+    def test_live_usage_reservation_set_contains_exactly_five_case_bound_members(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-live-reservation-set-") as temp:
+            fixture, authorization, completion = self._run_live_success(Path(temp))
+            matrix = json.loads(authorization.read_text(encoding="utf-8"))
+            reservation = json.loads(
+                (
+                    fixture.root
+                    / "usage/transactions"
+                    / f"{completion['reservation_sha256']}.json"
+                ).read_text(encoding="utf-8")
+            )
+            self.assertEqual("campaign-usage-transaction-v2", reservation["schema"])
+            self.assertEqual("reservation-set", reservation["kind"])
+            members = reservation["reservation_members"]
+            self.assertEqual(5, len(members))
+            self.assertEqual(5, len({row["reservation_sha256"] for row in members}))
+            self.assertEqual(
+                [row["reservation_sha256"] for row in members],
+                completion["producer_usage_reservation_sha256s"],
+            )
+            expected_keys = {
+                "schema", "reservation_ordinal", "campaign_authorization_sha256",
+                "matrix_authorization_sha256", "authorization_sha256", "candidate_id",
+                "candidate_maturity_sha256", "candidate_record_sha256", "source_commit",
+                "package_sha256", "package_tree_sha256", "execution_tooling_manifest_sha256",
+                "cycle_or_review_batch_id", "cohort", "case_id", "subject_id", "input_sha256",
+                "model", "reasoning_effort", "cohort_deadline_utc", "worker_timeout_seconds",
+                "worker_deadline_rule", "observation_protocol", "reservation_sha256",
+            }
+            for index, (member, case_input, call_contract) in enumerate(
+                zip(members, matrix["case_inputs"], reservation["call_contract"]),
+                1,
+            ):
+                self.assertEqual(expected_keys, set(member))
+                self.assertEqual(index, member["reservation_ordinal"])
+                self.assertEqual(matrix["campaign_authorization_sha256"], member["campaign_authorization_sha256"])
+                self.assertEqual(matrix["authorization_sha256"], member["matrix_authorization_sha256"])
+                self.assertEqual(digest(authorization), member["authorization_sha256"])
+                self.assertEqual(matrix["candidate_id"], member["candidate_id"])
+                self.assertEqual(matrix["candidate_maturity"]["sha256"], member["candidate_maturity_sha256"])
+                self.assertEqual(matrix["candidate_record"]["sha256"], member["candidate_record_sha256"])
+                self.assertEqual(matrix["source_commit"], member["source_commit"])
+                self.assertEqual(matrix["package_sha256"], member["package_sha256"])
+                self.assertEqual(matrix["package_tree_sha256"], member["package_tree_sha256"])
+                self.assertEqual(matrix["execution_tooling_manifest"]["sha256"], member["execution_tooling_manifest_sha256"])
+                self.assertEqual(matrix["cycle_id"], member["cycle_or_review_batch_id"])
+                self.assertEqual("gpt-producer", member["cohort"])
+                self.assertEqual(case_input["case_id"], member["case_id"])
+                self.assertEqual(f"producer:{case_input['case_id']}", member["subject_id"])
+                self.assertEqual(case_input["input_sha256"], member["input_sha256"])
+                self.assertEqual("gpt-5.5", member["model"])
+                self.assertEqual("high", member["reasoning_effort"])
+                self.assertEqual(matrix["launch_not_after"], member["cohort_deadline_utc"])
+                self.assertEqual(30, member["worker_timeout_seconds"])
+                self.assertEqual("min(worker-start-plus-timeout,cohort-deadline)", member["worker_deadline_rule"])
+                self.assertEqual("concurrent-five-shared-deadline-v1", member["observation_protocol"])
+                unsigned = {key: value for key, value in member.items() if key != "reservation_sha256"}
+                expected_sha = hashlib.sha256(
+                    b"daee-campaign-usage-reservation-member-v1\0" + canonical(unsigned)
+                ).hexdigest()
+                self.assertEqual(expected_sha, member["reservation_sha256"])
+                self.assertEqual(member["reservation_sha256"], call_contract["usage_reservation_sha256"])
+
+    def test_live_post_observation_failure_terminalizes_unreported_cost_exactly(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-live-observed-failure-cost-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=_ScriptedCodexHost(),
+                command_timeout_seconds=30,
+            )
+            with self.assertRaisesRegex(
+                CampaignError,
+                r"^INJECTED_TERMINAL_PHASE_FAILURE: after-observation-validation$",
+            ):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                    fault_at="after-observation-validation",
+                )
+
+            head = validate_head(fixture.root / "usage")
+            self.assertEqual(5, head["totals"]["completed"])
+            self.assertEqual(5, head["totals"]["producer_invocations"])
+            self.assertFalse(head["open_reservations"])
+            self.assertFalse(head["unresolved_usage"])
+            terminal = json.loads(
+                (
+                    fixture.root
+                    / "usage/transactions"
+                    / f"{head['last_transaction_sha256']}.json"
+                ).read_text(encoding="utf-8")
+            )
+            self.assertEqual("settlement-set", terminal["kind"])
+            self.assertEqual(
+                {
+                    "unit": "usd",
+                    "value": "unknown",
+                    "status": "UNAVAILABLE",
+                    "reason": "provider-cost-not-present-in-retained-jsonl",
+                    "source": "codex-cli-jsonl-v1",
+                },
+                terminal["measured_cost"],
+            )
+            member_shas = [
+                row["reservation_sha256"] for row in terminal["reservation_members"]
+            ]
+            self.assertEqual(
+                member_shas,
+                [row["usage_reservation_sha256"] for row in terminal["provider_usage_receipts"]],
+            )
+            incident = json.loads(
+                (fixture.root / "incidents/producer-live-cycle-01.json").read_text(encoding="utf-8")
+            )
+            finalizer = json.loads(
+                (fixture.root / "producer/observation-finalizer.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual("after-observation-validation", incident["failure_phase"])
+            self.assertEqual(member_shas, incident["producer_usage_reservation_sha256s"])
+            self.assertEqual(member_shas, finalizer["producer_usage_reservation_sha256s"])
+            self.assertEqual(5, len(finalizer["observed_results"]))
+            self.assertEqual("OBSERVED", finalizer["dispatch_classification"])
+            self.assertFalse(finalizer["usage_unresolved"])
+            self.assertTrue(finalizer["terminal"])
+
+    def test_live_concurrent_observation_interface_is_required_before_claim_or_reservation(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-live-observe-many-required-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = _ScriptedCodexHost()
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+                command_timeout_seconds=30,
+            )
+            adapter.observe_many = None  # type: ignore[method-assign]
+            before = head_snapshot(fixture.root / "usage")
+            with self.assertRaisesRegex(CampaignError, "LIVE_PROVIDER_CONCURRENT_OBSERVATION_UNAVAILABLE"):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+            self.assertEqual(before, head_snapshot(fixture.root / "usage"))
+            self.assertEqual([], host.starts)
+            self.assertFalse((fixture.root / "claims/producer-authorization.json").exists())
+            self.assertFalse((fixture.root / "claims/candidate.json").exists())
+            self.assertFalse((fixture.root / "producer/isolated").exists())
+
+    def test_live_terminal_observation_enters_all_five_waits_before_any_can_complete(self) -> None:
+        class ConcurrentObservationHost(_ScriptedCodexHost):
+            def __init__(self) -> None:
+                super().__init__()
+                self.observation_entries = 0
+                self.maximum_observation_entries = 0
+                self._observation_lock = threading.Lock()
+                self._all_observers_entered = threading.Event()
+
+            def start(self, *args: object, **kwargs: object) -> _CompletedCodexProcess:
+                process = super().start(*args, **kwargs)
+                original_wait = process.wait
+
+                def wait(timeout: float | None = None) -> int:
+                    with self._observation_lock:
+                        self.observation_entries += 1
+                        self.maximum_observation_entries = max(
+                            self.maximum_observation_entries,
+                            self.observation_entries,
+                        )
+                        if self.observation_entries == 5:
+                            self._all_observers_entered.set()
+                    if not self._all_observers_entered.wait(timeout=2):
+                        raise RuntimeError("terminal observation was serialized")
+                    try:
+                        return original_wait(timeout)
+                    finally:
+                        with self._observation_lock:
+                            self.observation_entries -= 1
+
+                process.wait = wait  # type: ignore[method-assign]
+                return process
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-concurrent-observation-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = ConcurrentObservationHost()
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+                command_timeout_seconds=30,
+            )
+            completion = run_producer_cohort(
+                fixture.root,
+                authorization,
+                adapter,
+                allow_test_fixture=True,
+            )
+            self.assertEqual(5, host.maximum_observation_entries)
+            self.assertEqual("PRODUCER_CAPTURE_COMPLETE", completion["status"])
+            self.assertEqual(
+                "concurrent-five-shared-deadline-v1",
+                json.loads(authorization.read_text(encoding="utf-8"))["provider_settings"]["observation_protocol"],
+            )
+            self.assertFalse((fixture.root / "producer/isolated").exists())
+
+    def test_completed_waits_do_not_expire_during_serial_retention(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-live-post-wait-deadline-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=_ScriptedCodexHost(),
+                command_timeout_seconds=30,
+            )
+            original_wait = adapter._inner._wait_for_terminal_process
+
+            def expire_after_terminal(row: dict[str, object]) -> int:
+                returncode = original_wait(row)
+                row["launch_deadline_monotonic"] = time.monotonic() - 1
+                return returncode
+
+            adapter._inner._wait_for_terminal_process = expire_after_terminal
+            completion = run_producer_cohort(
+                fixture.root,
+                authorization,
+                adapter,
+                allow_test_fixture=True,
+            )
+            self.assertEqual("PRODUCER_CAPTURE_COMPLETE", completion["status"])
+            self.assertEqual(5, len(completion["results"]))
             self.assertFalse((fixture.root / "producer/isolated").exists())
 
     def test_tail_workers_are_all_started_before_any_tail_admission_wait(self) -> None:
@@ -4412,9 +4662,9 @@ class LiveProducerContractTests(unittest.TestCase):
                 self.assertNotIn(token.encode(encoding), retained)
                 head = validate_head(fixture.root / "usage")
                 terminal = json.loads((fixture.root / "usage/transactions" / f"{head['last_transaction_sha256']}.json").read_text())
-                self.assertEqual((0, 5, 0), (terminal["completed"], terminal["unknown"], terminal["not_dispatched"]))
+                self.assertEqual((4, 1, 0), (terminal["completed"], terminal["unknown"], terminal["not_dispatched"]))
                 finalizer = json.loads((fixture.root / "producer/observation-finalizer.json").read_text())
-                self.assertEqual([], finalizer["observed_results"])
+                self.assertEqual(4, len(finalizer["observed_results"]))
 
     def test_scan_unavailable_purges_worker_and_preserves_unknown_terminalization(self) -> None:
         import codex_live_producer_adapter as live_adapter
@@ -4438,7 +4688,7 @@ class LiveProducerContractTests(unittest.TestCase):
             self.assertFalse((fixture.root / "producer/isolated/producer-01").exists())
             head = validate_head(fixture.root / "usage")
             terminal = json.loads((fixture.root / "usage/transactions" / f"{head['last_transaction_sha256']}.json").read_text())
-            self.assertEqual((0, 5, 0), (terminal["completed"], terminal["unknown"], terminal["not_dispatched"]))
+            self.assertEqual((4, 1, 0), (terminal["completed"], terminal["unknown"], terminal["not_dispatched"]))
             self.assertTrue((fixture.root / "producer/observation-finalizer.json").is_file())
 
     def test_secondary_worker_abort_residue_cannot_bypass_cohort_terminalization(self) -> None:
@@ -4455,9 +4705,9 @@ class LiveProducerContractTests(unittest.TestCase):
             self.assertFalse((fixture.root / "producer/isolated/producer-02").exists())
             head = validate_head(fixture.root / "usage")
             terminal = json.loads((fixture.root / "usage/transactions" / f"{head['last_transaction_sha256']}.json").read_text())
-            self.assertEqual((0, 5, 0), (terminal["completed"], terminal["unknown"], terminal["not_dispatched"]))
+            self.assertEqual((3, 2, 0), (terminal["completed"], terminal["unknown"], terminal["not_dispatched"]))
             finalizer = json.loads((fixture.root / "producer/observation-finalizer.json").read_text())
-            self.assertEqual([], finalizer["observed_results"])
+            self.assertEqual(3, len(finalizer["observed_results"]))
             self.assertEqual("OUTCOME_UNKNOWN", finalizer["dispatch_classification"])
 
     def test_live_capability_failure_is_preclaim_and_zero_dispatch(self) -> None:
@@ -4582,7 +4832,7 @@ class LiveProducerContractTests(unittest.TestCase):
                     host_args={"nonzero_at": 3},
                 )
             )
-            self.assertEqual(2, len(payload["observed_results"]))
+            self.assertEqual(4, len(payload["observed_results"]))
             orchestrator._validate_failure_resume_payload(
                 fixture.root,
                 fixture.root / auth["usage_ledger_root"],
@@ -4658,9 +4908,9 @@ class LiveProducerContractTests(unittest.TestCase):
         from codex_live_producer_adapter import CodexLiveProducerAdapter
         scenarios = [
             ({"fail_after_start_at": 3}, 0, 3, 2, RuntimeError),
-            ({"nonzero_at": 3}, 2, 3, 0, RuntimeError),
-            ({"timeout_at": 2}, 1, 4, 0, RuntimeError),
-            ({"interrupt_at": 2}, 1, 4, 0, KeyboardInterrupt),
+            ({"nonzero_at": 3}, 4, 1, 0, RuntimeError),
+            ({"timeout_at": 2}, 4, 1, 0, RuntimeError),
+            ({"interrupt_at": 2}, 4, 1, 0, KeyboardInterrupt),
         ]
         for host_args, completed, unknown, not_dispatched, error_type in scenarios:
             with self.subTest(host_args=host_args), tempfile.TemporaryDirectory(prefix="daee-live-partial-") as temp:

@@ -188,11 +188,13 @@ class Fixture:
             "cycle_or_review_batch_id": CYCLE_ID,
             "case_id": case_id,
             "subject_id": f"producer:{case_id}",
+            "usage_reservation_sha256": f"{index:064x}",
             "model": "gpt-5.5",
             "reasoning_effort": "high",
             "provider_settings": {
                 "effective_context_limit_bytes": 500000,
                 "command_timeout_seconds": 30,
+                "observation_protocol": "concurrent-five-shared-deadline-v1",
             },
             "execution_tooling_manifest": copy.deepcopy(self.tooling_ref),
             "single_call_output_contract": {
@@ -218,6 +220,7 @@ class Fixture:
             "cycle_or_review_batch_id": CYCLE_ID,
             "case_id": case_id,
             "subject_id": f"producer:{case_id}",
+            "usage_reservation_sha256": f"{index:064x}",
             "model": "gpt-5.5",
             "reasoning_effort": "high",
             "status": "COMPLETED",
@@ -257,6 +260,7 @@ class Fixture:
             "custody": custody_ref,
             "receipt": receipt_ref,
             "capture": capture_ref,
+            "usage_reservation_sha256": f"{index:064x}",
         }
 
     def _build(self) -> None:
@@ -336,6 +340,9 @@ class Fixture:
             "package_tree_sha256": CANDIDATE_BINDING["package_tree_sha256"],
             "authorization_sha256": authorization_ref["sha256"],
             "reservation_sha256": "8" * 64,
+            "producer_usage_reservation_sha256s": [
+                row["usage_reservation_sha256"] for row in artifacts
+            ],
             "settlement_sha256": "9" * 64,
             "dispatch_manifest": {"protocol": "barrier-five-submit-before-await-v1", "expected_workers": 5},
             "results": results,
@@ -352,6 +359,7 @@ class Fixture:
                 "source_commit": SOURCE_COMMIT,
                 "cycle_id": CYCLE_ID,
                 "case_id": case_id,
+                "usage_reservation_sha256": row["usage_reservation_sha256"],
                 "envelope_nonce": row["nonce"],
                 "candidate_binding": copy.deepcopy(CANDIDATE_BINDING),
                 "input_binding": {"sha256": row["raw_input"]["sha256"], "byte_count": row["raw_input"]["byte_count"]},
@@ -492,6 +500,44 @@ class ProducerStructuralCompletionContract(unittest.TestCase):
         self.assertEqual(["PASS"] * 5, [row["structural_status"] for row in aggregate["results"]])
         self.assertEqual(self.fixture.raw_completion_bytes, self.fixture.capture_completion_path.read_bytes())
         self.assertEqual(aggregate, self.revalidate(aggregate))
+
+    def test_exact_ordered_usage_reservation_members_survive_promotion(self) -> None:
+        aggregate = self.promote()
+        expected = self.fixture.raw_completion["producer_usage_reservation_sha256s"]
+        self.assertEqual(expected, aggregate["producer_usage_reservation_sha256s"])
+        self.assertEqual(
+            expected,
+            [row["usage_reservation_sha256"] for row in aggregate["results"]],
+        )
+
+    def test_per_case_usage_reservation_substitution_blocks_promotion(self) -> None:
+        original = promoter.validate_capture_complete_record
+
+        def substitute_first_member(*, root, record_path):
+            validated = original(root=root, record_path=record_path)
+            if validated["payload"]["case_id"] == CASES[0]:
+                validated = copy.deepcopy(validated)
+                validated["payload"]["usage_reservation_sha256"] = (
+                    self.fixture.raw_completion["producer_usage_reservation_sha256s"][1]
+                )
+            return validated
+
+        first, second = self._dependency_mocks()
+        with first, second, mock.patch.object(
+            promoter,
+            "validate_capture_complete_record",
+            side_effect=substitute_first_member,
+        ):
+            with self.assertRaisesRegex(
+                promoter.StructuralCompletionError,
+                "capture record identity mismatch",
+            ):
+                promoter.create_producer_structural_completion(
+                    custody_root=self.fixture.root,
+                    rows=copy.deepcopy(self.fixture.rows),
+                    authorization_path=self.fixture.authorization_path,
+                )
+        self.assertFalse(self.fixture.aggregate_path.exists())
 
     def test_cardinality_duplicate_and_order_fail_before_publication(self) -> None:
         mutations = {
@@ -755,6 +801,9 @@ class ProductionShapedPromotionIntegration(unittest.TestCase):
                 "source_commit": auth["source_commit"],
                 "cycle_id": auth["cycle_or_review_batch_id"],
                 "case_id": case_id,
+                "usage_reservation_sha256": completion[
+                    "producer_usage_reservation_sha256s"
+                ][0],
                 "envelope_nonce": contract["envelope_nonce"],
                 "candidate_binding": copy.deepcopy(contract["candidate_binding"]),
                 "input_binding": copy.deepcopy(contract["input_binding"]),

@@ -2,6 +2,7 @@
 """Deterministic Branch 10 protocol tests; no model runner is reachable here."""
 from __future__ import annotations
 
+import copy
 import json
 import hashlib
 import os
@@ -289,7 +290,7 @@ class FixtureProtocolTests(unittest.TestCase):
             "resolved_model":"gpt-5.5","adapter_version":"codex-live-v1","host_application_version":"codex-cli 0.130.0-alpha.5",
             "codex_executable_sha256":"e"*64,
             "provider_settings":{"response_surface":"package-faithful","delivery_mode":"explicit-prompt-components","effective_context_limit_bytes":1000000,"command_timeout_seconds":30,"parallelism":5,
-                                 "fresh_context_per_case":True,"submit_before_observe":True,"sandbox":"read-only",
+                                 "fresh_context_per_case":True,"submit_before_observe":True,"observation_protocol":"concurrent-five-shared-deadline-v1","sandbox":"read-only",
                                  "approval_policy":"never","ignore_user_config":True,"ignore_rules":True,"ephemeral":True},
             "cohort_size":5,"cohort_protocol":"barrier-five-submit-before-await-v1",
             "case_ids":["gate88-secularism","gate88-khaybar","gate88-trinitarian-j173","gate88-tst-lillard","gate88-torah-quran-source-authentication"],
@@ -305,6 +306,17 @@ class FixtureProtocolTests(unittest.TestCase):
         for invalid_timeout in (0, -1, True):
             invalid = json.loads(json.dumps(matrix_auth))
             invalid["provider_settings"]["command_timeout_seconds"] = invalid_timeout
+            invalid["authorization_sha256"] = canonical_sha256(invalid)
+            self.assertEqual(
+                "schema_contract",
+                matrix.validate_manifest(invalid, root=ROOT)[0]["failure_class"],
+            )
+        for invalid_protocol in (None, "serial-five-v1", True):
+            invalid = json.loads(json.dumps(matrix_auth))
+            if invalid_protocol is None:
+                invalid["provider_settings"].pop("observation_protocol")
+            else:
+                invalid["provider_settings"]["observation_protocol"] = invalid_protocol
             invalid["authorization_sha256"] = canonical_sha256(invalid)
             self.assertEqual(
                 "schema_contract",
@@ -497,6 +509,217 @@ class FixtureProtocolTests(unittest.TestCase):
             usage.settle(ledger, second["transaction_sha256"], completed=9, failed=0, cancelled=0, not_dispatched=0, unknown=1, provider_usage_receipts=provider_rows("c2","cycle2",["COMPLETED"]*9+["UNKNOWN"],cohort="paired-producer"), measured_cost={"unit":"usd","value":"unknown"}, candidate_id="c2", authorization_sha256=second["authorization_sha256"])
             with self.assertRaisesRegex(ValueError, "unresolved_usage"):
                 usage.reserve(ledger, cohort="gpt-review", calls=5, expected_sequence=4, expected_head_sha256=usage.head_snapshot(ledger)["head_sha256"], campaign_authorization_sha256=campaign, authorization_sha256="d"*64, candidate_id="c3", cycle_or_review_batch_id="review2")
+
+    def test_usage_live_producer_v2_reservation_set_is_atomic_and_case_bound(self) -> None:
+        cases = [
+            "gate88-secularism", "gate88-khaybar", "gate88-trinitarian-j173",
+            "gate88-tst-lillard", "gate88-torah-quran-source-authentication",
+        ]
+        campaign = "c" * 64
+        authorization = "a" * 64
+        candidate_id = "live-v2-candidate"
+        cycle_id = "live-v2-cycle"
+        subjects = [f"producer:{case_id}" for case_id in cases]
+        bindings = [
+            {
+                "schema": "campaign-usage-reservation-member-v1",
+                "reservation_ordinal": index,
+                "campaign_authorization_sha256": campaign,
+                "matrix_authorization_sha256": "b" * 64,
+                "authorization_sha256": authorization,
+                "candidate_id": candidate_id,
+                "candidate_maturity_sha256": "d" * 64,
+                "candidate_record_sha256": "e" * 64,
+                "source_commit": "1" * 40,
+                "package_sha256": "2" * 64,
+                "package_tree_sha256": "3" * 64,
+                "execution_tooling_manifest_sha256": "4" * 64,
+                "cycle_or_review_batch_id": cycle_id,
+                "cohort": "gpt-producer",
+                "case_id": case_id,
+                "subject_id": f"producer:{case_id}",
+                "input_sha256": str(index) * 64,
+                "model": "gpt-5.5",
+                "reasoning_effort": "high",
+                "cohort_deadline_utc": "2026-07-15T04:00:00Z",
+                "worker_timeout_seconds": 30,
+                "worker_deadline_rule": "min(worker-start-plus-timeout,cohort-deadline)",
+                "observation_protocol": "concurrent-five-shared-deadline-v1",
+            }
+            for index, case_id in enumerate(cases, 1)
+        ]
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            before = usage.head_snapshot(root)
+            reservation = REAL_USAGE_RESERVE(
+                root,
+                cohort="gpt-producer",
+                calls=5,
+                expected_sequence=before["sequence"],
+                expected_head_sha256=before["head_sha256"],
+                campaign_authorization_sha256=campaign,
+                authorization_sha256=authorization,
+                candidate_id=candidate_id,
+                cycle_or_review_batch_id=cycle_id,
+                call_subject_ids=subjects,
+                producer_reservation_bindings=bindings,
+            )
+            self.assertEqual(("campaign-usage-transaction-v2", "reservation-set"), (reservation["schema"], reservation["kind"]))
+            self.assertEqual(cases, [row["case_id"] for row in reservation["reservation_members"]])
+            self.assertEqual(
+                [row["reservation_sha256"] for row in reservation["reservation_members"]],
+                [row["usage_reservation_sha256"] for row in reservation["call_contract"]],
+            )
+            self.assertEqual(1, usage.validate_head(root)["sequence"])
+
+            for mutation in ("missing", "duplicate", "reorder", "case", "sixth"):
+                with self.subTest(mutation=mutation):
+                    invalid = json.loads(json.dumps(reservation))
+                    invalid.pop("transaction_sha256")
+                    invalid.pop("resulting_usage_head_sha256")
+                    if mutation == "missing":
+                        invalid["reservation_members"].pop()
+                    elif mutation == "duplicate":
+                        invalid["reservation_members"][1] = invalid["reservation_members"][0]
+                    elif mutation == "reorder":
+                        invalid["reservation_members"][0], invalid["reservation_members"][1] = invalid["reservation_members"][1], invalid["reservation_members"][0]
+                    elif mutation == "case":
+                        invalid["reservation_members"][0]["case_id"] = "wrong-case"
+                    else:
+                        invalid["reservation_members"].append(invalid["reservation_members"][-1])
+                    with self.assertRaisesRegex(ValueError, "usage_reservation_set"):
+                        usage._validate_transaction(invalid)
+
+            receipts = [
+                {
+                    "call_id": f"{cycle_id}:call-{index:02d}", **contract,
+                    "cycle_or_review_batch_id": cycle_id,
+                    "started_at": "2026-07-15T03:00:00Z", "ended_at": "2026-07-15T03:00:01Z",
+                    "host_invocation_id": f"host-{index:02d}", "accepted": True,
+                    "in_flight": True, "status": "COMPLETED", "unknown_kind": None,
+                    "acknowledgment_origin": "BOTH", "terminal_transport_status": "COMPLETED",
+                    "provider_call_id": f"provider-{index:02d}", "usage": {"status": "UNAVAILABLE"},
+                    "cost": {"unit": "usd", "value": "unknown"},
+                }
+                for index, contract in enumerate(reservation["call_contract"], 1)
+            ]
+            settlement = usage.settle(
+                root, reservation["transaction_sha256"], completed=5, failed=0,
+                cancelled=0, not_dispatched=0, unknown=0,
+                provider_usage_receipts=receipts, measured_cost={"unit": "usd", "value": "unknown"},
+                candidate_id=candidate_id, authorization_sha256=authorization,
+            )
+            self.assertEqual(("campaign-usage-transaction-v2", "settlement-set"), (settlement["schema"], settlement["kind"]))
+            self.assertEqual(reservation["reservation_members"], settlement["reservation_members"])
+            self.assertEqual([], usage.validate_head(root)["open_reservations"])
+
+    def test_usage_live_producer_v2_orphan_recovery_preserves_exact_member_set(self) -> None:
+        cases = [row["case_id"] for row in registry_contract.load_registry()["cases"]]
+        campaign = "c" * 64
+        authorization = "a" * 64
+        candidate_id = "live-v2-orphan"
+        cycle_id = "live-v2-orphan-cycle"
+        bindings = [
+            {
+                "schema": "campaign-usage-reservation-member-v1",
+                "reservation_ordinal": index,
+                "campaign_authorization_sha256": campaign,
+                "matrix_authorization_sha256": "b" * 64,
+                "authorization_sha256": authorization,
+                "candidate_id": candidate_id,
+                "candidate_maturity_sha256": "d" * 64,
+                "candidate_record_sha256": "e" * 64,
+                "source_commit": "1" * 40,
+                "package_sha256": "2" * 64,
+                "package_tree_sha256": "3" * 64,
+                "execution_tooling_manifest_sha256": "4" * 64,
+                "cycle_or_review_batch_id": cycle_id,
+                "cohort": "gpt-producer",
+                "case_id": case_id,
+                "subject_id": f"producer:{case_id}",
+                "input_sha256": f"{index:064x}",
+                "model": "gpt-5.5",
+                "reasoning_effort": "high",
+                "cohort_deadline_utc": "2026-07-15T04:00:00Z",
+                "worker_timeout_seconds": 30,
+                "worker_deadline_rule": "min(worker-start-plus-timeout,cohort-deadline)",
+                "observation_protocol": "concurrent-five-shared-deadline-v1",
+            }
+            for index, case_id in enumerate(cases, 1)
+        ]
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            before = usage.head_snapshot(root)
+            reservation = REAL_USAGE_RESERVE(
+                root,
+                cohort="gpt-producer",
+                calls=5,
+                expected_sequence=before["sequence"],
+                expected_head_sha256=before["head_sha256"],
+                campaign_authorization_sha256=campaign,
+                authorization_sha256=authorization,
+                candidate_id=candidate_id,
+                cycle_or_review_batch_id=cycle_id,
+                call_subject_ids=[f"producer:{case_id}" for case_id in cases],
+                producer_reservation_bindings=bindings,
+            )
+            member_shas = [row["reservation_sha256"] for row in reservation["reservation_members"]]
+            recovery_authorization = {
+                "schema": "campaign-usage-recovery-authorization-v2",
+                "kind": "orphan-recovery-set-authorization",
+                "authorization_id": "recover-live-v2-orphan",
+                "campaign_authorization_sha256": campaign,
+                "authorization_sha256": authorization,
+                "reservation_sha256": reservation["transaction_sha256"],
+                "producer_usage_reservation_sha256s": member_shas,
+                "orphan_id": "orphan-live-v2",
+                "candidate_id": candidate_id,
+                "expected_usage_head_sha256": usage.head_snapshot(root)["head_sha256"],
+                "claim_path": "claims/live-v2-orphan.json",
+                "dispatch_provider_evidence_path": None,
+                "dispatch_provider_evidence_sha256": None,
+            }
+            invalid = copy.deepcopy(recovery_authorization)
+            invalid["producer_usage_reservation_sha256s"][0:2] = reversed(
+                invalid["producer_usage_reservation_sha256s"][0:2]
+            )
+            invalid_path = root / "invalid-recovery-authorization.json"
+            invalid_path.write_bytes(canonical_bytes(invalid))
+            with self.assertRaisesRegex(ValueError, "producer reservation member set differs"):
+                usage.recover_orphan(
+                    root,
+                    reservation["transaction_sha256"],
+                    recovery_authorization=invalid_path,
+                    orphan_id="orphan-live-v2",
+                    candidate_id=candidate_id,
+                    completed=0,
+                    failed=0,
+                    cancelled=0,
+                    not_dispatched=0,
+                    unknown=5,
+                )
+            authorization_path = root / "recovery-authorization.json"
+            authorization_path.write_bytes(canonical_bytes(recovery_authorization))
+            recovered = usage.recover_orphan(
+                root,
+                reservation["transaction_sha256"],
+                recovery_authorization=authorization_path,
+                orphan_id="orphan-live-v2",
+                candidate_id=candidate_id,
+                completed=0,
+                failed=0,
+                cancelled=0,
+                not_dispatched=0,
+                unknown=5,
+            )
+            self.assertEqual(
+                ("campaign-usage-transaction-v2", "orphan-recovery-set"),
+                (recovered["schema"], recovered["kind"]),
+            )
+            self.assertEqual(reservation["reservation_members"], recovered["reservation_members"])
+            claim = load(root / recovery_authorization["claim_path"])
+            self.assertEqual("campaign-usage-recovery-claim-v2", claim["schema"])
+            self.assertEqual(member_shas, claim["producer_usage_reservation_sha256s"])
 
     def test_usage_rejects_reservation_mutated_from_five_calls_to_one(self) -> None:
         with tempfile.TemporaryDirectory() as td:
