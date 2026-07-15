@@ -3264,6 +3264,7 @@ class LiveProducerContractTests(unittest.TestCase):
         *,
         full_tooling: bool = False,
         command_timeout_seconds: int = 30,
+        uppercase_registry_hashes: bool = False,
     ) -> tuple[Fixture, Path, Path, bytes]:
         fixture = Fixture(root)
         if full_tooling:
@@ -3316,7 +3317,8 @@ class LiveProducerContractTests(unittest.TestCase):
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(raw)
             row["raw_bytes"] = len(raw)
-            row["raw_sha256"] = hashlib.sha256(raw).hexdigest()
+            raw_sha256 = hashlib.sha256(raw).hexdigest()
+            row["raw_sha256"] = raw_sha256.upper() if uppercase_registry_hashes else raw_sha256
         write_json(fixture.registry, registry)
         protocol = json.loads(fixture.protocol.read_text(encoding="utf-8"))
         protocol["input_registry"] = {
@@ -3368,7 +3370,7 @@ class LiveProducerContractTests(unittest.TestCase):
         matrix_tooling_ref = {"path": tooling_ref["path"], "sha256": tooling_ref["sha256"]}
         registry_value = json.loads(fixture.registry.read_text(encoding="utf-8"))
         case_inputs = [
-            {"case_id": row["case_id"], "input_sha256": row["raw_sha256"]}
+            {"case_id": row["case_id"], "input_sha256": row["raw_sha256"].lower()}
             for row in registry_value["cases"]
         ]
         branch = "codex/v0.4.6.0-runtime-footprint-b11"
@@ -4173,6 +4175,55 @@ class LiveProducerContractTests(unittest.TestCase):
                 ).hexdigest()
                 self.assertEqual(expected_sha, member["reservation_sha256"])
                 self.assertEqual(member["reservation_sha256"], call_contract["usage_reservation_sha256"])
+
+    def test_live_uppercase_registry_hashes_use_lowercase_execution_identity(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-live-uppercase-registry-hashes-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(
+                Path(temp),
+                uppercase_registry_hashes=True,
+            )
+            registry = json.loads(fixture.registry.read_text(encoding="utf-8"))
+            matrix = json.loads(authorization.read_text(encoding="utf-8"))
+            self.assertTrue(all(row["raw_sha256"] == row["raw_sha256"].upper() for row in registry["cases"]))
+            self.assertEqual(
+                [row["raw_sha256"].lower() for row in registry["cases"]],
+                [row["input_sha256"] for row in matrix["case_inputs"]],
+            )
+
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=_ScriptedCodexHost(),
+                command_timeout_seconds=30,
+            )
+            completion = run_producer_cohort(
+                fixture.root,
+                authorization,
+                adapter,
+                allow_test_fixture=True,
+            )
+            reservation = json.loads(
+                (
+                    fixture.root
+                    / "usage/transactions"
+                    / f"{completion['reservation_sha256']}.json"
+                ).read_text(encoding="utf-8")
+            )
+            self.assertEqual(
+                [row["input_sha256"] for row in matrix["case_inputs"]],
+                [row["input_sha256"] for row in reservation["reservation_members"]],
+            )
+            for result, expected in zip(completion["results"], matrix["case_inputs"]):
+                capture = json.loads(
+                    (fixture.root / result["capture_evidence"]["path"]).read_text(encoding="utf-8")
+                )
+                custody = json.loads(
+                    (fixture.root / capture["execution_custody"]["path"]).read_text(encoding="utf-8")
+                )
+                self.assertEqual(
+                    expected["input_sha256"],
+                    custody["single_call_output_contract"]["input_binding"]["sha256"],
+                )
 
     def test_live_post_observation_failure_terminalizes_unreported_cost_exactly(self) -> None:
         with tempfile.TemporaryDirectory(prefix="daee-live-observed-failure-cost-") as temp:

@@ -2777,7 +2777,13 @@ def _validate_common_bindings(root: Path, auth: dict[str, Any], *, allow_test_fi
             raise CampaignError("PACKAGE_AUTHORIZATION_BINDING")
         cases = registry.get("cases")
         exact_case_inputs = (
-            [{"case_id": row.get("case_id"), "input_sha256": row.get("raw_sha256")} for row in cases]
+            [
+                {
+                    "case_id": row.get("case_id"),
+                    "input_sha256": str(row.get("raw_sha256")).lower(),
+                }
+                for row in cases
+            ]
             if isinstance(cases, list) else None
         )
         if auth.get("case_inputs") != exact_case_inputs or [row["case_id"] for row in auth["case_inputs"]] != case_ids:
@@ -2888,11 +2894,12 @@ def _producer_output_contracts(
             raise CampaignError("PRODUCER_OUTPUT_CONTRACT_CASE_BINDING")
         case_id = row.get("case_id")
         raw_sha256 = row.get("raw_sha256")
+        normalized_raw_sha256 = str(raw_sha256).lower()
         raw_bytes = row.get("raw_bytes")
         if (
             not isinstance(case_id, str)
             or not case_id
-            or SHA256_RE.fullmatch(str(raw_sha256)) is None
+            or SHA256_RE.fullmatch(normalized_raw_sha256) is None
             or not isinstance(raw_bytes, int)
             or isinstance(raw_bytes, bool)
             or raw_bytes < 1
@@ -2913,7 +2920,7 @@ def _producer_output_contracts(
             "case_id": case_id,
             "cycle_id": auth["cycle_or_review_batch_id"],
             "candidate_binding": dict(candidate_binding),
-            "input_binding": {"sha256": raw_sha256, "byte_count": raw_bytes},
+            "input_binding": {"sha256": normalized_raw_sha256, "byte_count": raw_bytes},
             "transport": "daee-single-call-stage-envelope-v1",
             "stage08_owner": "private-source-bound-checker",
         }

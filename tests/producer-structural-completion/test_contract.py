@@ -80,7 +80,8 @@ ExecutionToolingManifestContract = (
 
 
 class Fixture:
-    def __init__(self) -> None:
+    def __init__(self, *, uppercase_registry_hashes: bool = False) -> None:
+        self.uppercase_registry_hashes = uppercase_registry_hashes
         self.relative = Path(".daee") / "producer-structural-completion-test" / uuid.uuid4().hex
         self.root = ROOT / self.relative
         self.root.mkdir(parents=True)
@@ -274,7 +275,11 @@ class Fixture:
                     "case_id": case_id,
                     "input_path": row["raw_input"]["path"],
                     "raw_bytes": row["raw_input"]["byte_count"],
-                    "raw_sha256": row["raw_input"]["sha256"],
+                    "raw_sha256": (
+                        row["raw_input"]["sha256"].upper()
+                        if self.uppercase_registry_hashes
+                        else row["raw_input"]["sha256"]
+                    ),
                 }
                 for case_id, row in zip(CASES, artifacts)
             ],
@@ -499,6 +504,13 @@ class ProducerStructuralCompletionContract(unittest.TestCase):
         self.assertEqual(CASES, aggregate["case_ids"])
         self.assertEqual(["PASS"] * 5, [row["structural_status"] for row in aggregate["results"]])
         self.assertEqual(self.fixture.raw_completion_bytes, self.fixture.capture_completion_path.read_bytes())
+        self.assertEqual(aggregate, self.revalidate(aggregate))
+
+    def test_uppercase_registry_hashes_preserve_lowercase_artifact_identity(self) -> None:
+        self.fixture.close()
+        self.fixture = Fixture(uppercase_registry_hashes=True)
+        aggregate = self.promote()
+        self.assertEqual("PRODUCER_STRUCTURAL_COMPLETE", aggregate["status"])
         self.assertEqual(aggregate, self.revalidate(aggregate))
 
     def test_exact_ordered_usage_reservation_members_survive_promotion(self) -> None:

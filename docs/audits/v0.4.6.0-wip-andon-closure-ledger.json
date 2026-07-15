@@ -4410,10 +4410,10 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "Task 11bi rejected predecessor repair tree 2e6d34ebfee35d0c0cb15052666966f2fcd95eb0; Task 11bj owner report sha256 ce6cb5f9e3a96da211be5915802edcfb91191e066fca17cb591f16ef4f5a8da8 and Task 11bk independent APPROVE sha256 9d5c056a0a57e8de23af58f06c5934c51c729f921eb663b3ec288a00a8ec61eb bind strict-JSON, mixed-terminal replay, execution-tooling, predispatch, and timeout contracts; Task 11cg ANDON 150 preserves governed provider-cost-unavailable settlement; Task 11cl ANDON 153/154 current bytes reconstruct exact completed receipts and terminal projections from retained adapter results plus original execution custody after projection failure and consume attempt authority through one atomic recoverable claim set; Task 11cn ANDON 155 makes publication and replay share one exact phase/classification/failure-class contract for mixed projection failures; Task 11cp ANDON 156 keeps pre-dispatch classification through the final live authorization and tooling rechecks and crosses into provider execution only immediately before the first submit; Task 11cu/11cv ANDON 159 current bytes treat the immutable attempt claim set as canonical after projection collision or persistent absence, retain ordered EXACT/COLLISION/MISSING projection states, preserve foreign bytes, terminalize without dispatch, and revalidate exact replay",
+          "source_ref": "Task 11bi rejected predecessor repair tree 2e6d34ebfee35d0c0cb15052666966f2fcd95eb0; Task 11bj owner report sha256 ce6cb5f9e3a96da211be5915802edcfb91191e066fca17cb591f16ef4f5a8da8 and Task 11bk independent APPROVE sha256 9d5c056a0a57e8de23af58f06c5934c51c729f921eb663b3ec288a00a8ec61eb bind strict-JSON, mixed-terminal replay, execution-tooling, predispatch, and timeout contracts; Task 11cg ANDON 150 preserves governed provider-cost-unavailable settlement; Task 11cl ANDON 153/154 current bytes reconstruct exact completed receipts and terminal projections from retained adapter results plus original execution custody after projection failure and consume attempt authority through one atomic recoverable claim set; Task 11cn ANDON 155 makes publication and replay share one exact phase/classification/failure-class contract for mixed projection failures; Task 11cp ANDON 156 keeps pre-dispatch classification through the final live authorization and tooling rechecks and crosses into provider execution only immediately before the first submit; Task 11cu/11cv ANDON 159 current bytes treat the immutable attempt claim set as canonical after projection collision or persistent absence, retain ordered EXACT/COLLISION/MISSING projection states, preserve foreign bytes, terminalize without dispatch, and revalidate exact replay; Task 11dn ANDON 162 preserves the canonical uppercase registry while normalizing its semantic digest to lowercase at schema-bound authorization and single-call output-contract joins",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "d643fe9fa7f729bb0e7f85b7d84ceede98ee0a5716e8a909e3991cd1cfc9c5b5",
+          "sha256": "3c600ec3e97d4d1c2de8eb253a19dae2d01e3a2bdf508ae6163ee13337771c03",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/reviewed_campaign_orchestrator.py",
@@ -4421,10 +4421,10 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "Task 11bk independently accepted predecessor live-adapter sha256 0d357768608eae2e6bc0b3c73d1af5846bba7abce855347daf79ab1f2fdad2af; Task 11bv ANDON 145/146 owner repair preserves those joins while making capability metadata-only and secret-free and binding destructive directory cleanup to an immutable create-once ownership witness; Task 11dc/11dd ANDON 160 current bytes use the installed CLI's exact secret-free bundled model-catalog command and normalize its structured reasoning-level rows while preserving exact GPT-5.5/high validation; this row binds exact current bytes only and does not claim provider invocation, independent successor acceptance, exact-SHA CI, candidate maturity, or terminal closure",
+          "source_ref": "Task 11bk independently accepted predecessor live-adapter sha256 0d357768608eae2e6bc0b3c73d1af5846bba7abce855347daf79ab1f2fdad2af; Task 11bv ANDON 145/146 owner repair preserves those joins while making capability metadata-only and secret-free and binding destructive directory cleanup to an immutable create-once ownership witness; Task 11dc/11dd ANDON 160 current bytes use the installed CLI's exact secret-free bundled model-catalog command and normalize its structured reasoning-level rows while preserving exact GPT-5.5/high validation; Task 11dn ANDON 162 normalizes the already-validated uppercase registry digest only at lowercase execution-identity comparisons for authorization and raw-input custody; this row binds exact current bytes only and does not claim provider invocation, independent successor acceptance, exact-SHA CI, candidate maturity, or terminal closure",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "b00bdf384ae9c3476d922eaf803ccf9740d2ad55c0a71247bf102030ac5c906f",
+          "sha256": "27f2197f5037906836445fc177aa78eb33a6857e6380ad513bb807280592b0ce",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/codex_live_producer_adapter.py",
@@ -4443,14 +4443,14 @@
         },
         {
           "kind": "command_result",
-          "source_ref": "Task 11dd ANDON 160 owner verification; exact current live adapter sha256 b00bdf384ae9c3476d922eaf803ccf9740d2ad55c0a71247bf102030ac5c906f and reviewed-campaign test sha256 d8a5560abe5cfeab4f3a22ebfa8f8b5012feeed146cc4683bb1233cb6ddec192; full reviewed-campaign suite is 111/111 GREEN including the installed Codex bundled model-catalog command, current structured reasoning-level normalization, exact GPT-5.5/high identity, metadata-only secret-free capability, deferred credential acquisition after authority and reservation, immutable directory-witness replacement custody, strict non-finite admission/rederivation, exact mixed-receipt replay, atomic five-member reservation, concurrent five-way observation, and zero-dispatch replay",
+          "source_ref": "Task 11dn ANDON 162 owner verification; exact current orchestrator sha256 3c600ec3e97d4d1c2de8eb253a19dae2d01e3a2bdf508ae6163ee13337771c03, live adapter sha256 27f2197f5037906836445fc177aa78eb33a6857e6380ad513bb807280592b0ce, and reviewed-campaign test sha256 a7ad8558ab0daea173c8b5be60d7961fdb8d8af8588791f68a2928062e6d741d; full reviewed-campaign suite is 112/112 GREEN including the uppercase-registry/lowercase-execution identity canary, exact GPT-5.5/high identity, metadata-only secret-free capability, deferred credential acquisition after authority and reservation, immutable directory-witness replacement custody, strict non-finite admission/rederivation, exact mixed-receipt replay, atomic five-member reservation, concurrent five-way observation, and zero-dispatch replay",
           "commit_sha1": null,
           "blob_sha1": null,
           "sha256": null,
           "command": "python -B tests/reviewed-campaign-orchestration/test_contract.py",
           "exit_code": 0,
           "retained_artifact": null,
-          "unretained_reason": "raw stdout and stderr and the local durable Task 11bv owner record are not tracked repository artifacts; bounded deterministic acceptance does not imply independent successor acceptance, provider execution, final whole-branch acceptance, or terminal closure"
+          "unretained_reason": "raw stdout and stderr and the local durable Task 11dn owner record are not tracked repository artifacts; bounded deterministic acceptance does not imply independent successor acceptance, provider execution, final whole-branch acceptance, or terminal closure"
         },
         {
           "kind": "command_result",
@@ -4498,7 +4498,7 @@
         },
         {
           "kind": "command_result",
-          "source_ref": "Task 11br ANDON 144 owner verification after bounded independent acceptance; current aggregate schema sha256 7940b0c37441e79d8e55bca92662b9045ca333e6b34a46bff05e6cd78311c732, tooling-bound promoter sha256 579715d8417af03e2f8adcafa495911dcab204dc7a25631efa5d1663e76b4339, and permanent test sha256 079f3f0346978f6b75322f065d195e8352a080ca4cc696e076cdbf017c12783f; registered producer-structural suite is 17/17 GREEN including Linux same-inode rollback custody, tooling canaries, scripted/test finalizer barrier, and shallow-fabrication rejection",
+          "source_ref": "Task 11dn ANDON 162 owner verification; current tooling-bound promoter sha256 41470981a996eec9811ecb01a38d4de717adff86470b23a0cedee53484df7af0 and permanent test sha256 cc80d39762038890c2483a57cb45a7b52ffb48947c7ab7af7795eaad481a39cc; registered producer-structural suite is 20/20 GREEN including uppercase-registry/lowercase-artifact identity, exact per-case reservation propagation, substitution rejection, Linux same-inode rollback custody, tooling canaries, scripted/test finalizer barrier, and shallow-fabrication rejection",
           "commit_sha1": null,
           "blob_sha1": null,
           "sha256": null,

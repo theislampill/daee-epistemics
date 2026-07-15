@@ -1179,7 +1179,13 @@ class CodexLiveProducerAdapter:
         if not isinstance(cases, list) or len(cases) != 5:
             raise ValueError("exact canonical five-case registry required")
         expected_rows = auth["case_inputs"]
-        actual_rows = [{"case_id": row.get("case_id"), "input_sha256": row.get("raw_sha256")} for row in cases]
+        actual_rows = [
+            {
+                "case_id": row.get("case_id"),
+                "input_sha256": str(row.get("raw_sha256")).lower(),
+            }
+            for row in cases
+        ]
         if actual_rows != expected_rows:
             raise ValueError("authorization case/input identity drift")
         output_contracts = bindings.get("producer_output_contracts")
@@ -1256,7 +1262,10 @@ class CodexLiveProducerAdapter:
                     raise ValueError("private candidate package copy drift")
                 input_path = _safe_join(self.root, row["input_path"], f"input_{index}", file=True)
                 raw_input = input_path.read_bytes()
-                if len(raw_input) != row.get("raw_bytes") or hashlib.sha256(raw_input).hexdigest() != row.get("raw_sha256"):
+                if (
+                    len(raw_input) != row.get("raw_bytes")
+                    or hashlib.sha256(raw_input).hexdigest() != str(row.get("raw_sha256")).lower()
+                ):
                     raise ValueError(f"canonical input drift: {case_id}")
                 private_input = run_root / "raw-input.bin"
                 _write_once(private_input, raw_input)

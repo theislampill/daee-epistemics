@@ -385,7 +385,7 @@ def _validate_finalization(
     ):
         raise StructuralCompletionError(f"{case_id} producer/finalizer output mismatch")
     if (
-        registry_case.get("raw_sha256") != refs["raw_input"]["sha256"]
+        str(registry_case.get("raw_sha256")).lower() != refs["raw_input"]["sha256"]
         or registry_case.get("raw_bytes") != refs["raw_input"]["byte_count"]
     ):
         raise StructuralCompletionError(f"{case_id} registry input binding mismatch")
