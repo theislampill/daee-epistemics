@@ -34,6 +34,7 @@ from check_initial_assessment_barrier import (
 )
 from check_parallel_dispatch_manifest import chain_dispatch_events, validate_dispatch_manifest
 import execution_tooling_manifest as tooling_manifest
+from source_provenance import strict_json_loads
 
 
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
@@ -45,6 +46,7 @@ WINDOWS_DEVICE_NAMES = {
     *(f"COM{index}" for index in range(1, 10)),
     *(f"LPT{index}" for index in range(1, 10)),
 }
+MATRIX_GOVERNED_SOURCE_JSON_ROLES = frozenset({"input_registry", "review_protocol"})
 TASK6_IMPLEMENTATION_OWNER = "/root/task6_no_dispatch"
 CONTINUATION_ISSUER = "/root"
 TEST_EXECUTION_MODE = "DETERMINISTIC_FAKE_NO_DISPATCH"
@@ -2223,10 +2225,13 @@ def _matrix_ref(root: Path, value: object, role: str) -> tuple[dict[str, Any], d
     if hashlib.sha256(raw).hexdigest() != value.get("sha256"):
         raise CampaignError(f"{role.upper()}_CONTENT_ADDRESS")
     try:
-        record = json.loads(raw)
-    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        record = strict_json_loads(raw, label=str(path))
+    except ValueError as exc:
         raise CampaignError(f"{role.upper()}_JSON_INVALID") from exc
-    if not isinstance(record, dict) or raw != canonical_bytes(record):
+    if not isinstance(record, dict) or (
+        role not in MATRIX_GOVERNED_SOURCE_JSON_ROLES
+        and raw != canonical_bytes(record)
+    ):
         raise CampaignError(f"{role.upper()}_CANONICAL_JSON_REQUIRED")
     internal = {"path": value["path"], "byte_count": len(raw), "sha256": value["sha256"]}
     return record, internal, raw

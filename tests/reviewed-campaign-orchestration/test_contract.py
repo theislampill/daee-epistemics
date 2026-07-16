@@ -29,6 +29,7 @@ import execution_tooling_manifest as tooling_manifest
 from reviewed_campaign_orchestrator import (
     CampaignError,
     _contained,
+    _matrix_ref,
     claim_initial_assessments as _claim_initial_assessments,
     extract_mature_candidate_identity,
     ingest_final_adjudication,
@@ -70,6 +71,15 @@ def write_json(path: Path, value: object) -> None:
     path.write_bytes(canonical(value))
 
 
+def write_pretty_json(path: Path, value: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(value, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -99,6 +109,63 @@ def synthetic_execution_tooling_manifest(source_commit: str) -> dict[str, object
     }
     value["aggregate_sha256"] = tooling_manifest._aggregate_sha256(value)
     return value
+
+
+class MatrixSourceReferenceContractTests(unittest.TestCase):
+    def test_live_matrix_admits_exact_hash_bound_governed_source_json_bytes(self) -> None:
+        for role, relative in (
+            ("input_registry", "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json"),
+            ("review_protocol", "tests/smoke-matrix/reviewed-five-smoke-protocol.json"),
+        ):
+            with self.subTest(role=role):
+                path = ROOT / relative
+                raw = path.read_bytes()
+                self.assertNotEqual(raw, canonical(json.loads(raw)))
+                record, admitted_ref, admitted_raw = _matrix_ref(
+                    ROOT,
+                    {"path": relative, "sha256": hashlib.sha256(raw).hexdigest()},
+                    role,
+                )
+                self.assertIsInstance(record, dict)
+                self.assertEqual(admitted_raw, raw)
+                self.assertEqual(
+                    admitted_ref,
+                    {"path": relative, "byte_count": len(raw), "sha256": hashlib.sha256(raw).hexdigest()},
+                )
+
+    def test_live_matrix_keeps_generated_control_plane_json_canonical(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            path = root / "campaign-authorization.json"
+            raw = b'{\n  "schema": "reviewed-campaign-owner-authorization-v1"\n}\n'
+            path.write_bytes(raw)
+            with self.assertRaisesRegex(
+                CampaignError,
+                "CAMPAIGN_AUTHORIZATION_CANONICAL_JSON_REQUIRED",
+            ):
+                _matrix_ref(
+                    root,
+                    {"path": path.name, "sha256": hashlib.sha256(raw).hexdigest()},
+                    "campaign_authorization",
+                )
+
+    def test_live_matrix_rejects_duplicate_keys_in_governed_source_json(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            path = root / "input-registry.json"
+            raw = b'{"schema":"first","schema":"second"}\n'
+            path.write_bytes(raw)
+            with self.assertRaisesRegex(CampaignError, "INPUT_REGISTRY_JSON_INVALID"):
+                _matrix_ref(
+                    root,
+                    {"path": path.name, "sha256": hashlib.sha256(raw).hexdigest()},
+                    "input_registry",
+                )
+
+    def test_live_matrix_rejects_governed_source_content_address_drift(self) -> None:
+        relative = "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json"
+        with self.assertRaisesRegex(CampaignError, "INPUT_REGISTRY_CONTENT_ADDRESS"):
+            _matrix_ref(ROOT, {"path": relative, "sha256": "0" * 64}, "input_registry")
 
 
 class FakeNoDispatchAdapter:
@@ -3265,6 +3332,7 @@ class LiveProducerContractTests(unittest.TestCase):
         full_tooling: bool = False,
         command_timeout_seconds: int = 30,
         uppercase_registry_hashes: bool = False,
+        pretty_source_documents: bool = False,
     ) -> tuple[Fixture, Path, Path, bytes]:
         fixture = Fixture(root)
         if full_tooling:
@@ -3319,13 +3387,14 @@ class LiveProducerContractTests(unittest.TestCase):
             row["raw_bytes"] = len(raw)
             raw_sha256 = hashlib.sha256(raw).hexdigest()
             row["raw_sha256"] = raw_sha256.upper() if uppercase_registry_hashes else raw_sha256
-        write_json(fixture.registry, registry)
+        source_document_writer = write_pretty_json if pretty_source_documents else write_json
+        source_document_writer(fixture.registry, registry)
         protocol = json.loads(fixture.protocol.read_text(encoding="utf-8"))
         protocol["input_registry"] = {
             "path": fixture.registry.relative_to(root).as_posix(),
             "sha256": digest(fixture.registry),
         }
-        write_json(fixture.protocol, protocol)
+        source_document_writer(fixture.protocol, protocol)
         # Refresh the fake Task6 bindings after the exact registry/protocol bytes change.
         package = json.loads(fixture.package.read_text(encoding="utf-8"))
         package["registry_sha256"] = digest(fixture.registry)
@@ -3484,6 +3553,29 @@ class LiveProducerContractTests(unittest.TestCase):
         matrix_path = root / "authorizations/matrix-live.json"
         write_json(matrix_path, matrix)
         return fixture, matrix_path, executable, skill_bytes
+
+    def test_live_authorization_normalizes_pretty_mature_source_documents(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory() as temp:
+            fixture, authorization, _executable, _skill_bytes = self._live_fixture(
+                Path(temp),
+                pretty_source_documents=True,
+            )
+            for path in (fixture.registry, fixture.protocol):
+                self.assertNotEqual(path.read_bytes(), canonical(json.loads(path.read_bytes())))
+            auth, _auth_sha = orchestrator._load_producer_authorization(
+                fixture.root,
+                authorization,
+                allow_test_fixture=True,
+            )
+            bindings = orchestrator._validate_common_bindings(
+                fixture.root,
+                auth,
+                allow_test_fixture=True,
+            )
+            self.assertEqual(bindings["registry_sha256"], digest(fixture.registry))
+            self.assertEqual(bindings["protocol_sha256"], digest(fixture.protocol))
 
     def _live_preparation_inputs(
         self,
