@@ -1548,6 +1548,171 @@ def _derive_terminal_receipt_state(
     }
 
 
+def _validate_pre_admission_diagnostics(
+    root: Path,
+    payload: dict[str, Any],
+    auth: dict[str, Any],
+    settlement: dict[str, Any] | None,
+) -> None:
+    references = payload.get("pre_admission_diagnostics")
+    if references is None:
+        # Historical v1 terminal records predate retained pre-admission diagnostics.
+        return
+    if not isinstance(references, list) or settlement is None:
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_INVENTORY")
+    receipts = settlement.get("provider_usage_receipts")
+    if not isinstance(receipts, list):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_INVENTORY")
+    dispatch_unknown_receipts = [
+        row
+        for row in receipts
+        if isinstance(row, dict)
+        and row.get("status") == "UNKNOWN"
+        and row.get("unknown_kind") == "DISPATCH_UNKNOWN"
+    ]
+    if len(references) != len(dispatch_unknown_receipts):
+        raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_INVENTORY")
+    expected_keys = {
+        "schema", "status", "failure_kind", "candidate_id", "source_commit",
+        "package_sha256", "package_tree_sha256", "case_id", "model",
+        "reasoning_effort", "dispatch_classification", "admission_status",
+        "provider_invocation_proven", "host_returncode", "host_returncode_status",
+        "host_invocation_id", "started_at", "ended_at", "source_presence",
+        "raw_event_log", "stderr", "raw_output", "credential_residue_scan",
+        "execution_custody_sha256", "execution_custody", "captured_at",
+    }
+    root_abs = Path(os.path.abspath(root))
+    for index, (reference, receipt) in enumerate(
+        zip(references, dispatch_unknown_receipts),
+        1,
+    ):
+        diagnostic, diagnostic_path, diagnostic_sha = _load_ref(
+            root,
+            reference,
+            f"producer_pre_admission_diagnostic_{index}",
+        )
+        diagnostic_raw = diagnostic_path.read_bytes()
+        if diagnostic_raw != canonical_bytes(diagnostic):
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CANONICAL")
+        diagnostic_relative = diagnostic_path.relative_to(root_abs).as_posix()
+        if (
+            not diagnostic_relative.startswith(f"{auth['provider_receipt_root']}/")
+            or not diagnostic_relative.endswith(".pre-admission-diagnostic.json")
+            or diagnostic_sha != reference.get("sha256")
+            or set(diagnostic) != expected_keys
+        ):
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_SHAPE")
+        expected_identity = {
+            "schema": "reviewed-campaign-pre-admission-diagnostic-v1",
+            "status": "PRE_ADMISSION_DIAGNOSTIC_RETAINED",
+            "candidate_id": auth["candidate_id"],
+            "source_commit": auth["source_commit"],
+            "package_sha256": auth["package_sha256"],
+            "package_tree_sha256": auth["package_tree_sha256"],
+            "case_id": receipt.get("case_id"),
+            "model": "gpt-5.5",
+            "reasoning_effort": "high",
+            "dispatch_classification": "DISPATCH_UNKNOWN",
+            "admission_status": "NOT_ADMITTED",
+            "provider_invocation_proven": False,
+        }
+        if any(diagnostic.get(key) != value for key, value in expected_identity.items()):
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_BINDING")
+        failure_kind = diagnostic.get("failure_kind")
+        if not isinstance(failure_kind, str) or not failure_kind:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_FAILURE_KIND")
+        returncode = diagnostic.get("host_returncode")
+        returncode_status = diagnostic.get("host_returncode_status")
+        if (
+            (returncode is None and returncode_status != "UNAVAILABLE")
+            or (
+                returncode is not None
+                and (
+                    not isinstance(returncode, int)
+                    or isinstance(returncode, bool)
+                    or returncode_status != "RECORDED"
+                )
+            )
+        ):
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_RETURNCODE")
+        if (
+            not isinstance(diagnostic.get("ended_at"), str)
+            or not diagnostic["ended_at"]
+            or not isinstance(diagnostic.get("captured_at"), str)
+            or not diagnostic["captured_at"]
+            or diagnostic.get("host_invocation_id") is not None
+            and (
+                not isinstance(diagnostic["host_invocation_id"], str)
+                or not diagnostic["host_invocation_id"]
+            )
+            or diagnostic.get("started_at") is not None
+            and (
+                not isinstance(diagnostic["started_at"], str)
+                or not diagnostic["started_at"]
+            )
+        ):
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_TIME_IDENTITY")
+        source_presence = diagnostic.get("source_presence")
+        if (
+            not isinstance(source_presence, dict)
+            or set(source_presence) != {"raw_event_log", "stderr", "raw_output"}
+            or any(type(value) is not bool for value in source_presence.values())
+        ):
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CARRIERS")
+        for role, suffix in (
+            ("raw_event_log", ".pre-admission.events.jsonl"),
+            ("stderr", ".pre-admission.stderr.txt"),
+            ("raw_output", ".pre-admission.output.md"),
+        ):
+            carrier_path, carrier_raw, _carrier_sha = _load_retained_bytes_ref(
+                root,
+                diagnostic.get(role),
+                f"producer_pre_admission_diagnostic_{index}_{role}",
+            )
+            carrier_relative = carrier_path.relative_to(root_abs).as_posix()
+            if (
+                not carrier_relative.startswith(f"{auth['provider_receipt_root']}/")
+                or not carrier_relative.endswith(suffix)
+                or (source_presence[role] is False and carrier_raw != b"")
+            ):
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CARRIERS")
+        scan, scan_path, _scan_sha = _load_ref(
+            root,
+            diagnostic.get("credential_residue_scan"),
+            f"producer_pre_admission_diagnostic_{index}_credential_scan",
+        )
+        if (
+            not scan_path.relative_to(root_abs).as_posix().startswith(
+                f"{auth['provider_receipt_root']}/"
+            )
+            or scan.get("schema") != "reviewed-campaign-credential-residue-scan-v1"
+            or scan.get("status") != "PASS"
+        ):
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CREDENTIAL_SCAN")
+        custody, _custody_path, custody_sha = _load_ref(
+            root,
+            diagnostic.get("execution_custody"),
+            f"producer_pre_admission_diagnostic_{index}_execution_custody",
+        )
+        custody_expected = {
+            "schema": "reviewed-campaign-execution-custody-v1",
+            "lane": "producer",
+            "candidate_id": auth["candidate_id"],
+            "source_commit": auth["source_commit"],
+            "authorization_sha256": payload.get("authorization_sha256"),
+            "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
+            "case_id": receipt.get("case_id"),
+            "model": "gpt-5.5",
+            "reasoning_effort": "high",
+            "usage_reservation_sha256": receipt.get("usage_reservation_sha256"),
+        }
+        if (
+            diagnostic.get("execution_custody_sha256") != custody_sha
+            or any(custody.get(key) != value for key, value in custody_expected.items())
+        ):
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CUSTODY")
+
+
 def _validate_failure_results(
     root: Path,
     payload: dict[str, Any],
@@ -1799,6 +1964,7 @@ def _validate_failure_resume_payload(
     receipt_state = _derive_terminal_receipt_state(settlement, auth)
     if classification != receipt_state["classification"]:
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLASSIFICATION_RECEIPTS")
+    _validate_pre_admission_diagnostics(root, payload, auth, settlement)
     results = _validate_failure_results(root, payload, auth, settlement, packet_disclosure, lane=lane)
     if classification != "PROVED_NO_DISPATCH" and (reservation is None or settlement is None):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_TERMINAL_USAGE_REQUIRED")
@@ -1959,6 +2125,7 @@ def _publish_failure_finalizer(
     failure_phase: str,
     observed_results: list[dict[str, object]] | None = None,
     completion: dict[str, object] | None = None,
+    pre_admission_diagnostics: list[dict[str, object]] | None = None,
     interrupt_after_incident: bool = False,
 ) -> dict[str, Any]:
     snapshot = head_snapshot(usage_root)
@@ -2001,6 +2168,10 @@ def _publish_failure_finalizer(
         "packet_disclosure": packet_disclosure,
         "failure_phase": failure_phase,
         "observed_results": observed_results or [],
+        **(
+            {"pre_admission_diagnostics": pre_admission_diagnostics}
+            if pre_admission_diagnostics is not None else {}
+        ),
         "completion": completion,
         "candidate_status": candidate_status,
         "review_status": "NO_DISPATCH" if lane == "cold-review" and dispatch_classification == "PROVED_NO_DISPATCH" else "OBSERVED" if lane == "cold-review" and dispatch_classification == "OBSERVED" else "DISPATCH_UNKNOWN" if lane == "cold-review" else None,
@@ -3227,7 +3398,11 @@ def _live_partial_observations(
     completed_receipts: list[dict[str, object]],
     completed_results: list[dict[str, object]],
     execution_custodies: list[dict[str, Any]],
-) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
+) -> tuple[
+    list[dict[str, object]],
+    list[dict[str, object]],
+    list[dict[str, object]],
+]:
     if (
         not isinstance(attempt_states, list)
         or len(attempt_states) != 5
@@ -3238,12 +3413,16 @@ def _live_partial_observations(
     result_by_case = {row.get("case_id"): row for row in completed_results if isinstance(row, dict)}
     rows: list[dict[str, object]] = []
     results: list[dict[str, object]] = []
+    pre_admission_diagnostics: list[dict[str, object]] = []
     observed_cases: list[str] = []
     for index, (contract, state_row, execution_custody) in enumerate(
         zip(reservation["call_contract"], attempt_states, execution_custodies),
         1,
     ):
-        if not isinstance(state_row, dict) or set(state_row) != {"case_id", "state", "started_at", "ended_at", "host_invocation_id", "result"}:
+        if not isinstance(state_row, dict) or set(state_row) != {
+            "case_id", "state", "started_at", "ended_at", "host_invocation_id",
+            "result", "pre_admission_diagnostic",
+        }:
             raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
         case_id = state_row.get("case_id")
         if (
@@ -3256,6 +3435,8 @@ def _live_partial_observations(
         observed_cases.append(case_id)
         call_id = f"{reservation['cycle_or_review_batch_id']}:call-{index:02d}"
         if state_row.get("state") == "COMPLETED":
+            if state_row.get("pre_admission_diagnostic") is not None:
+                raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
             retained_result = state_row.get("result")
             reconstructed = _provider_receipt(
                 reservation,
@@ -3292,6 +3473,8 @@ def _live_partial_observations(
             "cycle_or_review_batch_id": reservation["cycle_or_review_batch_id"],
         }
         if state_row.get("state") == "NOT_SUBMITTED":
+            if state_row.get("pre_admission_diagnostic") is not None:
+                raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
             rows.append(
                 {
                     **common, "started_at": None, "ended_at": None, "host_invocation_id": None,
@@ -3302,6 +3485,13 @@ def _live_partial_observations(
                 }
             )
         elif state_row.get("state") in {"DISPATCH_UNKNOWN", "SUBMITTING", "PENDING_STRUCTURED_ADMISSION"}:
+            diagnostic_ref = state_row.get("pre_admission_diagnostic")
+            if (
+                not isinstance(diagnostic_ref, dict)
+                or set(diagnostic_ref) != {"path", "byte_count", "sha256"}
+            ):
+                raise CampaignError("LIVE_PRE_ADMISSION_DIAGNOSTIC_REQUIRED")
+            pre_admission_diagnostics.append(copy.deepcopy(diagnostic_ref))
             rows.append(
                 {
                     **common, "started_at": None, "ended_at": None, "host_invocation_id": None,
@@ -3312,6 +3502,8 @@ def _live_partial_observations(
                 }
             )
         elif state_row.get("state") == "OUTCOME_UNKNOWN":
+            if state_row.get("pre_admission_diagnostic") is not None:
+                raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
             started_at = state_row.get("started_at")
             ended_at = state_row.get("ended_at")
             host_invocation_id = state_row.get("host_invocation_id")
@@ -3331,7 +3523,7 @@ def _live_partial_observations(
             raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
     if len(set(observed_cases)) != 5:
         raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
-    return rows, results
+    return rows, results, pre_admission_diagnostics
 
 
 def _finalize_provider_failure(
@@ -3355,7 +3547,7 @@ def _finalize_provider_failure(
 ) -> None:
     live = _producer_capture_mode(auth)
     if live:
-        receipts, retained_results = _live_partial_observations(
+        receipts, retained_results, pre_admission_diagnostics = _live_partial_observations(
             reservation,
             live_attempt_states,
             completed_receipts or [],
@@ -3379,6 +3571,7 @@ def _finalize_provider_failure(
         completed, unknown, not_dispatched = 0, 5, 0
         measured_cost = {"unit": "usd", "value": "unknown"}
         classification = "OUTCOME_UNKNOWN" if positive else "DISPATCH_UNKNOWN"
+        pre_admission_diagnostics = None
     terminal = settle(
         usage_root,
         reservation["transaction_sha256"],
@@ -3413,6 +3606,7 @@ def _finalize_provider_failure(
         resumable_retry=False,
         failure_phase=failure_phase,
         observed_results=retained_results,
+        pre_admission_diagnostics=pre_admission_diagnostics,
     )
 
 

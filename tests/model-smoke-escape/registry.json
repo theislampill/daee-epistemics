@@ -60,6 +60,98 @@
       "paid_cycle_eligible": true,
       "estimated_model_invocations_avoided": "unknown",
       "recurrence_of_escape_id": null
+    },
+    {
+      "escape_id": "escape-andon-182-pre-admission-diagnostic-001",
+      "deterministic_detectability": "YES",
+      "status": "CLOSED",
+      "scope": {
+        "source_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+        "schema_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+        "checker_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "model_protocol_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+        "defect_signature": "host-generation-terminated-before-structured-admission-with-diagnostic-carriers-destroyed-during-cleanup",
+        "ir_artifact_boundary": "live adapter pre-admission failure to terminal incident and replay validation"
+      },
+      "detectability_basis": {
+        "missing_topic_neutral_observable": "secret-scanned pre-admission event, stderr, and raw-output carrier retention before owned-worker cleanup",
+        "anti_answer_bank_basis": "the canary uses scripted host lifecycle and carrier identities without case-topic content",
+        "strongest_topic_neutral_observability": [
+          "content-addressed carrier role identity",
+          "execution-custody binding",
+          "terminal incident and replay binding"
+        ],
+        "recheck_predicates": [
+          "adapter pre-admission cleanup order changes",
+          "terminal diagnostic schema or consumer changes",
+          "provider carrier ownership changes"
+        ]
+      },
+      "canary": {
+        "topic_neutral": true,
+        "taint_tokens": [],
+        "red_boundary": [
+          "python -B tests/reviewed-campaign-orchestration/test_contract.py LiveProducerContractTests.test_already_exited_first_host_fails_before_adapter_in_flight_admission -> KeyError pre_admission_diagnostic",
+          "python -B tests/reviewed-campaign-orchestration/test_contract.py LiveProducerContractTests.test_pre_admission_diagnostic_is_bound_into_terminal_failure_and_replay -> role-swapped empty carriers survived replay"
+        ],
+        "green_boundary": [
+          "python -B tests/reviewed-campaign-orchestration/test_contract.py LiveProducerContractTests.test_already_exited_first_host_fails_before_adapter_in_flight_admission",
+          "python -B tests/reviewed-campaign-orchestration/test_contract.py LiveProducerContractTests.test_pre_admission_diagnostic_is_bound_into_terminal_failure_and_replay",
+          "python -B tests/reviewed-campaign-orchestration/test_contract.py"
+        ],
+        "neighboring_valid": [
+          "live partial failure, abort, outcome-unknown, and exact terminal replay controls remain green"
+        ],
+        "mutation_right_reason": [
+          {
+            "mutation": "swap equal-byte stderr and raw-output content-addressed references",
+            "expected_stage": "terminal-publication-preflight",
+            "observed_stage": "terminal-publication-preflight",
+            "expected_class": "pre-admission-diagnostic-carrier-role",
+            "observed_class": "pre-admission-diagnostic-carrier-role",
+            "expected_subcode": "role-suffix",
+            "observed_subcode": "role-suffix"
+          }
+        ],
+        "ci_registry_evidence": [
+          "python tools/check_model_smoke_escape_registry.py",
+          "python tools/check_ci_registry_coverage.py"
+        ]
+      },
+      "causal_control": {
+        "five_whys": [
+          "the first live host exited before structured admission",
+          "the early-exit path destroyed its available diagnostic carriers",
+          "retention existed only after successful admission and observation",
+          "fixtures asserted classification but not pre-admission carrier custody",
+          "the negative transition lacked one shared diagnostic evidence contract"
+        ],
+        "hansei": {
+          "gap": "a live-smoke failure reached an irreducible dispatch-unknown boundary without retained host diagnostics",
+          "cause": "pre-admission cleanup preceded content-addressed diagnostic retention",
+          "lesson": "every host generation needs secret-scanned negative-transition evidence before cleanup"
+        },
+        "owner_source_countermeasure": {
+          "owner": "live producer adapter and reviewed campaign orchestrator",
+          "source": "tools/codex_live_producer_adapter.py; tools/reviewed_campaign_orchestrator.py",
+          "countermeasure": "retain and replay-validate exact carrier-role, host-returncode, credential-scan, and execution-custody evidence"
+        },
+        "deterministic_green": [
+          "direct adapter diagnostic retention",
+          "terminal finalizer and replay binding",
+          "complete reviewed-campaign contract"
+        ],
+        "independent_concurrence": {
+          "accountable_owner": "standing Branch 11 owner steer",
+          "independent_reviewer": "/root/b11_andon182_repair_review",
+          "basis": "exact prospective-tree bounded review is required before successor publication"
+        },
+        "usage_drift_resolved": false,
+        "authorization_drift_resolved": true
+      },
+      "paid_cycle_eligible": false,
+      "estimated_model_invocations_avoided": "unknown",
+      "recurrence_of_escape_id": null
     }
   ],
   "events": [],

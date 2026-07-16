@@ -1325,6 +1325,7 @@ class CodexLiveProducerAdapter:
                     "ended_at": None, "host_invocation_id": None,
                     "launch_deadline_monotonic": None,
                     "credential_scan_status": "PENDING", "credential_scan_evidence": None,
+                    "pre_admission_diagnostic": None,
                 }
                 self._ordered_cases.append(case_id)
         except BaseException as exc:
@@ -1425,6 +1426,21 @@ class CodexLiveProducerAdapter:
                 "launch_deadline_monotonic": launch_deadline,
             }
         )
+        attempt_row: dict[str, Any] = {
+            **prepared,
+            "process": None,
+            "events": events,
+            "stderr": stderr,
+            "output": output,
+            "started_at": started_at,
+            "launch_deadline_monotonic": launch_deadline,
+            "execution_custody_sha256": hashlib.sha256(_canonical(execution_custody)).hexdigest(),
+            "execution_custody": custody_ref,
+            "case_id": case_id,
+            "event_bytes_seen": b"",
+            "in_flight_admission": None,
+            "admission_thread_id": None,
+        }
         try:
             process = self.host.start(
                 command, cwd=prepared["workspace"], env=env, prompt_path=prepared["prompt"],
@@ -1433,41 +1449,31 @@ class CodexLiveProducerAdapter:
         except BaseException as exc:
             process = getattr(exc, "process", None)
             if process is None:
-                prepared.update({"state": "DISPATCH_UNKNOWN", "ended_at": _utc_now()})
-                self._credential_readback(prepared)
+                self._fail_pre_admission(
+                    attempt_row,
+                    failure_kind="HOST_START_FAILED_BEFORE_PROCESS_IDENTITY",
+                    host_returncode=None,
+                )
             else:
                 handle = f"codex-host:{process.pid}:{case_id}"
-                prepared.update(
-                    {
-                        "state": "DISPATCH_UNKNOWN", "ended_at": _utc_now(),
-                        "host_invocation_id": handle,
-                    }
+                attempt_row.update({"process": process, "host_invocation_id": handle})
+                self._handles[handle] = attempt_row
+                self._fail_pre_admission(
+                    attempt_row,
+                    failure_kind="HOST_START_FAILED_AFTER_PROCESS_CREATION",
+                    host_returncode=process.poll(),
                 )
-                self._handles[handle] = {
-                    **prepared, "process": process, "events": events, "stderr": stderr,
-                    "output": output, "started_at": started_at,
-                    "launch_deadline_monotonic": launch_deadline,
-                    "execution_custody_sha256": hashlib.sha256(_canonical(execution_custody)).hexdigest(),
-                    "execution_custody": custody_ref,
-                    "case_id": case_id,
-                    "event_bytes_seen": b"",
-                    "in_flight_admission": None,
-                    "admission_thread_id": None,
-                }
-                self._teardown_process(process)
-                self._credential_readback(self._handles[handle])
             raise
         handle = f"codex-host:{process.pid}:{case_id}"
         prepared.update({"state": "PENDING_STRUCTURED_ADMISSION", "host_invocation_id": handle})
-        self._handles[handle] = {
-            **prepared, "process": process, "events": events, "stderr": stderr, "output": output,
-            "started_at": started_at, "execution_custody_sha256": hashlib.sha256(_canonical(execution_custody)).hexdigest(),
-            "execution_custody": custody_ref,
-            "case_id": case_id,
-            "event_bytes_seen": b"",
-            "in_flight_admission": None,
-            "admission_thread_id": None,
-        }
+        attempt_row.update(
+            {
+                "state": "PENDING_STRUCTURED_ADMISSION",
+                "process": process,
+                "host_invocation_id": handle,
+            }
+        )
+        self._handles[handle] = attempt_row
         return handle, self._handles[handle]
 
     def _advance_structured_admission(self, row: dict[str, Any]) -> tuple[str, bytes] | None:
@@ -1494,10 +1500,111 @@ class CodexLiveProducerAdapter:
             raise RuntimeError("Codex structured in-flight admission identity is invalid")
         return thread_id, prefix
 
-    def _fail_pre_admission(self, row: dict[str, Any]) -> None:
+    @staticmethod
+    def _optional_carrier_bytes(path: Path, label: str) -> tuple[bool, bytes]:
+        observed = _lstat_optional(path)
+        if observed is None:
+            return False, b""
+        if (
+            not stat.S_ISREG(observed.st_mode)
+            or stat.S_ISLNK(observed.st_mode)
+            or bool(getattr(observed, "st_file_attributes", 0) & _REPARSE_POINT)
+        ):
+            raise RuntimeError(f"{label} must be a regular non-reparse file")
+        try:
+            return True, path.read_bytes()
+        except OSError as exc:
+            raise RuntimeError(f"{label} readback failed") from exc
+
+    def _retain_pre_admission_diagnostic(
+        self,
+        row: dict[str, Any],
+        *,
+        failure_kind: str,
+        host_returncode: int | None,
+        credential_scan: dict[str, object],
+    ) -> dict[str, object]:
+        if not isinstance(failure_kind, str) or not failure_kind:
+            raise RuntimeError("pre-admission diagnostic failure kind unavailable")
+        if host_returncode is not None and (
+            not isinstance(host_returncode, int) or isinstance(host_returncode, bool)
+        ):
+            raise RuntimeError("pre-admission diagnostic host return code invalid")
+        source_presence: dict[str, bool] = {}
+        retained: dict[str, dict[str, object]] = {}
+        for role, path, suffix in (
+            ("raw_event_log", row.get("events"), ".pre-admission.events.jsonl"),
+            ("stderr", row.get("stderr"), ".pre-admission.stderr.txt"),
+            ("raw_output", row.get("output"), ".pre-admission.output.md"),
+        ):
+            if not isinstance(path, Path):
+                raise RuntimeError(f"pre-admission {role} path unavailable")
+            present, raw = self._optional_carrier_bytes(path, f"pre-admission {role}")
+            source_presence[role] = present
+            retained_path = _retain_content_addressed(row["provider_root"], raw, suffix)
+            retained[role] = _ref(self.root, retained_path)
+        execution_custody = row.get("execution_custody")
+        execution_custody_sha256 = row.get("execution_custody_sha256")
+        if (
+            not isinstance(execution_custody, dict)
+            or set(execution_custody) != {"path", "byte_count", "sha256"}
+            or not isinstance(execution_custody_sha256, str)
+            or execution_custody.get("sha256") != execution_custody_sha256
+        ):
+            raise RuntimeError("pre-admission execution custody unavailable")
+        diagnostic = {
+            "schema": "reviewed-campaign-pre-admission-diagnostic-v1",
+            "status": "PRE_ADMISSION_DIAGNOSTIC_RETAINED",
+            "failure_kind": failure_kind,
+            "candidate_id": row["candidate_id"],
+            "source_commit": row["source_commit"],
+            "package_sha256": row["package_sha256"],
+            "package_tree_sha256": row["package_tree_sha256"],
+            "case_id": row["case_id"],
+            "model": "gpt-5.5",
+            "reasoning_effort": "high",
+            "dispatch_classification": "DISPATCH_UNKNOWN",
+            "admission_status": "NOT_ADMITTED",
+            "provider_invocation_proven": False,
+            "host_returncode": host_returncode,
+            "host_returncode_status": "RECORDED" if host_returncode is not None else "UNAVAILABLE",
+            "host_invocation_id": row.get("host_invocation_id"),
+            "started_at": row.get("started_at"),
+            "ended_at": row.get("ended_at"),
+            "source_presence": source_presence,
+            **retained,
+            "credential_residue_scan": copy.deepcopy(credential_scan),
+            "execution_custody_sha256": execution_custody_sha256,
+            "execution_custody": copy.deepcopy(execution_custody),
+            "captured_at": _utc_now(),
+        }
+        diagnostic_path = _retain_content_addressed(
+            row["provider_root"],
+            _canonical(diagnostic),
+            ".pre-admission-diagnostic.json",
+        )
+        return _ref(self.root, diagnostic_path)
+
+    def _fail_pre_admission(
+        self,
+        row: dict[str, Any],
+        *,
+        failure_kind: str,
+        host_returncode: int | None,
+    ) -> None:
         self._mark_dispatch_unknown(row)
-        self._teardown_process(row["process"])
-        self._credential_readback(row)
+        process = row.get("process")
+        if process is not None:
+            self._teardown_process(process)
+        credential_scan = self._credential_readback(row)
+        diagnostic = self._retain_pre_admission_diagnostic(
+            row,
+            failure_kind=failure_kind,
+            host_returncode=host_returncode,
+            credential_scan=credential_scan,
+        )
+        row["pre_admission_diagnostic"] = diagnostic
+        self._prepared[row["case_id"]]["pre_admission_diagnostic"] = copy.deepcopy(diagnostic)
 
     def _await_structured_admission(
         self,
@@ -1508,30 +1615,52 @@ class CodexLiveProducerAdapter:
             try:
                 early_returncode = row["process"].poll()
             except BaseException as exc:
-                self._fail_pre_admission(row)
+                self._fail_pre_admission(
+                    row,
+                    failure_kind="ADMISSION_LIVENESS_CHECK_FAILED",
+                    host_returncode=None,
+                )
                 raise RuntimeError("Codex structured in-flight admission liveness check failed closed") from exc
             if early_returncode is not None:
-                self._fail_pre_admission(row)
+                self._fail_pre_admission(
+                    row,
+                    failure_kind="HOST_EXITED_BEFORE_ADMISSION",
+                    host_returncode=early_returncode,
+                )
                 raise RuntimeError(
                     f"Codex producer host exited before adapter in-flight admission ({early_returncode})"
                 )
             try:
                 admission = self._advance_structured_admission(row)
             except BaseException:
-                self._fail_pre_admission(row)
+                self._fail_pre_admission(
+                    row,
+                    failure_kind="STRUCTURED_ADMISSION_INVALID",
+                    host_returncode=row["process"].poll(),
+                )
                 raise
             if admission is not None:
                 thread_id, admitted_prefix = admission
+                after_parse_returncode = row["process"].poll()
+                if after_parse_returncode is not None:
+                    self._fail_pre_admission(
+                        row,
+                        failure_kind="HOST_EXITED_DURING_ADMISSION",
+                        host_returncode=after_parse_returncode,
+                    )
+                    raise RuntimeError("Codex producer host exited before structured in-flight admission")
                 try:
-                    if row["process"].poll() is not None:
-                        raise RuntimeError("Codex producer host exited before structured in-flight admission")
                     retained_admission = _retain_content_addressed(
                         row["provider_root"],
                         admitted_prefix,
                         ".in-flight-admission.events.jsonl",
                     )
                 except BaseException:
-                    self._fail_pre_admission(row)
+                    self._fail_pre_admission(
+                        row,
+                        failure_kind="ADMISSION_EVIDENCE_RETENTION_FAILED",
+                        host_returncode=row["process"].poll(),
+                    )
                     raise
                 admission_ref = _ref(self.root, retained_admission)
                 row.update(
@@ -1561,11 +1690,19 @@ class CodexLiveProducerAdapter:
                 }
             deadline = row.get("launch_deadline_monotonic")
             if not isinstance(deadline, (int, float)) or isinstance(deadline, bool):
-                self._fail_pre_admission(row)
+                self._fail_pre_admission(
+                    row,
+                    failure_kind="ADMISSION_DEADLINE_UNAVAILABLE",
+                    host_returncode=row["process"].poll(),
+                )
                 raise RuntimeError("Codex structured in-flight admission deadline unavailable")
             remaining = float(deadline) - time.monotonic()
             if remaining <= 0:
-                self._fail_pre_admission(row)
+                self._fail_pre_admission(
+                    row,
+                    failure_kind="ADMISSION_TIMEOUT",
+                    host_returncode=row["process"].poll(),
+                )
                 raise RuntimeError("Codex structured in-flight admission timed out")
             time.sleep(min(0.05, remaining))
 
@@ -1949,6 +2086,9 @@ class CodexLiveProducerAdapter:
                     "ended_at": prepared["ended_at"],
                     "host_invocation_id": prepared["host_invocation_id"],
                     "result": prepared["result"],
+                    "pre_admission_diagnostic": copy.deepcopy(
+                        prepared["pre_admission_diagnostic"]
+                    ),
                 }
             )
         return rows
@@ -1959,12 +2099,18 @@ class CodexLiveProducerAdapter:
         for row in self._handles.values():
             handled_workers.add(row["worker_root"])
             try:
-                self._teardown_process(row["process"])
                 if row["state"] in {"SUBMITTING", "PENDING_STRUCTURED_ADMISSION"}:
-                    self._mark_dispatch_unknown(row)
-                elif row["state"] == "ADAPTER_IN_FLIGHT":
+                    self._fail_pre_admission(
+                        row,
+                        failure_kind="ABORTED_BEFORE_ADMISSION",
+                        host_returncode=row["process"].poll(),
+                    )
+                else:
+                    self._teardown_process(row["process"])
+                if row["state"] == "ADAPTER_IN_FLIGHT":
                     self._mark_outcome_unknown(row)
-                self._credential_readback(row)
+                if row["state"] != "DISPATCH_UNKNOWN":
+                    self._credential_readback(row)
                 self._remove_owned_worker(row)
             except Exception as exc:
                 errors.append(str(exc))

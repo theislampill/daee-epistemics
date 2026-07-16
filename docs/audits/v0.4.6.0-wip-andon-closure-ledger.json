@@ -2833,7 +2833,11 @@
           "tests/validation-integrity/test_candidate_hardening.py",
           "tests/validation-integrity/test_consumer_migration.py",
           "tests/validation-integrity/test_scorecard_hardening.py",
+          "tests/model-smoke-escape/registry.json",
+          "tests/reviewed-campaign-orchestration/test_contract.py",
           "tools/build_model_compliance_scorecard.py",
+          "tools/codex_live_producer_adapter.py",
+          "tools/reviewed_campaign_orchestrator.py",
           "tools/check_validation_registry.py",
           "tools/checker_execution_snapshot.py",
           "tools/validation-registry.json",
@@ -2885,20 +2889,34 @@
         "command": null
       },
       "model_smoke_escape": {
-        "escape_id": null,
-        "deterministic_detectability": "NOT_APPLICABLE",
-        "red_boundary_evidence": [],
-        "green_boundary_evidence": [],
-        "mutation_right_reason_evidence": [],
+        "escape_id": "escape-andon-182-pre-admission-diagnostic-001",
+        "deterministic_detectability": "YES",
+        "red_boundary_evidence": [
+          "direct no-provider host-exit canary failed because pre_admission_diagnostic was absent",
+          "terminal replay accepted exchanged equal-byte stderr and raw-output carrier roles before role-suffix repair"
+        ],
+        "green_boundary_evidence": [
+          "direct adapter pre-admission diagnostic-retention canary",
+          "terminal incident/finalizer/replay diagnostic-binding canary",
+          "complete reviewed-campaign orchestration contract"
+        ],
+        "mutation_right_reason_evidence": [
+          "equal-byte stderr/raw-output reference exchange rejects at TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CARRIERS"
+        ],
         "next_model_cycle_eligible": false,
         "recurrence_of_escape_id": null,
         "model_invocations_spent_before_detection": 0,
         "estimated_model_invocations_avoided_by_canary": "unknown"
       },
-      "five_smoke_impact": [],
+      "five_smoke_impact": [
+        "ANDON 182 terminalized one dispatch-unknown and four not-dispatched attempts without proving a provider invocation",
+        "the missing deterministic negative-transition canary is now owned and closed",
+        "unresolved usage and replacement authority remain separate owner-only gates"
+      ],
       "owner_gates": [
-        "separate one-use successor commit authorization",
-        "separate one-use non-force push authorization",
+        "standing Branch 11 successor commit and non-force push authorization after governed repair gates",
+        "external owner disposition of unresolved dispatch-unknown usage",
+        "external owner-issued one-use continuation or replacement authority",
         "terminal owner acceptance after full integration"
       ],
       "artifact_gates": [
@@ -2906,9 +2924,10 @@
         "exact-SHA CI on a later ordinary successor commit"
       ],
       "remaining_risk": [
-        "structural promotion never upgrades to semantic truth"
+        "structural promotion never upgrades to semantic truth",
+        "case 1 provider invocation and cost remain neither proven nor disproven"
       ],
-      "next_action": "Preserve bounded A11 acceptance while the independently accepted R3 repair set is frozen as a new exact tree and receives fresh deterministic/whole-branch review evidence; then require successor exact-SHA CI, terminal dependencies, and owner acceptance; keep A11 terminal OPEN.",
+      "next_action": "Independently review and publish the bounded ANDON 182 diagnostic-retention successor, require fresh exact-SHA CI and source/candidate evidence, then stop at the unresolved-usage owner boundary without dispatching or minting replacement authority.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -4410,10 +4429,10 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "Task 11bi rejected predecessor repair tree 2e6d34ebfee35d0c0cb15052666966f2fcd95eb0; Task 11bj owner report sha256 ce6cb5f9e3a96da211be5915802edcfb91191e066fca17cb591f16ef4f5a8da8 and Task 11bk independent APPROVE sha256 9d5c056a0a57e8de23af58f06c5934c51c729f921eb663b3ec288a00a8ec61eb bind strict-JSON, mixed-terminal replay, execution-tooling, predispatch, and timeout contracts; Task 11cg ANDON 150 preserves governed provider-cost-unavailable settlement; Task 11cl ANDON 153/154 current bytes reconstruct exact completed receipts and terminal projections from retained adapter results plus original execution custody after projection failure and consume attempt authority through one atomic recoverable claim set; Task 11cn ANDON 155 makes publication and replay share one exact phase/classification/failure-class contract for mixed projection failures; Task 11cp ANDON 156 keeps pre-dispatch classification through the final live authorization and tooling rechecks and crosses into provider execution only immediately before the first submit; Task 11cu/11cv ANDON 159 current bytes treat the immutable attempt claim set as canonical after projection collision or persistent absence, retain ordered EXACT/COLLISION/MISSING projection states, preserve foreign bytes, terminalize without dispatch, and revalidate exact replay; Task 11dn ANDON 162 preserves the canonical uppercase registry while normalizing its semantic digest to lowercase at schema-bound authorization and single-call output-contract joins; Task 11dw ANDON 173 current bytes strictly parse every matrix reference, admit only the two exact hash-bound source-owned registry/protocol roles without generated-record canonical framing, and preserve canonical framing for every control-plane role; bounded independent review ACCEPT with 0 Critical, 0 Important, and 0 Minor findings",
+          "source_ref": "Task 11ed ANDON 182 current bytes preserve all previously accepted terminalization and identity joins while binding each dispatch-unknown pre-admission diagnostic into the incident/finalizer and exact replay; the validator requires canonical content-addressed diagnostic bytes, source/package/case/model/reservation/execution-custody identity, secret-scan PASS, host return-code state, and exact carrier-role suffixes without upgrading host launch to provider admission",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "00c0b3f6316f1ab9cae0ba32d03a8091870aeca1478e343093a573e5249eeae9",
+          "sha256": "a38c765d75cfaa4d6c96405aedc5647776a11e3bc1434258136544c6d84a6f19",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/reviewed_campaign_orchestrator.py",
@@ -4421,13 +4440,24 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "Task 11bk independently accepted predecessor live-adapter sha256 0d357768608eae2e6bc0b3c73d1af5846bba7abce855347daf79ab1f2fdad2af; Task 11bv ANDON 145/146 owner repair preserves those joins while making capability metadata-only and secret-free and binding destructive directory cleanup to an immutable create-once ownership witness; Task 11dc/11dd ANDON 160 current bytes use the installed CLI's exact secret-free bundled model-catalog command and normalize its structured reasoning-level rows while preserving exact GPT-5.5/high validation; Task 11dn ANDON 162 normalizes the already-validated uppercase registry digest only at lowercase execution-identity comparisons for authorization and raw-input custody; this row binds exact current bytes only and does not claim provider invocation, independent successor acceptance, exact-SHA CI, candidate maturity, or terminal closure",
+          "source_ref": "Task 11ed ANDON 182 current bytes preserve the accepted capability, isolation, process-custody, model, timeout, and execution-tooling joins while retaining the available event prefix, stderr, raw output including empty or absent identity, host return code, secret-scan result, and execution custody before owned-worker cleanup; this evidence remains explicitly not-admitted and provider invocation unproven",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "27f2197f5037906836445fc177aa78eb33a6857e6380ad513bb807280592b0ce",
+          "sha256": "81ff3d11000194cee4c7ae5841d54bb25cabe758b3979f2a7f6ad579fce8286a",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/codex_live_producer_adapter.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "Task 11ed closes MODEL_SMOKE_ESCAPE escape-andon-182-pre-admission-diagnostic-001 as deterministically detectable with topic-neutral RED, GREEN, neighboring, role-substitution mutation, and CI-registry evidence; paid-cycle eligibility remains false and unresolved usage remains an external owner gate",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "211a74200a33311c37c234656c301956f04683ad0579a5a1908d9de2d3973508",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tests/model-smoke-escape/registry.json",
           "unretained_reason": null
         },
         {
@@ -4443,14 +4473,14 @@
         },
         {
           "kind": "command_result",
-          "source_ref": "Task 11dw ANDON 173 owner verification; exact current orchestrator sha256 00c0b3f6316f1ab9cae0ba32d03a8091870aeca1478e343093a573e5249eeae9, live adapter sha256 27f2197f5037906836445fc177aa78eb33a6857e6380ad513bb807280592b0ce, and reviewed-campaign test sha256 15873448aeb66bda05dc1c1ff362bc68303c4fb3c4a3e23d4f959add915db1f4; full reviewed-campaign suite is 117/117 GREEN including exact pretty source registry/protocol framing, strict duplicate-key rejection, preserved generated-record canonical framing, downstream common-binding validation, uppercase-registry/lowercase-execution identity, exact GPT-5.5/high identity, metadata-only secret-free capability, deferred credential acquisition after authority and reservation, immutable directory-witness replacement custody, strict non-finite admission/rederivation, exact mixed-receipt replay, atomic five-member reservation, concurrent five-way observation, and zero-dispatch replay",
+          "source_ref": "Task 11ed ANDON 182 owner verification; exact current orchestrator sha256 a38c765d75cfaa4d6c96405aedc5647776a11e3bc1434258136544c6d84a6f19, live adapter sha256 81ff3d11000194cee4c7ae5841d54bb25cabe758b3979f2a7f6ad579fce8286a, and reviewed-campaign test sha256 79e9677acf41b2054b1eb8577ac00cb42fc218228932c102df2db042ff24eea2; full reviewed-campaign suite is 118/118 GREEN including direct pre-admission retention, terminal incident/finalizer/replay binding, equal-byte carrier-role substitution rejection, partial-failure and cleanup neighbors, exact five-member reservation and observation contracts, and all previously accepted authorization, identity, secret-custody, replay, and terminalization controls",
           "commit_sha1": null,
           "blob_sha1": null,
           "sha256": null,
           "command": "python -B tests/reviewed-campaign-orchestration/test_contract.py",
           "exit_code": 0,
           "retained_artifact": null,
-          "unretained_reason": "raw stdout and stderr and the local durable ANDON 173 and Task 11dw review records are not tracked repository artifacts; bounded deterministic acceptance does not imply exact-SHA CI, provider execution, final whole-branch acceptance, or terminal closure"
+          "unretained_reason": "raw stdout and stderr and the local durable ANDON 182 Task 11ed owner record are not tracked repository artifacts; bounded deterministic acceptance does not imply provider invocation, usage resolution, replacement authorization, exact-SHA CI, candidate maturity, or terminal closure"
         },
         {
           "kind": "command_result",
@@ -4830,11 +4860,15 @@
         "model_invocations_spent_before_detection": 0,
         "estimated_model_invocations_avoided_by_canary": "unknown"
       },
-      "five_smoke_impact": [],
+      "five_smoke_impact": [
+        "ANDON 182 terminalized one dispatch-unknown and four not-dispatched attempts without proving a provider invocation",
+        "the candidate and one-use authority are consumed and usage remains unresolved",
+        "no retry, replacement, tail dispatch, or new campaign is authorized"
+      ],
       "owner_gates": [
-        "separate one-use commit approval",
-        "separate one-use push approval",
-        "standing campaign child authorization",
+        "standing Branch 11 successor commit and non-force push authorization after governed repair gates",
+        "external owner disposition of unresolved dispatch-unknown usage",
+        "external owner-issued one-use continuation or replacement authority",
         "owner WIP acceptance"
       ],
       "artifact_gates": [
@@ -4845,9 +4879,10 @@
         "five human initial assessments before five cold reviews"
       ],
       "remaining_risk": [
-        "deterministic closure is not model, WIP, merge, release, or regression proof"
+        "deterministic closure is not model, WIP, merge, release, or regression proof",
+        "case 1 provider invocation and cost remain neither proven nor disproven"
       ],
-      "next_action": "Keep A16 PARTIAL and terminal OPEN; independently review and publish the bounded ANDON 167 exact-source header-framing repair, then regenerate the Branch 11 deterministic cohort on that accepted successor tree and obtain fresh exact-SHA CI, source receipt, and a mature candidate before executing only the authorized governed campaign.",
+      "next_action": "Independently review and publish the bounded ANDON 182 pre-admission diagnostic-retention successor, require fresh exact-SHA CI and source/candidate evidence, then stop at the unresolved-usage owner boundary without dispatching or minting replacement authority.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,

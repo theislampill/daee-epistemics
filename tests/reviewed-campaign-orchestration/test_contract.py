@@ -3704,6 +3704,7 @@ class LiveProducerContractTests(unittest.TestCase):
             "launch_deadline_monotonic": None,
             "credential_scan_status": "PENDING",
             "credential_scan_evidence": None,
+            "pre_admission_diagnostic": None,
         }
         adapter._ordered_cases = [case_id]
         execution_custody = {
@@ -5728,9 +5729,10 @@ class LiveProducerContractTests(unittest.TestCase):
 
     def test_already_exited_first_host_fails_before_adapter_in_flight_admission(self) -> None:
         with tempfile.TemporaryDirectory(prefix="daee-live-exited-before-admission-") as temp:
-            host = _ScriptedCodexHost(already_exited_at=1)
+            root = Path(temp)
+            host = _ScriptedCodexHost(already_exited_at=1, nonzero_at=1)
             adapter, execution_custody, isolated_root, provider_root = self._adapter_submission_fixture(
-                Path(temp),
+                root,
                 host,
             )
             try:
@@ -5742,7 +5744,53 @@ class LiveProducerContractTests(unittest.TestCase):
             self.assertEqual(1, len(host.starts))
             self.assertEqual([], host.processes[0].wait_timeouts)
             self.assertEqual(1, len(list(provider_root.glob("*.credential-scan.json"))))
-            self.assertEqual("DISPATCH_UNKNOWN", adapter.attempt_states()[0]["state"])
+            state = adapter.attempt_states()[0]
+            self.assertEqual("DISPATCH_UNKNOWN", state["state"])
+            diagnostic_ref = state["pre_admission_diagnostic"]
+            self.assertEqual({"path", "byte_count", "sha256"}, set(diagnostic_ref))
+            diagnostic_path = root / diagnostic_ref["path"]
+            self.assertEqual(diagnostic_ref["byte_count"], diagnostic_path.stat().st_size)
+            self.assertEqual(diagnostic_ref["sha256"], digest(diagnostic_path))
+            diagnostic = json.loads(diagnostic_path.read_bytes())
+            self.assertEqual(
+                {
+                    "schema", "status", "failure_kind", "candidate_id", "source_commit",
+                    "package_sha256", "package_tree_sha256", "case_id", "model",
+                    "reasoning_effort", "dispatch_classification", "admission_status",
+                    "provider_invocation_proven", "host_returncode", "host_returncode_status",
+                    "host_invocation_id", "started_at", "ended_at", "source_presence",
+                    "raw_event_log", "stderr", "raw_output", "credential_residue_scan",
+                    "execution_custody_sha256", "execution_custody", "captured_at",
+                },
+                set(diagnostic),
+            )
+            self.assertEqual("reviewed-campaign-pre-admission-diagnostic-v1", diagnostic["schema"])
+            self.assertEqual("PRE_ADMISSION_DIAGNOSTIC_RETAINED", diagnostic["status"])
+            self.assertEqual("HOST_EXITED_BEFORE_ADMISSION", diagnostic["failure_kind"])
+            self.assertEqual("DISPATCH_UNKNOWN", diagnostic["dispatch_classification"])
+            self.assertEqual("NOT_ADMITTED", diagnostic["admission_status"])
+            self.assertFalse(diagnostic["provider_invocation_proven"])
+            self.assertEqual(9, diagnostic["host_returncode"])
+            self.assertEqual("RECORDED", diagnostic["host_returncode_status"])
+            self.assertEqual(record_sha256(execution_custody), diagnostic["execution_custody_sha256"])
+            self.assertEqual(
+                {"raw_event_log": True, "stderr": True, "raw_output": False},
+                diagnostic["source_presence"],
+            )
+            self.assertEqual(
+                canonical({"type": "thread.started", "thread_id": "thread-01"})
+                + canonical({"type": "turn.started"}),
+                (root / diagnostic["raw_event_log"]["path"]).read_bytes(),
+            )
+            self.assertEqual(b"", (root / diagnostic["stderr"]["path"]).read_bytes())
+            self.assertEqual(b"", (root / diagnostic["raw_output"]["path"]).read_bytes())
+            scan_ref = diagnostic["credential_residue_scan"]
+            self.assertEqual({"path", "byte_count", "sha256"}, set(scan_ref))
+            scan_path = root / scan_ref["path"]
+            self.assertEqual(provider_root.resolve(), scan_path.parent.resolve())
+            self.assertEqual(scan_ref["byte_count"], scan_path.stat().st_size)
+            self.assertEqual(scan_ref["sha256"], digest(scan_path))
+            self.assertEqual(1, len(list(provider_root.glob("*.pre-admission-diagnostic.json"))))
             self.assertFalse(isolated_root.exists())
 
     def test_eventless_alive_first_host_cannot_yield_adapter_in_flight(self) -> None:
@@ -6119,6 +6167,111 @@ class LiveProducerContractTests(unittest.TestCase):
                         lane="producer",
                         attempt_index=1,
                     )
+
+    def test_pre_admission_diagnostic_is_bound_into_terminal_failure_and_replay(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-pre-admission-terminal-") as temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            host = _ScriptedCodexHost(already_exited_at=1, nonzero_at=1)
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+                command_timeout_seconds=30,
+            )
+            with self.assertRaisesRegex(CampaignError, "PROVIDER_EXECUTION_FAILED"):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+
+            incident_path = fixture.root / "incidents/producer-live-cycle-01.json"
+            finalizer_path = fixture.root / "producer/observation-finalizer.json"
+            incident = json.loads(incident_path.read_bytes())
+            finalizer = json.loads(finalizer_path.read_bytes())
+            diagnostics = finalizer["pre_admission_diagnostics"]
+            self.assertEqual(diagnostics, incident["finalizer_payload"]["pre_admission_diagnostics"])
+            self.assertEqual(1, len(diagnostics))
+            diagnostic_ref = diagnostics[0]
+            diagnostic_path = fixture.root / diagnostic_ref["path"]
+            diagnostic = json.loads(diagnostic_path.read_bytes())
+            self.assertEqual(CASES[0], diagnostic["case_id"])
+            self.assertEqual("DISPATCH_UNKNOWN", diagnostic["dispatch_classification"])
+            self.assertEqual("HOST_EXITED_BEFORE_ADMISSION", diagnostic["failure_kind"])
+            self.assertEqual(9, diagnostic["host_returncode"])
+            self.assertFalse(diagnostic["provider_invocation_proven"])
+
+            auth, auth_sha = orchestrator._load_producer_authorization(
+                fixture.root,
+                authorization,
+                require_active_window=False,
+                allow_test_fixture=True,
+            )
+            bindings = orchestrator._validate_common_bindings(
+                fixture.root,
+                auth,
+                allow_test_fixture=True,
+            )
+            orchestrator._validate_failure_resume_payload(
+                fixture.root,
+                fixture.root / auth["usage_ledger_root"],
+                incident,
+                incident["finalizer_payload"],
+                auth,
+                auth_sha,
+                bindings,
+                lane="producer",
+                attempt_index=1,
+            )
+
+            role_swapped_diagnostic = copy.deepcopy(diagnostic)
+            role_swapped_diagnostic["stderr"], role_swapped_diagnostic["raw_output"] = (
+                role_swapped_diagnostic["raw_output"],
+                role_swapped_diagnostic["stderr"],
+            )
+            role_swapped_raw = canonical(role_swapped_diagnostic)
+            role_swapped_path = diagnostic_path.parent / (
+                f"{hashlib.sha256(role_swapped_raw).hexdigest()}.pre-admission-diagnostic.json"
+            )
+            role_swapped_path.write_bytes(role_swapped_raw)
+            role_swapped_payload = copy.deepcopy(incident["finalizer_payload"])
+            role_swapped_payload["pre_admission_diagnostics"] = [
+                ref(fixture.root, role_swapped_path)
+            ]
+            role_swapped_incident = copy.deepcopy(incident)
+            role_swapped_incident["finalizer_payload"] = role_swapped_payload
+            with self.assertRaisesRegex(
+                CampaignError,
+                "TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CARRIERS",
+            ):
+                orchestrator._validate_failure_resume_payload(
+                    fixture.root,
+                    fixture.root / auth["usage_ledger_root"],
+                    role_swapped_incident,
+                    role_swapped_payload,
+                    auth,
+                    auth_sha,
+                    bindings,
+                    lane="producer",
+                    attempt_index=1,
+                )
+
+            diagnostic_path.write_bytes(b"substituted pre-admission diagnostic\n")
+            with self.assertRaisesRegex(CampaignError, "PRE_ADMISSION_DIAGNOSTIC"):
+                orchestrator._validate_failure_resume_payload(
+                    fixture.root,
+                    fixture.root / auth["usage_ledger_root"],
+                    incident,
+                    incident["finalizer_payload"],
+                    auth,
+                    auth_sha,
+                    bindings,
+                    lane="producer",
+                    attempt_index=1,
+                )
 
     def test_live_partial_failures_preserve_exact_call_state_and_verify_teardown(self) -> None:
         from codex_live_producer_adapter import CodexLiveProducerAdapter
