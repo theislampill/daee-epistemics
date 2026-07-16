@@ -1919,6 +1919,17 @@ def _artifact_zip(raw: bytes) -> tuple[bytes, str]:
     return evidence_raw, sha256_bytes(raw)
 
 
+def _commit_header_lines(commit_raw: str) -> list[str]:
+    lines = commit_raw.splitlines()
+    try:
+        boundary = lines.index("")
+    except ValueError as exc:
+        raise ValueError("source commit raw header/message boundary is missing") from exc
+    if boundary == 0:
+        raise ValueError("source commit raw header block is empty")
+    return lines[:boundary]
+
+
 def _lineage(source_sha: str) -> tuple[dict[str, Any], list[str], list[str]]:
     shallow = _git_text(["rev-parse", "--is-shallow-repository"]) == "true"
     replace_refs = [line for line in _git_text(["for-each-ref", "--format=%(refname)", "refs/replace"]).splitlines() if line]
@@ -1944,8 +1955,9 @@ def _lineage(source_sha: str) -> tuple[dict[str, Any], list[str], list[str]]:
     if ancestor.returncode != 0:
         raise ValueError("source SHA is not a strict full-history descendant of checkpoint")
     commit_raw = _run_git(["cat-file", "-p", source_sha]).decode("utf-8", "strict")
-    tree_lines = [line for line in commit_raw.splitlines() if line.startswith("tree ")]
-    parent_lines = [line for line in commit_raw.splitlines() if line.startswith("parent ")]
+    header_lines = _commit_header_lines(commit_raw)
+    tree_lines = [line for line in header_lines if line.startswith("tree ")]
+    parent_lines = [line for line in header_lines if line.startswith("parent ")]
     if len(tree_lines) != 1 or not parent_lines:
         raise ValueError("source commit raw tree/parent headers are incomplete")
     parent_oids = [line.split(" ", 1)[1] for line in parent_lines]

@@ -4520,14 +4520,14 @@
         },
         {
           "kind": "command_result",
-          "source_ref": "Task 11bk independently reconfirmed exact current Windows Job custody and CI-readback integration; checker sha256 36c74e09a56914f93a27a5e5d57d5963f37c07dc99f24e5068f31b0a732701eb, schema sha256 6e607b2dbfed00591b843bd1d86528b448b73c9e132037028b7dbc9b9f4443ca, test sha256 8bbbd00f486c6b09a5b196565b83f671493bf9bb547914e1bc81b88a75c01ba7, builder sha256 21640026d561bc9da66138dc32dcdcb492f9ad18d9ee4cda14e3ec9c1a00a12d, and runner sha256 f769d96653aefc8b7e6e89fffc55979f57e9a0b1610000aaebf3abb6e90a2461; full contract 60/60 GREEN including the governed real timeout tree canary",
+          "source_ref": "Task 11bk independently reconfirmed exact Windows Job custody and CI-readback integration; Task 11ds ANDON 167 current bytes distinguish the nonempty Git commit header block from header-looking message prose before deriving exact tree and parent identity. Current checker sha256 9ed9a456880645e225328696471ac349b89406923ee4f925126f4b05f9ffb28b, schema sha256 6e607b2dbfed00591b843bd1d86528b448b73c9e132037028b7dbc9b9f4443ca, test sha256 cb8af8f64b85ade6afed0363f839c490b1fd0610f8ee88cd4e067d98624e923a, builder sha256 21640026d561bc9da66138dc32dcdcb492f9ad18d9ee4cda14e3ec9c1a00a12d, and runner sha256 f769d96653aefc8b7e6e89fffc55979f57e9a0b1610000aaebf3abb6e90a2461; full contract 61/61 GREEN including the direct header/message-alias canary and governed real-timeout tree canary",
           "commit_sha1": null,
           "blob_sha1": null,
           "sha256": null,
           "command": "python -B tests/ci-readback/test_contract.py",
           "exit_code": 0,
           "retained_artifact": null,
-          "unretained_reason": "raw stdout and stderr and local durable Task 11bk review are not tracked repository artifacts; final create-once Branch 11 Task 7 evidence and exact-tree whole-branch review remain open"
+          "unretained_reason": "raw stdout and stderr and local durable Task 11bk/11ds records are not tracked repository artifacts; bounded focused GREEN does not claim independent ANDON 167 acceptance, final create-once Branch 11 Task 7 evidence, exact-tree whole-branch review, or provider execution"
         },
         {
           "kind": "command_result",
@@ -4847,7 +4847,7 @@
       "remaining_risk": [
         "deterministic closure is not model, WIP, merge, release, or regression proof"
       ],
-      "next_action": "Keep A16 PARTIAL and terminal OPEN; independently review the bounded ANDON 159 claim-projection terminalization/replay repair, then regenerate the Branch 11 deterministic cohort on the accepted exact tree and obtain a fresh whole-branch review; require successor exact-SHA CI and a fresh mature candidate before executing only the authorized governed campaign.",
+      "next_action": "Keep A16 PARTIAL and terminal OPEN; independently review and publish the bounded ANDON 167 exact-source header-framing repair, then regenerate the Branch 11 deterministic cohort on that accepted successor tree and obtain fresh exact-SHA CI, source receipt, and a mature candidate before executing only the authorized governed campaign.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,

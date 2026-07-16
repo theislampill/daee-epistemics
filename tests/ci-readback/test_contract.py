@@ -787,6 +787,47 @@ class CiReadbackContract(unittest.TestCase):
         accepted = checker._strict_predecessor_source("2" * 40, current, is_ancestor=lambda _old, _new: True)
         self.assertIsNone(accepted)
 
+    def test_lineage_ignores_commit_message_lines_that_look_like_headers(self) -> None:
+        self.require_checker()
+        checker = importlib.import_module("check_ci_readback")
+        source_oid = "9" * 40
+        tree_oid = "1" * 40
+        parent_oid = "2" * 40
+        raw = (
+            f"tree {tree_oid}\n"
+            f"parent {parent_oid}\n"
+            "author Owner <owner@example.test> 1 +0000\n"
+            "committer Owner <owner@example.test> 1 +0000\n"
+            "\n"
+            "Repair exact source receipt parsing\n\n"
+            f"tree {'3' * 40}\n"
+            f"parent {'4' * 40}\n"
+        )
+
+        def git_text(arguments: list[str]) -> str:
+            if arguments == ["rev-parse", "--is-shallow-repository"]:
+                return "false"
+            if arguments == ["for-each-ref", "--format=%(refname)", "refs/replace"]:
+                return ""
+            if arguments == ["rev-parse", "--git-path", "info/grafts"]:
+                return str(ROOT / ".git" / "missing-test-grafts")
+            if arguments[:2] == ["cat-file", "-t"]:
+                return "tree" if arguments[2] == tree_oid else "commit"
+            if arguments == ["show", "-s", "--format=%T", checker.CHECKPOINT_COMMIT]:
+                return checker.CHECKPOINT_TREE
+            if arguments == ["rev-list", "--count", f"{checker.CHECKPOINT_COMMIT}..{source_oid}"]:
+                return "1"
+            raise AssertionError(f"unexpected git text command: {arguments!r}")
+
+        with mock.patch.object(checker, "_git_text", side_effect=git_text), mock.patch.object(
+            checker, "_run_git", return_value=raw.encode("utf-8")
+        ), mock.patch.object(checker.subprocess, "run", return_value=mock.Mock(returncode=0)):
+            lineage, parent_lines, parent_oids = checker._lineage(source_oid)
+
+        self.assertEqual([f"parent {parent_oid}"], parent_lines)
+        self.assertEqual([parent_oid], parent_oids)
+        self.assertEqual([{"oid": parent_oid, "type": "commit"}], lineage["parent_object_types"])
+
     def test_genesis_receipt_build_creates_absent_custody_root(self) -> None:
         self.require_checker()
         checker = importlib.import_module("check_ci_readback")
