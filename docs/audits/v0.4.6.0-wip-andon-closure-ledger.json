@@ -2689,8 +2689,8 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "one cohesive ordinary checkpoint commit and non-force push of the independently accepted repair tree with exact local/upstream/live-remote equality",
-        "parallel exact-SHA GitHub CI and same-commit local source freeze, complete no-model preflight, full local CI, and generated/package qualification without source mutation",
+        "one non-empty ordinary ANDON 201 custody successor whose commit and non-force push both have fresh source-owned pre-action authorization, claim, PASS receipt, and exact local/upstream/live-remote equality",
+        "fresh exact-SHA GitHub CI and same-commit local source freeze, complete no-model preflight, full local CI, and generated/package qualification for that custody successor",
         "zero-finding final whole-tree review, valid exact-commit source receipt, fresh candidate gates, and the unresolved-usage owner boundary"
       ],
       "scope_exclusions": [
@@ -2927,7 +2927,7 @@
         "structural promotion never upgrades to semantic truth",
         "case 1 provider invocation and cost remain neither proven nor disproven"
       ],
-      "next_action": "Publish the independently accepted ANDON 199 convergence tranche as one cohesive ordinary Branch 11 checkpoint and non-force push. Start exact-SHA GitHub CI immediately and run fresh no-model, full local-CI, and generated/package qualification in parallel against that same immutable committed SHA without source mutation. Treat both lanes as non-promotable until local qualification, exact-SHA CI, final whole-tree review, and the exact source receipt all pass, then continue to fresh candidate gates and the unresolved-usage owner boundary without dispatching or minting replacement authority.",
+      "next_action": "Preserve checkpoint e1cb2b5 and its GREEN local/remote qualification as non-promotable ANDON 201 evidence because it lacks the mandatory pre-action commit/push custody chain and cannot receive a truthful source receipt. Independently review this narrow tracked custody disposition, then create and non-force push one ordinary non-empty successor through fresh source-owned VCS authorization, claim, and PASS receipts with exact ref equality. Rebuild all exact-tree deterministic, CI, review, and receipt evidence for that successor before candidate work; do not backfill e1cb custody or dispatch or mint replacement authority.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -4177,9 +4177,9 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "one cohesive ordinary checkpoint commit and non-force push of the independently accepted ANDON 199 repair with exact local/upstream/live-remote equality",
-        "parallel exact-SHA GitHub CI and same-commit fresh source freeze, complete no-model preflight, full local CI, and generated/package role without source mutation",
-        "zero-finding independent final whole-tree review and valid external exact-commit source receipt after both qualification lanes are GREEN",
+        "one non-empty ordinary ANDON 201 custody successor whose commit and non-force push both have fresh source-owned pre-action authorization, claim, PASS receipt, and exact local/upstream/live-remote equality",
+        "fresh exact-SHA GitHub CI and same-commit source freeze, complete no-model preflight, full local CI, and generated/package role for that custody successor",
+        "zero-finding independent final whole-tree review and valid external exact-commit source receipt after successor qualification is GREEN",
         "fresh immutable candidate construction, retention, package-faithful maturity, and independent readiness review",
         "external owner disposition of the existing unresolved dispatch-unknown usage before any separately authorized continuation"
       ],
@@ -4903,9 +4903,9 @@
       "remaining_risk": [
         "deterministic closure is not model, WIP, merge, release, or regression proof",
         "case 1 provider invocation and cost remain neither proven nor disproven",
-        "the rejected c81208f1 outer cohort, rejected 69648aab and 3395a5b4 repair-review trees, the ba9a5d0f ANDON 197 outer cohort, and the 480f7534 ANDON 199 no-model cohort remain non-promotable; the accepted checkpoint remains non-promotable until same-SHA local qualification, exact-SHA GitHub CI, final whole-tree review, and exact source receipt all pass"
+        "the rejected c81208f1 outer cohort, rejected 69648aab and 3395a5b4 repair-review trees, the ba9a5d0f ANDON 197 outer cohort, the 480f7534 ANDON 199 no-model cohort, and e1cb2b5's locally/remotely GREEN but VCS-custody-incomplete ANDON 201 cohort remain non-promotable"
       ],
-      "next_action": "Publish the independently accepted ANDON 199 convergence tranche as one cohesive ordinary Branch 11 checkpoint and non-force push. Start exact-SHA GitHub CI immediately and run fresh no-model, full local-CI, and generated/package qualification in parallel against that same immutable committed SHA without source mutation. Treat both lanes as non-promotable until local qualification, exact-SHA CI, final whole-tree review, and the exact source receipt all pass, then continue to fresh candidate gates and the unresolved-usage owner boundary without dispatching or minting replacement authority.",
+      "next_action": "Preserve checkpoint e1cb2b5 and its GREEN local/remote qualification as non-promotable ANDON 201 evidence because it lacks the mandatory pre-action commit/push custody chain and cannot receive a truthful source receipt. Independently review this narrow tracked custody disposition, then create and non-force push one ordinary non-empty successor through fresh source-owned VCS authorization, claim, and PASS receipts with exact ref equality. Rebuild all exact-tree deterministic, CI, review, and receipt evidence for that successor before candidate work; do not backfill e1cb custody or dispatch or mint replacement authority.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
