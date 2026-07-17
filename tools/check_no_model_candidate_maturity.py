@@ -44,7 +44,7 @@ CHECKER_ID = "no-model-candidate-maturity"
 DOWNSTREAM = ["candidate-build", "candidate-maturity", "paid-dispatch"]
 ESCAPE_SCHEMA_PATH = "schema/model-smoke-escape.schema.json"
 ESCAPE_CHECKER_PATH = "tools/check_model_smoke_escape_registry.py"
-ESCAPE_TEMPLATE_PATH = "tests/model-smoke-escape/registry.json"
+ESCAPE_LIVE_REGISTRY_PATH = "docs/audits/v0.4.6.0-wip-model-smoke-escape-registry.json"
 REVIEW_PROTOCOL_PATH = "tests/smoke-matrix/reviewed-five-smoke-protocol.json"
 CI_TEST_FIXTURE_PATH = "tests/ci-readback/valid/required-checks-bound-to-pushed-sha.json"
 REGISTRY_ROLE_PATHS = {
@@ -433,7 +433,7 @@ def _validated_live_escape_review(
     if review["source"] != _source_identity(receipt) or review["ci_receipt"] != ci_receipt:
         raise ValueError("escape review source differs from exact CI receipt")
     expected_refs = {
-        "registry_template": _canonical_ref(root, ESCAPE_TEMPLATE_PATH),
+        "registry_template": _canonical_ref(root, ESCAPE_LIVE_REGISTRY_PATH),
         "escape_schema": _canonical_ref(root, ESCAPE_SCHEMA_PATH),
         "escape_checker": _canonical_ref(root, ESCAPE_CHECKER_PATH),
         "review_protocol": _canonical_ref(root, REVIEW_PROTOCOL_PATH),
@@ -447,11 +447,19 @@ def _validated_live_escape_review(
     protocol_findings = validate_smoke_manifest(protocol, root=root)
     if protocol_findings:
         raise ValueError(f"escape review protocol semantics failed: {protocol_findings[0]}")
-    template, _ = _load_ref(root, expected_refs["registry_template"], "escape.registry_template")
-    template_findings = validate_registry(template)
-    if template_findings or template.get("registry_role") != "ILLUSTRATIVE_FIXTURE":
-        message = template_findings[0].message if template_findings else "template role is not illustrative"
-        raise ValueError(f"escape registry template rejected: {message}")
+    registry_source, _ = _load_ref(
+        root,
+        expected_refs["registry_template"],
+        "escape.registry_template",
+    )
+    registry_source_findings = validate_for_candidate_maturity(registry_source)
+    if registry_source_findings or registry_source.get("registry_role") != "LIVE_EVIDENCE":
+        message = (
+            registry_source_findings[0].message
+            if registry_source_findings
+            else "registry source role is not LIVE_EVIDENCE"
+        )
+        raise ValueError(f"escape registry source rejected: {message}")
     _consume_or_validate_review_authorization(
         root,
         review,
@@ -461,6 +469,37 @@ def _validated_live_escape_review(
         consume=consume_authorization,
     )
     return review, receipt
+
+
+def _derive_live_escape_registry(
+    registry_source: dict[str, Any],
+    *,
+    root: Path,
+    review: dict[str, Any],
+    receipt: dict[str, Any],
+    review_protocol: dict[str, Any],
+    independent_review: dict[str, Any],
+) -> dict[str, Any]:
+    """Rebind only the fields governed for one exact-source live registry."""
+    source = _source_identity(receipt)
+    expected = copy.deepcopy(registry_source)
+    expected["registry_id"] = f"daee-live-escape-{source['commit_sha']}"
+    scope_updates = {
+        "source_sha256": _source_scope_sha256(source),
+        "schema_sha256": _file_sha256(root, ESCAPE_SCHEMA_PATH),
+        "checker_sha256": _file_sha256(root, ESCAPE_CHECKER_PATH),
+        "model_protocol_sha256": review_protocol["sha256"],
+    }
+    concurrence = {
+        "accountable_owner": review["accountable_owner"],
+        "independent_reviewer": review["independent_reviewer"],
+        "basis": "exact live source/schema/checker/protocol scope",
+        "review": independent_review,
+    }
+    for row in expected["escapes"]:
+        row["scope"].update(scope_updates)
+        row["causal_control"]["independent_concurrence"] = copy.deepcopy(concurrence)
+    return expected
 
 
 def validate_live_escape_registry(
@@ -477,7 +516,7 @@ def validate_live_escape_registry(
         finding = findings[0]
         return [Finding(finding.failure_class, finding.message, finding.failure_subcode)]
     try:
-        _review, receipt = _validated_live_escape_review(
+        review, receipt = _validated_live_escape_review(
             root,
             ci_receipt=ci_receipt,
             review_protocol=review_protocol,
@@ -497,6 +536,25 @@ def validate_live_escape_registry(
             concurrence = row["causal_control"]["independent_concurrence"]
             if concurrence.get("review") != independent_review:
                 return [Finding("escape_review", "live escape concurrence lacks the exact independent review", "review-binding")]
+        registry_source, _ = _load_ref(
+            root,
+            review["registry_template"],
+            "escape.registry_template",
+        )
+        expected = _derive_live_escape_registry(
+            registry_source,
+            root=root,
+            review=review,
+            receipt=receipt,
+            review_protocol=review_protocol,
+            independent_review=independent_review,
+        )
+        if value != expected:
+            return [Finding(
+                "escape_review_binding",
+                "derived live escape rows or immutable payload differ from the reviewed canonical owner",
+                "reviewed-row-payload",
+            )]
     except (KeyError, TypeError, ValueError) as exc:
         return [Finding("escape_scope", str(exc), "live-scope")]
     return []

@@ -13,9 +13,10 @@ from validation_registry import ROOT, Finding, canonical_sha256, read_json, scan
 
 CHECKER_ID = "model-smoke-escape-registry"
 FIXTURE_ROOT = ROOT / "tests" / "model-smoke-escape"
-LIVE_REGISTRY = FIXTURE_ROOT / "registry.json"
+LIVE_REGISTRY = ROOT / "docs" / "audits" / "v0.4.6.0-wip-model-smoke-escape-registry.json"
 SCHEMA_REL = Path("schema/model-smoke-escape.schema.json")
 DOWNSTREAM = ["candidate-maturity", "paid-dispatch"]
+REQUIRED_LIVE_ESCAPE_IDS = frozenset({"escape-andon-182-pre-admission-diagnostic-001"})
 
 
 def _event_hash(event: dict[str, Any]) -> str:
@@ -227,6 +228,14 @@ def validate_for_candidate_maturity(document: Any) -> list[Finding]:
     for row in document.get("escapes", []):
         if (row.get("deterministic_detectability") == "YES" and row.get("status") != "CLOSED") or row.get("deterministic_detectability") == "UNKNOWN":
             return [Finding("open_detectability_offered_mature", "open YES or any UNKNOWN blocks derived candidate maturity", "maturity-block")]
+    live_ids = {str(row.get("escape_id", "")) for row in document.get("escapes", [])}
+    missing = sorted(REQUIRED_LIVE_ESCAPE_IDS - live_ids)
+    if missing:
+        return [Finding(
+            "missing_live_escape_evidence",
+            f"live registry omits required retained escape history: {', '.join(missing)}",
+            "required-live-escape",
+        )]
     return []
 
 
@@ -267,7 +276,7 @@ def run_fixture_inventory(root: Path, inventory: dict[str, Any]) -> tuple[list[s
 
 def self_test() -> int:
     inventory=read_json((FIXTURE_ROOT/"inventory.json").relative_to(ROOT)); problems,counts=run_fixture_inventory(FIXTURE_ROOT,inventory)
-    live_findings=validate_registry(read_json(LIVE_REGISTRY.relative_to(ROOT)))
+    live_findings=validate_for_candidate_maturity(read_json(LIVE_REGISTRY.relative_to(ROOT)))
     problems.extend(f"live: [{f.failure_class}] {f.message}" for f in live_findings)
     if problems:
         for problem in problems: print(f"FAIL: {problem}")

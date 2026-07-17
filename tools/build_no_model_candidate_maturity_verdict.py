@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import copy
 import hashlib
 import json
 from pathlib import Path
@@ -12,12 +11,8 @@ from typing import Any, Iterable
 from a16_immutable_custody import CustodyError, canonical_json_bytes, claim_json_once, strict_snapshot
 from check_ci_readback import validate_receipt
 from check_no_model_candidate_maturity import (
-    ESCAPE_CHECKER_PATH,
-    ESCAPE_SCHEMA_PATH,
-    _file_sha256,
+    _derive_live_escape_registry,
     _load_ref,
-    _source_identity,
-    _source_scope_sha256,
     _validate_source_carrier,
     _validate_source_roles,
     _validated_live_escape_review,
@@ -59,24 +54,16 @@ def build_live_escape_registry(
         consume_authorization=True,
     )
     template, _ = _load_ref(repo_root, review["registry_template"], "escape.registry_template")
-    source = _source_identity(receipt)
-    value = copy.deepcopy(template)
-    value["registry_id"] = f"daee-live-escape-{source['commit_sha']}"
-    value["registry_role"] = "LIVE_EVIDENCE"
-    scope_updates = {
-        "source_sha256": _source_scope_sha256(source),
-        "schema_sha256": _file_sha256(repo_root, ESCAPE_SCHEMA_PATH),
-        "checker_sha256": _file_sha256(repo_root, ESCAPE_CHECKER_PATH),
-        "model_protocol_sha256": review_protocol["sha256"],
-    }
-    for row in value.get("escapes", []):
-        row["scope"].update(scope_updates)
-        row["causal_control"]["independent_concurrence"] = {
-            "accountable_owner": review["accountable_owner"],
-            "independent_reviewer": review["independent_reviewer"],
-            "basis": "exact live source/schema/checker/protocol scope",
-            "review": independent_review,
-        }
+    if template.get("registry_role") != "LIVE_EVIDENCE":
+        raise ValueError("live escape registry source is not the tracked LIVE_EVIDENCE owner")
+    value = _derive_live_escape_registry(
+        template,
+        root=repo_root,
+        review=review,
+        receipt=receipt,
+        review_protocol=review_protocol,
+        independent_review=independent_review,
+    )
     findings = validate_live_escape_registry(
         value,
         root=repo_root,

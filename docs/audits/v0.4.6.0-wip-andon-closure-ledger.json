@@ -2689,9 +2689,10 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "one non-empty ordinary ANDON 201 custody successor whose commit and non-force push both have fresh source-owned pre-action authorization, claim, PASS receipt, and exact local/upstream/live-remote equality",
-        "fresh exact-SHA GitHub CI and same-commit local source freeze, complete no-model preflight, full local CI, and generated/package qualification for that custody successor",
-        "zero-finding final whole-tree review, valid exact-commit source receipt, fresh candidate gates, and the unresolved-usage owner boundary"
+        "bounded independent exact-tree acceptance of the ANDON 203 live-registry-owner and illustrative-fixture separation",
+        "one cohesive ordinary ANDON 203 successor with fresh source-owned commit and non-force-push authorization, claim, PASS receipts, and exact local/upstream/live-remote equality",
+        "fresh exact-SHA GitHub CI, same-commit local deterministic qualification, zero-finding final whole-tree review, and a valid exact-commit source receipt",
+        "fresh exact-source preflight and candidate gates followed by the unresolved-usage owner boundary"
       ],
       "scope_exclusions": [
         "no push to main",
@@ -2715,6 +2716,17 @@
           "command": null,
           "exit_code": null,
           "retained_artifact": "docs/audits/evidence/v0.4.6.0-b10/a11-task-review.md",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "ANDON 203 tracked live-evidence owner excludes the synthetic illustrative escape row and remains ineligible for paid-cycle promotion; exact source scope is rebound only after an independent source-preflight review",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "cb90217e8e18e0f9065edbb639ea5b4b2af01c5f13535e8ef8bed81733b7319e",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "docs/audits/v0.4.6.0-wip-model-smoke-escape-registry.json",
           "unretained_reason": null
         }
       ],
@@ -2787,6 +2799,7 @@
         "schema/negative-fixture-expectation.schema.json",
         "schema/checker-replay-verdict.schema.json",
         "schema/model-smoke-escape.schema.json",
+        "docs/audits/v0.4.6.0-wip-model-smoke-escape-registry.json",
         "tools/validation_registry.py",
         "tools/check_validation_registry.py",
         "tools/check_model_smoke_escape_registry.py"
@@ -2927,7 +2940,7 @@
         "structural promotion never upgrades to semantic truth",
         "case 1 provider invocation and cost remain neither proven nor disproven"
       ],
-      "next_action": "Preserve checkpoint e1cb2b5 and its GREEN local/remote qualification as non-promotable ANDON 201 evidence because it lacks the mandatory pre-action commit/push custody chain and cannot receive a truthful source receipt. Independently review this narrow tracked custody disposition, then create and non-force push one ordinary non-empty successor through fresh source-owned VCS authorization, claim, and PASS receipts with exact ref equality. Rebuild all exact-tree deterministic, CI, review, and receipt evidence for that successor before candidate work; do not backfill e1cb custody or dispatch or mint replacement authority.",
+      "next_action": "Complete the bounded ANDON 203 affected verification and obtain one independent exact-tree repair review. If accepted, create and non-force push one cohesive ordinary successor through fresh source-owned VCS authorization, claim, and PASS receipts, then rebuild exact-SHA CI, same-commit deterministic qualification, whole-tree review, and the exact source receipt before fresh source-preflight/candidate work. Do not promote illustrative fixture content, reuse the rejected source-preflight authorization, dispatch, or mint replacement authority.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -4177,9 +4190,9 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "one non-empty ordinary ANDON 201 custody successor whose commit and non-force push both have fresh source-owned pre-action authorization, claim, PASS receipt, and exact local/upstream/live-remote equality",
-        "fresh exact-SHA GitHub CI and same-commit source freeze, complete no-model preflight, full local CI, and generated/package role for that custody successor",
-        "zero-finding independent final whole-tree review and valid external exact-commit source receipt after successor qualification is GREEN",
+        "bounded independent exact-tree acceptance of the ANDON 203 live-registry-owner and illustrative-fixture separation",
+        "one cohesive ordinary ANDON 203 successor with fresh source-owned commit and non-force-push authorization, claim, PASS receipts, and exact local/upstream/live-remote equality",
+        "fresh exact-SHA GitHub CI, same-commit source freeze and deterministic qualification, zero-finding final whole-tree review, and a valid exact-commit source receipt",
         "fresh immutable candidate construction, retention, package-faithful maturity, and independent readiness review",
         "external owner disposition of the existing unresolved dispatch-unknown usage before any separately authorized continuation"
       ],
@@ -4451,13 +4464,13 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "Task 11ed closes MODEL_SMOKE_ESCAPE escape-andon-182-pre-admission-diagnostic-001 as deterministically detectable with topic-neutral RED, GREEN, neighboring, role-substitution mutation, and CI-registry evidence; paid-cycle eligibility remains false and unresolved usage remains an external owner gate",
+          "source_ref": "ANDON 203 live owner preserves Task 11ed's MODEL_SMOKE_ESCAPE escape-andon-182-pre-admission-diagnostic-001 as deterministically detectable with topic-neutral RED, GREEN, neighboring, role-substitution mutation, and CI-registry evidence while excluding the illustrative synthetic row; paid-cycle eligibility remains false and unresolved usage remains an external owner gate",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "211a74200a33311c37c234656c301956f04683ad0579a5a1908d9de2d3973508",
+          "sha256": "cb90217e8e18e0f9065edbb639ea5b4b2af01c5f13535e8ef8bed81733b7319e",
           "command": null,
           "exit_code": null,
-          "retained_artifact": "tests/model-smoke-escape/registry.json",
+          "retained_artifact": "docs/audits/v0.4.6.0-wip-model-smoke-escape-registry.json",
           "unretained_reason": null
         },
         {
@@ -4905,7 +4918,7 @@
         "case 1 provider invocation and cost remain neither proven nor disproven",
         "the rejected c81208f1 outer cohort, rejected 69648aab and 3395a5b4 repair-review trees, the ba9a5d0f ANDON 197 outer cohort, the 480f7534 ANDON 199 no-model cohort, and e1cb2b5's locally/remotely GREEN but VCS-custody-incomplete ANDON 201 cohort remain non-promotable"
       ],
-      "next_action": "Preserve checkpoint e1cb2b5 and its GREEN local/remote qualification as non-promotable ANDON 201 evidence because it lacks the mandatory pre-action commit/push custody chain and cannot receive a truthful source receipt. Independently review this narrow tracked custody disposition, then create and non-force push one ordinary non-empty successor through fresh source-owned VCS authorization, claim, and PASS receipts with exact ref equality. Rebuild all exact-tree deterministic, CI, review, and receipt evidence for that successor before candidate work; do not backfill e1cb custody or dispatch or mint replacement authority.",
+      "next_action": "Complete the bounded ANDON 203 affected verification and obtain one independent exact-tree repair review. If accepted, create and non-force push one cohesive ordinary successor through fresh source-owned VCS authorization, claim, and PASS receipts, then rebuild exact-SHA CI, same-commit deterministic qualification, whole-tree review, and the exact source receipt before fresh source-preflight/candidate work. Do not promote illustrative fixture content, reuse the rejected source-preflight authorization, dispatch, or mint replacement authority.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,

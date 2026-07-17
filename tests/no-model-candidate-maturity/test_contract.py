@@ -73,6 +73,7 @@ class NoModelCandidateMaturityContractTests(unittest.TestCase):
             "tests/smoke-matrix/reviewed-five-smoke-protocol.json",
             "tests/smoke-matrix/v0.4.6.0-wip-five-smoke.json",
             "tests/model-smoke-escape/registry.json",
+            "docs/audits/v0.4.6.0-wip-model-smoke-escape-registry.json",
             "schema/model-smoke-escape.schema.json",
             "tools/check_model_smoke_escape_registry.py",
             "tools/validation-registry.json",
@@ -88,7 +89,8 @@ class NoModelCandidateMaturityContractTests(unittest.TestCase):
         self.ci_receipt = self._artifact_ref("tests/ci-readback/valid/required-checks-bound-to-pushed-sha.json")
         self.receipt = json.loads((self.repo_root / self.ci_receipt["path"]).read_text(encoding="utf-8"))
         self.protocol = self._artifact_ref("tests/smoke-matrix/reviewed-five-smoke-protocol.json")
-        self.template = self._artifact_ref("tests/model-smoke-escape/registry.json")
+        self.template = self._artifact_ref("docs/audits/v0.4.6.0-wip-model-smoke-escape-registry.json")
+        self.illustrative = self._artifact_ref("tests/model-smoke-escape/registry.json")
         self.review_document = self._review_document()
         self.review = self._write_json("live-escape-independent-review.json", self.review_document)
         live_path = self.temp_root / "live-escape-registry.json"
@@ -309,7 +311,7 @@ class NoModelCandidateMaturityContractTests(unittest.TestCase):
 
     def test_source_preflight_rejects_illustrative_escape_registry(self) -> None:
         inputs = self.source_inputs()
-        inputs["registries"]["escape"] = self.template  # type: ignore[index]
+        inputs["registries"]["escape"] = self.illustrative  # type: ignore[index]
         with self.assertRaisesRegex(ValueError, "LIVE_EVIDENCE|illustrative"):
             builder.build_source_preflight(self.repo_root, inputs, allow_test_fixture=True)
 
@@ -335,6 +337,60 @@ class NoModelCandidateMaturityContractTests(unittest.TestCase):
                 allow_test_fixture=True,
             ),
         )
+
+    def test_live_escape_registry_rejects_required_row_deletion(self) -> None:
+        value = json.loads((self.repo_root / self.live_escape["path"]).read_text(encoding="utf-8"))
+        value["escapes"] = []
+        findings = checker.validate_live_escape_registry(
+            value,
+            root=self.repo_root,
+            ci_receipt=self.ci_receipt,
+            review_protocol=self.protocol,
+            independent_review=self.review,
+            allow_test_fixture=True,
+        )
+        self.assertTrue(findings)
+        self.assertEqual("missing_live_escape_evidence", findings[0].failure_class)
+
+    def test_source_preflight_rejects_reviewed_row_substitution_or_payload_drift(self) -> None:
+        live = json.loads((self.repo_root / self.live_escape["path"]).read_text(encoding="utf-8"))
+        illustrative = json.loads(
+            (self.repo_root / self.illustrative["path"]).read_text(encoding="utf-8")
+        )
+        synthetic = copy.deepcopy(illustrative["escapes"][0])
+        synthetic["scope"] = copy.deepcopy(live["escapes"][0]["scope"])
+        synthetic["causal_control"]["independent_concurrence"] = copy.deepcopy(
+            live["escapes"][0]["causal_control"]["independent_concurrence"]
+        )
+        payload_drift = copy.deepcopy(live["escapes"][0])
+        payload_drift["scope"]["defect_signature"] = "forged-reviewed-row-payload"
+
+        for label, rows, expected_failure in (
+            ("synthetic-substitution", [synthetic], "missing_live_escape_evidence"),
+            ("immutable-payload-drift", [payload_drift], "escape_review_binding"),
+        ):
+            with self.subTest(label=label):
+                changed = copy.deepcopy(live)
+                changed["escapes"] = rows
+                findings = checker.validate_live_escape_registry(
+                    changed,
+                    root=self.repo_root,
+                    ci_receipt=self.ci_receipt,
+                    review_protocol=self.protocol,
+                    independent_review=self.review,
+                    allow_test_fixture=True,
+                )
+                self.assertTrue(findings)
+                self.assertEqual(expected_failure, findings[0].failure_class)
+                changed_ref = self._write_json(f"{label}-live-escape.json", changed)
+                inputs = self.source_inputs()
+                inputs["registries"]["escape"] = changed_ref  # type: ignore[index]
+                with self.assertRaisesRegex(ValueError, expected_failure):
+                    builder.build_source_preflight(
+                        self.repo_root,
+                        inputs,
+                        allow_test_fixture=True,
+                    )
 
     def test_production_builder_rejects_tracked_ci_test_fixture(self) -> None:
         with self.assertRaisesRegex(ValueError, "test fixture|test-owned"):

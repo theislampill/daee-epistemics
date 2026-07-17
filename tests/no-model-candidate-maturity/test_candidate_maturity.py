@@ -146,6 +146,7 @@ class CandidateMaturityContractTests(unittest.TestCase):
             "docs/audits/v0.4.6.0-wip-andon-closure-ledger.json",
             "docs/audits/v0.4.6.0-wip-andon-contract-registry.json",
             "docs/audits/v0.4.6.0-wip-architecture-decisions.json",
+            "docs/audits/v0.4.6.0-wip-model-smoke-escape-registry.json",
             "schema/model-smoke-escape.schema.json",
             "tests/ci-readback/valid/required-checks-bound-to-pushed-sha.json",
             "tests/model-smoke-escape/registry.json",
@@ -185,7 +186,7 @@ class CandidateMaturityContractTests(unittest.TestCase):
             "independent_reviewer": "/root/task5_live_escape_reviewer",
             "source": source,
             "ci_receipt": full_ref(cls.repo, ci_source),
-            "registry_template": full_ref(cls.repo, "tests/model-smoke-escape/registry.json"),
+            "registry_template": full_ref(cls.repo, "docs/audits/v0.4.6.0-wip-model-smoke-escape-registry.json"),
             "escape_schema": full_ref(cls.repo, "schema/model-smoke-escape.schema.json"),
             "escape_checker": full_ref(cls.repo, "tools/check_model_smoke_escape_registry.py"),
             "review_protocol": full_ref(cls.repo, "tests/smoke-matrix/reviewed-five-smoke-protocol.json"),
@@ -215,10 +216,9 @@ class CandidateMaturityContractTests(unittest.TestCase):
         write_json(review_path, review)
         review_ref = full_ref(cls.repo, "evidence/live-escape-review.json")
 
-        template = json.loads((cls.repo / "tests/model-smoke-escape/registry.json").read_text(encoding="utf-8"))
+        template = json.loads((cls.repo / "docs/audits/v0.4.6.0-wip-model-smoke-escape-registry.json").read_text(encoding="utf-8"))
         live = copy.deepcopy(template)
         live["registry_id"] = f"daee-live-escape-{source['commit_sha']}"
-        live["registry_role"] = "LIVE_EVIDENCE"
         source_scope = hashlib.sha256(canonical_json_bytes({
             "repository": source["repository"],
             "commit_sha": source["commit_sha"],
@@ -637,6 +637,26 @@ class CandidateMaturityContractTests(unittest.TestCase):
             with self.subTest(role=value.get("registry_role"), declared="candidate_maturity_status" in value):
                 with self.assertRaisesRegex(ValueError, "escape|LIVE_EVIDENCE|scope|maturity|UNKNOWN|illustrative"):
                     maturity_checker._validate_escape_for_maturity(value, source, root=self.repo)
+
+    def test_live_escape_builder_rejects_illustrative_registry_source(self) -> None:
+        review = {
+            "registry_template": full_ref(
+                self.repo,
+                "tests/model-smoke-escape/registry.json",
+            ),
+        }
+        with patch.object(
+            maturity_builder,
+            "_validated_live_escape_review",
+            return_value=(review, {}),
+        ):
+            with self.assertRaisesRegex(ValueError, "tracked LIVE_EVIDENCE owner"):
+                maturity_builder.build_live_escape_registry(
+                    self.repo,
+                    ci_receipt={},
+                    review_protocol={},
+                    independent_review={},
+                )
 
     def test_registry_and_protocol_role_substitution_is_rejected(self) -> None:
         record = copy.deepcopy(self.candidate_record)
