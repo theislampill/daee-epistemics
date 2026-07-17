@@ -336,7 +336,47 @@ class Gate14RegistryContractTests(unittest.TestCase):
                 passed, _steps, repair = gate()
                 self.assertTrue(passed)
                 self.assertTrue(repair)
-                composed.assert_called_once_with(commands)
+                if gate is preflight.gate_reviewed_campaign_no_dispatch:
+                    composed.assert_called_once_with(
+                        commands,
+                        timeout=preflight.LONG_TIMEOUT_SEC,
+                    )
+                else:
+                    composed.assert_called_once_with(commands)
+
+    def test_gate10_uses_governed_long_timeout_for_mutation_sweep(self) -> None:
+        commands = ["python tools/gen_fixture_mutations.py --self-test"]
+        with mock.patch.object(
+            preflight,
+            "steps_all_pass",
+            return_value=(True, []),
+        ) as composed:
+            passed, _steps, repair = preflight.gate_mutation_sweep()
+        self.assertTrue(passed)
+        self.assertTrue(repair)
+        composed.assert_called_once_with(
+            commands,
+            timeout=preflight.LONG_TIMEOUT_SEC,
+        )
+
+    def test_gate25_uses_governed_long_timeout_for_complete_orchestration_suite(self) -> None:
+        commands = list(
+            preflight.A16_GATE_COMMANDS[
+                "reviewed-campaign no-dispatch orchestration"
+            ]
+        )
+        with mock.patch.object(
+            preflight,
+            "steps_all_pass",
+            return_value=(True, []),
+        ) as composed:
+            passed, _steps, repair = preflight.gate_reviewed_campaign_no_dispatch()
+        self.assertTrue(passed)
+        self.assertTrue(repair)
+        composed.assert_called_once_with(
+            commands,
+            timeout=preflight.LONG_TIMEOUT_SEC,
+        )
 
     def test_preflight_contract_self_test_is_wired_into_local_ci(self) -> None:
         self.assertIn(

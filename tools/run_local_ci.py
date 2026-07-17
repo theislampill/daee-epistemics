@@ -577,9 +577,19 @@ def _release_completed_windows_process_tree(
     except BaseException as exc:
         active = None
         issues.append(f"job-query-after:{type(exc).__name__}")
-    if active is None or active > 0:
-        if active is not None:
+    if active is not None and active > 0:
+        deadline = time.monotonic() + PROCESS_TREE_TERMINATION_GRACE_SECONDS
+        while active > 0 and time.monotonic() < deadline:
+            time.sleep(0.05)
+            try:
+                active = job.active_processes()  # type: ignore[attr-defined]
+            except BaseException as exc:
+                active = None
+                issues.append(f"job-query-after:{type(exc).__name__}")
+                break
+        if active is not None and active > 0:
             issues.append(f"active-descendants-after-root:{active}")
+    if active is None or active > 0:
         try:
             job.terminate(TEARDOWN_EXIT_CODE)  # type: ignore[attr-defined]
         except BaseException as exc:

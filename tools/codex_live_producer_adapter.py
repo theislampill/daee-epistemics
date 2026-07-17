@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 from artifact_tree import tree_sha256
+from check_captured_output_manifest import PublicationError, atomic_publish_bytes
 from runtime_call_context_adapter import prepare_runtime_call
 from runtime_context_resolver import EMPTY_VALIDATED_STATE
 
@@ -274,6 +275,14 @@ class DirectoryIdentity(NamedTuple):
     witness_sha256: str
 
 
+class WrittenFileIdentity(NamedTuple):
+    device: int
+    inode: int
+    ctime_ns: int
+    byte_count: int
+    sha256: str
+
+
 def _canonical(value: object) -> bytes:
     return (json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
 
@@ -322,13 +331,24 @@ def _complete_jsonl_prefix(raw: bytes) -> tuple[bytes, list[dict[str, Any]]]:
     return prefix, [_strict_json_event(line) for line in lines]
 
 
-def _write_once(path: Path, data: bytes) -> None:
+def _write_once(path: Path, data: bytes) -> WrittenFileIdentity:
     path.parent.mkdir(parents=True, exist_ok=True)
     descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     with os.fdopen(descriptor, "wb") as handle:
-        handle.write(data)
+        if handle.write(data) != len(data):
+            raise OSError("short create-once write")
         handle.flush()
         os.fsync(handle.fileno())
+        observed = os.fstat(handle.fileno())
+        if not stat.S_ISREG(observed.st_mode) or observed.st_size != len(data):
+            raise OSError("create-once write identity unavailable")
+        return WrittenFileIdentity(
+            observed.st_dev,
+            observed.st_ino,
+            observed.st_ctime_ns,
+            observed.st_size,
+            hashlib.sha256(data).hexdigest(),
+        )
 
 
 def _is_reparse(path: Path) -> bool:
@@ -443,26 +463,19 @@ def _create_owned_directory(path: Path, label: str, *, parents: bool) -> Directo
     witness_path = path / _OWNERSHIP_WITNESS_NAME
     witness_raw = secrets.token_bytes(_OWNERSHIP_WITNESS_BYTE_COUNT)
     try:
-        _write_once(witness_path, witness_raw)
+        created_witness = _write_once(witness_path, witness_raw)
         identity = _regular_directory_identity(path, label)
         if (identity.directory_device, identity.directory_inode) != (
             created.st_dev,
             created.st_ino,
         ):
             raise IsolationCleanupError(f"{label}: parent identity changed during witness creation")
+        if tuple(identity[2:]) != tuple(created_witness):
+            raise IsolationCleanupError(
+                f"{label}: ownership witness changed after exclusive creation"
+            )
         return identity
     except BaseException as exc:
-        try:
-            current = _regular_directory_stat(path, label)
-            if (current.st_dev, current.st_ino) == (created.st_dev, created.st_ino):
-                witness = _ownership_witness_identity(witness_path, label)
-                if witness[-1] == hashlib.sha256(witness_raw).hexdigest():
-                    entries = list(path.iterdir())
-                    if entries == [witness_path]:
-                        witness_path.unlink()
-                        path.rmdir()
-        except BaseException:
-            pass
         residue = "; unverified creation residue retained" if _lstat_optional(path) is not None else ""
         raise IsolationCleanupError(
             f"OWNED_ISOLATION_CREATION_IDENTITY_UNAVAILABLE: {label}{residue}"
@@ -544,10 +557,29 @@ def _retain_content_addressed(base: Path, data: bytes, suffix: str) -> Path:
         if path.read_bytes() != data:
             raise ValueError("content-addressed retention collision")
     else:
-        _write_once(path, data)
+        try:
+            atomic_publish_bytes(path, data)
+        except PublicationError as exc:
+            if not path.is_file() or path.read_bytes() != data:
+                raise ValueError("content-addressed retention collision") from exc
+    for stage in base.glob(f".{path.name}.stage-*"):
+        try:
+            stage.lstat()
+        except FileNotFoundError:
+            continue
+        if not stage.is_file() or stage.is_symlink():
+            raise ValueError("unsafe content-addressed retention stage residue")
+        stage.unlink()
     if path.read_bytes() != data or _sha256(path) != digest:
         raise ValueError("content-addressed retention readback drift")
     return path
+
+
+class _DiagnosticRetentionFailure(RuntimeError):
+    def __init__(self, role: str, cause: BaseException) -> None:
+        super().__init__(f"pre-admission diagnostic retention failed for {role}")
+        self.role = role
+        self.error_class = type(cause).__name__
 
 
 def _parse_codex_exec_option_identities(help_text: str) -> set[str]:
@@ -1057,6 +1089,48 @@ class CodexLiveProducerAdapter:
         try:
             path.rmdir()
         except OSError as exc:
+            try:
+                current = _regular_directory_stat(path, "isolation root")
+                if (current.st_dev, current.st_ino) != (
+                    identity.directory_device,
+                    identity.directory_inode,
+                ):
+                    raise IsolationCleanupError(
+                        "OWNED_ISOLATION_CLEANUP_UNSAFE: isolation root changed after final removal failure"
+                    )
+                if list(path.iterdir()):
+                    raise IsolationCleanupError(
+                        "OWNED_ISOLATION_CLEANUP_UNSAFE: isolation root changed after ownership witness removal"
+                    )
+                created_witness = _write_once(
+                    witness_path,
+                    secrets.token_bytes(_OWNERSHIP_WITNESS_BYTE_COUNT),
+                )
+                witness = _ownership_witness_identity(
+                    witness_path,
+                    "isolation root",
+                )
+                if witness != tuple(created_witness):
+                    raise IsolationCleanupError(
+                        "OWNED_ISOLATION_CLEANUP_UNSAFE: renewed isolation root ownership witness changed before adoption"
+                    )
+                replacement = DirectoryIdentity(
+                    current.st_dev,
+                    current.st_ino,
+                    *witness,
+                )
+                if (replacement.directory_device, replacement.directory_inode) != (
+                    identity.directory_device,
+                    identity.directory_inode,
+                ):
+                    raise IsolationCleanupError(
+                        "OWNED_ISOLATION_CLEANUP_UNSAFE: isolation root changed during ownership witness recovery"
+                    )
+                self._isolated_root_owner = (path, replacement)
+            except BaseException as recovery_exc:
+                raise IsolationCleanupError(
+                    "OWNED_ISOLATION_CLEANUP_INCOMPLETE: isolation root ownership witness recovery failed closed"
+                ) from recovery_exc
             raise IsolationCleanupError(
                 "OWNED_ISOLATION_CLEANUP_INCOMPLETE: isolation root is not empty or could not be removed"
             ) from exc
@@ -1326,6 +1400,10 @@ class CodexLiveProducerAdapter:
                     "launch_deadline_monotonic": None,
                     "credential_scan_status": "PENDING", "credential_scan_evidence": None,
                     "pre_admission_diagnostic": None,
+                    "terminal_cause": None,
+                    "terminal_failure_kind": None,
+                    "terminal_host_returncode": None,
+                    "outcome_unknown_diagnostic": None,
                 }
                 self._ordered_cases.append(case_id)
         except BaseException as exc:
@@ -1489,6 +1567,20 @@ class CodexLiveProducerAdapter:
         thread_rows = [event for event in events if event.get("type") == "thread.started"]
         if len(thread_rows) > 1:
             raise RuntimeError("Codex structured in-flight admission identity is ambiguous")
+        if thread_rows:
+            thread_index = next(
+                index for index, event in enumerate(events)
+                if event.get("type") == "thread.started"
+            )
+            if any(
+                event.get("type") in {
+                    "turn.started", "turn.completed", "turn.failed", "error",
+                }
+                for event in events[:thread_index]
+            ):
+                raise RuntimeError(
+                    "Codex turn or terminal event preceded structured in-flight admission"
+                )
         if any(event.get("type") in {"turn.failed", "error"} for event in events):
             raise RuntimeError("Codex failure event preceded structured in-flight admission")
         if any(event.get("type") == "turn.completed" for event in events):
@@ -1522,7 +1614,9 @@ class CodexLiveProducerAdapter:
         *,
         failure_kind: str,
         host_returncode: int | None,
-        credential_scan: dict[str, object],
+        credential_scan: dict[str, object] | None,
+        carrier_disposition: str,
+        cleanup_residual_witness: dict[str, object] | None = None,
     ) -> dict[str, object]:
         if not isinstance(failure_kind, str) or not failure_kind:
             raise RuntimeError("pre-admission diagnostic failure kind unavailable")
@@ -1530,6 +1624,8 @@ class CodexLiveProducerAdapter:
             not isinstance(host_returncode, int) or isinstance(host_returncode, bool)
         ):
             raise RuntimeError("pre-admission diagnostic host return code invalid")
+        if carrier_disposition not in {"RETAINED", "PURGED_UNRETAINED", "UNAVAILABLE"}:
+            raise RuntimeError("pre-admission carrier disposition unavailable")
         source_presence: dict[str, bool] = {}
         retained: dict[str, dict[str, object]] = {}
         for role, path, suffix in (
@@ -1537,11 +1633,17 @@ class CodexLiveProducerAdapter:
             ("stderr", row.get("stderr"), ".pre-admission.stderr.txt"),
             ("raw_output", row.get("output"), ".pre-admission.output.md"),
         ):
-            if not isinstance(path, Path):
-                raise RuntimeError(f"pre-admission {role} path unavailable")
-            present, raw = self._optional_carrier_bytes(path, f"pre-admission {role}")
+            if carrier_disposition in {"PURGED_UNRETAINED", "UNAVAILABLE"}:
+                present, raw = False, b""
+            else:
+                if not isinstance(path, Path):
+                    raise RuntimeError(f"pre-admission {role} path unavailable")
+                present, raw = self._optional_carrier_bytes(path, f"pre-admission {role}")
             source_presence[role] = present
-            retained_path = _retain_content_addressed(row["provider_root"], raw, suffix)
+            try:
+                retained_path = _retain_content_addressed(row["provider_root"], raw, suffix)
+            except BaseException as exc:
+                raise _DiagnosticRetentionFailure(role, exc) from exc
             retained[role] = _ref(self.root, retained_path)
         execution_custody = row.get("execution_custody")
         execution_custody_sha256 = row.get("execution_custody_sha256")
@@ -1571,12 +1673,83 @@ class CodexLiveProducerAdapter:
             "host_invocation_id": row.get("host_invocation_id"),
             "started_at": row.get("started_at"),
             "ended_at": row.get("ended_at"),
+            "carrier_disposition": carrier_disposition,
             "source_presence": source_presence,
             **retained,
             "credential_residue_scan": copy.deepcopy(credential_scan),
+            **(
+                {"cleanup_residual_witness": copy.deepcopy(cleanup_residual_witness)}
+                if cleanup_residual_witness is not None
+                else {}
+            ),
             "execution_custody_sha256": execution_custody_sha256,
             "execution_custody": copy.deepcopy(execution_custody),
             "captured_at": _utc_now(),
+        }
+        try:
+            diagnostic_path = _retain_content_addressed(
+                row["provider_root"],
+                _canonical(diagnostic),
+                ".pre-admission-diagnostic.json",
+            )
+        except BaseException as exc:
+            raise _DiagnosticRetentionFailure("diagnostic", exc) from exc
+        return _ref(self.root, diagnostic_path)
+
+    def _retain_pre_admission_retention_failure(
+        self,
+        row: dict[str, Any],
+        *,
+        original_failure_kind: str,
+        host_returncode: int | None,
+        credential_scan: dict[str, object],
+        retention_failure: _DiagnosticRetentionFailure,
+    ) -> dict[str, object]:
+        retained: dict[str, dict[str, object]] = {}
+        for role, suffix in (
+            ("raw_event_log", ".pre-admission.events.jsonl"),
+            ("stderr", ".pre-admission.stderr.txt"),
+            ("raw_output", ".pre-admission.output.md"),
+        ):
+            retained_path = _retain_content_addressed(row["provider_root"], b"", suffix)
+            retained[role] = _ref(self.root, retained_path)
+        diagnostic = {
+            "schema": "reviewed-campaign-pre-admission-diagnostic-v1",
+            "status": "PRE_ADMISSION_DIAGNOSTIC_RETENTION_FAILED_CLOSED",
+            "failure_kind": original_failure_kind,
+            "candidate_id": row["candidate_id"],
+            "source_commit": row["source_commit"],
+            "package_sha256": row["package_sha256"],
+            "package_tree_sha256": row["package_tree_sha256"],
+            "case_id": row["case_id"],
+            "model": "gpt-5.5",
+            "reasoning_effort": "high",
+            "dispatch_classification": "DISPATCH_UNKNOWN",
+            "admission_status": "NOT_ADMITTED",
+            "provider_invocation_proven": False,
+            "host_returncode": host_returncode,
+            "host_returncode_status": "RECORDED" if host_returncode is not None else "UNAVAILABLE",
+            "host_invocation_id": row.get("host_invocation_id"),
+            "started_at": row.get("started_at"),
+            "ended_at": row.get("ended_at"),
+            "carrier_disposition": "RETENTION_FAILED",
+            "source_presence": {
+                "raw_event_log": False,
+                "stderr": False,
+                "raw_output": False,
+            },
+            **retained,
+            "credential_residue_scan": copy.deepcopy(credential_scan),
+            "execution_custody_sha256": row["execution_custody_sha256"],
+            "execution_custody": copy.deepcopy(row["execution_custody"]),
+            "captured_at": _utc_now(),
+            "retention_failure": {
+                "schema": "reviewed-campaign-diagnostic-retention-failure-v1",
+                "status": "FAILED_CLOSED",
+                "failed_role": retention_failure.role,
+                "error_class": retention_failure.error_class,
+                "retained_original_carriers": False,
+            },
         }
         diagnostic_path = _retain_content_addressed(
             row["provider_root"],
@@ -1584,6 +1757,36 @@ class CodexLiveProducerAdapter:
             ".pre-admission-diagnostic.json",
         )
         return _ref(self.root, diagnostic_path)
+
+    def _retain_cleanup_residual_witness(
+        self,
+        row: dict[str, Any],
+        *,
+        failure_kind: str,
+        residual_kind: str,
+    ) -> dict[str, object]:
+        execution_custody_sha256 = row.get("execution_custody_sha256")
+        if (
+            not isinstance(execution_custody_sha256, str)
+            or re.fullmatch(r"[0-9a-f]{64}", execution_custody_sha256) is None
+        ):
+            raise RuntimeError("cleanup residual execution custody unavailable")
+        witness = {
+            "schema": "reviewed-campaign-cleanup-residual-witness-v1",
+            "status": "CLEANUP_INCOMPLETE",
+            "failure_kind": failure_kind,
+            "residual_kind": residual_kind,
+            "case_id": row["case_id"],
+            "worker": row["worker"],
+            "execution_custody_sha256": execution_custody_sha256,
+            "retained_original_carriers": False,
+        }
+        witness_path = _retain_content_addressed(
+            row["provider_root"],
+            _canonical(witness),
+            ".cleanup-residual-witness.json",
+        )
+        return _ref(self.root, witness_path)
 
     def _fail_pre_admission(
         self,
@@ -1595,16 +1798,89 @@ class CodexLiveProducerAdapter:
         self._mark_dispatch_unknown(row)
         process = row.get("process")
         if process is not None:
-            self._teardown_process(process)
-        credential_scan = self._credential_readback(row)
-        diagnostic = self._retain_pre_admission_diagnostic(
-            row,
-            failure_kind=failure_kind,
-            host_returncode=host_returncode,
-            credential_scan=credential_scan,
-        )
+            try:
+                self._teardown_process(process)
+            except BaseException as exc:
+                cleanup_failure_kind = "PROCESS_TEARDOWN_UNVERIFIED"
+                witness = self._retain_cleanup_residual_witness(
+                    row,
+                    failure_kind=cleanup_failure_kind,
+                    residual_kind="PROCESS_GENERATION",
+                )
+                diagnostic = self._retain_pre_admission_diagnostic(
+                    row,
+                    failure_kind=cleanup_failure_kind,
+                    host_returncode=host_returncode,
+                    credential_scan=None,
+                    carrier_disposition="UNAVAILABLE",
+                    cleanup_residual_witness=witness,
+                )
+                row["pre_admission_diagnostic"] = diagnostic
+                self._prepared[row["case_id"]]["pre_admission_diagnostic"] = copy.deepcopy(
+                    diagnostic
+                )
+                self._record_terminal_cause(row, exc)
+                raise RuntimeError("pre-admission process teardown remains unverified") from exc
+        credential_error: BaseException | None = None
+        carrier_disposition = "RETAINED"
+        try:
+            credential_scan = self._credential_readback(row)
+        except BaseException as exc:
+            credential_scan = row.get("credential_scan_evidence")
+            if row.get("credential_scan_status") != "PURGED" or not isinstance(
+                credential_scan,
+                dict,
+            ):
+                cleanup_failure_kind = "CREDENTIAL_SCAN_AND_PURGE_FAILED"
+                witness = self._retain_cleanup_residual_witness(
+                    row,
+                    failure_kind=cleanup_failure_kind,
+                    residual_kind="OWNED_WORKER",
+                )
+                diagnostic = self._retain_pre_admission_diagnostic(
+                    row,
+                    failure_kind=cleanup_failure_kind,
+                    host_returncode=host_returncode,
+                    credential_scan=None,
+                    carrier_disposition="UNAVAILABLE",
+                    cleanup_residual_witness=witness,
+                )
+                row["pre_admission_diagnostic"] = diagnostic
+                self._prepared[row["case_id"]]["pre_admission_diagnostic"] = copy.deepcopy(
+                    diagnostic
+                )
+                self._record_terminal_cause(row, exc)
+                raise RuntimeError("pre-admission credential scan and purge failed closed") from exc
+            credential_error = exc
+            carrier_disposition = "PURGED_UNRETAINED"
+        try:
+            diagnostic = self._retain_pre_admission_diagnostic(
+                row,
+                failure_kind=failure_kind,
+                host_returncode=host_returncode,
+                credential_scan=credential_scan,
+                carrier_disposition=carrier_disposition,
+            )
+        except _DiagnosticRetentionFailure as exc:
+            if carrier_disposition != "RETAINED":
+                raise
+            diagnostic = self._retain_pre_admission_retention_failure(
+                row,
+                original_failure_kind=failure_kind,
+                host_returncode=host_returncode,
+                credential_scan=credential_scan,
+                retention_failure=exc,
+            )
+            row["pre_admission_diagnostic"] = diagnostic
+            self._prepared[row["case_id"]]["pre_admission_diagnostic"] = copy.deepcopy(
+                diagnostic
+            )
+            self._record_terminal_cause(row, exc)
+            raise RuntimeError("pre-admission diagnostic retention failed closed") from exc
         row["pre_admission_diagnostic"] = diagnostic
         self._prepared[row["case_id"]]["pre_admission_diagnostic"] = copy.deepcopy(diagnostic)
+        if credential_error is not None:
+            raise credential_error
 
     def _await_structured_admission(
         self,
@@ -1760,26 +2036,35 @@ class CodexLiveProducerAdapter:
         first_error: BaseException | None = None
         processed: set[int] = set()
         executor = ThreadPoolExecutor(max_workers=5, thread_name_prefix="daee-producer-observe")
-        futures: dict[Future[int], int] = {
-            executor.submit(self._wait_for_terminal_process, row): index
-            for index, row in enumerate(rows)
-        }
+        futures: dict[Future[int], int] = {}
         try:
-            for future in as_completed(futures):
-                index = futures[future]
-                processed.add(index)
-                try:
-                    returncode = future.result()
-                    if returncode != 0:
-                        raise RuntimeError(f"Codex producer command exited {returncode}")
-                    results[index] = self._observe_terminal(
-                        handles[index],
-                        execution_custodies[index],
-                        terminal_returncode=returncode,
-                    )
-                except BaseException as exc:
-                    first_error = exc
-                    break
+            try:
+                for index, row in enumerate(rows):
+                    futures[executor.submit(self._wait_for_terminal_process, row)] = index
+            except BaseException as exc:
+                first_error = exc
+                for row in rows:
+                    self._record_terminal_cause(row, exc)
+                for future in futures:
+                    future.cancel()
+
+            if first_error is None:
+                for future in as_completed(futures):
+                    index = futures[future]
+                    processed.add(index)
+                    try:
+                        returncode = future.result()
+                        if returncode != 0:
+                            raise RuntimeError(f"Codex producer command exited {returncode}")
+                        results[index] = self._observe_terminal(
+                            handles[index],
+                            execution_custodies[index],
+                            terminal_returncode=returncode,
+                        )
+                    except BaseException as exc:
+                        self._record_terminal_cause(rows[index], exc)
+                        first_error = exc
+                        break
 
             if first_error is None:
                 executor.shutdown(wait=True, cancel_futures=False)
@@ -1808,8 +2093,8 @@ class CodexLiveProducerAdapter:
                         )
                     else:
                         raise RuntimeError(f"Codex producer command exited {returncode}")
-                except BaseException:
-                    pass
+                except BaseException as exc:
+                    self._record_terminal_cause(rows[index], exc)
 
             for index, row in enumerate(rows):
                 if results[index] is None and row.get("state") != "COMPLETED":
@@ -1818,7 +2103,13 @@ class CodexLiveProducerAdapter:
                             self._mark_outcome_unknown(row)
                         self._credential_readback(row)
                     except BaseException as exc:
+                        self._record_terminal_cause(row, exc)
                         teardown_errors.append(str(exc))
+                    if row.get("state") == "OUTCOME_UNKNOWN":
+                        try:
+                            self._ensure_outcome_unknown_diagnostic(row)
+                        except BaseException as exc:
+                            teardown_errors.append(str(exc))
                 try:
                     self._remove_owned_worker(row)
                 except BaseException as exc:
@@ -1980,20 +2271,28 @@ class CodexLiveProducerAdapter:
                 "credential_residue_scan": credential_scan,
                 "execution_custody": copy.deepcopy(row["execution_custody"]),
             }
+            row.update(
+                {"state": "COMPLETED", "ended_at": result["ended_at"], "result": result}
+            )
+            self._prepared[row["case_id"]].update(
+                {"state": "COMPLETED", "ended_at": result["ended_at"], "result": result}
+            )
             self._remove_owned_worker(row)
             self._remove_owned_root_if_ready()
         except subprocess.TimeoutExpired as exc:
-            self._mark_outcome_unknown(row)
+            if row.get("state") != "COMPLETED":
+                self._mark_outcome_unknown(row)
+            self._record_terminal_cause(row, exc)
             self._teardown_process(row["process"])
             self._credential_readback(row)
             raise RuntimeError("Codex producer command timed out") from exc
-        except BaseException:
-            self._mark_outcome_unknown(row)
+        except BaseException as exc:
+            if row.get("state") != "COMPLETED":
+                self._mark_outcome_unknown(row)
+            self._record_terminal_cause(row, exc)
             self._teardown_process(row["process"])
             self._credential_readback(row)
             raise
-        row.update({"state": "COMPLETED", "ended_at": result["ended_at"], "result": result})
-        self._prepared[row["case_id"]].update({"state": "COMPLETED", "ended_at": result["ended_at"], "result": result})
         return result
 
     def execution_bindings(self) -> dict[str, dict[str, object]]:
@@ -2010,9 +2309,147 @@ class CodexLiveProducerAdapter:
         self._prepared[row["case_id"]].update({"state": "DISPATCH_UNKNOWN", "ended_at": ended_at})
 
     def _mark_outcome_unknown(self, row: dict[str, Any]) -> None:
+        prepared = self._prepared[row["case_id"]]
+        if row.get("state") == "COMPLETED" or prepared.get("state") == "COMPLETED":
+            raise RuntimeError("completed live producer result cannot be downgraded")
         ended_at = _utc_now()
         row.update({"state": "OUTCOME_UNKNOWN", "ended_at": ended_at})
-        self._prepared[row["case_id"]].update({"state": "OUTCOME_UNKNOWN", "ended_at": ended_at})
+        prepared.update({"state": "OUTCOME_UNKNOWN", "ended_at": ended_at})
+
+    def _record_terminal_cause(self, row: dict[str, Any], error: BaseException) -> None:
+        if row.get("terminal_cause") is not None:
+            return
+        cause = str(error) or type(error).__name__
+        current: BaseException | None = error
+        chain: list[BaseException] = []
+        while current is not None and current not in chain:
+            chain.append(current)
+            next_error = current.__cause__ or current.__context__
+            current = next_error if isinstance(next_error, BaseException) else None
+        if any(isinstance(item, KeyboardInterrupt) for item in chain):
+            failure_kind = "OBSERVATION_INTERRUPTED"
+        elif any(isinstance(item, subprocess.TimeoutExpired) for item in chain):
+            failure_kind = "HOST_TIMEOUT"
+        elif any(isinstance(item, CredentialResidueError) for item in chain):
+            failure_kind = "CREDENTIAL_RESIDUE"
+        elif "event stream" in cause or "completion identity" in cause:
+            failure_kind = "TERMINAL_EVENT_STREAM_INVALID"
+        else:
+            process = row.get("process")
+            try:
+                returncode = process.poll() if process is not None else None
+            except BaseException:
+                returncode = None
+            failure_kind = (
+                "HOST_EXITED_NONZERO"
+                if isinstance(returncode, int) and returncode != 0
+                else "OBSERVATION_FAILED"
+            )
+        process = row.get("process")
+        try:
+            host_returncode = process.poll() if process is not None else None
+        except BaseException:
+            host_returncode = None
+        row["terminal_cause"] = cause
+        row["terminal_failure_kind"] = failure_kind
+        row["terminal_host_returncode"] = host_returncode
+        prepared = self._prepared.get(row["case_id"])
+        if prepared is not None:
+            prepared["terminal_cause"] = cause
+            prepared["terminal_failure_kind"] = failure_kind
+            prepared["terminal_host_returncode"] = host_returncode
+
+    def _ensure_outcome_unknown_diagnostic(self, row: dict[str, Any]) -> dict[str, object]:
+        retained = row.get("outcome_unknown_diagnostic")
+        if retained is not None:
+            if not isinstance(retained, dict):
+                raise RuntimeError("outcome-unknown diagnostic reference invalid")
+            return retained
+        if row.get("state") != "OUTCOME_UNKNOWN":
+            raise RuntimeError("outcome-unknown diagnostic requires exact terminal state")
+        failure_kind = row.get("terminal_failure_kind")
+        if not isinstance(failure_kind, str) or not failure_kind:
+            raise RuntimeError("outcome-unknown failure kind unavailable")
+        credential_scan = row.get("credential_scan_evidence")
+        credential_status = row.get("credential_scan_status")
+        if credential_status == "PASS":
+            carrier_disposition = "RETAINED"
+        elif credential_status == "PURGED":
+            carrier_disposition = "PURGED_UNRETAINED"
+        else:
+            raise RuntimeError("outcome-unknown credential scan evidence unavailable")
+        if not isinstance(credential_scan, dict):
+            raise RuntimeError("outcome-unknown credential scan reference invalid")
+        source_presence: dict[str, bool] = {}
+        carriers: dict[str, dict[str, object]] = {}
+        for role, path, suffix in (
+            ("raw_event_log", row.get("events"), ".outcome-unknown.events.jsonl"),
+            ("stderr", row.get("stderr"), ".outcome-unknown.stderr.txt"),
+            ("raw_output", row.get("output"), ".outcome-unknown.output.md"),
+        ):
+            if carrier_disposition == "PURGED_UNRETAINED":
+                present, raw = False, b""
+            else:
+                if not isinstance(path, Path):
+                    raise RuntimeError(f"outcome-unknown {role} path unavailable")
+                present, raw = self._optional_carrier_bytes(path, f"outcome-unknown {role}")
+            source_presence[role] = present
+            retained_path = _retain_content_addressed(row["provider_root"], raw, suffix)
+            carriers[role] = _ref(self.root, retained_path)
+        admission = row.get("in_flight_admission")
+        execution_custody = row.get("execution_custody")
+        execution_custody_sha256 = row.get("execution_custody_sha256")
+        if (
+            not isinstance(admission, dict)
+            or set(admission) != {"path", "byte_count", "sha256"}
+            or not isinstance(execution_custody, dict)
+            or set(execution_custody) != {"path", "byte_count", "sha256"}
+            or not isinstance(execution_custody_sha256, str)
+            or execution_custody.get("sha256") != execution_custody_sha256
+        ):
+            raise RuntimeError("outcome-unknown admission or execution custody unavailable")
+        host_returncode = row.get("terminal_host_returncode")
+        diagnostic = {
+            "schema": "reviewed-campaign-outcome-unknown-diagnostic-v1",
+            "status": "OUTCOME_UNKNOWN_DIAGNOSTIC_RETAINED",
+            "failure_kind": failure_kind,
+            "candidate_id": row["candidate_id"],
+            "source_commit": row["source_commit"],
+            "package_sha256": row["package_sha256"],
+            "package_tree_sha256": row["package_tree_sha256"],
+            "case_id": row["case_id"],
+            "model": "gpt-5.5",
+            "reasoning_effort": "high",
+            "dispatch_classification": "OUTCOME_UNKNOWN",
+            "admission_status": "ADMITTED",
+            "provider_invocation_proven": False,
+            "host_returncode": host_returncode,
+            "host_returncode_status": (
+                "RECORDED" if host_returncode is not None else "UNAVAILABLE"
+            ),
+            "host_invocation_id": row.get("host_invocation_id"),
+            "started_at": row.get("started_at"),
+            "ended_at": row.get("ended_at"),
+            "carrier_disposition": carrier_disposition,
+            "source_presence": source_presence,
+            "in_flight_admission": copy.deepcopy(admission),
+            **carriers,
+            "credential_residue_scan": copy.deepcopy(credential_scan),
+            "execution_custody_sha256": execution_custody_sha256,
+            "execution_custody": copy.deepcopy(execution_custody),
+            "captured_at": _utc_now(),
+        }
+        diagnostic_path = _retain_content_addressed(
+            row["provider_root"],
+            _canonical(diagnostic),
+            ".outcome-unknown-diagnostic.json",
+        )
+        retained = _ref(self.root, diagnostic_path)
+        row["outcome_unknown_diagnostic"] = retained
+        prepared = self._prepared.get(row["case_id"])
+        if prepared is not None:
+            prepared["outcome_unknown_diagnostic"] = copy.deepcopy(retained)
+        return retained
 
     def _teardown_process(self, process: Any) -> None:
         if not self.host.verify_tree_stopped(process):
@@ -2089,6 +2526,12 @@ class CodexLiveProducerAdapter:
                     "pre_admission_diagnostic": copy.deepcopy(
                         prepared["pre_admission_diagnostic"]
                     ),
+                    "terminal_cause": prepared.get("terminal_cause"),
+                    "terminal_failure_kind": prepared.get("terminal_failure_kind"),
+                    "terminal_host_returncode": prepared.get("terminal_host_returncode"),
+                    "outcome_unknown_diagnostic": copy.deepcopy(
+                        prepared.get("outcome_unknown_diagnostic")
+                    ),
                 }
             )
         return rows
@@ -2106,11 +2549,18 @@ class CodexLiveProducerAdapter:
                         host_returncode=row["process"].poll(),
                     )
                 else:
+                    if row["state"] == "ADAPTER_IN_FLIGHT":
+                        self._record_terminal_cause(
+                            row,
+                            RuntimeError("cohort aborted before terminal observation"),
+                        )
                     self._teardown_process(row["process"])
                 if row["state"] == "ADAPTER_IN_FLIGHT":
                     self._mark_outcome_unknown(row)
                 if row["state"] != "DISPATCH_UNKNOWN":
                     self._credential_readback(row)
+                if row["state"] == "OUTCOME_UNKNOWN":
+                    self._ensure_outcome_unknown_diagnostic(row)
                 self._remove_owned_worker(row)
             except Exception as exc:
                 errors.append(str(exc))

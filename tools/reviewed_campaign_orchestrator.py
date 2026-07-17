@@ -26,6 +26,7 @@ from campaign_usage_ledger import (
     reserve,
     settle,
 )
+from check_captured_output_manifest import PublicationError, atomic_publish_bytes
 from check_cold_comprehensiveness_review import validate_packet_manifest
 from check_initial_assessment_barrier import (
     AssessmentBarrierError,
@@ -211,6 +212,11 @@ def _portable_relative_parts(relative: object, role: str) -> tuple[str, ...]:
     return parts
 
 
+def _windows_relative_identity(relative: object, role: str) -> tuple[str, ...]:
+    """Return the physical Windows identity for an already-portable path."""
+    return tuple(part.casefold() for part in _portable_relative_parts(relative, role))
+
+
 def _contained(root: Path, relative: object, role: str, *, must_exist: bool) -> Path:
     parts = _portable_relative_parts(relative, role)
     root_abs = Path(os.path.abspath(root))
@@ -265,7 +271,13 @@ def _load_ref(root: Path, value: object, role: str) -> tuple[dict[str, Any], Pat
         raise CampaignError(f"{role.upper()}_REF_HASH")
     path = _contained(root, value.get("path"), role, must_exist=True)
     raw = path.read_bytes()
-    if value.get("byte_count") != len(raw) or hashlib.sha256(raw).hexdigest() != expected:
+    byte_count = value.get("byte_count")
+    if (
+        not isinstance(byte_count, int)
+        or isinstance(byte_count, bool)
+        or byte_count != len(raw)
+        or hashlib.sha256(raw).hexdigest() != expected
+    ):
         raise CampaignError(f"{role.upper()}_CONTENT_ADDRESS")
     try:
         record = json.loads(raw)
@@ -277,25 +289,8 @@ def _load_ref(root: Path, value: object, role: str) -> tuple[dict[str, Any], Pat
 
 
 def _publish_once_json(root: Path, relative: str, value: object, role: str) -> dict[str, object]:
-    path = _contained(root, relative, role, must_exist=False)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    _contained(root, path.parent.relative_to(Path(os.path.abspath(root))).as_posix(), f"{role}_parent", must_exist=False)
     raw = canonical_bytes(value)
-    try:
-        fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-    except FileExistsError as exc:
-        raise CampaignError(f"CREATE_ONCE_{role.upper()}: destination already exists") from exc
-    try:
-        with os.fdopen(fd, "wb") as handle:
-            handle.write(raw)
-            handle.flush()
-            os.fsync(handle.fileno())
-    except Exception:
-        path.unlink(missing_ok=True)
-        raise
-    if path.read_bytes() != raw:
-        raise CampaignError(f"CREATE_ONCE_{role.upper()}: readback differs")
-    return {"path": relative, "byte_count": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
+    return _publish_once_bytes(root, relative, raw, role)
 
 
 def _publish_or_adopt_exact_json(root: Path, relative: str, value: object, role: str) -> dict[str, object]:
@@ -317,18 +312,21 @@ def _publish_once_bytes(root: Path, relative: str, raw: bytes, role: str) -> dic
     path = _contained(root, relative, role, must_exist=False)
     path.parent.mkdir(parents=True, exist_ok=True)
     try:
-        fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-    except FileExistsError as exc:
+        atomic_publish_bytes(path, raw)
+    except PublicationError as exc:
         raise CampaignError(f"CREATE_ONCE_{role.upper()}: destination already exists") from exc
-    try:
-        with os.fdopen(fd, "wb") as handle:
-            handle.write(raw)
-            handle.flush()
-            os.fsync(handle.fileno())
-    except Exception:
-        path.unlink(missing_ok=True)
-        raise
-    if path.read_bytes() != raw:
+    # A process can die after staging but before the no-replace link.  Once this
+    # process has won the final-path CAS, every sibling stage is necessarily a
+    # loser or an abandoned predecessor and cannot become authoritative.
+    for stage in path.parent.glob(f".{path.name}.stage-*"):
+        try:
+            observed = stage.lstat()
+        except FileNotFoundError:
+            continue
+        if not stage.is_file() or stage.is_symlink():
+            raise CampaignError(f"CREATE_ONCE_{role.upper()}: unsafe stage residue")
+        stage.unlink()
+    if path.read_bytes() != raw or hashlib.sha256(path.read_bytes()).hexdigest() != hashlib.sha256(raw).hexdigest():
         raise CampaignError(f"CREATE_ONCE_{role.upper()}: readback differs")
     return {"path": relative, "byte_count": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
 
@@ -1228,6 +1226,23 @@ def _validate_failure_usage(
 
     if settlement_sha is None:
         settlement = None
+        last_transaction_sha = snapshot.get("last_transaction_sha256")
+        if isinstance(last_transaction_sha, str):
+            last_transaction_path = usage_root / "transactions" / f"{last_transaction_sha}.json"
+            last_transaction, _last_transaction_raw = _load_canonical_json(
+                last_transaction_path,
+                "resume_terminal_usage",
+            )
+            if (
+                last_transaction.get("kind") in {"settlement", "settlement-set"}
+                and last_transaction.get("authorization_sha256") == auth_sha
+                and last_transaction.get("candidate_id") == auth["candidate_id"]
+                and (
+                    reservation_sha is None
+                    or last_transaction.get("reservation_transaction_sha256") == reservation_sha
+                )
+            ):
+                raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_SETTLEMENT_OMISSION")
     else:
         if not isinstance(settlement_sha, str) or SHA256_RE.fullmatch(settlement_sha) is None:
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_SETTLEMENT_SHA")
@@ -1553,12 +1568,14 @@ def _validate_pre_admission_diagnostics(
     payload: dict[str, Any],
     auth: dict[str, Any],
     settlement: dict[str, Any] | None,
+    bindings: dict[str, Any],
 ) -> None:
     references = payload.get("pre_admission_diagnostics")
-    if references is None:
-        # Historical v1 terminal records predate retained pre-admission diagnostics.
+    if settlement is None:
+        if references is not None and references != []:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_INVENTORY")
         return
-    if not isinstance(references, list) or settlement is None:
+    if references is not None and not isinstance(references, list):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_INVENTORY")
     receipts = settlement.get("provider_usage_receipts")
     if not isinstance(receipts, list):
@@ -1570,17 +1587,28 @@ def _validate_pre_admission_diagnostics(
         and row.get("status") == "UNKNOWN"
         and row.get("unknown_kind") == "DISPATCH_UNKNOWN"
     ]
+    if references is None:
+        if dispatch_unknown_receipts:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_INVENTORY")
+        return
     if len(references) != len(dispatch_unknown_receipts):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_INVENTORY")
+    output_contracts = _producer_output_contracts(
+        auth,
+        payload.get("authorization_sha256"),
+        bindings,
+    )
     expected_keys = {
         "schema", "status", "failure_kind", "candidate_id", "source_commit",
         "package_sha256", "package_tree_sha256", "case_id", "model",
         "reasoning_effort", "dispatch_classification", "admission_status",
         "provider_invocation_proven", "host_returncode", "host_returncode_status",
-        "host_invocation_id", "started_at", "ended_at", "source_presence",
+        "host_invocation_id", "started_at", "ended_at", "carrier_disposition", "source_presence",
         "raw_event_log", "stderr", "raw_output", "credential_residue_scan",
         "execution_custody_sha256", "execution_custody", "captured_at",
     }
+    cleanup_witness_keys = expected_keys | {"cleanup_residual_witness"}
+    retention_failure_keys = expected_keys | {"retention_failure"}
     root_abs = Path(os.path.abspath(root))
     for index, (reference, receipt) in enumerate(
         zip(references, dispatch_unknown_receipts),
@@ -1599,17 +1627,24 @@ def _validate_pre_admission_diagnostics(
             not diagnostic_relative.startswith(f"{auth['provider_receipt_root']}/")
             or not diagnostic_relative.endswith(".pre-admission-diagnostic.json")
             or diagnostic_sha != reference.get("sha256")
-            or set(diagnostic) != expected_keys
+            or set(diagnostic) not in (
+                expected_keys,
+                cleanup_witness_keys,
+                retention_failure_keys,
+            )
         ):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_SHAPE")
+        receipt_case_id = receipt.get("case_id")
+        if receipt_case_id not in auth["case_ids"]:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_BINDING")
+        expected_worker = f"producer-{auth['case_ids'].index(receipt_case_id) + 1:02d}"
         expected_identity = {
             "schema": "reviewed-campaign-pre-admission-diagnostic-v1",
-            "status": "PRE_ADMISSION_DIAGNOSTIC_RETAINED",
             "candidate_id": auth["candidate_id"],
             "source_commit": auth["source_commit"],
             "package_sha256": auth["package_sha256"],
             "package_tree_sha256": auth["package_tree_sha256"],
-            "case_id": receipt.get("case_id"),
+            "case_id": receipt_case_id,
             "model": "gpt-5.5",
             "reasoning_effort": "high",
             "dispatch_classification": "DISPATCH_UNKNOWN",
@@ -1635,30 +1670,50 @@ def _validate_pre_admission_diagnostics(
             )
         ):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_RETURNCODE")
+        try:
+            _parse_utc(diagnostic.get("ended_at"), "pre_admission_diagnostic_ended_at")
+            _parse_utc(diagnostic.get("captured_at"), "pre_admission_diagnostic_captured_at")
+            if diagnostic.get("started_at") is not None:
+                _parse_utc(
+                    diagnostic.get("started_at"),
+                    "pre_admission_diagnostic_started_at",
+                )
+            diagnostic_times_valid = True
+        except CampaignError:
+            diagnostic_times_valid = False
         if (
-            not isinstance(diagnostic.get("ended_at"), str)
-            or not diagnostic["ended_at"]
-            or not isinstance(diagnostic.get("captured_at"), str)
-            or not diagnostic["captured_at"]
+            not diagnostic_times_valid
             or diagnostic.get("host_invocation_id") is not None
             and (
                 not isinstance(diagnostic["host_invocation_id"], str)
                 or not diagnostic["host_invocation_id"]
             )
-            or diagnostic.get("started_at") is not None
-            and (
-                not isinstance(diagnostic["started_at"], str)
-                or not diagnostic["started_at"]
-            )
         ):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_TIME_IDENTITY")
         source_presence = diagnostic.get("source_presence")
+        carrier_disposition = diagnostic.get("carrier_disposition")
         if (
             not isinstance(source_presence, dict)
             or set(source_presence) != {"raw_event_log", "stderr", "raw_output"}
             or any(type(value) is not bool for value in source_presence.values())
+            or carrier_disposition
+            not in {"RETAINED", "PURGED_UNRETAINED", "UNAVAILABLE", "RETENTION_FAILED"}
+            or (
+                carrier_disposition in {"PURGED_UNRETAINED", "UNAVAILABLE", "RETENTION_FAILED"}
+                and any(
+                    source_presence[role] is not False
+                    for role in ("raw_event_log", "stderr", "raw_output")
+                )
+            )
         ):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CARRIERS")
+        expected_diagnostic_status = (
+            "PRE_ADMISSION_DIAGNOSTIC_RETENTION_FAILED_CLOSED"
+            if carrier_disposition == "RETENTION_FAILED"
+            else "PRE_ADMISSION_DIAGNOSTIC_RETAINED"
+        )
+        if diagnostic.get("status") != expected_diagnostic_status:
+            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_BINDING")
         for role, suffix in (
             ("raw_event_log", ".pre-admission.events.jsonl"),
             ("stderr", ".pre-admission.stderr.txt"),
@@ -1676,20 +1731,144 @@ def _validate_pre_admission_diagnostics(
                 or (source_presence[role] is False and carrier_raw != b"")
             ):
                 raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CARRIERS")
-        scan, scan_path, _scan_sha = _load_ref(
-            root,
-            diagnostic.get("credential_residue_scan"),
-            f"producer_pre_admission_diagnostic_{index}_credential_scan",
-        )
-        if (
-            not scan_path.relative_to(root_abs).as_posix().startswith(
-                f"{auth['provider_receipt_root']}/"
+        if carrier_disposition == "UNAVAILABLE":
+            witness, witness_path, _witness_sha = _load_ref(
+                root,
+                diagnostic.get("cleanup_residual_witness"),
+                f"producer_pre_admission_diagnostic_{index}_cleanup_residual_witness",
             )
-            or scan.get("schema") != "reviewed-campaign-credential-residue-scan-v1"
-            or scan.get("status") != "PASS"
-        ):
-            raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CREDENTIAL_SCAN")
-        custody, _custody_path, custody_sha = _load_ref(
+            witness_relative = witness_path.relative_to(root_abs).as_posix()
+            witness_raw = witness_path.read_bytes()
+            allowed_residuals = {
+                "PROCESS_TEARDOWN_UNVERIFIED": "PROCESS_GENERATION",
+                "CREDENTIAL_SCAN_AND_PURGE_FAILED": "OWNED_WORKER",
+            }
+            if (
+                set(diagnostic) != cleanup_witness_keys
+                or diagnostic.get("credential_residue_scan") is not None
+                or not witness_relative.startswith(f"{auth['provider_receipt_root']}/")
+                or not witness_relative.endswith(".cleanup-residual-witness.json")
+                or witness_raw != canonical_bytes(witness)
+                or set(witness) != {
+                    "schema", "status", "failure_kind", "residual_kind",
+                    "case_id", "worker", "execution_custody_sha256",
+                    "retained_original_carriers",
+                }
+                or witness.get("schema")
+                != "reviewed-campaign-cleanup-residual-witness-v1"
+                or witness.get("status") != "CLEANUP_INCOMPLETE"
+                or witness.get("failure_kind") != failure_kind
+                or allowed_residuals.get(witness.get("failure_kind"))
+                != witness.get("residual_kind")
+                or witness.get("case_id") != receipt_case_id
+                or witness.get("worker") != expected_worker
+                or witness.get("execution_custody_sha256")
+                != diagnostic.get("execution_custody_sha256")
+                or witness.get("retained_original_carriers") is not False
+            ):
+                raise CampaignError(
+                    "TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CLEANUP_WITNESS"
+                )
+        else:
+            expected_noncleanup_keys = (
+                retention_failure_keys
+                if carrier_disposition == "RETENTION_FAILED"
+                else expected_keys
+            )
+            if set(diagnostic) != expected_noncleanup_keys:
+                raise CampaignError(
+                    "TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_SHAPE"
+                )
+            scan, scan_path, _scan_sha = _load_ref(
+                root,
+                diagnostic.get("credential_residue_scan"),
+                f"producer_pre_admission_diagnostic_{index}_credential_scan",
+            )
+            scan_relative = scan_path.relative_to(root_abs).as_posix()
+            scan_raw = scan_path.read_bytes()
+            valid_scan = (
+                scan_relative.startswith(f"{auth['provider_receipt_root']}/")
+                and scan_relative.endswith(".credential-scan.json")
+                and scan.get("schema") == "reviewed-campaign-credential-residue-scan-v1"
+            )
+            if carrier_disposition in {"RETAINED", "RETENTION_FAILED"}:
+                try:
+                    _parse_utc(
+                        scan.get("completed_at"),
+                        "pre_admission_credential_scan_completed_at",
+                    )
+                    pass_time_valid = True
+                except CampaignError:
+                    pass_time_valid = False
+                valid_scan = (
+                    valid_scan
+                    and set(scan) == {
+                        "schema", "status", "worker", "scanned_file_count",
+                        "scanned_byte_count", "encoding_forms_checked",
+                        "completed_at",
+                    }
+                    and scan_raw == canonical_bytes(scan)
+                    and scan.get("status") == "PASS"
+                    and scan.get("worker") == expected_worker
+                    and all(
+                        isinstance(scan.get(field), int)
+                        and not isinstance(scan.get(field), bool)
+                        and scan[field] >= 0
+                        for field in ("scanned_file_count", "scanned_byte_count")
+                    )
+                    and scan.get("encoding_forms_checked")
+                    == ["utf-8", "utf-16-le", "utf-16-be"]
+                    and pass_time_valid
+                )
+            else:
+                try:
+                    _parse_utc(
+                        scan.get("completed_at"),
+                        "pre_admission_credential_scan_completed_at",
+                    )
+                    completed_at_valid = True
+                except CampaignError:
+                    completed_at_valid = False
+                valid_scan = (
+                    valid_scan
+                    and set(scan) == {
+                        "schema", "status", "worker", "failure_class",
+                        "cleanup_status", "completed_at",
+                    }
+                    and scan_raw == canonical_bytes(scan)
+                    and scan.get("status") == "FAIL_CLOSED"
+                    and scan.get("cleanup_status") == "OWNED_WORKER_PURGED"
+                    and scan.get("failure_class")
+                    in {"CREDENTIAL_RESIDUE", "SCAN_UNAVAILABLE"}
+                    and scan.get("worker") == expected_worker
+                    and completed_at_valid
+                )
+            if not valid_scan:
+                raise CampaignError(
+                    "TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CREDENTIAL_SCAN"
+                )
+            if carrier_disposition == "RETENTION_FAILED":
+                retention_failure = diagnostic.get("retention_failure")
+                if (
+                    not isinstance(retention_failure, dict)
+                    or set(retention_failure)
+                    != {
+                        "schema", "status", "failed_role", "error_class",
+                        "retained_original_carriers",
+                    }
+                    or retention_failure.get("schema")
+                    != "reviewed-campaign-diagnostic-retention-failure-v1"
+                    or retention_failure.get("status") != "FAILED_CLOSED"
+                    or retention_failure.get("failed_role")
+                    not in {"raw_event_log", "stderr", "raw_output", "diagnostic"}
+                    or not isinstance(retention_failure.get("error_class"), str)
+                    or not retention_failure["error_class"]
+                    or retention_failure.get("retained_original_carriers") is not False
+                ):
+                    raise CampaignError(
+                        "TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_RETENTION_FAILURE"
+                    )
+        custody, custody_path, custody_sha = _load_ref(
             root,
             diagnostic.get("execution_custody"),
             f"producer_pre_admission_diagnostic_{index}_execution_custody",
@@ -1699,18 +1878,357 @@ def _validate_pre_admission_diagnostics(
             "lane": "producer",
             "candidate_id": auth["candidate_id"],
             "source_commit": auth["source_commit"],
+            "candidate_maturity": auth["candidate_maturity"],
+            "package_record": auth["package_record"],
+            "source_preflight": auth["source_preflight"],
+            "registry": auth["registry"],
+            "review_protocol": auth["review_protocol"],
             "authorization_sha256": payload.get("authorization_sha256"),
             "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
             "case_id": receipt.get("case_id"),
+            "subject_id": receipt.get("subject_id"),
             "model": "gpt-5.5",
             "reasoning_effort": "high",
+            "provider_settings": auth["provider_settings"],
             "usage_reservation_sha256": receipt.get("usage_reservation_sha256"),
+            "packet": None,
+            "execution_tooling_manifest": auth["execution_tooling_manifest"],
+            "single_call_output_contract": output_contracts[receipt.get("case_id")],
         }
+        expected_custody_keys = {
+            *custody_expected,
+            "isolated_worker_root",
+            "capture_bindings",
+        }
+        worker = _worker_inventory(auth, "producer")[
+            auth["case_ids"].index(receipt_case_id)
+        ]
+        expected_worker_root = {
+            key: worker[key] for key in ("worker", "home", "cache", "run_root")
+        }
+        capture_bindings = custody.get("capture_bindings")
         if (
             diagnostic.get("execution_custody_sha256") != custody_sha
+            or custody_path.read_bytes() != canonical_bytes(custody)
+            or set(custody) != expected_custody_keys
             or any(custody.get(key) != value for key, value in custody_expected.items())
+            or custody.get("isolated_worker_root") != expected_worker_root
+            or not isinstance(capture_bindings, dict)
+            or set(capture_bindings) != {
+                "raw_input", "exact_prompt", "composite_runtime_context",
+                "package_harness_parity",
+            }
         ):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CUSTODY")
+        capture_roles = (
+            ("raw_input", auth["structural_evidence_root"], ".input.bin"),
+            ("exact_prompt", auth["prompt_retention_root"], ".prompt.md"),
+            (
+                "composite_runtime_context",
+                auth["structural_evidence_root"],
+                ".runtime-context.json",
+            ),
+            (
+                "package_harness_parity",
+                auth["structural_evidence_root"],
+                ".package-harness-parity.json",
+            ),
+        )
+        for capture_role, expected_root, suffix in capture_roles:
+            retained_path, retained_raw, retained_sha = _load_retained_bytes_ref(
+                root,
+                capture_bindings[capture_role],
+                f"producer_pre_admission_diagnostic_{index}_{capture_role}",
+            )
+            relative = retained_path.relative_to(root_abs).as_posix()
+            if (
+                not relative.startswith(f"{expected_root}/")
+                or not relative.endswith(suffix)
+                or (
+                    capture_role == "raw_input"
+                    and retained_sha
+                    != auth["case_inputs"][
+                        auth["case_ids"].index(receipt_case_id)
+                    ]["input_sha256"]
+                )
+            ):
+                raise CampaignError(
+                    "TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CUSTODY"
+                )
+
+
+def _validate_outcome_unknown_diagnostics(
+    root: Path,
+    payload: dict[str, Any],
+    auth: dict[str, Any],
+    settlement: dict[str, Any] | None,
+    bindings: dict[str, Any],
+) -> None:
+    references = payload.get("outcome_unknown_diagnostics")
+    receipts = settlement.get("provider_usage_receipts") if isinstance(settlement, dict) else []
+    outcome_receipts = [
+        row
+        for row in receipts
+        if isinstance(row, dict)
+        and row.get("status") == "UNKNOWN"
+        and row.get("unknown_kind") == "OUTCOME_UNKNOWN"
+    ]
+    if not outcome_receipts:
+        if references is not None and references != []:
+            raise CampaignError(
+                "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_INVENTORY"
+            )
+        return
+    if not isinstance(references, list) or len(references) != len(outcome_receipts):
+        raise CampaignError(
+            "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_INVENTORY"
+        )
+    output_contracts = _producer_output_contracts(
+        auth,
+        payload.get("authorization_sha256"),
+        bindings,
+    )
+    expected_keys = {
+        "schema", "status", "failure_kind", "candidate_id", "source_commit",
+        "package_sha256", "package_tree_sha256", "case_id", "model",
+        "reasoning_effort", "dispatch_classification", "admission_status",
+        "provider_invocation_proven", "host_returncode", "host_returncode_status",
+        "host_invocation_id", "started_at", "ended_at", "carrier_disposition",
+        "source_presence", "in_flight_admission", "raw_event_log", "stderr",
+        "raw_output", "credential_residue_scan", "execution_custody_sha256",
+        "execution_custody", "captured_at",
+    }
+    allowed_failure_kinds = {
+        "HOST_EXITED_NONZERO", "HOST_TIMEOUT", "OBSERVATION_INTERRUPTED",
+        "TERMINAL_EVENT_STREAM_INVALID", "CREDENTIAL_RESIDUE",
+        "OBSERVATION_FAILED",
+    }
+    root_abs = Path(os.path.abspath(root))
+    for index, (reference, receipt) in enumerate(
+        zip(references, outcome_receipts),
+        1,
+    ):
+        diagnostic, diagnostic_path, diagnostic_sha = _load_ref(
+            root,
+            reference,
+            f"producer_outcome_unknown_diagnostic_{index}",
+        )
+        diagnostic_raw = diagnostic_path.read_bytes()
+        diagnostic_relative = diagnostic_path.relative_to(root_abs).as_posix()
+        case_id = receipt.get("case_id")
+        expected_worker = (
+            f"producer-{auth['case_ids'].index(case_id) + 1:02d}"
+            if case_id in auth["case_ids"]
+            else None
+        )
+        if (
+            diagnostic_raw != canonical_bytes(diagnostic)
+            or not diagnostic_relative.startswith(f"{auth['provider_receipt_root']}/")
+            or not diagnostic_relative.endswith(".outcome-unknown-diagnostic.json")
+            or diagnostic_sha != reference.get("sha256")
+            or set(diagnostic) != expected_keys
+            or diagnostic.get("schema")
+            != "reviewed-campaign-outcome-unknown-diagnostic-v1"
+            or diagnostic.get("status") != "OUTCOME_UNKNOWN_DIAGNOSTIC_RETAINED"
+            or diagnostic.get("failure_kind") not in allowed_failure_kinds
+            or diagnostic.get("candidate_id") != auth["candidate_id"]
+            or diagnostic.get("source_commit") != auth["source_commit"]
+            or diagnostic.get("package_sha256") != auth["package_sha256"]
+            or diagnostic.get("package_tree_sha256") != auth["package_tree_sha256"]
+            or diagnostic.get("case_id") != case_id
+            or diagnostic.get("model") != "gpt-5.5"
+            or diagnostic.get("reasoning_effort") != "high"
+            or diagnostic.get("dispatch_classification") != "OUTCOME_UNKNOWN"
+            or diagnostic.get("admission_status") != "ADMITTED"
+            or diagnostic.get("provider_invocation_proven") is not False
+            or diagnostic.get("host_invocation_id") != receipt.get("host_invocation_id")
+            or diagnostic.get("started_at") != receipt.get("started_at")
+            or diagnostic.get("ended_at") != receipt.get("ended_at")
+            or expected_worker is None
+        ):
+            raise CampaignError(
+                "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_BINDING"
+            )
+        returncode = diagnostic.get("host_returncode")
+        returncode_status = diagnostic.get("host_returncode_status")
+        if (
+            returncode is None
+            and returncode_status != "UNAVAILABLE"
+            or returncode is not None
+            and (
+                not isinstance(returncode, int)
+                or isinstance(returncode, bool)
+                or returncode_status != "RECORDED"
+            )
+        ):
+            raise CampaignError(
+                "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_RETURNCODE"
+            )
+        try:
+            _parse_utc(diagnostic.get("started_at"), "outcome_unknown_started_at")
+            _parse_utc(diagnostic.get("ended_at"), "outcome_unknown_ended_at")
+            _parse_utc(diagnostic.get("captured_at"), "outcome_unknown_captured_at")
+        except CampaignError as exc:
+            raise CampaignError(
+                "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_TIME"
+            ) from exc
+        carrier_disposition = diagnostic.get("carrier_disposition")
+        source_presence = diagnostic.get("source_presence")
+        if (
+            carrier_disposition not in {"RETAINED", "PURGED_UNRETAINED"}
+            or not isinstance(source_presence, dict)
+            or set(source_presence) != {"raw_event_log", "stderr", "raw_output"}
+            or any(type(value) is not bool for value in source_presence.values())
+            or carrier_disposition == "PURGED_UNRETAINED"
+            and any(source_presence.values())
+        ):
+            raise CampaignError(
+                "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_CARRIERS"
+            )
+        for role, suffix in (
+            ("raw_event_log", ".outcome-unknown.events.jsonl"),
+            ("stderr", ".outcome-unknown.stderr.txt"),
+            ("raw_output", ".outcome-unknown.output.md"),
+        ):
+            carrier_path, carrier_raw, _carrier_sha = _load_retained_bytes_ref(
+                root,
+                diagnostic.get(role),
+                f"producer_outcome_unknown_diagnostic_{index}_{role}",
+            )
+            carrier_relative = carrier_path.relative_to(root_abs).as_posix()
+            if (
+                not carrier_relative.startswith(f"{auth['provider_receipt_root']}/")
+                or not carrier_relative.endswith(suffix)
+                or source_presence[role] is False
+                and carrier_raw != b""
+            ):
+                raise CampaignError(
+                    "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_CARRIERS"
+                )
+        admission_path, admission_raw, _admission_sha = _load_retained_bytes_ref(
+            root,
+            diagnostic.get("in_flight_admission"),
+            f"producer_outcome_unknown_diagnostic_{index}_admission",
+        )
+        admission_relative = admission_path.relative_to(root_abs).as_posix()
+        admission_lines = admission_raw.splitlines()
+        admission_events = [
+            _strict_jsonl_object(
+                line,
+                f"producer_outcome_unknown_diagnostic_{index}_admission",
+            )
+            for line in admission_lines
+        ]
+        thread_indexes = [
+            event_index
+            for event_index, event in enumerate(admission_events)
+            if event.get("type") == "thread.started"
+        ]
+        if (
+            not admission_relative.startswith(f"{auth['provider_receipt_root']}/")
+            or not admission_relative.endswith(".in-flight-admission.events.jsonl")
+            or len(thread_indexes) != 1
+            or any(
+                event.get("type")
+                in {"turn.started", "turn.completed", "turn.failed", "error"}
+                for event in admission_events[: thread_indexes[0]]
+            )
+        ):
+            raise CampaignError(
+                "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_ADMISSION"
+            )
+        scan, scan_path, _scan_sha = _load_ref(
+            root,
+            diagnostic.get("credential_residue_scan"),
+            f"producer_outcome_unknown_diagnostic_{index}_credential_scan",
+        )
+        scan_relative = scan_path.relative_to(root_abs).as_posix()
+        scan_raw = scan_path.read_bytes()
+        try:
+            _parse_utc(scan.get("completed_at"), "outcome_unknown_scan_completed_at")
+            scan_time_valid = True
+        except CampaignError:
+            scan_time_valid = False
+        if carrier_disposition == "RETAINED":
+            valid_scan = (
+                set(scan) == {
+                    "schema", "status", "worker", "scanned_file_count",
+                    "scanned_byte_count", "encoding_forms_checked", "completed_at",
+                }
+                and scan.get("status") == "PASS"
+                and scan.get("worker") == expected_worker
+                and all(
+                    isinstance(scan.get(field), int)
+                    and not isinstance(scan.get(field), bool)
+                    and scan[field] >= 0
+                    for field in ("scanned_file_count", "scanned_byte_count")
+                )
+                and scan.get("encoding_forms_checked")
+                == ["utf-8", "utf-16-le", "utf-16-be"]
+            )
+        else:
+            valid_scan = (
+                set(scan) == {
+                    "schema", "status", "worker", "failure_class",
+                    "cleanup_status", "completed_at",
+                }
+                and scan.get("status") == "FAIL_CLOSED"
+                and scan.get("worker") == expected_worker
+                and scan.get("cleanup_status") == "OWNED_WORKER_PURGED"
+                and scan.get("failure_class")
+                in {"CREDENTIAL_RESIDUE", "SCAN_UNAVAILABLE"}
+            )
+        if (
+            not scan_relative.startswith(f"{auth['provider_receipt_root']}/")
+            or not scan_relative.endswith(".credential-scan.json")
+            or scan_raw != canonical_bytes(scan)
+            or scan.get("schema") != "reviewed-campaign-credential-residue-scan-v1"
+            or not scan_time_valid
+            or not valid_scan
+        ):
+            raise CampaignError(
+                "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_CREDENTIAL_SCAN"
+            )
+        custody, custody_path, custody_sha = _load_ref(
+            root,
+            diagnostic.get("execution_custody"),
+            f"producer_outcome_unknown_diagnostic_{index}_execution_custody",
+        )
+        expected_custody = {
+            "schema": "reviewed-campaign-execution-custody-v1",
+            "lane": "producer",
+            "candidate_id": auth["candidate_id"],
+            "source_commit": auth["source_commit"],
+            "candidate_maturity": auth["candidate_maturity"],
+            "package_record": auth["package_record"],
+            "source_preflight": auth["source_preflight"],
+            "registry": auth["registry"],
+            "review_protocol": auth["review_protocol"],
+            "authorization_sha256": payload.get("authorization_sha256"),
+            "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
+            "case_id": case_id,
+            "subject_id": receipt.get("subject_id"),
+            "model": "gpt-5.5",
+            "reasoning_effort": "high",
+            "provider_settings": auth["provider_settings"],
+            "usage_reservation_sha256": receipt.get("usage_reservation_sha256"),
+            "packet": None,
+            "execution_tooling_manifest": auth["execution_tooling_manifest"],
+            "single_call_output_contract": output_contracts[case_id],
+        }
+        worker = _worker_inventory(auth, "producer")[auth["case_ids"].index(case_id)]
+        if (
+            diagnostic.get("execution_custody_sha256") != custody_sha
+            or custody_path.read_bytes() != canonical_bytes(custody)
+            or set(custody)
+            != {*expected_custody, "isolated_worker_root", "capture_bindings"}
+            or any(custody.get(key) != value for key, value in expected_custody.items())
+            or custody.get("isolated_worker_root")
+            != {key: worker[key] for key in ("worker", "home", "cache", "run_root")}
+        ):
+            raise CampaignError(
+                "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_CUSTODY"
+            )
 
 
 def _validate_failure_results(
@@ -1868,7 +2386,10 @@ def _validate_failure_results(
 _FAILURE_PHASE_CLASSIFICATIONS = {
     "reservation": frozenset({"PROVED_NO_DISPATCH"}),
     "pre-dispatch": frozenset({"PROVED_NO_DISPATCH"}),
-    "provider-execution": frozenset({"DISPATCH_UNKNOWN", "OUTCOME_UNKNOWN"}),
+    "provider-execution": frozenset(
+        {"PROVED_NO_DISPATCH", "DISPATCH_UNKNOWN", "OUTCOME_UNKNOWN"}
+    ),
+    "post-capture-cleanup": frozenset({"OBSERVED"}),
     "result-publication": frozenset({"DISPATCH_UNKNOWN", "OUTCOME_UNKNOWN", "OBSERVED"}),
     "provider-receipt-publication": frozenset(
         {"DISPATCH_UNKNOWN", "OUTCOME_UNKNOWN", "OBSERVED"}
@@ -1964,7 +2485,8 @@ def _validate_failure_resume_payload(
     receipt_state = _derive_terminal_receipt_state(settlement, auth)
     if classification != receipt_state["classification"]:
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_CLASSIFICATION_RECEIPTS")
-    _validate_pre_admission_diagnostics(root, payload, auth, settlement)
+    _validate_pre_admission_diagnostics(root, payload, auth, settlement, bindings)
+    _validate_outcome_unknown_diagnostics(root, payload, auth, settlement, bindings)
     results = _validate_failure_results(root, payload, auth, settlement, packet_disclosure, lane=lane)
     if classification != "PROVED_NO_DISPATCH" and (reservation is None or settlement is None):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_TERMINAL_USAGE_REQUIRED")
@@ -1990,7 +2512,13 @@ def _validate_failure_resume_payload(
         completion = _validate_retained_json_ref(root, completion_ref, completion_path, "resume_completion")
         expected_completion = {
             "schema": "reviewed-campaign-producer-completion-v1" if lane == "producer" else "reviewed-campaign-cold-review-completion-v1",
-            "status": "PRODUCER_STRUCTURAL_COMPLETE" if lane == "producer" else "COLD_REVIEW_COHORT_COMPLETE",
+            "status": (
+                "PRODUCER_CAPTURE_COMPLETE"
+                if lane == "producer" and _producer_capture_mode(auth)
+                else "PRODUCER_STRUCTURAL_COMPLETE"
+                if lane == "producer"
+                else "COLD_REVIEW_COHORT_COMPLETE"
+            ),
             "candidate_id": auth["candidate_id"],
             "authorization_sha256": auth_sha,
             "reservation_sha256": payload.get("reservation_sha256"),
@@ -2126,6 +2654,7 @@ def _publish_failure_finalizer(
     observed_results: list[dict[str, object]] | None = None,
     completion: dict[str, object] | None = None,
     pre_admission_diagnostics: list[dict[str, object]] | None = None,
+    outcome_unknown_diagnostics: list[dict[str, object]] | None = None,
     interrupt_after_incident: bool = False,
 ) -> dict[str, Any]:
     snapshot = head_snapshot(usage_root)
@@ -2171,6 +2700,10 @@ def _publish_failure_finalizer(
         **(
             {"pre_admission_diagnostics": pre_admission_diagnostics}
             if pre_admission_diagnostics is not None else {}
+        ),
+        **(
+            {"outcome_unknown_diagnostics": outcome_unknown_diagnostics}
+            if outcome_unknown_diagnostics is not None else {}
         ),
         "completion": completion,
         "candidate_status": candidate_status,
@@ -2240,6 +2773,62 @@ def _finalize_no_dispatch_failure(
     terminal = None
     if reservation is None:
         current = head_snapshot(usage_root)
+        if not current["open_reservations"]:
+            candidates: list[tuple[str, dict[str, Any]]] = []
+            transaction_root = usage_root / "transactions"
+            for transaction_path in sorted(transaction_root.glob("*.json")):
+                candidate_sha = transaction_path.stem
+                if SHA256_RE.fullmatch(candidate_sha) is None:
+                    continue
+                candidate, raw = _load_canonical_json(
+                    transaction_path,
+                    "unheaded_reservation_candidate",
+                )
+                if hashlib.sha256(raw).hexdigest() != candidate_sha:
+                    raise CampaignError("RESERVATION_FAILURE_UNHEADED_CONTENT_ADDRESS")
+                if (
+                    candidate.get("kind") in {"reservation", "reservation-set"}
+                    and candidate.get("authorization_sha256") == auth_sha
+                    and candidate.get("campaign_authorization_sha256")
+                    == auth["campaign_authorization_sha256"]
+                    and candidate.get("candidate_id") == auth["candidate_id"]
+                    and candidate.get("cycle_or_review_batch_id")
+                    == auth["cycle_or_review_batch_id"]
+                    and candidate.get("predecessor_usage_head_sha256")
+                    == current["head_sha256"]
+                    and candidate.get("predecessor_transaction_sha256")
+                    == current["last_transaction_sha256"]
+                    and candidate.get("sequence") == current["sequence"] + 1
+                ):
+                    candidates.append((candidate_sha, candidate))
+            if len(candidates) > 1:
+                raise CampaignError("RESERVATION_FAILURE_UNHEADED_FORK")
+            if candidates:
+                candidate_sha, _candidate = candidates[0]
+                subjects = [f"producer:{case_id}" for case_id in auth["case_ids"]]
+                recovered = reserve(
+                    usage_root,
+                    cohort="gpt-producer",
+                    calls=5,
+                    expected_sequence=current["sequence"],
+                    expected_head_sha256=current["head_sha256"],
+                    campaign_authorization_sha256=auth[
+                        "campaign_authorization_sha256"
+                    ],
+                    authorization_sha256=auth_sha,
+                    candidate_id=auth["candidate_id"],
+                    cycle_or_review_batch_id=auth["cycle_or_review_batch_id"],
+                    call_subject_ids=subjects,
+                    producer_reservation_bindings=(
+                        _live_producer_reservation_bindings(auth, auth_sha)
+                        if _producer_capture_mode(auth)
+                        else None
+                    ),
+                )
+                if recovered.get("transaction_sha256") != candidate_sha:
+                    raise CampaignError("RESERVATION_FAILURE_UNHEADED_SUBSTITUTION")
+                reservation = recovered
+                current = head_snapshot(usage_root)
         if len(current["open_reservations"]) == 1:
             open_sha = current["open_reservations"][0]
             transaction_path = usage_root / "transactions" / f"{open_sha}.json"
@@ -2433,6 +3022,24 @@ def _normalize_live_producer_authorization(
     findings = validate_manifest(authorization, root=root)
     if findings:
         raise CampaignError(f"MATRIX_AUTHORIZATION_INVALID: {findings[0]['failure_class']}")
+    governed_root_fields = (
+        "candidate_package_root",
+        "isolated_root_prefix",
+        "usage_ledger_root",
+        "prompt_retention_root",
+        "output_retention_root",
+        "provider_receipt_root",
+        "structural_evidence_root",
+    )
+    governed_root_identities: dict[tuple[str, ...], str] = {}
+    for field in governed_root_fields:
+        identity = _windows_relative_identity(authorization.get(field), field)
+        prior = governed_root_identities.get(identity)
+        if prior is not None:
+            raise CampaignError(
+                f"GOVERNED_ROOT_ALIAS: {prior} and {field} are Windows-equivalent"
+            )
+        governed_root_identities[identity] = field
     parent, parent_ref, parent_raw = _matrix_ref(root, authorization["campaign_authorization"], "campaign_authorization")
     parent_keys = {
         "schema", "kind", "authorization_id", "status", "revoked", "valid_not_before", "valid_not_after",
@@ -2609,6 +3216,23 @@ def _recheck_live_authorization(
     )
     if observed_sha256 != expected_sha256 or observed != expected:
         raise CampaignError("LIVE_AUTHORIZATION_RECHECK_DRIFT")
+
+
+def _require_active_live_authorization_window(auth: dict[str, Any]) -> None:
+    authorization_window = auth.get("authorization_window")
+    if not isinstance(authorization_window, dict):
+        raise CampaignError("LIVE_AUTHORIZATION_WINDOW")
+    child_start = _parse_utc(
+        authorization_window.get("launch_not_before"),
+        "launch_not_before",
+    )
+    child_end = _parse_utc(
+        authorization_window.get("launch_not_after"),
+        "launch_not_after",
+    )
+    now = datetime.now(timezone.utc)
+    if not child_start <= now <= child_end:
+        raise CampaignError("LIVE_AUTHORIZATION_WINDOW")
 
 
 def retry_continuation_authorization_id(value: dict[str, Any]) -> str:
@@ -3402,6 +4026,7 @@ def _live_partial_observations(
     list[dict[str, object]],
     list[dict[str, object]],
     list[dict[str, object]],
+    list[dict[str, object]],
 ]:
     if (
         not isinstance(attempt_states, list)
@@ -3414,6 +4039,7 @@ def _live_partial_observations(
     rows: list[dict[str, object]] = []
     results: list[dict[str, object]] = []
     pre_admission_diagnostics: list[dict[str, object]] = []
+    outcome_unknown_diagnostics: list[dict[str, object]] = []
     observed_cases: list[str] = []
     for index, (contract, state_row, execution_custody) in enumerate(
         zip(reservation["call_contract"], attempt_states, execution_custodies),
@@ -3421,7 +4047,9 @@ def _live_partial_observations(
     ):
         if not isinstance(state_row, dict) or set(state_row) != {
             "case_id", "state", "started_at", "ended_at", "host_invocation_id",
-            "result", "pre_admission_diagnostic",
+            "result", "pre_admission_diagnostic", "terminal_cause",
+            "terminal_failure_kind", "terminal_host_returncode",
+            "outcome_unknown_diagnostic",
         }:
             raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
         case_id = state_row.get("case_id")
@@ -3435,7 +4063,10 @@ def _live_partial_observations(
         observed_cases.append(case_id)
         call_id = f"{reservation['cycle_or_review_batch_id']}:call-{index:02d}"
         if state_row.get("state") == "COMPLETED":
-            if state_row.get("pre_admission_diagnostic") is not None:
+            if (
+                state_row.get("pre_admission_diagnostic") is not None
+                or state_row.get("outcome_unknown_diagnostic") is not None
+            ):
                 raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
             retained_result = state_row.get("result")
             reconstructed = _provider_receipt(
@@ -3473,7 +4104,10 @@ def _live_partial_observations(
             "cycle_or_review_batch_id": reservation["cycle_or_review_batch_id"],
         }
         if state_row.get("state") == "NOT_SUBMITTED":
-            if state_row.get("pre_admission_diagnostic") is not None:
+            if (
+                state_row.get("pre_admission_diagnostic") is not None
+                or state_row.get("outcome_unknown_diagnostic") is not None
+            ):
                 raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
             rows.append(
                 {
@@ -3485,6 +4119,8 @@ def _live_partial_observations(
                 }
             )
         elif state_row.get("state") in {"DISPATCH_UNKNOWN", "SUBMITTING", "PENDING_STRUCTURED_ADMISSION"}:
+            if state_row.get("outcome_unknown_diagnostic") is not None:
+                raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
             diagnostic_ref = state_row.get("pre_admission_diagnostic")
             if (
                 not isinstance(diagnostic_ref, dict)
@@ -3504,6 +4140,17 @@ def _live_partial_observations(
         elif state_row.get("state") == "OUTCOME_UNKNOWN":
             if state_row.get("pre_admission_diagnostic") is not None:
                 raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
+            outcome_diagnostic = state_row.get("outcome_unknown_diagnostic")
+            if (
+                not isinstance(outcome_diagnostic, dict)
+                or set(outcome_diagnostic) != {"path", "byte_count", "sha256"}
+                or not isinstance(state_row.get("terminal_cause"), str)
+                or not state_row["terminal_cause"]
+                or not isinstance(state_row.get("terminal_failure_kind"), str)
+                or not state_row["terminal_failure_kind"]
+            ):
+                raise CampaignError("LIVE_OUTCOME_UNKNOWN_DIAGNOSTIC_REQUIRED")
+            outcome_unknown_diagnostics.append(copy.deepcopy(outcome_diagnostic))
             started_at = state_row.get("started_at")
             ended_at = state_row.get("ended_at")
             host_invocation_id = state_row.get("host_invocation_id")
@@ -3523,7 +4170,7 @@ def _live_partial_observations(
             raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
     if len(set(observed_cases)) != 5:
         raise CampaignError("LIVE_ATTEMPT_STATE_INVENTORY_INVALID")
-    return rows, results, pre_admission_diagnostics
+    return rows, results, pre_admission_diagnostics, outcome_unknown_diagnostics
 
 
 def _finalize_provider_failure(
@@ -3547,7 +4194,12 @@ def _finalize_provider_failure(
 ) -> None:
     live = _producer_capture_mode(auth)
     if live:
-        receipts, retained_results, pre_admission_diagnostics = _live_partial_observations(
+        (
+            receipts,
+            retained_results,
+            pre_admission_diagnostics,
+            outcome_unknown_diagnostics,
+        ) = _live_partial_observations(
             reservation,
             live_attempt_states,
             completed_receipts or [],
@@ -3560,6 +4212,8 @@ def _finalize_provider_failure(
         measured_cost = dict(LIVE_COST_UNAVAILABLE) if completed or unknown else {"unit": "usd", "value": "0"}
         if completed == 5 and unknown == 0 and not_dispatched == 0:
             classification = "OBSERVED"
+        elif not_dispatched == 5 and completed == 0 and unknown == 0:
+            classification = "PROVED_NO_DISPATCH"
         elif any(row["unknown_kind"] == "OUTCOME_UNKNOWN" for row in receipts):
             classification = "OUTCOME_UNKNOWN"
         else:
@@ -3572,6 +4226,7 @@ def _finalize_provider_failure(
         measured_cost = {"unit": "usd", "value": "unknown"}
         classification = "OUTCOME_UNKNOWN" if positive else "DISPATCH_UNKNOWN"
         pre_admission_diagnostics = None
+        outcome_unknown_diagnostics = None
     terminal = settle(
         usage_root,
         reservation["transaction_sha256"],
@@ -3598,15 +4253,21 @@ def _finalize_provider_failure(
         candidate_status=(
             "CONSUMED_OBSERVED"
             if lane != "producer" or classification == "OBSERVED"
+            else "CONSUMED_NO_DISPATCH"
+            if classification == "PROVED_NO_DISPATCH"
             else "CONSUMED_DISPATCH_UNKNOWN"
         ),
         reservation_sha256=reservation["transaction_sha256"],
         settlement_sha256=terminal["transaction_sha256"],
         error=error,
-        resumable_retry=False,
+        resumable_retry=(
+            classification == "PROVED_NO_DISPATCH"
+            and claims.get("candidate_claim") is not None
+        ),
         failure_phase=failure_phase,
         observed_results=retained_results,
         pre_admission_diagnostics=pre_admission_diagnostics,
+        outcome_unknown_diagnostics=outcome_unknown_diagnostics,
     )
 
 
@@ -3680,6 +4341,326 @@ def _finalize_observed_failure(
     )
 
 
+def _observed_terminal_journal_path(lane: str, attempt_index: int) -> str:
+    if attempt_index == 1:
+        return f"{lane}/observed-terminal-journal.json"
+    return f"{lane}/retry-terminal-journals/attempt-{attempt_index:02d}.json"
+
+
+def _success_finalizer_value(
+    auth: dict[str, Any],
+    auth_sha: str,
+    claims: dict[str, Any],
+    reservation: dict[str, Any],
+    settlement: dict[str, Any],
+    results: list[dict[str, Any]],
+    completion_ref: dict[str, object],
+    usage_root: Path,
+    *,
+    lane: str,
+    attempt_index: int,
+) -> dict[str, Any]:
+    value = {
+        "schema": "reviewed-campaign-observation-finalizer-v1",
+        "lane": lane,
+        "attempt_index": attempt_index,
+        "candidate_id": auth["candidate_id"],
+        "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
+        "authorization_sha256": auth_sha,
+        "attempt_claim_set": claims.get("attempt_claim_set"),
+        "authorization_claim": claims.get("authorization_claim"),
+        "candidate_claim": claims.get("candidate_claim"),
+        "continuation_claim": claims.get("continuation_claim"),
+        "candidate_status": "CONSUMED_OBSERVED",
+        "dispatch_status": (
+            "LIVE_RAW_CAPTURE_COMPLETE"
+            if lane == "producer" and _producer_capture_mode(auth)
+            else "DETERMINISTIC_FAKE_COMPLETE"
+        ),
+        "reservation_sha256": reservation["transaction_sha256"],
+        "settlement_sha256": settlement["transaction_sha256"],
+        "observed_results": results,
+        "completion": completion_ref,
+        "resulting_usage_head_sha256": head_snapshot(usage_root)["head_sha256"],
+        "terminal": True,
+    }
+    if lane == "producer" and reservation.get("kind") == "reservation-set":
+        value["producer_usage_reservation_sha256s"] = [
+            row["reservation_sha256"] for row in reservation["reservation_members"]
+        ]
+    return value
+
+
+def _recover_consumed_attempt_claims(
+    root: Path,
+    auth: dict[str, Any],
+    auth_sha: str,
+    bindings: dict[str, Any],
+    *,
+    lane: str,
+    attempt_index: int,
+) -> dict[str, Any]:
+    claim_set_path = _contained(
+        root,
+        _attempt_claim_set_path(lane, attempt_index, auth_sha),
+        "terminal_recovery_attempt_claim_set",
+        must_exist=False,
+    )
+    if not claim_set_path.is_file():
+        raise CampaignError("TERMINAL_RECOVERY_ATTEMPT_CLAIM_SET_MISSING")
+    authorization_claim = {
+        "schema": "reviewed-campaign-authorization-claim-v1",
+        "kind": "producer-cohort" if lane == "producer" else "cold-review-cohort",
+        "authorization_sha256": auth_sha,
+        "candidate_id": auth["candidate_id"],
+        "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
+        "execution_mode": auth["execution_mode"],
+        "live_dispatch": _production_live_mode(auth) if lane == "producer" else False,
+    }
+    try:
+        _consume_attempt_claims(
+            root,
+            auth,
+            auth_sha,
+            bindings,
+            lane=lane,
+            authorization_claim=authorization_claim,
+        )
+    except _AttemptClaimSetError as exc:
+        if not str(exc).startswith("ATTEMPT_CLAIM_SET_RECOVERY:"):
+            raise CampaignError(f"TERMINAL_RECOVERY_CLAIM_STATE: {exc}") from exc
+        return exc.claims
+    raise CampaignError("TERMINAL_RECOVERY_CLAIM_SET_WAS_NOT_PREEXISTING")
+
+
+def _recover_observed_success_terminal(
+    root: Path,
+    usage_root: Path,
+    auth: dict[str, Any],
+    auth_sha: str,
+    bindings: dict[str, Any],
+    *,
+    lane: str,
+    attempt_index: int,
+) -> bool:
+    journal_relative = _observed_terminal_journal_path(lane, attempt_index)
+    journal_path = _contained(
+        root,
+        journal_relative,
+        "observed_terminal_journal_recovery",
+        must_exist=False,
+    )
+    completion_relative = (
+        "producer/completion.json" if lane == "producer" else "cold-review/completion.json"
+    )
+    completion_path = _contained(
+        root,
+        completion_relative,
+        "observed_terminal_completion_recovery",
+        must_exist=False,
+    )
+    if not journal_path.exists() and not completion_path.exists():
+        return False
+
+    if journal_path.exists():
+        journal, journal_raw = _load_canonical_json(
+            journal_path,
+            "observed_terminal_journal_recovery",
+        )
+        expected_keys = {
+            "schema", "status", "lane", "attempt_index", "candidate_id",
+            "cycle_or_review_batch_id", "authorization_sha256",
+            "reservation_sha256", "producer_usage_reservation_sha256s",
+            "observed_results", "provider_usage_receipts", "measured_cost",
+        }
+        if (
+            set(journal) != expected_keys
+            or journal_raw != canonical_bytes(journal)
+            or journal.get("schema") != "reviewed-campaign-observed-terminal-journal-v1"
+            or journal.get("status") != "EXACT_FIVE_OBSERVED"
+            or journal.get("lane") != lane
+            or journal.get("attempt_index") != attempt_index
+            or journal.get("candidate_id") != auth["candidate_id"]
+            or journal.get("cycle_or_review_batch_id")
+            != auth["cycle_or_review_batch_id"]
+            or journal.get("authorization_sha256") != auth_sha
+            or not isinstance(journal.get("observed_results"), list)
+            or len(journal["observed_results"]) != 5
+            or not isinstance(journal.get("provider_usage_receipts"), list)
+            or len(journal["provider_usage_receipts"]) != 5
+        ):
+            raise CampaignError("TERMINAL_RECOVERY_OBSERVED_JOURNAL_SUBSTITUTION")
+        reservation_sha = journal.get("reservation_sha256")
+        results = journal["observed_results"]
+    else:
+        completion, _completion_raw = _load_canonical_json(
+            completion_path,
+            "observed_terminal_completion_recovery",
+        )
+        reservation_sha = completion.get("reservation_sha256")
+        results = completion.get("results")
+        journal = None
+        if not isinstance(results, list) or len(results) != 5:
+            raise CampaignError("TERMINAL_RECOVERY_COMPLETION_RESULTS")
+
+    if not isinstance(reservation_sha, str) or SHA256_RE.fullmatch(reservation_sha) is None:
+        raise CampaignError("TERMINAL_RECOVERY_RESERVATION_SHA")
+    reservation_path = usage_root / "transactions" / f"{reservation_sha}.json"
+    reservation, reservation_raw = _load_canonical_json(
+        reservation_path,
+        "terminal_recovery_reservation",
+    )
+    if (
+        hashlib.sha256(reservation_raw).hexdigest() != reservation_sha
+        or reservation.get("kind") not in {"reservation", "reservation-set"}
+        or reservation.get("authorization_sha256") != auth_sha
+        or reservation.get("candidate_id") != auth["candidate_id"]
+        or reservation.get("cycle_or_review_batch_id")
+        != auth["cycle_or_review_batch_id"]
+    ):
+        raise CampaignError("TERMINAL_RECOVERY_RESERVATION_SUBSTITUTION")
+    reservation = {**reservation, "transaction_sha256": reservation_sha}
+    member_shas = [
+        row.get("reservation_sha256")
+        for row in reservation.get("reservation_members", [])
+        if isinstance(row, dict)
+    ]
+    if reservation.get("kind") == "reservation-set" and (
+        len(member_shas) != 5
+        or journal is not None
+        and journal.get("producer_usage_reservation_sha256s") != member_shas
+    ):
+        raise CampaignError("TERMINAL_RECOVERY_RESERVATION_MEMBERS")
+
+    claims = _recover_consumed_attempt_claims(
+        root,
+        auth,
+        auth_sha,
+        bindings,
+        lane=lane,
+        attempt_index=attempt_index,
+    )
+    if journal is not None:
+        _validate_failure_results(
+            root,
+            {
+                "authorization_sha256": auth_sha,
+                "dispatch_classification": "OBSERVED",
+                "observed_results": results,
+            },
+            auth,
+            {
+                "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
+                "provider_usage_receipts": journal["provider_usage_receipts"],
+                "reservation_members": reservation.get("reservation_members"),
+                "completed": 5,
+                "failed": 0,
+                "cancelled": 0,
+                "not_dispatched": 0,
+                "unknown": 0,
+            },
+            None,
+            lane=lane,
+        )
+
+    snapshot = head_snapshot(usage_root)
+    if snapshot["open_reservations"] == [reservation_sha]:
+        if journal is None:
+            raise CampaignError("TERMINAL_RECOVERY_OPEN_RESERVATION_LACKS_JOURNAL")
+        settlement = settle(
+            usage_root,
+            reservation_sha,
+            completed=5,
+            failed=0,
+            cancelled=0,
+            not_dispatched=0,
+            unknown=0,
+            provider_usage_receipts=journal["provider_usage_receipts"],
+            measured_cost=journal["measured_cost"],
+            candidate_id=auth["candidate_id"],
+            authorization_sha256=auth_sha,
+        )
+    elif not snapshot["open_reservations"]:
+        settlement_sha = snapshot.get("last_transaction_sha256")
+        if not isinstance(settlement_sha, str):
+            raise CampaignError("TERMINAL_RECOVERY_SETTLEMENT_MISSING")
+        settlement_path = usage_root / "transactions" / f"{settlement_sha}.json"
+        settlement, settlement_raw = _load_canonical_json(
+            settlement_path,
+            "terminal_recovery_settlement",
+        )
+        if hashlib.sha256(settlement_raw).hexdigest() != settlement_sha:
+            raise CampaignError("TERMINAL_RECOVERY_SETTLEMENT_CONTENT_ADDRESS")
+        settlement = {**settlement, "transaction_sha256": settlement_sha}
+    else:
+        raise CampaignError("TERMINAL_RECOVERY_OPEN_RESERVATION_DRIFT")
+
+    if (
+        settlement.get("kind") not in {"settlement", "settlement-set"}
+        or settlement.get("reservation_transaction_sha256") != reservation_sha
+        or settlement.get("authorization_sha256") != auth_sha
+        or settlement.get("candidate_id") != auth["candidate_id"]
+        or settlement.get("completed") != 5
+        or settlement.get("unknown") != 0
+        or settlement.get("not_dispatched") != 0
+        or journal is not None
+        and (
+            settlement.get("provider_usage_receipts")
+            != journal["provider_usage_receipts"]
+            or settlement.get("measured_cost") != journal["measured_cost"]
+        )
+    ):
+        raise CampaignError("TERMINAL_RECOVERY_SETTLEMENT_SUBSTITUTION")
+
+    completion = _expected_success_completion(
+        auth,
+        auth_sha,
+        bindings,
+        results,
+        lane=lane,
+        reservation_sha256=reservation_sha,
+        settlement_sha256=settlement["transaction_sha256"],
+        producer_usage_reservation_sha256s=(
+            member_shas if reservation.get("kind") == "reservation-set" else None
+        ),
+    )
+    completion_ref = _publish_or_adopt_exact_json(
+        root,
+        completion_relative,
+        completion,
+        "observed_terminal_completion_recovery",
+    )
+    finalizer = _success_finalizer_value(
+        auth,
+        auth_sha,
+        claims,
+        reservation,
+        settlement,
+        results,
+        completion_ref,
+        usage_root,
+        lane=lane,
+        attempt_index=attempt_index,
+    )
+    _validate_success_finalizer(
+        root,
+        usage_root,
+        finalizer,
+        auth,
+        auth_sha,
+        bindings,
+        lane=lane,
+        attempt_index=attempt_index,
+    )
+    _publish_or_adopt_exact_json(
+        root,
+        _terminal_publication_paths(lane, auth, attempt_index)[1],
+        finalizer,
+        "observed_terminal_finalizer_recovery",
+    )
+    return True
+
+
 TERMINAL_PHASE_FAULTS = {
     "after-observation-validation",
     "after-settlement",
@@ -3698,6 +4679,60 @@ def _validate_fault_injection(fault_at: str | None, allow_test_fixture: bool) ->
     }
     if fault_at not in allowed_faults or (fault_at is not None and not allow_test_fixture):
         raise CampaignError("UNSUPPORTED_FAULT_INJECTION")
+
+
+def _cleanup_prepared_live_adapter_after_preclaim_failure(
+    root: Path,
+    auth: dict[str, Any],
+    auth_sha: str,
+    adapter: ProviderAdapter,
+    error: BaseException,
+    *,
+    claim_consumed: bool = False,
+    failure_phase: str = "post-prepare-preclaim",
+) -> None:
+    cleanup_failure: BaseException | None = None
+    abort = getattr(adapter, "abort_all", None)
+    if not callable(abort):
+        cleanup_failure = RuntimeError("live adapter abort interface unavailable")
+    else:
+        try:
+            abort()
+        except BaseException as exc:
+            cleanup_failure = exc
+    witness = {
+        "schema": "reviewed-campaign-preclaim-cleanup-witness-v1",
+        "status": (
+            "CLEANUP_INCOMPLETE"
+            if cleanup_failure is not None
+            else "OWNED_ISOLATION_REMOVED"
+        ),
+        "failure_phase": failure_phase,
+        "failure_class": type(error).__name__,
+        "cleanup_failure_class": (
+            type(cleanup_failure).__name__ if cleanup_failure is not None else None
+        ),
+        "authorization_sha256": auth_sha,
+        "candidate_id": auth["candidate_id"],
+        "case_ids": list(auth["case_ids"]),
+        "provider_host_started": False,
+        "claim_consumed": claim_consumed,
+        "reservation_created": False,
+    }
+    witness_sha = hashlib.sha256(canonical_bytes(witness)).hexdigest()
+    _publish_or_adopt_exact_json(
+        root,
+        (
+            "producer/preclaim-cleanup-witnesses/"
+            f"{witness_sha}.preclaim-cleanup-witness.json"
+        ),
+        witness,
+        "producer_preclaim_cleanup_witness",
+    )
+    if cleanup_failure is not None:
+        raise CampaignError(
+            f"{error}; OWNED_PRECLAIM_CLEANUP_FAILED: {type(cleanup_failure).__name__}"
+        ) from error
 
 
 def run_producer_cohort(
@@ -3722,6 +4757,7 @@ def run_producer_cohort(
     auth, auth_sha = _load_producer_authorization(
         root,
         authorization_path,
+        require_active_window=False,
         allow_test_fixture=allow_test_fixture,
     )
     live = _producer_capture_mode(auth)
@@ -3781,6 +4817,27 @@ def run_producer_cohort(
         lane="producer",
         attempt_index=attempt_index,
     )
+    if live and _recover_observed_success_terminal(
+        root,
+        usage_root,
+        auth,
+        auth_sha,
+        bindings,
+        lane="producer",
+        attempt_index=attempt_index,
+    ):
+        _preflight_terminal_publications(
+            root,
+            usage_root,
+            auth,
+            auth_sha,
+            bindings,
+            lane="producer",
+            attempt_index=attempt_index,
+        )
+        raise CampaignError("TERMINAL_RECOVERY_DID_NOT_BLOCK_REDISPATCH")
+    if live:
+        _require_active_live_authorization_window(auth)
     if live:
         expected_sequence = auth["expected_campaign_usage_sequence"]
         expected_head = auth["expected_campaign_usage_head_sha256"]
@@ -3801,27 +4858,37 @@ def run_producer_cohort(
             prepare(auth, bindings, allow_test_fixture=allow_test_fixture)
         except Exception as exc:
             raise CampaignError(f"LIVE_PROVIDER_PREPARATION_FAILED: {exc}") from exc
-        prepared_bindings = getattr(adapter, "execution_bindings", None)
-        if (
-            not callable(getattr(adapter, "attempt_states", None))
-            or not callable(getattr(adapter, "abort_all", None))
-            or not callable(prepared_bindings)
-        ):
-            raise CampaignError("LIVE_PROVIDER_TERMINALIZATION_INTERFACE_UNAVAILABLE")
         try:
-            producer_capture_bindings = prepared_bindings()
-        except Exception as exc:
-            raise CampaignError(f"LIVE_PROVIDER_CAPTURE_BINDINGS_UNAVAILABLE: {exc}") from exc
-        if list(producer_capture_bindings) != auth["case_ids"]:
-            raise CampaignError("LIVE_PROVIDER_CAPTURE_BINDINGS_CASE_ORDER")
-        _recheck_live_authorization(
-            root,
-            authorization_path,
-            auth,
-            auth_sha,
-            allow_test_fixture=allow_test_fixture,
-        )
-        _recheck_execution_tooling_binding(root, auth, allow_test_fixture=allow_test_fixture)
+            prepared_bindings = getattr(adapter, "execution_bindings", None)
+            if (
+                not callable(getattr(adapter, "attempt_states", None))
+                or not callable(getattr(adapter, "abort_all", None))
+                or not callable(prepared_bindings)
+            ):
+                raise CampaignError("LIVE_PROVIDER_TERMINALIZATION_INTERFACE_UNAVAILABLE")
+            try:
+                producer_capture_bindings = prepared_bindings()
+            except Exception as exc:
+                raise CampaignError(f"LIVE_PROVIDER_CAPTURE_BINDINGS_UNAVAILABLE: {exc}") from exc
+            if list(producer_capture_bindings) != auth["case_ids"]:
+                raise CampaignError("LIVE_PROVIDER_CAPTURE_BINDINGS_CASE_ORDER")
+            _recheck_live_authorization(
+                root,
+                authorization_path,
+                auth,
+                auth_sha,
+                allow_test_fixture=allow_test_fixture,
+            )
+            _recheck_execution_tooling_binding(root, auth, allow_test_fixture=allow_test_fixture)
+        except BaseException as exc:
+            _cleanup_prepared_live_adapter_after_preclaim_failure(
+                root,
+                auth,
+                auth_sha,
+                adapter,
+                exc,
+            )
+            raise
     try:
         claims = _consume_attempt_claims(
             root,
@@ -3855,20 +4922,58 @@ def run_producer_cohort(
             failure_phase="pre-dispatch",
         )
         raise
+    except BaseException as error:
+        if live:
+            claim_set_relative = _attempt_claim_set_path("producer", attempt_index, auth_sha)
+            claim_set_present = os.path.lexists(
+                root.joinpath(*claim_set_relative.split("/"))
+            )
+            _cleanup_prepared_live_adapter_after_preclaim_failure(
+                root,
+                auth,
+                auth_sha,
+                adapter,
+                error,
+                claim_consumed=claim_set_present,
+            )
+        raise
     if fault_at == "after-claims-before-reservation":
         error = CampaignError("INJECTED_RESERVATION_FAILURE_AFTER_CLAIMS")
-        _finalize_no_dispatch_failure(
-            root,
-            usage_root,
-            auth,
-            auth_sha,
-            lane="producer",
-            attempt_index=attempt_index,
-            claims=claims,
-            packet_disclosure=None,
-            reservation=None,
-            error=error,
-        )
+        try:
+            _finalize_no_dispatch_failure(
+                root,
+                usage_root,
+                auth,
+                auth_sha,
+                lane="producer",
+                attempt_index=attempt_index,
+                claims=claims,
+                packet_disclosure=None,
+                reservation=None,
+                error=error,
+            )
+        except BaseException as finalization_error:
+            if live:
+                _cleanup_prepared_live_adapter_after_preclaim_failure(
+                    root,
+                    auth,
+                    auth_sha,
+                    adapter,
+                    finalization_error,
+                    claim_consumed=True,
+                    failure_phase="post-claim-pre-reservation",
+                )
+            raise
+        if live:
+            _cleanup_prepared_live_adapter_after_preclaim_failure(
+                root,
+                auth,
+                auth_sha,
+                adapter,
+                error,
+                claim_consumed=True,
+                failure_phase="post-claim-pre-reservation",
+            )
         raise error
     subjects = [f"producer:{case_id}" for case_id in auth["case_ids"]]
     reservation: dict[str, Any] | None = None
@@ -3995,6 +5100,21 @@ def run_producer_cohort(
             raw_events.append({"event": "terminal_result_observed", "worker": worker["worker"], "case_id": worker["case_id"]})
             failure_phase = "provider-execution"
         if observation_error is not None:
+            try:
+                terminal_states = adapter.attempt_states()
+            except BaseException:
+                terminal_states = None
+            if (
+                isinstance(terminal_states, list)
+                and len(terminal_states) == 5
+                and all(
+                    isinstance(row, dict)
+                    and row.get("state") == "COMPLETED"
+                    and isinstance(row.get("result"), dict)
+                    for row in terminal_states
+                )
+            ):
+                failure_phase = "post-capture-cleanup"
             raise observation_error
         if len(results) != 5 or len(receipts) != 5:
             raise CampaignError("LIVE_PROVIDER_CONCURRENT_OBSERVATION_INCOMPLETE")
@@ -4010,6 +5130,29 @@ def run_producer_cohort(
         issues = validate_dispatch_manifest(manifest, 5)
         if issues:
             raise CampaignError(f"DISPATCH_BARRIER_INVALID: {issues[0]['failure_class']}")
+        if live:
+            _publish_once_json(
+                root,
+                _observed_terminal_journal_path("producer", attempt_index),
+                {
+                    "schema": "reviewed-campaign-observed-terminal-journal-v1",
+                    "status": "EXACT_FIVE_OBSERVED",
+                    "lane": "producer",
+                    "attempt_index": attempt_index,
+                    "candidate_id": auth["candidate_id"],
+                    "cycle_or_review_batch_id": auth["cycle_or_review_batch_id"],
+                    "authorization_sha256": auth_sha,
+                    "reservation_sha256": reservation["transaction_sha256"],
+                    "producer_usage_reservation_sha256s": [
+                        row["reservation_sha256"]
+                        for row in reservation["reservation_members"]
+                    ],
+                    "observed_results": results,
+                    "provider_usage_receipts": receipts,
+                    "measured_cost": dict(LIVE_COST_UNAVAILABLE),
+                },
+                "observed_terminal_journal",
+            )
         if fault_at in {"after-observation-validation", "after-incident-publication"}:
             failure_phase = "after-observation-validation"
             raise CampaignError(f"INJECTED_TERMINAL_PHASE_FAILURE: {fault_at}")

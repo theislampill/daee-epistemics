@@ -1852,7 +1852,7 @@ class CiReadbackContract(unittest.TestCase):
                 self.assertIn(name, (result.stderr or b"").decode("utf-8"))
                 self.assertGreaterEqual(job.close_calls, 1)
 
-    def test_windows_normal_completion_requires_zero_active_job_descendants(self) -> None:
+    def test_windows_normal_completion_distinguishes_accounting_convergence_from_persistent_descendant(self) -> None:
         runner = importlib.import_module("run_local_ci")
 
         class FakeProcess:
@@ -1864,8 +1864,8 @@ class CiReadbackContract(unittest.TestCase):
                 return b"complete", b""
 
         class FakeJob:
-            def __init__(self) -> None:
-                self.active = [1, 0]
+            def __init__(self, active: list[int]) -> None:
+                self.active = list(active)
                 self.terminate_calls: list[int] = []
                 self.close_calls = 0
 
@@ -1881,29 +1881,66 @@ class CiReadbackContract(unittest.TestCase):
             def close(self) -> None:
                 self.close_calls += 1
 
-        process = FakeProcess()
-        job = FakeJob()
-        with mock.patch.object(runner.os, "name", "nt"), mock.patch.object(
-            runner.subprocess,
-            "CREATE_NEW_PROCESS_GROUP",
-            0x00000200,
-            create=True,
-        ), mock.patch.object(runner, "_WindowsJobCustody", return_value=job, create=True), mock.patch.object(
-            runner.subprocess, "Popen", return_value=process
-        ), mock.patch.object(
-            runner.subprocess,
-            "run",
-            side_effect=AssertionError("taskkill fallback is forbidden"),
-        ):
-            result = runner.run_owned_command(["owned"], timeout_seconds=1)
+        cases = (
+            {
+                "name": "root-accounting-converges",
+                "active": [1, 0],
+                "grace": 1.0,
+                "returncode": 0,
+                "teardown_failed": False,
+                "failure_kind": None,
+                "terminate_calls": [],
+            },
+            {
+                "name": "descendant-persists-beyond-grace",
+                "active": [1, 1],
+                "grace": 0.0,
+                "returncode": 125,
+                "teardown_failed": True,
+                "failure_kind": "PROCESS_TREE_TEARDOWN",
+                "terminate_calls": [125],
+            },
+        )
+        for case in cases:
+            with self.subTest(case=case["name"]):
+                process = FakeProcess()
+                job = FakeJob(case["active"])
+                with mock.patch.object(runner.os, "name", "nt"), mock.patch.object(
+                    runner.subprocess,
+                    "CREATE_NEW_PROCESS_GROUP",
+                    0x00000200,
+                    create=True,
+                ), mock.patch.object(
+                    runner,
+                    "_WindowsJobCustody",
+                    return_value=job,
+                    create=True,
+                ), mock.patch.object(
+                    runner.subprocess,
+                    "Popen",
+                    return_value=process,
+                ), mock.patch.object(
+                    runner,
+                    "PROCESS_TREE_TERMINATION_GRACE_SECONDS",
+                    case["grace"],
+                ), mock.patch.object(
+                    runner.subprocess,
+                    "run",
+                    side_effect=AssertionError("taskkill fallback is forbidden"),
+                ):
+                    result = runner.run_owned_command(["owned"], timeout_seconds=1)
 
-        self.assertEqual(result.returncode, 125)
-        self.assertFalse(result.timed_out)
-        self.assertTrue(result.teardown_failed)
-        self.assertEqual(result.failure_kind, "PROCESS_TREE_TEARDOWN")
-        self.assertIn("active-descendants-after-root:1", (result.stderr or b"").decode("utf-8"))
-        self.assertEqual(job.terminate_calls, [125])
-        self.assertEqual(job.close_calls, 1)
+                self.assertEqual(case["returncode"], result.returncode)
+                self.assertFalse(result.timed_out)
+                self.assertEqual(case["teardown_failed"], result.teardown_failed)
+                self.assertEqual(case["failure_kind"], result.failure_kind)
+                self.assertEqual(case["terminate_calls"], job.terminate_calls)
+                self.assertEqual(1, job.close_calls)
+                if case["teardown_failed"]:
+                    self.assertIn(
+                        "active-descendants-after-root:1",
+                        (result.stderr or b"").decode("utf-8"),
+                    )
 
     def test_local_ci_cli_preserves_distinct_teardown_failure(self) -> None:
         runner = importlib.import_module("run_local_ci")

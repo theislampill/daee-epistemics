@@ -360,7 +360,10 @@ def gate_staged_runtime_handshake() -> tuple[bool, list[StepResult], str]:
 
 
 def gate_mutation_sweep() -> tuple[bool, list[StepResult], str]:
-    ok, steps = steps_all_pass(["python tools/gen_fixture_mutations.py --self-test"])
+    ok, steps = steps_all_pass(
+        ["python tools/gen_fixture_mutations.py --self-test"],
+        timeout=LONG_TIMEOUT_SEC,
+    )
     return ok, steps, "restore the mutation-sweep anti-evasion coverage flagged by the self-test"
 
 
@@ -669,7 +672,7 @@ def gate_evidence_retention_and_export() -> tuple[bool, list[StepResult], str]:
 
 def gate_reviewed_campaign_no_dispatch() -> tuple[bool, list[StepResult], str]:
     commands = list(A16_GATE_COMMANDS["reviewed-campaign no-dispatch orchestration"])
-    ok, steps = steps_all_pass(commands)
+    ok, steps = steps_all_pass(commands, timeout=LONG_TIMEOUT_SEC)
     return ok, steps, (
         "repair no-dispatch orchestration, exact adapter-envelope custody, usage/finalizer state, or retry lineage; "
         "this gate never authorizes or performs a provider call"

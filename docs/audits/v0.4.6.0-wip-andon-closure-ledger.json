@@ -2689,9 +2689,9 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "fresh deterministic source freeze, complete no-model preflight, full local CI, and zero-finding whole-branch review on the post-repair tree",
-        "ordinary successor commit followed by exact-SHA GitHub CI on that pushed commit",
-        "mandatory terminal dependencies and final owner acceptance"
+        "one cohesive ordinary checkpoint commit and non-force push of the independently accepted repair tree with exact local/upstream/live-remote equality",
+        "parallel exact-SHA GitHub CI and same-commit local source freeze, complete no-model preflight, full local CI, and generated/package qualification without source mutation",
+        "zero-finding final whole-tree review, valid exact-commit source receipt, fresh candidate gates, and the unresolved-usage owner boundary"
       ],
       "scope_exclusions": [
         "no push to main",
@@ -2927,7 +2927,7 @@
         "structural promotion never upgrades to semantic truth",
         "case 1 provider invocation and cost remain neither proven nor disproven"
       ],
-      "next_action": "Independently review and publish the bounded ANDON 182 diagnostic-retention successor, require fresh exact-SHA CI and source/candidate evidence, then stop at the unresolved-usage owner boundary without dispatching or minting replacement authority.",
+      "next_action": "Publish the independently accepted ANDON 199 convergence tranche as one cohesive ordinary Branch 11 checkpoint and non-force push. Start exact-SHA GitHub CI immediately and run fresh no-model, full local-CI, and generated/package qualification in parallel against that same immutable committed SHA without source mutation. Treat both lanes as non-promotable until local qualification, exact-SHA CI, final whole-tree review, and the exact source receipt all pass, then continue to fresh candidate gates and the unresolved-usage owner boundary without dispatching or minting replacement authority.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -3580,7 +3580,7 @@
           "source_ref": "tools/campaign_usage_ledger.py current Branch 11 campaign-usage custody bytes",
           "commit_sha1": null,
           "blob_sha1": null,
-        "sha256": "1db3381e389e1473f607bad717a55f1c6416bdba14636d38b6c69ba2a49d8e15",
+        "sha256": "df8783d3c379f9f568a3e9c170b0573dc706d1424adb364111ad93619a5ac367",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/campaign_usage_ledger.py",
@@ -4177,11 +4177,11 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "refresh the Branch 11 Task 7 deterministic cohort on the final repaired tree and freeze one exact source tree",
-        "fresh final-source freeze, complete no-model preflight, full local CI, and zero-finding independent whole-branch review",
-        "final successor commit, external exact-commit receipt, clean local/upstream/remote equality, and exact-SHA GitHub CI",
+        "one cohesive ordinary checkpoint commit and non-force push of the independently accepted ANDON 199 repair with exact local/upstream/live-remote equality",
+        "parallel exact-SHA GitHub CI and same-commit fresh source freeze, complete no-model preflight, full local CI, and generated/package role without source mutation",
+        "zero-finding independent final whole-tree review and valid external exact-commit source receipt after both qualification lanes are GREEN",
         "fresh immutable candidate construction, retention, package-faithful maturity, and independent readiness review",
-        "separately authorized reviewed five-smoke campaign and final owner acceptance"
+        "external owner disposition of the existing unresolved dispatch-unknown usage before any separately authorized continuation"
       ],
       "scope_exclusions": [
         "no push to main",
@@ -4429,10 +4429,10 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "Task 11ed ANDON 182 current bytes preserve all previously accepted terminalization and identity joins while binding each dispatch-unknown pre-admission diagnostic into the incident/finalizer and exact replay; the validator requires canonical content-addressed diagnostic bytes, source/package/case/model/reservation/execution-custody identity, secret-scan PASS, host return-code state, and exact carrier-role suffixes without upgrading host launch to provider admission",
+          "source_ref": "ANDON 193/194 current bytes preserve the accepted ANDON 185-190 terminalization and identity joins while extending the failed-launch state matrix through post-capture cleanup and exact writer-generation continuity: exact terminal-journal semantic validation precedes usage mutation, immutable usage children are adopted exactly once, replay precedes launch-only gates, current diagnostics and execution custody are revalidated before finalization, every reproduced live post-prepare exit before reservation invokes the cleanup owner, and a retained completed capture remains monotonic when later isolation cleanup fails",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "a38c765d75cfaa4d6c96405aedc5647776a11e3bc1434258136544c6d84a6f19",
+          "sha256": "b3f9288c1532ace7e57c59321a1adb4ede795b37cb59eb67412062650d53cbce",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/reviewed_campaign_orchestrator.py",
@@ -4440,10 +4440,10 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "Task 11ed ANDON 182 current bytes preserve the accepted capability, isolation, process-custody, model, timeout, and execution-tooling joins while retaining the available event prefix, stderr, raw output including empty or absent identity, host return code, secret-scan result, and execution custody before owned-worker cleanup; this evidence remains explicitly not-admitted and provider invocation unproven",
+          "source_ref": "ANDON 194/196 current bytes preserve the accepted capability, isolation, process-custody, model, timeout, and execution-tooling joins while enforcing ordered structured admission, total per-case terminal causes, bounded concurrent-observer quiescence, secret-free cleanup residual witnesses, content-addressed outcome-unknown diagnostics, monotonic completed-result state before cleanup, descriptor-bound witness-generation continuity for initial creation and renewal, and fail-closed retention instead of destructive cleanup before an owner token returns",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "81ff3d11000194cee4c7ae5841d54bb25cabe758b3979f2a7f6ad579fce8286a",
+          "sha256": "de2fb00726e6ad16f14cb690d164e36fc095663bbc1632c6c8b9cef0d0632df4",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/codex_live_producer_adapter.py",
@@ -4462,25 +4462,47 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "Task 11bk reconfirmed the inherited exact Windows suspended-launch Job Object custody, stable-handle membership verification, governed timeout teardown, and zero-active-member readback bytes; no PID-ancestry or taskkill fallback",
+          "source_ref": "ANDON 197 current bytes preserve exact Windows suspended-launch Job Object custody, stable-handle membership verification, governed timeout teardown, and zero-active-member readback while distinguishing bounded post-root Job accounting convergence from a persistent descendant; success requires exact zero membership within the existing finite grace, persistent membership is terminated and returns 125, and no PID-ancestry or taskkill fallback is used",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "f769d96653aefc8b7e6e89fffc55979f57e9a0b1610000aaebf3abb6e90a2461",
+          "sha256": "85d23cc6f93f9d3217a31f4d9ddf12734fdac50447ed933781fbc4141b8b0906",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/run_local_ci.py",
           "unretained_reason": null
         },
         {
+          "kind": "file_sha256",
+          "source_ref": "ANDON 199 current bytes bind no-model Gate 10's exact mutation-sweep self-test to the existing finite LONG_TIMEOUT_SEC without changing command identity, the default timeout for ordinary gates, Gate 25 policy, the full-local-CI child timeout, or the Task 7 outer role budget",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "e1c9ffa5994839c18ed910d02dccacc8168caf0231ff3fe2520f2329f5a583fe",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/run_no_model_preflight.py",
+          "unretained_reason": null
+        },
+        {
           "kind": "command_result",
-          "source_ref": "Task 11ed ANDON 182 owner verification; exact current orchestrator sha256 a38c765d75cfaa4d6c96405aedc5647776a11e3bc1434258136544c6d84a6f19, live adapter sha256 81ff3d11000194cee4c7ae5841d54bb25cabe758b3979f2a7f6ad579fce8286a, and reviewed-campaign test sha256 79e9677acf41b2054b1eb8577ac00cb42fc218228932c102df2db042ff24eea2; full reviewed-campaign suite is 118/118 GREEN including direct pre-admission retention, terminal incident/finalizer/replay binding, equal-byte carrier-role substitution rejection, partial-failure and cleanup neighbors, exact five-member reservation and observation contracts, and all previously accepted authorization, identity, secret-custody, replay, and terminalization controls",
+          "source_ref": "ANDON 199 direct current-path evidence: the source-owned mutation-sweep command timed out at 300.546 seconds under the inherited default but completed unchanged in 319.719 seconds under LONG_TIMEOUT_SEC with stdout sha256 97e0ce1598b4948c0643d7479d2b5beaf54a770c5c185f3d8f478ed7f516e6fc and zero stderr; permanent test sha256 3f78e5248e89b29c9243ec8e52ed20641780ce941ce14aab4652b909e85708e8; the direct timeout-policy canary and complete no-model contract are 1/1 and 23/23 GREEN",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/no-model-preflight/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "the failed native report, direct RED, exact long-timeout reproduction, Gemba, and five-whys are retained in the ignored ANDON 199 carrier; bounded focused GREEN does not claim independent repair acceptance, a restarted promotable outer cohort, exact-SHA CI, candidate maturity, provider execution, or terminal closure"
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "ANDON 196 owner verification; exact current orchestrator sha256 b3f9288c1532ace7e57c59321a1adb4ede795b37cb59eb67412062650d53cbce, live adapter sha256 de2fb00726e6ad16f14cb690d164e36fc095663bbc1632c6c8b9cef0d0632df4, usage ledger sha256 df8783d3c379f9f568a3e9c170b0573dc706d1424adb364111ad93619a5ac367, and reviewed-campaign test sha256 9c0208b0a079b0f88361204e2495a8cf5bad02b82c1e6308bd25bc4a7b267483; the accepted matrix direct REDs cover CAPTURED x worker/root cleanup failure x terminal replay plus pre-readback, renewal, and post-cleanup-readback same-byte different-generation witness substitution; completed usage remains monotonic, cleanup terminalizes as an OBSERVED incident, exact generation is required before adoption, and failed creation retains unverified residue rather than deleting by pathname before owner-token return; the complete affected suite is 144/144 GREEN in 487.097 seconds, the four direct/normal generation controls are GREEN, smoke matrix is 113 GREEN with four governed skips, capture finalization is 2/2 GREEN, structural promotion is 20/20 GREEN, and no-model contract is 22/22 GREEN",
           "commit_sha1": null,
           "blob_sha1": null,
           "sha256": null,
           "command": "python -B tests/reviewed-campaign-orchestration/test_contract.py",
           "exit_code": 0,
           "retained_artifact": null,
-          "unretained_reason": "raw stdout and stderr and the local durable ANDON 182 Task 11ed owner record are not tracked repository artifacts; bounded deterministic acceptance does not imply provider invocation, usage resolution, replacement authorization, exact-SHA CI, candidate maturity, or terminal closure"
+          "unretained_reason": "raw stdout and stderr and the local durable ANDON 190 failed-launch convergence records are not tracked repository artifacts; bounded deterministic GREEN remains subject to independent repair review and does not imply provider invocation, usage resolution, replacement authorization, exact-SHA CI, candidate maturity, or terminal closure"
         },
         {
           "kind": "command_result",
@@ -4550,14 +4572,14 @@
         },
         {
           "kind": "command_result",
-          "source_ref": "Task 11bk independently reconfirmed exact Windows Job custody and CI-readback integration; Task 11ds ANDON 167 current bytes distinguish the nonempty Git commit header block from header-looking message prose before deriving exact tree and parent identity. Current checker sha256 9ed9a456880645e225328696471ac349b89406923ee4f925126f4b05f9ffb28b, schema sha256 6e607b2dbfed00591b843bd1d86528b448b73c9e132037028b7dbc9b9f4443ca, test sha256 cb8af8f64b85ade6afed0363f839c490b1fd0610f8ee88cd4e067d98624e923a, builder sha256 21640026d561bc9da66138dc32dcdcb492f9ad18d9ee4cda14e3ec9c1a00a12d, and runner sha256 f769d96653aefc8b7e6e89fffc55979f57e9a0b1610000aaebf3abb6e90a2461; full contract 61/61 GREEN including the direct header/message-alias canary and governed real-timeout tree canary",
+          "source_ref": "ANDON 197 affected verification distinguishes bounded post-root Job accounting convergence from persistent Job membership without weakening timeout or teardown custody; ANDON 198's controller-only PYTHONDONTWRITEBYTECODE substitution was removed before the exact suite rerun. Current checker sha256 9ed9a456880645e225328696471ac349b89406923ee4f925126f4b05f9ffb28b, schema sha256 6e607b2dbfed00591b843bd1d86528b448b73c9e132037028b7dbc9b9f4443ca, test sha256 03b213e0f50e8b2d345a719e32673baa676538c11cd81451a75a2b4fab2f7c2b, builder sha256 21640026d561bc9da66138dc32dcdcb492f9ad18d9ee4cda14e3ec9c1a00a12d, and runner sha256 85d23cc6f93f9d3217a31f4d9ddf12734fdac50447ed933781fbc4141b8b0906; full contract 61/61 GREEN including the direct converging-membership, persistent-descendant teardown, header/message-alias, and governed real-timeout controls; exact source-derived command 8 check_compiled_skill_self_contained also completed GREEN after the repair",
           "commit_sha1": null,
           "blob_sha1": null,
           "sha256": null,
           "command": "python -B tests/ci-readback/test_contract.py",
           "exit_code": 0,
           "retained_artifact": null,
-          "unretained_reason": "raw stdout and stderr and local durable Task 11bk/11ds records are not tracked repository artifacts; bounded focused GREEN does not claim independent ANDON 167 acceptance, final create-once Branch 11 Task 7 evidence, exact-tree whole-branch review, or provider execution"
+          "unretained_reason": "raw stdout and stderr and local durable ANDON 197/198 records are not tracked repository artifacts; bounded focused GREEN does not claim independent ANDON 197 acceptance, a promotable restarted outer cohort, exact-tree whole-branch review, or provider execution"
         },
         {
           "kind": "command_result",
@@ -4880,9 +4902,10 @@
       ],
       "remaining_risk": [
         "deterministic closure is not model, WIP, merge, release, or regression proof",
-        "case 1 provider invocation and cost remain neither proven nor disproven"
+        "case 1 provider invocation and cost remain neither proven nor disproven",
+        "the rejected c81208f1 outer cohort, rejected 69648aab and 3395a5b4 repair-review trees, the ba9a5d0f ANDON 197 outer cohort, and the 480f7534 ANDON 199 no-model cohort remain non-promotable; the accepted checkpoint remains non-promotable until same-SHA local qualification, exact-SHA GitHub CI, final whole-tree review, and exact source receipt all pass"
       ],
-      "next_action": "Independently review and publish the bounded ANDON 182 pre-admission diagnostic-retention successor, require fresh exact-SHA CI and source/candidate evidence, then stop at the unresolved-usage owner boundary without dispatching or minting replacement authority.",
+      "next_action": "Publish the independently accepted ANDON 199 convergence tranche as one cohesive ordinary Branch 11 checkpoint and non-force push. Start exact-SHA GitHub CI immediately and run fresh no-model, full local-CI, and generated/package qualification in parallel against that same immutable committed SHA without source mutation. Treat both lanes as non-promotable until local qualification, exact-SHA CI, final whole-tree review, and the exact source receipt all pass, then continue to fresh candidate gates and the unresolved-usage owner boundary without dispatching or minting replacement authority.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,

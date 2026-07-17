@@ -203,11 +203,43 @@ def _atomic_write(path: Path, value: dict) -> None:
 
 @contextmanager
 def _lock(root: Path):
-    root.mkdir(parents=True,exist_ok=True); lock=root/".writer.lock"
-    try: fd=os.open(lock,os.O_CREAT|os.O_EXCL|os.O_WRONLY)
-    except FileExistsError as exc: raise ValueError("usage_head_conflict: exclusive writer is held") from exc
-    try: yield
-    finally: os.close(fd); lock.unlink(missing_ok=True)
+    root.mkdir(parents=True,exist_ok=True)
+    legacy=root/".writer.lock"
+    if legacy.exists():
+        # The former create/delete lock could survive process death.  It held
+        # no kernel lock, so its presence alone is not evidence of a writer.
+        if not legacy.is_file() or legacy.is_symlink():
+            raise ValueError("usage_head_conflict: unsafe legacy writer lock")
+        legacy.unlink()
+    guard=root/".writer.guard"
+    fd=os.open(guard,os.O_CREAT|os.O_RDWR,0o600)
+    locked=False
+    try:
+        if os.name=="nt":
+            import msvcrt
+            os.lseek(fd,0,os.SEEK_SET)
+            if os.fstat(fd).st_size<1:
+                os.write(fd,b"0")
+                os.fsync(fd)
+            os.lseek(fd,0,os.SEEK_SET)
+            try:msvcrt.locking(fd,msvcrt.LK_NBLCK,1)
+            except OSError as exc:raise ValueError("usage_head_conflict: exclusive writer is held") from exc
+        else:
+            import fcntl
+            try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            except OSError as exc:raise ValueError("usage_head_conflict: exclusive writer is held") from exc
+        locked=True
+        yield
+    finally:
+        if locked:
+            if os.name=="nt":
+                import msvcrt
+                os.lseek(fd,0,os.SEEK_SET)
+                msvcrt.locking(fd,msvcrt.LK_UNLCK,1)
+            else:
+                import fcntl
+                fcntl.flock(fd,fcntl.LOCK_UN)
+        os.close(fd)
 
 
 def _append(root: Path, tx: dict) -> str:
