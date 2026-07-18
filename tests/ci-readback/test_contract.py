@@ -874,8 +874,8 @@ class CiReadbackContract(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "continue-on-error"):
             checker._workflow_contract(job_drift)
         step_drift = raw.replace(
-            b"run: python tools/check_source_provenance.py --tracked-only",
-            b"run: python tools/check_source_provenance.py --tracked-only\n        continue-on-error: true",
+            b"run: python -B tools/check_source_provenance.py --tracked-only",
+            b"run: python -B tools/check_source_provenance.py --tracked-only\n        continue-on-error: true",
         )
         with self.assertRaisesRegex(ValueError, "continue-on-error"):
             checker._workflow_contract(step_drift)
@@ -2073,6 +2073,86 @@ class CiReadbackContract(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "step set"):
             checker._workflow_contract(raw.replace(needle, injected, 1).encode("utf-8"))
 
+    def test_checkout_touching_cross_language_python_launches_disable_bytecode(self) -> None:
+        self.require_checker()
+        checker = importlib.import_module("check_ci_readback")
+        workflow_path = ROOT / ".github" / "workflows" / "ci.yml"
+        workflow_raw = workflow_path.read_text(encoding="utf-8")
+        workflow = yaml.safe_load(workflow_raw)
+        steps = workflow["jobs"]["runtime-checks"]["steps"]
+        commands = {step.get("name"): step.get("run") for step in steps if step.get("name")}
+        self.assertEqual(
+            commands["Verify tracked source binding and checkpoint"],
+            "python -B tools/check_source_provenance.py --tracked-only",
+        )
+        self.assertEqual(
+            commands["Linux A01 custody self-test"],
+            "python -B tools/check_captured_output_manifest.py --self-test",
+        )
+        self.assertTrue(
+            commands["Emit Linux A01 evidence"].startswith(
+                "python -B tools/write_linux_a01_evidence.py "
+            )
+        )
+
+        powershell = (TOOLS / "run_current_skill_smoke.ps1").read_text(encoding="utf-8")
+        launches = [
+            line.strip()
+            for line in powershell.splitlines()
+            if "= & python" in line
+        ]
+        self.assertEqual(
+            launches,
+            [
+                "$builderOutput = & python -B @builderArgs 2>&1",
+                '$hashCheckerOutput = & python -B (Join-Path $rootPath "tools\\check_smoke_artifacts.py") --samples-only --no-release-artifacts --require-proof-sidecars --hash-record $selfTestHashPath 2>&1',
+                "$promotionOutput = & python -B @promotionArgs 2>&1",
+            ],
+        )
+        self.assertIn('command = "python -B $($builderArgs -join \' \')"', powershell)
+
+        mutated = workflow_raw.replace(
+            "python -B tools/check_source_provenance.py --tracked-only",
+            "python tools/check_source_provenance.py --tracked-only",
+            1,
+        )
+        self.assertNotEqual(mutated, workflow_raw)
+        with self.assertRaisesRegex(ValueError, "step set"):
+            checker._workflow_contract(mutated.encode("utf-8"))
+
+    def test_sanitized_python_syntax_command_retains_no_bytecode_residue(self) -> None:
+        runner = importlib.import_module("run_local_ci")
+        self.assertIn("python tools/check_python_syntax.py tools/*.py", runner.COMMANDS)
+        command = ["python", "tools/check_python_syntax.py"]
+        with tempfile.TemporaryDirectory(prefix="daee-pycompile-residue-") as temporary:
+            root = Path(temporary)
+            source = root / "probe.py"
+            source.write_text("VALUE = 1\n", encoding="utf-8")
+            completed = subprocess.run(
+                runner.execution_argv_for([*command, str(source)]),
+                cwd=ROOT,
+                env=runner.execution_environment_for(command),
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(0, completed.returncode, completed.stdout + completed.stderr)
+            self.assertEqual([], sorted(path.relative_to(root).as_posix() for path in root.rglob("*.pyc")))
+            self.assertFalse((root / "__pycache__").exists())
+            source.write_text("if True print('broken')\n", encoding="utf-8")
+            rejected = subprocess.run(
+                runner.execution_argv_for([*command, str(source)]),
+                cwd=ROOT,
+                env=runner.execution_environment_for(command),
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(1, rejected.returncode, rejected.stdout + rejected.stderr)
+            self.assertIn("python syntax check: FAIL", rejected.stderr)
+            with self.assertRaisesRegex(ValueError, "unsupported module"):
+                runner.execution_argv_for(["python", "-m", "py_compile", str(source)])
+
     def test_workflow_is_full_history_read_only_and_has_named_linux_a01_join(self) -> None:
         self.require_checker()
         workflow_path = ROOT / ".github" / "workflows" / "ci.yml"
@@ -2093,15 +2173,15 @@ class CiReadbackContract(unittest.TestCase):
         self.assertLess(names.index("Upload Linux A01 evidence"), names.index("Verify full CI executor source"))
         self.assertLess(names.index("Verify full CI executor source"), names.index("Build and verify runtime"))
         commands = {step.get("name"): step.get("run") for step in steps if step.get("name")}
-        self.assertEqual(commands["Verify tracked source binding and checkpoint"], "python tools/check_source_provenance.py --tracked-only")
-        self.assertEqual(commands["Linux A01 custody self-test"], "python tools/check_captured_output_manifest.py --self-test")
+        self.assertEqual(commands["Verify tracked source binding and checkpoint"], "python -B tools/check_source_provenance.py --tracked-only")
+        self.assertEqual(commands["Linux A01 custody self-test"], "python -B tools/check_captured_output_manifest.py --self-test")
         self.assertIn("git hash-object tools/write_linux_a01_evidence.py", commands["Verify Linux A01 evidence writer source"])
         self.assertIn("git hash-object tools/run_local_ci.py", commands["Verify full CI executor source"])
         self.assertIn("git hash-object tools/sanitized_python_bootstrap.py", commands["Verify full CI executor source"])
         writer_command = commands["Emit Linux A01 evidence"]
         self.assertEqual(
             writer_command,
-            'python tools/write_linux_a01_evidence.py --out .ci-evidence/linux-a01.json '
+            'python -B tools/write_linux_a01_evidence.py --out .ci-evidence/linux-a01.json '
             '--source-sha "${{ github.sha }}" --run-id "${{ github.run_id }}" '
             '--run-number "${{ github.run_number }}" --run-attempt "${{ github.run_attempt }}" '
             '--job-name runtime-checks --runner-label ubuntu-latest '

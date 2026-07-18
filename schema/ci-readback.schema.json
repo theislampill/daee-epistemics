@@ -479,7 +479,7 @@
             "completed_at": {"$ref": "#/$defs/timestamp"}
           }
         },
-        "command": {"const": "python tools/check_captured_output_manifest.py --self-test"},
+        "command": {"const": "python -B tools/check_captured_output_manifest.py --self-test"},
         "checker": {
           "type": "object",
           "additionalProperties": false,
@@ -747,8 +747,8 @@
         "executed_count": {"type": "integer", "minimum": 1, "maximum": 179},
         "start_at_command": {"type": "integer", "minimum": 1, "maximum": 179},
         "end_at_command": {"const": 179},
-        "command_list_sha256": {"const": "028e4b02955519545b2e9c30dd614d49bcf4fb73eee9993832038c68761d20c9"},
-        "execution_plan_sha256": {"const": "4aed4d93a23787aeb5288a8384b20fd3101d1e647796f45340787e517ece4082"},
+        "command_list_sha256": {"const": "b126166027245e194c930d1ce773805dfc589ca9f4f4f4e233d09dbaab6d923f"},
+        "execution_plan_sha256": {"const": "d4995b75c071001001b17c067fff0f5ad00535c9aebe9bba053d0acaa9d75ad8"},
         "strict_pwsh": {"type": "boolean"},
         "command_timeout_seconds": {"type": "integer", "minimum": 0},
         "timeout_count": {"const": 0},
@@ -1410,7 +1410,7 @@
         "runner_environment": {"const": "github-hosted"},
         "runner_label": {"const": "ubuntu-latest"},
         "step_name": {"const": "Linux A01 custody self-test"},
-        "command": {"const": "python tools/check_captured_output_manifest.py --self-test"},
+        "command": {"const": "python -B tools/check_captured_output_manifest.py --self-test"},
         "checker": {
           "type": "object",
           "additionalProperties": false,

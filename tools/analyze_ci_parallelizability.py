@@ -12,7 +12,7 @@ Categories:
                     these corrupts skill/SKILL.md / framework-pipeline.md / .daee.
   - git-gate      : a git command that READS tree state (git diff ...). Must run
                     AFTER the generators that produce what it inspects.
-  - read-only     : check_*/verify_*/gen_*/measure_*/*-self-test/py_compile —
+  - read-only     : check_*/verify_*/gen_*/measure_*/*-self-test —
                     independent, side-effect-free over already-produced artifacts.
 
 Conclusion (proof): the shared-writers and git-gates are order-sensitive and
@@ -55,7 +55,7 @@ def classify(command: str) -> str:
         return GIT_GATE
     if c.startswith("pwsh "):
         return SHARED_WRITER
-    if "--self-test" in c or "--check" in c or "-m py_compile" in c:
+    if "--self-test" in c or "--check" in c:
         return READ_ONLY
     tool = next((p.split("/")[-1] for p in c.split() if p.startswith("tools/")), "")
     if tool.startswith(("build_", "run_", "promote_")):
@@ -117,7 +117,7 @@ def self_test() -> int:
         ("git diff is git-gate", classify("git diff --exit-code -- skill/SKILL.md") == GIT_GATE),
         ("pwsh smoke is shared-writer", classify("pwsh -NoProfile -File tools/run_current_skill_smoke.ps1") == SHARED_WRITER),
         ("checker is read-only", classify("python tools/check_frontmatter.py") == READ_ONLY),
-        ("py_compile is read-only", classify("python -m py_compile tools/*.py") == READ_ONLY),
+        ("syntax checker is read-only", classify("python tools/check_python_syntax.py tools/*.py") == READ_ONLY),
     ]
     bench = benchmark_summary(
         {

@@ -2689,10 +2689,10 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "bounded independent exact-tree acceptance of the ANDON 203 live-registry-owner and illustrative-fixture separation",
-        "one cohesive ordinary ANDON 203 successor with fresh source-owned commit and non-force-push authorization, claim, PASS receipts, and exact local/upstream/live-remote equality",
+        "bounded independent exact-tree acceptance of the ANDON 219 cross-language bytecode-custody repair and direct blast radius",
+        "one cohesive ordinary ANDON 219 successor commit and non-force push to the existing Branch 11 ref with source-owned VCS custody and exact local/upstream/live-remote equality",
         "fresh exact-SHA GitHub CI, same-commit local deterministic qualification, zero-finding final whole-tree review, and a valid exact-commit source receipt",
-        "fresh exact-source preflight and candidate gates followed by the unresolved-usage owner boundary"
+        "fresh immutable candidate, maturity/readiness, no-spend capability, one fresh campaign authority, five unique case-bound reservations, exactly five GPT-5.5/high attempts, five terminal finalizers, and five validated blank assessment templates"
       ],
       "scope_exclusions": [
         "no push to main",
@@ -2922,14 +2922,14 @@
         "estimated_model_invocations_avoided_by_canary": "unknown"
       },
       "five_smoke_impact": [
-        "ANDON 182 terminalized one dispatch-unknown and four not-dispatched attempts without proving a provider invocation",
+        "ANDON 182 and ANDON 207 each terminalized one dispatch-unknown and four not-dispatched attempts without proving a provider invocation",
         "the missing deterministic negative-transition canary is now owned and closed",
-        "unresolved usage and replacement authority remain separate owner-only gates"
+        "historical possible usage remains unresolved by design, while the current owner disposition separately authorizes exactly one fresh five-case campaign after all governed artifact gates pass"
       ],
       "owner_gates": [
         "standing Branch 11 successor commit and non-force push authorization after governed repair gates",
-        "external owner disposition of unresolved dispatch-unknown usage",
-        "external owner-issued one-use continuation or replacement authority",
+        "no further owner decision before the currently authorized fresh five-case campaign after all required source, CI, receipt, candidate, capability, timeout, campaign-authority, and reservation gates pass",
+        "new owner authorization for any retry, replacement, sixth call, additional campaign, or model substitution",
         "terminal owner acceptance after full integration"
       ],
       "artifact_gates": [
@@ -2940,7 +2940,7 @@
         "structural promotion never upgrades to semantic truth",
         "case 1 provider invocation and cost remain neither proven nor disproven"
       ],
-      "next_action": "Complete the bounded ANDON 203 affected verification and obtain one independent exact-tree repair review. If accepted, create and non-force push one cohesive ordinary successor through fresh source-owned VCS authorization, claim, and PASS receipts, then rebuild exact-SHA CI, same-commit deterministic qualification, whole-tree review, and the exact source receipt before fresh source-preflight/candidate work. Do not promote illustrative fixture content, reuse the rejected source-preflight authorization, dispatch, or mint replacement authority.",
+      "next_action": "Complete the ANDON 219 successor path: obtain bounded independent exact-tree acceptance, create and non-force push one cohesive ordinary Branch 11 successor through source-owned VCS custody, run fresh exact-SHA CI and same-commit deterministic qualification, obtain final whole-tree acceptance and a valid exact source receipt, then continue through a fresh immutable candidate, maturity/readiness, no-spend capability, the reviewed timeout and shared deadline, one fresh one-use campaign authority, five unique case-bound reservations, exactly five GPT-5.5/high attempts and terminal finalizers, and five validated blank human pre-disclosure assessment templates. Preserve ANDON 182 and ANDON 207 as immutable terminal unknown lineages; any retry, replacement, sixth call, additional campaign, or model substitution requires new owner authority.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,
@@ -4190,11 +4190,11 @@
       "artifact_gated": true,
       "terminal_open": true,
       "remaining_joins": [
-        "bounded independent exact-tree acceptance of the ANDON 203 live-registry-owner and illustrative-fixture separation",
-        "one cohesive ordinary ANDON 203 successor with fresh source-owned commit and non-force-push authorization, claim, PASS receipts, and exact local/upstream/live-remote equality",
+        "bounded independent exact-tree acceptance of the ANDON 219 cross-language bytecode-custody repair and direct blast radius",
+        "one cohesive ordinary ANDON 219 successor commit and non-force push to the existing Branch 11 ref with source-owned VCS custody and exact local/upstream/live-remote equality",
         "fresh exact-SHA GitHub CI, same-commit source freeze and deterministic qualification, zero-finding final whole-tree review, and a valid exact-commit source receipt",
         "fresh immutable candidate construction, retention, package-faithful maturity, and independent readiness review",
-        "external owner disposition of the existing unresolved dispatch-unknown usage before any separately authorized continuation"
+        "no-spend capability, the reviewed 3600-second timeout and shared deadline, one fresh one-use campaign authority, five unique case-bound reservations, exactly five GPT-5.5/high attempts, five terminal finalizers, and five validated blank assessment templates"
       ],
       "scope_exclusions": [
         "no push to main",
@@ -4508,10 +4508,10 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "ANDON 213 contract-registry checker requires the shared credential scan contract as an existing A16 Branch 11 integration owner and carries a right-reason missing-owner fixture",
+          "source_ref": "ANDON 213/219 contract-registry checker requires both the shared credential scan contract and the residue-neutral Python syntax checker as existing A16 Branch 11 integration owners and carries right-reason missing-owner coverage",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "01769ca881a64087eddbb815537836e4ab76f757d4920190dfa36789f71d0799",
+          "sha256": "d13429a5ae95873b5cac6c66032b9411da8bba35f0c5dfb369da252590389253",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/check_andon_contract_registry.py",
@@ -4519,14 +4519,146 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "ANDON 213 A16 owner registry includes the shared credential-residue scan contract alongside its adapter and capture consumers",
+          "source_ref": "ANDON 213/219 A16 owner registry includes the shared credential-residue scan contract alongside its adapter and capture consumers and the residue-neutral Python syntax checker alongside the exact-SHA CI owners",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "3c838bd876df165af39b31cab0e28c9d97d2750158482ffb0186ea85a3d53b69",
+          "sha256": "abbdf1308183b4cad2c6ef9d1a38e852822a727f7885a7f936edaeac0cfbc13c",
           "command": null,
           "exit_code": null,
           "retained_artifact": "docs/audits/v0.4.6.0-wip-andon-contract-registry.json",
           "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "ANDON 219 exact GitHub workflow bytes launch every repository-touching prelude Python process with explicit per-interpreter no-bytecode custody",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "7b1db661f9eee23579e18e1a236258553dc30265650d48bd53b4325ab463df7a",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": ".github/workflows/ci.yml",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "ANDON 219 CI-readback schema binds the explicit Linux A01 command and the exact current 179-command completion identities",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "9e829912ba55ad4ad53823fb4f97bd96c41d0b4e7fc3609cbf03a7c4aa47af26",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "schema/ci-readback.schema.json",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "ANDON 219 exact-SHA CI checker binds the three explicit workflow launch commands and retained Linux A01 command identity",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "91770fdc6f5e86916b528fe76d885099be118d25397c622cf745f285fce48878",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/check_ci_readback.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "ANDON 219 Linux A01 evidence writer reports the exact explicit no-bytecode self-test command",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "fb14f1002fba48a7ef7dc741625f467df986c74a2c56015e6f46c53f4fd0d57e",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/write_linux_a01_evidence.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "ANDON 219 native PowerShell smoke wrapper passes explicit -B custody to all three repository Python children and records the same builder command identity",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "5799119cc028324fc0f2096d13bfd5891ea017172417947680b2a812c4f7506f",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/run_current_skill_smoke.ps1",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "ANDON 219 sanitized bootstrap rejects unsupported module-mode execution after explicit py_compile was removed from the source-owned plan",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "0a1797d3dfbf5bf7ac2df6af9c7ccd9a0b958befa896858bd279e85504a30b3c",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/sanitized_python_bootstrap.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "ANDON 219 syntax checker compiles source in memory and never creates an implicit or explicit bytecode artifact",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "1f85e96808ada35c5abf18fc1fa4f57a94632c5a1fa470cfeb42416373647e4f",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/check_python_syntax.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "ANDON 219 CI registry classifies the directly wired syntax checker as required",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "5622ae332c7935ef96c80d9dee501e4afc807c4b0b4a31ff346d61fb5d34ecdc",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tools/ci_registry.json",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "ANDON 219 CI-readback contract covers workflow and PowerShell launch parity, removal of -B, residue-neutral in-memory syntax compilation, invalid syntax rejection, and py_compile module rejection",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "0b900ebdfe615515ca75e2c69bb3539b694a6a06d2dda3c439fae09a8c6eb1f8",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tests/ci-readback/test_contract.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "file_sha256",
+          "source_ref": "ANDON 219 Task 7 fixture generator derives the migrated Linux A01 log and current command-plan identities",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": "2c62dde36540a5581c2e1f99dd33f8eab6c23db22c8e3e41dad75db7ec8e1a4c",
+          "command": null,
+          "exit_code": null,
+          "retained_artifact": "tests/ci-readback/build_task7_fixtures.py",
+          "unretained_reason": null
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "ANDON 219 direct RED/GREEN and adjacent verification: workflow and PowerShell repository Python launches now use explicit per-interpreter -B, explicit py_compile is replaced by the registered in-memory syntax owner, exact current plan remains 179 commands with command-list sha256 b126166027245e194c930d1ce773805dfc589ca9f4f4e233d09dbaab6d923f and execution-plan sha256 d4995b75c071001001b17c067fff0f5ad00535c9aebe9bba053d0acaa9d75ad8, and the complete CI-readback contract is 63/63 GREEN",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "python -B tests/ci-readback/test_contract.py",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "the exact Linux CI RED, two direct deterministic REDs, schema/fixture and registry owner migration REDs, and focused output are retained under the ignored ANDON 219 carrier; bounded GREEN does not claim independent repair acceptance, outer qualification, exact-SHA CI, candidate maturity, authority, reservation, provider execution, or terminal closure"
+        },
+        {
+          "kind": "command_result",
+          "source_ref": "ANDON 219 native wrapper production-path GREEN: the proof-sidecar self-test completed through all three explicit -B children and the post-run whole-checkout bytecode inventory was PASS with zero entries; source-owned tail commands 177-179 then completed with the registered syntax checker over 192 files and another zero-entry residue readback",
+          "commit_sha1": null,
+          "blob_sha1": null,
+          "sha256": null,
+          "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/run_current_skill_smoke.ps1 -Root . -ProofSidecarSelfTest",
+          "exit_code": 0,
+          "retained_artifact": null,
+          "unretained_reason": "raw output and the exact cleaned UUID validation directory are not tracked artifacts; the durable ANDON 219 owner record retains the output summary and zero-residue identity without claiming a complete local-CI role"
         },
         {
           "kind": "command_result",
@@ -4585,10 +4717,10 @@
         },
         {
           "kind": "file_sha256",
-          "source_ref": "ANDON 197 current bytes preserve exact Windows suspended-launch Job Object custody, stable-handle membership verification, governed timeout teardown, and zero-active-member readback while distinguishing bounded post-root Job accounting convergence from a persistent descendant; success requires exact zero membership within the existing finite grace, persistent membership is terminated and returns 125, and no PID-ancestry or taskkill fallback is used",
+          "source_ref": "ANDON 197/219 current bytes preserve exact Windows suspended-launch Job Object custody, stable-handle membership verification, governed timeout teardown, and zero-active-member readback while distinguishing bounded post-root Job accounting convergence from a persistent descendant; ANDON 219 additionally replaces the terminal explicit py_compile writer with an in-memory syntax checker while preserving the exact 179-command role",
           "commit_sha1": null,
           "blob_sha1": null,
-          "sha256": "85d23cc6f93f9d3217a31f4d9ddf12734fdac50447ed933781fbc4141b8b0906",
+          "sha256": "37be0f4573fcceb38cd0db4024857e5ecc40ea4b3c6c4cbfe655b57c335f1669",
           "command": null,
           "exit_code": null,
           "retained_artifact": "tools/run_local_ci.py",
@@ -4817,6 +4949,7 @@
         "schema/vcs-action-authorization.schema.json",
         "schema/execution-tooling-manifest.schema.json",
         "tools/check_ci_readback.py",
+        "tools/check_python_syntax.py",
         "tools/build_candidate_package_record.py",
         "tools/check_no_model_candidate_maturity.py",
         "tools/check_evidence_retention_manifest.py",
@@ -4877,6 +5010,7 @@
       "implementation": {
         "commit": null,
         "files": [
+          ".github/workflows/ci.yml",
           "schema/andon-closure-ledger.schema.json",
           "schema/architecture-decision-ledger.schema.json",
           "schema/source-binding.schema.json",
@@ -4909,6 +5043,10 @@
           "tools/run_reviewed_cold_review_cohort.py",
           "tools/run_no_model_preflight.py",
           "tools/run_local_ci.py",
+          "tools/check_python_syntax.py",
+          "tools/run_current_skill_smoke.ps1",
+          "tools/analyze_ci_parallelizability.py",
+          "tools/ci_registry.json",
           "tools/check_state_capsule.py",
           "tools/codex_live_producer_adapter.py",
           "tools/credential_residue_scan_contract.py",
@@ -5008,14 +5146,14 @@
         "estimated_model_invocations_avoided_by_canary": "unknown"
       },
       "five_smoke_impact": [
-        "ANDON 182 terminalized one dispatch-unknown and four not-dispatched attempts without proving a provider invocation",
-        "the candidate and one-use authority are consumed and usage remains unresolved",
-        "no retry, replacement, tail dispatch, or new campaign is authorized"
+        "ANDON 182 and ANDON 207 each terminalized one dispatch-unknown and four not-dispatched attempts without proving a provider invocation",
+        "both historical candidates and one-use authorities are consumed, both lineages are terminal, and possible usage remains unresolved by design",
+        "the current owner disposition authorizes exactly one wholly fresh five-case campaign after renewed gates; it authorizes no historical replay, retry, replacement after that cohort, sixth new call, or additional campaign"
       ],
       "owner_gates": [
         "standing Branch 11 successor commit and non-force push authorization after governed repair gates",
-        "external owner disposition of unresolved dispatch-unknown usage",
-        "external owner-issued one-use continuation or replacement authority",
+        "no further owner decision before the currently authorized fresh five-case campaign after all required source, CI, receipt, candidate, capability, timeout, campaign-authority, and reservation gates pass",
+        "new owner authorization for any retry, replacement, sixth call, additional campaign, or model substitution",
         "owner WIP acceptance"
       ],
       "artifact_gates": [
@@ -5030,7 +5168,7 @@
         "case 1 provider invocation and cost remain neither proven nor disproven",
         "the rejected c81208f1 outer cohort, rejected 69648aab and 3395a5b4 repair-review trees, the ba9a5d0f ANDON 197 outer cohort, the 480f7534 ANDON 199 no-model cohort, and e1cb2b5's locally/remotely GREEN but VCS-custody-incomplete ANDON 201 cohort remain non-promotable"
       ],
-      "next_action": "Complete the bounded ANDON 203 affected verification and obtain one independent exact-tree repair review. If accepted, create and non-force push one cohesive ordinary successor through fresh source-owned VCS authorization, claim, and PASS receipts, then rebuild exact-SHA CI, same-commit deterministic qualification, whole-tree review, and the exact source receipt before fresh source-preflight/candidate work. Do not promote illustrative fixture content, reuse the rejected source-preflight authorization, dispatch, or mint replacement authority.",
+      "next_action": "Complete the ANDON 219 successor path: obtain bounded independent exact-tree acceptance, create and non-force push one cohesive ordinary Branch 11 successor through source-owned VCS custody, run fresh exact-SHA CI and same-commit deterministic qualification, obtain final whole-tree acceptance and a valid exact source receipt, then continue through a fresh immutable candidate, maturity/readiness, no-spend capability, the reviewed timeout and shared deadline, one fresh one-use campaign authority, five unique case-bound reservations, exactly five GPT-5.5/high attempts and terminal finalizers, and five validated blank human pre-disclosure assessment templates. Preserve ANDON 182 and ANDON 207 as immutable terminal unknown lineages; any retry, replacement, sixth call, additional campaign, or model substitution requires new owner authority.",
       "terminal_status": {
         "required_status": "CLOSED_OWNER_ACCEPTED",
         "owner_acceptance_required": true,

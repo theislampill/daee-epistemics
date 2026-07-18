@@ -105,8 +105,8 @@ def native_no_model_report() -> dict[str, Any]:
 def linux_a01_job_log() -> bytes:
     full_ci_command = checker.FULL_CI_COMMAND
     return (
-        "2026-07-12T12:10:00Z ##[group]Run python tools/check_captured_output_manifest.py --self-test\n"
-        "2026-07-12T12:10:00Z python tools/check_captured_output_manifest.py --self-test\n"
+        "2026-07-12T12:10:00Z ##[group]Run python -B tools/check_captured_output_manifest.py --self-test\n"
+        "2026-07-12T12:10:00Z python -B tools/check_captured_output_manifest.py --self-test\n"
         "2026-07-12T12:10:01Z .......................\n"
         "2026-07-12T12:10:01Z ----------------------------------------------------------------------\n"
         "2026-07-12T12:10:01Z Ran 23 tests in 1.000s\n"

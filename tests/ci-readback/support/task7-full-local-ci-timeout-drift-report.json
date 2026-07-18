@@ -1,6 +1,6 @@
 {
   "schema": "daee-task7-result-report-v2",
-  "report_id": "7ecd75aff5c844633f0ddc6fbfdd5c71e32690cb35ff691c087ec1536a3a7bcd",
+  "report_id": "1da2ddda36114dde535e0bf376d5d3d6b1ecec95605b256c368bcedd86d7a079",
   "kind": "full-local-ci",
   "status": "PASS",
   "producer_command": [
@@ -59,7 +59,7 @@
       },
       "exit_code": 0,
       "stdout_byte_count": 529,
-      "stdout_sha256": "d12cf868c630143af1e84e07b4feb9981c2c549e4894f9ea996ecbe3e3cd9660",
+      "stdout_sha256": "99a09a15d50f73c716ae5bd2a2a8fd7bc1e26fba231c62ea2bf917dc567b2ba9",
       "stderr_byte_count": 0,
       "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }

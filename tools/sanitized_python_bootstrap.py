@@ -12,7 +12,7 @@ from typing import NoReturn
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "tools"
-ALLOWED_MODULES = {"py_compile"}
+ALLOWED_MODULES: set[str] = set()
 REMOVED_ENVIRONMENT_NAMES_ATTRIBUTE = "_daee_sanitized_python_removed_environment_names"
 
 

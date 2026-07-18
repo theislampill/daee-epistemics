@@ -1,5 +1,5 @@
-2026-07-12T12:10:00Z ##[group]Run python tools/check_captured_output_manifest.py --self-test
-2026-07-12T12:10:00Z python tools/check_captured_output_manifest.py --self-test
+2026-07-12T12:10:00Z ##[group]Run python -B tools/check_captured_output_manifest.py --self-test
+2026-07-12T12:10:00Z python -B tools/check_captured_output_manifest.py --self-test
 2026-07-12T12:10:01Z .......................
 2026-07-12T12:10:01Z ----------------------------------------------------------------------
 2026-07-12T12:10:01Z Ran 23 tests in 1.000s

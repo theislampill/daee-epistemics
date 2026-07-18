@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schema" / "ci-readback.schema.json"
 CHECKER_PATH = "tools/check_captured_output_manifest.py"
 TEST_PATH = "tests/captured-output-custody/test_contract.py"
-COMMAND = "python tools/check_captured_output_manifest.py --self-test"
+COMMAND = "python -B tools/check_captured_output_manifest.py --self-test"
 STEP_NAME = "Linux A01 custody self-test"
 
 

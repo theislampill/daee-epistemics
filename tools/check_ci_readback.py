@@ -87,7 +87,7 @@ WORKFLOW_NAME = "CI"
 JOB_NAME = "runtime-checks"
 CHECK_NAME = "CI / runtime-checks"
 LINUX_STEP_NAME = "Linux A01 custody self-test"
-LINUX_COMMAND = "python tools/check_captured_output_manifest.py --self-test"
+LINUX_COMMAND = "python -B tools/check_captured_output_manifest.py --self-test"
 LINUX_WRITER_STEP = "Emit Linux A01 evidence"
 LINUX_ARTIFACT_NAME = "linux-a01-evidence"
 LINUX_ARTIFACT_ENTRY = "linux-a01.json"
@@ -105,7 +105,7 @@ FULL_CI_BIND_COMMAND = (
     '"$(git rev-parse "${{ github.sha }}:tools/sanitized_python_bootstrap.py")"'
 )
 LINUX_WRITER_COMMAND = (
-    'python tools/write_linux_a01_evidence.py --out .ci-evidence/linux-a01.json '
+    'python -B tools/write_linux_a01_evidence.py --out .ci-evidence/linux-a01.json '
     '--source-sha "${{ github.sha }}" --run-id "${{ github.run_id }}" '
     '--run-number "${{ github.run_number }}" --run-attempt "${{ github.run_attempt }}" '
     '--job-name runtime-checks --runner-label ubuntu-latest '
@@ -121,7 +121,7 @@ EXPECTED_WORKFLOW_STEPS = [
     {"uses": "actions/checkout@v5", "with": {"fetch-depth": 0}},
     {"uses": "actions/setup-python@v6", "with": {"python-version": "3.11"}},
     {"name": "Install checker dependencies", "run": "python -m pip install --upgrade pip -r requirements-ci.txt"},
-    {"name": "Verify tracked source binding and checkpoint", "run": "python tools/check_source_provenance.py --tracked-only"},
+    {"name": "Verify tracked source binding and checkpoint", "run": "python -B tools/check_source_provenance.py --tracked-only"},
     {"name": LINUX_STEP_NAME, "run": LINUX_COMMAND},
     {"name": "Verify Linux A01 evidence writer source", "run": LINUX_WRITER_BIND_COMMAND},
     {"name": LINUX_WRITER_STEP, "run": LINUX_WRITER_COMMAND},

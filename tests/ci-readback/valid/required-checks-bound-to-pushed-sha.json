@@ -121,7 +121,7 @@
     "full_local_ci": {
       "path": ".IMPLEMENTAUDIT/runs/daee-v046-runtime-footprint-b10-sxsMU5/evidence/deterministic-verdicts-b11-v1/full-local-ci.json",
       "byte_count": 2679,
-      "sha256": "b3de4e7f98599dbd417675be3efcc6a316e8ee38b2dc7372b08e78ad96ae61af",
+      "sha256": "2c4075701220e30081a4bbd4bf7f8e9d95435836d360cc88b646dd09a05a882d",
       "artifact_schema": "daee-task7-deterministic-evidence-v1",
       "kind": "full-local-ci",
       "status": "PASS"
@@ -316,8 +316,8 @@
   },
   "job_log": {
     "download_endpoint": "repos/theislampill/daee-epistemics/actions/jobs/2001/logs",
-    "byte_count": 812,
-    "sha256": "9aec91b8fc314cc776b150b6b05ec008bd8814f82311c82f78125dba927d9fc8"
+    "byte_count": 818,
+    "sha256": "0db2d03ad0f24fb487011f9f542b5ae46855fea24fa49e384f553667a2e755ba"
   },
   "artifact_inventory": [
     {
@@ -331,8 +331,8 @@
       "archive_download_url": "https://api.github.com/repos/theislampill/daee-epistemics/actions/artifacts/5001/zip",
       "zip_sha256": "d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3",
       "entry_path": "linux-a01.json",
-      "entry_byte_count": 1288,
-      "entry_sha256": "1a31284dd1310ce72fa0608acb274db28b019d065951ebbd62cb88aa7de9f1e6"
+      "entry_byte_count": 1291,
+      "entry_sha256": "98bba951e7eb44efc623da5d80a9734ce59fc0359cb96f20e050b9c24aebc6fd"
     }
   ],
   "linux_a01": {
@@ -349,7 +349,7 @@
       "started_at": "2026-07-12T12:10:00Z",
       "completed_at": "2026-07-12T12:10:01Z"
     },
-    "command": "python tools/check_captured_output_manifest.py --self-test",
+    "command": "python -B tools/check_captured_output_manifest.py --self-test",
     "checker": {
       "path": "tools/check_captured_output_manifest.py",
       "blob_oid": "b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1",
@@ -376,8 +376,8 @@
       "archive_download_url": "https://api.github.com/repos/theislampill/daee-epistemics/actions/artifacts/5001/zip",
       "zip_sha256": "d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3",
       "entry_path": "linux-a01.json",
-      "entry_byte_count": 1288,
-      "entry_sha256": "1a31284dd1310ce72fa0608acb274db28b019d065951ebbd62cb88aa7de9f1e6"
+      "entry_byte_count": 1291,
+      "entry_sha256": "98bba951e7eb44efc623da5d80a9734ce59fc0359cb96f20e050b9c24aebc6fd"
     },
     "evidence": {
       "schema": "daee-linux-a01-ci-evidence-v1",
@@ -393,7 +393,7 @@
       "runner_environment": "github-hosted",
       "runner_label": "ubuntu-latest",
       "step_name": "Linux A01 custody self-test",
-      "command": "python tools/check_captured_output_manifest.py --self-test",
+      "command": "python -B tools/check_captured_output_manifest.py --self-test",
       "checker": {
         "path": "tools/check_captured_output_manifest.py",
         "blob_oid": "b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1",
@@ -415,8 +415,8 @@
       "candidate_claim": false,
       "terminal_claim": false
     },
-    "job_log_sha256": "9aec91b8fc314cc776b150b6b05ec008bd8814f82311c82f78125dba927d9fc8",
-    "log_segment_sha256": "a7d78acea5ef713388836edbaef71b86ef25f3bb40e2a8d6f7eedeb0df0ccf79"
+    "job_log_sha256": "0db2d03ad0f24fb487011f9f542b5ae46855fea24fa49e384f553667a2e755ba",
+    "log_segment_sha256": "2a34e91c02681573a24bb498e5ed7ee79b6e6790ceea4c388b66f09ea6dcd7b4"
   },
   "predecessor_record_sha256": null,
   "predecessor_receipt": {

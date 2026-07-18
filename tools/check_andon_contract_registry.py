@@ -58,6 +58,7 @@ CI_READBACK_OWNER_PATHS = {
         "tools/sanitized_python_bootstrap.py",
         "tools/run_no_model_preflight.py",
         "tools/run_local_ci.py",
+        "tools/check_python_syntax.py",
     ),
     "owned_test_paths": (
         "tests/ci-readback/build_task7_fixtures.py",

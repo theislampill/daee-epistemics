@@ -203,7 +203,7 @@ COMMANDS = [
     "python tools/check_diagnostic_ir_catalogue_integrity.py",
     "python tools/check_encoding_hygiene.py",
     "python tools/check_mojibake.py",
-    "python -m py_compile tools/*.py",
+    "python tools/check_python_syntax.py tools/*.py",
     "git diff --exit-code -- atomics/skill/references/diagnostics/framework-pipeline.md",
     "git diff --check",
 ]
@@ -216,7 +216,7 @@ _CREATE_SUSPENDED = 0x00000004
 PYTHON_STARTUP_FLAGS = ("-I", "-S", "-B")
 PYTHON_BOOTSTRAP_PATH = Path(__file__).resolve().with_name("sanitized_python_bootstrap.py")
 PYTHON_LOGICAL_STARTUP_FLAGS = {"-B", "-E", "-I", "-S", "-s"}
-PYTHON_ALLOWED_MODULES = {"py_compile"}
+PYTHON_ALLOWED_MODULES: set[str] = set()
 PYTHON_EXECUTION_PROFILE_ID = "python-isolated-bootstrap-v2"
 REMOVED_ENVIRONMENT_NAMES_ATTRIBUTE = "_daee_sanitized_python_removed_environment_names"
 PYTHON_EXECUTION_PROFILE = {

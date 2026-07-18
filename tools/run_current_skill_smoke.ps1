@@ -78,7 +78,7 @@ function Invoke-ProofSidecarBuild(
         "--prefix", $OutputBaseName,
         "--force"
     )
-    $builderOutput = & python @builderArgs 2>&1
+    $builderOutput = & python -B @builderArgs 2>&1
     $builderExit = $LASTEXITCODE
     $builderOutput | ForEach-Object { Write-Host "$_" }
     if ($builderExit -ne 0) {
@@ -112,7 +112,7 @@ function Invoke-ProofSidecarBuild(
             path = $proofHashesPath
             sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $proofHashesPath).Hash
         }
-        command = "python $($builderArgs -join ' ')"
+        command = "python -B $($builderArgs -join ' ')"
     }
 }
 
@@ -194,7 +194,7 @@ if ($PSCmdlet.ParameterSetName -eq "ProofSidecarSelfTest") {
     }
     Write-JsonUtf8NoBom -PathValue $selfTestHashPath -Payload $selfTestHashRecord
 
-    $hashCheckerOutput = & python (Join-Path $rootPath "tools\check_smoke_artifacts.py") --samples-only --no-release-artifacts --require-proof-sidecars --hash-record $selfTestHashPath 2>&1
+    $hashCheckerOutput = & python -B (Join-Path $rootPath "tools\check_smoke_artifacts.py") --samples-only --no-release-artifacts --require-proof-sidecars --hash-record $selfTestHashPath 2>&1
     $hashCheckerExit = $LASTEXITCODE
     $hashCheckerOutput | ForEach-Object { Write-Host "$_" }
     if ($hashCheckerExit -ne 0) {
@@ -206,7 +206,7 @@ if ($PSCmdlet.ParameterSetName -eq "ProofSidecarSelfTest") {
         "--source-only",
         "--hash-record", $selfTestHashPath
     )
-    $promotionOutput = & python @promotionArgs 2>&1
+    $promotionOutput = & python -B @promotionArgs 2>&1
     $promotionExit = $LASTEXITCODE
     $promotionOutput | ForEach-Object { Write-Host "$_" }
     if ($promotionExit -ne 0) {

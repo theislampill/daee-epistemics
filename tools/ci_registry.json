@@ -243,6 +243,9 @@
     "check_public_burden_grouping.py": {
       "class": "required"
     },
+    "check_python_syntax.py": {
+      "class": "required"
+    },
     "check_reconstructibility_and_mrp.py": {
       "class": "required"
     },

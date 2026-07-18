@@ -23,17 +23,17 @@ jobs:
         run: python -m pip install --upgrade pip -r requirements-ci.txt
 
       - name: Verify tracked source binding and checkpoint
-        run: python tools/check_source_provenance.py --tracked-only
+        run: python -B tools/check_source_provenance.py --tracked-only
 
       - name: Linux A01 custody self-test
-        run: python tools/check_captured_output_manifest.py --self-test
+        run: python -B tools/check_captured_output_manifest.py --self-test
 
       - name: Verify Linux A01 evidence writer source
         run: test "$(git hash-object tools/write_linux_a01_evidence.py)" = "$(git rev-parse "${{ github.sha }}:tools/write_linux_a01_evidence.py")"
 
       - name: Emit Linux A01 evidence
         run: >-
-          python tools/write_linux_a01_evidence.py
+          python -B tools/write_linux_a01_evidence.py
           --out .ci-evidence/linux-a01.json
           --source-sha "${{ github.sha }}"
           --run-id "${{ github.run_id }}"
