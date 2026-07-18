@@ -10,6 +10,7 @@ from pathlib import Path, PureWindowsPath
 from typing import Any, Mapping
 
 import contract_validation
+from credential_residue_scan_contract import valid_pass_credential_scan
 import finalize_single_call_stage_capture as strict_finalizer
 
 
@@ -289,8 +290,12 @@ def _validated_inputs(root: Path, payload: dict[str, Any]) -> tuple[dict[str, by
         raise CaptureFinalizationError("capture evidence must remain structurally unverified")
     _path, credential_raw = _load_ref(root, capture.get("credential_residue_scan"), "credential_residue_scan")
     credential = _parse_json(credential_raw, "credential residue scan")
-    if credential.get("status") != "PASS":
-        raise CaptureFinalizationError("credential residue scan is not PASS")
+    expected_worker = f"producer-{result_index + 1:02d}"
+    if (
+        credential_raw != _canonical(credential)
+        or not valid_pass_credential_scan(credential, expected_worker)
+    ):
+        raise CaptureFinalizationError("credential residue scan is not a valid bound PASS record")
 
     custody = objects["execution_custody"]
     if custody.get("schema") != "reviewed-campaign-execution-custody-v1" or custody.get("lane") != "producer":

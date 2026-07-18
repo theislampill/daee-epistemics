@@ -287,7 +287,7 @@ def validate_route_artifact(output_path: Path) -> None:
     for checker in route_checks:
         run_checked(
             [
-                sys.executable,
+                sys.executable, "-B",
                 str(ROOT / "tools" / checker),
                 "--outputs",
                 str(output_path),
@@ -435,7 +435,7 @@ def promote(manifest_path: Path, expected: dict[str, Any], source_paths: dict[st
     if B5_FULL_IR_SIDECAR_FIELD in source_paths:
         run_checked(
             [
-                sys.executable,
+                sys.executable, "-B",
                 str(ROOT / B5_FULL_IR_SIDECAR_BUILDER),
                 "--input",
                 str(retained_paths["input"]),

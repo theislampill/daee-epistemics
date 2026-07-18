@@ -84,7 +84,7 @@ def _run_checker(detector: str, content: str, emit_dir: Path, tag: str) -> int:
     path = emit_dir / f"mut_{tag}.md"
     path.write_text(content, encoding="utf-8")
     proc = subprocess.run(
-        [sys.executable, str(ROOT / "tools" / f"{detector}.py"), "--outputs", str(path)],
+        [sys.executable, "-B", str(ROOT / "tools" / f"{detector}.py"), "--outputs", str(path)],
         capture_output=True,
     )
     return proc.returncode
@@ -530,7 +530,7 @@ STAGE_RECORD_OPERATORS: dict[str, dict[str, Any]] = _build_stage_record_operator
 def _run_handshake_checker(record_path: Path) -> tuple[int, str]:
     proc = subprocess.run(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(ROOT / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(record_path),

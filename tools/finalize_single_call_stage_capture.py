@@ -524,12 +524,19 @@ def _build_checked_sidecars(
             "check_formal_reread_state_semantics.py",
         ):
             stage_runner.require_command_success(
-                [sys.executable, str(root / "tools" / checker), "--outputs", str(output_path)],
+                [
+                    sys.executable,
+                    "-B",
+                    str(root / "tools" / checker),
+                    "--outputs",
+                    str(output_path),
+                ],
                 cwd=root,
             )
         stage_runner.require_command_success(
             [
                 sys.executable,
+                "-B",
                 str(root / "tools" / "check_graph_completeness.py"),
                 "--outputs",
                 str(output_path),
@@ -540,6 +547,7 @@ def _build_checked_sidecars(
         stage_runner.require_command_success(
             [
                 sys.executable,
+                "-B",
                 str(root / "tools" / "build_retained_proof_sidecars.py"),
                 "--input",
                 str(raw_input_path),
@@ -564,6 +572,7 @@ def _build_checked_sidecars(
         stage_runner.require_command_success(
             [
                 sys.executable,
+                "-B",
                 str(root / "tools" / "build_b5_full_ir_projection_sidecar.py"),
                 "--input",
                 str(raw_input_path),

@@ -81,7 +81,7 @@ class SourceProvenanceContractTests(unittest.TestCase):
         }
         self.assertEqual(required, invalid_ids)
         proc = subprocess.run(
-            [sys.executable, str(CHECKER), "--self-test"],
+            [sys.executable, "-B", str(CHECKER), "--self-test"],
             cwd=ROOT,
             capture_output=True,
             text=True,
@@ -114,7 +114,7 @@ class SourceProvenanceContractTests(unittest.TestCase):
         if not CHECKER.is_file():
             self.skipTest("source-provenance checker owner is not implemented yet")
         proc = subprocess.run(
-            [sys.executable, str(CHECKER), "--tracked-only", "--explain"],
+            [sys.executable, "-B", str(CHECKER), "--tracked-only", "--explain"],
             cwd=ROOT,
             capture_output=True,
             text=True,

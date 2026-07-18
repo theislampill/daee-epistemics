@@ -1001,7 +1001,7 @@ def _read(path: Path) -> Any:
 
 def self_test() -> int:
     command = [
-        sys.executable,
+        sys.executable, "-B",
         "-m",
         "unittest",
         "discover",

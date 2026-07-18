@@ -70,7 +70,7 @@ def build(spec_path:Path,custody_root:Path,out_dir_relative:str,*,fault_at:str|N
  return manifest_path,payload_path
 def main()->int:
  p=argparse.ArgumentParser();p.add_argument("--spec",type=Path);p.add_argument("--custody-root",type=Path);p.add_argument("--out-dir");p.add_argument("--self-test",action="store_true");a=p.parse_args()
- if a.self_test:return subprocess.run([sys.executable,str(ROOT/"tests/captured-output-custody/test_contract.py")],cwd=ROOT).returncode
+ if a.self_test:return subprocess.run([sys.executable,"-B",str(ROOT/"tests/captured-output-custody/test_contract.py")],cwd=ROOT).returncode
  if not a.spec or not a.custody_root or not a.out_dir:p.error("--spec --custody-root --out-dir required")
  try:
   root=a.custody_root.resolve();spec=resolve_repo_path(root,a.spec,must_exist=True,expect_file=True);m,payload=build(spec,root,a.out_dir)

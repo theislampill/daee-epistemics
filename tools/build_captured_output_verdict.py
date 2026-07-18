@@ -15,7 +15,7 @@ def build(source:Path,custody_root:Path,kind:str)->dict:
  return {"schema":"daee-captured-output-verdict-v1","kind":"comparison-custody-verdict","comparison_id":value["comparison_id"],"comparison_manifest_sha256":snapshot.sha256,"regression_status":value["regression_status"],"promotion_eligible":False,"non_claims":["no automated tool emits proven","output length and one pair do not prove causality"]}
 def main()->int:
  p=argparse.ArgumentParser();p.add_argument("--capture",type=Path);p.add_argument("--comparison",type=Path);p.add_argument("--custody-root",type=Path);p.add_argument("--out",type=Path);p.add_argument("--self-test",action="store_true");a=p.parse_args()
- if a.self_test:return subprocess.run([sys.executable,str(ROOT/"tests/captured-output-custody/test_contract.py")],cwd=ROOT).returncode
+ if a.self_test:return subprocess.run([sys.executable,"-B",str(ROOT/"tests/captured-output-custody/test_contract.py")],cwd=ROOT).returncode
  source=a.capture or a.comparison
  if source is None or a.out is None:p.error("--capture or --comparison and --out required")
  root=(a.custody_root or ROOT).resolve()

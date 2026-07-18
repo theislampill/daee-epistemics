@@ -261,6 +261,15 @@ class SingleCallStageFinalizationContract(unittest.TestCase):
             self.finalize(**overrides)
         self.assertEqual(caught.exception.code, code, str(caught.exception))
 
+    def test_finalization_is_checkout_bytecode_residue_neutral(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        residue_before = orchestrator.checkout_execution_residue_inventory(ROOT)
+        self.assertEqual("PASS", residue_before["status"], residue_before)
+        self.finalize()
+        residue_after = orchestrator.checkout_execution_residue_inventory(ROOT)
+        self.assertEqual(residue_before, residue_after)
+
     def test_retained_a9_capture_finalizes_with_exact_checker_owned_evidence(self) -> None:
         result = self.finalize()
         parsed = envelope.parse_single_call_stage_envelope(

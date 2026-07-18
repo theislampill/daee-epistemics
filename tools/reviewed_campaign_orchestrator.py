@@ -34,10 +34,15 @@ from check_initial_assessment_barrier import (
     validate_initial_assessment_set,
 )
 from check_parallel_dispatch_manifest import chain_dispatch_events, validate_dispatch_manifest
+from credential_residue_scan_contract import (
+    valid_failed_credential_scan as _valid_failed_credential_scan,
+    valid_pass_credential_scan as _valid_pass_credential_scan,
+)
 import execution_tooling_manifest as tooling_manifest
 from source_provenance import strict_json_loads
 
 
+ROOT = Path(__file__).resolve().parents[1]
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 GIT_OID_RE = re.compile(r"[0-9a-f]{40}")
 HUMAN_ID_RE = re.compile(r"human:[a-z0-9][a-z0-9._-]*")
@@ -181,6 +186,90 @@ def canonical_bytes(value: object) -> bytes:
 
 def record_sha256(value: object) -> str:
     return hashlib.sha256(canonical_bytes(value)).hexdigest()
+
+
+def checkout_execution_residue_inventory(checkout_root: Path) -> dict[str, Any]:
+    root = Path(os.path.abspath(checkout_root))
+    if not root.is_dir() or root.is_symlink():
+        raise CampaignError("CHECKOUT_EXECUTION_RESIDUE_ROOT_INVALID")
+    entries: list[dict[str, Any]] = []
+
+    def traversal_unavailable(error: OSError) -> None:
+        raise CampaignError("CHECKOUT_EXECUTION_RESIDUE_TRAVERSAL_UNAVAILABLE") from error
+
+    for directory, names, files in os.walk(
+        root,
+        topdown=True,
+        onerror=traversal_unavailable,
+        followlinks=False,
+    ):
+        current = Path(directory)
+        names[:] = sorted(name for name in names if name != ".git")
+        for name in list(names):
+            path = current / name
+            observed = path.lstat()
+            if path.is_symlink() or bool(
+                getattr(observed, "st_file_attributes", 0) & 0x400
+            ):
+                raise CampaignError("CHECKOUT_EXECUTION_RESIDUE_REPARSE_CUSTODY")
+            if name == "__pycache__":
+                entries.append(
+                    {
+                        "path": path.relative_to(root).as_posix(),
+                        "kind": "BYTECODE_DIRECTORY",
+                    }
+                )
+        for name in sorted(files):
+            if Path(name).suffix.lower() != ".pyc":
+                continue
+            path = current / name
+            before = path.lstat()
+            if path.is_symlink() or bool(
+                getattr(before, "st_file_attributes", 0) & 0x400
+            ) or not path.is_file():
+                raise CampaignError("CHECKOUT_EXECUTION_RESIDUE_UNSUPPORTED_ENTRY")
+            raw = path.read_bytes()
+            after = path.lstat()
+            if (
+                before.st_dev,
+                before.st_ino,
+                before.st_size,
+                before.st_mtime_ns,
+            ) != (
+                after.st_dev,
+                after.st_ino,
+                after.st_size,
+                after.st_mtime_ns,
+            ) or len(raw) != before.st_size:
+                raise CampaignError("CHECKOUT_EXECUTION_RESIDUE_GENERATION_CHANGED")
+            entries.append(
+                {
+                    "path": path.relative_to(root).as_posix(),
+                    "kind": "PYTHON_BYTECODE_FILE",
+                    "byte_count": len(raw),
+                    "sha256": hashlib.sha256(raw).hexdigest(),
+                }
+            )
+    entries.sort(key=lambda row: (row["path"], row["kind"]))
+    inventory_sha256 = hashlib.sha256(canonical_bytes(entries)).hexdigest()
+    return {
+        "schema": "daee-checkout-execution-residue-v1",
+        "status": "PASS" if not entries else "FAIL",
+        "checkout_root": str(root),
+        "entry_count": len(entries),
+        "inventory_sha256": inventory_sha256,
+        "entries": entries,
+    }
+
+
+def require_checkout_execution_residue_free(checkout_root: Path) -> dict[str, Any]:
+    report = checkout_execution_residue_inventory(checkout_root)
+    if report["status"] != "PASS":
+        raise CampaignError(
+            "CHECKOUT_EXECUTION_RESIDUE: "
+            f"count={report['entry_count']} inventory_sha256={report['inventory_sha256']}"
+        )
+    return report
 
 
 def _is_reparse(path: Path) -> bool:
@@ -1789,7 +1878,6 @@ def _validate_pre_admission_diagnostics(
             valid_scan = (
                 scan_relative.startswith(f"{auth['provider_receipt_root']}/")
                 and scan_relative.endswith(".credential-scan.json")
-                and scan.get("schema") == "reviewed-campaign-credential-residue-scan-v1"
             )
             if carrier_disposition in {"RETAINED", "RETENTION_FAILED"}:
                 try:
@@ -1802,22 +1890,8 @@ def _validate_pre_admission_diagnostics(
                     pass_time_valid = False
                 valid_scan = (
                     valid_scan
-                    and set(scan) == {
-                        "schema", "status", "worker", "scanned_file_count",
-                        "scanned_byte_count", "encoding_forms_checked",
-                        "completed_at",
-                    }
                     and scan_raw == canonical_bytes(scan)
-                    and scan.get("status") == "PASS"
-                    and scan.get("worker") == expected_worker
-                    and all(
-                        isinstance(scan.get(field), int)
-                        and not isinstance(scan.get(field), bool)
-                        and scan[field] >= 0
-                        for field in ("scanned_file_count", "scanned_byte_count")
-                    )
-                    and scan.get("encoding_forms_checked")
-                    == ["utf-8", "utf-16-le", "utf-16-be"]
+                    and _valid_pass_credential_scan(scan, expected_worker)
                     and pass_time_valid
                 )
             else:
@@ -1831,16 +1905,8 @@ def _validate_pre_admission_diagnostics(
                     completed_at_valid = False
                 valid_scan = (
                     valid_scan
-                    and set(scan) == {
-                        "schema", "status", "worker", "failure_class",
-                        "cleanup_status", "completed_at",
-                    }
                     and scan_raw == canonical_bytes(scan)
-                    and scan.get("status") == "FAIL_CLOSED"
-                    and scan.get("cleanup_status") == "OWNED_WORKER_PURGED"
-                    and scan.get("failure_class")
-                    in {"CREDENTIAL_RESIDUE", "SCAN_UNAVAILABLE"}
-                    and scan.get("worker") == expected_worker
+                    and _valid_failed_credential_scan(scan, expected_worker)
                     and completed_at_valid
                 )
             if not valid_scan:
@@ -2150,39 +2216,13 @@ def _validate_outcome_unknown_diagnostics(
         except CampaignError:
             scan_time_valid = False
         if carrier_disposition == "RETAINED":
-            valid_scan = (
-                set(scan) == {
-                    "schema", "status", "worker", "scanned_file_count",
-                    "scanned_byte_count", "encoding_forms_checked", "completed_at",
-                }
-                and scan.get("status") == "PASS"
-                and scan.get("worker") == expected_worker
-                and all(
-                    isinstance(scan.get(field), int)
-                    and not isinstance(scan.get(field), bool)
-                    and scan[field] >= 0
-                    for field in ("scanned_file_count", "scanned_byte_count")
-                )
-                and scan.get("encoding_forms_checked")
-                == ["utf-8", "utf-16-le", "utf-16-be"]
-            )
+            valid_scan = _valid_pass_credential_scan(scan, expected_worker)
         else:
-            valid_scan = (
-                set(scan) == {
-                    "schema", "status", "worker", "failure_class",
-                    "cleanup_status", "completed_at",
-                }
-                and scan.get("status") == "FAIL_CLOSED"
-                and scan.get("worker") == expected_worker
-                and scan.get("cleanup_status") == "OWNED_WORKER_PURGED"
-                and scan.get("failure_class")
-                in {"CREDENTIAL_RESIDUE", "SCAN_UNAVAILABLE"}
-            )
+            valid_scan = _valid_failed_credential_scan(scan, expected_worker)
         if (
             not scan_relative.startswith(f"{auth['provider_receipt_root']}/")
             or not scan_relative.endswith(".credential-scan.json")
             or scan_raw != canonical_bytes(scan)
-            or scan.get("schema") != "reviewed-campaign-credential-residue-scan-v1"
             or not scan_time_valid
             or not valid_scan
         ):
@@ -4746,6 +4786,8 @@ def run_producer_cohort(
     """Run one exact producer cohort; live mode stops at immutable raw capture."""
     root = Path(os.path.abspath(custody_root))
     capability = _probe_producer_capability(adapter)  # Must precede authorization reads/claims.
+    if capability.get("adapter_kind") == "codex-live":
+        require_checkout_execution_residue_free(ROOT)
     if allow_test_fixture and (
         capability.get("adapter_kind") == "codex-live"
         or capability.get("paid_provider_reachable") is not False
@@ -6023,9 +6065,15 @@ def self_test() -> int:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--check-checkout-execution-residue", action="store_true")
+    parser.add_argument("--checkout-root", type=Path, default=ROOT)
     args = parser.parse_args()
     if args.self_test:
         return self_test()
+    if args.check_checkout_execution_residue:
+        report = checkout_execution_residue_inventory(args.checkout_root)
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0 if report["status"] == "PASS" else 1
     print(json.dumps(disabled_live_provider_message(), sort_keys=True))
     return 2
 

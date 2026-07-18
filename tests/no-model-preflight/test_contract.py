@@ -2,6 +2,7 @@
 """No-subprocess contract tests for the canonical Gate 14 input preflight."""
 from __future__ import annotations
 
+import ast
 import contextlib
 import io
 import inspect
@@ -669,6 +670,39 @@ class Gate14RegistryContractTests(unittest.TestCase):
         self.assertEqual(registry.get("required_integration_commands"), expected)
 
 
+class CheckoutBytecodeResidueContractTests(unittest.TestCase):
+    def test_literal_repo_python_child_commands_disable_bytecode(self) -> None:
+        violations: list[str] = []
+        for base in (TOOLS, ROOT / "tests"):
+            for path in sorted(base.rglob("*.py")):
+                tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+                for node in ast.walk(tree):
+                    if not isinstance(node, (ast.List, ast.Tuple)) or not node.elts:
+                        continue
+                    first = node.elts[0]
+                    if not (
+                        isinstance(first, ast.Attribute)
+                        and isinstance(first.value, ast.Name)
+                        and first.value.id == "sys"
+                        and first.attr == "executable"
+                    ):
+                        continue
+                    prefix = node.elts[:6]
+                    explicit = any(
+                        isinstance(item, ast.Constant) and item.value == "-B"
+                        for item in prefix
+                    )
+                    governed_flags = any(
+                        isinstance(item, ast.Starred)
+                        and isinstance(item.value, ast.Name)
+                        and item.value.id == "PYTHON_STARTUP_FLAGS"
+                        for item in prefix
+                    )
+                    if not explicit and not governed_flags:
+                        violations.append(f"{path.relative_to(ROOT).as_posix()}:{node.lineno}")
+        self.assertEqual([], violations)
+
+
 def _run_timeout_canary_mode() -> int | None:
     if len(sys.argv) >= 2 and sys.argv[1] == "--timeout-canary-child":
         child_pid_path = Path(sys.argv[2])
@@ -677,7 +711,7 @@ def _run_timeout_canary_mode() -> int | None:
         child_pid_path.write_text(str(os.getpid()), encoding="utf-8")
         subprocess.Popen(
             [
-                sys.executable,
+                sys.executable, "-B",
                 str(Path(__file__).resolve()),
                 "--timeout-canary-grandchild",
                 str(grandchild_pid_path),

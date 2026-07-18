@@ -91,7 +91,7 @@ def validate_topology_review(path:Path|ArtifactSnapshot,custody_root:Path|None=N
  return []
 def main()->int:
  p=argparse.ArgumentParser();p.add_argument("--review",type=Path);p.add_argument("--custody-root",type=Path);p.add_argument("--explain",action="store_true");p.add_argument("--self-test",action="store_true");a=p.parse_args()
- if a.self_test:return subprocess.run([sys.executable,str(ROOT/"tests/captured-output-custody/test_contract.py")],cwd=ROOT).returncode
+ if a.self_test:return subprocess.run([sys.executable,"-B",str(ROOT/"tests/captured-output-custody/test_contract.py")],cwd=ROOT).returncode
  if not a.review:p.error("--review required")
  root=(a.custody_root or ROOT).resolve()
  try:path=resolve_repo_path(root,a.review,must_exist=True,expect_file=True)

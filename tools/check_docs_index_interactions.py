@@ -455,7 +455,7 @@ def run_docs_output_grapher_smoke(errors: list[str]) -> None:
         errors.append("tools/check_docs_output_grapher_smoke.py missing")
         return
     proc = subprocess.run(
-        [sys.executable, str(checker)],
+        [sys.executable, "-B", str(checker)],
         cwd=ROOT,
         text=True,
         encoding="utf-8",
@@ -2487,7 +2487,7 @@ def run_generation_freshness_check(errors: list[str]) -> None:
         errors.append("docs/index/manifest.json missing; docs/index.html must be generator-backed")
         return
     proc = subprocess.run(
-        [sys.executable, "tools/build_docs_index.py", "--check"],
+        [sys.executable, "-B", "tools/build_docs_index.py", "--check"],
         cwd=ROOT,
         text=True,
         stdout=subprocess.PIPE,

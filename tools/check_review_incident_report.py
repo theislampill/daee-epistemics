@@ -34,7 +34,7 @@ def validate_incident_report(path:Path|ArtifactSnapshot,custody_root:Path|None=N
  return []
 def main()->int:
  p=argparse.ArgumentParser();p.add_argument("--report",type=Path);p.add_argument("--custody-root",type=Path);p.add_argument("--explain",action="store_true");p.add_argument("--self-test",action="store_true");a=p.parse_args()
- if a.self_test:return subprocess.run([sys.executable,str(ROOT/"tests/captured-output-custody/test_contract.py")],cwd=ROOT).returncode
+ if a.self_test:return subprocess.run([sys.executable,"-B",str(ROOT/"tests/captured-output-custody/test_contract.py")],cwd=ROOT).returncode
  if not a.report:p.error("--report required")
  root=(a.custody_root or ROOT).resolve()
  try:path=resolve_repo_path(root,a.report,must_exist=True,expect_file=True)

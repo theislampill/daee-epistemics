@@ -163,6 +163,7 @@ BRANCH11_INTEGRATION_OWNER_PATHS = {
         ),
         "owned_tool_paths": (
             "tools/codex_live_producer_adapter.py",
+            "tools/credential_residue_scan_contract.py",
             "tools/execution_tooling_manifest.py",
             "tools/finalize_producer_capture_complete.py",
             "tools/promote_producer_structural_completion.py",

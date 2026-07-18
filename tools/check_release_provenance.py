@@ -140,7 +140,7 @@ def run_mojibake_preflight(
     release_body: Path | None, manifest_out: Path | None, provenance_path: Path | None
 ) -> list[str]:
     command = [
-        sys.executable,
+        sys.executable, "-B",
         "tools/check_mojibake.py",
         *release_mojibake_paths(release_body, manifest_out, provenance_path),
     ]
@@ -150,9 +150,9 @@ def run_mojibake_preflight(
 def run_generated_surface_preflight() -> list[str]:
     errors: list[str] = []
     checks = [
-        ("compiled runtime freshness", [sys.executable, "tools/check_compiled_runtime_freshness.py"]),
-        ("docs index freshness", [sys.executable, "tools/build_docs_index.py", "--check"]),
-        ("docs index interactions", [sys.executable, "tools/check_docs_index_interactions.py"]),
+        ("compiled runtime freshness", [sys.executable, "-B", "tools/check_compiled_runtime_freshness.py"]),
+        ("docs index freshness", [sys.executable, "-B", "tools/build_docs_index.py", "--check"]),
+        ("docs index interactions", [sys.executable, "-B", "tools/check_docs_index_interactions.py"]),
     ]
     for label, command in checks:
         errors.extend(run_check(label, command))
@@ -162,7 +162,7 @@ def run_generated_surface_preflight() -> list[str]:
 def run_package_artifact_preflight(version: str, artifact: Path) -> list[str]:
     return run_check(
         "package artifact shape/leakage",
-        [sys.executable, "tools/check_skill_package_artifact.py", str(artifact), "--expect-version", version],
+        [sys.executable, "-B", "tools/check_skill_package_artifact.py", str(artifact), "--expect-version", version],
     )
 
 

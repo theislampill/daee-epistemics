@@ -26,6 +26,10 @@ from typing import Any, NamedTuple
 
 from artifact_tree import tree_sha256
 from check_captured_output_manifest import PublicationError, atomic_publish_bytes
+from credential_residue_scan_contract import (
+    MANAGED_AUTH_MARKER_FAMILIES as _MANAGED_AUTH_MARKER_FAMILIES,
+    MANAGED_AUTH_SCAN_MODE as _MANAGED_AUTH_SCAN_MODE,
+)
 from runtime_call_context_adapter import prepare_runtime_call
 from runtime_context_resolver import EMPTY_VALIDATED_STATE
 
@@ -34,6 +38,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 CANONICAL_EXEC_FLAGS = ["--json", "--ephemeral", "--ignore-user-config", "--ignore-rules", "-C", "-s", "-m", "-c", "--output-last-message", "-"]
+_DEDICATED_AGENT_IDENTITY_ENV = "DEDICATED_AGENT_IDENTITY_ENV"
+_MANAGED_AUTH_HOME = "CLI_MANAGED_AUTH_HOME"
 _REPARSE_POINT = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
 _OWNERSHIP_WITNESS_NAME = ".daee-owned-directory-v1"
 _OWNERSHIP_WITNESS_BYTE_COUNT = 32
@@ -672,6 +678,70 @@ def _scan_private_worker_for_credential(worker_root: Path, credential: str) -> d
     return {"scanned_file_count": files, "scanned_byte_count": byte_count}
 
 
+def _file_contains_structural_credential_marker(path: Path) -> bool:
+    fixed_text = (
+        '"access_token"',
+        '"refresh_token"',
+        '"id_token"',
+        '"agent_identity"',
+        '"OPENAI_API_KEY"',
+        "Authorization: Bearer ",
+        "authorization: bearer ",
+        '"Authorization":"Bearer ',
+        '"authorization":"bearer ',
+    )
+    fixed_patterns = tuple(
+        dict.fromkeys(
+            marker.encode(encoding)
+            for marker in fixed_text
+            for encoding in ("utf-8", "utf-16-le", "utf-16-be")
+        )
+    )
+    compact_jwt = re.compile(r"(?<![A-Za-z0-9_-])eyJ[A-Za-z0-9_-]{5,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}")
+    openai_key = re.compile(r"(?<![A-Za-z0-9_-])sk-[A-Za-z0-9_-]{16,}")
+    retained = b""
+    with path.open("rb") as handle:
+        while chunk := handle.read(1024 * 1024):
+            combined = retained + chunk
+            if any(pattern in combined for pattern in fixed_patterns):
+                return True
+            for encoding in ("utf-8", "utf-16-le", "utf-16-be"):
+                decoded = combined.decode(encoding, errors="ignore")
+                if compact_jwt.search(decoded) or openai_key.search(decoded):
+                    return True
+            retained = combined[-4096:]
+    return False
+
+
+def _scan_private_worker_for_structural_credential_markers(
+    worker_root: Path,
+) -> dict[str, int]:
+    if not worker_root.is_dir() or _is_reparse(worker_root):
+        raise RuntimeError("private worker root unavailable or reparse during credential readback")
+    files = 0
+    byte_count = 0
+    pending = [worker_root]
+    while pending:
+        directory = pending.pop()
+        if _is_reparse(directory):
+            raise RuntimeError("private worker credential readback encountered reparse custody")
+        with os.scandir(directory) as entries:
+            for entry in entries:
+                path = Path(entry.path)
+                if _is_reparse(path):
+                    raise RuntimeError("private worker credential readback encountered reparse custody")
+                if entry.is_dir(follow_symlinks=False):
+                    pending.append(path)
+                elif entry.is_file(follow_symlinks=False):
+                    files += 1
+                    byte_count += entry.stat(follow_symlinks=False).st_size
+                    if _file_contains_structural_credential_marker(path):
+                        raise CredentialResidueError("managed credential residue marker detected")
+                else:
+                    raise RuntimeError("private worker credential readback encountered unsupported entry")
+    return {"scanned_file_count": files, "scanned_byte_count": byte_count}
+
+
 def _copy_tree_exact(source: Path, destination: Path) -> None:
     if destination.exists():
         raise FileExistsError(destination)
@@ -998,6 +1068,8 @@ class CodexLiveProducerAdapter:
         self.executable = Path(os.path.abspath(codex_executable))
         self._access_token = access_token
         self._credential: str | None = None
+        self._credential_transport_mode: str | None = None
+        self._managed_auth_home: Path | None = None
         self.host = host or SubprocessCodexHost()
         self.timeout = command_timeout_seconds
         self._capability: dict[str, object] | None = None
@@ -1158,33 +1230,74 @@ class CodexLiveProducerAdapter:
     def _token(self) -> str:
         token = self._access_token or os.environ.get("CODEX_ACCESS_TOKEN")
         if token:
+            if self._credential_transport_mode not in {
+                None,
+                _DEDICATED_AGENT_IDENTITY_ENV,
+            }:
+                raise RuntimeError("Codex credential transport mode changed during cohort")
+            self._credential_transport_mode = _DEDICATED_AGENT_IDENTITY_ENV
             self._credential = token
             return token
+        raise RuntimeError("dedicated Codex Agent Identity credential unavailable")
+
+    def _managed_auth_home_if_available(self) -> Path | None:
         auth = Path.home() / ".codex/auth.json"
-        try:
-            value = json.loads(auth.read_text(encoding="utf-8"))
-            candidate = value.get("tokens", {}).get("access_token")
-        except (OSError, UnicodeDecodeError, json.JSONDecodeError, AttributeError):
-            candidate = None
-        if not isinstance(candidate, str) or not candidate:
-            raise RuntimeError("Codex access credential unavailable")
-        self._credential = candidate
-        return candidate
+        observed = _lstat_optional(auth)
+        auth_home = auth.parent
+        home_observed = _lstat_optional(auth_home)
+        if not (
+            observed is not None
+            and stat.S_ISREG(observed.st_mode)
+            and not stat.S_ISLNK(observed.st_mode)
+            and not bool(getattr(observed, "st_file_attributes", 0) & _REPARSE_POINT)
+            and observed.st_size > 0
+            and home_observed is not None
+            and stat.S_ISDIR(home_observed.st_mode)
+            and not stat.S_ISLNK(home_observed.st_mode)
+            and not bool(getattr(home_observed, "st_file_attributes", 0) & _REPARSE_POINT)
+        ):
+            return None
+        for component in (auth_home, *auth_home.parents):
+            component_observed = _lstat_optional(component)
+            if (
+                component_observed is None
+                or not stat.S_ISDIR(component_observed.st_mode)
+                or stat.S_ISLNK(component_observed.st_mode)
+                or bool(
+                    getattr(component_observed, "st_file_attributes", 0)
+                    & _REPARSE_POINT
+                )
+            ):
+                return None
+        return Path(os.path.abspath(auth_home))
+
+    def _credential_transport(self) -> tuple[str, str | Path]:
+        if (
+            isinstance(self._access_token, str)
+            and bool(self._access_token)
+        ) or "CODEX_ACCESS_TOKEN" in os.environ:
+            mode = _DEDICATED_AGENT_IDENTITY_ENV
+            transport: str | Path = self._token()
+        else:
+            auth_home = self._managed_auth_home_if_available()
+            if auth_home is None:
+                raise RuntimeError("Codex managed auth carrier unavailable")
+            if self._managed_auth_home not in {None, auth_home}:
+                raise RuntimeError("Codex managed auth home changed during cohort")
+            mode = _MANAGED_AUTH_HOME
+            transport = auth_home
+            self._managed_auth_home = auth_home
+        if self._credential_transport_mode not in {None, mode}:
+            raise RuntimeError("Codex credential transport mode changed during cohort")
+        self._credential_transport_mode = mode
+        return mode, transport
 
     def _credential_carrier_available(self) -> bool:
         if isinstance(self._access_token, str) and bool(self._access_token):
             return True
         if "CODEX_ACCESS_TOKEN" in os.environ:
             return True
-        auth = Path.home() / ".codex/auth.json"
-        observed = _lstat_optional(auth)
-        return bool(
-            observed is not None
-            and stat.S_ISREG(observed.st_mode)
-            and not stat.S_ISLNK(observed.st_mode)
-            and not bool(getattr(observed, "st_file_attributes", 0) & _REPARSE_POINT)
-            and observed.st_size > 0
-        )
+        return self._managed_auth_home_if_available() is not None
 
     def capability(self) -> dict[str, object]:
         probe = self.host.probe(
@@ -1320,6 +1433,7 @@ class CodexLiveProducerAdapter:
                 workspace = worker_root / "workspace"
                 run_root = worker_root / "run"
                 cache = worker_root / "cache"
+                sqlite_home = worker_root / "sqlite"
                 temp = worker_root / "temp"
                 local_appdata = worker_root / "appdata/local"
                 roaming_appdata = worker_root / "appdata/roaming"
@@ -1329,7 +1443,7 @@ class CodexLiveProducerAdapter:
                     parents=False,
                 )
                 self._owned_workers[worker_root] = worker_identity
-                for directory in (home, run_root, cache, temp, local_appdata, roaming_appdata):
+                for directory in (home, run_root, cache, sqlite_home, temp, local_appdata, roaming_appdata):
                     directory.mkdir(parents=True, exist_ok=False)
                 _copy_tree_exact(package_root, workspace)
                 if tree_sha256(workspace) != source_tree_sha256:
@@ -1384,7 +1498,7 @@ class CodexLiveProducerAdapter:
                 self._prepared[case_id] = {
                     "case_id": case_id, "worker": f"producer-{index:02d}", "worker_root": worker_root, "home": home,
                     "worker_identity": worker_identity,
-                    "workspace": workspace, "run_root": run_root, "cache": cache, "temp": temp,
+                    "workspace": workspace, "run_root": run_root, "cache": cache, "sqlite_home": sqlite_home, "temp": temp,
                     "local_appdata": local_appdata, "roaming_appdata": roaming_appdata,
                     "prompt": prompt_path, "input": retained_input, "output_root": output_root,
                     "provider_root": provider_root, "capture_root": capture_root,
@@ -1468,9 +1582,10 @@ class CodexLiveProducerAdapter:
             str(self.executable), "exec", "--json", "--ephemeral", "--ignore-user-config", "--ignore-rules",
             "-C", str(prepared["workspace"]), "-s", "read-only", "-m", "gpt-5.5",
             "-c", 'model_reasoning_effort="high"', "-c", 'approval_policy="never"',
-            "-c", "shell_environment_policy.inherit=none", "--output-last-message", str(output), "-",
+            "-c", "shell_environment_policy.inherit=none", "-c", 'cli_auth_credentials_store="file"',
+            "--output-last-message", str(output), "-",
         ]
-        token = self._token()
+        credential_transport_mode, credential_transport = self._credential_transport()
         env = {
             key: value
             for key in ("SYSTEMROOT", "WINDIR", "COMSPEC", "PATH")
@@ -1481,15 +1596,21 @@ class CodexLiveProducerAdapter:
             {
                 "HOME": private_home,
                 "USERPROFILE": private_home,
-                "CODEX_HOME": private_home,
+                "CODEX_HOME": (
+                    str(credential_transport)
+                    if credential_transport_mode == _MANAGED_AUTH_HOME
+                    else private_home
+                ),
+                "CODEX_SQLITE_HOME": prepared["sqlite_home"].as_posix(),
                 "TEMP": prepared["temp"].as_posix(),
                 "TMP": prepared["temp"].as_posix(),
                 "LOCALAPPDATA": prepared["local_appdata"].as_posix(),
                 "APPDATA": prepared["roaming_appdata"].as_posix(),
                 "XDG_CACHE_HOME": prepared["cache"].as_posix(),
-                "CODEX_ACCESS_TOKEN": token,
             }
         )
+        if credential_transport_mode == _DEDICATED_AGENT_IDENTITY_ENV:
+            env["CODEX_ACCESS_TOKEN"] = str(credential_transport)
         started_at = _utc_now()
         started_monotonic = time.monotonic()
         launch_deadline = started_monotonic + float(command_timeout_seconds)
@@ -2464,10 +2585,22 @@ class CodexLiveProducerAdapter:
             if not isinstance(retained, dict):
                 raise RuntimeError("credential residue readback evidence unavailable")
             return retained
-        if status != "PENDING" or not isinstance(self._credential, str) or not self._credential:
+        if status != "PENDING" or self._credential_transport_mode not in {
+            _DEDICATED_AGENT_IDENTITY_ENV,
+            _MANAGED_AUTH_HOME,
+        }:
             raise RuntimeError("credential residue readback unavailable")
         try:
-            inventory = _scan_private_worker_for_credential(row["worker_root"], self._credential)
+            if self._credential_transport_mode == _DEDICATED_AGENT_IDENTITY_ENV:
+                if not isinstance(self._credential, str) or not self._credential:
+                    raise RuntimeError("dedicated credential unavailable for residue readback")
+                inventory = _scan_private_worker_for_credential(row["worker_root"], self._credential)
+            else:
+                if self._credential is not None:
+                    raise RuntimeError("managed auth credential value entered adapter custody")
+                inventory = _scan_private_worker_for_structural_credential_markers(
+                    row["worker_root"]
+                )
         except BaseException as exc:
             try:
                 self._remove_owned_worker(row)
@@ -2479,13 +2612,24 @@ class CodexLiveProducerAdapter:
             if _lstat_optional(row["worker_root"]) is not None:
                 raise RuntimeError("OWNED_WORKER_CLEANUP_FAILED_CLOSED: worker still exists") from exc
             failure = {
-                "schema": "reviewed-campaign-credential-residue-scan-v1",
+                "schema": (
+                    "reviewed-campaign-credential-residue-scan-v2"
+                    if self._credential_transport_mode == _MANAGED_AUTH_HOME
+                    else "reviewed-campaign-credential-residue-scan-v1"
+                ),
                 "status": "FAIL_CLOSED",
                 "worker": row["worker"],
                 "failure_class": "CREDENTIAL_RESIDUE" if isinstance(exc, CredentialResidueError) else "SCAN_UNAVAILABLE",
                 "cleanup_status": "OWNED_WORKER_PURGED",
                 "completed_at": _utc_now(),
             }
+            if self._credential_transport_mode == _MANAGED_AUTH_HOME:
+                failure.update(
+                    {
+                        "scan_mode": _MANAGED_AUTH_SCAN_MODE,
+                        "credential_value_loaded_by_adapter": False,
+                    }
+                )
             evidence_path = _retain_content_addressed(row["provider_root"], _canonical(failure), ".credential-scan.json")
             evidence = _ref(self.root, evidence_path)
             row.update({"credential_scan_status": "PURGED", "credential_scan_evidence": evidence})
@@ -2496,13 +2640,25 @@ class CodexLiveProducerAdapter:
                 raise RuntimeError("access credential residue detected; owned worker custody purged") from exc
             raise RuntimeError("access credential residue scan failed closed; owned worker custody purged") from exc
         success = {
-            "schema": "reviewed-campaign-credential-residue-scan-v1",
+            "schema": (
+                "reviewed-campaign-credential-residue-scan-v2"
+                if self._credential_transport_mode == _MANAGED_AUTH_HOME
+                else "reviewed-campaign-credential-residue-scan-v1"
+            ),
             "status": "PASS",
             "worker": row["worker"],
             **inventory,
             "encoding_forms_checked": ["utf-8", "utf-16-le", "utf-16-be"],
             "completed_at": _utc_now(),
         }
+        if self._credential_transport_mode == _MANAGED_AUTH_HOME:
+            success.update(
+                {
+                    "scan_mode": _MANAGED_AUTH_SCAN_MODE,
+                    "credential_value_loaded_by_adapter": False,
+                    "marker_families_checked": list(_MANAGED_AUTH_MARKER_FAMILIES),
+                }
+            )
         evidence_path = _retain_content_addressed(row["provider_root"], _canonical(success), ".credential-scan.json")
         evidence = _ref(self.root, evidence_path)
         row.update({"credential_scan_status": "PASS", "credential_scan_evidence": evidence})

@@ -133,7 +133,7 @@ def run_terminal_cover(checker: Path, outputs: list[Path]) -> dict[str, list[str
     ``--json`` condition report is read.
     """
     proc = subprocess.run(
-        [sys.executable, str(checker), "--json", "--outputs", *[str(p) for p in outputs]],
+        [sys.executable, "-B", str(checker), "--json", "--outputs", *[str(p) for p in outputs]],
         capture_output=True,
         text=True,
         cwd=ROOT,

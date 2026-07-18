@@ -125,6 +125,7 @@ def build_sidecars(input_path: Path, output_path: Path, out_dir: Path, prefix: s
     cert_result = run_command(
         [
             sys.executable,
+            "-B",
             str(ROOT / "tools" / "check_graph_completeness.py"),
             "--outputs",
             str(output_path),
@@ -145,6 +146,7 @@ def build_sidecars(input_path: Path, output_path: Path, out_dir: Path, prefix: s
     run_command(
         [
             sys.executable,
+            "-B",
             str(ROOT / "tools" / "check_collapse_certificate_schema.py"),
             "--certificates",
             str(certificate_path),
@@ -154,6 +156,7 @@ def build_sidecars(input_path: Path, output_path: Path, out_dir: Path, prefix: s
     run_command(
         [
             sys.executable,
+            "-B",
             str(ROOT / "tools" / "check_output_grapher.py"),
             "--skill-output",
             str(output_path),

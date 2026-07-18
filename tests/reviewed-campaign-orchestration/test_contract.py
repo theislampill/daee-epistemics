@@ -922,11 +922,16 @@ class ReviewedCampaignOrchestrationTests(unittest.TestCase):
                 claim_initial_assessments(fixture.root, completion, assessments, claimant="human:task6-assessor")
 
     def test_cli_live_provider_requires_exact_executable_before_claim(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        residue_before = orchestrator.checkout_execution_residue_inventory(ROOT)
+        self.assertEqual("PASS", residue_before["status"], residue_before)
         with tempfile.TemporaryDirectory(prefix="daee-task6-cli-") as temp:
             fixture = Fixture(Path(temp))
             proc = subprocess.run(
                 [
                     sys.executable,
+                    "-B",
                     str(TOOLS / "run_reviewed_producer_cohort.py"),
                     "--custody-root",
                     str(fixture.root),
@@ -943,6 +948,8 @@ class ReviewedCampaignOrchestrationTests(unittest.TestCase):
             self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
             self.assertIn("LIVE_PROVIDER_EXACT_CUSTODY_AUTHORIZATION_AND_EXECUTABLE_REQUIRED", proc.stdout)
             self.assertFalse((fixture.root / "claims").exists())
+        residue_after = orchestrator.checkout_execution_residue_inventory(ROOT)
+        self.assertEqual(residue_before, residue_after)
 
     def test_cold_review_requires_assessments_then_discloses_exact_packets_and_uses_barrier(self) -> None:
         with tempfile.TemporaryDirectory(prefix="daee-task6-cold-") as temp:
@@ -3060,7 +3067,7 @@ class ReviewedCampaignOrchestrationTests(unittest.TestCase):
 
     def test_orchestrator_self_test_is_no_dispatch(self) -> None:
         proc = subprocess.run(
-            [sys.executable, str(TOOLS / "reviewed_campaign_orchestrator.py"), "--self-test"],
+            [sys.executable, "-B", str(TOOLS / "reviewed_campaign_orchestrator.py"), "--self-test"],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -3075,6 +3082,7 @@ class ReviewedCampaignOrchestrationTests(unittest.TestCase):
             proc = subprocess.run(
                 [
                     sys.executable,
+                    "-B",
                     str(TOOLS / "run_reviewed_cold_review_cohort.py"),
                     "--custody-root",
                     str(fixture.root),
@@ -3211,7 +3219,11 @@ class _ScriptedCodexHost:
         )
         if self.credential_residue_at == ordinal:
             residue = Path(env["TEMP"]) / "credential-residue.bin"
-            residue.write_bytes(env["CODEX_ACCESS_TOKEN"].encode(self.credential_residue_encoding))
+            credential = env.get(
+                "CODEX_ACCESS_TOKEN",
+                "eyJhbGciOiJub25lIn0.eyJzdWJqZWN0IjoidGVzdCJ9.c3ludGhldGljLXNpZ25hdHVyZQ",
+            )
+            residue.write_bytes(credential.encode(self.credential_residue_encoding))
         process = _CompletedCodexProcess(
             1000 + len(self.starts), self.log, worker,
             returncode=9 if self.nonzero_at == ordinal else 0,
@@ -3245,7 +3257,7 @@ class _ScriptedCodexTestAdapter:
         codex_executable: Path,
         host: _ScriptedCodexHost,
         command_timeout_seconds: int = 30,
-        fixture_token: str = "non-provider-scripted-fixture-token",
+        fixture_token: str | None = "non-provider-scripted-fixture-token",
     ) -> None:
         from codex_live_producer_adapter import CodexLiveProducerAdapter
 
@@ -3266,7 +3278,7 @@ class _ScriptedCodexTestAdapter:
     def capability(self) -> dict[str, object]:
         probe = self._host.probe(
             self._executable,
-            credential_carrier_available=bool(self._fixture_token),
+            credential_carrier_available=self._inner._credential_carrier_available(),
         )
         self._capability = {
             "schema": "reviewed-campaign-provider-capability-v1",
@@ -3646,10 +3658,11 @@ class LiveProducerContractTests(unittest.TestCase):
         workspace = worker_root / "workspace"
         run_root = worker_root / "run"
         cache = worker_root / "cache"
+        sqlite_home = worker_root / "sqlite"
         private_temp = worker_root / "temp"
         local_appdata = worker_root / "appdata/local"
         roaming_appdata = worker_root / "appdata/roaming"
-        for directory in (home, workspace, run_root, cache, private_temp, local_appdata, roaming_appdata):
+        for directory in (home, workspace, run_root, cache, sqlite_home, private_temp, local_appdata, roaming_appdata):
             directory.mkdir(parents=True)
         runtime_reference = workspace / "references/runtime-core-routing.md"
         runtime_reference.parent.mkdir()
@@ -3680,6 +3693,7 @@ class LiveProducerContractTests(unittest.TestCase):
             "workspace": workspace,
             "run_root": run_root,
             "cache": cache,
+            "sqlite_home": sqlite_home,
             "temp": private_temp,
             "local_appdata": local_appdata,
             "roaming_appdata": roaming_appdata,
@@ -4937,6 +4951,80 @@ class LiveProducerContractTests(unittest.TestCase):
             self.assertFalse((fixture.root / "claims").exists())
             self.assertFalse((fixture.root / "usage").exists())
 
+    def test_paid_live_path_rejects_checkout_bytecode_before_authorization_read(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+        from codex_live_producer_adapter import CodexLiveProducerAdapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-residue-stop-") as temp, tempfile.TemporaryDirectory(
+            prefix="daee-live-residue-source-"
+        ) as source_temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            source_root = Path(source_temp)
+            residue = source_root / "ignored/__pycache__/blocked.pyc"
+            residue.parent.mkdir(parents=True)
+            residue.write_bytes(b"synthetic checkout residue\n")
+            host = _ScriptedCodexHost()
+            adapter = CodexLiveProducerAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                access_token="fixture-access-token-never-retain",
+                host=host,
+            )
+
+            with mock.patch.object(orchestrator, "ROOT", source_root), self.assertRaisesRegex(
+                CampaignError,
+                "CHECKOUT_EXECUTION_RESIDUE",
+            ):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+
+            self.assertEqual([("probe", executable.name)], host.log)
+            self.assertFalse((fixture.root / "claims").exists())
+            self.assertFalse((fixture.root / "usage").exists())
+
+    def test_paid_live_path_rejects_unreadable_checkout_subtree_before_authorization_read(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-residue-traversal-stop-") as temp:
+            source_root = Path(temp)
+            adapter = mock.Mock()
+            adapter.capability.return_value = {
+                "schema": "reviewed-campaign-provider-capability-v1",
+                "adapter_kind": "codex-live",
+                "adapter_version": "codex-live-v1",
+                "host_application_version": "synthetic-no-provider-host-v1",
+                "codex_executable_sha256": "a" * 64,
+                "model": "gpt-5.5",
+                "reasoning_effort": "high",
+                "test_only": False,
+                "paid_provider_reachable": True,
+                "live_execution_authorized": True,
+            }
+
+            with mock.patch.object(orchestrator, "ROOT", source_root), mock.patch.object(
+                orchestrator.os,
+                "scandir",
+                side_effect=PermissionError("synthetic unreadable checkout subtree"),
+            ), mock.patch.object(
+                orchestrator,
+                "_load_producer_authorization",
+                side_effect=CampaignError("AUTHORIZATION_READ_REACHED"),
+            ) as authorization_read, self.assertRaisesRegex(
+                CampaignError,
+                "^CHECKOUT_EXECUTION_RESIDUE_TRAVERSAL_UNAVAILABLE$",
+            ):
+                run_producer_cohort(
+                    source_root,
+                    source_root / "must-not-be-read.json",
+                    adapter,
+                )
+
+            authorization_read.assert_not_called()
+
     def test_fixture_flag_rejects_paid_live_adapter_preparation(self) -> None:
         import reviewed_campaign_orchestrator as orchestrator
         from codex_live_producer_adapter import CodexLiveProducerAdapter
@@ -5388,6 +5476,190 @@ class LiveProducerContractTests(unittest.TestCase):
             ):
                 self.assertIs(adapter._credential_carrier_available(), False)
 
+    def test_live_managed_auth_transport_never_reframes_or_reads_auth_file_tokens(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-live-managed-auth-") as temp, tempfile.TemporaryDirectory(
+            prefix="daee-live-managed-auth-home-"
+        ) as controller_temp:
+            root = Path(temp)
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(root)
+            controller_home = Path(controller_temp)
+            auth_file = controller_home / ".codex/auth.json"
+            auth_file.parent.mkdir(parents=True)
+            auth_bytes = b"synthetic managed auth carrier; deliberately not JSON\n"
+            auth_file.write_bytes(auth_bytes)
+            host = _ScriptedCodexHost()
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+                fixture_token=None,
+            )
+
+            with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                live_adapter.Path,
+                "home",
+                return_value=controller_home,
+            ):
+                completion = run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+
+            self.assertEqual("PRODUCER_CAPTURE_COMPLETE", completion["status"])
+            self.assertEqual(5, len(host.starts))
+            self.assertEqual(auth_bytes, auth_file.read_bytes())
+            self.assertIsNone(adapter._inner._credential)
+            for start in host.starts:
+                env = start["env"]
+                self.assertNotIn("CODEX_ACCESS_TOKEN", env)
+                self.assertEqual(auth_file.parent, Path(env["CODEX_HOME"]))
+                worker_root = Path(start["cwd"]).parent
+                self.assertTrue(Path(env["HOME"]).is_relative_to(worker_root))
+                self.assertTrue(Path(env["USERPROFILE"]).is_relative_to(worker_root))
+                self.assertTrue(Path(env["CODEX_SQLITE_HOME"]).is_relative_to(worker_root))
+                self.assertNotEqual(env["CODEX_HOME"], env["HOME"])
+            for result in completion["results"]:
+                capture = json.loads(
+                    (fixture.root / result["capture_evidence"]["path"]).read_text(
+                        encoding="utf-8"
+                    )
+                )
+                scan = json.loads(
+                    (fixture.root / capture["credential_residue_scan"]["path"]).read_text(
+                        encoding="utf-8"
+                    )
+                )
+                self.assertEqual("reviewed-campaign-credential-residue-scan-v2", scan["schema"])
+                self.assertEqual("MANAGED_AUTH_STRUCTURAL_MARKERS", scan["scan_mode"])
+                self.assertIs(scan["credential_value_loaded_by_adapter"], False)
+            retained = b"\n".join(
+                path.read_bytes() for path in fixture.root.rglob("*") if path.is_file()
+            )
+            self.assertNotIn(auth_bytes.rstrip(), retained)
+
+    def test_checkout_execution_residue_inventory_finds_ignored_nested_bytecode(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(prefix="daee-checkout-residue-") as temp:
+            root = Path(temp)
+            (root / ".git/objects").mkdir(parents=True)
+            (root / ".git/objects/ignored.pyc").write_bytes(b"git metadata excluded\n")
+            (root / "ignored/a/__pycache__").mkdir(parents=True)
+            (root / "ignored/b").mkdir(parents=True)
+            (root / "ignored/b/orphan.pyc").write_bytes(b"orphan bytecode\n")
+            (root / "ignored/c/__pycache__").mkdir(parents=True)
+            (root / "ignored/c/__pycache__/module.cpython-312.pyc").write_bytes(
+                b"nested bytecode\n"
+            )
+
+            report = orchestrator.checkout_execution_residue_inventory(root)
+
+            self.assertEqual("FAIL", report["status"])
+            self.assertEqual(4, report["entry_count"])
+            self.assertEqual(
+                [
+                    "ignored/a/__pycache__",
+                    "ignored/b/orphan.pyc",
+                    "ignored/c/__pycache__",
+                    "ignored/c/__pycache__/module.cpython-312.pyc",
+                ],
+                [row["path"] for row in report["entries"]],
+            )
+            self.assertNotIn(".git/objects/ignored.pyc", [row["path"] for row in report["entries"]])
+            with self.assertRaisesRegex(CampaignError, "CHECKOUT_EXECUTION_RESIDUE"):
+                orchestrator.require_checkout_execution_residue_free(root)
+
+    def test_managed_auth_pre_admission_residue_purges_and_replays_terminally(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="daee-live-managed-auth-residue-") as temp, tempfile.TemporaryDirectory(
+            prefix="daee-live-managed-auth-residue-home-"
+        ) as controller_temp:
+            import codex_live_producer_adapter as live_adapter
+
+            root = Path(temp)
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(root)
+            controller_home = Path(controller_temp)
+            auth_file = controller_home / ".codex/auth.json"
+            auth_file.parent.mkdir(parents=True)
+            auth_file.write_bytes(b"synthetic managed auth carrier; deliberately not JSON\n")
+            host = _ScriptedCodexHost(
+                already_exited_at=1,
+                nonzero_at=1,
+                credential_residue_at=1,
+            )
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+                fixture_token=None,
+            )
+
+            with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                live_adapter.Path,
+                "home",
+                return_value=controller_home,
+            ), self.assertRaisesRegex(CampaignError, "access credential residue detected"):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+
+            self.assertEqual(1, len(host.starts))
+            self.assertFalse((fixture.root / "producer/isolated/producer-01").exists())
+            head = validate_head(fixture.root / "usage")
+            self.assertFalse(head["open_reservations"])
+            self.assertTrue(head["unresolved_usage"])
+            self.assertEqual(0, head["totals"]["attempted"])
+            self.assertEqual(0, head["totals"]["producer_invocations"])
+            self.assertEqual(1, head["totals"]["unknown"])
+            self.assertEqual(4, head["totals"]["not_dispatched"])
+            finalizer = json.loads(
+                (fixture.root / "producer/observation-finalizer.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            diagnostic = json.loads(
+                (
+                    fixture.root
+                    / finalizer["pre_admission_diagnostics"][0]["path"]
+                ).read_text(encoding="utf-8")
+            )
+            self.assertEqual("PURGED_UNRETAINED", diagnostic["carrier_disposition"])
+            scan = json.loads(
+                (
+                    fixture.root / diagnostic["credential_residue_scan"]["path"]
+                ).read_text(encoding="utf-8")
+            )
+            self.assertEqual("reviewed-campaign-credential-residue-scan-v2", scan["schema"])
+            self.assertEqual("FAIL_CLOSED", scan["status"])
+            self.assertEqual("CREDENTIAL_RESIDUE", scan["failure_class"])
+            self.assertEqual("MANAGED_AUTH_STRUCTURAL_MARKERS", scan["scan_mode"])
+            self.assertIs(scan["credential_value_loaded_by_adapter"], False)
+            replay_host = _ScriptedCodexHost()
+            replay_adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=replay_host,
+                fixture_token=None,
+            )
+            with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                live_adapter.Path,
+                "home",
+                return_value=controller_home,
+            ), self.assertRaisesRegex(CampaignError, "ATTEMPT_ALREADY_TERMINALIZED"):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    replay_adapter,
+                    allow_test_fixture=True,
+                )
+            self.assertEqual([], replay_host.starts)
+
     def test_capability_host_rejects_non_boolean_carrier_before_launch(self) -> None:
         import codex_live_producer_adapter as live_adapter
 
@@ -5708,7 +5980,7 @@ class LiveProducerContractTests(unittest.TestCase):
             host = SubprocessCodexHost()
             try:
                 process = host.start(
-                    [sys.executable, str(script), str(child_pid_path)],
+                    [sys.executable, "-B", str(script), str(child_pid_path)],
                     cwd=root,
                     env=dict(os.environ),
                     prompt_path=prompt,
@@ -5782,7 +6054,7 @@ class LiveProducerContractTests(unittest.TestCase):
             adapter.host = host
             try:
                 process = host.start(
-                    [sys.executable, str(script), str(child_pid_path)],
+                    [sys.executable, "-B", str(script), str(child_pid_path)],
                     cwd=root,
                     env=dict(os.environ),
                     prompt_path=prompt,

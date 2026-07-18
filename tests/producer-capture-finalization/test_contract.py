@@ -267,7 +267,15 @@ class ProducerCaptureFinalizationContract(unittest.TestCase):
         execution_ref = self.retain_json("execution-custody", execution_custody)
         credential_ref = self.retain_json(
             "credential-scan",
-            {"schema": "reviewed-campaign-credential-residue-scan-v1", "status": "PASS"},
+            {
+                "schema": "reviewed-campaign-credential-residue-scan-v1",
+                "status": "PASS",
+                "worker": "producer-01",
+                "scanned_file_count": 0,
+                "scanned_byte_count": 0,
+                "encoding_forms_checked": ["utf-8", "utf-16-le", "utf-16-be"],
+                "completed_at": "2026-07-17T00:00:00Z",
+            },
         )
         provider_receipt = {
             "call_id": f"{CYCLE_ID}:call-01",
@@ -399,6 +407,57 @@ class ProducerCaptureFinalizationContract(unittest.TestCase):
             )
         self.assertEqual(result.run_root, self.run_root)
         called.assert_called_once()
+
+    def test_malformed_credential_scan_rejects_before_finalizer_or_run_root(self) -> None:
+        malformed_scans = {
+            "status-only-v1": {
+                "schema": "reviewed-campaign-credential-residue-scan-v1",
+                "status": "PASS",
+            },
+            "partial-managed-v2": {
+                "schema": "reviewed-campaign-credential-residue-scan-v2",
+                "status": "PASS",
+                "worker": "producer-01",
+            },
+        }
+        for label, malformed_scan in malformed_scans.items():
+            with self.subTest(label=label):
+                payload, _raw = self.fixture()
+                scan_ref = self.retain_json(f"malformed-credential-scan-{label}", malformed_scan)
+                capture = json.loads(
+                    (self.scratch / payload["refs"]["capture_evidence"]["path"]).read_text(
+                        encoding="utf-8"
+                    )
+                )
+                capture["credential_residue_scan"] = scan_ref
+                capture_ref = self.retain_json(f"capture-with-{label}", capture)
+                payload["refs"]["capture_evidence"] = capture_ref
+                completion = json.loads(
+                    (self.scratch / payload["refs"]["producer_completion"]["path"]).read_text(
+                        encoding="utf-8"
+                    )
+                )
+                completion["results"][0]["capture_evidence"] = capture_ref
+                payload["refs"]["producer_completion"] = self.retain_json(
+                    f"completion-with-{label}", completion
+                )
+                record_path = self.publish(payload)
+
+                with mock.patch.object(
+                    capture_finalizer.strict_finalizer,
+                    "finalize_single_call_stage_capture",
+                ) as called:
+                    with self.assertRaisesRegex(
+                        capture_finalizer.CaptureFinalizationError,
+                        "credential residue scan",
+                    ):
+                        capture_finalizer.finalize_capture_complete_record(
+                            root=self.scratch,
+                            record_path=record_path,
+                            run_root=self.run_relative,
+                        )
+                called.assert_not_called()
+                self.assertFalse(self.run_root.exists())
 
     def test_output_or_context_substitution_rejects_before_finalizer_or_run_root(self) -> None:
         expected_failure = {

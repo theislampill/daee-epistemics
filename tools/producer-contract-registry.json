@@ -2,7 +2,7 @@
   "schema": "daee-producer-contract-registry-v1",
   "harness_source": {
     "path": "tools/run_staged_current_skill_smoke.py",
-    "sha256": "51048ff3566e5ad916d78787250594af5d9bb926c1417df9cd357c24c26587d4"
+    "sha256": "ff89a1b3a8368879be78f6b3b72e1efecd1474f92220e06618acf8db1a2f6ef0"
   },
   "forbidden_selection_inputs": ["case_id", "case_name", "topic", "smoke_id", "expected_answer", "expected_topology"],
   "prompt_surfaces": [
@@ -150,7 +150,7 @@
       "generated_owner": null,
       "harness_anchor": "Return exactly one JSON object",
       "visible_surfaces": ["stage_prompt"],
-      "delivery_projection": {"component_id": "harness:transport-json-only", "component_sha256": "51048ff3566e5ad916d78787250594af5d9bb926c1417df9cd357c24c26587d4", "delivery": "prompt-bound", "visible_before_call": true},
+      "delivery_projection": {"component_id": "harness:transport-json-only", "component_sha256": "ff89a1b3a8368879be78f6b3b72e1efecd1474f92220e06618acf8db1a2f6ef0", "delivery": "prompt-bound", "visible_before_call": true},
       "checker": {"obligation": "post-producer-non-semantic", "path": "tools/check_staged_runtime_handshake.py", "sha256": "de7c700f8a3489f64c3d12b30080d4a0918737dc028f97cc2ad1b50db8791e96"},
       "normalizer": {"class": "transport-only", "semantic_fields": []},
       "selection_inputs": ["stage_policy"],
@@ -163,7 +163,7 @@
       "canonical_owner": null,
       "generated_owner": null,
       "harness_anchor": "raw response text",
-      "delivery_projection": {"component_id": "none", "component_sha256": "51048ff3566e5ad916d78787250594af5d9bb926c1417df9cd357c24c26587d4", "delivery": "not-model-visible", "visible_before_call": false},
+      "delivery_projection": {"component_id": "none", "component_sha256": "ff89a1b3a8368879be78f6b3b72e1efecd1474f92220e06618acf8db1a2f6ef0", "delivery": "not-model-visible", "visible_before_call": false},
       "checker": {"obligation": "post-producer-custody", "path": "tools/check_staged_runtime_handshake.py", "sha256": "de7c700f8a3489f64c3d12b30080d4a0918737dc028f97cc2ad1b50db8791e96"},
       "normalizer": {"class": "none", "semantic_fields": []},
       "selection_inputs": [],

@@ -121,7 +121,7 @@ class ValidationIntegrityContractTests(unittest.TestCase):
     def test_external_expectation_and_verdict(self) -> None:
         fixture_root = Path(__file__).parent / "valid"
         proc = subprocess.run(
-            [sys.executable, str(TOOLS / "assert_expected_rejection.py"),
+            [sys.executable, "-B", str(TOOLS / "assert_expected_rejection.py"),
              "--expectation", str((fixture_root / "right-reason-stage04.verdict.expectation.json").relative_to(ROOT)),
              "--verdict", str((fixture_root / "right-reason-stage04.verdict.json").relative_to(ROOT))],
             cwd=ROOT, capture_output=True, text=True,

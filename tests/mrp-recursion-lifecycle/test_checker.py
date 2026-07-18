@@ -18,7 +18,7 @@ STATE_V2_VALID = ROOT / "tests" / "state-capsule-v2" / "valid"
 
 def run_checker(*args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        [sys.executable, str(CHECKER), *args],
+        [sys.executable, "-B", str(CHECKER), *args],
         cwd=ROOT,
         text=True,
         capture_output=True,

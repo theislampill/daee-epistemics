@@ -213,7 +213,15 @@ class Fixture:
         custody_ref = self.retain_json(f"execution-custody-{index}", custody)
         credential_ref = self.retain_json(
             f"credential-scan-{index}",
-            {"schema": "reviewed-campaign-credential-residue-scan-v1", "status": "PASS"},
+            {
+                "schema": "reviewed-campaign-credential-residue-scan-v1",
+                "status": "PASS",
+                "worker": f"producer-{index:02d}",
+                "scanned_file_count": 0,
+                "scanned_byte_count": 0,
+                "encoding_forms_checked": ["utf-8", "utf-16-le", "utf-16-be"],
+                "completed_at": "2026-07-17T00:00:00Z",
+            },
         )
         receipt = {
             "call_id": f"{CYCLE_ID}:call-{index:02d}",

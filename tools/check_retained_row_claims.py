@@ -121,7 +121,7 @@ def run_claims(manifest_path: Path) -> int:
     if graph_case_ids:
         outputs = [str(case_output_path(manifest_path, cases_by_id[c])) for c in graph_case_ids]
         proc = subprocess.run(
-            [sys.executable, str(ROOT / GRAPH_CHECKER), "--json", "--outputs", *outputs],
+            [sys.executable, "-B", str(ROOT / GRAPH_CHECKER), "--json", "--outputs", *outputs],
             capture_output=True,
             text=True,
             cwd=ROOT,
@@ -154,7 +154,7 @@ def run_claims(manifest_path: Path) -> int:
         elif kind == "outputs-checker":
             executed += 1
             outputs = [str(case_output_path(manifest_path, cases_by_id[c])) for c in case_ids]
-            command = [sys.executable, str(ROOT / binding["tool"]), *binding.get("args", []), *outputs]
+            command = [sys.executable, "-B", str(ROOT / binding["tool"]), *binding.get("args", []), *outputs]
             proc = subprocess.run(command, capture_output=True, text=True, cwd=ROOT)
             verdict = "PASS" if proc.returncode == 0 else "FAIL"
             print(f"{target_id} | {binding['tool']} | cases={len(case_ids)} | {verdict}")

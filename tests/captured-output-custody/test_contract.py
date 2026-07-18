@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import importlib.util
 import errno
 import os
@@ -47,6 +48,34 @@ def load_validator(kind: str):
 
 
 class CustodyContractTests(unittest.TestCase):
+    def test_repo_python_self_test_wrappers_disable_checkout_bytecode(self) -> None:
+        wrappers = (
+            "check_captured_output_manifest.py",
+            "check_cold_comprehensiveness_review.py",
+            "check_review_incident_report.py",
+            "check_topology_review.py",
+            "build_captured_output_verdict.py",
+            "build_cold_review_packet.py",
+        )
+        for name in wrappers:
+            with self.subTest(tool=name):
+                tree = ast.parse((TOOLS / name).read_text(encoding="utf-8"), filename=name)
+                launches = [
+                    node
+                    for node in ast.walk(tree)
+                    if isinstance(node, ast.Call)
+                    and isinstance(node.func, ast.Attribute)
+                    and isinstance(node.func.value, ast.Name)
+                    and node.func.value.id == "subprocess"
+                    and node.func.attr == "run"
+                ]
+                self.assertEqual(1, len(launches))
+                argv = launches[0].args[0]
+                self.assertIsInstance(argv, ast.List)
+                self.assertGreaterEqual(len(argv.elts), 2)
+                self.assertIsInstance(argv.elts[1], ast.Constant)
+                self.assertEqual("-B", argv.elts[1].value)
+
     def test_malformed_nested_shapes_return_findings_without_crashing(self) -> None:
         from _support import load_json, write_json
         cases=(("capture","capture","structural_replay",lambda value:value.update({"structural_replay":{"checker_results":"not-an-array"}})),("topology","topology","schema_contract",lambda value:value.update({"artifacts":[]})))

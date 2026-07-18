@@ -1047,7 +1047,7 @@ def require_command_success(command: list[str], *, cwd: Path, input_text: str | 
 def validate_replay_record(root: Path, replay_record: Path) -> None:
     require_command_success(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(replay_record),
@@ -8837,7 +8837,7 @@ def run_compiled_release_self_test(
     tampered_path = compiled_dir / "parity-canary-tampered-output.md"
     write_text(tampered_path, tampered_text)
     require_command_success(
-        [sys.executable, str(root / "tools" / "check_mid_reread_pressure.py"), "--outputs", str(tampered_path)],
+        [sys.executable, "-B", str(root / "tools" / "check_mid_reread_pressure.py"), "--outputs", str(tampered_path)],
         cwd=root,
     )
     try:
@@ -14702,7 +14702,7 @@ def run_self_test(root: Path) -> int:
     write_json(generated_missing_terminal_path, generated_missing_terminal)
     invalid_result = run_checked(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(generated_missing_terminal_path),
@@ -14727,7 +14727,7 @@ def run_self_test(root: Path) -> int:
     write_json(no_new_with_unresolved_path, no_new_with_unresolved)
     invalid_result = run_checked(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(no_new_with_unresolved_path),
@@ -18014,7 +18014,7 @@ def run_self_test(root: Path) -> int:
     write_json(stage06_nested_only_path, stage06_nested_only_record)
     invalid_result = run_checked(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(stage06_nested_only_path),
@@ -18063,7 +18063,7 @@ def run_self_test(root: Path) -> int:
         write_json(invalid_register_delta_path, invalid_register_delta_record)
         invalid_result = run_checked(
             [
-                sys.executable,
+                sys.executable, "-B",
                 str(root / "tools" / "check_staged_runtime_handshake.py"),
                 "--records",
                 str(invalid_register_delta_path),
@@ -18108,7 +18108,7 @@ def run_self_test(root: Path) -> int:
     write_json(stage06_boolean_nar_path, stage06_boolean_nar)
     invalid_result = run_checked(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(stage06_boolean_nar_path),
@@ -18133,7 +18133,7 @@ def run_self_test(root: Path) -> int:
     write_json(stage06_floor_mismatch_path, stage06_floor_mismatch)
     invalid_result = run_checked(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(stage06_floor_mismatch_path),
@@ -18157,7 +18157,7 @@ def run_self_test(root: Path) -> int:
     write_json(stage06_release_output_path, stage06_release_output)
     invalid_result = run_checked(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(stage06_release_output_path),
@@ -18366,7 +18366,7 @@ def run_self_test(root: Path) -> int:
     write_json(stage07_missing_validation_path, stage07_missing_validation)
     invalid_result = run_checked(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(stage07_missing_validation_path),
@@ -18385,7 +18385,7 @@ def run_self_test(root: Path) -> int:
     write_json(stage07_missing_diagnostics_path, stage07_missing_diagnostics)
     invalid_result = run_checked(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(stage07_missing_diagnostics_path),
@@ -18407,7 +18407,7 @@ def run_self_test(root: Path) -> int:
     write_json(stage07_mismatched_diagnostics_path, stage07_mismatched_diagnostics)
     invalid_result = run_checked(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(stage07_mismatched_diagnostics_path),
@@ -18427,7 +18427,7 @@ def run_self_test(root: Path) -> int:
     write_json(stage07_failed_validation_path, stage07_failed_validation)
     invalid_result = run_checked(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(stage07_failed_validation_path),
@@ -18446,7 +18446,7 @@ def run_self_test(root: Path) -> int:
     write_json(stage07_with_sidecars_path, stage07_with_sidecars)
     invalid_result = run_checked(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_staged_runtime_handshake.py"),
             "--records",
             str(stage07_with_sidecars_path),
@@ -19064,7 +19064,7 @@ def build_sidecars(
     out_dir.mkdir(parents=True, exist_ok=True)
     require_command_success(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_nla_decode_semantic_faithfulness.py"),
             "--outputs",
             str(output_path),
@@ -19073,7 +19073,7 @@ def build_sidecars(
     )
     require_command_success(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_field_witness_convergence.py"),
             "--outputs",
             str(output_path),
@@ -19082,7 +19082,7 @@ def build_sidecars(
     )
     require_command_success(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_formal_reread_state_semantics.py"),
             "--outputs",
             str(output_path),
@@ -19091,7 +19091,7 @@ def build_sidecars(
     )
     require_command_success(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "check_graph_completeness.py"),
             "--outputs",
             str(output_path),
@@ -19101,7 +19101,7 @@ def build_sidecars(
     )
     require_command_success(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "build_retained_proof_sidecars.py"),
             "--input",
             str(raw_input),
@@ -19134,7 +19134,7 @@ def build_sidecars(
         )
     require_command_success(
         [
-            sys.executable,
+            sys.executable, "-B",
             str(root / "tools" / "build_b5_full_ir_projection_sidecar.py"),
             "--input",
             str(raw_input),

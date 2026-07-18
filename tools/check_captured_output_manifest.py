@@ -465,7 +465,7 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path); parser.add_argument("--comparison", type=Path); parser.add_argument("--custody-root", type=Path); parser.add_argument("--explain", action="store_true"); parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     if args.self_test:
-        return subprocess.run([sys.executable, str(ROOT / "tests/captured-output-custody/test_contract.py")], cwd=ROOT).returncode
+        return subprocess.run([sys.executable, "-B", str(ROOT / "tests/captured-output-custody/test_contract.py")], cwd=ROOT).returncode
     raw = args.manifest or args.comparison
     if raw is None: parser.error("--manifest or --comparison required")
     root = (args.custody_root or ROOT).resolve()

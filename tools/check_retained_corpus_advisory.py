@@ -77,7 +77,7 @@ def probe_passes(checker: str, case: str) -> bool:
     """True iff the checker accepts this single retained output (exit 0)."""
     output = CORPUS / "cases" / case / "output.md"
     result = subprocess.run(
-        [sys.executable, str(ROOT / "tools" / f"{checker}.py"), "--outputs", str(output)],
+        [sys.executable, "-B", str(ROOT / "tools" / f"{checker}.py"), "--outputs", str(output)],
         capture_output=True,
     )
     return result.returncode == 0

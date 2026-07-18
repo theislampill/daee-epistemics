@@ -255,7 +255,7 @@ def main(argv: Iterable[str] | None = None) -> int:
         checker_identity = _source_file_identity(args.source_sha, CHECKER_PATH)
         contract_test_identity = _source_file_identity(args.source_sha, TEST_PATH)
         completed = subprocess.run(
-            [sys.executable, CHECKER_PATH, "--self-test"],
+            [sys.executable, "-B", CHECKER_PATH, "--self-test"],
             cwd=ROOT,
             capture_output=True,
             check=False,

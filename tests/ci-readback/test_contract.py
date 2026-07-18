@@ -265,7 +265,7 @@ def write_owned_process_tree(root: Path) -> tuple[list[str], Path, Path]:
         encoding="utf-8",
     )
     return (
-        [sys.executable, str(child), str(child_identity), str(grandchild), str(grandchild_identity)],
+        [sys.executable, "-B", str(child), str(child_identity), str(grandchild), str(grandchild_identity)],
         child_identity,
         grandchild_identity,
     )
@@ -1973,7 +1973,7 @@ class CiReadbackContract(unittest.TestCase):
             first_argv, child_identity_path, grandchild_identity_path = write_owned_process_tree(root)
             next_marker = root / "next-command-ran"
             next_argv = [
-                sys.executable,
+                sys.executable, "-B",
                 "-c",
                 f"from pathlib import Path; Path({str(next_marker)!r}).write_text('ran', encoding='ascii')",
             ]

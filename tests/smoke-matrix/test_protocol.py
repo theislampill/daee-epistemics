@@ -394,7 +394,7 @@ class FixtureProtocolTests(unittest.TestCase):
         registry = ROOT / "tests" / "smoke-matrix" / "v0.4.6.0-wip-five-smoke.json"
         result = subprocess.run(
             [
-                sys.executable,
+                sys.executable, "-B",
                 str(ROOT / "tools" / "smoke_matrix_registry.py"),
                 "--manifest",
                 str(registry),
@@ -1533,7 +1533,7 @@ class FixtureProtocolTests(unittest.TestCase):
             maturity_path.write_text(json.dumps(maturity), encoding="utf-8")
             result = subprocess.run(
                 [
-                    sys.executable,
+                    sys.executable, "-B",
                     str(ROOT / "tools" / "run_five_smoke_matrix.py"),
                     "--model-runner",
                     "codex",
@@ -1658,7 +1658,7 @@ class FixtureProtocolTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             out = Path(td) / "structural-pre-review-verdict.json"
             result = subprocess.run(
-                [sys.executable, str(ROOT / "tools" / "build_smoke_matrix_verdict.py"),
+                [sys.executable, "-B", str(ROOT / "tools" / "build_smoke_matrix_verdict.py"),
                  "--mode", "structural-pre-review", "--out", str(out)],
                 cwd=ROOT, text=True, capture_output=True, check=False,
             )

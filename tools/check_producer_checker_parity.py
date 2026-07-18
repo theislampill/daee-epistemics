@@ -252,10 +252,14 @@ def validate_registry(registry: dict[str, Any]) -> dict[str, Any]:
                 raise ParityFailure("canonical-package-clause-missing", clause, "canonical package law has wrong proof class")
             counts["canonical"] += 1
         elif cls == "transport_adapter":
+            if projection.get("component_sha256") != harness.get("sha256"):
+                raise ParityFailure("prompt-projection-hash-mismatch", clause, "transport projection does not bind exact harness source bytes")
             if projection.get("visible_before_call") is not True or row.get("proof_class") != "harness-assisted":
                 raise ParityFailure("producer-obligation-not-visible", clause, "transport adapter classification is inconsistent")
             counts["harness"] += 1
         elif cls == "instrumentation_only":
+            if projection.get("component_sha256") != harness.get("sha256"):
+                raise ParityFailure("prompt-projection-hash-mismatch", clause, "instrumentation projection does not bind exact harness source bytes")
             if projection.get("visible_before_call") is not False or not str(checker.get("obligation", "")).startswith("post-producer"):
                 raise ParityFailure("checker-only-semantic-law", clause, "instrumentation must be post-producer/non-semantic")
             counts["custody"] += 1
@@ -342,6 +346,10 @@ def self_test() -> int:
         clause = next(row for row in candidate["clauses"] if row.get("clause_id") == "stage04.owner-act-execution")
         clause["alternate_delivery_projections"][0]["component_sha256"] = "f" * 64
 
+    def drift_harness_projection(candidate: dict[str, Any], clause_id: str) -> None:
+        clause = next(row for row in candidate["clauses"] if row.get("clause_id") == clause_id)
+        clause["delivery_projection"]["component_sha256"] = "f" * 64
+
     mutations = [
         ("harness clause absent from package", lambda r: r["clauses"][0]["generated_owner"].update(package_member=False), "canonical-package-clause-missing"),
         ("checker-only secret law", lambda r: r["clauses"][0]["delivery_projection"].update(visible_before_call=False), "producer-obligation-not-visible"),
@@ -351,6 +359,8 @@ def self_test() -> int:
         ("unregistered prompt surface", lambda r: r["prompt_surfaces"].pop(), "unregistered-model-visible-clause"),
         ("owner section uses bundle hash", lambda r: r["clauses"][3]["delivery_projection"].update(component_sha256=r["clauses"][3]["generated_owner"]["sha256"]), "projection-section-hash-mismatch"),
         ("Stage01 kernel alternate projection drift", drift_stage01_kernel_projection, "prompt-projection-hash-mismatch"),
+        ("transport adapter harness projection drift", lambda r: drift_harness_projection(r, "transport.json-only"), "prompt-projection-hash-mismatch"),
+        ("instrumentation harness projection drift", lambda r: drift_harness_projection(r, "custody.raw-response-retention"), "prompt-projection-hash-mismatch"),
     ]
     for name, mutate, expected in mutations:
         candidate = copy.deepcopy(registry); mutate(candidate)
