@@ -27,8 +27,13 @@ from typing import Any, NamedTuple
 from artifact_tree import tree_sha256
 from check_captured_output_manifest import PublicationError, atomic_publish_bytes
 from credential_residue_scan_contract import (
+    CredentialResidueError,
     MANAGED_AUTH_MARKER_FAMILIES as _MANAGED_AUTH_MARKER_FAMILIES,
     MANAGED_AUTH_SCAN_MODE as _MANAGED_AUTH_SCAN_MODE,
+    ManagedCredentialScanAmbiguousError,
+    PASS_V3_SCHEMA as _MANAGED_AUTH_SCAN_SCHEMA,
+    SAFE_CARRIER_ROLES as _SAFE_CARRIER_ROLES,
+    classify_managed_auth_bytes as _classify_managed_auth_bytes,
 )
 from runtime_call_context_adapter import prepare_runtime_call
 from runtime_context_resolver import EMPTY_VALIDATED_STATE
@@ -261,10 +266,6 @@ if os.name == "nt":
             self.handle = None
             if not _kernel32.CloseHandle(wintypes.HANDLE(handle)):
                 raise ctypes.WinError(ctypes.get_last_error())
-
-
-class CredentialResidueError(RuntimeError):
-    pass
 
 
 class IsolationCleanupError(RuntimeError):
@@ -678,48 +679,14 @@ def _scan_private_worker_for_credential(worker_root: Path, credential: str) -> d
     return {"scanned_file_count": files, "scanned_byte_count": byte_count}
 
 
-def _file_contains_structural_credential_marker(path: Path) -> bool:
-    fixed_text = (
-        '"access_token"',
-        '"refresh_token"',
-        '"id_token"',
-        '"agent_identity"',
-        '"OPENAI_API_KEY"',
-        "Authorization: Bearer ",
-        "authorization: bearer ",
-        '"Authorization":"Bearer ',
-        '"authorization":"bearer ',
-    )
-    fixed_patterns = tuple(
-        dict.fromkeys(
-            marker.encode(encoding)
-            for marker in fixed_text
-            for encoding in ("utf-8", "utf-16-le", "utf-16-be")
-        )
-    )
-    compact_jwt = re.compile(r"(?<![A-Za-z0-9_-])eyJ[A-Za-z0-9_-]{5,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}")
-    openai_key = re.compile(r"(?<![A-Za-z0-9_-])sk-[A-Za-z0-9_-]{16,}")
-    retained = b""
-    with path.open("rb") as handle:
-        while chunk := handle.read(1024 * 1024):
-            combined = retained + chunk
-            if any(pattern in combined for pattern in fixed_patterns):
-                return True
-            for encoding in ("utf-8", "utf-16-le", "utf-16-be"):
-                decoded = combined.decode(encoding, errors="ignore")
-                if compact_jwt.search(decoded) or openai_key.search(decoded):
-                    return True
-            retained = combined[-4096:]
-    return False
-
-
 def _scan_private_worker_for_structural_credential_markers(
     worker_root: Path,
-) -> dict[str, int]:
+) -> dict[str, object]:
     if not worker_root.is_dir() or _is_reparse(worker_root):
         raise RuntimeError("private worker root unavailable or reparse during credential readback")
     files = 0
     byte_count = 0
+    structural_families: set[str] = set()
     pending = [worker_root]
     while pending:
         directory = pending.pop()
@@ -735,11 +702,26 @@ def _scan_private_worker_for_structural_credential_markers(
                 elif entry.is_file(follow_symlinks=False):
                     files += 1
                     byte_count += entry.stat(follow_symlinks=False).st_size
-                    if _file_contains_structural_credential_marker(path):
-                        raise CredentialResidueError("managed credential residue marker detected")
+                    classification = _classify_managed_auth_bytes(path.read_bytes())
+                    structural_families.update(
+                        classification["observed_structure_families"]
+                    )
                 else:
                     raise RuntimeError("private worker credential readback encountered unsupported entry")
-    return {"scanned_file_count": files, "scanned_byte_count": byte_count}
+    return {
+        "scanned_file_count": files,
+        "scanned_byte_count": byte_count,
+        "semantic_classification": (
+            "EXPECTED_TRANSPORT_STRUCTURE"
+            if structural_families
+            else "NO_CREDENTIAL_MARKERS"
+        ),
+        "observed_structure_families": list(
+            family
+            for family in _MANAGED_AUTH_MARKER_FAMILIES
+            if family in structural_families
+        ),
+    }
 
 
 def _copy_tree_exact(source: Path, destination: Path) -> None:
@@ -1729,6 +1711,116 @@ class CodexLiveProducerAdapter:
         except OSError as exc:
             raise RuntimeError(f"{label} readback failed") from exc
 
+    @staticmethod
+    def _terminal_carrier_specs(row: dict[str, Any]) -> tuple[tuple[str, Path | None, str], ...]:
+        prefix = "pre-admission" if row.get("state") == "DISPATCH_UNKNOWN" else "outcome-unknown"
+        return (
+            ("raw_event_log", row.get("events"), f".{prefix}.events.jsonl"),
+            ("stderr", row.get("stderr"), f".{prefix}.stderr.txt"),
+            ("raw_output", row.get("output"), f".{prefix}.output.md"),
+        )
+
+    def _retain_safe_terminal_carriers_before_purge(
+        self,
+        row: dict[str, Any],
+    ) -> dict[str, str]:
+        existing = row.get("safe_terminal_carrier_custody")
+        if existing is not None:
+            if (
+                not isinstance(existing, dict)
+                or set(existing) != {"outcomes", "references"}
+                or not isinstance(existing.get("outcomes"), dict)
+                or set(existing["outcomes"]) != set(_SAFE_CARRIER_ROLES)
+                or not isinstance(existing.get("references"), dict)
+            ):
+                raise RuntimeError("safe terminal carrier custody changed before replay")
+            return copy.deepcopy(existing["outcomes"])
+        outcomes: dict[str, str] = {}
+        references: dict[str, dict[str, object]] = {}
+        for role, path, suffix in self._terminal_carrier_specs(row):
+            present = False
+            raw = b""
+            safe = False
+            try:
+                if not isinstance(path, Path):
+                    raise RuntimeError(f"{role} path unavailable")
+                present, raw = self._optional_carrier_bytes(
+                    path,
+                    f"secret-safe pre-purge {role}",
+                )
+                if present:
+                    _classify_managed_auth_bytes(raw)
+                safe = True
+            except BaseException:
+                outcomes[role] = "UNSAFE_OR_UNPROVEN"
+                raw = b""
+            if safe:
+                outcomes[role] = (
+                    "RETAINED_SECRET_SAFE" if present else "SOURCE_ABSENT"
+                )
+            try:
+                retained_path = _retain_content_addressed(
+                    row["provider_root"],
+                    raw,
+                    suffix,
+                )
+            except BaseException:
+                if safe:
+                    outcomes[role] = "PUBLICATION_FAILED"
+                continue
+            references[role] = _ref(self.root, retained_path)
+        custody = {"outcomes": outcomes, "references": references}
+        row["safe_terminal_carrier_custody"] = copy.deepcopy(custody)
+        prepared = self._prepared.get(row["case_id"])
+        if prepared is not None:
+            prepared["safe_terminal_carrier_custody"] = copy.deepcopy(custody)
+        return outcomes
+
+    @staticmethod
+    def _safe_carrier_disposition(row: dict[str, Any]) -> str:
+        custody = row.get("safe_terminal_carrier_custody")
+        if not isinstance(custody, dict) or not isinstance(custody.get("outcomes"), dict):
+            return "PURGED_UNRETAINED"
+        outcomes = custody["outcomes"]
+        if set(outcomes) != set(_SAFE_CARRIER_ROLES):
+            return "PURGED_UNRETAINED"
+        values = list(outcomes.values())
+        if all(value in {"RETAINED_SECRET_SAFE", "SOURCE_ABSENT"} for value in values):
+            return "SAFE_RETAINED_BEFORE_PURGE"
+        if any(value == "RETAINED_SECRET_SAFE" for value in values):
+            return "PARTIAL_SAFE_RETENTION_BEFORE_PURGE"
+        return "PURGED_UNRETAINED"
+
+    def _retained_safe_carrier(
+        self,
+        row: dict[str, Any],
+        role: str,
+        suffix: str,
+    ) -> tuple[bool, dict[str, object]]:
+        custody = row.get("safe_terminal_carrier_custody")
+        outcome = None
+        reference = None
+        if isinstance(custody, dict):
+            outcomes = custody.get("outcomes")
+            references = custody.get("references")
+            if isinstance(outcomes, dict):
+                outcome = outcomes.get(role)
+            if isinstance(references, dict):
+                reference = references.get(role)
+        if isinstance(reference, dict):
+            path = _safe_join(
+                self.root,
+                reference.get("path"),
+                f"secret-safe retained {role}",
+                file=True,
+            )
+            if _ref(self.root, path) != reference or not path.name.endswith(suffix):
+                raise RuntimeError(f"secret-safe retained {role} identity changed")
+        else:
+            path = _retain_content_addressed(row["provider_root"], b"", suffix)
+            reference = _ref(self.root, path)
+        return outcome == "RETAINED_SECRET_SAFE", copy.deepcopy(reference)
+
     def _retain_pre_admission_diagnostic(
         self,
         row: dict[str, Any],
@@ -1745,7 +1837,13 @@ class CodexLiveProducerAdapter:
             not isinstance(host_returncode, int) or isinstance(host_returncode, bool)
         ):
             raise RuntimeError("pre-admission diagnostic host return code invalid")
-        if carrier_disposition not in {"RETAINED", "PURGED_UNRETAINED", "UNAVAILABLE"}:
+        if carrier_disposition not in {
+            "RETAINED",
+            "SAFE_RETAINED_BEFORE_PURGE",
+            "PARTIAL_SAFE_RETENTION_BEFORE_PURGE",
+            "PURGED_UNRETAINED",
+            "UNAVAILABLE",
+        }:
             raise RuntimeError("pre-admission carrier disposition unavailable")
         source_presence: dict[str, bool] = {}
         retained: dict[str, dict[str, object]] = {}
@@ -1754,18 +1852,30 @@ class CodexLiveProducerAdapter:
             ("stderr", row.get("stderr"), ".pre-admission.stderr.txt"),
             ("raw_output", row.get("output"), ".pre-admission.output.md"),
         ):
-            if carrier_disposition in {"PURGED_UNRETAINED", "UNAVAILABLE"}:
-                present, raw = False, b""
-            else:
+            if carrier_disposition == "RETAINED":
                 if not isinstance(path, Path):
                     raise RuntimeError(f"pre-admission {role} path unavailable")
                 present, raw = self._optional_carrier_bytes(path, f"pre-admission {role}")
+                try:
+                    retained_path = _retain_content_addressed(row["provider_root"], raw, suffix)
+                except BaseException as exc:
+                    raise _DiagnosticRetentionFailure(role, exc) from exc
+                reference = _ref(self.root, retained_path)
+            elif carrier_disposition == "UNAVAILABLE":
+                present, raw = False, b""
+                try:
+                    retained_path = _retain_content_addressed(row["provider_root"], raw, suffix)
+                except BaseException as exc:
+                    raise _DiagnosticRetentionFailure(role, exc) from exc
+                reference = _ref(self.root, retained_path)
+            else:
+                present, reference = self._retained_safe_carrier(
+                    row,
+                    role,
+                    suffix,
+                )
             source_presence[role] = present
-            try:
-                retained_path = _retain_content_addressed(row["provider_root"], raw, suffix)
-            except BaseException as exc:
-                raise _DiagnosticRetentionFailure(role, exc) from exc
-            retained[role] = _ref(self.root, retained_path)
+            retained[role] = reference
         execution_custody = row.get("execution_custody")
         execution_custody_sha256 = row.get("execution_custody_sha256")
         if (
@@ -1776,7 +1886,11 @@ class CodexLiveProducerAdapter:
         ):
             raise RuntimeError("pre-admission execution custody unavailable")
         diagnostic = {
-            "schema": "reviewed-campaign-pre-admission-diagnostic-v1",
+            "schema": (
+                "reviewed-campaign-pre-admission-diagnostic-v2"
+                if isinstance(row.get("safe_terminal_carrier_custody"), dict)
+                else "reviewed-campaign-pre-admission-diagnostic-v1"
+            ),
             "status": "PRE_ADMISSION_DIAGNOSTIC_RETAINED",
             "failure_kind": failure_kind,
             "candidate_id": row["candidate_id"],
@@ -1973,7 +2087,7 @@ class CodexLiveProducerAdapter:
                 self._record_terminal_cause(row, exc)
                 raise RuntimeError("pre-admission credential scan and purge failed closed") from exc
             credential_error = exc
-            carrier_disposition = "PURGED_UNRETAINED"
+            carrier_disposition = self._safe_carrier_disposition(row)
         try:
             diagnostic = self._retain_pre_admission_diagnostic(
                 row,
@@ -2046,6 +2160,15 @@ class CodexLiveProducerAdapter:
                         host_returncode=after_parse_returncode,
                     )
                     raise RuntimeError("Codex producer host exited before structured in-flight admission")
+                try:
+                    _classify_managed_auth_bytes(admitted_prefix)
+                except BaseException:
+                    self._fail_pre_admission(
+                        row,
+                        failure_kind="ADMISSION_EVIDENCE_UNSAFE_OR_UNPROVEN",
+                        host_returncode=row["process"].poll(),
+                    )
+                    raise
                 try:
                     retained_admission = _retain_content_addressed(
                         row["provider_root"],
@@ -2453,6 +2576,10 @@ class CodexLiveProducerAdapter:
             failure_kind = "HOST_TIMEOUT"
         elif any(isinstance(item, CredentialResidueError) for item in chain):
             failure_kind = "CREDENTIAL_RESIDUE"
+        elif any(
+            isinstance(item, ManagedCredentialScanAmbiguousError) for item in chain
+        ):
+            failure_kind = "CREDENTIAL_SCAN_AMBIGUOUS"
         elif "event stream" in cause or "completion identity" in cause:
             failure_kind = "TERMINAL_EVENT_STREAM_INVALID"
         else:
@@ -2495,8 +2622,8 @@ class CodexLiveProducerAdapter:
         credential_status = row.get("credential_scan_status")
         if credential_status == "PASS":
             carrier_disposition = "RETAINED"
-        elif credential_status == "PURGED":
-            carrier_disposition = "PURGED_UNRETAINED"
+        elif credential_status in {"PURGED", "PURGE_INCOMPLETE"}:
+            carrier_disposition = self._safe_carrier_disposition(row)
         else:
             raise RuntimeError("outcome-unknown credential scan evidence unavailable")
         if not isinstance(credential_scan, dict):
@@ -2508,15 +2635,20 @@ class CodexLiveProducerAdapter:
             ("stderr", row.get("stderr"), ".outcome-unknown.stderr.txt"),
             ("raw_output", row.get("output"), ".outcome-unknown.output.md"),
         ):
-            if carrier_disposition == "PURGED_UNRETAINED":
-                present, raw = False, b""
-            else:
+            if credential_status == "PASS":
                 if not isinstance(path, Path):
                     raise RuntimeError(f"outcome-unknown {role} path unavailable")
                 present, raw = self._optional_carrier_bytes(path, f"outcome-unknown {role}")
+                retained_path = _retain_content_addressed(row["provider_root"], raw, suffix)
+                reference = _ref(self.root, retained_path)
+            else:
+                present, reference = self._retained_safe_carrier(
+                    row,
+                    role,
+                    suffix,
+                )
             source_presence[role] = present
-            retained_path = _retain_content_addressed(row["provider_root"], raw, suffix)
-            carriers[role] = _ref(self.root, retained_path)
+            carriers[role] = reference
         admission = row.get("in_flight_admission")
         execution_custody = row.get("execution_custody")
         execution_custody_sha256 = row.get("execution_custody_sha256")
@@ -2531,7 +2663,11 @@ class CodexLiveProducerAdapter:
             raise RuntimeError("outcome-unknown admission or execution custody unavailable")
         host_returncode = row.get("terminal_host_returncode")
         diagnostic = {
-            "schema": "reviewed-campaign-outcome-unknown-diagnostic-v1",
+            "schema": (
+                "reviewed-campaign-outcome-unknown-diagnostic-v2"
+                if isinstance(row.get("safe_terminal_carrier_custody"), dict)
+                else "reviewed-campaign-outcome-unknown-diagnostic-v1"
+            ),
             "status": "OUTCOME_UNKNOWN_DIAGNOSTIC_RETAINED",
             "failure_kind": failure_kind,
             "candidate_id": row["candidate_id"],
@@ -2581,7 +2717,7 @@ class CodexLiveProducerAdapter:
     def _credential_readback(self, row: dict[str, Any]) -> dict[str, object]:
         status = row.get("credential_scan_status")
         retained = row.get("credential_scan_evidence")
-        if status in {"PASS", "PURGED"}:
+        if status in {"PASS", "PURGED", "PURGE_INCOMPLETE"}:
             if not isinstance(retained, dict):
                 raise RuntimeError("credential residue readback evidence unavailable")
             return retained
@@ -2602,46 +2738,101 @@ class CodexLiveProducerAdapter:
                     row["worker_root"]
                 )
         except BaseException as exc:
+            safe_carrier_outcomes: dict[str, str] | None = None
+            if self._credential_transport_mode == _MANAGED_AUTH_HOME:
+                try:
+                    safe_carrier_outcomes = (
+                        self._retain_safe_terminal_carriers_before_purge(row)
+                    )
+                except BaseException:
+                    safe_carrier_outcomes = {
+                        role: "UNSAFE_OR_UNPROVEN" for role in _SAFE_CARRIER_ROLES
+                    }
+                    row["safe_terminal_carrier_custody"] = {
+                        "outcomes": copy.deepcopy(safe_carrier_outcomes),
+                        "references": {},
+                    }
+            cleanup_error: IsolationCleanupError | None = None
             try:
                 self._remove_owned_worker(row)
                 self._remove_owned_root_if_ready()
             except IsolationCleanupError as cleanup_exc:
-                raise RuntimeError(
-                    f"OWNED_WORKER_CLEANUP_FAILED_CLOSED: {cleanup_exc}"
-                ) from exc
-            if _lstat_optional(row["worker_root"]) is not None:
-                raise RuntimeError("OWNED_WORKER_CLEANUP_FAILED_CLOSED: worker still exists") from exc
-            failure = {
-                "schema": (
-                    "reviewed-campaign-credential-residue-scan-v2"
-                    if self._credential_transport_mode == _MANAGED_AUTH_HOME
-                    else "reviewed-campaign-credential-residue-scan-v1"
-                ),
-                "status": "FAIL_CLOSED",
-                "worker": row["worker"],
-                "failure_class": "CREDENTIAL_RESIDUE" if isinstance(exc, CredentialResidueError) else "SCAN_UNAVAILABLE",
-                "cleanup_status": "OWNED_WORKER_PURGED",
-                "completed_at": _utc_now(),
-            }
-            if self._credential_transport_mode == _MANAGED_AUTH_HOME:
-                failure.update(
-                    {
-                        "scan_mode": _MANAGED_AUTH_SCAN_MODE,
-                        "credential_value_loaded_by_adapter": False,
-                    }
+                cleanup_error = cleanup_exc
+            worker_purged = _lstat_optional(row["worker_root"]) is None
+            if not worker_purged and cleanup_error is None:
+                cleanup_error = IsolationCleanupError(
+                    "OWNED_WORKER_CLEANUP_FAILED_CLOSED: worker still exists"
                 )
+            if self._credential_transport_mode == _MANAGED_AUTH_HOME:
+                if isinstance(exc, CredentialResidueError):
+                    failure_class = "CREDENTIAL_RESIDUE"
+                    semantic_classification = "CREDENTIAL_VALUE_RESIDUE"
+                elif isinstance(exc, ManagedCredentialScanAmbiguousError):
+                    failure_class = "AMBIGUOUS_SCAN_RESULT"
+                    semantic_classification = "AMBIGUOUS_OR_UNAVAILABLE"
+                else:
+                    failure_class = "SCAN_UNAVAILABLE"
+                    semantic_classification = "AMBIGUOUS_OR_UNAVAILABLE"
+                marker_families = list(
+                    getattr(exc, "marker_families", ())
+                    if failure_class != "SCAN_UNAVAILABLE"
+                    else ()
+                )
+                failure = {
+                    "schema": _MANAGED_AUTH_SCAN_SCHEMA,
+                    "status": "FAIL_CLOSED",
+                    "worker": row["worker"],
+                    "scan_mode": _MANAGED_AUTH_SCAN_MODE,
+                    "credential_value_loaded_by_adapter": False,
+                    "failure_class": failure_class,
+                    "semantic_classification": semantic_classification,
+                    "observed_marker_families": marker_families,
+                    "safe_carrier_outcomes": safe_carrier_outcomes,
+                    "cleanup_status": (
+                        "OWNED_WORKER_PURGED"
+                        if worker_purged
+                        else "OWNED_WORKER_PURGE_INCOMPLETE"
+                    ),
+                    "completed_at": _utc_now(),
+                }
+            else:
+                failure = {
+                    "schema": "reviewed-campaign-credential-residue-scan-v1",
+                    "status": "FAIL_CLOSED",
+                    "worker": row["worker"],
+                    "failure_class": (
+                        "CREDENTIAL_RESIDUE"
+                        if isinstance(exc, CredentialResidueError)
+                        else "SCAN_UNAVAILABLE"
+                    ),
+                    "cleanup_status": (
+                        "OWNED_WORKER_PURGED"
+                        if worker_purged
+                        else "OWNED_WORKER_PURGE_INCOMPLETE"
+                    ),
+                    "completed_at": _utc_now(),
+                }
             evidence_path = _retain_content_addressed(row["provider_root"], _canonical(failure), ".credential-scan.json")
             evidence = _ref(self.root, evidence_path)
-            row.update({"credential_scan_status": "PURGED", "credential_scan_evidence": evidence})
+            scan_status = "PURGED" if worker_purged else "PURGE_INCOMPLETE"
+            row.update({"credential_scan_status": scan_status, "credential_scan_evidence": evidence})
             prepared = self._prepared.get(row["case_id"])
             if prepared is not None:
-                prepared.update({"credential_scan_status": "PURGED", "credential_scan_evidence": evidence})
+                prepared.update({"credential_scan_status": scan_status, "credential_scan_evidence": evidence})
+            if cleanup_error is not None:
+                raise RuntimeError(
+                    f"OWNED_WORKER_CLEANUP_FAILED_CLOSED: {cleanup_error}"
+                ) from exc
             if isinstance(exc, CredentialResidueError):
                 raise RuntimeError("access credential residue detected; owned worker custody purged") from exc
+            if isinstance(exc, ManagedCredentialScanAmbiguousError):
+                raise RuntimeError(
+                    "managed credential scan ambiguous; owned worker custody purged"
+                ) from exc
             raise RuntimeError("access credential residue scan failed closed; owned worker custody purged") from exc
         success = {
             "schema": (
-                "reviewed-campaign-credential-residue-scan-v2"
+                _MANAGED_AUTH_SCAN_SCHEMA
                 if self._credential_transport_mode == _MANAGED_AUTH_HOME
                 else "reviewed-campaign-credential-residue-scan-v1"
             ),

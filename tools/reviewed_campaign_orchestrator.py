@@ -35,6 +35,7 @@ from check_initial_assessment_barrier import (
 )
 from check_parallel_dispatch_manifest import chain_dispatch_events, validate_dispatch_manifest
 from credential_residue_scan_contract import (
+    classify_managed_auth_bytes as _classify_managed_auth_bytes,
     valid_failed_credential_scan as _valid_failed_credential_scan,
     valid_pass_credential_scan as _valid_pass_credential_scan,
 )
@@ -1433,6 +1434,32 @@ def _rederive_live_provider_facts(
     retained_relative = events_path.relative_to(Path(os.path.abspath(root))).as_posix()
     if not retained_relative.startswith(f"{auth['provider_receipt_root']}/"):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_EVENT_CUSTODY")
+    scan, scan_path, _scan_sha = _load_ref(
+        root,
+        capture.get("credential_residue_scan"),
+        f"producer_credential_residue_scan_{index}",
+    )
+    scan_relative = scan_path.relative_to(Path(os.path.abspath(root))).as_posix()
+    scan_raw = scan_path.read_bytes()
+    if (
+        not scan_relative.startswith(f"{auth['provider_receipt_root']}/")
+        or not scan_relative.endswith(".credential-scan.json")
+        or scan_raw != canonical_bytes(scan)
+        or not _valid_pass_credential_scan(scan, f"producer-{index:02d}")
+    ):
+        raise CampaignError(
+            "TERMINAL_PUBLICATION_PREFLIGHT_COMPLETED_CAPTURE_CREDENTIAL_SCAN"
+        )
+    stderr_path, stderr_raw, _stderr_sha = _load_retained_bytes_ref(
+        root,
+        capture.get("stderr"),
+        f"producer_stderr_{index}",
+    )
+    stderr_relative = stderr_path.relative_to(Path(os.path.abspath(root))).as_posix()
+    if not stderr_relative.startswith(f"{auth['provider_receipt_root']}/"):
+        raise CampaignError(
+            "TERMINAL_PUBLICATION_PREFLIGHT_COMPLETED_CAPTURE_CREDENTIAL_CUSTODY"
+        )
     lines = events_raw.splitlines()
     if not lines or any(not line for line in lines):
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_EVENT_JSONL")
@@ -1579,6 +1606,14 @@ def _rederive_live_provider_facts(
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_OUTPUT_UTF8") from exc
     if not raw_output or raw_output != result_output:
         raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_RAW_OUTPUT_BINDING")
+    if scan.get("schema") == "reviewed-campaign-credential-residue-scan-v3":
+        for carrier_raw in (admission_raw, events_raw, stderr_raw, raw_output):
+            try:
+                _classify_managed_auth_bytes(carrier_raw)
+            except Exception as exc:
+                raise CampaignError(
+                    "TERMINAL_PUBLICATION_PREFLIGHT_COMPLETED_CAPTURE_CREDENTIAL_CONTENT"
+                ) from exc
 
 
 def _derive_terminal_receipt_state(
@@ -1728,7 +1763,6 @@ def _validate_pre_admission_diagnostics(
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_BINDING")
         expected_worker = f"producer-{auth['case_ids'].index(receipt_case_id) + 1:02d}"
         expected_identity = {
-            "schema": "reviewed-campaign-pre-admission-diagnostic-v1",
             "candidate_id": auth["candidate_id"],
             "source_commit": auth["source_commit"],
             "package_sha256": auth["package_sha256"],
@@ -1740,7 +1774,17 @@ def _validate_pre_admission_diagnostics(
             "admission_status": "NOT_ADMITTED",
             "provider_invocation_proven": False,
         }
-        if any(diagnostic.get(key) != value for key, value in expected_identity.items()):
+        if (
+            diagnostic.get("schema")
+            not in {
+                "reviewed-campaign-pre-admission-diagnostic-v1",
+                "reviewed-campaign-pre-admission-diagnostic-v2",
+            }
+            or any(
+                diagnostic.get(key) != value
+                for key, value in expected_identity.items()
+            )
+        ):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_BINDING")
         failure_kind = diagnostic.get("failure_kind")
         if not isinstance(failure_kind, str) or not failure_kind:
@@ -1786,14 +1830,29 @@ def _validate_pre_admission_diagnostics(
             or set(source_presence) != {"raw_event_log", "stderr", "raw_output"}
             or any(type(value) is not bool for value in source_presence.values())
             or carrier_disposition
-            not in {"RETAINED", "PURGED_UNRETAINED", "UNAVAILABLE", "RETENTION_FAILED"}
+            not in {
+                "RETAINED",
+                "SAFE_RETAINED_BEFORE_PURGE",
+                "PARTIAL_SAFE_RETENTION_BEFORE_PURGE",
+                "PURGED_UNRETAINED",
+                "UNAVAILABLE",
+                "RETENTION_FAILED",
+            }
             or (
-                carrier_disposition in {"PURGED_UNRETAINED", "UNAVAILABLE", "RETENTION_FAILED"}
+                carrier_disposition
+                in {"PURGED_UNRETAINED", "UNAVAILABLE", "RETENTION_FAILED"}
                 and any(
                     source_presence[role] is not False
                     for role in ("raw_event_log", "stderr", "raw_output")
                 )
             )
+            or carrier_disposition
+            in {
+                "SAFE_RETAINED_BEFORE_PURGE",
+                "PARTIAL_SAFE_RETENTION_BEFORE_PURGE",
+            }
+            and diagnostic.get("schema")
+            != "reviewed-campaign-pre-admission-diagnostic-v2"
         ):
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CARRIERS")
         expected_diagnostic_status = (
@@ -1803,6 +1862,7 @@ def _validate_pre_admission_diagnostics(
         )
         if diagnostic.get("status") != expected_diagnostic_status:
             raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_BINDING")
+        carrier_raws: dict[str, bytes] = {}
         for role, suffix in (
             ("raw_event_log", ".pre-admission.events.jsonl"),
             ("stderr", ".pre-admission.stderr.txt"),
@@ -1820,6 +1880,7 @@ def _validate_pre_admission_diagnostics(
                 or (source_presence[role] is False and carrier_raw != b"")
             ):
                 raise CampaignError("TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CARRIERS")
+            carrier_raws[role] = carrier_raw
         if carrier_disposition == "UNAVAILABLE":
             witness, witness_path, _witness_sha = _load_ref(
                 root,
@@ -1912,6 +1973,67 @@ def _validate_pre_admission_diagnostics(
             if not valid_scan:
                 raise CampaignError(
                     "TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_CREDENTIAL_SCAN"
+                )
+            if (
+                scan.get("schema")
+                == "reviewed-campaign-credential-residue-scan-v3"
+                and scan.get("status") == "FAIL_CLOSED"
+            ):
+                outcomes = scan.get("safe_carrier_outcomes")
+                expected_presence = {
+                    role: outcomes.get(role) == "RETAINED_SECRET_SAFE"
+                    for role in ("raw_event_log", "stderr", "raw_output")
+                }
+                values = list(outcomes.values())
+                expected_disposition = (
+                    "SAFE_RETAINED_BEFORE_PURGE"
+                    if all(
+                        value in {"RETAINED_SECRET_SAFE", "SOURCE_ABSENT"}
+                        for value in values
+                    )
+                    else "PARTIAL_SAFE_RETENTION_BEFORE_PURGE"
+                    if any(value == "RETAINED_SECRET_SAFE" for value in values)
+                    else "PURGED_UNRETAINED"
+                )
+                if (
+                    source_presence != expected_presence
+                    or carrier_disposition != expected_disposition
+                    or diagnostic.get("schema")
+                    != "reviewed-campaign-pre-admission-diagnostic-v2"
+                ):
+                    raise CampaignError(
+                        "TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_SAFE_CUSTODY"
+                    )
+                for role, outcome in outcomes.items():
+                    if outcome != "RETAINED_SECRET_SAFE":
+                        continue
+                    try:
+                        _classify_managed_auth_bytes(carrier_raws[role])
+                    except Exception as exc:
+                        raise CampaignError(
+                            "TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_SAFE_CUSTODY_CONTENT"
+                        ) from exc
+            elif (
+                scan.get("schema")
+                == "reviewed-campaign-credential-residue-scan-v3"
+                and scan.get("status") == "PASS"
+            ):
+                for role, present in source_presence.items():
+                    if not present:
+                        continue
+                    try:
+                        _classify_managed_auth_bytes(carrier_raws[role])
+                    except Exception as exc:
+                        raise CampaignError(
+                            "TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_SAFE_CUSTODY_CONTENT"
+                        ) from exc
+            elif carrier_disposition not in {
+                "RETAINED",
+                "RETENTION_FAILED",
+                "PURGED_UNRETAINED",
+            }:
+                raise CampaignError(
+                    "TERMINAL_PUBLICATION_PREFLIGHT_PRE_ADMISSION_DIAGNOSTIC_SAFE_CUSTODY"
                 )
             if carrier_disposition == "RETENTION_FAILED":
                 retention_failure = diagnostic.get("retention_failure")
@@ -2067,7 +2189,7 @@ def _validate_outcome_unknown_diagnostics(
     allowed_failure_kinds = {
         "HOST_EXITED_NONZERO", "HOST_TIMEOUT", "OBSERVATION_INTERRUPTED",
         "TERMINAL_EVENT_STREAM_INVALID", "CREDENTIAL_RESIDUE",
-        "OBSERVATION_FAILED",
+        "CREDENTIAL_SCAN_AMBIGUOUS", "OBSERVATION_FAILED",
     }
     root_abs = Path(os.path.abspath(root))
     for index, (reference, receipt) in enumerate(
@@ -2094,7 +2216,10 @@ def _validate_outcome_unknown_diagnostics(
             or diagnostic_sha != reference.get("sha256")
             or set(diagnostic) != expected_keys
             or diagnostic.get("schema")
-            != "reviewed-campaign-outcome-unknown-diagnostic-v1"
+            not in {
+                "reviewed-campaign-outcome-unknown-diagnostic-v1",
+                "reviewed-campaign-outcome-unknown-diagnostic-v2",
+            }
             or diagnostic.get("status") != "OUTCOME_UNKNOWN_DIAGNOSTIC_RETAINED"
             or diagnostic.get("failure_kind") not in allowed_failure_kinds
             or diagnostic.get("candidate_id") != auth["candidate_id"]
@@ -2141,16 +2266,30 @@ def _validate_outcome_unknown_diagnostics(
         carrier_disposition = diagnostic.get("carrier_disposition")
         source_presence = diagnostic.get("source_presence")
         if (
-            carrier_disposition not in {"RETAINED", "PURGED_UNRETAINED"}
+            carrier_disposition
+            not in {
+                "RETAINED",
+                "SAFE_RETAINED_BEFORE_PURGE",
+                "PARTIAL_SAFE_RETENTION_BEFORE_PURGE",
+                "PURGED_UNRETAINED",
+            }
             or not isinstance(source_presence, dict)
             or set(source_presence) != {"raw_event_log", "stderr", "raw_output"}
             or any(type(value) is not bool for value in source_presence.values())
             or carrier_disposition == "PURGED_UNRETAINED"
             and any(source_presence.values())
+            or carrier_disposition
+            in {
+                "SAFE_RETAINED_BEFORE_PURGE",
+                "PARTIAL_SAFE_RETENTION_BEFORE_PURGE",
+            }
+            and diagnostic.get("schema")
+            != "reviewed-campaign-outcome-unknown-diagnostic-v2"
         ):
             raise CampaignError(
                 "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_CARRIERS"
             )
+        carrier_raws: dict[str, bytes] = {}
         for role, suffix in (
             ("raw_event_log", ".outcome-unknown.events.jsonl"),
             ("stderr", ".outcome-unknown.stderr.txt"),
@@ -2171,6 +2310,7 @@ def _validate_outcome_unknown_diagnostics(
                 raise CampaignError(
                     "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_CARRIERS"
                 )
+            carrier_raws[role] = carrier_raw
         admission_path, admission_raw, _admission_sha = _load_retained_bytes_ref(
             root,
             diagnostic.get("in_flight_admission"),
@@ -2228,6 +2368,69 @@ def _validate_outcome_unknown_diagnostics(
         ):
             raise CampaignError(
                 "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_CREDENTIAL_SCAN"
+            )
+        if scan.get("schema") == "reviewed-campaign-credential-residue-scan-v3":
+            try:
+                _classify_managed_auth_bytes(admission_raw)
+            except Exception as exc:
+                raise CampaignError(
+                    "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_ADMISSION_CONTENT"
+                ) from exc
+        if (
+            scan.get("schema") == "reviewed-campaign-credential-residue-scan-v3"
+            and scan.get("status") == "FAIL_CLOSED"
+        ):
+            outcomes = scan.get("safe_carrier_outcomes")
+            expected_presence = {
+                role: outcomes.get(role) == "RETAINED_SECRET_SAFE"
+                for role in ("raw_event_log", "stderr", "raw_output")
+            }
+            values = list(outcomes.values()) if isinstance(outcomes, dict) else []
+            expected_disposition = (
+                "SAFE_RETAINED_BEFORE_PURGE"
+                if values
+                and all(
+                    value in {"RETAINED_SECRET_SAFE", "SOURCE_ABSENT"}
+                    for value in values
+                )
+                else "PARTIAL_SAFE_RETENTION_BEFORE_PURGE"
+                if any(value == "RETAINED_SECRET_SAFE" for value in values)
+                else "PURGED_UNRETAINED"
+            )
+            if (
+                source_presence != expected_presence
+                or carrier_disposition != expected_disposition
+                or diagnostic.get("schema")
+                != "reviewed-campaign-outcome-unknown-diagnostic-v2"
+            ):
+                raise CampaignError(
+                    "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_SAFE_CUSTODY"
+                )
+            for role, outcome in outcomes.items():
+                if outcome != "RETAINED_SECRET_SAFE":
+                    continue
+                try:
+                    _classify_managed_auth_bytes(carrier_raws[role])
+                except Exception as exc:
+                    raise CampaignError(
+                        "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_SAFE_CUSTODY_CONTENT"
+                    ) from exc
+        elif (
+            scan.get("schema") == "reviewed-campaign-credential-residue-scan-v3"
+            and scan.get("status") == "PASS"
+        ):
+            for role, present in source_presence.items():
+                if not present:
+                    continue
+                try:
+                    _classify_managed_auth_bytes(carrier_raws[role])
+                except Exception as exc:
+                    raise CampaignError(
+                        "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_SAFE_CUSTODY_CONTENT"
+                    ) from exc
+        elif carrier_disposition not in {"RETAINED", "PURGED_UNRETAINED"}:
+            raise CampaignError(
+                "TERMINAL_PUBLICATION_PREFLIGHT_OUTCOME_UNKNOWN_DIAGNOSTIC_SAFE_CUSTODY"
             )
         custody, custody_path, custody_sha = _load_ref(
             root,

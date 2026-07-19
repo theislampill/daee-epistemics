@@ -3782,20 +3782,50 @@ class LiveProducerContractTests(unittest.TestCase):
         )
         return fixture, authorization, incident, payload, auth, auth_sha, bindings
 
-    def _run_live_success(self, root: Path) -> tuple[Fixture, Path, dict[str, object]]:
+    def _run_live_success(
+        self,
+        root: Path,
+        *,
+        managed_auth_home: Path | None = None,
+    ) -> tuple[Fixture, Path, dict[str, object]]:
         fixture, authorization, executable, _skill_bytes = self._live_fixture(root)
         adapter = _ScriptedCodexTestAdapter(
             custody_root=fixture.root,
             codex_executable=executable,
             host=_ScriptedCodexHost(),
+            fixture_token=(
+                None
+                if managed_auth_home is not None
+                else "non-provider-scripted-fixture-token"
+            ),
             command_timeout_seconds=30,
         )
-        completion = run_producer_cohort(
-            fixture.root,
-            authorization,
-            adapter,
-            allow_test_fixture=True,
-        )
+        if managed_auth_home is None:
+            completion = run_producer_cohort(
+                fixture.root,
+                authorization,
+                adapter,
+                allow_test_fixture=True,
+            )
+        else:
+            import codex_live_producer_adapter as live_adapter
+
+            auth_file = managed_auth_home / ".codex/auth.json"
+            auth_file.parent.mkdir(parents=True)
+            auth_file.write_bytes(
+                b"synthetic managed auth carrier; deliberately not JSON\n"
+            )
+            with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                live_adapter.Path,
+                "home",
+                return_value=managed_auth_home,
+            ):
+                completion = run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
         return fixture, authorization, completion
 
     def _rewrite_first_capture(
@@ -3809,6 +3839,19 @@ class LiveProducerContractTests(unittest.TestCase):
         result = updated["results"][0]
         capture_path = root / result["capture_evidence"]["path"]
         capture = json.loads(capture_path.read_text(encoding="utf-8"))
+
+        def replace_content_addressed_ref(
+            current: dict[str, object],
+            raw: bytes,
+        ) -> dict[str, object]:
+            relative = Path(str(current["path"]))
+            suffix = relative.name[64:]
+            if len(relative.name) < 65 or not suffix:
+                raise AssertionError("fixture carrier is not content-addressed")
+            target = root / relative.parent / f"{hashlib.sha256(raw).hexdigest()}{suffix}"
+            target.write_bytes(raw)
+            return ref(root, target)
+
         if mutation in {"raw-thread", "raw-usage"}:
             event_path = root / capture["raw_event_log"]["path"]
             events = [json.loads(line) for line in event_path.read_bytes().splitlines()]
@@ -3818,6 +3861,63 @@ class LiveProducerContractTests(unittest.TestCase):
                 next(row for row in events if row.get("type") == "turn.completed")["usage"]["input_tokens"] = 11
             event_path.write_bytes(b"".join(canonical(row) for row in events))
             capture["raw_event_log"] = ref(root, event_path)
+        elif mutation in {
+            "credential-admission",
+            "credential-events",
+            "credential-stderr",
+            "credential-output",
+        }:
+            synthetic_jwt = (
+                "eyJhbGciOiJub25lIn0.eyJzdWJqZWN0IjoidGVzdCJ9."
+                "c3ludGhldGljLXNpZ25hdHVyZQ"
+            )
+            if mutation in {"credential-admission", "credential-events"}:
+                event_path = root / capture["raw_event_log"]["path"]
+                events = [
+                    json.loads(line) for line in event_path.read_bytes().splitlines()
+                ]
+                event_type = (
+                    "thread.started"
+                    if mutation == "credential-admission"
+                    else "turn.completed"
+                )
+                next(row for row in events if row.get("type") == event_type)[
+                    "synthetic_credential_probe"
+                ] = synthetic_jwt
+                event_raw = b"".join(canonical(row) for row in events)
+                capture["raw_event_log"] = replace_content_addressed_ref(
+                    capture["raw_event_log"],
+                    event_raw,
+                )
+                if mutation == "credential-admission":
+                    admission_path = root / capture["in_flight_admission"]["path"]
+                    admission_events = [
+                        json.loads(line)
+                        for line in admission_path.read_bytes().splitlines()
+                    ]
+                    next(
+                        row
+                        for row in admission_events
+                        if row.get("type") == "thread.started"
+                    )["synthetic_credential_probe"] = synthetic_jwt
+                    capture["in_flight_admission"] = replace_content_addressed_ref(
+                        capture["in_flight_admission"],
+                        b"".join(canonical(row) for row in admission_events),
+                    )
+            elif mutation == "credential-stderr":
+                capture["stderr"] = replace_content_addressed_ref(
+                    capture["stderr"],
+                    synthetic_jwt.encode("ascii"),
+                )
+            else:
+                unsafe_output = synthetic_jwt.encode("ascii")
+                result_path = root / result["output"]["path"]
+                result_path.write_bytes(unsafe_output)
+                capture["raw_output"] = replace_content_addressed_ref(
+                    capture["raw_output"],
+                    unsafe_output,
+                )
+                result["output"] = ref(root, result_path)
         elif mutation == "admission-prefix":
             admission_path = root / capture["in_flight_admission"]["path"]
             admission_path.write_bytes(
@@ -3911,6 +4011,39 @@ class LiveProducerContractTests(unittest.TestCase):
                         mutation=mutation,
                     )
                     with self.assertRaisesRegex(CampaignError, marker):
+                        orchestrator.revalidate_live_producer_completion(
+                            mutated_root,
+                            mutated_root / authorization_relative,
+                            mutated,
+                            allow_test_fixture=True,
+                        )
+
+    def test_live_completion_revalidation_rescans_v3_credential_carriers(self) -> None:
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(
+            prefix="daee-live-credential-carrier-revalidation-"
+        ) as temp:
+            base_root = Path(temp) / "base"
+            base_root.mkdir()
+            _fixture, authorization, completion = self._run_live_success(
+                base_root,
+                managed_auth_home=Path(temp) / "controller-home",
+            )
+            authorization_relative = authorization.relative_to(base_root)
+            for role in ("admission", "events", "stderr", "output"):
+                with self.subTest(role=role):
+                    mutated_root = Path(temp) / role
+                    shutil.copytree(base_root, mutated_root)
+                    mutated = self._rewrite_first_capture(
+                        mutated_root,
+                        completion,
+                        mutation=f"credential-{role}",
+                    )
+                    with self.assertRaisesRegex(
+                        CampaignError,
+                        "COMPLETED_CAPTURE_CREDENTIAL_CONTENT",
+                    ):
                         orchestrator.revalidate_live_producer_completion(
                             mutated_root,
                             mutated_root / authorization_relative,
@@ -5533,13 +5666,989 @@ class LiveProducerContractTests(unittest.TestCase):
                         encoding="utf-8"
                     )
                 )
-                self.assertEqual("reviewed-campaign-credential-residue-scan-v2", scan["schema"])
+                self.assertEqual("reviewed-campaign-credential-residue-scan-v3", scan["schema"])
                 self.assertEqual("MANAGED_AUTH_STRUCTURAL_MARKERS", scan["scan_mode"])
                 self.assertIs(scan["credential_value_loaded_by_adapter"], False)
+                self.assertEqual("NO_CREDENTIAL_MARKERS", scan["semantic_classification"])
+                self.assertEqual([], scan["observed_structure_families"])
             retained = b"\n".join(
                 path.read_bytes() for path in fixture.root.rglob("*") if path.is_file()
             )
             self.assertNotIn(auth_bytes.rstrip(), retained)
+
+    def test_managed_auth_expected_structure_is_not_credential_value_residue(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(prefix="daee-managed-auth-structure-") as temp:
+            root = Path(temp)
+            for index in range(1, 6):
+                with self.subTest(worker=index):
+                    worker_root = root / f"producer-{index:02d}"
+                    worker_root.mkdir()
+                    metadata = worker_root / "managed-auth-transport.json"
+                    metadata.write_bytes(
+                        canonical(
+                            {
+                                "agent_identity": None,
+                                "access_token": "[REDACTED]",
+                                "transport": "managed-auth-home",
+                            }
+                        )
+                    )
+
+                    inventory = live_adapter._scan_private_worker_for_structural_credential_markers(
+                        worker_root
+                    )
+
+                    self.assertEqual(1, inventory["scanned_file_count"])
+                    self.assertEqual(
+                        metadata.stat().st_size,
+                        inventory["scanned_byte_count"],
+                    )
+                    self.assertEqual(
+                        "EXPECTED_TRANSPORT_STRUCTURE",
+                        inventory["semantic_classification"],
+                    )
+                    self.assertEqual(
+                        ["credential-json-keys"],
+                        inventory["observed_structure_families"],
+                    )
+
+    def test_managed_auth_semantic_scanner_separates_values_from_ambiguity(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        safe_bearer_scenarios = (
+            "Authorization: Bearer [REDACTED]\n",
+            '{"authorization":"Bearer [REDACTED]"}\n',
+        )
+        for text in safe_bearer_scenarios:
+            for encoding in ("utf-8", "utf-16-le", "utf-16-be"):
+                with self.subTest(safe_bearer=True, text=text, encoding=encoding):
+                    classification = live_adapter._classify_managed_auth_bytes(
+                        text.encode(encoding)
+                    )
+                    self.assertEqual(
+                        "EXPECTED_TRANSPORT_STRUCTURE",
+                        classification["semantic_classification"],
+                    )
+                    self.assertEqual(
+                        ["authorization-bearer"],
+                        classification["observed_structure_families"],
+                    )
+
+        residue_scenarios = (
+            (
+                "credential-json-keys",
+                '{"agent_identity":"synthetic-secret-value"}\n',
+            ),
+            (
+                "credential-json-keys",
+                '{"access_\\u0074oken":"synthetic-secret-value"}\n',
+            ),
+            (
+                "authorization-bearer",
+                "Authorization: Bearer synthetic-secret-value\n",
+            ),
+            (
+                "authorization-bearer",
+                'Authorization: Bearer "synthetic-secret-value"\n',
+            ),
+            (
+                "authorization-bearer",
+                '{"diagnostic":"Authorization: B\\u0065arer synthetic-secret-value"}\n',
+            ),
+            (
+                "compact-jwt",
+                "eyJhbGciOiJub25lIn0.eyJzdWJqZWN0IjoidGVzdCJ9."
+                "c3ludGhldGljLXNpZ25hdHVyZQ\n",
+            ),
+            (
+                "compact-jwt",
+                '{"diagnostic":"e\\u0079JhbGciOiJub25lIn0.'
+                'eyJzdWJqZWN0IjoidGVzdCJ9.c3ludGhldGljLXNpZ25hdHVyZQ"}\n',
+            ),
+            (
+                "openai-key-prefix",
+                "sk-syntheticfixturevalue1234567890\n",
+            ),
+            (
+                "openai-key-prefix",
+                '{"diagnostic":"s\\u006b-syntheticfixturevalue1234567890"}\n',
+            ),
+        )
+        for family, text in residue_scenarios:
+            for encoding in ("utf-8", "utf-16-le", "utf-16-be"):
+                with self.subTest(family=family, encoding=encoding), tempfile.TemporaryDirectory(
+                    prefix=f"daee-managed-auth-{family}-"
+                ) as temp:
+                    worker_root = Path(temp) / "producer-01"
+                    worker_root.mkdir()
+                    (worker_root / "managed-auth-transport.bin").write_bytes(
+                        text.encode(encoding)
+                    )
+                    with self.assertRaises(live_adapter.CredentialResidueError) as caught:
+                        live_adapter._scan_private_worker_for_structural_credential_markers(
+                            worker_root
+                        )
+                    self.assertEqual(
+                        "CREDENTIAL_VALUE_RESIDUE",
+                        caught.exception.semantic_classification,
+                    )
+                    self.assertIn(family, caught.exception.marker_families)
+
+        with tempfile.TemporaryDirectory(
+            prefix="daee-managed-auth-lossy-binary-jwt-"
+        ) as temp:
+            worker_root = Path(temp) / "producer-01"
+            worker_root.mkdir()
+            (worker_root / "managed-auth-transport.bin").write_bytes(
+                b"\xff\xfeinvalid-prefix\x00"
+                b"eyJhbGciOiJub25lIn0.eyJzdWJqZWN0IjoidGVzdCJ9."
+                b"c3ludGhldGljLXNpZ25hdHVyZQ"
+            )
+            with self.assertRaises(live_adapter.CredentialResidueError) as caught:
+                live_adapter._scan_private_worker_for_structural_credential_markers(
+                    worker_root
+                )
+            self.assertIn("compact-jwt", caught.exception.marker_families)
+
+        with tempfile.TemporaryDirectory(
+            prefix="daee-managed-auth-ambiguous-structure-"
+        ) as temp:
+            worker_root = Path(temp) / "producer-01"
+            worker_root.mkdir()
+            (worker_root / "managed-auth-transport.json").write_bytes(
+                b'{"agent_identity":'
+            )
+            with self.assertRaises(
+                live_adapter.ManagedCredentialScanAmbiguousError
+            ) as caught:
+                live_adapter._scan_private_worker_for_structural_credential_markers(
+                    worker_root
+                )
+            self.assertEqual(
+                "AMBIGUOUS_OR_UNAVAILABLE",
+                caught.exception.semantic_classification,
+            )
+            self.assertEqual(
+                ("credential-json-keys",),
+                caught.exception.marker_families,
+            )
+
+        with tempfile.TemporaryDirectory(
+            prefix="daee-managed-auth-malformed-escaped-sensitive-key-"
+        ) as temp:
+            worker_root = Path(temp) / "producer-01"
+            worker_root.mkdir()
+            (worker_root / "managed-auth-transport.txt").write_bytes(
+                b"{'access_\\u0074oken':'synthetic-secret-value'"
+            )
+            with self.assertRaises(
+                live_adapter.ManagedCredentialScanAmbiguousError
+            ) as caught:
+                live_adapter._scan_private_worker_for_structural_credential_markers(
+                    worker_root
+                )
+            self.assertEqual(
+                "AMBIGUOUS_OR_UNAVAILABLE",
+                caught.exception.semantic_classification,
+            )
+            self.assertEqual(
+                ("credential-json-keys",),
+                caught.exception.marker_families,
+            )
+
+        with tempfile.TemporaryDirectory(
+            prefix="daee-managed-auth-duplicate-sensitive-key-"
+        ) as temp:
+            worker_root = Path(temp) / "producer-01"
+            worker_root.mkdir()
+            (worker_root / "managed-auth-transport.json").write_bytes(
+                b'{"access_\\u0074oken":"[REDACTED]",'
+                b'"access_t\\u006fken":"[REDACTED]"}'
+            )
+            with self.assertRaises(
+                live_adapter.ManagedCredentialScanAmbiguousError
+            ) as caught:
+                live_adapter._scan_private_worker_for_structural_credential_markers(
+                    worker_root
+                )
+            self.assertEqual(
+                "AMBIGUOUS_OR_UNAVAILABLE",
+                caught.exception.semantic_classification,
+            )
+            self.assertEqual(
+                ("credential-json-keys",),
+                caught.exception.marker_families,
+            )
+
+    def test_managed_auth_structured_admission_is_scanned_before_publication(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        synthetic_value = b"synthetic-secret-value"
+
+        class CredentialLikeAdmissionHost(_ScriptedCodexHost):
+            def start(self, *args: object, **kwargs: object) -> _CompletedCodexProcess:
+                process = super().start(*args, **kwargs)
+                event_log_path = kwargs["event_log_path"]
+                assert isinstance(event_log_path, Path)
+                lines = event_log_path.read_bytes().splitlines(keepends=True)
+                first = lines[0].rstrip(b"\r\n")
+                assert first.endswith(b"}")
+                lines[0] = (
+                    first[:-1]
+                    + b',"diagnostic":"Authorization: B\\u0065arer '
+                    + b'synthetic-secret-value"}\n'
+                )
+                event_log_path.write_bytes(b"".join(lines))
+                return process
+
+        with tempfile.TemporaryDirectory(
+            prefix="daee-managed-auth-admission-safe-publication-"
+        ) as temp, tempfile.TemporaryDirectory(
+            prefix="daee-managed-auth-admission-safe-publication-home-"
+        ) as controller_temp:
+            root = Path(temp)
+            host = CredentialLikeAdmissionHost()
+            adapter, execution_custody, isolated_root, provider_root = (
+                self._adapter_submission_fixture(root, host)
+            )
+            controller_home = Path(controller_temp)
+            auth_file = controller_home / ".codex/auth.json"
+            auth_file.parent.mkdir(parents=True)
+            auth_file.write_bytes(b"synthetic managed auth carrier; not inspected\n")
+            adapter._access_token = None
+            adapter._credential = None
+            adapter._credential_transport_mode = None
+            try:
+                with mock.patch.object(
+                    live_adapter.os,
+                    "environ",
+                    {},
+                ), mock.patch.object(
+                    live_adapter.Path,
+                    "home",
+                    return_value=controller_home,
+                ), self.assertRaisesRegex(RuntimeError, "credential|admission"):
+                    adapter.submit(execution_custody)
+            finally:
+                try:
+                    adapter.abort_all()
+                except RuntimeError as cleanup_error:
+                    if "credential residue" not in str(cleanup_error):
+                        raise
+
+            self.assertEqual("DISPATCH_UNKNOWN", adapter.attempt_states()[0]["state"])
+            self.assertEqual(
+                [],
+                list(provider_root.glob("*.in-flight-admission.events.jsonl")),
+            )
+            retained = b"\n".join(
+                path.read_bytes() for path in provider_root.rglob("*") if path.is_file()
+            )
+            self.assertNotIn(synthetic_value, retained)
+            self.assertFalse(isolated_root.exists())
+
+    def test_managed_auth_v3_failure_contract_rejects_semantic_and_custody_aliases(self) -> None:
+        from credential_residue_scan_contract import valid_failed_credential_scan
+
+        valid = {
+            "schema": "reviewed-campaign-credential-residue-scan-v3",
+            "status": "FAIL_CLOSED",
+            "worker": "producer-01",
+            "scan_mode": "MANAGED_AUTH_STRUCTURAL_MARKERS",
+            "credential_value_loaded_by_adapter": False,
+            "failure_class": "CREDENTIAL_RESIDUE",
+            "semantic_classification": "CREDENTIAL_VALUE_RESIDUE",
+            "observed_marker_families": ["compact-jwt"],
+            "safe_carrier_outcomes": {
+                "raw_event_log": "RETAINED_SECRET_SAFE",
+                "stderr": "SOURCE_ABSENT",
+                "raw_output": "PUBLICATION_FAILED",
+            },
+            "cleanup_status": "OWNED_WORKER_PURGED",
+            "completed_at": "2026-07-18T00:00:00Z",
+        }
+        self.assertTrue(valid_failed_credential_scan(valid, "producer-01"))
+        mutations = []
+        wrong_semantic = copy.deepcopy(valid)
+        wrong_semantic["semantic_classification"] = "AMBIGUOUS_OR_UNAVAILABLE"
+        mutations.append(wrong_semantic)
+        missing_family = copy.deepcopy(valid)
+        missing_family["observed_marker_families"] = []
+        mutations.append(missing_family)
+        wrong_worker = copy.deepcopy(valid)
+        wrong_worker["worker"] = "producer-05"
+        mutations.append(wrong_worker)
+        missing_role = copy.deepcopy(valid)
+        del missing_role["safe_carrier_outcomes"]["stderr"]
+        mutations.append(missing_role)
+        extra_property = copy.deepcopy(valid)
+        extra_property["matched_value"] = "must-never-be-retained"
+        mutations.append(extra_property)
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                self.assertFalse(
+                    valid_failed_credential_scan(mutation, "producer-01")
+                )
+
+    def test_managed_auth_failure_consumer_rescans_retained_safe_carrier_bytes(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(
+            prefix="daee-live-managed-auth-safe-carrier-revalidation-"
+        ) as temp, tempfile.TemporaryDirectory(
+            prefix="daee-live-managed-auth-safe-carrier-revalidation-home-"
+        ) as controller_temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            controller_home = Path(controller_temp)
+            auth_file = controller_home / ".codex/auth.json"
+            auth_file.parent.mkdir(parents=True)
+            auth_file.write_bytes(b"synthetic managed auth carrier; not inspected\n")
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=_ScriptedCodexHost(credential_residue_at=1),
+                fixture_token=None,
+            )
+            with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                live_adapter.Path,
+                "home",
+                return_value=controller_home,
+            ), self.assertRaises(CampaignError):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+
+            incident = json.loads(
+                (fixture.root / "incidents/producer-live-cycle-01.json").read_bytes()
+            )
+            payload = copy.deepcopy(incident["finalizer_payload"])
+            diagnostic_ref = payload["outcome_unknown_diagnostics"][0]
+            diagnostic = json.loads(
+                (fixture.root / diagnostic_ref["path"]).read_bytes()
+            )
+            provider_root = fixture.root / "producer/provider-receipts"
+            unsafe_raw = (
+                b"eyJhbGciOiJub25lIn0.eyJzdWJqZWN0IjoidGVzdCJ9."
+                b"c3ludGhldGljLXNpZ25hdHVyZQ"
+            )
+            unsafe_path = provider_root / (
+                f"{hashlib.sha256(unsafe_raw).hexdigest()}.outcome-unknown.output.md"
+            )
+            unsafe_path.write_bytes(unsafe_raw)
+            diagnostic["raw_output"] = ref(fixture.root, unsafe_path)
+            diagnostic_raw = canonical(diagnostic)
+            mutated_diagnostic_path = provider_root / (
+                f"{hashlib.sha256(diagnostic_raw).hexdigest()}"
+                ".outcome-unknown-diagnostic.json"
+            )
+            mutated_diagnostic_path.write_bytes(diagnostic_raw)
+            payload["outcome_unknown_diagnostics"][0] = ref(
+                fixture.root,
+                mutated_diagnostic_path,
+            )
+            mutated_incident = copy.deepcopy(incident)
+            mutated_incident["finalizer_payload"] = payload
+            auth, auth_sha = orchestrator._load_producer_authorization(
+                fixture.root,
+                authorization,
+                require_active_window=False,
+                allow_test_fixture=True,
+            )
+            bindings = orchestrator._validate_common_bindings(
+                fixture.root,
+                auth,
+                allow_test_fixture=True,
+            )
+            bindings["producer_output_contracts"] = orchestrator._producer_output_contracts(
+                auth,
+                auth_sha,
+                bindings,
+            )
+            with self.assertRaisesRegex(
+                CampaignError,
+                "OUTCOME_UNKNOWN_DIAGNOSTIC_SAFE_CUSTODY_CONTENT",
+            ):
+                orchestrator._validate_failure_resume_payload(
+                    fixture.root,
+                    fixture.root / auth["usage_ledger_root"],
+                    mutated_incident,
+                    payload,
+                    auth,
+                    auth_sha,
+                    bindings,
+                    lane="producer",
+                    attempt_index=1,
+                )
+
+    def test_managed_auth_failure_consumer_rescans_in_flight_admission_bytes(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+        import reviewed_campaign_orchestrator as orchestrator
+
+        with tempfile.TemporaryDirectory(
+            prefix="daee-live-managed-auth-admission-revalidation-"
+        ) as temp, tempfile.TemporaryDirectory(
+            prefix="daee-live-managed-auth-admission-revalidation-home-"
+        ) as controller_temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            controller_home = Path(controller_temp)
+            auth_file = controller_home / ".codex/auth.json"
+            auth_file.parent.mkdir(parents=True)
+            auth_file.write_bytes(b"synthetic managed auth carrier; not inspected\n")
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=_ScriptedCodexHost(credential_residue_at=1),
+                fixture_token=None,
+            )
+            with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                live_adapter.Path,
+                "home",
+                return_value=controller_home,
+            ), self.assertRaises(CampaignError):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+
+            incident = json.loads(
+                (fixture.root / "incidents/producer-live-cycle-01.json").read_bytes()
+            )
+            payload = copy.deepcopy(incident["finalizer_payload"])
+            diagnostic_ref = payload["outcome_unknown_diagnostics"][0]
+            diagnostic = json.loads(
+                (fixture.root / diagnostic_ref["path"]).read_bytes()
+            )
+            original_admission = fixture.root / diagnostic["in_flight_admission"]["path"]
+            admission_lines = original_admission.read_bytes().splitlines(keepends=True)
+            first = admission_lines[0].rstrip(b"\r\n")
+            self.assertTrue(first.endswith(b"}"))
+            admission_lines[0] = (
+                first[:-1]
+                + b',"diagnostic":"e\\u0079JhbGciOiJub25lIn0.'
+                + b'eyJzdWJqZWN0IjoidGVzdCJ9.'
+                + b'c3ludGhldGljLXNpZ25hdHVyZQ"}\n'
+            )
+            unsafe_raw = b"".join(admission_lines)
+            provider_root = fixture.root / "producer/provider-receipts"
+            unsafe_path = provider_root / (
+                f"{hashlib.sha256(unsafe_raw).hexdigest()}"
+                ".in-flight-admission.events.jsonl"
+            )
+            unsafe_path.write_bytes(unsafe_raw)
+            diagnostic["in_flight_admission"] = ref(fixture.root, unsafe_path)
+            diagnostic_raw = canonical(diagnostic)
+            mutated_diagnostic_path = provider_root / (
+                f"{hashlib.sha256(diagnostic_raw).hexdigest()}"
+                ".outcome-unknown-diagnostic.json"
+            )
+            mutated_diagnostic_path.write_bytes(diagnostic_raw)
+            payload["outcome_unknown_diagnostics"][0] = ref(
+                fixture.root,
+                mutated_diagnostic_path,
+            )
+            mutated_incident = copy.deepcopy(incident)
+            mutated_incident["finalizer_payload"] = payload
+            auth, auth_sha = orchestrator._load_producer_authorization(
+                fixture.root,
+                authorization,
+                require_active_window=False,
+                allow_test_fixture=True,
+            )
+            bindings = orchestrator._validate_common_bindings(
+                fixture.root,
+                auth,
+                allow_test_fixture=True,
+            )
+            bindings["producer_output_contracts"] = orchestrator._producer_output_contracts(
+                auth,
+                auth_sha,
+                bindings,
+            )
+            with self.assertRaisesRegex(
+                CampaignError,
+                "OUTCOME_UNKNOWN_DIAGNOSTIC_ADMISSION_CONTENT",
+            ):
+                orchestrator._validate_failure_resume_payload(
+                    fixture.root,
+                    fixture.root / auth["usage_ledger_root"],
+                    mutated_incident,
+                    payload,
+                    auth,
+                    auth_sha,
+                    bindings,
+                    lane="producer",
+                    attempt_index=1,
+                )
+
+    def test_managed_auth_residue_retains_safe_terminal_carriers_before_purge_for_all_workers(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        synthetic_residue = (
+            b"eyJhbGciOiJub25lIn0.eyJzdWJqZWN0IjoidGVzdCJ9."
+            b"c3ludGhldGljLXNpZ25hdHVyZQ"
+        )
+        for worker_index in range(1, 6):
+            with self.subTest(worker=worker_index), tempfile.TemporaryDirectory(
+                prefix=f"daee-live-managed-auth-safe-purge-{worker_index}-"
+            ) as temp, tempfile.TemporaryDirectory(
+                prefix="daee-live-managed-auth-safe-purge-home-"
+            ) as controller_temp:
+                fixture, authorization, executable, _skill_bytes = self._live_fixture(
+                    Path(temp)
+                )
+                controller_home = Path(controller_temp)
+                auth_file = controller_home / ".codex/auth.json"
+                auth_file.parent.mkdir(parents=True)
+                auth_file.write_bytes(b"synthetic managed auth carrier; not inspected\n")
+                host = _ScriptedCodexHost(credential_residue_at=worker_index)
+                adapter = _ScriptedCodexTestAdapter(
+                    custody_root=fixture.root,
+                    codex_executable=executable,
+                    host=host,
+                    fixture_token=None,
+                )
+
+                with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                    live_adapter.Path,
+                    "home",
+                    return_value=controller_home,
+                ), self.assertRaisesRegex(CampaignError, "access credential residue"):
+                    run_producer_cohort(
+                        fixture.root,
+                        authorization,
+                        adapter,
+                        allow_test_fixture=True,
+                    )
+
+                self.assertEqual(5, len(host.starts))
+                self.assertFalse(
+                    (fixture.root / f"producer/isolated/producer-{worker_index:02d}").exists()
+                )
+                finalizer = json.loads(
+                    (fixture.root / "producer/observation-finalizer.json").read_bytes()
+                )
+                diagnostic_ref = next(
+                    reference
+                    for reference in finalizer["outcome_unknown_diagnostics"]
+                    if json.loads((fixture.root / reference["path"]).read_bytes())["case_id"]
+                    == CASES[worker_index - 1]
+                )
+                diagnostic = json.loads(
+                    (fixture.root / diagnostic_ref["path"]).read_bytes()
+                )
+                self.assertEqual(
+                    "SAFE_RETAINED_BEFORE_PURGE",
+                    diagnostic["carrier_disposition"],
+                )
+                self.assertEqual(
+                    {"raw_event_log": True, "stderr": True, "raw_output": True},
+                    diagnostic["source_presence"],
+                )
+                for role in ("raw_event_log", "stderr", "raw_output"):
+                    carrier_path = fixture.root / diagnostic[role]["path"]
+                    self.assertEqual(diagnostic[role], ref(fixture.root, carrier_path))
+                    self.assertFalse(
+                        carrier_path.is_relative_to(fixture.root / "producer/isolated")
+                    )
+                scan = json.loads(
+                    (
+                        fixture.root
+                        / diagnostic["credential_residue_scan"]["path"]
+                    ).read_bytes()
+                )
+                self.assertEqual(
+                    "reviewed-campaign-credential-residue-scan-v3",
+                    scan["schema"],
+                )
+                self.assertEqual("CREDENTIAL_VALUE_RESIDUE", scan["semantic_classification"])
+                self.assertEqual(
+                    {
+                        "raw_event_log": "RETAINED_SECRET_SAFE",
+                        "stderr": "RETAINED_SECRET_SAFE",
+                        "raw_output": "RETAINED_SECRET_SAFE",
+                    },
+                    scan["safe_carrier_outcomes"],
+                )
+                retained = b"\n".join(
+                    path.read_bytes()
+                    for path in fixture.root.rglob("*")
+                    if path.is_file()
+                )
+                self.assertNotIn(synthetic_residue, retained)
+                head = validate_head(fixture.root / "usage")
+                self.assertEqual(
+                    (4, 1, 0),
+                    (
+                        head["totals"]["completed"],
+                        head["totals"]["unknown"],
+                        head["totals"]["not_dispatched"],
+                    ),
+                )
+
+    def test_managed_auth_safe_carrier_publication_failure_is_total_and_secret_free(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        for failed_roles in (
+            {"stderr"},
+            {"raw_event_log", "stderr", "raw_output"},
+        ):
+            with self.subTest(failed_roles=sorted(failed_roles)), tempfile.TemporaryDirectory(
+                prefix="daee-live-managed-auth-retention-failure-"
+            ) as temp, tempfile.TemporaryDirectory(
+                prefix="daee-live-managed-auth-retention-failure-home-"
+            ) as controller_temp:
+                fixture, authorization, executable, _skill_bytes = self._live_fixture(
+                    Path(temp)
+                )
+                controller_home = Path(controller_temp)
+                auth_file = controller_home / ".codex/auth.json"
+                auth_file.parent.mkdir(parents=True)
+                auth_file.write_bytes(b"synthetic managed auth carrier; not inspected\n")
+                host = _ScriptedCodexHost(credential_residue_at=1)
+                adapter = _ScriptedCodexTestAdapter(
+                    custody_root=fixture.root,
+                    codex_executable=executable,
+                    host=host,
+                    fixture_token=None,
+                )
+                original_retain = live_adapter._retain_content_addressed
+                failed_once: set[str] = set()
+                suffix_to_role = {
+                    ".outcome-unknown.events.jsonl": "raw_event_log",
+                    ".outcome-unknown.stderr.txt": "stderr",
+                    ".outcome-unknown.output.md": "raw_output",
+                }
+
+                def fail_selected_once(base: Path, data: bytes, suffix: str) -> Path:
+                    role = suffix_to_role.get(suffix)
+                    if role in failed_roles and role not in failed_once:
+                        failed_once.add(role)
+                        raise OSError(f"injected safe-carrier publication failure for {role}")
+                    return original_retain(base, data, suffix)
+
+                with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                    live_adapter.Path,
+                    "home",
+                    return_value=controller_home,
+                ), mock.patch.object(
+                    live_adapter,
+                    "_retain_content_addressed",
+                    side_effect=fail_selected_once,
+                ), self.assertRaisesRegex(CampaignError, "access credential residue"):
+                    run_producer_cohort(
+                        fixture.root,
+                        authorization,
+                        adapter,
+                        allow_test_fixture=True,
+                    )
+
+                finalizer = json.loads(
+                    (fixture.root / "producer/observation-finalizer.json").read_bytes()
+                )
+                diagnostic = json.loads(
+                    (
+                        fixture.root
+                        / finalizer["outcome_unknown_diagnostics"][0]["path"]
+                    ).read_bytes()
+                )
+                scan = json.loads(
+                    (
+                        fixture.root
+                        / diagnostic["credential_residue_scan"]["path"]
+                    ).read_bytes()
+                )
+                expected_outcomes = {
+                    role: (
+                        "PUBLICATION_FAILED"
+                        if role in failed_roles
+                        else "RETAINED_SECRET_SAFE"
+                    )
+                    for role in ("raw_event_log", "stderr", "raw_output")
+                }
+                self.assertEqual(expected_outcomes, scan["safe_carrier_outcomes"])
+                expected_disposition = (
+                    "PURGED_UNRETAINED"
+                    if len(failed_roles) == 3
+                    else "PARTIAL_SAFE_RETENTION_BEFORE_PURGE"
+                )
+                self.assertEqual(expected_disposition, diagnostic["carrier_disposition"])
+                for role in ("raw_event_log", "stderr", "raw_output"):
+                    raw = (fixture.root / diagnostic[role]["path"]).read_bytes()
+                    if role in failed_roles:
+                        self.assertEqual(b"", raw)
+                        self.assertIs(diagnostic["source_presence"][role], False)
+                    else:
+                        self.assertIs(diagnostic["source_presence"][role], True)
+                self.assertFalse((fixture.root / "producer/isolated/producer-01").exists())
+
+    def test_managed_auth_scan_unavailable_retains_only_independently_safe_carriers(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(
+            prefix="daee-live-managed-auth-scan-unavailable-"
+        ) as temp, tempfile.TemporaryDirectory(
+            prefix="daee-live-managed-auth-scan-unavailable-home-"
+        ) as controller_temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            controller_home = Path(controller_temp)
+            auth_file = controller_home / ".codex/auth.json"
+            auth_file.parent.mkdir(parents=True)
+            auth_file.write_bytes(b"synthetic managed auth carrier; not inspected\n")
+            host = _ScriptedCodexHost()
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+                fixture_token=None,
+            )
+            original_scan = live_adapter._scan_private_worker_for_structural_credential_markers
+            failed = False
+
+            def fail_first(worker_root: Path) -> dict[str, object]:
+                nonlocal failed
+                if worker_root.name == "producer-01" and not failed:
+                    failed = True
+                    raise OSError("injected managed-auth whole-worker scan failure")
+                return original_scan(worker_root)
+
+            with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                live_adapter.Path,
+                "home",
+                return_value=controller_home,
+            ), mock.patch.object(
+                live_adapter,
+                "_scan_private_worker_for_structural_credential_markers",
+                side_effect=fail_first,
+            ), self.assertRaisesRegex(CampaignError, "credential residue scan failed closed"):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+
+            finalizer = json.loads(
+                (fixture.root / "producer/observation-finalizer.json").read_bytes()
+            )
+            diagnostic = json.loads(
+                (
+                    fixture.root / finalizer["outcome_unknown_diagnostics"][0]["path"]
+                ).read_bytes()
+            )
+            scan = json.loads(
+                (fixture.root / diagnostic["credential_residue_scan"]["path"]).read_bytes()
+            )
+            self.assertEqual("SCAN_UNAVAILABLE", scan["failure_class"])
+            self.assertEqual("AMBIGUOUS_OR_UNAVAILABLE", scan["semantic_classification"])
+            self.assertEqual([], scan["observed_marker_families"])
+            self.assertEqual(
+                {
+                    "raw_event_log": "RETAINED_SECRET_SAFE",
+                    "stderr": "RETAINED_SECRET_SAFE",
+                    "raw_output": "RETAINED_SECRET_SAFE",
+                },
+                scan["safe_carrier_outcomes"],
+            )
+            self.assertEqual("SAFE_RETAINED_BEFORE_PURGE", diagnostic["carrier_disposition"])
+            self.assertFalse((fixture.root / "producer/isolated/producer-01").exists())
+
+    def test_managed_auth_partial_purge_preserves_safe_custody_and_terminalizes(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(
+            prefix="daee-live-managed-auth-partial-purge-"
+        ) as temp, tempfile.TemporaryDirectory(
+            prefix="daee-live-managed-auth-partial-purge-home-"
+        ) as controller_temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            controller_home = Path(controller_temp)
+            auth_file = controller_home / ".codex/auth.json"
+            auth_file.parent.mkdir(parents=True)
+            auth_file.write_bytes(b"synthetic managed auth carrier; not inspected\n")
+            host = _ScriptedCodexHost(credential_residue_at=1)
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+                fixture_token=None,
+            )
+            original_rmtree = live_adapter.shutil.rmtree
+            failed = False
+
+            def fail_after_partial_delete(
+                path: object,
+                *args: object,
+                **kwargs: object,
+            ) -> None:
+                nonlocal failed
+                worker_root = Path(path)
+                if worker_root.name == "producer-01" and not failed:
+                    failed = True
+                    (worker_root / "temp/credential-residue.bin").unlink()
+                    raise OSError("injected partial owned-worker purge failure")
+                original_rmtree(path, *args, **kwargs)
+
+            with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                live_adapter.Path,
+                "home",
+                return_value=controller_home,
+            ), mock.patch.object(
+                live_adapter.shutil,
+                "rmtree",
+                side_effect=fail_after_partial_delete,
+            ), self.assertRaises(CampaignError):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+
+            finalizer = json.loads(
+                (fixture.root / "producer/observation-finalizer.json").read_bytes()
+            )
+            diagnostic = json.loads(
+                (
+                    fixture.root / finalizer["outcome_unknown_diagnostics"][0]["path"]
+                ).read_bytes()
+            )
+            scan = json.loads(
+                (fixture.root / diagnostic["credential_residue_scan"]["path"]).read_bytes()
+            )
+            self.assertEqual("OWNED_WORKER_PURGE_INCOMPLETE", scan["cleanup_status"])
+            self.assertEqual("SAFE_RETAINED_BEFORE_PURGE", diagnostic["carrier_disposition"])
+            self.assertEqual(
+                {"raw_event_log": True, "stderr": True, "raw_output": True},
+                diagnostic["source_presence"],
+            )
+            self.assertFalse((fixture.root / "producer/isolated/producer-01").exists())
+            replay_host = _ScriptedCodexHost()
+            replay_adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=replay_host,
+                fixture_token=None,
+            )
+            with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                live_adapter.Path,
+                "home",
+                return_value=controller_home,
+            ), self.assertRaisesRegex(CampaignError, "ATTEMPT_ALREADY_TERMINALIZED"):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    replay_adapter,
+                    allow_test_fixture=True,
+                )
+            self.assertEqual([], replay_host.starts)
+
+    def test_managed_auth_failed_purge_terminalizes_before_owned_cleanup_recovery(self) -> None:
+        import codex_live_producer_adapter as live_adapter
+
+        with tempfile.TemporaryDirectory(
+            prefix="daee-live-managed-auth-failed-purge-"
+        ) as temp, tempfile.TemporaryDirectory(
+            prefix="daee-live-managed-auth-failed-purge-home-"
+        ) as controller_temp:
+            fixture, authorization, executable, _skill_bytes = self._live_fixture(Path(temp))
+            controller_home = Path(controller_temp)
+            auth_file = controller_home / ".codex/auth.json"
+            auth_file.parent.mkdir(parents=True)
+            auth_file.write_bytes(b"synthetic managed auth carrier; not inspected\n")
+            host = _ScriptedCodexHost(credential_residue_at=1)
+            adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=host,
+                fixture_token=None,
+            )
+            original_rmtree = live_adapter.shutil.rmtree
+
+            def fail_target_purge(
+                path: object,
+                *args: object,
+                **kwargs: object,
+            ) -> None:
+                if Path(path).name == "producer-01":
+                    raise OSError("injected owned-worker purge failure")
+                original_rmtree(path, *args, **kwargs)
+
+            with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                live_adapter.Path,
+                "home",
+                return_value=controller_home,
+            ), mock.patch.object(
+                live_adapter.shutil,
+                "rmtree",
+                side_effect=fail_target_purge,
+            ), self.assertRaises(CampaignError):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    adapter,
+                    allow_test_fixture=True,
+                )
+
+            worker_root = fixture.root / "producer/isolated/producer-01"
+            self.assertTrue(worker_root.is_dir())
+            finalizer = json.loads(
+                (fixture.root / "producer/observation-finalizer.json").read_bytes()
+            )
+            diagnostic = json.loads(
+                (
+                    fixture.root / finalizer["outcome_unknown_diagnostics"][0]["path"]
+                ).read_bytes()
+            )
+            scan = json.loads(
+                (fixture.root / diagnostic["credential_residue_scan"]["path"]).read_bytes()
+            )
+            self.assertEqual("OWNED_WORKER_PURGE_INCOMPLETE", scan["cleanup_status"])
+            self.assertEqual("SAFE_RETAINED_BEFORE_PURGE", diagnostic["carrier_disposition"])
+            for role in ("raw_event_log", "stderr", "raw_output"):
+                carrier_path = fixture.root / diagnostic[role]["path"]
+                self.assertFalse(carrier_path.is_relative_to(worker_root))
+                self.assertEqual(diagnostic[role], ref(fixture.root, carrier_path))
+
+            adapter.abort_all()
+            self.assertFalse(worker_root.exists())
+            retained = b"\n".join(
+                path.read_bytes()
+                for path in fixture.root.rglob("*")
+                if path.is_file()
+            )
+            self.assertNotIn(
+                b"eyJhbGciOiJub25lIn0.eyJzdWJqZWN0IjoidGVzdCJ9."
+                b"c3ludGhldGljLXNpZ25hdHVyZQ",
+                retained,
+            )
+            replay_host = _ScriptedCodexHost()
+            replay_adapter = _ScriptedCodexTestAdapter(
+                custody_root=fixture.root,
+                codex_executable=executable,
+                host=replay_host,
+                fixture_token=None,
+            )
+            with mock.patch.object(live_adapter.os, "environ", {}), mock.patch.object(
+                live_adapter.Path,
+                "home",
+                return_value=controller_home,
+            ), self.assertRaisesRegex(CampaignError, "ATTEMPT_ALREADY_TERMINALIZED"):
+                run_producer_cohort(
+                    fixture.root,
+                    authorization,
+                    replay_adapter,
+                    allow_test_fixture=True,
+                )
+            self.assertEqual([], replay_host.starts)
+
 
     def test_checkout_execution_residue_inventory_finds_ignored_nested_bytecode(self) -> None:
         import reviewed_campaign_orchestrator as orchestrator
@@ -5629,15 +6738,20 @@ class LiveProducerContractTests(unittest.TestCase):
                     / finalizer["pre_admission_diagnostics"][0]["path"]
                 ).read_text(encoding="utf-8")
             )
-            self.assertEqual("PURGED_UNRETAINED", diagnostic["carrier_disposition"])
+            self.assertEqual("SAFE_RETAINED_BEFORE_PURGE", diagnostic["carrier_disposition"])
+            self.assertEqual(
+                {"raw_event_log": True, "stderr": True, "raw_output": False},
+                diagnostic["source_presence"],
+            )
             scan = json.loads(
                 (
                     fixture.root / diagnostic["credential_residue_scan"]["path"]
                 ).read_text(encoding="utf-8")
             )
-            self.assertEqual("reviewed-campaign-credential-residue-scan-v2", scan["schema"])
+            self.assertEqual("reviewed-campaign-credential-residue-scan-v3", scan["schema"])
             self.assertEqual("FAIL_CLOSED", scan["status"])
             self.assertEqual("CREDENTIAL_RESIDUE", scan["failure_class"])
+            self.assertEqual("CREDENTIAL_VALUE_RESIDUE", scan["semantic_classification"])
             self.assertEqual("MANAGED_AUTH_STRUCTURAL_MARKERS", scan["scan_mode"])
             self.assertIs(scan["credential_value_loaded_by_adapter"], False)
             replay_host = _ScriptedCodexHost()

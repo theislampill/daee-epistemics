@@ -10,7 +10,10 @@ from pathlib import Path, PureWindowsPath
 from typing import Any, Mapping
 
 import contract_validation
-from credential_residue_scan_contract import valid_pass_credential_scan
+from credential_residue_scan_contract import (
+    classify_managed_auth_bytes,
+    valid_pass_credential_scan,
+)
 import finalize_single_call_stage_capture as strict_finalizer
 
 
@@ -296,6 +299,19 @@ def _validated_inputs(root: Path, payload: dict[str, Any]) -> tuple[dict[str, by
         or not valid_pass_credential_scan(credential, expected_worker)
     ):
         raise CaptureFinalizationError("credential residue scan is not a valid bound PASS record")
+    if credential.get("schema") == "reviewed-campaign-credential-residue-scan-v3":
+        for field in ("in_flight_admission", "raw_output", "raw_event_log", "stderr"):
+            _carrier_path, carrier_raw = _load_ref(
+                root,
+                capture.get(field),
+                f"capture evidence {field}",
+            )
+            try:
+                classify_managed_auth_bytes(carrier_raw)
+            except Exception as exc:
+                raise CaptureFinalizationError(
+                    f"capture evidence {field} contradicts managed-auth PASS scan"
+                ) from exc
 
     custody = objects["execution_custody"]
     if custody.get("schema") != "reviewed-campaign-execution-custody-v1" or custody.get("lane") != "producer":

@@ -419,6 +419,31 @@ class ProducerCaptureFinalizationContract(unittest.TestCase):
                 "status": "PASS",
                 "worker": "producer-01",
             },
+            "partial-managed-v3": {
+                "schema": "reviewed-campaign-credential-residue-scan-v3",
+                "status": "PASS",
+                "worker": "producer-01",
+                "semantic_classification": "EXPECTED_TRANSPORT_STRUCTURE",
+            },
+            "contradictory-managed-v3": {
+                "schema": "reviewed-campaign-credential-residue-scan-v3",
+                "status": "PASS",
+                "worker": "producer-01",
+                "scan_mode": "MANAGED_AUTH_STRUCTURAL_MARKERS",
+                "credential_value_loaded_by_adapter": False,
+                "scanned_file_count": 1,
+                "scanned_byte_count": 1,
+                "semantic_classification": "NO_CREDENTIAL_MARKERS",
+                "observed_structure_families": ["credential-json-keys"],
+                "marker_families_checked": [
+                    "credential-json-keys",
+                    "authorization-bearer",
+                    "compact-jwt",
+                    "openai-key-prefix",
+                ],
+                "encoding_forms_checked": ["utf-8", "utf-16-le", "utf-16-be"],
+                "completed_at": "2026-07-17T00:00:00Z",
+            },
         }
         for label, malformed_scan in malformed_scans.items():
             with self.subTest(label=label):
@@ -458,6 +483,231 @@ class ProducerCaptureFinalizationContract(unittest.TestCase):
                         )
                 called.assert_not_called()
                 self.assertFalse(self.run_root.exists())
+
+    def test_managed_auth_v3_pass_scan_reaches_strict_finalizer(self) -> None:
+        payload, raw = self.fixture()
+        scan_ref = self.retain_json(
+            "managed-auth-v3-pass-scan",
+            {
+                "schema": "reviewed-campaign-credential-residue-scan-v3",
+                "status": "PASS",
+                "worker": "producer-01",
+                "scan_mode": "MANAGED_AUTH_STRUCTURAL_MARKERS",
+                "credential_value_loaded_by_adapter": False,
+                "scanned_file_count": 1,
+                "scanned_byte_count": 24,
+                "semantic_classification": "EXPECTED_TRANSPORT_STRUCTURE",
+                "observed_structure_families": ["credential-json-keys"],
+                "marker_families_checked": [
+                    "credential-json-keys",
+                    "authorization-bearer",
+                    "compact-jwt",
+                    "openai-key-prefix",
+                ],
+                "encoding_forms_checked": ["utf-8", "utf-16-le", "utf-16-be"],
+                "completed_at": "2026-07-17T00:00:00Z",
+            },
+        )
+        capture = json.loads(
+            (self.scratch / payload["refs"]["capture_evidence"]["path"]).read_text(
+                encoding="utf-8"
+            )
+        )
+        capture["credential_residue_scan"] = scan_ref
+        capture["in_flight_admission"] = self.retain(
+            "managed-auth-v3-admission",
+            b'{"type":"thread.started","thread_id":"thread-01"}\n',
+            ".in-flight-admission.events.jsonl",
+        )
+        capture["raw_event_log"] = self.retain(
+            "managed-auth-v3-events",
+            b'{"type":"turn.completed"}\n',
+            ".events.jsonl",
+        )
+        capture["stderr"] = self.retain(
+            "managed-auth-v3-stderr",
+            b"",
+            ".stderr.txt",
+        )
+        capture_ref = self.retain_json("capture-with-managed-auth-v3", capture)
+        payload["refs"]["capture_evidence"] = capture_ref
+        completion = json.loads(
+            (self.scratch / payload["refs"]["producer_completion"]["path"]).read_text(
+                encoding="utf-8"
+            )
+        )
+        completion["results"][0]["capture_evidence"] = capture_ref
+        payload["refs"]["producer_completion"] = self.retain_json(
+            "completion-with-managed-auth-v3",
+            completion,
+        )
+        record_path = self.publish(payload)
+
+        with mock.patch.object(
+            capture_finalizer.strict_finalizer,
+            "finalize_single_call_stage_capture",
+            return_value=SimpleNamespace(run_root=self.run_root),
+        ) as called:
+            capture_finalizer.finalize_capture_complete_record(
+                root=self.scratch,
+                record_path=record_path,
+                run_root=self.run_relative,
+            )
+        called.assert_called_once()
+        self.assertEqual(raw["raw_output"], called.call_args.kwargs["raw_envelope"])
+
+    def test_managed_auth_v3_pass_scan_cannot_cover_credential_bearing_stderr(self) -> None:
+        payload, _raw = self.fixture()
+        scan_ref = self.retain_json(
+            "managed-auth-v3-pass-scan-unsafe-carrier",
+            {
+                "schema": "reviewed-campaign-credential-residue-scan-v3",
+                "status": "PASS",
+                "worker": "producer-01",
+                "scan_mode": "MANAGED_AUTH_STRUCTURAL_MARKERS",
+                "credential_value_loaded_by_adapter": False,
+                "scanned_file_count": 1,
+                "scanned_byte_count": 24,
+                "semantic_classification": "NO_CREDENTIAL_MARKERS",
+                "observed_structure_families": [],
+                "marker_families_checked": [
+                    "credential-json-keys",
+                    "authorization-bearer",
+                    "compact-jwt",
+                    "openai-key-prefix",
+                ],
+                "encoding_forms_checked": ["utf-8", "utf-16-le", "utf-16-be"],
+                "completed_at": "2026-07-17T00:00:00Z",
+            },
+        )
+        capture = json.loads(
+            (self.scratch / payload["refs"]["capture_evidence"]["path"]).read_text(
+                encoding="utf-8"
+            )
+        )
+        capture["credential_residue_scan"] = scan_ref
+        capture["in_flight_admission"] = self.retain(
+            "managed-auth-v3-safe-admission",
+            b'{"type":"thread.started","thread_id":"thread-01"}\n',
+            ".in-flight-admission.events.jsonl",
+        )
+        capture["raw_event_log"] = self.retain(
+            "managed-auth-v3-unsafe-events",
+            b'{"type":"turn.completed"}\n',
+            ".events.jsonl",
+        )
+        capture["stderr"] = self.retain(
+            "managed-auth-v3-unsafe-stderr",
+            b"eyJhbGciOiJub25lIn0.eyJzdWJqZWN0IjoidGVzdCJ9."
+            b"c3ludGhldGljLXNpZ25hdHVyZQ",
+            ".stderr.txt",
+        )
+        capture_ref = self.retain_json("capture-with-managed-auth-v3-unsafe", capture)
+        payload["refs"]["capture_evidence"] = capture_ref
+        completion = json.loads(
+            (self.scratch / payload["refs"]["producer_completion"]["path"]).read_text(
+                encoding="utf-8"
+            )
+        )
+        completion["results"][0]["capture_evidence"] = capture_ref
+        payload["refs"]["producer_completion"] = self.retain_json(
+            "completion-with-managed-auth-v3-unsafe",
+            completion,
+        )
+        record_path = self.publish(payload)
+
+        with mock.patch.object(
+            capture_finalizer.strict_finalizer,
+            "finalize_single_call_stage_capture",
+        ) as called:
+            with self.assertRaisesRegex(
+                capture_finalizer.CaptureFinalizationError,
+                "stderr contradicts managed-auth PASS scan",
+            ):
+                capture_finalizer.finalize_capture_complete_record(
+                    root=self.scratch,
+                    record_path=record_path,
+                    run_root=self.run_relative,
+                )
+        called.assert_not_called()
+
+    def test_managed_auth_v3_pass_scan_cannot_cover_credential_bearing_admission(self) -> None:
+        payload, _raw = self.fixture()
+        scan_ref = self.retain_json(
+            "managed-auth-v3-pass-scan-unsafe-admission",
+            {
+                "schema": "reviewed-campaign-credential-residue-scan-v3",
+                "status": "PASS",
+                "worker": "producer-01",
+                "scan_mode": "MANAGED_AUTH_STRUCTURAL_MARKERS",
+                "credential_value_loaded_by_adapter": False,
+                "scanned_file_count": 1,
+                "scanned_byte_count": 24,
+                "semantic_classification": "NO_CREDENTIAL_MARKERS",
+                "observed_structure_families": [],
+                "marker_families_checked": [
+                    "credential-json-keys",
+                    "authorization-bearer",
+                    "compact-jwt",
+                    "openai-key-prefix",
+                ],
+                "encoding_forms_checked": ["utf-8", "utf-16-le", "utf-16-be"],
+                "completed_at": "2026-07-17T00:00:00Z",
+            },
+        )
+        capture = json.loads(
+            (self.scratch / payload["refs"]["capture_evidence"]["path"]).read_text(
+                encoding="utf-8"
+            )
+        )
+        capture["credential_residue_scan"] = scan_ref
+        capture["raw_event_log"] = self.retain(
+            "managed-auth-v3-admission-events",
+            b'{"type":"turn.completed"}\n',
+            ".events.jsonl",
+        )
+        capture["stderr"] = self.retain(
+            "managed-auth-v3-admission-stderr",
+            b"",
+            ".stderr.txt",
+        )
+        capture["in_flight_admission"] = self.retain(
+            "managed-auth-v3-unsafe-admission",
+            b'{"type":"thread.started","thread_id":"thread-01",'
+            b'"diagnostic":"s\\u006b-syntheticfixturevalue1234567890"}\n',
+            ".in-flight-admission.events.jsonl",
+        )
+        capture_ref = self.retain_json(
+            "capture-with-managed-auth-v3-unsafe-admission",
+            capture,
+        )
+        payload["refs"]["capture_evidence"] = capture_ref
+        completion = json.loads(
+            (self.scratch / payload["refs"]["producer_completion"]["path"]).read_text(
+                encoding="utf-8"
+            )
+        )
+        completion["results"][0]["capture_evidence"] = capture_ref
+        payload["refs"]["producer_completion"] = self.retain_json(
+            "completion-with-managed-auth-v3-unsafe-admission",
+            completion,
+        )
+        record_path = self.publish(payload)
+
+        with mock.patch.object(
+            capture_finalizer.strict_finalizer,
+            "finalize_single_call_stage_capture",
+        ) as called:
+            with self.assertRaisesRegex(
+                capture_finalizer.CaptureFinalizationError,
+                "in_flight_admission contradicts managed-auth PASS scan",
+            ):
+                capture_finalizer.finalize_capture_complete_record(
+                    root=self.scratch,
+                    record_path=record_path,
+                    run_root=self.run_relative,
+                )
+        called.assert_not_called()
 
     def test_output_or_context_substitution_rejects_before_finalizer_or_run_root(self) -> None:
         expected_failure = {
